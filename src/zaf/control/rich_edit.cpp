@@ -215,13 +215,9 @@ void RichEdit::UpdateStyle() {
 }
 
 
-void RichEdit::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void RichEdit::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
-
-    //If text color got from text color picker has been changed, set it to CHARFORMAT 
-    //before painting.
-    ReviseTextColor();
 
     //Note: all painting operations are in content coordinate.
     auto content_rect = this->ContentRect();
@@ -252,24 +248,7 @@ void RichEdit::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-void RichEdit::ReviseTextColor() {
-
-    auto text_color = TextColor();
-    if (text_color_ != text_color) {
-
-        text_color_ = text_color;
-
-        character_format_.dwMask |= CFM_COLOR;
-        character_format_.crTextColor = text_color_.ToCOLORREF();
-
-        if (text_service_ != nullptr) {
-            text_service_->OnTxPropertyBitsChange(TXTBIT_CHARFORMATCHANGE, TXTBIT_CHARFORMATCHANGE);
-        }
-    }
-}
-
-
-void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     try {
 
@@ -358,7 +337,7 @@ void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect)
 }
 
 
-float RichEdit::GetContentVerticalOffset() {
+float RichEdit::GetContentVerticalOffset() const {
 
     auto paragraph_alignment = ParagraphAlignment();
     if (paragraph_alignment == ParagraphAlignment::Near) {
@@ -676,8 +655,15 @@ Color RichEdit::TextColor() const {
 
 
 void RichEdit::SetTextColor(const Color& color) {
+
     text_color_ = color;
-    NeedRepaint();
+
+    character_format_.dwMask |= CFM_COLOR;
+    character_format_.crTextColor = text_color_.ToCOLORREF();
+
+    if (text_service_) {
+        text_service_->OnTxPropertyBitsChange(TXTBIT_CHARFORMATCHANGE, TXTBIT_CHARFORMATCHANGE);
+    }
 }
 
 
@@ -909,7 +895,7 @@ void RichEdit::GetVerticalScrollValues(
     int& current_value, 
     int& min_value,
     int& max_value,
-    int& page_value) {
+    int& page_value) const {
 
     GetScrollValues(false, current_value, min_value, max_value, page_value);
 }
@@ -919,7 +905,7 @@ void RichEdit::GetHorizontalScrollValues(
     int& current_value, 
     int& min_value,
     int& max_value,
-    int& page_value) {
+    int& page_value) const {
 
     GetScrollValues(true, current_value, min_value, max_value, page_value);
 }
@@ -930,7 +916,7 @@ void RichEdit::GetScrollValues(
     int& current_value, 
     int& min_value, 
     int& max_value,
-    int& page_value) {
+    int& page_value) const {
 
     if (!text_service_) {
         return;

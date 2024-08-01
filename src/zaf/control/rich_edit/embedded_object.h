@@ -86,7 +86,7 @@ public:
     virtual void Paint(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
-        const PaintContext& context) = 0;
+        const PaintContext& context) const = 0;
 
     virtual void OnMouseCursorChanging(const MouseCursorChangingContext& context);
     virtual void OnMouseDown(const MouseDownContext& context);

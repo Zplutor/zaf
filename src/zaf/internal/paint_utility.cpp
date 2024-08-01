@@ -11,7 +11,7 @@ namespace internal {
 
 void DrawTextWithIcon(
     Canvas& canvas,
-    TextualControl& control,
+    const TextualControl& control,
     TextLayout& text_layout,
     const std::function<void(Canvas& canvas, const Rect& icon_rect)>& paint_icon_function) {
 

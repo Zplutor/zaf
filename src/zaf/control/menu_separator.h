@@ -10,9 +10,9 @@ public:
 
 protected:
     void Initialize() override;
-    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
     zaf::Rect DetermineTextRect() override;
-    zaf::Rect GetSubMenuArrowRect() override;
+    zaf::Rect GetSubMenuArrowRect() const override;
     zaf::Size CalculatePreferredContentSize(const zaf::Size& bound_size) const override;
 };
 

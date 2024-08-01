@@ -210,13 +210,13 @@ public:
         int& current_value,
         int& min_value,
         int& max_value,
-        int& page_value) override;
+        int& page_value) const override;
 
     void GetHorizontalScrollValues(
         int& current_value,
         int& min_value,
         int& max_value,
-        int& page_value) override;
+        int& page_value) const override;
 
     /**
      Get selection changed event.
@@ -352,7 +352,7 @@ public:
 protected:
     void Initialize() override;
     void UpdateStyle() override;
-    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
     void Layout(const zaf::Rect& previous_rect) override;
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
 
@@ -384,9 +384,8 @@ private:
 
 private:
     void InitializeTextService();
-    void ReviseTextColor();
-    void PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect);
-    float GetContentVerticalOffset();
+    void PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) const;
+    float GetContentVerticalOffset() const;
     void ResetCachedTextHeight();
     void HandleMouseCursorChanging(const MouseCursorChangingInfo& event_info);
     Point AdjustMousePositionIntoRichEdit(const Point& position_in_control);
@@ -398,7 +397,7 @@ private:
         int& current_value,
         int& min_value,
         int& max_value,
-        int& page_value);
+        int& page_value) const;
     void SendScrollMessage(bool is_horizontal, WORD scroll_type);
     void Scroll(bool is_horizontal, int new_value);
     void ScrollBarChange();
@@ -421,7 +420,7 @@ private:
     PARAFORMAT paragraph_format_;
     zaf::ParagraphAlignment paragraph_alignment_{ zaf::ParagraphAlignment::Near };
     DWORD scroll_bar_property_;
-    std::optional<float> cached_text_height_;
+    mutable std::optional<float> cached_text_height_;
     Color text_color_;
     Subscription ime_message_subscription_;
 

@@ -14,7 +14,7 @@ public:
 
 protected:
     void UpdateStyle() override;
-    void Paint(zaf::Canvas& canvas, const zaf::Rect&) override;;
+    void Paint(zaf::Canvas& canvas, const zaf::Rect&) const override;
 
     zaf::Rect DetermineTextRect() override;
 

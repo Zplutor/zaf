@@ -50,7 +50,7 @@ void RadioButton::UpdateStyle() {
 }
 
 
-void RadioButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void RadioButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -66,7 +66,7 @@ void RadioButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-void RadioButton::PaintRadio(Canvas& canvas, const zaf::Rect& radio_rect) {
+void RadioButton::PaintRadio(Canvas& canvas, const zaf::Rect& radio_rect) const {
 
     float ellipse_x_radius = radio_rect.size.width / 2;
     float ellipse_y_radius = radio_rect.size.height / 2;

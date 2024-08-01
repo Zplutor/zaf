@@ -17,7 +17,7 @@ public:
 protected:
     void Layout(const zaf::Rect& previous_rect) override;
     void UpdateStyle() override;
-    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const override;
 
     void OnMouseEnter(const zaf::MouseEnterInfo& event_info) override {
         NeedRepaint();
@@ -42,11 +42,11 @@ private:
         }
 
     protected:
-        void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override;
+        void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const override;
 
     private:
-        void PaintNormalBubble(zaf::Canvas& canvas);
-        void PaintMinimizeBubble(zaf::Canvas& canvas);
+        void PaintNormalBubble(zaf::Canvas& canvas) const;
+        void PaintMinimizeBubble(zaf::Canvas& canvas) const;
 
     private:
         std::size_t unread_count_ = 0;

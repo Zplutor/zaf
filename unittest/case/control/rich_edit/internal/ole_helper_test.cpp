@@ -24,7 +24,7 @@ public:
     void Paint(
         zaf::Canvas& canvas,
         const zaf::Rect& dirty_rect,
-        const zaf::rich_edit::PaintContext& context) override {
+        const zaf::rich_edit::PaintContext& context) const override {
 
     }
 };

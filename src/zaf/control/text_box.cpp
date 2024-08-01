@@ -142,7 +142,7 @@ void TextBox::UpdateStyle() {
 }
 
 
-void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -154,7 +154,7 @@ void TextBox::PaintTextBack(
     Canvas& canvas,
     const zaf::Rect& dirty_rect,
     const TextLayout& text_layout,
-    const zaf::Rect& layout_rect) {
+    const zaf::Rect& layout_rect) const {
 
     __super::PaintTextBack(canvas, dirty_rect, text_layout, layout_rect);
 
@@ -166,7 +166,7 @@ void TextBox::PaintSelection(
     Canvas& canvas,
     const zaf::Rect& dirty_rect,
     const TextLayout& text_layout,
-    const zaf::Rect& layout_rect) {
+    const zaf::Rect& layout_rect) const {
 
     auto selection_range = this->SelectionRange();
     if (selection_range.length == 0) {
@@ -601,7 +601,7 @@ void TextBox::GetVerticalScrollValues(
     int& current_value, 
     int& min_value,
     int& max_value,
-    int& page_value) {
+    int& page_value) const {
 
     GetScrollValues(
         ContentSize().height,
@@ -618,7 +618,7 @@ void TextBox::GetHorizontalScrollValues(
     int& current_value, 
     int& min_value,
     int& max_value,
-    int& page_value) {
+    int& page_value) const {
 
     GetScrollValues(
         ContentSize().width,

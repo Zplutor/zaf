@@ -829,7 +829,7 @@ protected:
 
      Derived classes can override this method to paint the control.
      */
-    virtual void Paint(Canvas& canvas, const zaf::Rect& dirty_rect);
+    virtual void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const;
 
     /**
      Release the renderer-dependent resources.
@@ -1039,7 +1039,7 @@ private:
     void RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect, bool update_style);
     void RecalculateCachedPaintingRect(const zaf::Rect& repaint_rect);
     void ReleaseCachedPaintingRenderer();
-    void DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect);
+    void DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect) const;
 
     void SetParent(const std::shared_ptr<Control>& parent);
     void InnerRemoveChild(const std::shared_ptr<Control>& child, bool set_parent_to_null);

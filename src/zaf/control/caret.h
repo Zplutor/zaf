@@ -66,7 +66,7 @@ public:
     @param dirty_rect
         A rectangle area that need to be painted, in owner content coordinate.
     */
-    void Paint(Canvas& owner_canvas, const zaf::Rect& dirty_rect);
+    void Paint(Canvas& owner_canvas, const zaf::Rect& dirty_rect) const;
 
 private:
     void ShowCaret();

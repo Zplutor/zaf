@@ -29,15 +29,15 @@ public:
 
 protected:
     void Initialize() override;
-    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
     zaf::Rect DetermineTextRect() override;
     zaf::Size CalculatePreferredContentSize(const zaf::Size& bound_size) const override;
     void OnIsSelectedChanged() override;
 
-    virtual zaf::Rect GetSubMenuArrowRect();
+    virtual zaf::Rect GetSubMenuArrowRect() const;
 
 private:
-    void PaintSubMenuArrow(Canvas& canvas);
+    void PaintSubMenuArrow(Canvas& canvas) const;
     void CheckCreateSubMenu();
 
 private:

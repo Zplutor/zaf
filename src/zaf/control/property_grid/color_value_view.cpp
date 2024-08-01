@@ -146,7 +146,7 @@ void ColorValueView::ColorSquare::SetColor(const zaf::Color& color) {
 }
 
 
-void ColorValueView::ColorSquare::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void ColorValueView::ColorSquare::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -157,7 +157,7 @@ void ColorValueView::ColorSquare::Paint(Canvas& canvas, const zaf::Rect& dirty_r
 }
 
 
-void ColorValueView::ColorSquare::PaintTransparentColorSmallSquares(Canvas& canvas) {
+void ColorValueView::ColorSquare::PaintTransparentColorSmallSquares(Canvas& canvas) const {
 
     auto content_rect = ContentRect();
     auto clipping_guard = canvas.PushClipping(content_rect);

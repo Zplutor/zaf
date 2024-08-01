@@ -32,7 +32,7 @@ void MenuItem::Initialize() {
 }
 
 
-void MenuItem::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void MenuItem::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -40,7 +40,7 @@ void MenuItem::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-void MenuItem::PaintSubMenuArrow(Canvas& canvas) {
+void MenuItem::PaintSubMenuArrow(Canvas& canvas) const {
 
     auto sub_menu_arrow_rect = GetSubMenuArrowRect();
     if (sub_menu_arrow_rect.IsEmpty()) {
@@ -77,7 +77,7 @@ zaf::Rect MenuItem::DetermineTextRect() {
 }
 
 
-zaf::Rect MenuItem::GetSubMenuArrowRect() {
+zaf::Rect MenuItem::GetSubMenuArrowRect() const {
 
     if (!HasSubMenuItem()) {
         return {};

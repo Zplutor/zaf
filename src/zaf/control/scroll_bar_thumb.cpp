@@ -58,7 +58,7 @@ void ScrollBarThumb::UpdateStyle() {
 }
 
 
-void ScrollBarThumb::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void ScrollBarThumb::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 

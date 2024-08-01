@@ -17,7 +17,7 @@ void MenuSeparator::Initialize() {
 }
 
 
-void MenuSeparator::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void MenuSeparator::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -40,7 +40,7 @@ zaf::Rect MenuSeparator::DetermineTextRect() {
 }
 
 
-zaf::Rect MenuSeparator::GetSubMenuArrowRect() {
+zaf::Rect MenuSeparator::GetSubMenuArrowRect() const {
     //Separator doesn't have any sub menu item.
     return {};
 }

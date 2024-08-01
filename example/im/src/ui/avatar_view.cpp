@@ -2,7 +2,7 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/graphic_factory.h>
 
-void AvatarView::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
+void AvatarView::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     if (!image_source_) {
         return;

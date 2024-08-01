@@ -21,7 +21,7 @@ constexpr float IconMargin = 5;
 
 void DrawTextWithIcon(
     Canvas& canvas, 
-    TextualControl& textual_control,
+    const TextualControl& textual_control,
     TextLayout& text_layout, 
     const std::function<void(Canvas& canvas, const Rect& icon_rect)>& paint_icon_function);
 

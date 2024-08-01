@@ -24,10 +24,10 @@ private:
         void SetColor(const zaf::Color& color);
 
     protected:
-        void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+        void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
 
     private:
-        void PaintTransparentColorSmallSquares(Canvas& canvas);
+        void PaintTransparentColorSmallSquares(Canvas& canvas) const;
 
     private:
         zaf::Color color_;

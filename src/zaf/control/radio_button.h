@@ -125,7 +125,7 @@ protected:
     void Initialize() override;
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
     void UpdateStyle() override;
-    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
     zaf::Rect DetermineTextRect() override;
     void OnClick(const ClickInfo& event_info) override;
 
@@ -138,7 +138,7 @@ protected:
     virtual void OnCheckStateChanged(const CheckStateChangedInfo& event_info);
 
 private:
-    void PaintRadio(Canvas& canvas, const zaf::Rect& radio_rect);
+    void PaintRadio(Canvas& canvas, const zaf::Rect& radio_rect) const;
 
     //Called by Group internally.
     void Uncheck() {

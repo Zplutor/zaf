@@ -154,7 +154,7 @@ void ComboBox::UpdateStyle() {
 }
 
 
-void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 

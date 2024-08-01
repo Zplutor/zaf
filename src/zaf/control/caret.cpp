@@ -140,7 +140,7 @@ void Caret::DestroySystemCaret() {
 }
 
 
-void Caret::Paint(Canvas& owner_canvas, const zaf::Rect& dirty_rect) {
+void Caret::Paint(Canvas& owner_canvas, const zaf::Rect& dirty_rect) const {
 
     if (!IsVisible()) {
         return;

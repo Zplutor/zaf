@@ -43,7 +43,7 @@ void ScrollBarArrow::UpdateStyle() {
 }
 
 
-void ScrollBarArrow::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void ScrollBarArrow::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 

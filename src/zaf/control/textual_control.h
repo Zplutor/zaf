@@ -319,19 +319,19 @@ protected:
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
     void UpdateStyle() override;
-    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
 
     virtual void PaintTextBack(
         Canvas& canvas, 
         const zaf::Rect& dirty_rect,
         const TextLayout& text_layout,
-        const zaf::Rect& layout_rect);
+        const zaf::Rect& layout_rect) const;
 
     virtual void PaintText(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
         const TextLayout& text_layout,
-        const zaf::Rect& layout_rect);
+        const zaf::Rect& layout_rect) const;
 
     void ReleaseRendererResources() override;
 
@@ -365,7 +365,7 @@ private:
         Canvas& canvas, 
         const TextLayout& text_layout, 
         const Range& range,
-        const Color& color);
+        const Color& color) const;
 
     void OnInlineObjectAttached(const internal::InlineObjectAttachedInfo&);
     void OnTextModelChanged(const internal::TextModelChangedInfo&);

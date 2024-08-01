@@ -36,7 +36,7 @@ public:
     void SetInterpolationMode(zaf::InterpolationMode mode);
 
 protected:
-    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
     void ReleaseRendererResources() override;
     void OnDPIChanged() override;
 

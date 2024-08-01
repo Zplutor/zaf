@@ -21,7 +21,7 @@ void TreeItemExpandButton::UpdateStyle() {
 }
 
 
-void TreeItemExpandButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void TreeItemExpandButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 

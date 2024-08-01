@@ -32,7 +32,7 @@ void MemberItem::UpdateStyle() {
 }
 
 
-void MemberItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
+void MemberItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 

@@ -87,7 +87,7 @@ void TextualControl::UpdateStyle() {
 }
 
 
-void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -130,7 +130,7 @@ void TextualControl::PaintTextBack(
     Canvas& canvas,
     const zaf::Rect& dirty_rect,
     const TextLayout& text_layout,
-    const zaf::Rect& layout_rect) {
+    const zaf::Rect& layout_rect) const {
 
     auto& text_back_colors = text_model_->StyledText().RangedTextBackColors();
     if (text_back_colors.IsEmpty()) {
@@ -149,7 +149,7 @@ void TextualControl::PaintTextBackInRange(
     Canvas& canvas,
     const TextLayout& text_layout,
     const Range& range,
-    const Color& color) {
+    const Color& color) const {
 
     auto range_metrics = text_layout.HitTestRange(range);
     for (const auto& metrics : range_metrics) {
@@ -165,7 +165,7 @@ void TextualControl::PaintText(
     Canvas& canvas,
     const zaf::Rect& dirty_rect,
     const TextLayout& text_layout,
-    const zaf::Rect& layout_rect) {
+    const zaf::Rect& layout_rect) const {
 
     auto state_guard = canvas.PushState();
     canvas.SetBrushWithColor(TextColor());

@@ -197,12 +197,12 @@ protected:
     zaf::Rect DetermineTextRect() override;
     void OnTextChanged(const TextChangedInfo& event_info) override;
     void UpdateStyle() override;
-    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
     void PaintTextBack(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
         const TextLayout& text_layout,
-        const zaf::Rect& layout_rect) override;
+        const zaf::Rect& layout_rect) const override;
     void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseMove(const MouseMoveInfo& event_info) override;
@@ -227,12 +227,12 @@ protected:
         int& current_value,
         int& min_value,
         int& max_value,
-        int& page_value) override;
+        int& page_value) const override;
     void GetHorizontalScrollValues(
         int& current_value,
         int& min_value,
         int& max_value,
-        int& page_value) override;
+        int& page_value) const override;
 
     Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() override;
     Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
@@ -248,7 +248,7 @@ private:
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
         const TextLayout& text_layout,
-        const zaf::Rect& layout_rect);
+        const zaf::Rect& layout_rect) const;
 
     void UpdateTextRectOnLayout();
 

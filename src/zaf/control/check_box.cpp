@@ -55,7 +55,7 @@ void CheckBox::UpdateStyle() {
 }
 
 
-void CheckBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void CheckBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
     
     __super::Paint(canvas, dirty_rect);
 

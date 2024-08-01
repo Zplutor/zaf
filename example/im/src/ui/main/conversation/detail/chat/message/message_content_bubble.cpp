@@ -13,7 +13,7 @@ void MessageContentBubble::Initialize() {
 }
 
 
-void MessageContentBubble::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
+void MessageContentBubble::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     zaf::RoundedRect bubble_rect(zaf::Rect(zaf::Point(), Size()), 4, 4);
 

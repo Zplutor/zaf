@@ -18,7 +18,7 @@ public:
     }
 
 protected:
-    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) override;
+    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const override;
 
 private:
     Style style_ = Style::Normal;

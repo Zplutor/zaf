@@ -295,7 +295,7 @@ void Control::RepaintChildren(
 }
 
 
-void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     auto state_guard = canvas.PushState();
 
@@ -333,7 +333,7 @@ void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 }
 
 
-void Control::DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect) {
+void Control::DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect) const {
 
     auto background_image = BackgroundImage();
     if (!background_image) {

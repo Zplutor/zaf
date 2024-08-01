@@ -19,7 +19,7 @@ ImageBox::~ImageBox() {
 }
 
 
-void ImageBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void ImageBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 

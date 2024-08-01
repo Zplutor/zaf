@@ -193,7 +193,7 @@ void ConversationItem::UpdateStyle() {
 }
 
 
-void ConversationItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
+void ConversationItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -340,7 +340,9 @@ void ConversationItem::UnreadCountBubble::Initialize() {
 }
 
 
-void ConversationItem::UnreadCountBubble::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) {
+void ConversationItem::UnreadCountBubble::Paint(
+    zaf::Canvas& canvas, 
+    const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -357,7 +359,7 @@ void ConversationItem::UnreadCountBubble::Paint(zaf::Canvas& canvas, const zaf::
 }
 
 
-void ConversationItem::UnreadCountBubble::PaintNormalBubble(zaf::Canvas& canvas) {
+void ConversationItem::UnreadCountBubble::PaintNormalBubble(zaf::Canvas& canvas) const {
 
     std::wstring unread_count_text;
     if (unread_count_ <= 99) {
@@ -409,7 +411,7 @@ void ConversationItem::UnreadCountBubble::PaintNormalBubble(zaf::Canvas& canvas)
 }
 
 
-void ConversationItem::UnreadCountBubble::PaintMinimizeBubble(zaf::Canvas& canvas) {
+void ConversationItem::UnreadCountBubble::PaintMinimizeBubble(zaf::Canvas& canvas) const {
 
     zaf::Ellipse ellipse(
         zaf::Point(UnreadCountBubbleWidth - UnreadCountBubbleHeight + 2 + 5, 2 + 6),

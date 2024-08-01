@@ -17,7 +17,7 @@ public:
 
 protected:
     void UpdateStyle() override;
-    void Paint(Canvas& canvas, const zaf::Rect&) override;
+    void Paint(Canvas& canvas, const zaf::Rect&) const override;
 
 private:
     ArrowDirection direction_{ ArrowDirection::Up };
