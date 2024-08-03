@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-class StyleParser : public ObjectParser {
+class IfParser : public ObjectParser {
 public:
     void ParseFromNode(const XamlNode& node, Object& object) override;
 };

@@ -1,21 +1,21 @@
-#include <zaf/object/style/declaration.h>
+#include <zaf/control/style/property_value.h>
 #include <zaf/object/object.h>
 
 namespace zaf {
 
-Declaration::Declaration(ObjectProperty* property, std::shared_ptr<Object> value) : 
+PropertyValue::PropertyValue(ObjectProperty* property, std::shared_ptr<Object> value) :
     storage_(PropertyStorage{ property, std::move(value) }) {
 
 }
 
 
-Declaration::Declaration(std::wstring property_name, std::wstring value) : 
+PropertyValue::PropertyValue(std::wstring property_name, std::wstring value) :
     storage_(StringStorage{ std::move(property_name), std::move(value) }) {
 
 }
 
 
-const std::wstring& Declaration::PropertyName() const noexcept {
+const std::wstring& PropertyValue::PropertyName() const noexcept {
 
     auto string_storage = std::get_if<StringStorage>(&storage_);
     if (string_storage) {
@@ -27,10 +27,10 @@ const std::wstring& Declaration::PropertyName() const noexcept {
 }
 
 
-void Declaration::ApplyTo(Object& object) const {
+void PropertyValue::ApplyTo(Object& object) const {
 
     std::visit([&object](const auto& storage) {
-    
+
         using StorageType = std::decay_t<decltype(storage)>;
 
         if constexpr (std::is_same_v<StorageType, PropertyStorage>) {
@@ -40,16 +40,16 @@ void Declaration::ApplyTo(Object& object) const {
             ApplyStringStorage(storage, object);
         }
     },
-    storage_);
+        storage_);
 }
 
 
-void Declaration::ApplyPropertyStorage(const PropertyStorage& storage, Object& object) {
+void PropertyValue::ApplyPropertyStorage(const PropertyStorage& storage, Object& object) {
     storage.property->SetValue(object, storage.value);
 }
 
 
-void Declaration::ApplyStringStorage(const StringStorage& storage, Object& object) {
+void PropertyValue::ApplyStringStorage(const StringStorage& storage, Object& object) {
     auto property_storage = ConvertStringStorageToPropertyStorage(storage, object);
     if (property_storage) {
         ApplyPropertyStorage(*property_storage, object);
@@ -57,7 +57,7 @@ void Declaration::ApplyStringStorage(const StringStorage& storage, Object& objec
 }
 
 
-bool Declaration::IsMatchedIn(const Object& object) const {
+bool PropertyValue::IsMatchedIn(const Object& object) const {
 
     bool result{};
     std::visit([&object, &result](const auto& storage) {
@@ -77,8 +77,8 @@ bool Declaration::IsMatchedIn(const Object& object) const {
 }
 
 
-bool Declaration::IsMatchedPropertyStorage(const PropertyStorage& storage, const Object& object) {
-    
+bool PropertyValue::IsMatchedPropertyStorage(const PropertyStorage& storage, const Object& object) {
+
     auto value = storage.property->GetValue(object);
     if (!value) {
         return false;
@@ -88,8 +88,8 @@ bool Declaration::IsMatchedPropertyStorage(const PropertyStorage& storage, const
 }
 
 
-bool Declaration::IsMatchedStringStorage(const StringStorage& storage, const Object& object) {
-    
+bool PropertyValue::IsMatchedStringStorage(const StringStorage& storage, const Object& object) {
+
     auto property_storage = ConvertStringStorageToPropertyStorage(storage, object);
     if (property_storage) {
         return IsMatchedPropertyStorage(*property_storage, object);
@@ -98,7 +98,7 @@ bool Declaration::IsMatchedStringStorage(const StringStorage& storage, const Obj
 }
 
 
-std::optional<Declaration::PropertyStorage> Declaration::ConvertStringStorageToPropertyStorage(
+std::optional<PropertyValue::PropertyStorage> PropertyValue::ConvertStringStorageToPropertyStorage(
     const StringStorage& storage,
     const Object& object) {
 

@@ -1,18 +1,18 @@
-#include <zaf/object/style/selector_parser.h>
+#include <zaf/control/style/if_parser.h>
 #include <zaf/base/as.h>
+#include <zaf/control/style/if.h>
 #include <zaf/object/parsing/internal/utility.h>
 #include <zaf/object/parsing/parse_error.h>
 #include <zaf/object/parsing/xaml_node.h>
-#include <zaf/object/style/selector.h>
 
 namespace zaf {
 
-void SelectorParser::ParseFromNode(const XamlNode& node, Object& object) {
+void IfParser::ParseFromNode(const XamlNode& node, Object& object) {
 
-    auto& selector = As<Selector>(object);
+    auto& if_statement = As<If>(object);
 
     for (const auto& each_attribute : node.GetAttributes()) {
-        selector.AddDeclaration(each_attribute->Name(), each_attribute->Value());
+        if_statement.AddCondition(each_attribute->Name(), each_attribute->Value());
     }
 
     const auto& content_nodes = node.GetContentNodes();
@@ -24,12 +24,12 @@ void SelectorParser::ParseFromNode(const XamlNode& node, Object& object) {
         throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
-    auto sheet = internal::CreateObjectFromNode<Sheet>(content_nodes.front());
-    if (!sheet) {
+    auto set = internal::CreateObjectFromNode<Set>(content_nodes.front());
+    if (!set) {
         throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
-    selector.SetSheet(std::move(sheet));
+    if_statement.SetResult(std::move(set));
 }
 
 }

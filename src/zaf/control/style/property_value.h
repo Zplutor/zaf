@@ -7,10 +7,10 @@
 
 namespace zaf {
 
-class Declaration {
+class PropertyValue {
 public:
-    Declaration(ObjectProperty* property, std::shared_ptr<Object> value);
-    Declaration(std::wstring property_name, std::wstring value);
+    PropertyValue(ObjectProperty* property, std::shared_ptr<Object> value);
+    PropertyValue(std::wstring property_name, std::wstring value);
 
     const std::wstring& PropertyName() const noexcept;
 
@@ -45,18 +45,18 @@ private:
 };
 
 
-struct DeclarationHash {
-    std::size_t operator()(const Declaration& declaration) const {
-        return std::hash<std::wstring>()(declaration.PropertyName());
+struct PropertyValueHash {
+    std::size_t operator()(const PropertyValue& PropertyValue) const {
+        return std::hash<std::wstring>()(PropertyValue.PropertyName());
     }
 };
 
-struct DeclarationEqual {
-    bool operator()(const Declaration& declaration1, const Declaration& declaration2) const {
-        return declaration1.PropertyName() == declaration2.PropertyName();
+struct PropertyValueEqual {
+    bool operator()(const PropertyValue& PropertyValue1, const PropertyValue& PropertyValue2) const {
+        return PropertyValue1.PropertyName() == PropertyValue2.PropertyName();
     }
 };
 
-using DeclarationSet = std::unordered_set<Declaration, DeclarationHash, DeclarationEqual>;
+using PropertyValueSet = std::unordered_set<PropertyValue, PropertyValueHash, PropertyValueEqual>;
 
 }

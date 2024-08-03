@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-class SheetParser : public ObjectParser {
+class SetParser : public ObjectParser {
 public:
     void ParseFromNode(const XamlNode& node, Object& object) override;
 };

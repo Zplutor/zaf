@@ -73,43 +73,6 @@ protected:
         auto button = zaf::Create<zaf::Button>();
         button->SetText(L"This is a button");
 
-        auto style = zaf::Create<zaf::Style>();
-
-        style->Sheet()->AddDeclaration(
-            zaf::Control::Type::Instance()->BackgroundColorProperty,
-            zaf::Box(zaf::Color::White()));
-
-        style->AddSelector([]() {
-
-            auto selector = zaf::Create<zaf::Selector>();
-            selector->AddDeclaration(
-                zaf::Control::Type::Instance()->IsMouseOverProperty, 
-                zaf::Box(true));
-
-            selector->AddDeclaration(
-                zaf::ClickableControl::Type::Instance()->IsPressedProperty, 
-                zaf::Box(true));
-
-            selector->Sheet()->AddDeclaration(
-                zaf::Control::Type::Instance()->BorderColorProperty, 
-                zaf::Box(zaf::Color::Red()));
-
-            return selector;
-        }());
-        style->AddSelector([]() {
-        
-            auto selector = zaf::Create<zaf::Selector>();
-            selector->AddDeclaration(
-                zaf::Control::Type::Instance()->IsMouseOverProperty, 
-                zaf::Box(false));
-            selector->Sheet()->AddDeclaration(
-                zaf::Control::Type::Instance()->BorderColorProperty, 
-                zaf::Box(zaf::Color::Green()));
-
-            return selector;
-        }());
-        button->SetStyle(style);
-
         RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
         RootControl()->AddChild(button);
         RootControl()->SetPadding(zaf::Frame{ 20 });

@@ -29,12 +29,12 @@
 #include <zaf/control/image_picker.h>
 #include <zaf/control/layout/layouter.h>
 #include <zaf/control/control_update_guard.h>
+#include <zaf/control/style/style_collection.h>
 #include <zaf/graphic/renderer/bitmap_renderer.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/object/object.h>
-#include <zaf/object/style/style.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subscription_host.h>
 
@@ -749,8 +749,8 @@ public:
     */
     Point TranslateFromParent(const Point& position) const;
 
-    const std::shared_ptr<zaf::Style>& Style() const;
-    void SetStyle(std::shared_ptr<zaf::Style> style);
+    StyleCollection& Styles();
+    const StyleCollection& Styles() const;
 
     Observable<StyleUpdateInfo> StyleUpdateEvent() const;
 
@@ -814,7 +814,6 @@ protected:
     void InvokeInitialize() override;
     void InvokeParse() override;
 
-    void NeedUpdateStyle();
     virtual void UpdateStyle();
     virtual void OnStyleUpdate(const StyleUpdateInfo& event_info);
 
@@ -1028,15 +1027,14 @@ private:
     @param parent_update_style
         A value indicating whether the parent needs to update its style.
     */
-    void Repaint(Canvas& canvas, const zaf::Rect& dirty_rect, bool parent_update_style);
-    bool HandleUpdateStyle(bool parent_update_style);
+    void Repaint(Canvas& canvas, const zaf::Rect& dirty_rect);
+    void HandleUpdateStyle();
     void RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_rect);
     void RepaintControl(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
-        bool need_clear,
-        bool update_style);
-    void RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect, bool update_style);
+        bool need_clear);
+    void RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect);
     void RecalculateCachedPaintingRect(const zaf::Rect& repaint_rect);
     void ReleaseCachedPaintingRenderer();
     void DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect) const;
@@ -1078,7 +1076,6 @@ private:
     std::weak_ptr<internal::ControlUpdateLock> update_lock_;
     std::unique_ptr<internal::ControlUpdateState> update_state_;
 
-    bool need_update_style_{};
     bool is_updating_style_{};
     bool is_cached_painting_enabled_{};
     BitmapRenderer cached_renderer_;
@@ -1122,7 +1119,7 @@ private:
     std::wstring name_;
     std::wstring tooltip_;
 
-    std::shared_ptr<zaf::Style> style_;
+    StyleCollection styles_;
 
     Event<StyleUpdateInfo> style_update_event_;
     Event<RectChangedInfo> rect_changed_event_;

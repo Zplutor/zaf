@@ -123,7 +123,6 @@ void ClickableControl::OnMouseCaptured(const MouseCapturedInfo& event_info) {
     __super::OnMouseCaptured(event_info);
 
     is_pressed_ = true;
-    NeedUpdateStyle();
     NeedRepaint();
 }
 
@@ -133,7 +132,6 @@ void ClickableControl::OnMouseReleased(const MouseReleasedInfo& event_info) {
     __super::OnMouseReleased(event_info);
 
     is_pressed_ = false;
-    NeedUpdateStyle();
     NeedRepaint();
 }
 
@@ -242,7 +240,6 @@ bool ClickableControl::CheckIsMousePressed(const Point& position, const MouseMes
     }
 
     is_pressed_ = is_pressed;
-    NeedUpdateStyle();
 
     if (need_repaint) {
         NeedRepaint();

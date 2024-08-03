@@ -208,11 +208,11 @@
     <Filter Include="zaf\internal\stream">
       <UniqueIdentifier>{6df488a8-8dd8-4ae1-8fd8-a7430c8c8be2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\object\style">
-      <UniqueIdentifier>{6fc84dc4-b426-4c31-a1fb-952fe1f37ece}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\internal\object">
       <UniqueIdentifier>{f22f587a-86b4-42fa-8e2d-e66b8b235d6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\control\style">
+      <UniqueIdentifier>{75303be0-4d61-4ca8-b9ee-ea202ff596bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1222,15 +1222,6 @@
     <ClCompile Include="src\zaf\control\event\style_update_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\style\style.cpp">
-      <Filter>zaf\object\style</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\object\style\sheet.cpp">
-      <Filter>zaf\object\style</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\object\style\sheet_parser.cpp">
-      <Filter>zaf\object\style</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\control_object.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
@@ -1264,17 +1255,26 @@
     <ClCompile Include="src\zaf\internal\object\enum_parser.cpp">
       <Filter>zaf\internal\object</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\style\declaration.cpp">
-      <Filter>zaf\object\style</Filter>
+    <ClCompile Include="src\zaf\control\style\style_collection.cpp">
+      <Filter>zaf\control\style</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\style\selector.cpp">
-      <Filter>zaf\object\style</Filter>
+    <ClCompile Include="src\zaf\control\style\style.cpp">
+      <Filter>zaf\control\style</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\style\selector_parser.cpp">
-      <Filter>zaf\object\style</Filter>
+    <ClCompile Include="src\zaf\control\style\if.cpp">
+      <Filter>zaf\control\style</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\style\style_parser.cpp">
-      <Filter>zaf\object\style</Filter>
+    <ClCompile Include="src\zaf\control\style\property_value.cpp">
+      <Filter>zaf\control\style</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\style\set.cpp">
+      <Filter>zaf\control\style</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\style\set_parser.cpp">
+      <Filter>zaf\control\style</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\style\if_parser.cpp">
+      <Filter>zaf\control\style</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2833,15 +2833,6 @@
     <ClInclude Include="src\zaf\control\event\style_update_info.h">
       <Filter>zaf\control\event</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\style\style.h">
-      <Filter>zaf\object\style</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\style\sheet.h">
-      <Filter>zaf\object\style</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\style\sheet_parser.h">
-      <Filter>zaf\object\style</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\object\property_support.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
@@ -2923,17 +2914,26 @@
     <ClInclude Include="src\zaf\internal\object\optional_utility.h">
       <Filter>zaf\internal\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\style\declaration.h">
-      <Filter>zaf\object\style</Filter>
+    <ClInclude Include="src\zaf\control\style\style_collection.h">
+      <Filter>zaf\control\style</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\style\selector.h">
-      <Filter>zaf\object\style</Filter>
+    <ClInclude Include="src\zaf\control\style\style.h">
+      <Filter>zaf\control\style</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\style\selector_parser.h">
-      <Filter>zaf\object\style</Filter>
+    <ClInclude Include="src\zaf\control\style\if.h">
+      <Filter>zaf\control\style</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\style\style_parser.h">
-      <Filter>zaf\object\style</Filter>
+    <ClInclude Include="src\zaf\control\style\property_value.h">
+      <Filter>zaf\control\style</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\style\set.h">
+      <Filter>zaf\control\style</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\style\set_parser.h">
+      <Filter>zaf\control\style</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\style\if_parser.h">
+      <Filter>zaf\control\style</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

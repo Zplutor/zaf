@@ -35,6 +35,9 @@ protected:
     virtual void ParseContentNodes(
         const std::vector<std::shared_ptr<XamlNode>>& nodes,
         Control& control);
+
+private:
+    void ParseStyles(const XamlNode& node, Control& control);
 };
 
 }

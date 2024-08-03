@@ -591,7 +591,7 @@ void Window::HandleWMPAINT() {
             canvas.DrawRectangle(dirty_rect);
         }
 
-        root_control_->Repaint(canvas, dirty_rect, false);
+        root_control_->Repaint(canvas, dirty_rect);
 
         PaintInspectedControl(canvas, dirty_rect);
     }
