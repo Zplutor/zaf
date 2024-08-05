@@ -1478,7 +1478,7 @@ void Control::SetIsMouseOverByWindow(bool is_mouse_over) {
 }
 
 
-bool Control::ContainMouse() const {
+bool Control::ContainsMouse() const {
 
     if (IsMouseOver()) {
         return true;
@@ -1558,7 +1558,7 @@ bool Control::IsInFocusedContext() const {
 }
 
 
-bool Control::ContainFocus() const {
+bool Control::ContainsFocus() const {
 
     if (IsFocused()) {
         return true;

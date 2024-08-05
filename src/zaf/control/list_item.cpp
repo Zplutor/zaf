@@ -44,7 +44,7 @@ bool ListItem::IsInFocusContext() const {
 
     auto container = As<ListItemContainer>(Parent());
     if (container) {
-        return container->ContainFocus();
+        return container->ContainsFocus();
     }
     return false;
 }

@@ -579,9 +579,9 @@ public:
     }
 
     /**
-     Get a value indicating that whether the control or any of its children is under mouse cursor.
-     */
-    bool ContainMouse() const;
+    Indicates whether the control or any of its children is under mouse cursor.
+    */
+    bool ContainsMouse() const;
 
     /**
      Get a value indicating that whether the control can be focused.
@@ -646,7 +646,7 @@ public:
     */
     bool IsInFocusedContext() const;
 
-    bool ContainFocus() const;
+    bool ContainsFocus() const;
 
     bool IsCachedPaintingEnabled() const {
         return is_cached_painting_enabled_;

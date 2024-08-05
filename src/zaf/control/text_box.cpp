@@ -130,7 +130,7 @@ void TextBox::UpdateStyle() {
 
     SetSelectionBackgroundColor([this]() {
 
-        if (this->ContainFocus()) {
+        if (this->ContainsFocus()) {
             //Use the same color as rich edit.
             auto color = zaf::Color::FromCOLORREF(GetSysColor(COLOR_HIGHLIGHT));
             color.a = 100.f / 255.f;

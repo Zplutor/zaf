@@ -184,7 +184,7 @@ void ConversationItem::UpdateStyle() {
             return zaf::Color::FromRGB(0xE8F3FB);
         }
 
-        if (ContainMouse()) {
+        if (ContainsMouse()) {
             return zaf::Color::FromRGB(0xF3F8FA);
         }
 

@@ -358,7 +358,7 @@ COLORREF TextHostBridge::TxGetSysColor(int nIndex) {
     }
 
     //Use custom colors for selected text if rich edit doesn't have focus.
-    if (!rich_edit->ContainFocus()) {
+    if (!rich_edit->ContainsFocus()) {
 
         if (nIndex == COLOR_HIGHLIGHT) {
             return RGB(0xE4, 0xE4, 0xE4);
