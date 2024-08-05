@@ -709,6 +709,8 @@ public:
         return false;
     }
 
+    void NeedUpdateStyle();
+
     /**
      Requires the control to repaint.
      */
@@ -1027,14 +1029,15 @@ private:
     @param parent_update_style
         A value indicating whether the parent needs to update its style.
     */
-    void Repaint(Canvas& canvas, const zaf::Rect& dirty_rect);
-    void HandleUpdateStyle();
+    void Repaint(Canvas& canvas, const zaf::Rect& dirty_rect, bool parent_update_style);
+    bool HandleUpdateStyle(bool parent_update_style);
     void RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_rect);
     void RepaintControl(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
-        bool need_clear);
-    void RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect);
+        bool need_clear,
+        bool update_style);
+    void RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect, bool update_style);
     void RecalculateCachedPaintingRect(const zaf::Rect& repaint_rect);
     void ReleaseCachedPaintingRenderer();
     void DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect) const;
@@ -1076,7 +1079,10 @@ private:
     std::weak_ptr<internal::ControlUpdateLock> update_lock_;
     std::unique_ptr<internal::ControlUpdateState> update_state_;
 
+    bool need_update_style_{};
     bool is_updating_style_{};
+    StyleCollection styles_;
+
     bool is_cached_painting_enabled_{};
     BitmapRenderer cached_renderer_;
     zaf::Rect valid_cached_renderer_rect_;
@@ -1118,8 +1124,6 @@ private:
 
     std::wstring name_;
     std::wstring tooltip_;
-
-    StyleCollection styles_;
 
     Event<StyleUpdateInfo> style_update_event_;
     Event<RectChangedInfo> rect_changed_event_;

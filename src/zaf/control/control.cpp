@@ -117,6 +117,11 @@ void Control::EndUpdate() {
 }
 
 
+void Control::NeedUpdateStyle() {
+    need_update_style_ = true;
+}
+
+
 void Control::UpdateStyle() {
     
 }
@@ -144,23 +149,31 @@ const StyleCollection& Control::Styles() const {
 
 void Control::Repaint(
     Canvas& canvas, 
-    const zaf::Rect& dirty_rect) {
+    const zaf::Rect& dirty_rect,
+    bool parent_update_style) {
 
     //Make sure the control repaints only if it is visible.
     ZAF_EXPECT(IsVisible());
 
-    HandleUpdateStyle();
+    bool need_update_style = HandleUpdateStyle(parent_update_style);
 
     if (IsCachedPaintingEnabled()) {
         RepaintUsingCachedPainting(canvas, dirty_rect);
     }
     else {
-        RepaintControl(canvas, dirty_rect, false);
+        RepaintControl(canvas, dirty_rect, false, need_update_style);
     }
 }
 
 
-void Control::HandleUpdateStyle() {
+bool Control::HandleUpdateStyle(bool parent_update_style) {
+
+    bool need_update = parent_update_style || need_update_style_;
+    if (!need_update) {
+        return false;
+    }
+
+    need_update_style_ = false;
 
     auto auto_reset = MakeAutoReset(is_updating_style_, true);
 
@@ -171,6 +184,7 @@ void Control::HandleUpdateStyle() {
     }
 
     OnStyleUpdate(StyleUpdateInfo{ shared_from_this() });
+    return true;
 }
 
 
@@ -207,7 +221,8 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_
             RepaintControl(
                 cached_painting_canvas,
                 calculate_result.actual_dirty_rect, 
-                true);
+                true, 
+                false);
         }
         cached_renderer_.EndDraw();
 
@@ -226,18 +241,19 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_
 void Control::RepaintControl(
     Canvas& canvas, 
     const zaf::Rect& dirty_rect,
-    bool need_clear) {
+    bool need_clear,
+    bool update_style) {
 
     if (need_clear) {
         canvas.Clear();
     }
     Paint(canvas, dirty_rect);
 
-    RepaintChildren(canvas, dirty_rect);
+    RepaintChildren(canvas, dirty_rect, update_style);
 }
 
 
-void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect) {
+void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect, bool update_style) {
 
     //No need to repaint if there is no child.
     if (children_.empty()) {
@@ -273,7 +289,7 @@ void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
         auto layer_guard = canvas.PushRegion(child_rect, child_dirty_rect);
         child_dirty_rect.position.SubtractOffset(child_rect.position);
-        child->Repaint(canvas, child_dirty_rect);
+        child->Repaint(canvas, child_dirty_rect, update_style);
     }
 }
 
@@ -1045,6 +1061,10 @@ void Control::SetParent(const std::shared_ptr<Control>& parent) {
 
     parent_ = parent;
 
+    if (parent) {
+        NeedUpdateStyle();
+    }
+
     ParentChangedInfo parent_changed_info{ shared_from_this(), previous_parent };
     OnParentChanged(parent_changed_info);
 
@@ -1421,6 +1441,7 @@ void Control::SetInteractiveProperty(
     }
 
     property_value = new_value;
+    NeedUpdateStyle();
     NeedRepaint();
 
     if (notification != nullptr) {
@@ -1457,6 +1478,7 @@ void Control::SetIsSelected(bool is_selected) {
     }
 
     is_selected_ = is_selected;
+    NeedUpdateStyle();
     NeedRepaint();
 
     OnIsSelectedChanged();
@@ -1475,6 +1497,7 @@ Observable<IsSelectedChangedInfo> Control::IsSelectedChangedEvent() const {
 
 void Control::SetIsMouseOverByWindow(bool is_mouse_over) {
     is_mouse_over_ = is_mouse_over;
+    NeedUpdateStyle();
 }
 
 
@@ -1540,6 +1563,7 @@ void Control::SetIsFocused(bool is_focused) {
 
 void Control::SetIsFocusedByWindow(bool is_focused) {
     is_focused_ = is_focused;
+    NeedUpdateStyle();
 }
 
 

@@ -574,7 +574,7 @@
     <ClCompile Include="unittest\case\io\stream\referenced_global_mem_stream_test.cpp">
       <Filter>case\io\stream</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\control\control_visual_state_test.cpp">
+    <ClCompile Include="unittest\case\control\control_style_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
   </ItemGroup>
