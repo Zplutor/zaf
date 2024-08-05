@@ -559,12 +559,6 @@
     <ClCompile Include="unittest\case\io\stream\plain_memory_stream_test.cpp">
       <Filter>case\io\stream</Filter>
     </ClCompile>
-    <ClCompile Include="src\unittest\case\io\stream\referenced_global_mem_stream_test.cpp">
-      <Filter>case\io\stream</Filter>
-    </ClCompile>
-    <ClCompile Include="src\unittest\case\control\control_visual_state_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\object\reflective_type_test.cpp">
       <Filter>case\object</Filter>
     </ClCompile>
@@ -576,6 +570,12 @@
     </ClCompile>
     <ClCompile Include="unittest\case\object\boxing\boxing_traits_test.cpp">
       <Filter>case\object\boxing</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\io\stream\referenced_global_mem_stream_test.cpp">
+      <Filter>case\io\stream</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\control_visual_state_test.cpp">
+      <Filter>case\control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
