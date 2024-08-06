@@ -591,7 +591,7 @@ void Window::HandleWMPAINT() {
             canvas.DrawRectangle(dirty_rect);
         }
 
-        root_control_->Repaint(canvas, dirty_rect, false);
+        root_control_->Repaint(canvas, dirty_rect);
 
         PaintInspectedControl(canvas, dirty_rect);
     }
@@ -1339,13 +1339,17 @@ void Window::ChangeControlMouseOverState(
         target_control, 
         changed_control);
 
-    for (auto control = target_control; control; control = control->Parent()) {
+    for (auto sender = target_control; sender; sender = sender->Parent()) {
+
+        //Parents at the route path should update their styles to reflect the change of mouse 
+        //over state. For example, parents may use ContainsMouse to update their styles.
+        sender->NeedUpdateStyle();
 
         if (is_mouse_over) {
-            control->OnMouseEnter(MouseEnterInfo{ event_info_state, control });
+            sender->OnMouseEnter(MouseEnterInfo{ event_info_state, sender });
         }
         else {
-            control->OnMouseLeave(MouseLeaveInfo{ event_info_state, control });
+            sender->OnMouseLeave(MouseLeaveInfo{ event_info_state, sender });
         }
     }
 }

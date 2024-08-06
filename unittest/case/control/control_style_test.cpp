@@ -27,12 +27,15 @@ protected:
     void SetUp() override {
 
         leaf1_ = Create<Control>();
+        leaf1_->SetCanFocused(true);
         leaf1_->SetRect(Rect{ 0, 0, 100, 100 });
 
         leaf2_ = Create<Control>();
-        leaf2_->SetRect(Rect{ 1000, 0, 100, 100 });
+        leaf2_->SetCanFocused(true);
+        leaf2_->SetRect(Rect{ 0, 0, 100, 100 });
 
         stem_ = Create<Control>();
+        stem_->SetCanFocused(true);
         stem_->AddChildren({ leaf1_, leaf2_ });
         stem_->SetRect(Rect{ 0, 0, 100, 100 });
 
@@ -40,6 +43,10 @@ protected:
 
         //Consume any repaint requirement.
         RepaintWindow();
+
+        //Move leaf2 outside the visible area. This should be done after consuming the repaint
+        //requirement in order to reset its style update requirement.
+        leaf2_->SetPosition(Point{ 1000, 0 });
 
         Subscriptions() += leaf1_->StyleUpdateEvent().Subscribe(std::bind([this]() {
             leaf1_update_count_++;
@@ -67,8 +74,20 @@ protected:
         UpdateWindow(test_window_->Handle());
     }
 
+    static const std::shared_ptr<Window>& TestWindow() {
+        return test_window_;
+    }
+
     const std::shared_ptr<Control>& Stem() const {
         return stem_;
+    }
+
+    const std::shared_ptr<Control>& Leaf1() const {
+        return leaf1_;
+    }
+
+    const std::shared_ptr<Control>& Leaf2() const {
+        return leaf2_;
     }
 
     int RootUpdateCount() const {
@@ -138,107 +157,114 @@ TEST_F(ControlStyleTest, UpdateOnIsEnabledChange) {
     ASSERT_EQ(RootUpdateCount(), 0);
     ASSERT_EQ(StemUpdateCount(), 1);
     ASSERT_EQ(Leaf1UpdateCount(), 1);
+    // Leaf2 won't update as it is outside the visible area.
+    ASSERT_EQ(Leaf2UpdateCount(), 0); 
+}
+
+
+TEST_F(ControlStyleTest, UpdateOnIsSelectedChange) {
+
+    Stem()->SetIsSelected(true);
+    RepaintWindow();
+
+    ASSERT_EQ(RootUpdateCount(), 0);
+    ASSERT_EQ(StemUpdateCount(), 1);
+    ASSERT_EQ(Leaf1UpdateCount(), 1);
+    // Leaf2 won't update as it is outside the visible area.
+    ASSERT_EQ(Leaf2UpdateCount(), 0); 
+}
+
+
+TEST_F(ControlStyleTest, UpdateOnIsVisibleChange) {
+
+    //Change visibility to false won't trigger update.
+    Stem()->SetIsVisible(false);
+    RepaintWindow();
+    ASSERT_EQ(RootUpdateCount(), 0);
+    ASSERT_EQ(StemUpdateCount(), 0);
+    ASSERT_EQ(Leaf1UpdateCount(), 0);
+    ASSERT_EQ(Leaf2UpdateCount(), 0);
+
+    Stem()->SetIsVisible(true);
+    RepaintWindow();
+    ASSERT_EQ(RootUpdateCount(), 0);
+    ASSERT_EQ(StemUpdateCount(), 1);
+    ASSERT_EQ(Leaf1UpdateCount(), 1);
+    // Leaf2 won't update as it is outside the visible area.
+    ASSERT_EQ(Leaf2UpdateCount(), 0);
+}
+
+
+TEST_F(ControlStyleTest, UpdateOnIsFocusedChange) {
+
+    Stem()->SetIsFocused(true);
+    RepaintWindow();
+
+    ASSERT_EQ(RootUpdateCount(), 1);
+    ASSERT_EQ(StemUpdateCount(), 1);
+    ASSERT_EQ(Leaf1UpdateCount(), 1);
+    // Leaf2 won't update as it is outside the visible area.
+    ASSERT_EQ(Leaf2UpdateCount(), 0);
+}
+
+
+TEST_F(ControlStyleTest, UpdateOnIsMouseOverChange) {
+
+    TestWindow()->Messager().Send(WM_MOUSEMOVE, 0, 0);
+    RepaintWindow();
+
+    ASSERT_EQ(RootUpdateCount(), 1);
+    ASSERT_EQ(StemUpdateCount(), 1);
+    ASSERT_EQ(Leaf1UpdateCount(), 1);
+    // Leaf2 won't update as it is outside the visible area.
+    ASSERT_EQ(Leaf2UpdateCount(), 0);
+}
+
+
+TEST_F(ControlStyleTest, UpdateOnPositionChange) {
+
+    //At first, the control is outside the visible area, it won't update style.
+    //Once it becomes visible, it should update style.
+    Stem()->SetIsEnabled(false);
+    RepaintWindow();
+    ASSERT_EQ(RootUpdateCount(), 0);
+    ASSERT_EQ(StemUpdateCount(), 1);
+    ASSERT_EQ(Leaf1UpdateCount(), 1);
+    ASSERT_EQ(Leaf2UpdateCount(), 0);
+
+    Leaf2()->SetPosition(Point{});
+    RepaintWindow();
+    ASSERT_EQ(RootUpdateCount(), 0);
+    ASSERT_EQ(StemUpdateCount(), 1);
+    ASSERT_EQ(Leaf1UpdateCount(), 1);
     ASSERT_EQ(Leaf2UpdateCount(), 1);
 }
 
 
-TEST(ControlTest, UpdateStyleOnParentChange) {
+TEST_F(ControlStyleTest, NoExtraPaintWhenUpdatingStyle) {
 
-    TestWithWindow([](Window& window) {
-    
-        auto control = Create<Control>();
-        control->SetSize(Size{ 100, 100 });
-
-        int update_count{};
-        auto sub = control->StyleUpdateEvent().Subscribe(
-            [&update_count](const StyleUpdateInfo& event_info) {
-            ++update_count;
-        });
-
-        //Changing parent will update style.
-        window.RootControl()->AddChild(control);
-        UpdateWindow(window.Handle());
-        ASSERT_EQ(update_count, 1);
-
-        //Changing IsEnabled will update style.
-        update_count = 0;
-        control->SetIsEnabled(false);
+    auto sub = Leaf1()->StyleUpdateEvent().Subscribe([](const StyleUpdateInfo& event_info) {
+        auto control = As<Control>(event_info.Source());
+        //Imminate a property setting that will repaint the control.
         control->NeedRepaint();
-        UpdateWindow(window.Handle());
-        ASSERT_EQ(update_count, 1);
-
-        //Changing IsFocused will update style.
-        control->SetIsEnabled(true);
-        control->SetCanFocused(true);
-        UpdateWindow(window.Handle());
-        update_count = 0;
-        control->SetIsFocused(true);
-        control->NeedRepaint();
-        UpdateWindow(window.Handle());
-        ASSERT_EQ(update_count, 1);
-
-        //Changing IsVisible to true will update style.
-        control->SetIsVisible(false);
-        UpdateWindow(window.Handle());
-        update_count = 0;
-        control->SetIsVisible(true);
-        control->NeedRepaint();
-        UpdateWindow(window.Handle());
-        ASSERT_EQ(update_count, 1);
-
-        //Changing IsSelected will update style.
-        update_count = 0;
-        control->SetIsSelected(true);
-        control->NeedRepaint();
-        UpdateWindow(window.Handle());
-        ASSERT_EQ(update_count, 1);
-
-        //Changing mouse over will update style.
-        update_count = 0;
-        window.Messager().Send(WM_MOUSEMOVE, 0, 0);
-        control->NeedRepaint();
-        UpdateWindow(window.Handle());
-        ASSERT_EQ(update_count, 1);
     });
-}
 
-
-TEST(ControlTest, NoPaintWhenUpdatingVisualState) {
-
-    TestWithWindow([](Window& window) {
-    
-        auto label = Create<Label>();
-        label->SetSize(Size{ 100, 30 });
-        label->SetIsEnabled(true);
-        label->SetTextColor(Color::White());
-
-        auto label_sub = label->StyleUpdateEvent().Subscribe(
-            [](const StyleUpdateInfo& event_info) {
-
-            auto label = As<Label>(event_info.Source());
-            //This will make a NeedRepaint call.
-            label->SetTextColor(Color::Black());
-        });
-
-        window.RootControl()->AddChild(label);
-
-        int paint_count{};
-        auto window_sub = window.MessageReceivedEvent().Subscribe(
-            [&paint_count](const MessageReceivedInfo& event_info) {
-            if (event_info.Message().ID() == WM_PAINT) {
-                paint_count++;
-            }
-        });
-
-        //This will update visual state.
-        label->SetIsEnabled(false);
-
-        //Trigger the WM_PAINT mandatorily.
-        UpdateWindow(window.Handle());
-
-        ASSERT_EQ(paint_count, 1);
-
-        BOOL has_update_rect = GetUpdateRect(window.Handle(), nullptr, FALSE);
-        ASSERT_FALSE(has_update_rect);
+    int paint_count{};
+    auto window_sub = TestWindow()->MessageReceivedEvent().Subscribe(
+        [&paint_count](const MessageReceivedInfo& event_info) {
+        if (event_info.Message().ID() == WM_PAINT) {
+            paint_count++;
+        }
     });
+
+    //This will update style.
+    Leaf1()->SetIsEnabled(false);
+
+    //Trigger the WM_PAINT mandatorily.
+    RepaintWindow();
+
+    ASSERT_EQ(paint_count, 1);
+
+    BOOL has_update_rect = GetUpdateRect(TestWindow()->Handle(), nullptr, FALSE);
+    ASSERT_FALSE(has_update_rect);
 }

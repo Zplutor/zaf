@@ -234,6 +234,9 @@ void WindowFocusedControlManager::BubbleFocusEvent(
     auto sender = target_control;
     while (sender) {
 
+        //Controls at the bubble path should update their styles to reflect the change of focus 
+        //state. For example, parents may use ContainsFocus property for their styles.
+        sender->NeedUpdateStyle();
         bubble_event_invoker(event_state, sender);
 
         //Stop event routing if there is reentrance.

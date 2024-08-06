@@ -147,15 +147,12 @@ const StyleCollection& Control::Styles() const {
 }
 
 
-void Control::Repaint(
-    Canvas& canvas, 
-    const zaf::Rect& dirty_rect,
-    bool parent_update_style) {
+void Control::Repaint(Canvas& canvas, const zaf::Rect& dirty_rect) {
 
     //Make sure the control repaints only if it is visible.
     ZAF_EXPECT(IsVisible());
 
-    bool need_update_style = HandleUpdateStyle(parent_update_style);
+    bool need_update_style = HandleUpdateStyle();
 
     if (IsCachedPaintingEnabled()) {
         RepaintUsingCachedPainting(canvas, dirty_rect);
@@ -166,10 +163,9 @@ void Control::Repaint(
 }
 
 
-bool Control::HandleUpdateStyle(bool parent_update_style) {
+bool Control::HandleUpdateStyle() {
 
-    bool need_update = parent_update_style || need_update_style_;
-    if (!need_update) {
+    if (!need_update_style_) {
         return false;
     }
 
@@ -273,6 +269,11 @@ void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect, bool 
             continue;
         }
 
+        //Children should update their styles if parent needs update as well.
+        if (update_style) {
+            child->NeedUpdateStyle();
+        }
+
         zaf::Rect child_rect = child->Rect();
         child_rect.position.AddOffset(content_rect.position);
 
@@ -289,7 +290,7 @@ void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect, bool 
 
         auto layer_guard = canvas.PushRegion(child_rect, child_dirty_rect);
         child_dirty_rect.position.SubtractOffset(child_rect.position);
-        child->Repaint(canvas, child_dirty_rect, update_style);
+        child->Repaint(canvas, child_dirty_rect);
     }
 }
 
@@ -1498,6 +1499,7 @@ Observable<IsSelectedChangedInfo> Control::IsSelectedChangedEvent() const {
 void Control::SetIsMouseOverByWindow(bool is_mouse_over) {
     is_mouse_over_ = is_mouse_over;
     NeedUpdateStyle();
+    NeedRepaint();
 }
 
 
@@ -1547,7 +1549,8 @@ void Control::SetIsFocused(bool is_focused) {
         return;
     }
 
-    if (IsFocused() == is_focused) {
+    auto old_is_focused = IsFocused();
+    if (old_is_focused == is_focused) {
         return;
     }
 
@@ -1558,12 +1561,16 @@ void Control::SetIsFocused(bool is_focused) {
 
     window->focused_control_manager_->ChangeFocusedControl(
         is_focused ? shared_from_this() : nullptr);
+
+    if (old_is_focused != IsFocused()) {
+        NeedUpdateStyle();
+        NeedRepaint();
+    }
 }
 
 
 void Control::SetIsFocusedByWindow(bool is_focused) {
     is_focused_ = is_focused;
-    NeedUpdateStyle();
 }
 
 

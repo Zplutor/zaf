@@ -1025,12 +1025,9 @@ private:
 
     @param dirty_rect
         The rect that needs to be repainted, in the control's coordinate space.
-
-    @param parent_update_style
-        A value indicating whether the parent needs to update its style.
     */
-    void Repaint(Canvas& canvas, const zaf::Rect& dirty_rect, bool parent_update_style);
-    bool HandleUpdateStyle(bool parent_update_style);
+    void Repaint(Canvas& canvas, const zaf::Rect& dirty_rect);
+    bool HandleUpdateStyle();
     void RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_rect);
     void RepaintControl(
         Canvas& canvas,
