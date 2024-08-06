@@ -47,26 +47,6 @@ Observable<ClickInfo> ClickableControl::ClickEvent() const {
 }
 
 
-void ClickableControl::OnMouseEnter(const MouseEnterInfo& event_info) {
-
-    __super::OnMouseEnter(event_info);
-
-    if (event_info.Source().get() == this) {
-        NeedRepaint();
-    }
-}
-
-
-void ClickableControl::OnMouseLeave(const MouseLeaveInfo& event_info) {
-
-    __super::OnMouseLeave(event_info);
-
-    if (event_info.Source().get() == this) {
-        NeedRepaint();
-    }
-}
-
-
 void ClickableControl::OnMouseMove(const MouseMoveInfo& event_info) {
 
     __super::OnMouseMove(event_info);
@@ -123,6 +103,7 @@ void ClickableControl::OnMouseCaptured(const MouseCapturedInfo& event_info) {
     __super::OnMouseCaptured(event_info);
 
     is_pressed_ = true;
+    NeedUpdateStyle();
     NeedRepaint();
 }
 
@@ -132,6 +113,7 @@ void ClickableControl::OnMouseReleased(const MouseReleasedInfo& event_info) {
     __super::OnMouseReleased(event_info);
 
     is_pressed_ = false;
+    NeedUpdateStyle();
     NeedRepaint();
 }
 
@@ -240,28 +222,13 @@ bool ClickableControl::CheckIsMousePressed(const Point& position, const MouseMes
     }
 
     is_pressed_ = is_pressed;
+    NeedUpdateStyle();
 
     if (need_repaint) {
         NeedRepaint();
     }
 
     return true;
-}
-
-
-void ClickableControl::OnFocusGained(const FocusGainedInfo& event_info) {
-
-    __super::OnFocusGained(event_info);
-
-    NeedRepaint();
-}
-
-
-void ClickableControl::OnFocusLost(const FocusLostInfo& event_info) {
-
-    __super::OnFocusLost(event_info);
-
-    NeedRepaint();
 }
 
 }

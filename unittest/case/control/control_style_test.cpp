@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/as.h>
-#include <zaf/control/label.h>
-#include <zaf/control/linear_box.h>
+#include <zaf/control/button.h>
 #include <zaf/creation.h>
 #include "utility/test_window.h"
 
@@ -26,7 +25,7 @@ public:
 protected:
     void SetUp() override {
 
-        leaf1_ = Create<Control>();
+        leaf1_ = Create<Button>();
         leaf1_->SetCanFocused(true);
         leaf1_->SetRect(Rect{ 0, 0, 100, 100 });
 
@@ -82,7 +81,7 @@ protected:
         return stem_;
     }
 
-    const std::shared_ptr<Control>& Leaf1() const {
+    const std::shared_ptr<Button>& Leaf1() const {
         return leaf1_;
     }
 
@@ -115,7 +114,7 @@ private:
     int stem_update_count_{};
 
     //leaf1 is within the visible area.
-    std::shared_ptr<Control> leaf1_;
+    std::shared_ptr<Button> leaf1_;
     int leaf1_update_count_{};
 
     //leaf2 is outside the visible area.
@@ -217,6 +216,22 @@ TEST_F(ControlStyleTest, UpdateOnIsMouseOverChange) {
     ASSERT_EQ(StemUpdateCount(), 1);
     ASSERT_EQ(Leaf1UpdateCount(), 1);
     // Leaf2 won't update as it is outside the visible area.
+    ASSERT_EQ(Leaf2UpdateCount(), 0);
+}
+
+
+TEST_F(ControlStyleTest, UpdateOnIsPressedChange) {
+
+    TestWindow()->Messager().Send(WM_MOUSEMOVE, 0, 0);
+    Leaf1()->SetIsFocused(true);
+    RepaintWindow();
+
+    TestWindow()->Messager().Send(WM_LBUTTONDOWN, 0, 0);
+    RepaintWindow();
+
+    ASSERT_EQ(RootUpdateCount(), 1);
+    ASSERT_EQ(StemUpdateCount(), 1);
+    ASSERT_EQ(Leaf1UpdateCount(), 2);
     ASSERT_EQ(Leaf2UpdateCount(), 0);
 }
 
