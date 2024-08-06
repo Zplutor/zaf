@@ -16,7 +16,7 @@ void Set::AddProperty(std::wstring property_name, std::wstring value) {
 
 void Set::ApplyTo(Object& object) {
     for (const auto& each_property : properties_) {
-        each_property.ApplyTo(object);
+        each_property.SetTo(object);
     }
 }
 

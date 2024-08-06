@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/control/style/property_value.h>
+#include <zaf/control/style/property_value_pair.h>
 #include <zaf/control/style/set_parser.h>
 #include <zaf/control/style/style.h>
 
@@ -16,7 +16,7 @@ public:
     void ApplyTo(Object& object) override;
 
 private:
-    PropertyValueSet properties_;
+    PropertyValuePairSet properties_;
 };
 
 ZAF_OBJECT_BEGIN(Set);

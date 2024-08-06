@@ -35,7 +35,7 @@ bool If::ShouldApply(const Object& object) const {
 
     for (const auto& each_condition : conditions_) {
 
-        if (!each_condition.IsMatchedIn(object)) {
+        if (!each_condition.IsSetIn(object)) {
             return false;
         }
     }

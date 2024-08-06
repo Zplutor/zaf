@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/control/style/if_parser.h>
-#include <zaf/control/style/property_value.h>
+#include <zaf/control/style/property_value_pair.h>
 #include <zaf/control/style/set.h>
 #include <zaf/control/style/style.h>
 
@@ -22,7 +22,7 @@ private:
     bool ShouldApply(const Object& object) const;
 
 private:
-    PropertyValueSet conditions_;
+    PropertyValuePairSet conditions_;
     std::shared_ptr<Set> result_;
 };
 

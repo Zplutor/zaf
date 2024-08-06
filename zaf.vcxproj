@@ -207,7 +207,7 @@
     <ClCompile Include="src\zaf\control\style\if.cpp" />
     <ClCompile Include="src\zaf\control\style\if_parser.cpp" />
     <ClCompile Include="src\zaf\control\style\set.cpp" />
-    <ClCompile Include="src\zaf\control\style\property_value.cpp" />
+    <ClCompile Include="src\zaf\control\style\property_value_pair.cpp" />
     <ClCompile Include="src\zaf\control\style\set_parser.cpp" />
     <ClCompile Include="src\zaf\control\style\style.cpp" />
     <ClCompile Include="src\zaf\control\style\style_collection.cpp" />
@@ -646,7 +646,7 @@
     <ClInclude Include="src\zaf\control\style\if.h" />
     <ClInclude Include="src\zaf\control\style\if_parser.h" />
     <ClInclude Include="src\zaf\control\style\set.h" />
-    <ClInclude Include="src\zaf\control\style\property_value.h" />
+    <ClInclude Include="src\zaf\control\style\property_value_pair.h" />
     <ClInclude Include="src\zaf\control\style\set_parser.h" />
     <ClInclude Include="src\zaf\control\style\style.h" />
     <ClInclude Include="src\zaf\control\style\style_collection.h" />

@@ -1264,7 +1264,7 @@
     <ClCompile Include="src\zaf\control\style\if.cpp">
       <Filter>zaf\control\style</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\style\property_value.cpp">
+    <ClCompile Include="src\zaf\control\style\property_value_pair.cpp">
       <Filter>zaf\control\style</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\style\set.cpp">
@@ -2923,7 +2923,7 @@
     <ClInclude Include="src\zaf\control\style\if.h">
       <Filter>zaf\control\style</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\style\property_value.h">
+    <ClInclude Include="src\zaf\control\style\property_value_pair.h">
       <Filter>zaf\control\style</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\style\set.h">
