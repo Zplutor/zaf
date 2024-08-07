@@ -77,35 +77,6 @@ bool IsTypeNameMatched(const std::wstring& type_name, ObjectType* type) {
 }
 
 
-ObjectProperty* FindPropertyByNode(const Object& object, const std::wstring& node_name) {
-
-    auto splitted = Split(node_name, L'.');
-    if (splitted.size() < 2) {
-        return nullptr;
-    }
-
-    const auto& type_name = splitted[0];
-    const auto& property_name = splitted[1];
-
-    if (!IsTypeNameMatched(type_name, object.DynamicType())) {
-        return nullptr;
-    }
-
-    auto type = object.DynamicType();
-    while (type) {
-
-        auto property = type->GetProperty(property_name);
-        if (property) {
-            return property;
-        }
-
-        type = type->BaseType();
-    }
-
-    return nullptr;
-}
-
-
 std::shared_ptr<Object> ParsePropertyValueFromNode(
     const ObjectProperty& property,
     const XamlNode& node) {
@@ -128,22 +99,6 @@ std::shared_ptr<Object> ParsePropertyValueFromNode(
     }
 }
 
-
-void ParseNodes(const XamlNode& node, Object& object) {
-
-    const auto& property_nodes = node.GetPropertyNodes();
-    for (const auto& each_node : property_nodes) {
-
-        auto property = FindPropertyByNode(object, each_node->Value());
-        if (!property) {
-            continue;
-        }
-
-        auto value = ParsePropertyValueFromNode(*property, *each_node);
-        property->SetValue(object, value);
-    }
-}
-
 }
 
 void ObjectParser::ParseFromAttribute(const std::wstring& attribute_value, Object& object) {
@@ -154,7 +109,64 @@ void ObjectParser::ParseFromAttribute(const std::wstring& attribute_value, Objec
 void ObjectParser::ParseFromNode(const XamlNode& node, Object& object) {
 
     ParseAttributes(node, object);
-    ParseNodes(node, object);
+    ParsePropertyNodes(node, object);
+}
+
+
+void ObjectParser::ParsePropertyNodes(const XamlNode& node, Object& object) {
+
+    const auto& property_nodes = node.GetPropertyNodes();
+    for (const auto& each_node : property_nodes) {
+        ParseSinglePropertyNode(*each_node, object);
+    }
+}
+
+
+void ObjectParser::ParseSinglePropertyNode(const XamlNode& node, Object& object) {
+
+    auto splitted = Split(node.Value(), L'.');
+    if (splitted.size() < 2) {
+        return;
+    }
+
+    const auto& type_name = splitted[0];
+    const auto& property_name = splitted[1];
+
+    if (!IsTypeNameMatched(type_name, object.DynamicType())) {
+        return;
+    }
+
+    ParsePropertyNode(node, property_name, object);
+}
+
+
+void ObjectParser::ParsePropertyNode(
+    const XamlNode& node,
+    const std::wstring& property_name, 
+    Object& object) {
+
+    auto property = [&property_name, &object]() -> ObjectProperty* {
+    
+        auto type = object.DynamicType();
+        while (type) {
+
+            auto property = type->GetProperty(property_name);
+            if (property) {
+                return property;
+            }
+
+            type = type->BaseType();
+        }
+
+        return nullptr;
+    }(); 
+
+    if (!property) {
+        return;
+    }
+
+    auto value = ParsePropertyValueFromNode(*property, node);
+    property->SetValue(object, value);
 }
 
 }

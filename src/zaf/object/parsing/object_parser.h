@@ -56,6 +56,16 @@ public:
         call the default implementation to retain the ability of property parsing.
     */
     virtual void ParseFromNode(const XamlNode& node, Object& object);
+
+protected:
+    virtual void ParsePropertyNode(
+        const XamlNode& node,
+        const std::wstring& property_name, 
+        Object& object);
+
+private:
+    void ParsePropertyNodes(const XamlNode& node, Object& object);
+    void ParseSinglePropertyNode(const XamlNode& node, Object& object);
 };
 
 }

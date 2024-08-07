@@ -13,6 +13,10 @@ public:
     void AddProperty(ObjectProperty* property, std::shared_ptr<Object> value);
     void AddProperty(std::wstring property_name, std::wstring value);
 
+    const PropertyValuePairSet& Properties() const noexcept {
+        return properties_;
+    }
+
     void ApplyTo(Object& object) override;
 
 private:

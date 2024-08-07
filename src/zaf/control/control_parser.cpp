@@ -8,10 +8,10 @@ namespace zaf {
 
 void ControlParser::ParseFromNode(const XamlNode& node, Object& object) {
 
-    __super::ParseFromNode(node, object);
-
     auto& control = As<Control>(object);
     auto update_guard = control.BeginUpdate();
+
+    __super::ParseFromNode(node, object);
 
     XamlNodeParseHelper helper(node, control.DynamicType());
     auto tab_index = helper.GetFloatProperty(L"TabIndex");
@@ -19,9 +19,31 @@ void ControlParser::ParseFromNode(const XamlNode& node, Object& object) {
         control.SetTabIndex(static_cast<std::size_t>(*tab_index));
     }
 
-    ParseStyles(node, control);
-
     ParseContentNodes(node.GetContentNodes(), control);
+}
+
+
+void ControlParser::ParsePropertyNode(
+    const XamlNode& node,
+    const std::wstring& property_name,
+    Object& object) {
+
+    if (property_name == L"Styles") {
+        ParseStyles(node, As<Control>(object));
+    }
+    else {
+        __super::ParsePropertyNode(node, property_name, object);
+    }
+}
+
+
+void ControlParser::ParseStyles(const XamlNode& node, Control& control) {
+
+    for (const auto& each_node : node.GetContentNodes()) {
+
+        auto style = internal::CreateObjectFromNode<Style>(each_node);
+        control.Styles().Add(std::move(style));
+    }
 }
 
 
@@ -37,21 +59,6 @@ void ControlParser::ParseContentNodes(
         }
 
         control.AddChild(child_control);
-    }
-}
-
-
-void ControlParser::ParseStyles(const XamlNode& node, Control& control) {
-
-    auto style_node = node.FindPropertyNode(L"Styles");
-    if (!style_node) {
-        return;
-    }
-
-    for (const auto& each_node : style_node->GetContentNodes()) {
-
-        auto style = internal::CreateObjectFromNode<Style>(each_node);
-        control.Styles().Add(std::move(style));
     }
 }
 

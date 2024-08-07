@@ -112,6 +112,9 @@
     <Filter Include="case\io\stream">
       <UniqueIdentifier>{e19dc5ac-99fc-4888-b76e-181ce3775fb9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\control\style">
+      <UniqueIdentifier>{28d12b99-c3b4-452a-a183-47a5fedaa28e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -576,6 +579,12 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\control_style_test.cpp">
       <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\style\set_test.cpp">
+      <Filter>case\control\style</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\style\if_test.cpp">
+      <Filter>case\control\style</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

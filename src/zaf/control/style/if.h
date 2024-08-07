@@ -11,10 +11,21 @@ class If : public Style {
 public:
     ZAF_OBJECT;
 
+public:
+    If();
+
     void AddCondition(ObjectProperty* property, std::shared_ptr<Object> value);
     void AddCondition(std::wstring property_name, std::wstring value);
 
+    const PropertyValuePairSet& Conditions() const noexcept {
+        return conditions_;
+    }
+
     void SetResult(std::shared_ptr<Set> result);
+
+    const std::shared_ptr<Set>& Result() const noexcept {
+        return result_;
+    }
 
     void ApplyTo(Object& object) override;
 
