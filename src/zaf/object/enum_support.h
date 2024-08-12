@@ -41,7 +41,7 @@ private:                                                                        
     Type();                                                                                       \
 public:                                                                                           \
     static Type* Instance() { return &instance; }                                                 \
-    zaf::ObjectType* BaseType() const override {                                                  \
+    zaf::ObjectType* BaseType() const noexcept override {                                         \
         return Class::StaticBaseType();                                                           \
     }                                                                                             \
     const std::wstring& Name() const override {                                                   \

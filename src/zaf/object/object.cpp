@@ -48,7 +48,7 @@ Object::Type::Type() {
     zaf::internal::ReflectionManager::Instance().RegisterType(this);
 }
 
-ObjectType* Object::Type::BaseType() const {
+ObjectType* Object::Type::BaseType() const noexcept {
     return nullptr;
 }
 

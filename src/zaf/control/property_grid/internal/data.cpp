@@ -85,7 +85,7 @@ PropertyTable Data::CreatePropertyTable(
     for (auto each_type : types) {
 
         std::vector<ObjectProperty*> property_list_inner;
-        for (auto each_property : each_type->GetProperties()) {
+        for (auto each_property : each_type->NonInheritedProperties()) {
             //Write only properties are not supported.
             if (each_property->CanGet()) {
                 property_list_inner.push_back(each_property);

@@ -11,9 +11,38 @@ namespace {
 
 constexpr int ReadOnlyValue = 73;
 
-class PropertyHost : public zaf::Object {
+class PropertyHostBase : public zaf::Object {
 public:
     ZAF_OBJECT;
+
+    int BaseValue1() const {
+        return value1_;
+    }
+
+    int BaseValue2() const {
+        return value2_;
+    }
+
+private:
+    int value1_{};
+    int value2_{};
+};
+
+ZAF_OBJECT_BEGIN(PropertyHostBase);
+ZAF_OBJECT_PROPERTY(BaseValue1);
+ZAF_OBJECT_PROPERTY(BaseValue2);
+ZAF_OBJECT_END;
+
+ZAF_OBJECT_IMPL(PropertyHostBase);
+
+
+class PropertyHost : public PropertyHostBase {
+public:
+    ZAF_OBJECT;
+
+    int BaseValue2() const {
+        return base_value_;
+    }
 
     int ReadWrite() const {
         return read_write_value_;
@@ -76,6 +105,7 @@ public:
     }
 
 private:
+    int base_value_{};
     int read_write_value_{};
     int write_only_value_{};
     std::shared_ptr<zaf::Point> boxed_object_;
@@ -84,6 +114,7 @@ private:
 };
 
 ZAF_OBJECT_BEGIN(PropertyHost)
+ZAF_OBJECT_PROPERTY(BaseValue2);
 ZAF_OBJECT_PROPERTY(ReadWrite);
 ZAF_OBJECT_PROPERTY(ReadOnly);
 ZAF_OBJECT_PROPERTY(WriteOnly);
@@ -97,6 +128,145 @@ ZAF_OBJECT_END
 
 ZAF_OBJECT_IMPL(PropertyHost);
 
+}
+
+
+TEST(PropertyTest, NonInheritedProperties) {
+
+    auto type = PropertyHost::StaticType();
+    auto properties = type->NonInheritedProperties();
+    ASSERT_EQ(properties.size(), 10);
+    ASSERT_EQ(properties[0]->Name(), L"BaseValue2");
+    ASSERT_EQ(properties[1]->Name(), L"BoxedObject");
+    ASSERT_EQ(properties[2]->Name(), L"FloatType");
+    ASSERT_EQ(properties[3]->Name(), L"Image");
+    ASSERT_EQ(properties[4]->Name(), L"OptionalValue");
+    ASSERT_EQ(properties[5]->Name(), L"ReadOnly");
+    ASSERT_EQ(properties[6]->Name(), L"ReadWrite");
+    ASSERT_EQ(properties[7]->Name(), L"SizeType");
+    ASSERT_EQ(properties[8]->Name(), L"StringType");
+    ASSERT_EQ(properties[9]->Name(), L"WriteOnly");
+}
+
+
+TEST(PropertyTest, InheritedProperties) {
+
+    auto type = PropertyHost::StaticType();
+    auto properties = type->InheritedProperties();
+    ASSERT_EQ(properties.size(), 2);
+    ASSERT_EQ(properties[0]->Name(), L"BaseValue1");
+    ASSERT_EQ(properties[1]->Name(), L"BaseValue2");
+}
+
+
+TEST(PropertyTest, AllProperties) {
+
+    auto type = PropertyHost::StaticType();
+    auto properties = type->AllProperties();
+    ASSERT_EQ(properties.size(), 12);
+    ASSERT_EQ(properties[0]->Name(), L"BaseValue2");
+    ASSERT_EQ(properties[1]->Name(), L"BoxedObject");
+    ASSERT_EQ(properties[2]->Name(), L"FloatType");
+    ASSERT_EQ(properties[3]->Name(), L"Image");
+    ASSERT_EQ(properties[4]->Name(), L"OptionalValue");
+    ASSERT_EQ(properties[5]->Name(), L"ReadOnly");
+    ASSERT_EQ(properties[6]->Name(), L"ReadWrite");
+    ASSERT_EQ(properties[7]->Name(), L"SizeType");
+    ASSERT_EQ(properties[8]->Name(), L"StringType");
+    ASSERT_EQ(properties[9]->Name(), L"WriteOnly");
+    ASSERT_EQ(properties[10]->Name(), L"BaseValue1");
+    ASSERT_EQ(properties[11]->Name(), L"BaseValue2");
+}
+
+
+TEST(PropertyTest, GetNonInheritedProperty) {
+
+    auto type = PropertyHost::StaticType();
+
+    //Non-exist property.
+    {
+        auto property = type->GetNonInheritedProperty(L"BaseValue1");
+        ASSERT_EQ(property, nullptr);
+    }
+
+    //Exist property.
+    {
+        auto property = type->GetNonInheritedProperty(L"ReadWrite");
+        ASSERT_NE(property, nullptr);
+        ASSERT_EQ(property->Name(), L"ReadWrite");
+    }
+
+    //Overriding property.
+    {
+        auto property = type->GetNonInheritedProperty(L"BaseValue2");
+        ASSERT_NE(property, nullptr);
+        ASSERT_EQ(property, PropertyHost::Type::Instance()->BaseValue2Property);
+    }
+}
+
+
+TEST(PropertyTest, GetInheritedProperty) {
+
+    auto type = PropertyHost::StaticType();
+
+    //Non-exist property.
+    {
+        auto property = type->GetInheritedProperty(L"NonExist");
+        ASSERT_EQ(property, nullptr);
+    }
+
+    //Exist property.
+    {
+        auto property = type->GetInheritedProperty(L"BaseValue1");
+        ASSERT_NE(property, nullptr);
+        ASSERT_EQ(property->Name(), L"BaseValue1");
+    }
+
+    //Overriding property.
+    {
+        auto property = type->GetInheritedProperty(L"BaseValue2");
+        ASSERT_NE(property, nullptr);
+        ASSERT_EQ(property, PropertyHostBase::Type::Instance()->BaseValue2Property);
+    }
+
+    //Non-inherited property.
+    {
+        auto property = type->GetInheritedProperty(L"ReadWrite");
+        ASSERT_EQ(property, nullptr);
+    }
+}
+
+
+TEST(PropertyTest, GetProperty) {
+
+    auto type = PropertyHost::StaticType();
+
+    //Non-exist property.
+    {
+        auto property = type->GetProperty(L"NonExist");
+        ASSERT_EQ(property, nullptr);
+    }
+
+    //Non-inherited property.
+    {
+        auto property = type->GetProperty(L"ReadWrite");
+        ASSERT_NE(property, nullptr);
+        ASSERT_EQ(property->Name(), L"ReadWrite");
+    }
+
+    //Inherited property.
+    {
+        auto property = type->GetProperty(L"BaseValue1");
+        ASSERT_NE(property, nullptr);
+        ASSERT_EQ(property->Name(), L"BaseValue1");
+    }
+
+    //Overriding property.
+    {
+        auto property = type->GetProperty(L"BaseValue2");
+        ASSERT_NE(property, nullptr);
+        ASSERT_EQ(property, PropertyHost::Type::Instance()->BaseValue2Property);
+    }
 }
 
 

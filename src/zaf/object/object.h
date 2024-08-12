@@ -17,7 +17,7 @@ public:
         static Type* Instance();
 
     public:
-        ObjectType* BaseType() const override;
+        ObjectType* BaseType() const noexcept override;
         const std::wstring& Name() const override;
         std::shared_ptr<Object> CreateInstance() const override;
         ObjectParser* Parser() const;
