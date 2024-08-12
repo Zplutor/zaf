@@ -2,6 +2,7 @@
 #include <zaf/control/style/if.h>
 #include <zaf/control/control.h>
 #include <zaf/control/control_object.h>
+#include <zaf/control/label.h>
 #include <zaf/object/parsing/helpers.h>
 
 using namespace zaf;
@@ -44,19 +45,41 @@ TEST(IfTest, ApplyTo) {
         Control::Type::Instance()->BorderColorProperty,
         Box(Color::Blue()));
 
-    auto control = Create<Control>();
-    control->SetIsEnabled(false);
-    control->SetIsSelected(false);
-    control->SetBorderColor(Color::Red());
+    //Sets to base class.
+    {
+        auto control = Create<Control>();
+        control->SetIsEnabled(false);
+        control->SetIsSelected(false);
+        control->SetBorderColor(Color::Red());
 
-    if_statement->ApplyTo(*control);
-    ASSERT_EQ(control->BorderColor(), Color::Red());
-    
-    control->SetIsSelected(true);
-    if_statement->ApplyTo(*control);
-    ASSERT_EQ(control->BorderColor(), Color::Red());
+        if_statement->ApplyTo(*control);
+        ASSERT_EQ(control->BorderColor(), Color::Red());
 
-    control->SetIsEnabled(true);
-    if_statement->ApplyTo(*control);
-    ASSERT_EQ(control->BorderColor(), Color::Blue());
+        control->SetIsSelected(true);
+        if_statement->ApplyTo(*control);
+        ASSERT_EQ(control->BorderColor(), Color::Red());
+
+        control->SetIsEnabled(true);
+        if_statement->ApplyTo(*control);
+        ASSERT_EQ(control->BorderColor(), Color::Blue());
+    }
+
+    //Sets to derived class.
+    {
+        auto label = Create<Label>();
+        label->SetIsEnabled(false);
+        label->SetIsSelected(false);
+        label->SetBorderColor(Color::Red());
+
+        if_statement->ApplyTo(*label);
+        ASSERT_EQ(label->BorderColor(), Color::Red());
+
+        label->SetIsSelected(true);
+        if_statement->ApplyTo(*label);
+        ASSERT_EQ(label->BorderColor(), Color::Red());
+
+        label->SetIsEnabled(true);
+        if_statement->ApplyTo(*label);
+        ASSERT_EQ(label->BorderColor(), Color::Blue());
+    }
 }

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/control/control.h>
 #include <zaf/control/control_object.h>
+#include <zaf/control/label.h>
 #include <zaf/control/style/set.h>
 #include <zaf/object/parsing/helpers.h>
 
@@ -37,9 +38,19 @@ TEST(SetTest, ApplyTo) {
     set->AddProperty(Control::Type::Instance()->BorderColorProperty,
         Box(Color::Green()));
 
-    auto control = Create<Control>();
-    set->ApplyTo(*control);
+    //Sets to base class.
+    {
+        auto control = Create<Control>();
+        set->ApplyTo(*control);
+        ASSERT_EQ(control->BackgroundColor(), Color::Red());
+        ASSERT_EQ(control->BorderColor(), Color::Green());
+    }
 
-    ASSERT_EQ(control->BackgroundColor(), Color::Red());
-    ASSERT_EQ(control->BorderColor(), Color::Green());
+    //Sets to derived class.
+    {
+        auto label = Create<Label>();
+        set->ApplyTo(*label);
+        ASSERT_EQ(label->BackgroundColor(), Color::Red());
+        ASSERT_EQ(label->BorderColor(), Color::Green());
+    }
 }

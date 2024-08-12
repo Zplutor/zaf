@@ -11,23 +11,6 @@
 namespace zaf {
 namespace {
 
-ObjectProperty* FindPropertyByAttribute(const Object& object, const std::wstring& property_name) {
-
-    auto type = object.DynamicType();
-    while (type) {
-
-        auto property = type->GetProperty(property_name);
-        if (property) {
-            return property;
-        }
-
-        type = type->BaseType();
-    }
-
-    return nullptr;
-}
-
-
 std::shared_ptr<Object> ParsePropertyValueFromAttribute(
     const ObjectProperty& property,
     const std::wstring& attribute_value) {
@@ -51,7 +34,8 @@ void ParseAttributes(const XamlNode& node, Object& object) {
     const auto& attributes = node.GetAttributes();
     for (const auto& each_attribute : attributes) {
 
-        auto property = FindPropertyByAttribute(object, each_attribute->Name());
+        auto type = object.DynamicType();
+        auto property = type->GetProperty(each_attribute->Name());
         if (!property) {
             continue;
         }
@@ -145,22 +129,7 @@ void ObjectParser::ParsePropertyNode(
     const std::wstring& property_name, 
     Object& object) {
 
-    auto property = [&property_name, &object]() -> ObjectProperty* {
-    
-        auto type = object.DynamicType();
-        while (type) {
-
-            auto property = type->GetProperty(property_name);
-            if (property) {
-                return property;
-            }
-
-            type = type->BaseType();
-        }
-
-        return nullptr;
-    }(); 
-
+    auto property = object.DynamicType()->GetProperty(property_name);
     if (!property) {
         return;
     }
