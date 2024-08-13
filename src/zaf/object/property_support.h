@@ -76,20 +76,19 @@ private:                                                                        
     };                                                                                            \
     class PropertyName##PropertyType : public zaf::ObjectProperty {                               \
     public:                                                                                       \
-        const std::wstring& Name() const override {                                               \
-            static const std::wstring& name{ L#PropertyName };                                    \
-            return name;                                                                          \
+        std::wstring_view Name() const noexcept override {                                        \
+            return std::wstring_view{ L#PropertyName };                                           \
         }                                                                                         \
-        zaf::ObjectType* ValueType() const override {                                             \
+        zaf::ObjectType* ValueType() const noexcept override {                                    \
             return PropertyName##Traits::GetValueType();                                          \
         }                                                                                         \
-        bool IsValueDynamic() const override {                                                    \
+        bool IsValueDynamic() const noexcept override {                                           \
             return zaf::IsBoxedInstanceTypeV<PropertyName##Traits::DeclaredType>;                 \
         }                                                                                         \
-        bool CanGet() const override {                                                            \
+        bool CanGet() const noexcept override {                                                   \
             return PropertyName##Traits::CanGet;                                                  \
         }                                                                                         \
-        bool CanSet() const override {                                                            \
+        bool CanSet() const noexcept override {                                                   \
             return PropertyName##Traits::CanSet;                                                  \
         }                                                                                         \
         std::shared_ptr<zaf::Object> GetValue(const zaf::Object& object) const override {         \

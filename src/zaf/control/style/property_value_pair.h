@@ -11,7 +11,7 @@ class PropertyValuePair {
 public:
     struct Hash {
         std::size_t operator()(const PropertyValuePair& pair) const {
-            return std::hash<std::wstring>()(pair.PropertyName());
+            return std::hash<std::wstring_view>()(pair.PropertyName());
         }
     };
 
@@ -25,7 +25,7 @@ public:
     PropertyValuePair(ObjectProperty* property, std::shared_ptr<Object> value);
     PropertyValuePair(std::wstring property_name, std::wstring value);
 
-    const std::wstring& PropertyName() const noexcept;
+    std::wstring_view PropertyName() const noexcept;
 
     void SetTo(Object& object) const;
     bool IsSetIn(const Object& object) const;

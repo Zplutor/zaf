@@ -69,7 +69,7 @@ void Item::InitializeNameLabel() {
     name_label_ = CreateLabel();
     name_label_->SetPadding(Frame{ 0, 0, 4, 0 });
 
-    name_label_->SetText(data_->Property()->Name());
+    name_label_->SetText(std::wstring{ data_->Property()->Name() });
 }
 
 

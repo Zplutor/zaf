@@ -15,7 +15,7 @@ PropertyValuePair::PropertyValuePair(std::wstring property_name, std::wstring va
 }
 
 
-const std::wstring& PropertyValuePair::PropertyName() const noexcept {
+std::wstring_view PropertyValuePair::PropertyName() const noexcept {
 
     auto not_parsed_data = std::get_if<NotParsedData>(&data_);
     if (not_parsed_data) {
