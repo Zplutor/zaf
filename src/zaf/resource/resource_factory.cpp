@@ -20,12 +20,12 @@ ResourceFactory::~ResourceFactory() {
 }
 
 
-Stream ResourceFactory::LoadURI(const std::wstring& uri) {
+Stream ResourceFactory::LoadURI(std::wstring_view uri) {
     return LoadURI(uri, Application::Instance().GetSystemDPI());
 }
 
 
-Stream ResourceFactory::LoadURI(const std::wstring& uri, float dpi) {
+Stream ResourceFactory::LoadURI(std::wstring_view uri, float dpi) {
 
     if (custom_uri_loader_) {
         return custom_uri_loader_->Load(uri, dpi);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string_view>
+
 namespace zaf::internal {
 
 class ResourceLocation {
@@ -8,6 +10,6 @@ public:
     std::wstring name;
 };
 
-ResourceLocation ParseResourceLocation(const std::wstring& string);
+ResourceLocation ParseResourceLocation(std::wstring_view string);
 
 }

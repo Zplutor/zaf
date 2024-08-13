@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <string_view>
 
 namespace zaf {
 namespace internal {
@@ -18,7 +19,7 @@ public:
     std::wstring value;
 };
 
-URIParseResult ParseURI(const std::wstring& uri);
+URIParseResult ParseURI(std::wstring_view uri);
 
 }
 }

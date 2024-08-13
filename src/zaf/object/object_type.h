@@ -30,16 +30,19 @@ public:
     virtual ObjectType* BaseType() const noexcept = 0;
 
     /**
-     Get name of the type.
-     */
-    virtual const std::wstring& Name() const = 0;
+    Gets the name of the type.
+
+    @return
+        The name of the type.
+    */
+    virtual std::wstring_view Name() const noexcept = 0;
 
     /**
      Create an instance of the type.
      */
     virtual std::shared_ptr<Object> CreateInstance() const = 0;
 
-    virtual const std::wstring& ResourceURI() const;
+    virtual std::wstring_view ResourceURI() const noexcept;
 
     /**
      Get the parser for the type.

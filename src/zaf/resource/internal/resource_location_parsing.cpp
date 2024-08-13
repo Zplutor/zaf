@@ -2,7 +2,7 @@
 
 namespace zaf::internal {
 
-ResourceLocation ParseResourceLocation(const std::wstring& string) {
+ResourceLocation ParseResourceLocation(std::wstring_view string) {
 
     ResourceLocation result;
 

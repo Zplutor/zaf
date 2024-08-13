@@ -4,16 +4,16 @@ namespace zaf {
 namespace internal {
 namespace {
 
-bool TryToParseFileURI(const std::wstring& uri, URIParseResult& result) {
+bool TryToParseFileURI(std::wstring_view uri, URIParseResult& result) {
 
-    const std::wstring prefix{ L"file://" };
+    std::wstring_view prefix{ L"file://" };
     if (uri.find(prefix) != 0) {
         return false;
     }
 
     //A formal file uri format is "file://host/path", host is unsupported here,
     //so there must be three '/'s.
-    if (uri[prefix.length()] != L'/') {
+    if (uri.length() <= prefix.length() || uri[prefix.length()] != L'/') {
         result.type = URIType::Unknown;
         return true;
     }
@@ -32,9 +32,9 @@ bool TryToParseFileURI(const std::wstring& uri, URIParseResult& result) {
 }
 
 
-bool TryToParseResourceURI(const std::wstring& uri, URIParseResult& result) {
+bool TryToParseResourceURI(std::wstring_view uri, URIParseResult& result) {
 
-    const std::wstring prefix{ L"res://" };
+    std::wstring_view prefix{ L"res://" };
     if (uri.find(prefix) != 0) {
         return false;
     }
@@ -54,7 +54,7 @@ bool TryToParseResourceURI(const std::wstring& uri, URIParseResult& result) {
 }
 
 
-void ParseRelativeURI(const std::wstring& uri, URIParseResult& result) {
+void ParseRelativeURI(std::wstring_view uri, URIParseResult& result) {
 
     if (uri.empty()) {
         result.type = URIType::Unknown;
@@ -77,7 +77,7 @@ void ParseRelativeURI(const std::wstring& uri, URIParseResult& result) {
 
 }
 
-URIParseResult ParseURI(const std::wstring& uri) {
+URIParseResult ParseURI(std::wstring_view uri) {
 
     URIParseResult result;
     if (TryToParseFileURI(uri, result)) {

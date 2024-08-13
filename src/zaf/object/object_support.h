@@ -22,9 +22,8 @@ public:                                                                         
     zaf::ObjectType* BaseType() const noexcept override {                                         \
         return ClassName::StaticBaseType();                                                       \
     }                                                                                             \
-    const std::wstring& Name() const override {                                                   \
-        static const std::wstring name{ L#ClassName };                                            \
-        return name;                                                                              \
+    std::wstring_view Name() const noexcept override {                                            \
+        return std::wstring_view{ L#ClassName };                                                  \
     }                                                                                             \
     std::shared_ptr<zaf::Object> CreateInstance() const override {                                \
         return zaf::internal::InstanceCreatorSelector<ClassName>::Type::Create();                 \
@@ -39,9 +38,8 @@ public:                                                                         
 
 
 #define ZAF_OBJECT_RESOURCE_URI(URI)                                                              \
-    const std::wstring& ResourceURI() const override {                                            \
-        static const std::wstring uri{ URI };                                                     \
-        return uri;                                                                               \
+    std::wstring_view ResourceURI() const noexcept override {                                     \
+        return std::wstring_view{ URI };                                                          \
     }                                                                                           
 
 

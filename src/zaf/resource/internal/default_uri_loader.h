@@ -7,11 +7,11 @@ namespace zaf::internal {
 
 class DefaultURILoader : public URILoader {
 public:
-    Stream Load(const std::wstring& uri, float dpi) override;
+    Stream Load(std::wstring_view uri, float dpi) override;
 
 private:
-    Stream LoadResourceURI(const std::wstring& resource_location, float dpi);
-    Stream LoadRelativeURI(const std::wstring& uri);
+    Stream LoadResourceURI(std::wstring_view resource_location, float dpi);
+    Stream LoadRelativeURI(std::wstring_view uri);
 
 private:
     internal::ResourceLoader resource_loader_;

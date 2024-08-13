@@ -18,7 +18,7 @@ public:
 
     void RegisterType(ObjectType* type);
 
-    ObjectType* GetType(const std::wstring& name) const;
+    ObjectType* GetType(std::wstring_view name) const;
 
 private:
     ReflectionManager() = default;

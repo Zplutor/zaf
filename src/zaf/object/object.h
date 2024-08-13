@@ -18,7 +18,7 @@ public:
 
     public:
         ObjectType* BaseType() const noexcept override;
-        const std::wstring& Name() const override;
+        std::wstring_view Name() const noexcept override;
         std::shared_ptr<Object> CreateInstance() const override;
         ObjectParser* Parser() const;
 

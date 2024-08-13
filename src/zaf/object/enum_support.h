@@ -44,9 +44,8 @@ public:                                                                         
     zaf::ObjectType* BaseType() const noexcept override {                                         \
         return Class::StaticBaseType();                                                           \
     }                                                                                             \
-    const std::wstring& Name() const override {                                                   \
-        static const std::wstring name{ L#EnumName };                                             \
-        return name;                                                                              \
+    std::wstring_view Name() const noexcept override {                                            \
+        return std::wstring_view{ L#EnumName };                                                   \
     }                                                                                             \
     std::shared_ptr<zaf::Object> CreateInstance() const override {                                \
         return zaf::Create<EnumName##Enum>();                                                     \

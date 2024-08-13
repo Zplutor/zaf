@@ -17,8 +17,8 @@ public:
     ResourceFactory(const ResourceFactory&) = delete;
     ResourceFactory& operator=(const ResourceFactory&) = delete;
 
-    Stream LoadURI(const std::wstring& uri);
-    Stream LoadURI(const std::wstring& uri, float dpi);
+    Stream LoadURI(std::wstring_view uri);
+    Stream LoadURI(std::wstring_view, float dpi);
 
 private:
     friend class zaf::Application;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string_view>
 #include <zaf/io/stream/stream.h>
 
 namespace zaf {
@@ -15,7 +16,7 @@ public:
     URILoader(const URILoader&) = delete;
     URILoader& operator=(const URILoader&) = delete;
 
-    virtual Stream Load(const std::wstring& uri, float dpi) = 0;
+    virtual Stream Load(std::wstring_view uri, float dpi) = 0;
 };
 
 }

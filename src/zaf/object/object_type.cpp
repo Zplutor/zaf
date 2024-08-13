@@ -45,9 +45,8 @@ ObjectParser* ObjectType::Parser() const {
 }
 
 
-const std::wstring& ObjectType::ResourceURI() const {
-    static const std::wstring uri{};
-    return uri;
+std::wstring_view ObjectType::ResourceURI() const noexcept {
+    return std::wstring_view{ L"" };
 }
 
 

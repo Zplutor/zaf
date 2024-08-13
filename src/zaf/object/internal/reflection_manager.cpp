@@ -25,22 +25,17 @@ void ReflectionManager::RegisterType(ObjectType* type) {
 }
 
 
-ObjectType* ReflectionManager::GetType(const std::wstring& name) const {
+ObjectType* ReflectionManager::GetType(std::wstring_view name) const {
 
     auto iterator = std::lower_bound(
         types_.begin(),
         types_.end(),
         name,
-        [](auto type, const std::wstring& name) {
+        [](auto type, std::wstring_view name) {
+            return type->Name() < name;
+        });
 
-        return type->Name() < name;
-    });
-
-    if (iterator == types_.end()) {
-        return nullptr;
-    }
-
-    if ((*iterator)->Name() != name) {
+    if (iterator == types_.end() || (*iterator)->Name() != name) {
         return nullptr;
     }
 

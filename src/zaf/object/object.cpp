@@ -19,7 +19,7 @@ void ParseObject(ObjectType& type, Object& object) {
         ParseObject(*base_type, object);
     }
 
-    const auto& resource_uri = type.ResourceURI();
+    auto resource_uri = type.ResourceURI();
     if (resource_uri.empty()) {
         return;
     }
@@ -52,9 +52,8 @@ ObjectType* Object::Type::BaseType() const noexcept {
     return nullptr;
 }
 
-const std::wstring& Object::Type::Name() const {
-    static std::wstring name{ L"Object" };
-    return name;
+std::wstring_view Object::Type::Name() const noexcept {
+    return std::wstring_view{ L"Object" };
 }
 
 std::shared_ptr<Object> Object::Type::CreateInstance() const {
