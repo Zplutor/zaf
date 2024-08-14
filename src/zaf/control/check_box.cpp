@@ -29,6 +29,16 @@ CheckBox::~CheckBox() {
 void CheckBox::Initialize() {
 
     __super::Initialize();
+
+    SetBackgroundColor(Color::Transparent());
+
+    SetBoxBorderColorPicker(ColorPicker([](const Control& control) {
+        return internal::GetBoxBorderColor(As<ClickableControl>(control));
+    })); 
+
+    SetBoxBackgroundColorPicker(ColorPicker([](const Control& control) {
+        return internal::GetBoxBackgroundColor(As<ClickableControl>(control));
+    })); 
 }
 
 
@@ -49,9 +59,13 @@ void CheckBox::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    SetBackgroundColor(Color::Transparent());
-    SetBoxBorderColor(internal::GetBoxBorderColor(*this));
-    SetBoxBackgroundColor(internal::GetBoxBackgroundColor(*this));
+    if (box_border_color_picker_) {
+        box_border_color_ = box_border_color_picker_(*this);
+    }
+
+    if (box_background_color_picker_) {
+        box_background_color_ = box_background_color_picker_(*this);
+    }
 }
 
 
@@ -130,6 +144,18 @@ Color CheckBox::BoxBorderColor() const {
 
 void CheckBox::SetBoxBorderColor(const Color& color) {
     box_border_color_ = color;
+    box_border_color_picker_ = nullptr;
+    NeedRepaint();
+}
+
+
+const ColorPicker& CheckBox::BoxBorderColorPicker() const {
+    return box_border_color_picker_;
+}
+
+void CheckBox::SetBoxBorderColorPicker(ColorPicker picker) {
+    box_border_color_picker_ = std::move(picker);
+    NeedUpdateStyle();
     NeedRepaint();
 }
 
@@ -138,9 +164,20 @@ Color CheckBox::BoxBackgroundColor() const {
     return box_background_color_;
 }
 
-
 void CheckBox::SetBoxBackgroundColor(const Color& color) {
     box_background_color_ = color;
+    box_background_color_picker_ = nullptr;
+    NeedRepaint();
+}
+
+
+const ColorPicker& CheckBox::BoxBackgroundColorPicker() const {
+    return box_background_color_picker_;
+}
+
+void CheckBox::SetBoxBackgroundColorPicker(ColorPicker picker) {
+    box_background_color_picker_ = std::move(picker);
+    NeedUpdateStyle();
     NeedRepaint();
 }
 

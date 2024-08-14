@@ -29,6 +29,9 @@ public:
      */
     void SetBoxBorderColor(const Color& color);
 
+    const ColorPicker& BoxBorderColorPicker() const;
+    void SetBoxBorderColorPicker(ColorPicker picker);
+
     /**
      Get the box background color.
      */
@@ -38,6 +41,9 @@ public:
      Set the box background color.
      */
     void SetBoxBackgroundColor(const Color& color);
+
+    const ColorPicker& BoxBackgroundColorPicker() const;
+    void SetBoxBackgroundColorPicker(ColorPicker picker);
 
     /**
      Get a value indicating that whether the check box changes its check state when 
@@ -130,7 +136,10 @@ private:
     zaf::CheckState check_state_;
 
     Color box_background_color_;
+    ColorPicker box_background_color_picker_;
+
     Color box_border_color_;
+    ColorPicker box_border_color_picker_;
 
     Event<CheckStateChangedInfo> check_state_changed_event_;
 };
