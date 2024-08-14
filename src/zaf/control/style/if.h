@@ -2,12 +2,11 @@
 
 #include <zaf/control/style/if_parser.h>
 #include <zaf/control/style/property_value_pair.h>
-#include <zaf/control/style/set.h>
-#include <zaf/control/style/style.h>
+#include <zaf/object/object.h>
 
 namespace zaf {
 
-class If : public Style {
+class If : public Object {
 public:
     ZAF_OBJECT;
 
@@ -21,20 +20,20 @@ public:
         return conditions_;
     }
 
-    void SetResult(std::shared_ptr<Set> result);
+    void SetResult(std::shared_ptr<Object> result);
 
-    const std::shared_ptr<Set>& Result() const noexcept {
+    const std::shared_ptr<Object>& Result() const noexcept {
         return result_;
     }
 
-    void ApplyTo(Object& object) override;
+    std::shared_ptr<Object> Evaluate(const Object& object) const;
 
 private:
-    bool ShouldApply(const Object& object) const;
+    bool MeetsConditions(const Object& object) const;
 
 private:
     PropertyValuePairSet conditions_;
-    std::shared_ptr<Set> result_;
+    std::shared_ptr<Object> result_;
 };
 
 ZAF_OBJECT_BEGIN(If);

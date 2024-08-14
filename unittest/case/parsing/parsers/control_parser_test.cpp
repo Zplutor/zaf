@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/control/control.h>
 #include <zaf/control/layout/linear_layouter.h>
-#include <zaf/control/style/if.h>
-#include <zaf/control/style/set.h>
 #include <zaf/graphic/image/image.h>
 #include <zaf/object/parsing/parse_error.h>
 #include "utility.h"
@@ -445,32 +443,4 @@ TEST(ControlParserTest, ParseAutoSize) {
     control = CreateControlFromXaml(xaml);
     ASSERT_TRUE(control->AutoWidth());
     ASSERT_TRUE(control->AutoHeight());
-}
-
-
-TEST(ControlParserTest, ParseStyles) {
-
-    auto control = CreateControlFromXaml(R"(
-        <Control>
-            <Control.Styles>
-                <Set BackgroundColor="Blue" />
-                <If IsEnabled="true">
-                    <Set BorderColor="Green" />
-                </If>
-            </Control.Styles>
-        </Control>
-    )");
-
-    const auto& styles = control->Styles();
-    ASSERT_EQ(styles.Count(), 2);
-    
-    auto first = zaf::As<zaf::Set>(styles[0]);
-    ASSERT_EQ(first->Properties().size(), 1);
-    ASSERT_EQ(first->Properties().begin()->PropertyName(), L"BackgroundColor");
-
-    auto second = zaf::As<zaf::If>(styles[1]);
-    ASSERT_EQ(second->Conditions().size(), 1);
-    ASSERT_EQ(second->Conditions().begin()->PropertyName(), L"IsEnabled");
-    ASSERT_EQ(second->Result()->Properties().size(), 1);
-    ASSERT_EQ(second->Result()->Properties().begin()->PropertyName(), L"BorderColor");
 }

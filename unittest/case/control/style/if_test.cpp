@@ -11,7 +11,7 @@ TEST(IfTest, Parse) {
 
     auto xaml = LR"(
         <If IsEnabled="true" IsVisible="true"> 
-            <Set Background="#ffff00" />
+            <Color>#ff00ff</Color>
         </If>
     )";
 
@@ -21,7 +21,6 @@ TEST(IfTest, Parse) {
     auto control = Create<Control>();
     control->SetIsEnabled(true);
     control->SetIsVisible(true);
-    control->SetBackgroundColor(Color::FromRGB(0xffff00));
 
     const auto& conditions = if_statement->Conditions();
     ASSERT_EQ(conditions.size(), 2);
@@ -30,56 +29,13 @@ TEST(IfTest, Parse) {
     ++iterator;
     ASSERT_TRUE(iterator->IsSetIn(*control));
 
-    const auto& properties = if_statement->Result()->Properties();
-    ASSERT_EQ(properties.size(), 1);
-    ASSERT_TRUE(iterator->IsSetIn(*control));
+    auto result_name = if_statement->Result()->DynamicType()->Name();
+    ASSERT_EQ(result_name, L"Color");
+
+    auto result = if_statement->Evaluate(*control);
+    ASSERT_NE(result, nullptr);
+    auto color = As<Color>(result);
+    ASSERT_EQ(*color, Color::FromRGB(0xff00ff));
 }
 
 
-TEST(IfTest, ApplyTo) {
-
-    auto if_statement = Create<If>();
-    if_statement->AddCondition(Control::Type::Instance()->IsEnabledProperty, Box(true));
-    if_statement->AddCondition(Control::Type::Instance()->IsSelectedProperty, Box(true));
-    if_statement->Result()->AddProperty(
-        Control::Type::Instance()->BorderColorProperty,
-        Box(Color::Blue()));
-
-    //Sets to base class.
-    {
-        auto control = Create<Control>();
-        control->SetIsEnabled(false);
-        control->SetIsSelected(false);
-        control->SetBorderColor(Color::Red());
-
-        if_statement->ApplyTo(*control);
-        ASSERT_EQ(control->BorderColor(), Color::Red());
-
-        control->SetIsSelected(true);
-        if_statement->ApplyTo(*control);
-        ASSERT_EQ(control->BorderColor(), Color::Red());
-
-        control->SetIsEnabled(true);
-        if_statement->ApplyTo(*control);
-        ASSERT_EQ(control->BorderColor(), Color::Blue());
-    }
-
-    //Sets to derived class.
-    {
-        auto label = Create<Label>();
-        label->SetIsEnabled(false);
-        label->SetIsSelected(false);
-        label->SetBorderColor(Color::Red());
-
-        if_statement->ApplyTo(*label);
-        ASSERT_EQ(label->BorderColor(), Color::Red());
-
-        label->SetIsSelected(true);
-        if_statement->ApplyTo(*label);
-        ASSERT_EQ(label->BorderColor(), Color::Red());
-
-        label->SetIsEnabled(true);
-        if_statement->ApplyTo(*label);
-        ASSERT_EQ(label->BorderColor(), Color::Blue());
-    }
-}

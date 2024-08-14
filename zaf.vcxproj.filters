@@ -1255,26 +1255,23 @@
     <ClCompile Include="src\zaf\internal\object\enum_parser.cpp">
       <Filter>zaf\internal\object</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\style\style_collection.cpp">
-      <Filter>zaf\control\style</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\style\style.cpp">
-      <Filter>zaf\control\style</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\style\if.cpp">
       <Filter>zaf\control\style</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\style\property_value_pair.cpp">
       <Filter>zaf\control\style</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\style\set.cpp">
-      <Filter>zaf\control\style</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\style\set_parser.cpp">
-      <Filter>zaf\control\style</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\style\if_parser.cpp">
       <Filter>zaf\control\style</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\style\color_picker.cpp">
+      <Filter>zaf\control\style</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\style\color_picker_parser.cpp">
+      <Filter>zaf\control\style</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\control\color_picker_impl.cpp">
+      <Filter>zaf\internal\control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2914,26 +2911,23 @@
     <ClInclude Include="src\zaf\internal\object\optional_utility.h">
       <Filter>zaf\internal\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\style\style_collection.h">
-      <Filter>zaf\control\style</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\style\style.h">
-      <Filter>zaf\control\style</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\style\if.h">
       <Filter>zaf\control\style</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\style\property_value_pair.h">
       <Filter>zaf\control\style</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\style\set.h">
-      <Filter>zaf\control\style</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\style\set_parser.h">
-      <Filter>zaf\control\style</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\style\if_parser.h">
       <Filter>zaf\control\style</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\style\color_picker.h">
+      <Filter>zaf\control\style</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\style\color_picker_parser.h">
+      <Filter>zaf\control\style</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\control\color_picker_impl.h">
+      <Filter>zaf\internal\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

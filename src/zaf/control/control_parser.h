@@ -14,11 +14,6 @@ public:
     void ParseFromNode(const XamlNode& node, Object& object) override;
 
 protected:
-    void ParsePropertyNode(
-        const XamlNode& node,
-        const std::wstring& property_name,
-        Object& object) override;
-
     /**
     Parses content nodes of the XAML node and sets the result to a specified control.
 
@@ -40,9 +35,6 @@ protected:
     virtual void ParseContentNodes(
         const std::vector<std::shared_ptr<XamlNode>>& nodes,
         Control& control);
-
-private:
-    void ParseStyles(const XamlNode& node, Control& control);
 };
 
 }

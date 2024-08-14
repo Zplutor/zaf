@@ -204,13 +204,11 @@
     <ClCompile Include="src\zaf\control\spin_button.cpp" />
     <ClCompile Include="src\zaf\control\spin_edit.cpp" />
     <ClCompile Include="src\zaf\control\split_control.cpp" />
+    <ClCompile Include="src\zaf\control\style\color_picker.cpp" />
+    <ClCompile Include="src\zaf\control\style\color_picker_parser.cpp" />
     <ClCompile Include="src\zaf\control\style\if.cpp" />
     <ClCompile Include="src\zaf\control\style\if_parser.cpp" />
-    <ClCompile Include="src\zaf\control\style\set.cpp" />
     <ClCompile Include="src\zaf\control\style\property_value_pair.cpp" />
-    <ClCompile Include="src\zaf\control\style\set_parser.cpp" />
-    <ClCompile Include="src\zaf\control\style\style.cpp" />
-    <ClCompile Include="src\zaf\control\style\style_collection.cpp" />
     <ClCompile Include="src\zaf\control\textual\default_text_style.cpp" />
     <ClCompile Include="src\zaf\control\textual\dynamic_inline_object.cpp" />
     <ClCompile Include="src\zaf\control\textual\dynamic_inline_object_events.cpp" />
@@ -288,6 +286,7 @@
     <ClCompile Include="src\zaf\graphic\text\text_trimming.cpp" />
     <ClCompile Include="src\zaf\graphic\text\word_wrapping.cpp" />
     <ClCompile Include="src\zaf\input\keyboard.cpp" />
+    <ClCompile Include="src\zaf\internal\control\color_picker_impl.cpp" />
     <ClCompile Include="src\zaf\internal\control\control_event_invoker.cpp" />
     <ClCompile Include="src\zaf\internal\control\control_event_route_utility.cpp" />
     <ClCompile Include="src\zaf\internal\control\control_focus_event_info_helper.cpp" />
@@ -643,13 +642,11 @@
     <ClInclude Include="src\zaf\control\spin_button.h" />
     <ClInclude Include="src\zaf\control\spin_edit.h" />
     <ClInclude Include="src\zaf\control\split_control.h" />
+    <ClInclude Include="src\zaf\control\style\color_picker.h" />
+    <ClInclude Include="src\zaf\control\style\color_picker_parser.h" />
     <ClInclude Include="src\zaf\control\style\if.h" />
     <ClInclude Include="src\zaf\control\style\if_parser.h" />
-    <ClInclude Include="src\zaf\control\style\set.h" />
     <ClInclude Include="src\zaf\control\style\property_value_pair.h" />
-    <ClInclude Include="src\zaf\control\style\set_parser.h" />
-    <ClInclude Include="src\zaf\control\style\style.h" />
-    <ClInclude Include="src\zaf\control\style\style_collection.h" />
     <ClInclude Include="src\zaf\control\textual\default_text_style.h" />
     <ClInclude Include="src\zaf\control\textual\dynamic_inline_object.h" />
     <ClInclude Include="src\zaf\control\textual\dynamic_inline_object_events.h" />
@@ -772,6 +769,7 @@
     <ClInclude Include="src\zaf\input\key_state.h" />
     <ClInclude Include="src\zaf\input\key.h" />
     <ClInclude Include="src\zaf\input\mouse.h" />
+    <ClInclude Include="src\zaf\internal\control\color_picker_impl.h" />
     <ClInclude Include="src\zaf\internal\control\control_event_invoker.h" />
     <ClInclude Include="src\zaf\internal\control\control_event_route_utility.h" />
     <ClInclude Include="src\zaf\internal\control\control_focus_event_info_helpers.h" />

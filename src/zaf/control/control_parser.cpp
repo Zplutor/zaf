@@ -23,30 +23,6 @@ void ControlParser::ParseFromNode(const XamlNode& node, Object& object) {
 }
 
 
-void ControlParser::ParsePropertyNode(
-    const XamlNode& node,
-    const std::wstring& property_name,
-    Object& object) {
-
-    if (property_name == L"Styles") {
-        ParseStyles(node, As<Control>(object));
-    }
-    else {
-        __super::ParsePropertyNode(node, property_name, object);
-    }
-}
-
-
-void ControlParser::ParseStyles(const XamlNode& node, Control& control) {
-
-    for (const auto& each_node : node.GetContentNodes()) {
-
-        auto style = internal::CreateObjectFromNode<Style>(each_node);
-        control.Styles().Add(std::move(style));
-    }
-}
-
-
 void ControlParser::ParseContentNodes(
     const std::vector<std::shared_ptr<XamlNode>>& nodes,
     Control& control) {

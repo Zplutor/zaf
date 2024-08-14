@@ -5,7 +5,7 @@ namespace zaf {
 
 ZAF_OBJECT_IMPL(If);
 
-If::If() : result_(Create<Set>()) {
+If::If() : result_(Create<Object>()) {
 
 }
 
@@ -20,21 +20,24 @@ void If::AddCondition(std::wstring property_name, std::wstring value) {
 }
 
 
-void If::SetResult(std::shared_ptr<Set> result) {
+void If::SetResult(std::shared_ptr<Object> result) {
     ZAF_EXPECT(result);
     result_ = std::move(result);
 }
 
 
-void If::ApplyTo(Object& object) {
-
-    if (ShouldApply(object)) {
-        result_->ApplyTo(object);
+std::shared_ptr<Object> If::Evaluate(const Object& object) const{
+    
+    if (MeetsConditions(object)) {
+        return result_;
+    }
+    else {
+        return nullptr;
     }
 }
 
 
-bool If::ShouldApply(const Object& object) const {
+bool If::MeetsConditions(const Object& object) const {
 
     for (const auto& each_condition : conditions_) {
 

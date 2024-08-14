@@ -29,7 +29,7 @@
 #include <zaf/control/image_picker.h>
 #include <zaf/control/layout/layouter.h>
 #include <zaf/control/control_update_guard.h>
-#include <zaf/control/style/style_collection.h>
+#include <zaf/control/style/color_picker.h>
 #include <zaf/graphic/renderer/bitmap_renderer.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/frame.h>
@@ -356,6 +356,9 @@ public:
      */
     void SetBackgroundColor(const Color& color);
 
+    const ColorPicker& BackgroundColorPicker() const;
+    void SetBackgroundColorPicker(ColorPicker picker);
+
     /**
      Get border color.
      */
@@ -365,6 +368,9 @@ public:
      Set border color.
      */
     void SetBorderColor(const Color& color);
+
+    const ColorPicker& BorderColorPicker() const;
+    void SetBorderColorPicker(ColorPicker picker);
 
     /**
      Get the layouter.
@@ -751,9 +757,6 @@ public:
     */
     Point TranslateFromParent(const Point& position) const;
 
-    StyleCollection& Styles();
-    const StyleCollection& Styles() const;
-
     Observable<StyleUpdateInfo> StyleUpdateEvent() const;
 
     /**
@@ -1078,7 +1081,6 @@ private:
 
     bool need_update_style_{};
     bool is_updating_style_{};
-    StyleCollection styles_;
 
     bool is_cached_painting_enabled_{};
     BitmapRenderer cached_renderer_;
@@ -1115,7 +1117,11 @@ private:
     Point last_mouse_down_position_;
 
     Color background_color_ = Color::Transparent();
+    ColorPicker background_color_picker_;
+
     Color border_color_ = Color::Black();
+    ColorPicker border_color_picker_;
+
     ImageLayout background_image_layout_{ ImageLayout::None };
     ImagePicker background_image_picker_;
 

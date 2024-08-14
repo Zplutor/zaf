@@ -4,7 +4,7 @@
 
 namespace zaf {
 
-class SetParser : public ObjectParser {
+class ColorPickerParser : public ObjectParser {
 public:
     void ParseFromNode(const XamlNode& node, Object& object) override;
 };

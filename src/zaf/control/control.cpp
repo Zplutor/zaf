@@ -49,8 +49,7 @@ Control::Control() :
     is_focused_(false),
     can_focused_(DefaultCanFocused),
     is_enabled_(DefaultIsEnabled),
-    is_visible_(DefaultIsVisible),
-    styles_(this) {
+    is_visible_(DefaultIsVisible) {
 
 }
 
@@ -124,6 +123,13 @@ void Control::NeedUpdateStyle() {
 
 void Control::UpdateStyle() {
     
+    if (background_color_picker_) {
+        background_color_ = background_color_picker_(*this);
+    }
+
+    if (border_color_picker_) {
+        border_color_ = border_color_picker_(*this);
+    }
 }
 
 
@@ -134,16 +140,6 @@ Observable<StyleUpdateInfo> Control::StyleUpdateEvent() const {
 
 void Control::OnStyleUpdate(const StyleUpdateInfo& event_info) {
     style_update_event_.Raise(event_info);
-}
-
-
-StyleCollection& Control::Styles() {
-    return styles_;
-}
-
-
-const StyleCollection& Control::Styles() const {
-    return styles_;
 }
 
 
@@ -174,11 +170,6 @@ bool Control::HandleUpdateStyle() {
     auto auto_reset = MakeAutoReset(is_updating_style_, true);
 
     UpdateStyle();
-
-    for (auto index : Range(0, styles_.Count())) {
-        styles_[index]->ApplyTo(*this);
-    }
-
     OnStyleUpdate(StyleUpdateInfo{ shared_from_this() });
     return true;
 }
@@ -997,6 +988,18 @@ Color Control::BackgroundColor() const {
 
 void Control::SetBackgroundColor(const Color& color) {
     background_color_= color;
+    background_color_picker_ = nullptr;
+    NeedRepaint();
+}
+
+
+const ColorPicker& Control::BackgroundColorPicker() const {
+    return background_color_picker_;
+}
+
+void Control::SetBackgroundColorPicker(ColorPicker picker) {
+    background_color_picker_ = std::move(picker);
+    NeedUpdateStyle();
     NeedRepaint();
 }
 
@@ -1008,6 +1011,18 @@ Color Control::BorderColor() const {
 
 void Control::SetBorderColor(const Color& color) {
     border_color_ = color;
+    border_color_picker_ = nullptr;
+    NeedRepaint();
+}
+
+
+const ColorPicker& Control::BorderColorPicker() const {
+    return border_color_picker_;
+}
+
+void Control::SetBorderColorPicker(ColorPicker picker) {
+    border_color_picker_ = std::move(picker);
+    NeedUpdateStyle();
     NeedRepaint();
 }
 

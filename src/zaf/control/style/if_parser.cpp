@@ -24,12 +24,12 @@ void IfParser::ParseFromNode(const XamlNode& node, Object& object) {
         throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
-    auto set = internal::CreateObjectFromNode<Set>(content_nodes.front());
-    if (!set) {
+    auto result = internal::CreateObjectFromNode<Object>(content_nodes.front());
+    if (!result) {
         throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
-    if_statement.SetResult(std::move(set));
+    if_statement.SetResult(std::move(result));
 }
 
 }

@@ -443,7 +443,6 @@
     <ClCompile Include="unittest\case\control\scroll_box_test.cpp" />
     <ClCompile Include="unittest\case\control\split_control_test.cpp" />
     <ClCompile Include="unittest\case\control\style\if_test.cpp" />
-    <ClCompile Include="unittest\case\control\style\set_test.cpp" />
     <ClCompile Include="unittest\case\control\textual\default_text_style_test.cpp" />
     <ClCompile Include="unittest\case\control\textual\inline_object_store_test.cpp" />
     <ClCompile Include="unittest\case\control\textual\inline_object_test.cpp" />
