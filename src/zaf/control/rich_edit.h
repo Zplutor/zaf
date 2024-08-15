@@ -69,6 +69,9 @@ public:
     Color TextColor() const;
     void SetTextColor(const Color& color);
 
+    const ColorPicker& TextColorPicker() const;
+    void SetTextColorPicker(ColorPicker picker);
+
     /**
      Get the dimensions of the white space inset around the text.
 
@@ -384,6 +387,7 @@ private:
 
 private:
     void InitializeTextService();
+    void ReviseTextColor();
     void PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect) const;
     float GetContentVerticalOffset() const;
     void ResetCachedTextHeight();
@@ -421,7 +425,8 @@ private:
     zaf::ParagraphAlignment paragraph_alignment_{ zaf::ParagraphAlignment::Near };
     DWORD scroll_bar_property_;
     mutable std::optional<float> cached_text_height_;
-    Color text_color_;
+    internal::ColorField text_color_field_{ this };
+
     Subscription ime_message_subscription_;
 
     Event<rich_edit::TextChangingInfo> text_changing_event_;

@@ -35,15 +35,15 @@ public:
     /**
      Get the box background color.
      */
-    Color BoxBackgroundColor() const;
+    Color BoxBackColor() const;
 
     /**
      Set the box background color.
      */
-    void SetBoxBackgroundColor(const Color& color);
+    void SetBoxBackColor(const Color& color);
 
-    const ColorPicker& BoxBackgroundColorPicker() const;
-    void SetBoxBackgroundColorPicker(ColorPicker picker);
+    const ColorPicker& BoxBackColorPicker() const;
+    void SetBoxBackColorPicker(ColorPicker picker);
 
     /**
      Get a value indicating that whether the check box changes its check state when 
@@ -135,19 +135,18 @@ private:
     bool can_be_indeterminate_{ false };
     zaf::CheckState check_state_;
 
-    Color box_background_color_;
-    ColorPicker box_background_color_picker_;
-
-    Color box_border_color_;
-    ColorPicker box_border_color_picker_;
+    internal::ColorField box_back_color_field_{ this };
+    internal::ColorField box_border_color_field_{ this };
 
     Event<CheckStateChangedInfo> check_state_changed_event_;
 };
 
 ZAF_OBJECT_BEGIN(CheckBox);
 ZAF_OBJECT_PROPERTY(AutoCheck);
-ZAF_OBJECT_PROPERTY(BoxBackgroundColor);
+ZAF_OBJECT_PROPERTY(BoxBackColor);
+ZAF_OBJECT_PROPERTY(BoxBackColorPicker);
 ZAF_OBJECT_PROPERTY(BoxBorderColor);
+ZAF_OBJECT_PROPERTY(BoxBorderColorPicker);
 ZAF_OBJECT_PROPERTY(CanBeIndeterminate);
 ZAF_OBJECT_PROPERTY(CheckState);
 ZAF_OBJECT_PROPERTY(IsChecked);

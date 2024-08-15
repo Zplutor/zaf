@@ -17,6 +17,21 @@ void ScrollBarThumb::Initialize() {
 
     SetCanFocused(false);
     SetIsHorizontal(false);
+
+    SetThumbColorPicker(ColorPicker([](const Control& control) {
+
+        const auto& thumb = As<ScrollBarThumb>(control);
+
+        if (thumb.IsPressed()) {
+            return Color::FromRGB(0x808080);
+        }
+
+        if (thumb.IsMouseOver()) {
+            return Color::FromRGB(0xA9A9A9);
+        }
+
+        return Color::FromRGB(0xCECECE);
+    }));
 }
 
 
@@ -43,18 +58,7 @@ void ScrollBarThumb::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    SetThumbColor([this]() {
-
-        if (IsPressed()) {
-            return Color::FromRGB(0x808080);
-        }
-
-        if (IsMouseOver()) {
-            return Color::FromRGB(0xA9A9A9);
-        }
-
-        return Color::FromRGB(0xCECECE);
-    }());
+    thumb_color_field_.UpdateColor();
 }
 
 
@@ -74,13 +78,21 @@ void ScrollBarThumb::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
 
 Color ScrollBarThumb::ThumbColor() const {
-    return thumb_color_;
+    return thumb_color_field_.Color();
 }
 
 
 void ScrollBarThumb::SetThumbColor(const Color& color) {
-    thumb_color_ = color;
-    NeedRepaint();
+    thumb_color_field_.SetColor(color);
+}
+
+
+const ColorPicker& ScrollBarThumb::ThumbColorPicker() const {
+    return thumb_color_field_.ColorPicker();
+}
+
+void ScrollBarThumb::SetThumbColorPicker(ColorPicker color_picker) {
+    thumb_color_field_.SetColorPicker(std::move(color_picker));
 }
 
 

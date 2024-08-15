@@ -10,25 +10,19 @@ void MemberItem::Initialize() {
     SetPadding(zaf::Frame(10, 0, 0, 0));
     SetTextColor(zaf::Color::Black());
     SetParagraphAlignment(zaf::ParagraphAlignment::Center);
-}
 
-
-void MemberItem::UpdateStyle() {
-
-    __super::UpdateStyle();
-
-    SetBackgroundColor([this]() {
-
-        if (IsSelectedInContext()) {
+    SetBackgroundColorPicker(zaf::ColorPicker([](const zaf::Control& control) {
+    
+        if (control.IsSelectedInContext()) {
             return zaf::Color::FromRGB(0xAED2F6);
         }
-        else if (IsMouseOver()) {
+        else if (control.IsMouseOver()) {
             return zaf::Color::FromRGB(0xE0E9F2);
         }
         else {
             return zaf::Color::FromRGB(0xECF0F3);
         }
-    }());
+    }));
 }
 
 

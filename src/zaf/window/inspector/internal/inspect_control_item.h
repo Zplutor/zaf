@@ -9,7 +9,7 @@ public:
     InspectControlItem(const std::shared_ptr<Control>& control);
 
 protected:
-    void UpdateStyle() override;
+    void Initialize() override;
 
 private:
     std::shared_ptr<Control> control_;

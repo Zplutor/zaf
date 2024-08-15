@@ -15,7 +15,6 @@ public:
 
 protected:
     void Initialize() override;
-    void UpdateStyle() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
 
 private:

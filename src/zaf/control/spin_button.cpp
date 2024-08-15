@@ -7,6 +7,30 @@ namespace zaf {
 
 ZAF_OBJECT_IMPL(SpinButton);
 
+void SpinButton::Initialize() {
+
+    __super::Initialize();
+
+    SetArrowColorPicker(ColorPicker([](const Control& control) {
+
+        const auto& button = As<SpinButton>(control);
+
+        if (!button.IsEnabledInContext()) {
+            return Color::FromRGB(0xc0c0c0);
+        }
+
+        if (button.IsPressed()) {
+            return Color::FromRGB(0x306DD9);
+        }
+
+        if (button.IsMouseOver()) {
+            return Color::FromRGB(0x5080ef);
+        }
+
+        return Color::Black();
+    }));
+}
+
 
 ArrowDirection SpinButton::Direction() const {
     return direction_;
@@ -22,35 +46,27 @@ void SpinButton::SetDirection(ArrowDirection direction) {
 
 
 Color SpinButton::ArrowColor() const {
-    return arrow_color_;
+    return arrow_color_field_.Color();
 }
 
 void SpinButton::SetArrowColor(const Color& color) {
-    arrow_color_ = color;
-    NeedRepaint();
+    arrow_color_field_.SetColor(color);
 }
 
+
+const ColorPicker& SpinButton::ArrowColorPicker() const {
+    return arrow_color_field_.ColorPicker();
+}
+
+void SpinButton::SetArrowColorPicker(ColorPicker picker) {
+    arrow_color_field_.SetColorPicker(std::move(picker));
+}
 
 void SpinButton::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    SetArrowColor([this]() {
-    
-        if (!IsEnabledInContext()) {
-            return Color::FromRGB(0xc0c0c0);
-        }
-
-        if (IsPressed()) {
-            return Color::FromRGB(0x306DD9);
-        }
-
-        if (IsMouseOver()) {
-            return Color::FromRGB(0x5080ef);
-        }
-
-        return Color::Black();
-    }());
+    arrow_color_field_.UpdateColor();
 }
 
 

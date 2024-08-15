@@ -77,6 +77,14 @@ void Control::InvokeParse() {
 }
 
 
+void Control::Initialize() {
+
+    __super::Initialize();
+
+    SetBorderColor(Color::Black());
+}
+
+
 ControlUpdateGuard Control::BeginUpdate() {
 
     auto lock = update_lock_.lock();
@@ -123,13 +131,8 @@ void Control::NeedUpdateStyle() {
 
 void Control::UpdateStyle() {
     
-    if (background_color_picker_) {
-        background_color_ = background_color_picker_(*this);
-    }
-
-    if (border_color_picker_) {
-        border_color_ = border_color_picker_(*this);
-    }
+    background_color_field_.UpdateColor();
+    border_color_field_.UpdateColor();
 }
 
 
@@ -982,48 +985,40 @@ void Control::SetBackgroundImageLayout(ImageLayout image_layout) {
 
 
 Color Control::BackgroundColor() const {
-    return background_color_;
+    return background_color_field_.Color();
 }
 
 
 void Control::SetBackgroundColor(const Color& color) {
-    background_color_= color;
-    background_color_picker_ = nullptr;
-    NeedRepaint();
+    background_color_field_.SetColor(color);
 }
 
 
 const ColorPicker& Control::BackgroundColorPicker() const {
-    return background_color_picker_;
+    return background_color_field_.ColorPicker();
 }
 
 void Control::SetBackgroundColorPicker(ColorPicker picker) {
-    background_color_picker_ = std::move(picker);
-    NeedUpdateStyle();
-    NeedRepaint();
+    background_color_field_.SetColorPicker(std::move(picker));
 }
 
 
 Color Control::BorderColor() const {
-    return border_color_;
+    return border_color_field_.Color();
 }
 
 
 void Control::SetBorderColor(const Color& color) {
-    border_color_ = color;
-    border_color_picker_ = nullptr;
-    NeedRepaint();
+    border_color_field_.SetColor(color);
 }
 
 
 const ColorPicker& Control::BorderColorPicker() const {
-    return border_color_picker_;
+    return border_color_field_.ColorPicker();
 }
 
 void Control::SetBorderColorPicker(ColorPicker picker) {
-    border_color_picker_ = std::move(picker);
-    NeedUpdateStyle();
-    NeedRepaint();
+    border_color_field_.SetColorPicker(std::move(picker));
 }
 
 

@@ -91,8 +91,7 @@ RichEdit::RichEdit() :
     property_bits_(kDefaultPropertyBits),
     character_format_(),
     paragraph_format_(),
-    scroll_bar_property_(kDefaultScrollBarProperty),
-    text_color_(Color::Black()) {
+    scroll_bar_property_(kDefaultScrollBarProperty) {
 
     character_format_.cbSize = sizeof(character_format_);
     character_format_.dwMask |= CFM_PROTECTED;
@@ -119,7 +118,22 @@ void RichEdit::Initialize() {
     SetFont(Font::Default());
     SetTextAlignment(TextAlignment::Leading);
     SetParagraphAlignment(ParagraphAlignment::Near);
+
     SetBorderColor(Color::Black());
+
+    SetTextColorPicker(ColorPicker([](const Control& control) {
+        return control.IsEnabledInContext() ?
+            Color::FromRGB(zaf::internal::ControlNormalTextColorRGB) :
+            Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB);
+    }));
+
+    SetBackgroundColorPicker(ColorPicker([](const Control& control) {
+        const auto& edit = As<RichEdit>(control);
+        if (edit.IsReadOnly() || !edit.IsEnabledInContext()) {
+            return Color::FromRGB(0xEEEEEE);;
+        }
+        return Color::White();
+    }));
 
     InitializeTextService();
 }
@@ -201,17 +215,8 @@ void RichEdit::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    SetTextColor(
-        IsEnabledInContext() ? 
-        Color::FromRGB(zaf::internal::ControlNormalTextColorRGB) : 
-        Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB));
-
-    SetBackgroundColor([this]() {
-        if (IsReadOnly() || !IsEnabledInContext()) {
-            return Color::FromRGB(0xEEEEEE);;
-        }
-        return Color::White();
-    }());
+    text_color_field_.UpdateColor();
+    ReviseTextColor();
 }
 
 
@@ -650,16 +655,30 @@ void RichEdit::SetWordWrapping(zaf::WordWrapping word_wrapping) {
 
 
 Color RichEdit::TextColor() const {
-    return text_color_;
+    return text_color_field_.Color();
 }
 
 
 void RichEdit::SetTextColor(const Color& color) {
+    text_color_field_.SetColor(color);
+    ReviseTextColor();
+}
 
-    text_color_ = color;
+
+const ColorPicker& RichEdit::TextColorPicker() const {
+    return text_color_field_.ColorPicker();
+}
+
+void RichEdit::SetTextColorPicker(ColorPicker picker) {
+    text_color_field_.SetColorPicker(std::move(picker));
+    ReviseTextColor();
+}
+
+
+void RichEdit::ReviseTextColor() {
 
     character_format_.dwMask |= CFM_COLOR;
-    character_format_.crTextColor = text_color_.ToCOLORREF();
+    character_format_.crTextColor = TextColor().ToCOLORREF();
 
     if (text_service_) {
         text_service_->OnTxPropertyBitsChange(TXTBIT_CHARFORMATCHANGE, TXTBIT_CHARFORMATCHANGE);

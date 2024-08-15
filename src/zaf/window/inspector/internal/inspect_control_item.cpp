@@ -8,13 +8,13 @@ InspectControlItem::InspectControlItem(const std::shared_ptr<Control>& control) 
 }
 
 
-void InspectControlItem::UpdateStyle() {
+void InspectControlItem::Initialize() {
 
-    __super::UpdateStyle();
+    __super::Initialize();
 
     SetTextColor([this]() {
 
-        if (this->IsSelectedInContext()) {
+        if (IsSelectedInContext()) {
             return Color::White();
         }
 

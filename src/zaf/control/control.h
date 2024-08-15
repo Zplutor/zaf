@@ -34,6 +34,7 @@
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
+#include <zaf/internal/control/color_field.h>
 #include <zaf/object/object.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subscription_host.h>
@@ -819,6 +820,8 @@ protected:
     void InvokeInitialize() override;
     void InvokeParse() override;
 
+    void Initialize() override;
+
     virtual void UpdateStyle();
     virtual void OnStyleUpdate(const StyleUpdateInfo& event_info);
 
@@ -1116,11 +1119,8 @@ private:
     std::uint32_t last_mouse_down_time_{};
     Point last_mouse_down_position_;
 
-    Color background_color_ = Color::Transparent();
-    ColorPicker background_color_picker_;
-
-    Color border_color_ = Color::Black();
-    ColorPicker border_color_picker_;
+    internal::ColorField background_color_field_{ this };
+    internal::ColorField border_color_field_{ this };
 
     ImageLayout background_image_layout_{ ImageLayout::None };
     ImagePicker background_image_picker_;

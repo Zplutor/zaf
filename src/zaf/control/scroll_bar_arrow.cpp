@@ -6,7 +6,6 @@ namespace zaf {
 
 ZAF_OBJECT_IMPL(ScrollBarArrow);
 
-
 ScrollBarArrow::ScrollBarArrow() : arrow_direction_(ArrowDirection::Up) {
 
 }
@@ -17,6 +16,25 @@ void ScrollBarArrow::Initialize() {
     __super::Initialize();
 
     SetCanFocused(false);
+
+    SetArrowColorPicker(ColorPicker([](const Control& control) {
+
+        const auto& arrow = As<ScrollBarArrow>(control);
+
+        if (!arrow.IsEnabledInContext()) {
+            return Color::FromRGB(0xc0c0c0);
+        }
+
+        if (arrow.IsPressed()) {
+            return Color::FromRGB(0x306DD9);
+        }
+
+        if (arrow.IsMouseOver()) {
+            return Color::FromRGB(0x5080ef);
+        }
+
+        return Color::FromRGB(0x808080);
+    }));
 }
 
 
@@ -24,22 +42,7 @@ void ScrollBarArrow::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    SetArrowColor([this]() {
-
-        if (!IsEnabledInContext()) {
-            return Color::FromRGB(0xc0c0c0);
-        }
-
-        if (IsPressed()) {
-            return Color::FromRGB(0x306DD9);
-        }
-
-        if (IsMouseOver()) {
-            return Color::FromRGB(0x5080ef);
-        }
-
-        return Color::FromRGB(0x808080);
-    }());
+    arrow_color_field_.UpdateColor();
 }
 
 
@@ -84,13 +87,20 @@ void ScrollBarArrow::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
 
 Color ScrollBarArrow::ArrowColor() const {
-    return arrow_color_;
+    return arrow_color_field_.Color();
+}
+
+void ScrollBarArrow::SetArrowColor(const Color& color) {
+    arrow_color_field_.SetColor(color);
 }
 
 
-void ScrollBarArrow::SetArrowColor(const Color& color) {
-    arrow_color_ = color;
-    NeedRepaint();
+const ColorPicker& ScrollBarArrow::ArrowColorPicker() const {
+    return arrow_color_field_.ColorPicker();
+}
+
+void ScrollBarArrow::SetArrowColorPicker(ColorPicker color_picker) {
+    arrow_color_field_.SetColorPicker(std::move(color_picker));
 }
 
 

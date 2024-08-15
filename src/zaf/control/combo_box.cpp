@@ -56,6 +56,26 @@ void ComboBox::Initialize() {
     SetDropDownButtonColor(Color::Black());
     SetParagraphAlignment(ParagraphAlignment::Center);
 
+    SetBackgroundColorPicker(ColorPicker([](const Control& control) {
+
+        if (!control.IsEnabledInContext()) {
+            return Color::FromRGB(internal::ControlBackgroundColorRGB);
+        }
+
+        return Color::FromRGB(internal::ControlContentColorRGB);
+    }));
+
+    SetBorderColorPicker(ColorPicker([](const Control& control) {
+
+        const auto& clickable_control = As<ClickableControl>(control);
+
+        if (clickable_control.IsPressed() || clickable_control.IsMouseOver()) {
+            return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
+        }
+
+        return Color::Black();
+    }));
+
     drop_down_window_ = Create<internal::ComboBoxDropDownWindow>();
     drop_down_window_->SetIsPopup(true);
     drop_down_window_->SetHasBorder(false);
@@ -127,30 +147,6 @@ void ComboBox::Layout(const zaf::Rect& previous_rect) {
 
     auto edit_box_rect = DetermineTextRect();
     edit_box_->SetRect(edit_box_rect);
-}
-
-
-void ComboBox::UpdateStyle() {
-
-    __super::UpdateStyle();
-
-    SetBackgroundColor([this]() {
-
-        if (!IsEnabledInContext()) {
-            return Color::FromRGB(internal::ControlBackgroundColorRGB);
-        }
-
-        return Color::FromRGB(internal::ControlContentColorRGB);
-    }());
-
-    SetBorderColor([this]() {
-
-        if (IsPressed() || IsMouseOver()) {
-            return Color::FromRGB(internal::ButtonActivedBorderColorRGB);
-        }
-
-        return Color::Black();
-    }());
 }
 
 

@@ -53,15 +53,21 @@ public:
      */
     void SetRadioBorderColor(const Color& color);
 
+    const ColorPicker& RadioBorderColorPicker() const;
+    void SetRadioBorderColorPicker(ColorPicker picker);
+
     /**
      Get radio background color.
      */
-    Color RadioBackgroundColor() const;
+    Color RadioBackColor() const;
 
     /**
      Set radio background color.
      */
-    void SetRadioBackgroundColor(const Color& color);
+    void SetRadioBackColor(const Color& color);
+
+    const ColorPicker& RadioBackColorPicker() const;
+    void SetRadioBackColorPicker(ColorPicker picker);
 
     /**
      Get the associated group.
@@ -152,8 +158,8 @@ private:
     bool is_checked_;
     std::shared_ptr<Group> group_;
 
-    Color radio_background_color_;
-    Color radio_border_color_;
+    internal::ColorField radio_back_color_field_{ this };
+    internal::ColorField radio_border_color_field_{ this };
 
     Event<CheckStateChangedInfo> check_state_changed_event_;
 };
@@ -161,8 +167,10 @@ private:
 ZAF_OBJECT_BEGIN(RadioButton);
 ZAF_OBJECT_PROPERTY(AutoCheck)
 ZAF_OBJECT_PROPERTY(IsChecked)
-ZAF_OBJECT_PROPERTY(RadioBackgroundColor)
+ZAF_OBJECT_PROPERTY(RadioBackColor)
+ZAF_OBJECT_PROPERTY(RadioBackColorPicker)
 ZAF_OBJECT_PROPERTY(RadioBorderColor)
+ZAF_OBJECT_PROPERTY(RadioBorderColorPicker)
 ZAF_OBJECT_END;
 
 }

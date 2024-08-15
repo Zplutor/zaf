@@ -15,17 +15,24 @@ public:
     Color ArrowColor() const;
     void SetArrowColor(const Color& color);
 
+    const ColorPicker& ArrowColorPicker() const;
+    void SetArrowColorPicker(ColorPicker picker);
+
 protected:
+    void Initialize() override;
     void UpdateStyle() override;
     void Paint(Canvas& canvas, const zaf::Rect&) const override;
 
 private:
     ArrowDirection direction_{ ArrowDirection::Up };
 
-    Color arrow_color_;
+    internal::ColorField arrow_color_field_{ this };
 };
 
 ZAF_OBJECT_BEGIN(SpinButton);
+ZAF_OBJECT_PROPERTY(Direction);
+ZAF_OBJECT_PROPERTY(ArrowColor);
+ZAF_OBJECT_PROPERTY(ArrowColorPicker);
 ZAF_OBJECT_END;
 
 }

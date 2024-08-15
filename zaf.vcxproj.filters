@@ -1273,6 +1273,9 @@
     <ClCompile Include="src\zaf\internal\control\color_picker_impl.cpp">
       <Filter>zaf\internal\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\internal\control\color_field.cpp">
+      <Filter>zaf\internal\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2927,6 +2930,9 @@
       <Filter>zaf\control\style</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\control\color_picker_impl.h">
+      <Filter>zaf\internal\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\control\color_field.h">
       <Filter>zaf\internal\control</Filter>
     </ClInclude>
   </ItemGroup>

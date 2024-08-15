@@ -25,6 +25,14 @@ void RadioButton::Initialize() {
     __super::Initialize();
 
     SetBackgroundColor(Color::Transparent());
+
+    SetRadioBorderColorPicker(ColorPicker([](const Control& control) {
+        return internal::GetBoxBorderColor(As<ClickableControl>(control));
+    }));
+    
+    SetRadioBackColorPicker(ColorPicker([](const Control& control) {
+        return internal::GetBoxBackgroundColor(As<ClickableControl>(control));
+    }));
 }
 
 
@@ -45,8 +53,8 @@ void RadioButton::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    SetRadioBorderColor(internal::GetBoxBorderColor(*this));
-    SetRadioBackgroundColor(internal::GetBoxBackgroundColor(*this));
+    radio_back_color_field_.UpdateColor();
+    radio_border_color_field_.UpdateColor();
 }
 
 
@@ -77,7 +85,7 @@ void RadioButton::PaintRadio(Canvas& canvas, const zaf::Rect& radio_rect) const 
 
     Ellipse ellipse(ellipse_position, ellipse_x_radius, ellipse_y_radius);
 
-    canvas.SetBrushWithColor(RadioBackgroundColor());
+    canvas.SetBrushWithColor(RadioBackColor());
     canvas.DrawEllipse(ellipse);
 
     canvas.SetBrushWithColor(RadioBorderColor());
@@ -96,24 +104,39 @@ zaf::Rect RadioButton::DetermineTextRect() {
 
 
 Color RadioButton::RadioBorderColor() const {
-    return radio_border_color_;
+    return radio_border_color_field_.Color();
 }
 
 
 void RadioButton::SetRadioBorderColor(const Color& color) {
-    radio_border_color_ = color;
-    NeedRepaint();
+    radio_border_color_field_.SetColor(color);
 }
 
 
-Color RadioButton::RadioBackgroundColor() const {
-    return radio_background_color_;
+const ColorPicker& RadioButton::RadioBorderColorPicker() const {
+    return radio_border_color_field_.ColorPicker();
+}
+
+void RadioButton::SetRadioBorderColorPicker(ColorPicker picker) {
+    radio_border_color_field_.SetColorPicker(std::move(picker));
 }
 
 
-void RadioButton::SetRadioBackgroundColor(const Color& color) {
-    radio_background_color_ = color;
-    NeedRepaint();
+Color RadioButton::RadioBackColor() const {
+    return radio_back_color_field_.Color();
+}
+
+void RadioButton::SetRadioBackColor(const Color& color) {
+    radio_back_color_field_.SetColor(color);
+}
+
+
+const ColorPicker& RadioButton::RadioBackColorPicker() const {
+    return radio_back_color_field_.ColorPicker();
+}
+
+void RadioButton::SetRadioBackColorPicker(ColorPicker picker) {
+    radio_back_color_field_.SetColorPicker(std::move(picker));
 }
 
 

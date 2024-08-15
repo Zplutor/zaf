@@ -27,6 +27,9 @@ public:
      */
     void SetArrowColor(const Color& color);
 
+    const ColorPicker& ArrowColorPicker() const;
+    void SetArrowColorPicker(ColorPicker color_picker);
+
     /**
      Get the arrow's direction.
 
@@ -72,7 +75,7 @@ private:
 private:
     zaf::ArrowDirection arrow_direction_;
 
-    Color arrow_color_;
+    internal::ColorField arrow_color_field_{ this };
 
     Subject<ScrollBarArrowBeginPressInfo> begin_press_event_;
     Subject<ScrollBarArrowEndPressInfo> end_press_event_;
@@ -80,6 +83,7 @@ private:
 
 ZAF_OBJECT_BEGIN(ScrollBarArrow);
 ZAF_OBJECT_PROPERTY(ArrowColor)
+ZAF_OBJECT_PROPERTY(ArrowColorPicker)
 ZAF_OBJECT_PROPERTY(ArrowDirection)
 ZAF_OBJECT_END;
 

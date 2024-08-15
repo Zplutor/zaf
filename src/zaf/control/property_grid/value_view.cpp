@@ -13,16 +13,10 @@ void ValueView::Initialize() {
 
     this->SetLayouter(Create<HorizontalLayouter>());
     this->SetBorder(Frame{ 0, 1, 1, 1});
-}
-
-
-void ValueView::UpdateStyle() {
-
-    __super::UpdateStyle();
 
     SetBackgroundColor(Color::White());
 
-    SetBorderColor([this]() {
+    SetBorderColorPicker(ColorPicker([this](const Control& control) {
 
         auto parent = Parent();
         while (parent) {
@@ -36,7 +30,7 @@ void ValueView::UpdateStyle() {
         }
 
         return Color::White();
-    }());
+    }));
 }
 
 

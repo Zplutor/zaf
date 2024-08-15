@@ -26,6 +26,9 @@ public:
      */
     void SetThumbColor(const Color& color);
 
+    const ColorPicker& ThumbColorPicker() const;
+    void SetThumbColorPicker(ColorPicker color_picker);
+
     /**
      Get a value indicating that whether the thumb is horizontal.
 
@@ -86,7 +89,7 @@ private:
     bool is_horizontal_{};
     bool is_dragging_{};
 
-    Color thumb_color_;
+    internal::ColorField thumb_color_field_{ this };
 
     Subject<ScrollBarThumbBeginDragInfo> begin_drag_event_;
     Subject<ScrollBarThumbDragInfo> drag_event_;

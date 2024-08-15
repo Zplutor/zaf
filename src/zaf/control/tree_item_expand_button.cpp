@@ -9,12 +9,6 @@ void TreeItemExpandButton::Initialize() {
     __super::Initialize();
 
     SetCanFocused(false);
-}
-
-
-void TreeItemExpandButton::UpdateStyle() {
-
-    __super::UpdateStyle();
 
     SetBorderColor(Color::Transparent());
     SetBackgroundColor(Color::Transparent());
