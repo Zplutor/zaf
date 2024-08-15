@@ -23,7 +23,9 @@ void ColorField::SetColorPicker(zaf::ColorPicker color_picker) {
 
 void ColorField::UpdateColor() {
 
-    color_ = color_picker_(*owner_);
+    if (color_picker_) {
+        color_ = color_picker_(*owner_);
+    }
 }
 
 }
