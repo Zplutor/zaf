@@ -5,6 +5,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/none.h>
 #include <zaf/base/range.h>
+#include <zaf/control/style/color_picker.h>
 #include <zaf/control/textual/styled_text.h>
 #include <zaf/internal/textual/inline_object_attached_info.h>
 #include <zaf/rx/subject.h>
@@ -119,7 +120,10 @@ public:
     void SetFontInRange(Font font, const Range& range);
 
     void SetTextColor(const Color& color);
+    void SetTextColorPicker(ColorPicker picker, const Control& owner);
+
     void SetTextColorInRange(const Color& color, const Range& range);
+    void SetTextColorPickerInRange(ColorPicker picker, const Range& range, const Control& owner);
 
     void SetTextBackColor(const Color& color);
     void SetTextBackColorInRange(const Color& color, const Range& range);
@@ -141,6 +145,8 @@ public:
     }
 
 private:
+    void InnerSetTextColor(const Color& color);
+
     void RaiseInlineObjectAttachedEvent(
         std::vector<std::shared_ptr<textual::InlineObject>> objects) {
 
@@ -171,6 +177,13 @@ private:
 
 private:
     textual::StyledText styled_text_;
+
+    ColorPicker default_text_color_picker_;
+    RangeMap<ColorPicker> ranged_text_color_pickers_;
+
+    ColorPicker default_text_back_color_picker_;
+    RangeMap<ColorPicker> ranged_text_back_color_pickers_;
+
     Subject<InlineObjectAttachedInfo> inline_object_attached_event_;
     Subject<TextModelChangedInfo> changed_event_;
 };

@@ -31,6 +31,8 @@ void TextModel::SetText(std::wstring text) {
     auto new_length = text.length();
 
     styled_text_.SetText(std::move(text));
+    ranged_text_color_pickers_.Clear();
+    ranged_text_back_color_pickers_.Clear();
 
     RaiseChangedEvent(TextModelAttribute::All);
 }
@@ -43,6 +45,8 @@ void TextModel::SetTextInRange(std::wstring_view text, const Range& range) {
         (range.EndIndex() <= styled_text_.Text().length()));
 
     styled_text_.SetTextInRange(text, range);
+    ranged_text_color_pickers_.ReplaceSpan(range, text.length());
+    ranged_text_back_color_pickers_.ReplaceSpan(range, text.length());
 
     RaiseChangedEvent(TextModelAttribute::All, range, text.length());
 }
@@ -66,6 +70,25 @@ void TextModel::SetFontInRange(Font font, const Range& range) {
 
 void TextModel::SetTextColor(const Color& color) {
 
+    default_text_color_picker_ = nullptr;
+    ranged_text_color_pickers_.Clear();
+
+    InnerSetTextColor(color);
+}
+
+
+void TextModel::SetTextColorPicker(ColorPicker picker, const Control& owner) {
+
+    default_text_color_picker_ = std::move(picker);
+    ranged_text_color_pickers_.Clear();
+
+    auto text_color = default_text_color_picker_(owner);
+    InnerSetTextColor(text_color);
+}
+
+
+void TextModel::InnerSetTextColor(const Color& color) {
+
     styled_text_.SetDefaultTextColor(color);
     styled_text_.ClearRangedTextColors();
     RaiseChangedEvent(TextModelAttribute::TextColor);
@@ -75,7 +98,20 @@ void TextModel::SetTextColor(const Color& color) {
 void TextModel::SetTextColorInRange(const Color& color, const Range& range) {
 
     styled_text_.SetTextColorInRange(color, range);
+    ranged_text_color_pickers_.RemoveRange(range);
     RaiseChangedEvent(TextModelAttribute::TextColor, range, range.length);
+}
+
+
+
+
+
+void TextModel::SetTextColorPickerInRange(
+    ColorPicker picker,
+    const Range& range,
+    const Control& owner) {
+
+
 }
 
 
@@ -83,6 +119,10 @@ void TextModel::SetTextBackColor(const Color& color) {
 
     styled_text_.SetDefaultTextBackColor(color);
     styled_text_.ClearRangedTextBackColors();
+
+    default_text_back_color_picker_ = nullptr;
+    ranged_text_back_color_pickers_.Clear();
+
     RaiseChangedEvent(TextModelAttribute::TextBackColor);
 }
 
@@ -90,6 +130,7 @@ void TextModel::SetTextBackColor(const Color& color) {
 void TextModel::SetTextBackColorInRange(const Color& color, const Range& range) {
 
     styled_text_.SetTextBackColorInRange(color, range);
+    ranged_text_back_color_pickers_.RemoveRange(range);
     RaiseChangedEvent(TextModelAttribute::TextBackColor);
 }
 
@@ -114,6 +155,8 @@ void TextModel::ReplaceStyledTextSlice(
     const textual::StyledText& slice) {
 
     auto sub_text_range = styled_text_.SetStyledTextInRange(slice, replaced_range);
+    ranged_text_color_pickers_.RemoveRange(sub_text_range);
+    ranged_text_back_color_pickers_.RemoveRange(sub_text_range);
 
     //Get inline objects from the slice range to raise attach event.
     std::vector<std::shared_ptr<textual::InlineObject>> new_inline_objects;
