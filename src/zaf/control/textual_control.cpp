@@ -55,6 +55,15 @@ void TextualControl::Initialize() {
 
     __super::Initialize();
 
+    SetTextColorPicker(ColorPicker([](const Control& control) {
+        if (control.IsEnabledInContext()) {
+            return Color::FromRGB(internal::ControlNormalTextColorRGB);
+        }
+        else {
+            return Color::FromRGB(internal::ControlDisabledTextColorRGB);
+        }
+    }));
+
     Subscriptions() += text_model_->InlineObjectAttachedEvent().Subscribe(
         std::bind(&TextualControl::OnInlineObjectAttached, this, std::placeholders::_1));
 
@@ -76,14 +85,7 @@ void TextualControl::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    text_model_->SetTextColor([this]() {
-        if (IsEnabledInContext()) {
-            return Color::FromRGB(internal::ControlNormalTextColorRGB);
-        }
-        else {
-            return Color::FromRGB(internal::ControlDisabledTextColorRGB);
-        }
-    }());
+    text_model_->UpdateColors(*this);
 }
 
 
@@ -230,6 +232,15 @@ void TextualControl::SetTextColor(const Color& color) {
 }
 
 
+const ColorPicker& TextualControl::TextColorPicker() const {
+    return text_model_->DefaultTextColorPicker();
+}
+
+void TextualControl::SetTextColorPicker(ColorPicker picker) {
+    text_model_->SetTextColorPicker(std::move(picker), *this);
+}
+
+
 Color TextualControl::GetTextColorAtIndex(std::size_t index) const {
     return text_model_->StyledText().GetTextColorAtIndex(index);
 }
@@ -246,6 +257,15 @@ Color TextualControl::TextBackColor() const {
 
 void TextualControl::SetTextBackColor(const Color& color) {
     text_model_->SetTextBackColor(color);
+}
+
+
+const ColorPicker& TextualControl::TextBackColorPicker() const {
+    return text_model_->DefaultTextBackColorPicker();
+}
+
+void TextualControl::SetTextBackColorPicker(ColorPicker picker) {
+    text_model_->SetTextBackColorPicker(std::move(picker), *this);
 }
 
 

@@ -158,8 +158,8 @@ private:
     bool is_checked_;
     std::shared_ptr<Group> group_;
 
-    internal::ColorField radio_back_color_field_{ this };
-    internal::ColorField radio_border_color_field_{ this };
+    internal::ColorField radio_back_color_field_;
+    internal::ColorField radio_border_color_field_;
 
     Event<CheckStateChangedInfo> check_state_changed_event_;
 };

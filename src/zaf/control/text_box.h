@@ -116,8 +116,11 @@ public:
         const Range& range,
         textual::SelectionOption selection_option = textual::SelectionOption::Default);
 
-    Color SelectionBackgroundColor() const;
-    void SetSelectionBackgroundColor(const Color& color);
+    Color SelectionBackColor() const;
+    void SetSelectionBackColor(const Color& color);
+    
+    const ColorPicker& SelectionBackColorPicker() const;
+    void SetSelectionBackColorPicker(ColorPicker picker);
 
     std::wstring SelectedText() const;
 
@@ -277,7 +280,7 @@ private:
     Event<SelfScrollControlScrollBarChangeInfo> scroll_bar_change_event_;
     Event<SelfScrollControlScrollValuesChangeInfo> scroll_values_change_event_;
 
-    Color selection_background_color_;
+    internal::ColorField selection_back_color_field_;
     textual::WordExtractor word_extractor_;
 
     Subscription ime_message_subscription_;

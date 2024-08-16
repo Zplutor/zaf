@@ -662,18 +662,14 @@ std::shared_ptr<ListItem> ComboBoxDropDownListBox::DropDownListBoxDelegate::Crea
 
     auto result = __super::CreateItem(item_index, item_data);
 
-    result->Subscriptions() += result->StyleUpdateEvent().Subscribe(
-        [](const StyleUpdateInfo& event_info) {
-
-        auto item = As<ListItem>(event_info.Source());
-
+    result->SetBackgroundColorPicker(ColorPicker([](const Control& control) {
         //Drop down list is always inactive, display active selection color instead of inactive
         //selection color.
-        item->SetBackgroundColor(
-            item->IsSelectedInContext() ?
+        return 
+            control.IsSelectedInContext() ?
             Color::FromRGB(internal::ControlSelectedActivedColorRGB) :
-            Color::Transparent());
-    });
+            Color::Transparent();
+    }));
 
     return result;
 }

@@ -26,7 +26,7 @@ protected:
 private:
     ArrowDirection direction_{ ArrowDirection::Up };
 
-    internal::ColorField arrow_color_field_{ this };
+    internal::ColorField arrow_color_field_;
 };
 
 ZAF_OBJECT_BEGIN(SpinButton);

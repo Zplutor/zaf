@@ -747,3 +747,17 @@ TEST(ControlTest, IsSelectedInContext) {
     parent->SetIsSelected(true);
     ASSERT_TRUE(control->IsSelectedInContext());
 }
+
+
+TEST(ControlTest, BackgroundColor) {
+
+    auto control = zaf::Create<zaf::Control>();
+    ASSERT_EQ(control->BackgroundColor(), zaf::Color::Transparent());
+}
+
+
+TEST(ControlTest, BorderColor) {
+
+    auto control = zaf::Create<zaf::Control>();
+    ASSERT_EQ(control->BorderColor(), zaf::Color::Black());
+}

@@ -75,7 +75,7 @@ private:
 private:
     zaf::ArrowDirection arrow_direction_;
 
-    internal::ColorField arrow_color_field_{ this };
+    internal::ColorField arrow_color_field_;
 
     Subject<ScrollBarArrowBeginPressInfo> begin_press_event_;
     Subject<ScrollBarArrowEndPressInfo> end_press_event_;

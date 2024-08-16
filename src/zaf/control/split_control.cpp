@@ -387,6 +387,14 @@ void SplitBar::Initialize() {
 }
 
 
+void SplitBar::UpdateStyle() {
+
+    __super::UpdateStyle();
+
+    splitter_color_field_.UpdateColor(*this);
+}
+
+
 void SplitBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
@@ -413,13 +421,20 @@ void SplitBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
 
 Color SplitBar::SplitterColor() const {
-    return splitter_color_;
+    return splitter_color_field_.Color();
+}
+
+void SplitBar::SetSplitterColor(const Color& color) {
+    splitter_color_field_.SetColor(color, *this);
 }
 
 
-void SplitBar::SetSplitterColor(const Color& color) {
-    splitter_color_ = color;
-    NeedRepaint();
+const ColorPicker& SplitBar::SplitterColorPicker() const {
+    return splitter_color_field_.ColorPicker();
+}
+
+void SplitBar::SetSplitterColorPicker(ColorPicker picker) {
+    splitter_color_field_.SetColorPicker(std::move(picker), *this);
 }
 
 

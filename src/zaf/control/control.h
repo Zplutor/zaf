@@ -1119,8 +1119,8 @@ private:
     std::uint32_t last_mouse_down_time_{};
     Point last_mouse_down_position_;
 
-    internal::ColorField background_color_field_{ this };
-    internal::ColorField border_color_field_{ this };
+    internal::ColorField background_color_field_;
+    internal::ColorField border_color_field_;
 
     ImageLayout background_image_layout_{ ImageLayout::None };
     ImagePicker background_image_picker_;

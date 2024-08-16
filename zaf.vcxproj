@@ -771,6 +771,7 @@
     <ClInclude Include="src\zaf\input\key.h" />
     <ClInclude Include="src\zaf\input\mouse.h" />
     <ClInclude Include="src\zaf\internal\control\color_field.h" />
+    <ClInclude Include="src\zaf\internal\control\color_picker_equal.h" />
     <ClInclude Include="src\zaf\internal\control\color_picker_impl.h" />
     <ClInclude Include="src\zaf\internal\control\control_event_invoker.h" />
     <ClInclude Include="src\zaf\internal\control\control_event_route_utility.h" />

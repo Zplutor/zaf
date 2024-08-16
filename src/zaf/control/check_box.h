@@ -135,8 +135,8 @@ private:
     bool can_be_indeterminate_{ false };
     zaf::CheckState check_state_;
 
-    internal::ColorField box_back_color_field_{ this };
-    internal::ColorField box_border_color_field_{ this };
+    internal::ColorField box_back_color_field_;
+    internal::ColorField box_border_color_field_;
 
     Event<CheckStateChangedInfo> check_state_changed_event_;
 };

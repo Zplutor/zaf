@@ -81,6 +81,7 @@ void Control::Initialize() {
 
     __super::Initialize();
 
+    SetBackgroundColor(Color::Transparent());
     SetBorderColor(Color::Black());
 }
 
@@ -131,8 +132,8 @@ void Control::NeedUpdateStyle() {
 
 void Control::UpdateStyle() {
     
-    background_color_field_.UpdateColor();
-    border_color_field_.UpdateColor();
+    background_color_field_.UpdateColor(*this);
+    border_color_field_.UpdateColor(*this);
 }
 
 
@@ -990,7 +991,7 @@ Color Control::BackgroundColor() const {
 
 
 void Control::SetBackgroundColor(const Color& color) {
-    background_color_field_.SetColor(color);
+    background_color_field_.SetColor(color, *this);
 }
 
 
@@ -999,7 +1000,7 @@ const ColorPicker& Control::BackgroundColorPicker() const {
 }
 
 void Control::SetBackgroundColorPicker(ColorPicker picker) {
-    background_color_field_.SetColorPicker(std::move(picker));
+    background_color_field_.SetColorPicker(std::move(picker), *this);
 }
 
 
@@ -1009,7 +1010,7 @@ Color Control::BorderColor() const {
 
 
 void Control::SetBorderColor(const Color& color) {
-    border_color_field_.SetColor(color);
+    border_color_field_.SetColor(color, *this);
 }
 
 
@@ -1018,7 +1019,7 @@ const ColorPicker& Control::BorderColorPicker() const {
 }
 
 void Control::SetBorderColorPicker(ColorPicker picker) {
-    border_color_field_.SetColorPicker(std::move(picker));
+    border_color_field_.SetColorPicker(std::move(picker), *this);
 }
 
 

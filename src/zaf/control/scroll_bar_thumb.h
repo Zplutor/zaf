@@ -89,7 +89,7 @@ private:
     bool is_horizontal_{};
     bool is_dragging_{};
 
-    internal::ColorField thumb_color_field_{ this };
+    internal::ColorField thumb_color_field_;
 
     Subject<ScrollBarThumbBeginDragInfo> begin_drag_event_;
     Subject<ScrollBarThumbDragInfo> drag_event_;

@@ -3,28 +3,28 @@
 
 namespace zaf::internal {
 
-void ColorField::SetColor(const zaf::Color& color) {
+void ColorField::SetColor(const zaf::Color& color, Control& owner) {
 
     color_ = color;
     color_picker_ = nullptr;
 
-    owner_->NeedRepaint();
+    owner.NeedRepaint();
 }
 
 
-void ColorField::SetColorPicker(zaf::ColorPicker color_picker) {
+void ColorField::SetColorPicker(zaf::ColorPicker color_picker, Control& owner) {
 
     color_picker_ = std::move(color_picker);
-    UpdateColor();
+    UpdateColor(owner);
 
-    owner_->NeedRepaint();
+    owner.NeedRepaint();
 }
 
 
-void ColorField::UpdateColor() {
+void ColorField::UpdateColor(const Control& owner) {
 
     if (color_picker_) {
-        color_ = color_picker_(*owner_);
+        color_ = color_picker_(owner);
     }
 }
 

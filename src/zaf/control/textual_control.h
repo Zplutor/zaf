@@ -91,6 +91,9 @@ public:
     */
     void SetTextColor(const Color& color);
 
+    const ColorPicker& TextColorPicker() const;
+    void SetTextColorPicker(ColorPicker picker);
+
     /**
     Gets the text color at the specified text index in current state.
     */
@@ -120,6 +123,9 @@ public:
     existing text.
     */
     void SetTextBackColor(const Color& color);
+
+    const ColorPicker& TextBackColorPicker() const;
+    void SetTextBackColorPicker(ColorPicker picker);
 
     /**
     Gets the text background color at the specified text index in current state.

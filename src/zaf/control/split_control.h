@@ -150,8 +150,10 @@ public:
     }
 
     Color SplitterColor() const;
-
     void SetSplitterColor(const Color& color);
+
+    const ColorPicker& SplitterColorPicker() const;
+    void SetSplitterColorPicker(ColorPicker picker);
 
     Observable<SplitBarBeginDragInfo> BeginDragEvent() {
         return begin_drag_event_.AsObservable();
@@ -167,6 +169,7 @@ public:
 
 protected:
     void Initialize() override;
+    void UpdateStyle() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
     void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) override;
     void OnMouseMove(const MouseMoveInfo& event_info) override;
@@ -178,7 +181,7 @@ protected:
 private:
     bool is_horizontal_ = false;
 
-    Color splitter_color_;
+    internal::ColorField splitter_color_field_;
 
     Subject<SplitBarBeginDragInfo> begin_drag_event_;
     Subject<SplitBarDragInfo> drag_event_;
@@ -203,6 +206,7 @@ ZAF_OBJECT_END;
 ZAF_OBJECT_BEGIN(SplitBar);
 ZAF_OBJECT_PROPERTY(IsHorizontal)
 ZAF_OBJECT_PROPERTY(SplitterColor)
+ZAF_OBJECT_PROPERTY(SplitterColorPicker)
 ZAF_OBJECT_END;
 
 }

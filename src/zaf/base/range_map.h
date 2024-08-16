@@ -1,11 +1,12 @@
 #pragma once
 
+#include <functional>
 #include <vector>
 #include <zaf/base/range.h>
 
 namespace zaf {
 
-template<typename T>
+template<typename T, typename Equal = std::equal_to<T>>
 class RangeMap {
 public:
     class Item {
@@ -252,7 +253,7 @@ private:
             //The current range is right after the new range, modify the current range to contain
             //the new range.
             if (replaced_range.EndIndex() == current_range.index) {
-                if (new_value && *new_value == iterator->Value()) {
+                if (new_value && Equal{}(*new_value, iterator->Value())) {
 
                     iterator->range_ = Range::FromIndexPair(
                         replaced_range.index, 
@@ -275,7 +276,7 @@ private:
                 replaced_range.EndIndex() < current_range.EndIndex()) {
 
                 //If the values are equal, nothing need to be done.
-                if (new_value && *new_value == iterator->Value()) {
+                if (new_value && Equal{}(*new_value, iterator->Value())) {
                     has_merged_new_value = true;
                     break;
                 }
@@ -303,7 +304,7 @@ private:
                 Range modified_range;
 
                 //If the values are equal, merge two ranges.
-                if (new_value && *new_value == iterator->Value()) {
+                if (new_value && Equal{}(*new_value, iterator->Value())) {
                     modified_range.index = replaced_range.index;
                     modified_range.length = current_range.EndIndex() - replaced_range.index;
                     has_merged_new_value = true;
@@ -327,7 +328,7 @@ private:
                 modified_range.index = current_range.index;
 
                 //If the values are equal, merge two ranges.
-                if (new_value && *new_value == iterator->Value()) {
+                if (new_value && Equal{}(*new_value, iterator->Value())) {
                     modified_range.length = replaced_range.EndIndex() - current_range.index;
                 }
                 //Otherwise narrow the current range.
@@ -343,7 +344,7 @@ private:
             //The new range is right after the current range, modify the current range to contain
             //the new range.
             if (current_range.EndIndex() == replaced_range.index) {
-                if (new_value && *new_value == iterator->Value()) {
+                if (new_value && Equal{}(*new_value, iterator->Value())) {
 
                     iterator->range_.length += replaced_range.length;
                     has_merged_new_value = true;
@@ -354,7 +355,7 @@ private:
                     while (remove_end != items_.end()) {
 
                         if (remove_end->Range().index > iterator->Range().EndIndex() ||
-                            !(remove_end->Value() == iterator->Value())) {
+                            !Equal{}(remove_end->Value(), iterator->Value())) {
                             break;
                         }
 

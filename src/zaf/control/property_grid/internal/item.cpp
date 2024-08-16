@@ -101,24 +101,19 @@ std::shared_ptr<Label> Item::CreateLabel() {
     auto result = Create<Label>();
     result->SetParagraphAlignment(ParagraphAlignment::Center);
     result->SetTextTrimming(TextTrimmingGranularity::Character);
-
-    Subscriptions() += result->StyleUpdateEvent().Subscribe(
-        [this](const StyleUpdateInfo& event_info) {
+    result->SetTextColorPicker(ColorPicker([this](const Control& control) {
     
-        auto label = As<Label>(event_info.Source());
-        label->SetTextColor([this, &label]() {
-        
-            if (label->IsSelectedInContext()) {
-                return Color::White();
-            }
+        if (control.IsSelectedInContext()) {
+            return Color::White();
+        }
 
-            if (data_->IsReadOnly()) {
-                return Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB);
-            }
+        if (data_->IsReadOnly()) {
+            return Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB);
+        }
 
-            return Color::FromRGB(zaf::internal::ControlNormalTextColorRGB);
-        }());
-    });
+        return Color::FromRGB(zaf::internal::ControlNormalTextColorRGB);
+    }));
+
     return result;
 }
 
@@ -130,30 +125,25 @@ void Item::InitializeSplitControl() {
     split_control_->SetFirstPane(name_label_);
     split_control_->SetSecondPane(value_view_);
 
-    Subscriptions() += split_control_->SplitBar()->StyleUpdateEvent().Subscribe(
-        [this](const StyleUpdateInfo& event_info) {
-    
-        auto split_bar = As<SplitBar>(event_info.Source());
-        split_bar->SetSplitterColor([this, &split_bar]() {
+    split_control_->SplitBar()->SetSplitterColorPicker(ColorPicker([](const Control& control) {
 
-            if (this->IsSelectedInContext()) {
+        if (control.IsSelectedInContext()) {
 
-                auto parent = split_bar->Parent();
-                while (parent) {
+            auto parent = control.Parent();
+            while (parent) {
 
-                    auto list_item = As<ListItem>(parent);
-                    if (list_item) {
-                        return list_item->BackgroundColor();
-                    }
-
-                    parent = parent->Parent();
+                auto list_item = As<ListItem>(parent);
+                if (list_item) {
+                    return list_item->BackgroundColor();
                 }
-            }
 
-            return Color::FromRGB(DelimiterLineColor);
-        }());
-    });
-    
+                parent = parent->Parent();
+            }
+        }
+
+        return Color::FromRGB(DelimiterLineColor);
+    }));
+
     Subscriptions() += split_control_->SplitDistanceChangedEvent().Subscribe(
         [this](const SplitDistanceChangedInfo& event_info) {
 

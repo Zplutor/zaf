@@ -42,7 +42,7 @@ void ScrollBarArrow::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    arrow_color_field_.UpdateColor();
+    arrow_color_field_.UpdateColor(*this);
 }
 
 
@@ -91,7 +91,7 @@ Color ScrollBarArrow::ArrowColor() const {
 }
 
 void ScrollBarArrow::SetArrowColor(const Color& color) {
-    arrow_color_field_.SetColor(color);
+    arrow_color_field_.SetColor(color, *this);
 }
 
 
@@ -100,7 +100,7 @@ const ColorPicker& ScrollBarArrow::ArrowColorPicker() const {
 }
 
 void ScrollBarArrow::SetArrowColorPicker(ColorPicker color_picker) {
-    arrow_color_field_.SetColorPicker(std::move(color_picker));
+    arrow_color_field_.SetColorPicker(std::move(color_picker), *this);
 }
 
 

@@ -13,6 +13,11 @@ void TextModel::SetStyledText(textual::StyledText styled_text) {
     //Replace the old styled text.
     styled_text_ = std::move(styled_text);
 
+    default_text_color_picker_ = nullptr;
+    ranged_text_color_pickers_.Clear();
+    default_text_back_color_picker_ = nullptr;
+    ranged_text_back_color_pickers_.Clear();
+
     //Get all inline objects from new styled text.
     std::vector<std::shared_ptr<textual::InlineObject>> new_inline_objects;
     for (const auto& each_item : styled_text_.InlineObjects()) {
@@ -79,10 +84,11 @@ void TextModel::SetTextColor(const Color& color) {
 
 void TextModel::SetTextColorPicker(ColorPicker picker, const Control& owner) {
 
+    auto text_color = picker(owner);
+
     default_text_color_picker_ = std::move(picker);
     ranged_text_color_pickers_.Clear();
-
-    auto text_color = default_text_color_picker_(owner);
+    
     InnerSetTextColor(text_color);
 }
 
@@ -97,13 +103,9 @@ void TextModel::InnerSetTextColor(const Color& color) {
 
 void TextModel::SetTextColorInRange(const Color& color, const Range& range) {
 
-    styled_text_.SetTextColorInRange(color, range);
     ranged_text_color_pickers_.RemoveRange(range);
-    RaiseChangedEvent(TextModelAttribute::TextColor, range, range.length);
+    InnerSetTextColorInRange(color, range);
 }
-
-
-
 
 
 void TextModel::SetTextColorPickerInRange(
@@ -111,27 +113,95 @@ void TextModel::SetTextColorPickerInRange(
     const Range& range,
     const Control& owner) {
 
+    auto text_color = picker(owner);
+    ranged_text_color_pickers_.AddRange(range, std::move(picker));
 
+    InnerSetTextColorInRange(text_color, range);
+}
+
+
+void TextModel::InnerSetTextColorInRange(const Color& color, const Range& range) {
+    styled_text_.SetTextColorInRange(color, range);
+    RaiseChangedEvent(TextModelAttribute::TextColor, range, range.length);
 }
 
 
 void TextModel::SetTextBackColor(const Color& color) {
 
-    styled_text_.SetDefaultTextBackColor(color);
-    styled_text_.ClearRangedTextBackColors();
-
     default_text_back_color_picker_ = nullptr;
     ranged_text_back_color_pickers_.Clear();
 
+    InnerSetTextBackColor(color);
+}
+
+
+void TextModel::SetTextBackColorPicker(ColorPicker picker, const Control& owner) {
+
+    auto back_color = picker(owner);
+
+    default_text_back_color_picker_ = std::move(picker);
+    ranged_text_back_color_pickers_.Clear();
+
+    InnerSetTextBackColor(back_color);
+}
+
+
+void TextModel::InnerSetTextBackColor(const Color& color) {
+
+    styled_text_.SetDefaultTextBackColor(color);
+    styled_text_.ClearRangedTextBackColors();
     RaiseChangedEvent(TextModelAttribute::TextBackColor);
 }
 
 
 void TextModel::SetTextBackColorInRange(const Color& color, const Range& range) {
 
-    styled_text_.SetTextBackColorInRange(color, range);
     ranged_text_back_color_pickers_.RemoveRange(range);
+    InnerSetTextBackColorInRange(color, range);
+}
+
+
+void TextModel::SetTextBackColorPickerInRange(
+    ColorPicker picker,
+    const Range& range,
+    const Control& owner) {
+
+    auto back_color = picker(owner);
+    ranged_text_back_color_pickers_.AddRange(range, std::move(picker));
+    InnerSetTextBackColorInRange(back_color, range);
+}
+
+
+void TextModel::InnerSetTextBackColorInRange(const Color& color, const Range& range) {
+
+    styled_text_.SetTextBackColorInRange(color, range);
     RaiseChangedEvent(TextModelAttribute::TextBackColor);
+}
+
+
+void TextModel::UpdateColors(const Control& owner) {
+
+    //Update text colors.
+    if (default_text_color_picker_) {
+        auto default_text_color = default_text_color_picker_(owner);
+        styled_text_.SetDefaultTextColor(default_text_color);
+    }
+
+    for (const auto& each_item : ranged_text_color_pickers_) {
+        auto text_color = each_item.Value()(owner);
+        styled_text_.SetTextColorInRange(text_color, each_item.Range());
+    }
+
+    //Update text back colors.
+    if (default_text_back_color_picker_) {
+        auto default_text_back_color = default_text_back_color_picker_(owner);
+        styled_text_.SetDefaultTextBackColor(default_text_back_color);
+    }
+
+    for (const auto& each_item : ranged_text_back_color_pickers_) {
+        auto text_back_color = each_item.Value()(owner);
+        styled_text_.SetTextBackColorInRange(text_back_color, each_item.Range());
+    }
 }
 
 

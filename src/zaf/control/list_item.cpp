@@ -14,29 +14,26 @@ void ListItem::Initialize() {
 
     SetParagraphAlignment(ParagraphAlignment::Center);
     SetPadding(Frame(2, 0, 2, 0));
-}
 
+    SetTextColorPicker(ColorPicker([](const Control& control) {
+        return control.IsSelectedInContext() ?
+            Color::White() :
+            Color::FromRGB(internal::ControlNormalTextColorRGB);
+    }));
 
-void ListItem::UpdateStyle() {
+    SetBackgroundColorPicker(ColorPicker([](const Control& control) {
 
-    __super::UpdateStyle();
+        const auto& list_item = As<ListItem>(control);
 
-    SetTextColor(
-        IsSelectedInContext() ?
-        Color::White() :
-        Color::FromRGB(internal::ControlNormalTextColorRGB));
-
-    SetBackgroundColor([this]() {
-
-        if (!IsSelectedInContext()) {
+        if (!list_item.IsSelectedInContext()) {
             return Color::Transparent();
         }
 
         return Color::FromRGB(
-            IsInFocusContext() ?
+            list_item.IsInFocusContext() ?
             internal::ControlSelectedActivedColorRGB :
             internal::ControlSelectedInActivedColorRGB);
-    }());
+    }));
 }
 
 

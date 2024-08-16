@@ -50,7 +50,7 @@ Color SpinButton::ArrowColor() const {
 }
 
 void SpinButton::SetArrowColor(const Color& color) {
-    arrow_color_field_.SetColor(color);
+    arrow_color_field_.SetColor(color, *this);
 }
 
 
@@ -59,14 +59,14 @@ const ColorPicker& SpinButton::ArrowColorPicker() const {
 }
 
 void SpinButton::SetArrowColorPicker(ColorPicker picker) {
-    arrow_color_field_.SetColorPicker(std::move(picker));
+    arrow_color_field_.SetColorPicker(std::move(picker), *this);
 }
 
 void SpinButton::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    arrow_color_field_.UpdateColor();
+    arrow_color_field_.UpdateColor(*this);
 }
 
 

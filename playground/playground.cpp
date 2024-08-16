@@ -70,20 +70,7 @@ protected:
 
         __super::Initialize();
 
-        auto label = zaf::CreateObjectFromXaml<zaf::Label>(LR"(
-            <Label 
-                Text="This is a label"
-                FontSize="20"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-                <Label.Styles>
-                    <Set TextColor="White" BackgroundColor="Black" />
-                </Label.Styles>
-            </Label>  
-        )");
-
         RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
-        RootControl()->AddChild(label);
         RootControl()->SetPadding(zaf::Frame{ 20 });
     }
 };

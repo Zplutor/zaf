@@ -7,6 +7,7 @@
 #include <zaf/base/range.h>
 #include <zaf/control/style/color_picker.h>
 #include <zaf/control/textual/styled_text.h>
+#include <zaf/internal/control/color_picker_equal.h>
 #include <zaf/internal/textual/inline_object_attached_info.h>
 #include <zaf/rx/subject.h>
 
@@ -128,6 +129,19 @@ public:
     void SetTextBackColor(const Color& color);
     void SetTextBackColorInRange(const Color& color, const Range& range);
 
+    void SetTextBackColorPicker(ColorPicker picker, const Control& owner);
+    void SetTextBackColorPickerInRange(ColorPicker picker, const Range& range, const Control& owner);
+
+    void UpdateColors(const Control& owner);
+
+    const ColorPicker& DefaultTextColorPicker() const {
+        return default_text_color_picker_;
+    }
+
+    const ColorPicker& DefaultTextBackColorPicker() const {
+        return default_text_back_color_picker_;
+    }
+
     void AttachInlineObjectToRange(
         std::shared_ptr<textual::InlineObject> object,
         const Range& range);
@@ -146,6 +160,10 @@ public:
 
 private:
     void InnerSetTextColor(const Color& color);
+    void InnerSetTextColorInRange(const Color& color, const Range& range);
+
+    void InnerSetTextBackColor(const Color& color);
+    void InnerSetTextBackColorInRange(const Color& color, const Range& range);
 
     void RaiseInlineObjectAttachedEvent(
         std::vector<std::shared_ptr<textual::InlineObject>> objects) {
@@ -179,10 +197,10 @@ private:
     textual::StyledText styled_text_;
 
     ColorPicker default_text_color_picker_;
-    RangeMap<ColorPicker> ranged_text_color_pickers_;
+    RangeMap<ColorPicker, internal::ColorPickerEqual> ranged_text_color_pickers_;
 
     ColorPicker default_text_back_color_picker_;
-    RangeMap<ColorPicker> ranged_text_back_color_pickers_;
+    RangeMap<ColorPicker, internal::ColorPickerEqual> ranged_text_back_color_pickers_;
 
     Subject<InlineObjectAttachedInfo> inline_object_attached_event_;
     Subject<TextModelChangedInfo> changed_event_;

@@ -59,8 +59,8 @@ void CheckBox::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    box_back_color_field_.UpdateColor();
-    box_border_color_field_.UpdateColor();
+    box_back_color_field_.UpdateColor(*this);
+    box_border_color_field_.UpdateColor(*this);
 }
 
 
@@ -138,7 +138,7 @@ Color CheckBox::BoxBorderColor() const {
 
 
 void CheckBox::SetBoxBorderColor(const Color& color) {
-    box_border_color_field_.SetColor(color);
+    box_border_color_field_.SetColor(color, *this);
 }
 
 
@@ -147,7 +147,7 @@ const ColorPicker& CheckBox::BoxBorderColorPicker() const {
 }
 
 void CheckBox::SetBoxBorderColorPicker(ColorPicker picker) {
-    box_border_color_field_.SetColorPicker(std::move(picker));
+    box_border_color_field_.SetColorPicker(std::move(picker), *this);
 }
 
 
@@ -156,7 +156,7 @@ Color CheckBox::BoxBackColor() const {
 }
 
 void CheckBox::SetBoxBackColor(const Color& color) {
-    box_back_color_field_.SetColor(color);
+    box_back_color_field_.SetColor(color, *this);
 }
 
 
@@ -165,7 +165,7 @@ const ColorPicker& CheckBox::BoxBackColorPicker() const {
 }
 
 void CheckBox::SetBoxBackColorPicker(ColorPicker picker) {
-    box_back_color_field_.SetColorPicker(std::move(picker));
+    box_back_color_field_.SetColorPicker(std::move(picker), *this);
 }
 
 

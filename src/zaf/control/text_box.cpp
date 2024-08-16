@@ -38,6 +38,18 @@ void TextBox::Initialize() {
     module_context_ = std::make_unique<internal::TextBoxModuleContext>(this);
     module_context_->Initialize();
 
+    SetSelectionBackColorPicker(ColorPicker([](const Control& control) {
+
+        if (control.ContainsFocus()) {
+            //Use the same color as rich edit.
+            auto color = zaf::Color::FromCOLORREF(GetSysColor(COLOR_HIGHLIGHT));
+            color.a = 100.f / 255.f;
+            return color;
+        }
+
+        return Color::FromRGB(0xE4E4E4);
+    }));
+
     Subscriptions() += module_context_->SelectionManager().SelectionChangedEvent().Subscribe(
         std::bind(&TextBox::OnSelectionChanged, this, std::placeholders::_1));
 
@@ -114,13 +126,21 @@ zaf::Rect TextBox::DetermineTextRect() {
 }
 
 
-Color TextBox::SelectionBackgroundColor() const {
-    return selection_background_color_;
+Color TextBox::SelectionBackColor() const {
+    return selection_back_color_field_.Color();
 }
 
-void TextBox::SetSelectionBackgroundColor(const Color& color) {
-    selection_background_color_ = color;
-    NeedRepaint();
+void TextBox::SetSelectionBackColor(const Color& color) {
+    selection_back_color_field_.SetColor(color, *this);
+}
+
+
+const ColorPicker& TextBox::SelectionBackColorPicker() const {
+    return selection_back_color_field_.ColorPicker();
+}
+
+void TextBox::SetSelectionBackColorPicker(ColorPicker picker) {
+    selection_back_color_field_.SetColorPicker(std::move(picker), *this);
 }
 
 
@@ -128,17 +148,7 @@ void TextBox::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    SetSelectionBackgroundColor([this]() {
-
-        if (this->ContainsFocus()) {
-            //Use the same color as rich edit.
-            auto color = zaf::Color::FromCOLORREF(GetSysColor(COLOR_HIGHLIGHT));
-            color.a = 100.f / 255.f;
-            return color;
-        }
-
-        return Color::FromRGB(0xE4E4E4);
-    }());
+    selection_back_color_field_.UpdateColor(*this);
 }
 
 
@@ -180,7 +190,7 @@ void TextBox::PaintSelection(
 
     auto region_guard = canvas.PushRegion(layout_rect, layout_rect);
 
-    auto background_color = SelectionBackgroundColor();
+    auto background_color = SelectionBackColor();
     auto brush = canvas.Renderer().CreateSolidColorBrush(background_color);
     std::wstring_view text = TextModel().GetText();
 

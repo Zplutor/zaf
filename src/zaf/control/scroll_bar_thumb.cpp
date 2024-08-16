@@ -58,7 +58,7 @@ void ScrollBarThumb::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    thumb_color_field_.UpdateColor();
+    thumb_color_field_.UpdateColor(*this);
 }
 
 
@@ -83,7 +83,7 @@ Color ScrollBarThumb::ThumbColor() const {
 
 
 void ScrollBarThumb::SetThumbColor(const Color& color) {
-    thumb_color_field_.SetColor(color);
+    thumb_color_field_.SetColor(color, *this);
 }
 
 
@@ -92,7 +92,7 @@ const ColorPicker& ScrollBarThumb::ThumbColorPicker() const {
 }
 
 void ScrollBarThumb::SetThumbColorPicker(ColorPicker color_picker) {
-    thumb_color_field_.SetColorPicker(std::move(color_picker));
+    thumb_color_field_.SetColorPicker(std::move(color_picker), *this);
 }
 
 

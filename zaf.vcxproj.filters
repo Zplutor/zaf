@@ -2935,5 +2935,8 @@
     <ClInclude Include="src\zaf\internal\control\color_field.h">
       <Filter>zaf\internal\control</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\internal\control\color_picker_equal.h">
+      <Filter>zaf\internal\control</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

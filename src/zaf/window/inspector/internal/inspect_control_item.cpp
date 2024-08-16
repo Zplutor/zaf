@@ -12,14 +12,14 @@ void InspectControlItem::Initialize() {
 
     __super::Initialize();
 
-    SetTextColor([this]() {
+    SetTextColorPicker(ColorPicker([this](const Control& control) {
 
         if (IsSelectedInContext()) {
             return Color::White();
         }
 
         return control_->IsVisibleInContext() ? Color::Black() : Color::Gray();
-    }());
+    }));
 }
 
 }

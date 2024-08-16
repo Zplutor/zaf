@@ -53,8 +53,8 @@ void RadioButton::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    radio_back_color_field_.UpdateColor();
-    radio_border_color_field_.UpdateColor();
+    radio_back_color_field_.UpdateColor(*this);
+    radio_border_color_field_.UpdateColor(*this);
 }
 
 
@@ -109,7 +109,7 @@ Color RadioButton::RadioBorderColor() const {
 
 
 void RadioButton::SetRadioBorderColor(const Color& color) {
-    radio_border_color_field_.SetColor(color);
+    radio_border_color_field_.SetColor(color, *this);
 }
 
 
@@ -118,7 +118,7 @@ const ColorPicker& RadioButton::RadioBorderColorPicker() const {
 }
 
 void RadioButton::SetRadioBorderColorPicker(ColorPicker picker) {
-    radio_border_color_field_.SetColorPicker(std::move(picker));
+    radio_border_color_field_.SetColorPicker(std::move(picker), *this);
 }
 
 
@@ -127,7 +127,7 @@ Color RadioButton::RadioBackColor() const {
 }
 
 void RadioButton::SetRadioBackColor(const Color& color) {
-    radio_back_color_field_.SetColor(color);
+    radio_back_color_field_.SetColor(color, *this);
 }
 
 
@@ -136,7 +136,7 @@ const ColorPicker& RadioButton::RadioBackColorPicker() const {
 }
 
 void RadioButton::SetRadioBackColorPicker(ColorPicker picker) {
-    radio_back_color_field_.SetColorPicker(std::move(picker));
+    radio_back_color_field_.SetColorPicker(std::move(picker), *this);
 }
 
 

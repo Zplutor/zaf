@@ -425,7 +425,7 @@ private:
     zaf::ParagraphAlignment paragraph_alignment_{ zaf::ParagraphAlignment::Near };
     DWORD scroll_bar_property_;
     mutable std::optional<float> cached_text_height_;
-    internal::ColorField text_color_field_{ this };
+    internal::ColorField text_color_field_;
 
     Subscription ime_message_subscription_;
 

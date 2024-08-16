@@ -215,7 +215,7 @@ void RichEdit::UpdateStyle() {
 
     __super::UpdateStyle();
 
-    text_color_field_.UpdateColor();
+    text_color_field_.UpdateColor(*this);
     ReviseTextColor();
 }
 
@@ -660,7 +660,7 @@ Color RichEdit::TextColor() const {
 
 
 void RichEdit::SetTextColor(const Color& color) {
-    text_color_field_.SetColor(color);
+    text_color_field_.SetColor(color, *this);
     ReviseTextColor();
 }
 
@@ -670,7 +670,7 @@ const ColorPicker& RichEdit::TextColorPicker() const {
 }
 
 void RichEdit::SetTextColorPicker(ColorPicker picker) {
-    text_color_field_.SetColorPicker(std::move(picker));
+    text_color_field_.SetColorPicker(std::move(picker), *this);
     ReviseTextColor();
 }
 
