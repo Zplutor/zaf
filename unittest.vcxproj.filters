@@ -583,6 +583,7 @@
     <ClCompile Include="unittest\case\control\style\if_test.cpp">
       <Filter>case\control\style</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\precompiled.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
@@ -597,6 +598,7 @@
     <ClInclude Include="unittest\utility\test_window.h">
       <Filter>utility</Filter>
     </ClInclude>
+    <ClInclude Include="unittest\precompiled.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="unittest\res.rc" />
