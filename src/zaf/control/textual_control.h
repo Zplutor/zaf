@@ -81,6 +81,9 @@ public:
 
     void SetStyledText(textual::StyledText styled_text);
 
+    bool IsMultiline() const noexcept;
+    void SetIsMultiline(bool is_multiline);
+
     /**
     Gets the default text color of the textual control in current state.
     */
@@ -405,6 +408,7 @@ private:
 
 ZAF_OBJECT_BEGIN(TextualControl);
 ZAF_OBJECT_PROPERTY(IgnoreTailingWhiteSpaces)
+ZAF_OBJECT_PROPERTY(IsMultiline)
 ZAF_OBJECT_PROPERTY(Text)
 ZAF_OBJECT_PROPERTY(TextLength)
 ZAF_OBJECT_PROPERTY(TextColor)

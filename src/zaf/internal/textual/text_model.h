@@ -104,6 +104,9 @@ public:
     TextModel();
     ~TextModel() = default;
 
+    bool IsMultiline() const noexcept;
+    void SetIsMultiline(bool is_multiline);
+
     const textual::StyledText& StyledText() const {
         return styled_text_;
     }
@@ -194,6 +197,7 @@ private:
     }
 
 private:
+    bool is_multiline_{ true };
     textual::StyledText styled_text_;
 
     ColorPicker default_text_color_picker_;

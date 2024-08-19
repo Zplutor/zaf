@@ -8,6 +8,29 @@ TextModel::TextModel() {
 }
 
 
+bool TextModel::IsMultiline() const noexcept {
+    return is_multiline_;
+}
+
+void TextModel::SetIsMultiline(bool is_multiline) {
+
+    if (is_multiline_ == is_multiline) {
+        return;
+    }
+
+    is_multiline_ = is_multiline;
+
+    //Remove line breaks if the text is multiline.
+    const auto& text = this->GetText();
+    auto line_break_index = text.find_first_of(L"\r\n");
+    if (line_break_index == std::wstring::npos) {
+        return;
+    }
+
+    this->SetTextInRange({}, { line_break_index, text.length() - line_break_index });
+}
+
+
 void TextModel::SetStyledText(textual::StyledText styled_text) {
 
     //Replace the old styled text.

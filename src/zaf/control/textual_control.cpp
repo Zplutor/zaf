@@ -223,6 +223,15 @@ void TextualControl::SetStyledText(textual::StyledText styled_text) {
 }
 
 
+bool TextualControl::IsMultiline() const noexcept {
+    return text_model_->IsMultiline();
+}
+
+void TextualControl::SetIsMultiline(bool is_multiline) {
+    text_model_->SetIsMultiline(is_multiline);
+}
+
+
 Color TextualControl::TextColor() const {
     return text_model_->StyledText().DefaultTextColor();
 }
