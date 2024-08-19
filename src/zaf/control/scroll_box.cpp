@@ -41,6 +41,8 @@ ScrollBox::~ScrollBox() {
 
 void ScrollBox::Initialize() {
 
+    __super::Initialize();
+
     SetBorder(Frame(1));
 
     SetBorderColor(Color::Black());
