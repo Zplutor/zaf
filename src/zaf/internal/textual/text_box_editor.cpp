@@ -101,7 +101,7 @@ void TextBoxEditor::SetAllowUndo(bool allow_undo) {
 }
 
 
-bool TextBoxEditor::CanUndo() const {
+bool TextBoxEditor::CanUndo() const noexcept {
     return next_command_index_ > 0;
 }
 
@@ -112,7 +112,7 @@ bool TextBoxEditor::Undo() {
 }
 
 
-bool TextBoxEditor::CanRedo() const {
+bool TextBoxEditor::CanRedo() const noexcept {
     return next_command_index_ < edit_commands_.size();
 }
 

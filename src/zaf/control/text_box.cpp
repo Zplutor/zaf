@@ -126,7 +126,7 @@ zaf::Rect TextBox::DetermineTextRect() {
 }
 
 
-Color TextBox::SelectionBackColor() const {
+Color TextBox::SelectionBackColor() const noexcept {
     return selection_back_color_field_.Color();
 }
 
@@ -135,7 +135,7 @@ void TextBox::SetSelectionBackColor(const Color& color) {
 }
 
 
-const ColorPicker& TextBox::SelectionBackColorPicker() const {
+const ColorPicker& TextBox::SelectionBackColorPicker() const noexcept {
     return selection_back_color_field_.ColorPicker();
 }
 
@@ -209,7 +209,7 @@ void TextBox::PaintSelection(
 }
 
 
-bool TextBox::IsEditable() const {
+bool TextBox::IsEditable() const noexcept {
     return module_context_->Editor().CanEdit();
 }
 
@@ -219,7 +219,7 @@ void TextBox::SetIsEditable(bool is_editable) {
 }
 
 
-bool TextBox::IsCaretEnabledWhenNotEditable() const {
+bool TextBox::IsCaretEnabledWhenNotEditable() const noexcept {
     return module_context_->CaretManager().IsCaretEnabledWhenNotEditable();
 }
 
@@ -229,7 +229,7 @@ void TextBox::SetIsCaretEnabledWhenNotEditable(bool value) {
 }
 
 
-bool TextBox::AllowUndo() const {
+bool TextBox::AllowUndo() const noexcept {
     return module_context_->Editor().AllowUndo();
 }
 
@@ -239,7 +239,7 @@ void TextBox::SetAllowUndo(bool allow_undo) {
 }
 
 
-bool TextBox::CanUndo() const {
+bool TextBox::CanUndo() const noexcept {
     return module_context_->Editor().CanUndo();
 }
 
@@ -249,7 +249,7 @@ bool TextBox::Undo() {
 }
 
 
-bool TextBox::CanRedo() const {
+bool TextBox::CanRedo() const noexcept {
     return module_context_->Editor().CanRedo();
 }
 

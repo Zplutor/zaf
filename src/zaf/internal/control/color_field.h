@@ -8,13 +8,13 @@ namespace zaf::internal {
 
 class ColorField : NonCopyableNonMovable {
 public:
-    const zaf::Color& Color() const {
+    const zaf::Color& Color() const noexcept {
         return color_;
     }
 
     void SetColor(const zaf::Color& color, Control& owner);
 
-    const zaf::ColorPicker& ColorPicker() const {
+    const zaf::ColorPicker& ColorPicker() const noexcept {
         return color_picker_;
     }
 

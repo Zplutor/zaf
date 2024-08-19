@@ -13,7 +13,7 @@ public:
 
     void Initialize() override;
 
-    bool IsCaretEnabledWhenNotEditable() const {
+    bool IsCaretEnabledWhenNotEditable() const noexcept {
         return is_caret_enabled_when_not_editable_;
     }
 

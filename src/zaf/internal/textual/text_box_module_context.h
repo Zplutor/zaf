@@ -47,7 +47,7 @@ public:
         return *selection_manager_;
     }
 
-    TextBoxCaretManager& CaretManager() const {
+    TextBoxCaretManager& CaretManager() const noexcept {
         return *caret_manager_;
     }
     
@@ -59,7 +59,7 @@ public:
         return *keyboard_input_handler_;
     }
 
-    TextBoxEditor& Editor() const {
+    TextBoxEditor& Editor() const noexcept {
         return *editor_;
     }
 

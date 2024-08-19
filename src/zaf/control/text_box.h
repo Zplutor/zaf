@@ -28,11 +28,11 @@ public:
     /**
     Indicates whether the text box is editable.
 
-    @remark
+    @details
         A text box is not editable by default. A non-editable text box doesn't respond to user 
         input that would modify the text.
     */
-    bool IsEditable() const;
+    bool IsEditable() const noexcept;
 
     /**
     Sets whether the text box is editable.
@@ -42,10 +42,10 @@ public:
     /**
     Indicates whether the caret is enabled when the text box is not editable.
 
-    @remark
+    @details
         The caret is disabled for a non-editable text box by default.
     */
-    bool IsCaretEnabledWhenNotEditable() const;
+    bool IsCaretEnabledWhenNotEditable() const noexcept;
 
     /**
     Sets whether the caret is enabled when the text box is not editable.
@@ -55,10 +55,10 @@ public:
     /**
     Indicates whether the text box allows undo operations.
 
-    @remark
+    @details
         A text box allows undo operations by default.
     */
-    bool AllowUndo() const;
+    bool AllowUndo() const noexcept;
 
     /**
     Sets whether the text box allows undo operations.
@@ -68,7 +68,7 @@ public:
     /**
     Determines whether there are undoable text modification operations in the text box's history.
     */
-    bool CanUndo() const;
+    bool CanUndo() const noexcept;
 
     /**
     Undoes the most recent text modification operation in the text box's history.
@@ -82,7 +82,7 @@ public:
     /**
     Determines whether there are redoable text modification operations in the text box's history.
     */
-    bool CanRedo() const;
+    bool CanRedo() const noexcept;
     
     /**
     Redoes the most recently undone text modification operation in the text box's history.
@@ -116,10 +116,10 @@ public:
         const Range& range,
         textual::SelectionOption selection_option = textual::SelectionOption::Default);
 
-    Color SelectionBackColor() const;
+    Color SelectionBackColor() const noexcept;
     void SetSelectionBackColor(const Color& color);
     
-    const ColorPicker& SelectionBackColorPicker() const;
+    const ColorPicker& SelectionBackColorPicker() const noexcept;
     void SetSelectionBackColorPicker(ColorPicker picker);
 
     std::wstring SelectedText() const;
@@ -136,7 +136,7 @@ public:
     @throw zaf::Error
         Thrown if the operation fails.
 
-    @remark
+    @details
         This method uses WordExtractor() to determine the word range.
     */
     void SelectWordAtIndex(
@@ -157,7 +157,7 @@ public:
     @param extractor
         The extractor to be set. If it is nullptr, the default extractor will be used.
 
-    @remark
+    @details
         The word extractor is used when the user double clicks on the text box, or when
         SelectWordAtIndex() is called. You can set a custom word extractor function to replace the 
         default behavior of determining the completed word to select. If you want to disable the
@@ -288,8 +288,12 @@ private:
 
 ZAF_OBJECT_BEGIN(TextBox);
 ZAF_OBJECT_PROPERTY(AllowUndo);
+ZAF_OBJECT_PROPERTY(CanRedo);
+ZAF_OBJECT_PROPERTY(CanUndo);
 ZAF_OBJECT_PROPERTY(IsCaretEnabledWhenNotEditable);
 ZAF_OBJECT_PROPERTY(IsEditable);
+ZAF_OBJECT_PROPERTY(SelectionBackColor);
+ZAF_OBJECT_PROPERTY(SelectionBackColorPicker);
 ZAF_OBJECT_PROPERTY(SelectedText);
 ZAF_OBJECT_PROPERTY(SelectionRange);
 ZAF_OBJECT_END;

@@ -17,7 +17,7 @@ public:
 
     void Initialize() override;
 
-    bool CanEdit() const {
+    bool CanEdit() const noexcept {
         return can_edit_;
     }
 
@@ -27,16 +27,16 @@ public:
         return can_edit_changed_event_.GetObservable();
     }
 
-    bool AllowUndo() const {
+    bool AllowUndo() const noexcept {
         return allow_undo_;
     }
 
     void SetAllowUndo(bool allow_undo);
 
-    bool CanUndo() const;
+    bool CanUndo() const noexcept;
     bool Undo();
 
-    bool CanRedo() const;
+    bool CanRedo() const noexcept;
     bool Redo();
 
     void HandleKeyDown(const KeyDownInfo& event_info);
