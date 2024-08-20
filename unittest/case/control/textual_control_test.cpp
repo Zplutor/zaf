@@ -3,6 +3,148 @@
 #include <zaf/creation.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/control/textual/inline_object.h>
+#include <zaf/control/textual/styled_text.h>
+
+TEST(TextualControlTest, IsMultiline) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+
+    //The default is multiline.
+    ASSERT_TRUE(control->IsMultiline());
+}
+
+
+/**
+In this test case, we set IsMultiline to true, the text won't be modified.
+*/
+TEST(TextualControlTest, SetIsMultilineToTrue) {
+
+    auto control = zaf::Create<zaf::TextualControl>();
+    control->SetIsMultiline(false);
+    control->SetText(L"single line text");
+    control->SetIsMultiline(true);
+    ASSERT_EQ(control->Text(), L"single line text");
+}
+
+
+/*
+In this test case, we set IsMultiline to false to check if the lines will be removed.
+*/
+TEST(TextualControlTest, SetIsMultilineToFalse) {
+
+    auto test = [](const std::wstring& original_text, const std::wstring& expected_text) {
+        auto control = zaf::Create<zaf::TextualControl>();
+        control->SetText(original_text);
+        control->SetIsMultiline(false);
+        return control->Text() == expected_text;
+    };
+
+    ASSERT_TRUE(test(L"", L""));
+    ASSERT_TRUE(test(L"single line", L"single line"));
+    ASSERT_TRUE(test(L"\r\n", L""));
+    ASSERT_TRUE(test(L"\r\nline2", L""));
+    ASSERT_TRUE(test(L"line1\r\nline2", L"line1"));
+    ASSERT_TRUE(test(L"line1\r\nline2\r\nline3", L"line1"));
+    ASSERT_TRUE(test(L"\r", L""));
+    ASSERT_TRUE(test(L"\rline2", L""));
+    ASSERT_TRUE(test(L"line1\rline2", L"line1"));
+    ASSERT_TRUE(test(L"line1\rline2\rline3", L"line1"));
+    ASSERT_TRUE(test(L"\n", L""));
+    ASSERT_TRUE(test(L"\nline2", L""));
+    ASSERT_TRUE(test(L"line1\nline2", L"line1"));
+    ASSERT_TRUE(test(L"line1\nline2\nline3", L"line1"));
+}
+
+
+/**
+In this test case, we set a multi-line text to a single line textual control, the text will be 
+modified to a single line text.
+*/
+TEST(TextualControlTest, SetMultilineTextToSingleLineControl) {
+
+    auto test = [](const std::wstring& original_text, const std::wstring& expected_text) {
+        auto control = zaf::Create<zaf::TextualControl>();
+        control->SetIsMultiline(false);
+        control->SetText(original_text);
+        return control->Text() == expected_text;
+    };
+
+    ASSERT_TRUE(test(L"", L""));
+    ASSERT_TRUE(test(L"single line", L"single line"));
+    ASSERT_TRUE(test(L"\r\n", L""));
+    ASSERT_TRUE(test(L"\r\nline2", L""));
+    ASSERT_TRUE(test(L"line1\r\nline2", L"line1"));
+    ASSERT_TRUE(test(L"line1\r\nline2\r\nline3", L"line1"));
+    ASSERT_TRUE(test(L"\r", L""));
+    ASSERT_TRUE(test(L"\rline2", L""));
+    ASSERT_TRUE(test(L"line1\rline2", L"line1"));
+    ASSERT_TRUE(test(L"line1\rline2\rline3", L"line1"));
+    ASSERT_TRUE(test(L"\n", L""));
+    ASSERT_TRUE(test(L"\nline2", L""));
+    ASSERT_TRUE(test(L"line1\nline2", L"line1"));
+    ASSERT_TRUE(test(L"line1\nline2\nline3", L"line1"));
+}
+
+
+TEST(TextualControlTest, SetMultilineStyledTextToSingleLineControl) {
+
+    auto test = [](const std::wstring& original_text, const std::wstring& expected_text) {
+        auto control = zaf::Create<zaf::TextualControl>();
+        control->SetIsMultiline(false);
+        zaf::textual::StyledText styled_text{ original_text };
+        control->SetStyledText(std::move(styled_text));
+        return control->Text() == expected_text;
+    };
+
+    ASSERT_TRUE(test(L"", L""));
+    ASSERT_TRUE(test(L"single line", L"single line"));
+    ASSERT_TRUE(test(L"\r\n", L""));
+    ASSERT_TRUE(test(L"\r\nline2", L""));
+    ASSERT_TRUE(test(L"line1\r\nline2", L"line1"));
+    ASSERT_TRUE(test(L"line1\r\nline2\r\nline3", L"line1"));
+    ASSERT_TRUE(test(L"\r", L""));
+    ASSERT_TRUE(test(L"\rline2", L""));
+    ASSERT_TRUE(test(L"line1\rline2", L"line1"));
+    ASSERT_TRUE(test(L"line1\rline2\rline3", L"line1"));
+    ASSERT_TRUE(test(L"\n", L""));
+    ASSERT_TRUE(test(L"\nline2", L""));
+    ASSERT_TRUE(test(L"line1\nline2", L"line1"));
+    ASSERT_TRUE(test(L"line1\nline2\nline3", L"line1"));
+}
+
+
+TEST(TextualControlTest, SetMultilineTextInRangeToSingleLineControl) {
+
+    auto test = [](
+        const std::wstring& original_text,
+        const zaf::Range& range,
+        const std::wstring& new_text,
+        const std::wstring& expected_text) {
+
+        auto control = zaf::Create<zaf::TextualControl>();
+        control->SetIsMultiline(false);
+        control->SetText(original_text);
+        control->SetTextInRange(new_text, range);
+        return control->Text() == expected_text;
+    };
+
+    ASSERT_TRUE(test(L"", { 0, 0 }, L"00\r\n111", L"00"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"", L"00000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"11", L"0011000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\r\n", L"00"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\r\nBB", L"00"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\r\n", L"00AA"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\r\nBB", L"00AA"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\r", L"00"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\rBB", L"00"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\r", L"00AA"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\rBB", L"00AA"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\n", L"00"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\nBB", L"00"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\n", L"00AA"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\nBB", L"00AA"));
+}
+
 
 TEST(TextualControlTest, SetText) {
 

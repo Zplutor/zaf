@@ -118,7 +118,7 @@ public:
     }
 
     void SetText(std::wstring text);
-    void SetTextInRange(std::wstring_view text, const Range& range);
+    void SetTextInRange(std::wstring_view text, Range range);
 
     void SetFont(Font font);
     void SetFontInRange(Font font, const Range& range);
@@ -168,33 +168,22 @@ private:
     void InnerSetTextBackColor(const Color& color);
     void InnerSetTextBackColorInRange(const Color& color, const Range& range);
 
+    bool TryToReplaceSingleStyledTextSlice(
+        const Range& replaced_range,
+        const textual::StyledText& slice);
+    void InnerReplaceStyledTextSlice(
+        const Range& replaced_range,
+        const textual::StyledText& slice);
+
     void RaiseInlineObjectAttachedEvent(
-        std::vector<std::shared_ptr<textual::InlineObject>> objects) {
+        std::vector<std::shared_ptr<textual::InlineObject>> objects);
 
-        if (objects.empty()) {
-            return;
-        }
-
-        inline_object_attached_event_.AsObserver().OnNext(InlineObjectAttachedInfo{
-            std::move(objects),
-        });
-    }
-
-    void RaiseChangedEvent(TextModelAttribute attributes) {
-        changed_event_.AsObserver().OnNext(TextModelChangedInfo{ attributes });
-    }
+    void RaiseChangedEvent(TextModelAttribute attributes);
 
     void RaiseChangedEvent(
         TextModelAttribute attributes,
         const Range& changed_range,
-        std::size_t new_length) {
-
-        changed_event_.AsObserver().OnNext(TextModelChangedInfo{ 
-            attributes,
-            changed_range,
-            new_length
-        });
-    }
+        std::size_t new_length);
 
 private:
     bool is_multiline_{ true };

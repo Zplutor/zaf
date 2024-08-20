@@ -20,18 +20,33 @@ void TextModel::SetIsMultiline(bool is_multiline) {
 
     is_multiline_ = is_multiline;
 
-    //Remove line breaks if the text is multiline.
-    const auto& text = this->GetText();
-    auto line_break_index = text.find_first_of(L"\r\n");
-    if (line_break_index == std::wstring::npos) {
-        return;
-    }
+    //Remove lines if multiline is set to false.
+    if (!is_multiline_) {
 
-    this->SetTextInRange({}, { line_break_index, text.length() - line_break_index });
+        const auto& text = this->GetText();
+        auto line_break_index = text.find_first_of(L"\r\n");
+        if (line_break_index == std::wstring::npos) {
+            return;
+        }
+
+        this->SetTextInRange({}, { line_break_index, text.length() - line_break_index });
+    }
 }
 
 
 void TextModel::SetStyledText(textual::StyledText styled_text) {
+
+    //Remove lines if multiline is not supported.
+    if (!is_multiline_) {
+
+        const auto& original_text = styled_text.Text();
+        auto line_break_index = original_text.find_first_of(L"\r\n");
+        if (line_break_index != std::wstring::npos) {
+            styled_text.SetTextInRange(
+                {}, 
+                { line_break_index, original_text.length() - line_break_index });
+        }
+    }
 
     //Replace the old styled text.
     styled_text_ = std::move(styled_text);
@@ -55,6 +70,14 @@ void TextModel::SetStyledText(textual::StyledText styled_text) {
 
 void TextModel::SetText(std::wstring text) {
 
+    //Remove lines if multiline is not supported.
+    if (!is_multiline_) {
+        auto line_break_index = text.find_first_of(L"\r\n");
+        if (line_break_index != std::wstring::npos) {
+            text.erase(line_break_index);
+        }
+    }
+
     auto old_length = styled_text_.Text().length();
     auto new_length = text.length();
 
@@ -66,11 +89,24 @@ void TextModel::SetText(std::wstring text) {
 }
 
 
-void TextModel::SetTextInRange(std::wstring_view text, const Range& range) {
+void TextModel::SetTextInRange(std::wstring_view text, Range range) {
 
     ZAF_EXPECT(
         (range.index <= styled_text_.Text().length()) &&
         (range.EndIndex() <= styled_text_.Text().length()));
+
+    //Remove lines if multiline is not supported.
+    if (!is_multiline_) {
+
+        auto line_break_index = text.find_first_of(L"\r\n");
+        if (line_break_index != std::wstring_view::npos) {
+
+            text = text.substr(0, line_break_index);
+
+            //All trailing text needs to be removed if there is line break in the new text.
+            range.length = styled_text_.Text().length() - range.index;
+        }
+    }
 
     styled_text_.SetTextInRange(text, range);
     ranged_text_color_pickers_.ReplaceSpan(range, text.length());
@@ -244,6 +280,44 @@ void TextModel::AttachInlineObjectToRange(
 
 
 void TextModel::ReplaceStyledTextSlice(
+    const Range& replaced_range,
+    const textual::StyledText& slice) {
+
+    if (TryToReplaceSingleStyledTextSlice(replaced_range, slice)) {
+        return;
+    }
+
+    InnerReplaceStyledTextSlice(replaced_range, slice);
+}
+
+
+bool TextModel::TryToReplaceSingleStyledTextSlice(
+    const Range& replaced_range, 
+    const textual::StyledText& slice) {
+
+    if (is_multiline_) {
+        return false;
+    }
+
+    const auto& slice_text = slice.Text();
+    auto line_break_index = slice_text.find_first_of(L"\r\n");
+    if (line_break_index == slice_text.npos) {
+        return false;
+    }
+
+    Range revised_range{
+        replaced_range.index,
+        styled_text_.Text().length() - replaced_range.index
+    };
+
+    auto single_line_slice = slice.GetSubText({ 0, line_break_index });
+
+    InnerReplaceStyledTextSlice(revised_range, single_line_slice);
+    return true;
+}
+
+
+void TextModel::InnerReplaceStyledTextSlice(
     const Range& replaced_range, 
     const textual::StyledText& slice) {
 
@@ -261,6 +335,37 @@ void TextModel::ReplaceStyledTextSlice(
 
     RaiseInlineObjectAttachedEvent(std::move(new_inline_objects));
     RaiseChangedEvent(TextModelAttribute::All);
+}
+
+
+void TextModel::RaiseInlineObjectAttachedEvent(
+    std::vector<std::shared_ptr<textual::InlineObject>> objects) {
+
+    if (objects.empty()) {
+        return;
+    }
+
+    inline_object_attached_event_.AsObserver().OnNext(InlineObjectAttachedInfo{
+        std::move(objects),
+    });
+}
+
+
+void TextModel::RaiseChangedEvent(TextModelAttribute attributes) {
+    changed_event_.AsObserver().OnNext(TextModelChangedInfo{ attributes });
+}
+
+
+void TextModel::RaiseChangedEvent(
+    TextModelAttribute attributes,
+    const Range& changed_range,
+    std::size_t new_length) {
+
+    changed_event_.AsObserver().OnNext(TextModelChangedInfo{
+        attributes,
+        changed_range,
+        new_length
+    });
 }
 
 }
