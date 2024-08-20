@@ -23,19 +23,32 @@ void TextBoxEditCommand::Undo(const TextBoxModuleContext& context) {
 
 void TextBoxEditCommand::Execute(const TextBoxModuleContext& context, const EditInfo& edit_info) {
 
-    context.TextModel().ReplaceStyledTextSlice(
+    auto new_range = context.TextModel().ReplaceStyledTextSlice(
         edit_info.replaced_range,
         edit_info.styled_text_slice);
 
+    Range selection_range;
+    if (edit_info.select_slice) {
+        selection_range = new_range;
+    }
+    else {
+        if (edit_info.set_caret_to_begin) {
+            selection_range.index = new_range.index;
+        }
+        else {
+            selection_range.index = new_range.EndIndex();
+        }
+    }
+
     auto selection_option =
-        edit_info.is_caret_at_begin ?
+        edit_info.set_caret_to_begin ?
         textual::SelectionOption::SetCaretToBegin :
         textual::SelectionOption::SetCaretToEnd;
 
     selection_option |= textual::SelectionOption::ScrollToCaret;
 
     context.SelectionManager().SetSelectionRange(
-        edit_info.new_selection_range,
+        selection_range,
         selection_option, 
         std::nullopt,
         true);

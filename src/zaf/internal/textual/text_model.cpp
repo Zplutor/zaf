@@ -100,11 +100,7 @@ void TextModel::SetTextInRange(std::wstring_view text, Range range) {
 
         auto line_break_index = text.find_first_of(L"\r\n");
         if (line_break_index != std::wstring_view::npos) {
-
             text = text.substr(0, line_break_index);
-
-            //All trailing text needs to be removed if there is line break in the new text.
-            range.length = styled_text_.Text().length() - range.index;
         }
     }
 
@@ -279,41 +275,38 @@ void TextModel::AttachInlineObjectToRange(
 }
 
 
-void TextModel::ReplaceStyledTextSlice(
+Range TextModel::ReplaceStyledTextSlice(
     const Range& replaced_range,
     const textual::StyledText& slice) {
 
-    if (TryToReplaceSingleStyledTextSlice(replaced_range, slice)) {
-        return;
+    auto single_line_range = TryReplaceStyledTextSliceAsSingleLine(replaced_range, slice);
+    if (single_line_range) {
+        return *single_line_range;
     }
 
     InnerReplaceStyledTextSlice(replaced_range, slice);
+    return Range{ replaced_range.index, slice.Length() };
 }
 
 
-bool TextModel::TryToReplaceSingleStyledTextSlice(
+std::optional<Range> TextModel::TryReplaceStyledTextSliceAsSingleLine(
     const Range& replaced_range, 
     const textual::StyledText& slice) {
 
     if (is_multiline_) {
-        return false;
+        return std::nullopt;
     }
 
     const auto& slice_text = slice.Text();
     auto line_break_index = slice_text.find_first_of(L"\r\n");
     if (line_break_index == slice_text.npos) {
-        return false;
+        return std::nullopt;
     }
-
-    Range revised_range{
-        replaced_range.index,
-        styled_text_.Text().length() - replaced_range.index
-    };
 
     auto single_line_slice = slice.GetSubText({ 0, line_break_index });
 
-    InnerReplaceStyledTextSlice(revised_range, single_line_slice);
-    return true;
+    InnerReplaceStyledTextSlice(replaced_range, single_line_slice);
+    return Range{ replaced_range.index, single_line_slice.Length() };
 }
 
 

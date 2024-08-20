@@ -149,7 +149,7 @@ public:
         std::shared_ptr<textual::InlineObject> object,
         const Range& range);
 
-    void ReplaceStyledTextSlice(
+    Range ReplaceStyledTextSlice(
         const Range& replaced_range,
         const textual::StyledText& slice);
 
@@ -168,9 +168,10 @@ private:
     void InnerSetTextBackColor(const Color& color);
     void InnerSetTextBackColorInRange(const Color& color, const Range& range);
 
-    bool TryToReplaceSingleStyledTextSlice(
+    std::optional<Range> TryReplaceStyledTextSliceAsSingleLine(
         const Range& replaced_range,
         const textual::StyledText& slice);
+
     void InnerReplaceStyledTextSlice(
         const Range& replaced_range,
         const textual::StyledText& slice);

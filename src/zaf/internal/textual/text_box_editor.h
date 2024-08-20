@@ -66,7 +66,7 @@ private:
     std::unique_ptr<TextBoxEditCommand> CreateCommand(
         textual::StyledText new_text,
         const Range& replaced_selection_range,
-        const Range& new_selection_range) const;
+        bool set_caret_to_begin) const;
 
     void ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command);
     bool HandleUndo();

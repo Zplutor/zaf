@@ -22,14 +22,14 @@ public:
         textual::StyledText styled_text_slice;
 
         /**
-        The selection range which will be set after replacing.
+        Indicates whether the caret should be set to the beginning of the new text.
         */
-        Range new_selection_range;
+        bool set_caret_to_begin{};
 
         /**
-        A value indicates whether the caret should be set to the beginning of new_selection_range.
+        Indicates whether the new text should be selected.
         */
-        bool is_caret_at_begin{};
+        bool select_slice{};
     };
 
 public:

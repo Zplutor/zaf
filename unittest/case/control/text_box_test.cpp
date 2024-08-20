@@ -531,6 +531,6 @@ TEST(TextBoxTest, Paste) {
     zaf::clipboard::Clipboard::SetText(L"line1\r\n line2");
     control->SetSelectionRange(zaf::Range{ 4, 0 });
     ASSERT_NO_THROW(control->Paste());
-    ASSERT_EQ(control->Text(), L"Thisline1");
+    ASSERT_EQ(control->Text(), L"Thisline1 is a text in clipboard!");
     ASSERT_EQ(control->SelectionRange(), zaf::Range(9, 0));
 }

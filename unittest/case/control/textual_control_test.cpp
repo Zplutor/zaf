@@ -131,18 +131,18 @@ TEST(TextualControlTest, SetMultilineTextInRangeToSingleLineControl) {
     ASSERT_TRUE(test(L"", { 0, 0 }, L"00\r\n111", L"00"));
     ASSERT_TRUE(test(L"00000", { 2, 0 }, L"", L"00000"));
     ASSERT_TRUE(test(L"00000", { 2, 0 }, L"11", L"0011000"));
-    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\r\n", L"00"));
-    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\r\nBB", L"00"));
-    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\r\n", L"00AA"));
-    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\r\nBB", L"00AA"));
-    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\r", L"00"));
-    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\rBB", L"00"));
-    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\r", L"00AA"));
-    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\rBB", L"00AA"));
-    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\n", L"00"));
-    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\nBB", L"00"));
-    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\n", L"00AA"));
-    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\nBB", L"00AA"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\r\n", L"00000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\r\nBB", L"00000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\r\n", L"00AA000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\r\nBB", L"00AA000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\r", L"00000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\rBB", L"00000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\r", L"00AA000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\rBB", L"00AA000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\n", L"00000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\nBB", L"00000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\n", L"00AA000"));
+    ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\nBB", L"00AA000"));
 }
 
 

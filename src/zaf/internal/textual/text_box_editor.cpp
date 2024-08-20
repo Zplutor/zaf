@@ -212,7 +212,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleDelete() {
 
     //Remove the selected text.
     if (selection_range.length > 0) {
-        return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
+        return CreateCommand({}, selection_range, true);
     }
 
     auto next_index = Context().IndexManager().GetForwardIndex(selection_range.index);
@@ -225,7 +225,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleDelete() {
     return CreateCommand(
         {},
         Range::FromIndexPair(selection_range.index, next_index),
-        Range{ selection_range.index, 0 });
+        true);
 }
 
 
@@ -235,7 +235,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchDelete() {
 
     //Remove the selected text.
     if (selection_range.length > 0) {
-        return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
+        return CreateCommand({}, selection_range, true);
     }
 
     //Determine the word range.
@@ -250,7 +250,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchDelete() {
     return CreateCommand(
         {},
         Range{ selection_range.index, word_range.EndIndex() - selection_range.index },
-        Range{ selection_range.index, 0 });
+        true);
 }
 
 
@@ -260,7 +260,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
 
     //Remove the selected text.
     if (selection_range.length > 0) {
-        return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
+        return CreateCommand({}, selection_range, true);
     }
 
     //Determine the word range. Note that the index used to determine should be prior to the caret 
@@ -279,7 +279,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
     return CreateCommand(
         {},
         Range{ word_range.index, selection_range.index - word_range.index },
-        Range{ word_range.index, 0 });
+        true);
 }
 
 
@@ -289,7 +289,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleCut() {
 
     //Remove the selected text.
     auto selection_range = Context().SelectionManager().SelectionRange();
-    return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
+    return CreateCommand({}, selection_range, true);
 }
 
 
@@ -313,8 +313,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreatePasteCommand() const {
 
     //Replace the current selection with the text in clipboard.
     auto selection_range = Context().SelectionManager().SelectionRange();
-    Range new_selection_range{ selection_range.index + styled_text.Length(), 0 };
-    return CreateCommand(std::move(styled_text), selection_range, new_selection_range);
+    return CreateCommand(std::move(styled_text), selection_range, false);
 }
 
 
@@ -335,7 +334,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBackspace() {
 
     //Remove the selected text.
     if (selection_range.length > 0) {
-        return CreateCommand({}, selection_range, Range{ selection_range.index, 0 });
+        return CreateCommand({}, selection_range, true);
     }
 
     auto previous_index = Context().IndexManager().GetBackwardIndex(selection_range.index);
@@ -348,7 +347,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBackspace() {
     return CreateCommand(
         {},
         Range::FromIndexPair(previous_index, selection_range.index),
-        Range{ previous_index, 0 });
+        true);
 }
 
 
@@ -369,17 +368,14 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateInsertTextCommand(std::
     //The default style should be the same as the current styled text.
     styled_text.SetDefaultStyle(Context().TextModel().StyledText().DefaultStyle());
 
-    return CreateCommand(
-        std::move(styled_text),
-        selection_range,
-        Range{ selection_range.index + styled_text.Length(), 0});
+    return CreateCommand(std::move(styled_text), selection_range, false);
 }
 
 
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
     textual::StyledText new_text,
     const Range& replaced_selection_range,
-    const Range& new_selection_range) const {
+    bool set_caret_to_begin) const {
 
     auto& selection_manager = Context().SelectionManager();
     auto old_caret_index = selection_manager.CaretIndex();
@@ -389,17 +385,17 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
     auto old_text = styled_text.GetSubText(replaced_selection_range);
 
     TextBoxEditCommand::EditInfo undo_info{
-        Range{ replaced_selection_range.index, new_text.Length() },
-        std::move(old_text),
-        old_selection_range,
-        old_caret_index == old_selection_range.index,
+        .replaced_range = Range{ replaced_selection_range.index, new_text.Length() },
+        .styled_text_slice = std::move(old_text),
+        .set_caret_to_begin = old_caret_index == old_selection_range.index,
+        .select_slice = true,
     };
 
     TextBoxEditCommand::EditInfo do_info{
-        replaced_selection_range,
-        std::move(new_text),
-        new_selection_range,
-        false,
+        .replaced_range = replaced_selection_range,
+        .styled_text_slice = std::move(new_text),
+        .set_caret_to_begin = set_caret_to_begin,
+        .select_slice = false,
     };
 
     return std::make_unique<TextBoxEditCommand>(std::move(do_info), std::move(undo_info));
