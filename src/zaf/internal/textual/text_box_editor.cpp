@@ -202,7 +202,11 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
 
 
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleEnter() {
-    return CreateInsertTextCommand(L"\r\n");
+
+    if (Context().TextModel().IsMultiline()) {
+        return CreateInsertTextCommand(L"\r\n");
+    }
+    return nullptr;
 }
 
 
@@ -352,8 +356,6 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBackspace() {
 
 
 void TextBoxEditor::SimulatePaste() {
-
-    auto auto_reset = MakeAutoReset(is_editing_, true);
 
     auto command = CreatePasteCommand();
     ExecuteCommand(std::move(command));

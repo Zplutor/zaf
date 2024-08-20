@@ -514,6 +514,37 @@ TEST(TextBoxTest, HandleEnd) {
 }
 
 
+TEST(TextBoxTest, HandleEnter) {
+
+    TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {
+
+        //Press Enter in empty text.
+        text_box.SetText(L"");
+        text_box.SetSelectionRange({});
+        window.Messager().SendWMKEYDOWN(zaf::Key::Enter);
+        ASSERT_EQ(text_box.Text(), L"\r\n");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(2, 0));
+
+        //Press Enter at the middle of the text.
+        text_box.SetText(L"00000");
+        text_box.SetSelectionRange({ 2, 0 });
+        window.Messager().SendWMKEYDOWN(zaf::Key::Enter);
+        ASSERT_EQ(text_box.Text(), L"00\r\n000");
+        ASSERT_EQ(text_box.SelectionRange(), zaf::Range(4, 0));
+
+        //Press Enter in a single line control.
+        text_box.SetIsMultiline(false);
+        text_box.SetText(L"11222");
+        text_box.SetSelectionRange({ 2, 0 });
+        window.Messager().SendWMKEYDOWN(zaf::Key::Enter);
+        //Won't insert a line break.
+        ASSERT_EQ(text_box.Text(), L"11222");
+        //Won't change the undo history.
+        ASSERT_FALSE(text_box.CanUndo());
+    });
+}
+
+
 TEST(TextBoxTest, Paste) {
 
     zaf::clipboard::Clipboard::SetText(L"text in clipboard");
@@ -522,6 +553,7 @@ TEST(TextBoxTest, Paste) {
     control->SetText(L"This is a !");
     control->SetSelectionRange(zaf::Range{ 10, 0 });
     ASSERT_NO_THROW(control->Paste());
+    //ASSERT_FALSE(control->CanUndo());
     ASSERT_EQ(control->Text(), L"This is a text in clipboard!");
     ASSERT_EQ(control->SelectionRange(), zaf::Range(27, 0));
 
@@ -531,6 +563,7 @@ TEST(TextBoxTest, Paste) {
     zaf::clipboard::Clipboard::SetText(L"line1\r\n line2");
     control->SetSelectionRange(zaf::Range{ 4, 0 });
     ASSERT_NO_THROW(control->Paste());
+    //ASSERT_FALSE(control->CanUndo());
     ASSERT_EQ(control->Text(), L"Thisline1 is a text in clipboard!");
     ASSERT_EQ(control->SelectionRange(), zaf::Range(9, 0));
 }
