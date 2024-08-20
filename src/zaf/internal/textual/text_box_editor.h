@@ -42,6 +42,8 @@ public:
     void HandleKeyDown(const KeyDownInfo& event_info);
     void HandleCharInput(const CharInputInfo& event_info);
 
+    void SimulatePaste();
+
     bool IsEditing() const {
         return is_editing_;
     }
@@ -54,6 +56,7 @@ private:
     std::unique_ptr<TextBoxEditCommand> HandleBatchBackspace();
     std::unique_ptr<TextBoxEditCommand> HandleCut();
     std::unique_ptr<TextBoxEditCommand> HandlePaste();
+    std::unique_ptr<TextBoxEditCommand> CreatePasteCommand() const;
 
     std::unique_ptr<TextBoxEditCommand> HandleChar(wchar_t ch);
     std::unique_ptr<TextBoxEditCommand> HandleBackspace();

@@ -710,4 +710,9 @@ std::size_t TextBox::LineCount() const {
     return GetTextLayout().GetMetrics().LineCount();
 }
 
+
+void TextBox::Paste() {
+    module_context_->Editor().SimulatePaste();
+}
+
 }

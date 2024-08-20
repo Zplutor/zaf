@@ -194,6 +194,21 @@ public:
     */
     bool IsPositionInsideText(const Point& position) const;
 
+    /**
+    Pastes the content of the clipboard into the text box.
+
+    @throw zaf::COMError
+        Thrown if fails to access the clipboard, or the content of the clipboard is not supported.
+
+    @throw std::bad_alloc
+        Thrown if memory allocation fails during the pasting.
+
+    @details
+        This method is equivalent to press the Ctrl+V key combination, except that even if the text
+        box is not editable, it can still paste the content of the clipboard.
+    */
+    void Paste();
+
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
