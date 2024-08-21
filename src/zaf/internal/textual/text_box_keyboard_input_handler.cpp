@@ -46,7 +46,7 @@ bool TextBoxKeyboardInputHandler::TryToHandleCaretRelatedKeyEvent(Key key) {
 
     //Ignore these key events if the caret is disabled.
     if (!Context().CaretManager().IsCaretEnabled()) {
-        return true;
+        return false;
     }
 
     if (key == Key::Left) {

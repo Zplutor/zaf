@@ -251,6 +251,30 @@ public:
     */
     bool Cut();
 
+    //Methods from SelfScrollControl
+    void SetAllowVerticalScroll(bool allow) override;
+    void SetAllowHorizontalScroll(bool allow) override;
+    void SetAutoHideScrollBars(bool auto_hide) override;
+    bool CanShowVerticalScrollBar() override;
+    bool CanShowHorizontalScrollBar() override;
+    bool CanEnableVerticalScrollBar() override;
+    bool CanEnableHorizontalScrollBar() override;
+    void GetVerticalScrollValues(
+        int& current_value,
+        int& min_value,
+        int& max_value,
+        int& page_value) const override;
+    void GetHorizontalScrollValues(
+        int& current_value,
+        int& min_value,
+        int& max_value,
+        int& page_value) const override;
+
+    Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() override;
+    Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
+    void VerticallyScroll(int new_value) override;
+    void HorizontallyScroll(int new_value) override;
+
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
@@ -276,30 +300,6 @@ protected:
     void OnIMEComposition(const IMECompositionInfo& event_info) override;
 
     virtual void OnSelectionChanged(const textual::SelectionChangedInfo& event_info);
-
-    //Methods from SelfScrollControl
-    void SetAllowVerticalScroll(bool allow) override;
-    void SetAllowHorizontalScroll(bool allow) override;
-    void SetAutoHideScrollBars(bool auto_hide) override;
-    bool CanShowVerticalScrollBar() override;
-    bool CanShowHorizontalScrollBar() override;
-    bool CanEnableVerticalScrollBar() override;
-    bool CanEnableHorizontalScrollBar() override;
-    void GetVerticalScrollValues(
-        int& current_value,
-        int& min_value,
-        int& max_value,
-        int& page_value) const override;
-    void GetHorizontalScrollValues(
-        int& current_value,
-        int& min_value,
-        int& max_value,
-        int& page_value) const override;
-
-    Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() override;
-    Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
-    void VerticallyScroll(int new_value) override;
-    void HorizontallyScroll(int new_value) override;
 
 private:
     friend class internal::TextBoxCaretManager;
