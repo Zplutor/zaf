@@ -1276,6 +1276,9 @@
     <ClCompile Include="src\zaf\internal\control\color_field.cpp">
       <Filter>zaf\internal\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\textual\selection_changed_info.cpp">
+      <Filter>zaf\control\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2937,6 +2940,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\control\color_picker_equal.h">
       <Filter>zaf\internal\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\selection_changed_info.h">
+      <Filter>zaf\control\textual</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

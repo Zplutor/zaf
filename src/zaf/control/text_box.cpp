@@ -51,7 +51,7 @@ void TextBox::Initialize() {
     }));
 
     Subscriptions() += module_context_->SelectionManager().SelectionChangedEvent().Subscribe(
-        std::bind(&TextBox::OnSelectionChanged, this, std::placeholders::_1));
+        std::bind(&TextBox::OnInnerSelectionChanged, this, std::placeholders::_1));
 
     SetCanFocused(true);
     SetCanTabStop(true);
@@ -462,16 +462,17 @@ void TextBox::SetSelectionRange(const Range& range, textual::SelectionOption sel
 }
 
 
-std::wstring TextBox::SelectedText() const {
-
-    std::wstring_view text = TextModel().GetText();
-    auto selection_range = this->SelectionRange();
-    auto selected_text = text.substr(selection_range.index, selection_range.length);
-    return std::wstring{ selected_text };
+Observable<textual::SelectionChangedInfo> TextBox::SelectionChangedEvent() const {
+    return selection_changed_event_.GetObservable();
 }
 
 
-void TextBox::OnSelectionChanged(const internal::TextBoxSelectionChangedInfo& event_info) {
+void TextBox::OnSelectionChanged(const textual::SelectionChangedInfo& event_info) {
+    selection_changed_event_.Raise(event_info);
+}
+
+
+void TextBox::OnInnerSelectionChanged(const internal::TextBoxSelectionChangedInfo& event_info) {
 
     if (event_info.NeedScrollToCaret()) {
         EnsureCaretVisible(event_info.CharRectAtCaret());
@@ -481,6 +482,17 @@ void TextBox::OnSelectionChanged(const internal::TextBoxSelectionChangedInfo& ev
     module_context_->CaretManager().MoveCaretToCharRect(event_info.CharRectAtCaret());
 
     NeedRepaint();
+
+    OnSelectionChanged(textual::SelectionChangedInfo{ As<TextBox>(shared_from_this()) });
+}
+
+
+std::wstring TextBox::SelectedText() const {
+
+    std::wstring_view text = TextModel().GetText();
+    auto selection_range = this->SelectionRange();
+    auto selected_text = text.substr(selection_range.index, selection_range.length);
+    return std::wstring{ selected_text };
 }
 
 

@@ -216,6 +216,7 @@
     <ClCompile Include="src\zaf\control\textual\inline_object_store.cpp" />
     <ClCompile Include="src\zaf\control\textual\inline_object_events.cpp" />
     <ClCompile Include="src\zaf\control\textual\ranged_text_style.cpp" />
+    <ClCompile Include="src\zaf\control\textual\selection_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\textual\styled_text.cpp" />
     <ClCompile Include="src\zaf\control\textual\styled_text_data.cpp" />
     <ClCompile Include="src\zaf\control\textual\word_extractor.cpp" />
@@ -655,6 +656,7 @@
     <ClInclude Include="src\zaf\control\textual\inline_object_store.h" />
     <ClInclude Include="src\zaf\control\textual\inline_object_events.h" />
     <ClInclude Include="src\zaf\control\textual\ranged_text_style.h" />
+    <ClInclude Include="src\zaf\control\textual\selection_changed_info.h" />
     <ClInclude Include="src\zaf\control\textual\selection_option.h" />
     <ClInclude Include="src\zaf\control\textual\styled_text.h" />
     <ClInclude Include="src\zaf\control\textual\styled_text_data.h" />

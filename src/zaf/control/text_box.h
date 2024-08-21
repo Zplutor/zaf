@@ -4,6 +4,7 @@
 #include <zaf/control/self_scroll_control.h>
 #include <zaf/graphic/text/text_layout.h>
 #include <zaf/control/textual_control.h>
+#include <zaf/control/textual/selection_changed_info.h>
 #include <zaf/control/textual/selection_option.h>
 #include <zaf/control/textual/word_extractor.h>
 #include <zaf/window/event/message_received_info.h>
@@ -115,6 +116,8 @@ public:
     void SetSelectionRange(
         const Range& range,
         textual::SelectionOption selection_option = textual::SelectionOption::Default);
+
+    Observable<textual::SelectionChangedInfo> SelectionChangedEvent() const;
 
     Color SelectionBackColor() const noexcept;
     void SetSelectionBackColor(const Color& color);
@@ -272,6 +275,8 @@ protected:
     void OnIMEStartComposition(const IMEStartCompositionInfo& event_info) override;
     void OnIMEComposition(const IMECompositionInfo& event_info) override;
 
+    virtual void OnSelectionChanged(const textual::SelectionChangedInfo& event_info);
+
     //Methods from SelfScrollControl
     void SetAllowVerticalScroll(bool allow) override;
     void SetAllowHorizontalScroll(bool allow) override;
@@ -309,7 +314,7 @@ private:
 
     void UpdateTextRectOnLayout();
 
-    void OnSelectionChanged(const internal::TextBoxSelectionChangedInfo& event_info);
+    void OnInnerSelectionChanged(const internal::TextBoxSelectionChangedInfo& event_info);
     void EnsureCaretVisible(const zaf::Rect& char_rect_at_caret);
     
     static void GetScrollValues(
@@ -338,6 +343,8 @@ private:
     textual::WordExtractor word_extractor_;
 
     Subscription ime_message_subscription_;
+
+    Event<textual::SelectionChangedInfo> selection_changed_event_;
 };
 
 ZAF_OBJECT_BEGIN(TextBox);

@@ -181,6 +181,24 @@ TEST(TextBoxTest, SelectionRange) {
 }
 
 
+TEST(TextBoxTest, SelectionChangedEvent) {
+
+    auto control = Create<TextBox>();
+    control->SetText(L"TextBox");
+
+    int event_call_count{};
+    auto sub = control->SelectionChangedEvent().Subscribe(
+        [&event_call_count](const SelectionChangedInfo& event_info) {
+        ++event_call_count;
+    });
+
+    control->SetSelectionRange(Range{ 1, 0 });
+    control->SetSelectionRange(Range{ 1, 1 });
+    control->SetSelectionRange(Range{ 0, 7 });
+    ASSERT_EQ(event_call_count, 3);
+}
+
+
 TEST(TextBoxTest, SelectedText) {
 
     auto text_box = zaf::Create<zaf::TextBox>();
