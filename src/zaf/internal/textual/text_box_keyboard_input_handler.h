@@ -13,7 +13,18 @@ public:
     void Initialize() override;
 
     void HandleKeyDown(const KeyDownInfo& event_info);
-    void HandleCopy();
+
+    /**
+    Performs a copy operation, copies the selected text to the clipboard.
+
+    @return
+        Returns true if the selected text is copied to the clipboard; or returns false if there is 
+        no selected text.
+
+    @throw zaf::COMError
+    @throw std::bad_alloc
+    */
+    bool PerformCopy();
 
 private:
     class LineInfo {
@@ -42,7 +53,7 @@ private:
         std::size_t new_index,
         bool expand_selection,
         bool update_caret_x);
-
+    void HandleCopy();
     void HandleSelectAll();
 };
 

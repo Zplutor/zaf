@@ -711,8 +711,18 @@ std::size_t TextBox::LineCount() const {
 }
 
 
-void TextBox::Paste() {
-    module_context_->Editor().SimulatePaste();
+bool TextBox::Copy() const {
+    return module_context_->KeyboardInputHandler().PerformCopy();
+}
+
+
+bool TextBox::Paste() {
+    return module_context_->Editor().PerformPaste();
+}
+
+
+bool TextBox::Cut() {
+    return module_context_->Editor().PerformCut();
 }
 
 }

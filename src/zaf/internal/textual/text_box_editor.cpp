@@ -180,11 +180,13 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
     }
 
     if ((key == Key::X) && Keyboard::IsCtrlDown()) {
-        return HandleCut();
+        HandleCut();
+        return nullptr;
     }
 
     if ((key == Key::V) && Keyboard::IsCtrlDown()) {
-        return HandlePaste();
+        HandlePaste();
+        return nullptr;
     }
 
     if ((key == Key::Z) && Keyboard::IsCtrlDown()) {
@@ -287,29 +289,63 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
 }
 
 
-std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleCut() {
+void TextBoxEditor::HandleCut() {
+    try {
+        InnerCut();
+    }
+    catch (...) {
 
-    Context().KeyboardInputHandler().HandleCopy();
+    }
+}
+
+
+bool TextBoxEditor::InnerCut() {
+
+    if (!CanEdit()) {
+        return false;
+    }
+
+    if (!Context().KeyboardInputHandler().PerformCopy()) {
+        return false;
+    }
 
     //Remove the selected text.
     auto selection_range = Context().SelectionManager().SelectionRange();
-    return CreateCommand({}, selection_range, true);
+    auto command = CreateCommand({}, selection_range, true);
+    ExecuteCommand(std::move(command));
+    return true;
 }
 
 
-std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandlePaste() {
+bool TextBoxEditor::PerformCut() {
+    auto auto_reset = MakeAutoReset(is_editing_, true);
+    return InnerCut();
+}
+
+
+void TextBoxEditor::HandlePaste() {
     try {
-        return CreatePasteCommand();
+        InnerPaste();
     }
     catch (...) {
-        return nullptr;
+
     }
 }
 
 
-std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreatePasteCommand() const {
+bool TextBoxEditor::InnerPaste() {
 
-    auto [styled_text, is_styled_text] = LoadStyledTextFromClipboard();
+    if (!CanEdit()) {
+        return false;
+    }
+
+    textual::StyledText styled_text;
+    bool is_styled_text{};
+    bool is_loaded = LoadStyledTextFromClipboard(styled_text, is_styled_text);
+    if (!is_loaded) {
+        return false;
+    }
+
     if (!is_styled_text) {
         const auto& default_style = Context().TextModel().StyledText().DefaultStyle();
         styled_text.SetDefaultStyle(default_style);
@@ -317,7 +353,15 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreatePasteCommand() const {
 
     //Replace the current selection with the text in clipboard.
     auto selection_range = Context().SelectionManager().SelectionRange();
-    return CreateCommand(std::move(styled_text), selection_range, false);
+    auto command = CreateCommand(std::move(styled_text), selection_range, false);
+    ExecuteCommand(std::move(command));
+    return true;
+}
+
+
+bool TextBoxEditor::PerformPaste() {
+    auto auto_reset = MakeAutoReset(is_editing_, true);
+    return InnerPaste();
 }
 
 
@@ -352,13 +396,6 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBackspace() {
         {},
         Range::FromIndexPair(previous_index, selection_range.index),
         true);
-}
-
-
-void TextBoxEditor::SimulatePaste() {
-
-    auto command = CreatePasteCommand();
-    ExecuteCommand(std::move(command));
 }
 
 

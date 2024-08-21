@@ -302,15 +302,24 @@ void TextBoxKeyboardInputHandler::SetCaretIndexByKey(
 
 void TextBoxKeyboardInputHandler::HandleCopy() {
     try {
-
-        auto selection_range = Context().SelectionManager().SelectionRange();
-        auto selected_styled_text = Context().TextModel().StyledText().GetSubText(selection_range);
-
-        internal::SaveStyledTextToClipboard(std::move(selected_styled_text));
+        PerformCopy();
     }
     catch (...) {
 
     }
+}
+
+
+bool TextBoxKeyboardInputHandler::PerformCopy() {
+
+    auto selection_range = Context().SelectionManager().SelectionRange();
+    if (selection_range.IsEmpty()) {
+        return false;
+    }
+
+    auto selected_styled_text = Context().TextModel().StyledText().GetSubText(selection_range);
+    internal::SaveStyledTextToClipboard(std::move(selected_styled_text));
+    return true;
 }
 
 

@@ -42,7 +42,29 @@ public:
     void HandleKeyDown(const KeyDownInfo& event_info);
     void HandleCharInput(const CharInputInfo& event_info);
 
-    void SimulatePaste();
+    /**
+    Performs a paste operation to paste the content in the clipboard to the text box.
+
+    @return
+        Returns true if the content in the clipboard is pasted to the text box. Returns false if 
+        the text box is not editable or the content is not accepted by the text box.
+
+    @throw zaf::COMError
+    @throw std::bad_alloc
+    */
+    bool PerformPaste();
+
+    /**
+    Performs a cut operation to cut the selected text to the clipboard.
+
+    @return
+        Returns true if the selected text is cut to the clipboard. Returns false if the text box
+        is not editable or there is no selected text.
+
+    @throw zaf::COMError
+    @throw std::bad_alloc
+    */
+    bool PerformCut();
 
     bool IsEditing() const {
         return is_editing_;
@@ -54,10 +76,10 @@ private:
     std::unique_ptr<TextBoxEditCommand> HandleDelete();
     std::unique_ptr<TextBoxEditCommand> HandleBatchDelete();
     std::unique_ptr<TextBoxEditCommand> HandleBatchBackspace();
-    std::unique_ptr<TextBoxEditCommand> HandleCut();
-    std::unique_ptr<TextBoxEditCommand> HandlePaste();
-    std::unique_ptr<TextBoxEditCommand> CreatePasteCommand() const;
-
+    void HandleCut();
+    bool InnerCut();
+    void HandlePaste();
+    bool InnerPaste();
     std::unique_ptr<TextBoxEditCommand> HandleChar(wchar_t ch);
     std::unique_ptr<TextBoxEditCommand> HandleBackspace();
 

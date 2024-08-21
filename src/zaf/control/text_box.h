@@ -195,19 +195,58 @@ public:
     bool IsPositionInsideText(const Point& position) const;
 
     /**
-    Pastes the content of the clipboard into the text box.
+    Copies the selected text to the clipboard.
+
+    @return
+        Returns true if the selected text is copied to the clipboard; or returns false if there is 
+        no selected text.
 
     @throw zaf::COMError
-        Thrown if fails to access the clipboard, or the content of the clipboard is not supported.
+        Thrown if fails to access the clipboard.
+
+    @throw std::bad_alloc
+        Thrown if memory allocation fails during the copying.
+
+    @details
+        This method is equivalent to press the Ctrl+C key combination.
+    */
+    bool Copy() const;
+
+    /**
+    Pastes the content of the clipboard into the text box.
+
+    @return
+        Returns true if the content of the clipboard is pasted into the text box. Returns false if
+        the text box is not editable or the content is not accepted by the text box.
+
+    @throw zaf::COMError
+        Thrown if fails to access the clipboard.
 
     @throw std::bad_alloc
         Thrown if memory allocation fails during the pasting.
 
     @details
-        This method is equivalent to press the Ctrl+V key combination, except that even if the text
-        box is not editable, it can still paste the content of the clipboard.
+        This method is equivalent to press the Ctrl+V key combination.
     */
-    void Paste();
+    bool Paste();
+
+    /**
+    Cuts the selected text to the clipboard.
+
+    @return
+        Returns true if the selected text is cut to the clipboard. Returns false if the text box is
+        not editable or there is no selected text.
+
+    @throw zaf::COMError
+        Thrown if fails to access the clipboard.
+
+    @throw std::bad_alloc
+        Thrown if memory allocation fails during the cutting.
+
+    @details
+        This method is equivalent to press the Ctrl+X key combination.
+    */
+    bool Cut();
 
 protected:
     void Initialize() override;

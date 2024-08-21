@@ -545,15 +545,65 @@ TEST(TextBoxTest, HandleEnter) {
 }
 
 
+TEST(TextBoxTest, Copy) {
+
+    auto control = zaf::Create<zaf::TextBox>();
+    control->SetText(L"Text to copy");
+
+    control->SetSelectionRange(zaf::Range{ 2, 0 });
+    //Returns false if nothing is selected.
+    ASSERT_FALSE(control->Copy());
+
+    control->SetSelectionRange(zaf::Range{ 5, 7 });
+    ASSERT_TRUE(control->Copy());
+    ASSERT_EQ(zaf::clipboard::Clipboard::GetText(), L"to copy");
+}
+
+
+TEST(TextBoxTest, Cut) {
+
+    auto control = zaf::Create<zaf::TextBox>();
+    control->SetIsEditable(false);
+    control->SetText(L"Text to cut");
+    control->SetSelectionRange(zaf::Range{ 2, 2 });
+    //A not editable text box can not cut.
+    ASSERT_FALSE(control->Cut());
+
+    control->SetIsEditable(true);
+    control->SetSelectionRange(zaf::Range{ 2, 0 });
+    //Returns false if nothing is selected.
+    ASSERT_FALSE(control->Cut());
+
+    control->SetSelectionRange(zaf::Range{ 2, 4 });
+    ASSERT_TRUE(control->Cut());
+    ASSERT_EQ(control->Text(), L"Teo cut");
+    ASSERT_EQ(zaf::clipboard::Clipboard::GetText(), L"xt t");
+    ASSERT_TRUE(control->CanUndo());
+}
+
+
 TEST(TextBoxTest, Paste) {
 
     zaf::clipboard::Clipboard::SetText(L"text in clipboard");
-
     auto control = zaf::Create<zaf::TextBox>();
+    control->SetIsEditable(false);
+    //A not editable text box can not paste.
+    ASSERT_FALSE(control->Paste());
+
+    //Can not paste incompatible content.
+    auto data_object = zaf::clipboard::DataObject::Create();
+    data_object.SetData(
+        zaf::clipboard::DataDescriptor::FromFormatType(zaf::clipboard::MakePrivateFormatType(101)),
+        zaf::clipboard::Medium::FromString(L""));
+    zaf::clipboard::Clipboard::SetDataObject(data_object);
+    control->SetIsEditable(true);
+    ASSERT_FALSE(control->Paste());
+
+    zaf::clipboard::Clipboard::SetText(L"text in clipboard");
     control->SetText(L"This is a !");
     control->SetSelectionRange(zaf::Range{ 10, 0 });
-    ASSERT_NO_THROW(control->Paste());
-    //ASSERT_FALSE(control->CanUndo());
+    ASSERT_TRUE(control->Paste());
+    ASSERT_TRUE(control->CanUndo());
     ASSERT_EQ(control->Text(), L"This is a text in clipboard!");
     ASSERT_EQ(control->SelectionRange(), zaf::Range(27, 0));
 
@@ -562,8 +612,8 @@ TEST(TextBoxTest, Paste) {
 
     zaf::clipboard::Clipboard::SetText(L"line1\r\n line2");
     control->SetSelectionRange(zaf::Range{ 4, 0 });
-    ASSERT_NO_THROW(control->Paste());
-    //ASSERT_FALSE(control->CanUndo());
+    ASSERT_TRUE(control->Paste());
+    ASSERT_TRUE(control->CanUndo());
     ASSERT_EQ(control->Text(), L"Thisline1 is a text in clipboard!");
     ASSERT_EQ(control->SelectionRange(), zaf::Range(9, 0));
 }

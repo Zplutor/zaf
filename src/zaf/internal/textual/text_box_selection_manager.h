@@ -17,7 +17,7 @@ public:
 
     void Initialize() override;
 
-    const Range& SelectionRange() const {
+    const Range& SelectionRange() const noexcept {
         return selection_range_;
     }
 

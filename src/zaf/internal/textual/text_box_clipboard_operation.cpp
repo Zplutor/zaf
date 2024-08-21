@@ -29,25 +29,47 @@ void SaveStyledTextToClipboard(textual::StyledText styled_text) {
 }
 
 
-std::pair<textual::StyledText, bool> LoadStyledTextFromClipboard() {
+bool LoadStyledTextFromClipboard(textual::StyledText& styled_text, bool& is_styled_text) {
 
     auto data_object = Clipboard::GetDataObject();
+    auto enumerator = data_object.EnumerateDataDescriptors();
+    enumerator.Reset();
 
-    try {
-        StyledTextData styled_text_data;
-        data_object.GetData(
-            DataDescriptor::FromFormatType(StyledTextData::FormatType()),
-            styled_text_data);
+    do {
 
-        return std::make_pair(styled_text_data.Detach(), true);
+        auto descriptor = enumerator.Next();
+        if (!descriptor) {
+            break;
+        }
+
+        if (descriptor->FormatType() == StyledTextData::FormatType()) {
+            try {
+                StyledTextData styled_text_data;
+                data_object.GetData(*descriptor, styled_text_data);
+                styled_text = styled_text_data.Detach();
+                is_styled_text = true;
+                return true;
+            }
+            catch (...) {
+                continue;
+            }
+        }
+        else if (descriptor->FormatType() == FormatType::Text) {
+            try {
+                TextData text_data;
+                data_object.GetData(*descriptor, text_data);
+                styled_text.SetText(text_data.Detach());
+                is_styled_text = false;
+                return true;
+            }
+            catch (...) {
+                continue;
+            }
+        }
     }
-    catch (...) {
+    while (true);
 
-    }
-
-    TextData text_data;
-    data_object.GetData(DataDescriptor::FromFormatType(FormatType::Text), text_data);
-    return std::make_pair(StyledText{ text_data.Detach() }, false);
+    return false;
 }
 
 }
