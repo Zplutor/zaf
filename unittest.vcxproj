@@ -477,6 +477,7 @@
     <ClCompile Include="unittest\case\graphic\size_parser_test.cpp" />
     <ClCompile Include="unittest\case\graphic\size_test.cpp" />
     <ClCompile Include="unittest\case\graphic\text\text_layout_test.cpp" />
+    <ClCompile Include="unittest\case\internal\textual\line_utility_test.cpp" />
     <ClCompile Include="unittest\case\io\stream\byte_array_stream_test.cpp" />
     <ClCompile Include="unittest\case\io\stream\plain_memory_stream_test.cpp" />
     <ClCompile Include="unittest\case\io\stream\referenced_global_mem_stream_test.cpp" />

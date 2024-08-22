@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file
+    Defines the zaf::TextBox class.
+*/
+
 #include <zaf/base/range.h>
 #include <zaf/control/self_scroll_control.h>
 #include <zaf/graphic/text/text_layout.h>

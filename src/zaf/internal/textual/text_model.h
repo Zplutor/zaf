@@ -6,6 +6,7 @@
 #include <zaf/base/none.h>
 #include <zaf/base/range.h>
 #include <zaf/control/style/color_picker.h>
+#include <zaf/control/textual/line_break.h>
 #include <zaf/control/textual/styled_text.h>
 #include <zaf/internal/control/color_picker_equal.h>
 #include <zaf/internal/textual/inline_object_attached_info.h>
@@ -107,16 +108,14 @@ public:
     bool IsMultiline() const noexcept;
     void SetIsMultiline(bool is_multiline);
 
-    const textual::StyledText& StyledText() const {
-        return styled_text_;
-    }
+    textual::LineBreak LineBreak() const noexcept;
+    void SetLineBreak(textual::LineBreak line_break);
+    Range SetStyledTextInRange(const textual::StyledText& styled_text, const Range& range);
 
+    const textual::StyledText& StyledText() const noexcept;
     void SetStyledText(textual::StyledText styled_text);
 
-    const std::wstring& GetText() const {
-        return styled_text_.Text();
-    }
-
+    const std::wstring& Text() const noexcept;
     void SetText(std::wstring text);
     void SetTextInRange(std::wstring_view text, Range range);
 
@@ -148,10 +147,6 @@ public:
     void AttachInlineObjectToRange(
         std::shared_ptr<textual::InlineObject> object,
         const Range& range);
-
-    Range ReplaceStyledTextSlice(
-        const Range& replaced_range,
-        const textual::StyledText& slice);
 
     Observable<InlineObjectAttachedInfo> InlineObjectAttachedEvent() const {
         return inline_object_attached_event_.AsObservable();
@@ -188,6 +183,7 @@ private:
 
 private:
     bool is_multiline_{ true };
+    textual::LineBreak line_break_{ textual::LineBreak::Unspecific };
     textual::StyledText styled_text_;
 
     ColorPicker default_text_color_picker_;

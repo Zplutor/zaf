@@ -245,7 +245,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchDelete() {
     }
 
     //Determine the word range.
-    auto text = Context().TextModel().GetText();
+    auto text = Context().TextModel().Text();
     auto word_range = Context().Owner().WordExtractor()(text, selection_range.index);
 
     //Nothing can be removed.
@@ -271,7 +271,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
 
     //Determine the word range. Note that the index used to determine should be prior to the caret 
     //index.
-    auto text = Context().TextModel().GetText();
+    auto text = Context().TextModel().Text();
 
     auto determined_index = selection_range.index > 0 ? selection_range.index - 1 : 0;
     auto word_range = Context().Owner().WordExtractor()(text, determined_index);

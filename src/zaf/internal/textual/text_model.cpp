@@ -1,5 +1,6 @@
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/base/error/contract_error.h>
+#include <zaf/internal/textual/line_utility.h>
 
 namespace zaf::internal {
 
@@ -23,30 +24,37 @@ void TextModel::SetIsMultiline(bool is_multiline) {
     //Remove lines if multiline is set to false.
     if (!is_multiline_) {
 
-        const auto& text = this->GetText();
+        const auto& text = this->Text();
         auto line_break_index = text.find_first_of(L"\r\n");
-        if (line_break_index == std::wstring::npos) {
-            return;
+        if (line_break_index != std::wstring::npos) {
+            this->SetTextInRange({}, { line_break_index, text.length() - line_break_index });
         }
-
-        this->SetTextInRange({}, { line_break_index, text.length() - line_break_index });
     }
 }
 
 
+textual::LineBreak TextModel::LineBreak() const noexcept {
+    return line_break_;
+}
+
+
+void TextModel::SetLineBreak(textual::LineBreak line_break) {
+
+    if (line_break_ == line_break) {
+        return;
+    }
+
+    line_break_ = line_break;
+}
+
+
+const textual::StyledText& TextModel::StyledText() const noexcept {
+    return styled_text_;
+}
+
 void TextModel::SetStyledText(textual::StyledText styled_text) {
 
-    //Remove lines if multiline is not supported.
-    if (!is_multiline_) {
-
-        const auto& original_text = styled_text.Text();
-        auto line_break_index = original_text.find_first_of(L"\r\n");
-        if (line_break_index != std::wstring::npos) {
-            styled_text.SetTextInRange(
-                {}, 
-                { line_break_index, original_text.length() - line_break_index });
-        }
-    }
+    internal::LineUtility::ReviseLinesInStyledText(styled_text, is_multiline_, line_break_);
 
     //Replace the old styled text.
     styled_text_ = std::move(styled_text);
@@ -68,18 +76,68 @@ void TextModel::SetStyledText(textual::StyledText styled_text) {
 }
 
 
-void TextModel::SetText(std::wstring text) {
+Range TextModel::SetStyledTextInRange(const textual::StyledText& styled_text, const Range& range) {
 
-    //Remove lines if multiline is not supported.
-    if (!is_multiline_) {
-        auto line_break_index = text.find_first_of(L"\r\n");
-        if (line_break_index != std::wstring::npos) {
-            text.erase(line_break_index);
-        }
+    auto single_line_range = TryReplaceStyledTextSliceAsSingleLine(range, styled_text);
+    if (single_line_range) {
+        return *single_line_range;
     }
 
-    auto old_length = styled_text_.Text().length();
-    auto new_length = text.length();
+    InnerReplaceStyledTextSlice(range, styled_text);
+    return Range{ range.index, styled_text.Length() };
+}
+
+
+std::optional<Range> TextModel::TryReplaceStyledTextSliceAsSingleLine(
+    const Range& replaced_range,
+    const textual::StyledText& slice) {
+
+    if (is_multiline_) {
+        return std::nullopt;
+    }
+
+    const auto& slice_text = slice.Text();
+    auto line_break_index = slice_text.find_first_of(L"\r\n");
+    if (line_break_index == slice_text.npos) {
+        return std::nullopt;
+    }
+
+    auto single_line_slice = slice.GetSubText({ 0, line_break_index });
+
+    InnerReplaceStyledTextSlice(replaced_range, single_line_slice);
+    return Range{ replaced_range.index, single_line_slice.Length() };
+}
+
+
+void TextModel::InnerReplaceStyledTextSlice(
+    const Range& replaced_range,
+    const textual::StyledText& slice) {
+
+    auto sub_text_range = styled_text_.SetStyledTextInRange(slice, replaced_range);
+    ranged_text_color_pickers_.RemoveRange(sub_text_range);
+    ranged_text_back_color_pickers_.RemoveRange(sub_text_range);
+
+    //Get inline objects from the slice range to raise attach event.
+    std::vector<std::shared_ptr<textual::InlineObject>> new_inline_objects;
+    styled_text_.InlineObjects().VisitItemsInRange(
+        sub_text_range,
+        [&new_inline_objects](const auto& item) {
+        new_inline_objects.push_back(item.Object());
+    });
+
+    RaiseInlineObjectAttachedEvent(std::move(new_inline_objects));
+    RaiseChangedEvent(TextModelAttribute::All);
+}
+
+
+const std::wstring& TextModel::Text() const noexcept {
+    return styled_text_.Text();
+}
+
+
+void TextModel::SetText(std::wstring text) {
+
+    internal::LineUtility::ReviseLinesInText(text, is_multiline_, line_break_);
 
     styled_text_.SetText(std::move(text));
     ranged_text_color_pickers_.Clear();
@@ -272,62 +330,6 @@ void TextModel::AttachInlineObjectToRange(
 
     RaiseInlineObjectAttachedEvent({ std::move(object) });
     RaiseChangedEvent(TextModelAttribute::InlineObject, range, range.length);
-}
-
-
-Range TextModel::ReplaceStyledTextSlice(
-    const Range& replaced_range,
-    const textual::StyledText& slice) {
-
-    auto single_line_range = TryReplaceStyledTextSliceAsSingleLine(replaced_range, slice);
-    if (single_line_range) {
-        return *single_line_range;
-    }
-
-    InnerReplaceStyledTextSlice(replaced_range, slice);
-    return Range{ replaced_range.index, slice.Length() };
-}
-
-
-std::optional<Range> TextModel::TryReplaceStyledTextSliceAsSingleLine(
-    const Range& replaced_range, 
-    const textual::StyledText& slice) {
-
-    if (is_multiline_) {
-        return std::nullopt;
-    }
-
-    const auto& slice_text = slice.Text();
-    auto line_break_index = slice_text.find_first_of(L"\r\n");
-    if (line_break_index == slice_text.npos) {
-        return std::nullopt;
-    }
-
-    auto single_line_slice = slice.GetSubText({ 0, line_break_index });
-
-    InnerReplaceStyledTextSlice(replaced_range, single_line_slice);
-    return Range{ replaced_range.index, single_line_slice.Length() };
-}
-
-
-void TextModel::InnerReplaceStyledTextSlice(
-    const Range& replaced_range, 
-    const textual::StyledText& slice) {
-
-    auto sub_text_range = styled_text_.SetStyledTextInRange(slice, replaced_range);
-    ranged_text_color_pickers_.RemoveRange(sub_text_range);
-    ranged_text_back_color_pickers_.RemoveRange(sub_text_range);
-
-    //Get inline objects from the slice range to raise attach event.
-    std::vector<std::shared_ptr<textual::InlineObject>> new_inline_objects;
-    styled_text_.InlineObjects().VisitItemsInRange(
-        sub_text_range,
-        [&new_inline_objects](const auto& item) {
-            new_inline_objects.push_back(item.Object());
-        });
-
-    RaiseInlineObjectAttachedEvent(std::move(new_inline_objects));
-    RaiseChangedEvent(TextModelAttribute::All);
 }
 
 

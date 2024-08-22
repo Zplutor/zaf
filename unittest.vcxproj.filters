@@ -115,6 +115,12 @@
     <Filter Include="case\control\style">
       <UniqueIdentifier>{28d12b99-c3b4-452a-a183-47a5fedaa28e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\internal">
+      <UniqueIdentifier>{8ac46f2e-954e-4a37-87b8-1de140fb48e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\internal\textual">
+      <UniqueIdentifier>{10f44d7b-fd58-4bc9-b148-a030fb782291}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -584,6 +590,9 @@
       <Filter>case\control\style</Filter>
     </ClCompile>
     <ClCompile Include="unittest\precompiled.cpp" />
+    <ClCompile Include="unittest\case\internal\textual\line_utility_test.cpp">
+      <Filter>case\internal\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

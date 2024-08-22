@@ -23,9 +23,9 @@ void TextBoxEditCommand::Undo(const TextBoxModuleContext& context) {
 
 void TextBoxEditCommand::Execute(const TextBoxModuleContext& context, const EditInfo& edit_info) {
 
-    auto new_range = context.TextModel().ReplaceStyledTextSlice(
-        edit_info.replaced_range,
-        edit_info.styled_text_slice);
+    auto new_range = context.TextModel().SetStyledTextInRange(
+        edit_info.styled_text_slice, 
+        edit_info.replaced_range);
 
     Range selection_range;
     if (edit_info.select_slice) {

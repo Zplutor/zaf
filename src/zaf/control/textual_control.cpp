@@ -199,12 +199,12 @@ void TextualControl::UpdateTextRect(const zaf::Rect& text_rect) {
 
 
 std::size_t TextualControl::TextLength() const {
-    return text_model_->GetText().length();
+    return text_model_->Text().length();
 }
 
 
 const std::wstring& TextualControl::Text() const {
-    return text_model_->GetText();
+    return text_model_->Text();
 }
 
 
@@ -229,6 +229,15 @@ bool TextualControl::IsMultiline() const noexcept {
 
 void TextualControl::SetIsMultiline(bool is_multiline) {
     text_model_->SetIsMultiline(is_multiline);
+}
+
+
+textual::LineBreak TextualControl::LineBreak() const noexcept {
+    return text_model_->LineBreak();
+}
+
+void TextualControl::SetLineBreak(textual::LineBreak line_break) {
+    text_model_->SetLineBreak(line_break);
 }
 
 
@@ -560,7 +569,7 @@ TextLayout TextualControl::GetTextLayout() const {
 
 TextLayout TextualControl::CreateTextLayout() const {
 
-    auto text = text_model_->GetText();
+    auto text = text_model_->Text();
 
     auto text_layout = GraphicFactory::Instance().CreateTextLayout(
         text,

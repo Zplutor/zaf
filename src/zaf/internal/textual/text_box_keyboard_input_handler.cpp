@@ -201,7 +201,7 @@ void TextBoxKeyboardInputHandler::MoveCaretIndexToTextHead() {
 
 
 void TextBoxKeyboardInputHandler::MoveCaretIndexToTextEnd() {
-    SetCaretIndexByKey(Context().TextModel().GetText().length(), Keyboard::IsShiftDown(), true);
+    SetCaretIndexByKey(Context().TextModel().Text().length(), Keyboard::IsShiftDown(), true);
 }
 
 
@@ -212,7 +212,7 @@ std::size_t TextBoxKeyboardInputHandler::LocateCurrentLineEndIndex() const {
         return line_info.line_char_index;
     }
 
-    std::wstring_view text = Context().TextModel().GetText();
+    std::wstring_view text = Context().TextModel().Text();
 
     auto last_char_index = line_info.line_char_index + line_info.line_length - 1;
     if (text[last_char_index] == L'\r') {
@@ -326,7 +326,7 @@ bool TextBoxKeyboardInputHandler::PerformCopy() {
 void TextBoxKeyboardInputHandler::HandleSelectAll() {
 
     Context().SelectionManager().SetSelectionRange(
-        Range{ 0, Context().TextModel().GetText().length() },
+        Range{ 0, Context().TextModel().Text().length() },
         textual::SelectionOption::SetCaretToEnd | textual::SelectionOption::ScrollToCaret, 
         std::nullopt,
         true);

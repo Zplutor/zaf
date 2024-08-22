@@ -192,7 +192,7 @@ void TextBox::PaintSelection(
 
     auto background_color = SelectionBackColor();
     auto brush = canvas.Renderer().CreateSolidColorBrush(background_color);
-    std::wstring_view text = TextModel().GetText();
+    std::wstring_view text = TextModel().Text();
 
     for (const auto& metrics : metrics_list) {
 
@@ -335,7 +335,7 @@ void TextBox::OnDoubleClick(const DoubleClickInfo& event_info) {
 
 void TextBox::SelectWordAtIndex(std::size_t index, textual::SelectionOption selection_option) {
 
-    auto word_range = word_extractor_(TextModel().GetText(), index);
+    auto word_range = word_extractor_(TextModel().Text(), index);
     SetSelectionRange(word_range, selection_option);
 }
 
@@ -448,7 +448,7 @@ const Range& TextBox::SelectionRange() const {
 
 void TextBox::SetSelectionRange(const Range& range, textual::SelectionOption selection_option) {
 
-    std::wstring_view text = module_context_->TextModel().GetText();
+    std::wstring_view text = module_context_->TextModel().Text();
 
     auto revised_range = Range::FromIndexPair(
         (std::min)(range.index, text.length()),
@@ -489,7 +489,7 @@ void TextBox::OnInnerSelectionChanged(const internal::TextBoxSelectionChangedInf
 
 std::wstring TextBox::SelectedText() const {
 
-    std::wstring_view text = TextModel().GetText();
+    std::wstring_view text = TextModel().Text();
     auto selection_range = this->SelectionRange();
     auto selected_text = text.substr(selection_range.index, selection_range.length);
     return std::wstring{ selected_text };

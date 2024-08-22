@@ -3,6 +3,7 @@
 #include <zaf/base/range.h>
 #include <zaf/control/control.h>
 #include <zaf/control/event/text_changed_info.h>
+#include <zaf/control/textual/line_break.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/graphic/text/line_spacing.h>
@@ -83,6 +84,9 @@ public:
 
     bool IsMultiline() const noexcept;
     void SetIsMultiline(bool is_multiline);
+
+    textual::LineBreak LineBreak() const noexcept;
+    void SetLineBreak(textual::LineBreak line_break);
 
     /**
     Gets the default text color of the textual control in current state.
@@ -409,6 +413,7 @@ private:
 ZAF_OBJECT_BEGIN(TextualControl);
 ZAF_OBJECT_PROPERTY(IgnoreTailingWhiteSpaces)
 ZAF_OBJECT_PROPERTY(IsMultiline)
+ZAF_OBJECT_PROPERTY(LineBreak)
 ZAF_OBJECT_PROPERTY(Text)
 ZAF_OBJECT_PROPERTY(TextLength)
 ZAF_OBJECT_PROPERTY(TextColor)
