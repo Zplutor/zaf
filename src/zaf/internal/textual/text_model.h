@@ -163,13 +163,9 @@ private:
     void InnerSetTextBackColor(const Color& color);
     void InnerSetTextBackColorInRange(const Color& color, const Range& range);
 
-    std::optional<Range> TryReplaceStyledTextSliceAsSingleLine(
-        const Range& replaced_range,
-        const textual::StyledText& slice);
-
-    void InnerReplaceStyledTextSlice(
-        const Range& replaced_range,
-        const textual::StyledText& slice);
+    void InnerSetStyledTextInRange(
+        const textual::StyledText& slice,
+        const Range& replaced_range);
 
     void RaiseInlineObjectAttachedEvent(
         std::vector<std::shared_ptr<textual::InlineObject>> objects);

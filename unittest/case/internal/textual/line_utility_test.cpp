@@ -8,7 +8,7 @@ TEST(LineUtilityTest, ReviseLinesInStyledText_NoMultiline) {
 
     auto test = [](const std::wstring& original_text, const std::wstring& expected) {
         StyledText styled_text(original_text);
-        LineUtility::ReviseLinesInStyledText(styled_text, false, LineBreak::Unspecific);
+        ReviseLinesInStyledText(styled_text, false, LineBreak::Unspecific);
         return styled_text.Text() == expected;
     };
 
@@ -23,11 +23,50 @@ TEST(LineUtilityTest, ReviseLinesInStyledText_NoMultiline) {
 }
 
 
+TEST(LineUtilityTest, ReviseLinesInStyledTextView_NoMultiline) {
+
+    StyledText styled_text{ L"line" };
+    auto revised_styled_text = ReviseLinesInStyledTextView(
+        styled_text,
+        false,
+        LineBreak::Unspecific);
+
+    ASSERT_TRUE(
+        std::holds_alternative<std::reference_wrapper<const StyledText>>(revised_styled_text));
+    ASSERT_EQ(
+        std::get<std::reference_wrapper<const StyledText>>(revised_styled_text).get().Text(), 
+        L"line");
+
+    styled_text = StyledText(L"line1\r\nline2\r\nline3");
+    revised_styled_text = ReviseLinesInStyledTextView(
+        styled_text,
+        false,
+        LineBreak::Unspecific);
+    ASSERT_TRUE(std::holds_alternative<StyledText>(revised_styled_text));
+    ASSERT_EQ(std::get<StyledText>(revised_styled_text).Text(), L"line1");
+}
+
+
 TEST(LineUtilityTest, ReviseLinesInText_NoMultiline) {
 
     std::wstring text{ L"line1\r\nline2\r\nline3" };
-    LineUtility::ReviseLinesInText(text, false, LineBreak::Unspecific);
+    ReviseLinesInText(text, false, LineBreak::Unspecific);
     ASSERT_EQ(text, L"line1");
+}
+
+
+TEST(LineUtilityTest, ReviseLinesInTextView_NoMultiline) {
+
+    auto revised_text = ReviseLinesInTextView(L"line", false, LineBreak::Unspecific);
+    ASSERT_TRUE(std::holds_alternative<std::wstring_view>(revised_text));
+    ASSERT_EQ(std::get<std::wstring_view>(revised_text), L"line");
+
+    revised_text = ReviseLinesInTextView(
+        L"line1\r\nline2\r\nline3",
+        false,
+        LineBreak::Unspecific);
+    ASSERT_TRUE(std::holds_alternative<std::wstring_view>(revised_text));
+    ASSERT_EQ(std::get<std::wstring_view>(revised_text), L"line1");
 }
 
 
@@ -39,7 +78,7 @@ TEST(LineUtilityTest, ReviseLinesInStyledText_LineBreaks) {
         const std::wstring& expected) {
 
         StyledText styled_text(original_text);
-        LineUtility::ReviseLinesInStyledText( styled_text, true, line_break);
+        ReviseLinesInStyledText( styled_text, true, line_break);
         return styled_text.Text() == expected;
     };
 
@@ -82,6 +121,44 @@ TEST(LineUtilityTest, ReviseLinesInStyledText_LineBreaks) {
 }
 
 
+TEST(LineUtilityTest, ReviseLinesInStyledTextView_LineBreaks) {
+
+    auto test = [](
+        LineBreak line_break,
+        const std::wstring& original_text,
+        bool is_view,
+        const std::wstring& expected) {
+
+        StyledText styled_text(original_text);
+        auto revised = ReviseLinesInStyledTextView(
+            styled_text,
+            true,
+            line_break);
+
+        if (is_view != std::holds_alternative<std::reference_wrapper<const StyledText>>(revised)) {
+            return false;
+        }
+
+        if (is_view) {
+            return
+                std::get<std::reference_wrapper<const StyledText>>(revised).get().Text() ==
+                expected;
+        }
+        else {
+            return std::get<StyledText>(revised).Text() == expected;
+        }
+    };
+
+    ASSERT_TRUE(test(LineBreak::Unspecific, L"l1\r\nl2\rl3\nl4", true, L"l1\r\nl2\rl3\nl4"));
+    ASSERT_TRUE(test(LineBreak::CRLF, L"l1\r\nl2\rl3\nl4", false, L"l1\r\nl2\r\nl3\r\nl4"));
+    ASSERT_TRUE(test(LineBreak::CRLF, L"l1\r\nl2\r\nl3", true, L"l1\r\nl2\r\nl3"));
+    ASSERT_TRUE(test(LineBreak::CR, L"l1\r\nl2\rl3\nl4", false, L"l1\rl2\rl3\rl4"));
+    ASSERT_TRUE(test(LineBreak::CR, L"l1\rl2\rl3", true, L"l1\rl2\rl3"));
+    ASSERT_TRUE(test(LineBreak::LF, L"l1\r\nl2\rl3\nl4", false, L"l1\nl2\nl3\nl4"));
+    ASSERT_TRUE(test(LineBreak::LF, L"l1\nl2\nl3", true, L"l1\nl2\nl3"));
+}
+
+
 TEST(LineUtilityTest, ReviseLinesInText_LineBreaks) {
 
     auto test = [](
@@ -90,7 +167,7 @@ TEST(LineUtilityTest, ReviseLinesInText_LineBreaks) {
         const std::wstring& expected) {
 
         std::wstring text(original_text);
-        LineUtility::ReviseLinesInText(text, true, line_break);
+        ReviseLinesInText(text, true, line_break);
         return text == expected;
     };
 
@@ -98,4 +175,35 @@ TEST(LineUtilityTest, ReviseLinesInText_LineBreaks) {
     ASSERT_TRUE(test(LineBreak::CRLF, L"l1\r\nl2\rl3\nl4", L"l1\r\nl2\r\nl3\r\nl4"));
     ASSERT_TRUE(test(LineBreak::CR, L"l1\r\nl2\rl3\nl4", L"l1\rl2\rl3\rl4"));
     ASSERT_TRUE(test(LineBreak::LF, L"l1\r\nl2\rl3\nl4", L"l1\nl2\nl3\nl4"));
+}
+
+
+TEST(LineUtilityTest, ReviseLinesInTextView_LineBreaks) {
+
+    auto test = [](
+        LineBreak line_break,
+        const std::wstring& original_text,
+        bool is_string_view,
+        const std::wstring& expected) {
+
+        auto revised_text = ReviseLinesInTextView(original_text, true, line_break);
+        if (is_string_view != std::holds_alternative<std::wstring_view>(revised_text)) {
+            return false;
+        }
+
+        if (is_string_view) {
+            return std::get<std::wstring_view>(revised_text) == expected;
+        }
+        else {
+            return std::get<std::wstring>(revised_text) == expected;
+        }
+    };
+
+    ASSERT_TRUE(test(LineBreak::Unspecific, L"l1\r\nl2\rl3\nl4", true, L"l1\r\nl2\rl3\nl4"));
+    ASSERT_TRUE(test(LineBreak::CRLF, L"l1\r\nl2\rl3\nl4", false, L"l1\r\nl2\r\nl3\r\nl4"));
+    ASSERT_TRUE(test(LineBreak::CRLF, L"l1\r\nl2\r\nl3", true, L"l1\r\nl2\r\nl3"));
+    ASSERT_TRUE(test(LineBreak::CR, L"l1\r\nl2\rl3\nl4", false, L"l1\rl2\rl3\rl4"));
+    ASSERT_TRUE(test(LineBreak::CR, L"l1\rl2\rl3", true, L"l1\rl2\rl3"));
+    ASSERT_TRUE(test(LineBreak::LF, L"l1\r\nl2\rl3\nl4", false, L"l1\nl2\nl3\nl4"));
+    ASSERT_TRUE(test(LineBreak::LF, L"l1\nl2\nl3", true, L"l1\nl2\nl3"));
 }
