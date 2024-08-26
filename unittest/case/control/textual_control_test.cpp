@@ -5,6 +5,9 @@
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/control/textual/styled_text.h>
 
+using namespace zaf;
+using namespace zaf::textual;
+
 TEST(TextualControlTest, IsMultiline) {
 
     auto control = zaf::Create<zaf::TextualControl>();
@@ -143,6 +146,84 @@ TEST(TextualControlTest, SetMultilineTextInRangeToSingleLineControl) {
     ASSERT_TRUE(test(L"00000", { 2, 0 }, L"\nBB", L"00000"));
     ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\n", L"00AA000"));
     ASSERT_TRUE(test(L"00000", { 2, 0 }, L"AA\nBB", L"00AA000"));
+}
+
+
+/**
+Checks the default line break.
+*/
+TEST(TextualControlTest, LineBreak) {
+    auto control = Create<TextualControl>();
+    ASSERT_EQ(control->LineBreak(), LineBreak::Unspecific);
+}
+
+
+TEST(TextualControlTest, SetLineBreak) {
+
+}
+
+
+TEST(TextualControlTest, SetMultilineText_LineBreak) {
+
+    auto test = [](
+        LineBreak line_break, 
+        const std::wstring& original,
+        const std::wstring& expected) {
+    
+        auto control = Create<TextualControl>();
+        control->SetLineBreak(line_break);
+        control->SetText(original);
+        return control->Text() == expected;
+    };
+
+    ASSERT_TRUE(test(LineBreak::Unspecific, L"l1\nl2\rl3\r\nl4", L"l1\nl2\rl3\r\nl4"));
+    ASSERT_TRUE(test(LineBreak::CRLF, L"l1\nl2\rl3\r\nl4", L"l1\r\nl2\r\nl3\r\nl4"));
+    ASSERT_TRUE(test(LineBreak::CR, L"l1\nl2\rl3\r\nl4", L"l1\rl2\rl3\rl4"));
+    ASSERT_TRUE(test(LineBreak::LF, L"l1\nl2\rl3\r\nl4", L"l1\nl2\nl3\nl4"));
+}
+
+
+TEST(TextualControlTest, SetMultilineTextInRange_LineBreak) {
+
+    auto test = [](
+        LineBreak line_break,
+        const std::wstring& original,
+        const Range& range,
+        const std::wstring& text_in_range,
+        const std::wstring& expected) {
+
+        auto control = Create<TextualControl>();
+        control->SetLineBreak(line_break);
+        control->SetText(original);
+        control->SetTextInRange(text_in_range, range);
+        return control->Text() == expected;
+    };
+
+    ASSERT_TRUE(test(LineBreak::Unspecific, L"00", {}, L"1\n2\r3\r\n4", L"1\n2\r3\r\n400"));
+    ASSERT_TRUE(test(LineBreak::CRLF, L"00", {}, L"1\n2\r3\r\n4", L"1\r\n2\r\n3\r\n400"));
+    ASSERT_TRUE(test(LineBreak::CR, L"00", {}, L"1\n2\r3\r\n4", L"1\r2\r3\r400"));
+    ASSERT_TRUE(test(LineBreak::LF, L"00", {}, L"1\n2\r3\r\n4", L"1\n2\n3\n400"));
+}
+
+
+TEST(TextualControlTest, SetMultilineStyledText_LineBreak) {
+
+    auto test = [](
+        LineBreak line_break,
+        const std::wstring& original,
+        const std::wstring& expected) {
+
+        auto control = Create<TextualControl>();
+        control->SetLineBreak(line_break);
+        StyledText styled_text{ original };
+        control->SetStyledText(std::move(styled_text));
+        return control->Text() == expected;
+    };
+
+    ASSERT_TRUE(test(LineBreak::Unspecific, L"l1\nl2\rl3\r\nl4", L"l1\nl2\rl3\r\nl4"));
+    ASSERT_TRUE(test(LineBreak::CRLF, L"l1\nl2\rl3\r\nl4", L"l1\r\nl2\r\nl3\r\nl4"));
+    ASSERT_TRUE(test(LineBreak::CR, L"l1\nl2\rl3\r\nl4", L"l1\rl2\rl3\rl4"));
+    ASSERT_TRUE(test(LineBreak::LF, L"l1\nl2\rl3\r\nl4", L"l1\nl2\nl3\nl4"));
 }
 
 
