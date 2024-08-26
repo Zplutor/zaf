@@ -550,6 +550,24 @@ TEST(TextBoxTest, HandleEnter) {
         ASSERT_EQ(text_box.Text(), L"00\r\n000");
         ASSERT_EQ(text_box.SelectionRange(), zaf::Range(4, 0));
 
+        //Press Enter with CRLF line break.
+        text_box.SetText(L"");
+        text_box.SetLineBreak(LineBreak::CRLF);
+        window.Messager().SendWMKEYDOWN(zaf::Key::Enter);
+        ASSERT_EQ(text_box.Text(), L"\r\n");
+
+        //Press Enter with CR line break.
+        text_box.SetText(L"");
+        text_box.SetLineBreak(LineBreak::CR);
+        window.Messager().SendWMKEYDOWN(zaf::Key::Enter);
+        ASSERT_EQ(text_box.Text(), L"\r");
+
+        //Press Enter with LF line break.
+        text_box.SetText(L"");
+        text_box.SetLineBreak(LineBreak::LF);
+        window.Messager().SendWMKEYDOWN(zaf::Key::Enter);
+        ASSERT_EQ(text_box.Text(), L"\n");
+
         //Press Enter in a single line control.
         text_box.SetIsMultiline(false);
         text_box.SetText(L"11222");

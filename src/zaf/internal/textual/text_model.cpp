@@ -24,10 +24,17 @@ void TextModel::SetIsMultiline(bool is_multiline) {
     //Remove lines if multiline is set to false.
     if (!is_multiline_) {
 
-        const auto& text = this->Text();
-        auto line_break_index = text.find_first_of(L"\r\n");
-        if (line_break_index != std::wstring::npos) {
-            this->SetTextInRange({}, { line_break_index, text.length() - line_break_index });
+        bool has_revised = internal::ReviseLinesInStyledText(
+            styled_text_,
+            is_multiline_,
+            line_break_,
+            [this](const Range& range, std::size_t new_length) {
+                ranged_text_color_pickers_.ReplaceSpan(range, new_length);
+                ranged_text_back_color_pickers_.ReplaceSpan(range, new_length);
+            });
+
+        if (has_revised) {
+            RaiseChangedEvent(TextModelAttribute::All);
         }
     }
 }
@@ -45,6 +52,23 @@ void TextModel::SetLineBreak(textual::LineBreak line_break) {
     }
 
     line_break_ = line_break;
+
+    //Revise line breaks in the current styled text.
+    if (is_multiline_) {
+
+        bool has_revised = internal::ReviseLinesInStyledText(
+            styled_text_,
+            is_multiline_,
+            line_break_,
+            [this](const Range& range, std::size_t new_length) {
+                ranged_text_color_pickers_.ReplaceSpan(range, new_length);
+                ranged_text_back_color_pickers_.ReplaceSpan(range, new_length);
+            });
+
+        if (has_revised) {
+            RaiseChangedEvent(TextModelAttribute::All);
+        }
+    }
 }
 
 
@@ -54,7 +78,7 @@ const textual::StyledText& TextModel::StyledText() const noexcept {
 
 void TextModel::SetStyledText(textual::StyledText styled_text) {
 
-    internal::ReviseLinesInStyledText(styled_text, is_multiline_, line_break_);
+    internal::ReviseLinesInStyledText(styled_text, is_multiline_, line_break_, nullptr);
 
     //Replace the old styled text.
     styled_text_ = std::move(styled_text);

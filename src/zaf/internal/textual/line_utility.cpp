@@ -317,31 +317,50 @@ private:
 template<typename T>
 class Reviser {
 public:
-    static void ReviseLines(T& text, bool supports_multiline, LineBreak line_break) {
+    static bool ReviseLines(
+        T& text,
+        bool supports_multiline, 
+        LineBreak line_break,
+        const RangeReplacedCallback& range_replaced_callback) {
 
         if (!supports_multiline) {
-            RemoveRedundantLines(text);
-            return;
+            return RemoveRedundantLines(text, range_replaced_callback);
         }
 
         if (line_break != LineBreak::Unspecific) {
-            ReplaceLineBreaks(text, line_break);
+            return ReplaceLineBreaks(text, line_break, range_replaced_callback);
         }
+
+        return false;
     }
 
 private:
-    static void RemoveRedundantLines(T& text) {
+    static bool RemoveRedundantLines(
+        T& text,
+        const RangeReplacedCallback& range_replaced_callback) {
 
         auto line_break_index = text.FindFirstOf(L"\r\n", 0);
-        if (line_break_index != std::wstring::npos) {
-            text.Erase(line_break_index);
+        if (line_break_index == std::wstring::npos) {
+            return false;
         }
+
+        auto length = text.Length();
+        text.Erase(line_break_index);
+
+        if (range_replaced_callback) {
+            range_replaced_callback({ line_break_index, length - line_break_index }, 0);
+        }
+        return true;
     }
 
-    static void ReplaceLineBreaks(T& text, LineBreak new_line_break) {
+    static bool ReplaceLineBreaks(
+        T& text,
+        LineBreak new_line_break,
+        const RangeReplacedCallback& range_replaced_callback) {
 
         auto new_line_break_string = GetLineBreakString(new_line_break);
 
+        bool has_replaced{};
         std::size_t current_index{};
         while (current_index < text.Length()) {
 
@@ -360,24 +379,39 @@ private:
 
             auto old_line_break_string = text.SubString(line_break_index, line_break_length);
             if (old_line_break_string != new_line_break_string) {
+
                 text.Replace(line_break_index, line_break_length, new_line_break_string);
+
+                if (range_replaced_callback) {
+                    range_replaced_callback(
+                        { line_break_index, line_break_length },
+                        new_line_break_string.length());
+                }
+                has_replaced = true;
             }
 
             current_index = line_break_index + new_line_break_string.length();
         }
+
+        return has_replaced;
     }
 };
 
 }
 
 
-void ReviseLinesInStyledText(
+bool ReviseLinesInStyledText(
     StyledText& styled_text, 
     bool supports_multiline,
-    LineBreak line_break) {
+    LineBreak line_break,
+    const RangeReplacedCallback& range_replaced_callback) {
 
     StyledTextShim styled_text_shim{ styled_text };
-    Reviser<StyledTextShim>::ReviseLines(styled_text_shim, supports_multiline, line_break);
+    return Reviser<StyledTextShim>::ReviseLines(
+        styled_text_shim,
+        supports_multiline,
+        line_break,
+        range_replaced_callback);
 }
 
 
@@ -391,7 +425,8 @@ std::variant<std::reference_wrapper<const StyledText>, StyledText>
     Reviser<StyledTextViewShim>::ReviseLines(
         styled_text_view_shim,
         supports_multiline,
-        line_break);
+        line_break,
+        nullptr);
 
     return styled_text_view_shim.Detach();
 }
@@ -403,7 +438,7 @@ void ReviseLinesInText(
     LineBreak line_break) {
 
     TextShim text_shim{ text };
-    Reviser<TextShim>::ReviseLines(text_shim, supports_multiline, line_break);
+    Reviser<TextShim>::ReviseLines(text_shim, supports_multiline, line_break, nullptr);
 }
 
 
@@ -413,7 +448,7 @@ std::variant<std::wstring_view, std::wstring> ReviseLinesInTextView(
     LineBreak line_break) {
 
     TextViewShim text_view_shim{ text_view };
-    Reviser<TextViewShim>::ReviseLines(text_view_shim, supports_multiline, line_break);
+    Reviser<TextViewShim>::ReviseLines(text_view_shim, supports_multiline, line_break, nullptr);
     return text_view_shim.Detach();
 }
 

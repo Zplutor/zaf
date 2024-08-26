@@ -160,6 +160,21 @@ TEST(TextualControlTest, LineBreak) {
 
 TEST(TextualControlTest, SetLineBreak) {
 
+    auto test = [](
+        LineBreak line_break,
+        const std::wstring& original,
+        const std::wstring& expected) {
+
+        auto control = Create<TextualControl>();
+        control->SetText(original);
+        control->SetLineBreak(line_break);
+        return control->Text() == expected;
+    };
+
+    ASSERT_TRUE(test(LineBreak::Unspecific, L"l1\nl2\rl3\r\nl4", L"l1\nl2\rl3\r\nl4"));
+    ASSERT_TRUE(test(LineBreak::CRLF, L"l1\nl2\rl3\r\nl4", L"l1\r\nl2\r\nl3\r\nl4"));
+    ASSERT_TRUE(test(LineBreak::CR, L"l1\nl2\rl3\r\nl4", L"l1\rl2\rl3\rl4"));
+    ASSERT_TRUE(test(LineBreak::LF, L"l1\nl2\rl3\r\nl4", L"l1\nl2\nl3\nl4"));
 }
 
 

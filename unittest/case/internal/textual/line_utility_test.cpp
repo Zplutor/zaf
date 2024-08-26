@@ -8,7 +8,7 @@ TEST(LineUtilityTest, ReviseLinesInStyledText_NoMultiline) {
 
     auto test = [](const std::wstring& original_text, const std::wstring& expected) {
         StyledText styled_text(original_text);
-        ReviseLinesInStyledText(styled_text, false, LineBreak::Unspecific);
+        ReviseLinesInStyledText(styled_text, false, LineBreak::Unspecific, nullptr);
         return styled_text.Text() == expected;
     };
 
@@ -78,7 +78,7 @@ TEST(LineUtilityTest, ReviseLinesInStyledText_LineBreaks) {
         const std::wstring& expected) {
 
         StyledText styled_text(original_text);
-        ReviseLinesInStyledText( styled_text, true, line_break);
+        ReviseLinesInStyledText( styled_text, true, line_break, nullptr);
         return styled_text.Text() == expected;
     };
 
