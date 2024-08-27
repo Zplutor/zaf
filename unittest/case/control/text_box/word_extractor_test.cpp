@@ -51,26 +51,32 @@ TEST(WordExtractorTest, Default) {
     }
 
     {
-        constexpr auto text = L"a\r\n\r\n\r\nb";
-        ASSERT_EQ(extractor(text, 1), Range(1, 2));
-        ASSERT_EQ(extractor(text, 2), Range(1, 2));
-        ASSERT_EQ(extractor(text, 3), Range(3, 2));
-        ASSERT_EQ(extractor(text, 4), Range(3, 2));
-        ASSERT_EQ(extractor(text, 5), Range(5, 2));
-        ASSERT_EQ(extractor(text, 6), Range(5, 2));
+        constexpr auto text = L"\r\nl\r\n\r\n";
+        ASSERT_EQ(extractor(text, 0), Range(0, 0));
+        ASSERT_EQ(extractor(text, 1), Range(0, 0));
+        ASSERT_EQ(extractor(text, 2), Range(2, 1));
+        ASSERT_EQ(extractor(text, 3), Range(2, 1));
+        ASSERT_EQ(extractor(text, 4), Range(2, 1));
+        ASSERT_EQ(extractor(text, 5), Range(5, 0));
+        ASSERT_EQ(extractor(text, 6), Range(5, 0));
+        ASSERT_EQ(extractor(text, 7), Range(7, 0));
     }
 
     {
-        constexpr auto text = L"a\r\r\rb";
+        constexpr auto text = L"\rl\r\r";
+        ASSERT_EQ(extractor(text, 0), Range(0, 0));
         ASSERT_EQ(extractor(text, 1), Range(1, 1));
-        ASSERT_EQ(extractor(text, 2), Range(2, 1));
-        ASSERT_EQ(extractor(text, 3), Range(3, 1));
+        ASSERT_EQ(extractor(text, 2), Range(1, 1));
+        ASSERT_EQ(extractor(text, 3), Range(3, 0));
+        ASSERT_EQ(extractor(text, 4), Range(4, 0));
     }
 
     {
-        constexpr auto text = L"a\n\n\nb";
+        constexpr auto text = L"\nl\n\n";
+        ASSERT_EQ(extractor(text, 0), Range(0, 0));
         ASSERT_EQ(extractor(text, 1), Range(1, 1));
-        ASSERT_EQ(extractor(text, 2), Range(2, 1));
-        ASSERT_EQ(extractor(text, 3), Range(3, 1));
+        ASSERT_EQ(extractor(text, 2), Range(1, 1));
+        ASSERT_EQ(extractor(text, 3), Range(3, 0));
+        ASSERT_EQ(extractor(text, 4), Range(4, 0));
     }
 }

@@ -37,7 +37,6 @@ Gets the default word extractor used in text box.
     The following character categories are considered as a word respectively:
     - Alphabetic and numeric characters.
     - Blank characters, such as space and tab.
-    - Adjacent `\r` and `\n`.
 */
 WordExtractor DefaultWordExtractor() noexcept;
 
