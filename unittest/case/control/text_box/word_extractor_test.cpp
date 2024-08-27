@@ -40,4 +40,37 @@ TEST(WordExtractorTest, Default) {
         ASSERT_EQ(extractor(text, 12), Range(11, 1));
         ASSERT_EQ(extractor(text, 13), Range(11, 1));
     }
+    
+    {
+        constexpr auto text = L"a  \t  b";
+        ASSERT_EQ(extractor(text, 1), Range(1, 5));
+        ASSERT_EQ(extractor(text, 2), Range(1, 5));
+        ASSERT_EQ(extractor(text, 3), Range(1, 5));
+        ASSERT_EQ(extractor(text, 4), Range(1, 5));
+        ASSERT_EQ(extractor(text, 5), Range(1, 5));
+    }
+
+    {
+        constexpr auto text = L"a\r\n\r\n\r\nb";
+        ASSERT_EQ(extractor(text, 1), Range(1, 2));
+        ASSERT_EQ(extractor(text, 2), Range(1, 2));
+        ASSERT_EQ(extractor(text, 3), Range(3, 2));
+        ASSERT_EQ(extractor(text, 4), Range(3, 2));
+        ASSERT_EQ(extractor(text, 5), Range(5, 2));
+        ASSERT_EQ(extractor(text, 6), Range(5, 2));
+    }
+
+    {
+        constexpr auto text = L"a\r\r\rb";
+        ASSERT_EQ(extractor(text, 1), Range(1, 1));
+        ASSERT_EQ(extractor(text, 2), Range(2, 1));
+        ASSERT_EQ(extractor(text, 3), Range(3, 1));
+    }
+
+    {
+        constexpr auto text = L"a\n\n\nb";
+        ASSERT_EQ(extractor(text, 1), Range(1, 1));
+        ASSERT_EQ(extractor(text, 2), Range(2, 1));
+        ASSERT_EQ(extractor(text, 3), Range(3, 1));
+    }
 }

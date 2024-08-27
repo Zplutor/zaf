@@ -13,7 +13,7 @@ A WordExtractor is used to extract a range of the completed word around the inde
     The input text from which to extract the word range.
 
 @param index 
-    The index around which to extract the completed word range. It may exceed the lenght of the 
+    The index around which to extract the completed word range. It may exceed the length of the 
     text.
 
 @return 
@@ -25,7 +25,19 @@ using WordExtractor = std::function<
 
 
 /**
-Returns the default word extractor used in text box.
+Gets the default word extractor used in text box.
+
+@return
+    The default word extractor.
+
+@post
+    The returned value is not null.
+
+@details
+    The following character categories are considered as a word respectively:
+    - Alphabetic and numeric characters.
+    - Blank characters, such as space and tab.
+    - Adjacent `\r` and `\n`.
 */
 WordExtractor DefaultWordExtractor() noexcept;
 
