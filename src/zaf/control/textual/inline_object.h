@@ -27,6 +27,8 @@ namespace textual {
 
 class InlineObjectStore;
 
+constexpr wchar_t InlineObjectChar = L'\uFFFC';
+
 class InlineObject : 
     public Object, 
     public XMLSerializable,

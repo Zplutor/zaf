@@ -256,17 +256,46 @@ public:
     @param range
         The range within the existing text where the inline object will be attached.
 
-    @throw std::logic_error
-        Thrown if the inline_object is nullptr, or if the inline_object has been attached to a
-        textual control, or if the range is not entirely within the existing text.
+    @pre
+        - The inline object is not null.
+        - The inline object has not been attached to any textual control.
+        - The range is entirely within the existing text.
 
-    @remark
-        After being attached, the inline object will be displayed instead of the sub-range text. 
-        Any content modification to the sub-range text will remove the attachment. If there are 
-        inline objects that are already attached with the sub-range text, they will be removed as
-        well.
+    @throw zaf::PreconditionError
+    @throw std::bad_alloc
+
+    @details
+        After being attached, the existing text will not change, and the inline object will be 
+        displayed instead of the sub-range text. Any content modification to the sub-range text 
+        will remove the attachment. If there are inline objects that are already attached with the 
+        sub-range text, they will be removed as well.
     */
     void AttachInlineObjectToRange(
+        std::shared_ptr<textual::InlineObject> inline_object,
+        const Range& range);
+
+    /**
+    Sets the specified inline object to the specified range within the existing text.
+
+    @param inline_object
+        The inline object to set.
+
+    @param range
+        The range within the existing text where the inline object will be set.
+
+    @pre
+        - The inline object is not null.
+        - The inline object has not been attached to any textual control.
+        - The range is entirely within the existing text.
+
+    @throw zaf::PreconditionError
+    @throw std::bad_alloc
+
+    @details
+        This method is equivalent to calling SetTextInRange with the textual::InlineObjectChar and
+        then calling AttachInlineObjectToRange to attach the inline object to the character.
+    */
+    void SetInlineObjectInRange(
         std::shared_ptr<textual::InlineObject> inline_object,
         const Range& range);
 

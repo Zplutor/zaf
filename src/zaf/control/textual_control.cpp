@@ -383,6 +383,15 @@ void TextualControl::AttachInlineObjectToRange(
 }
 
 
+void TextualControl::SetInlineObjectInRange(
+    std::shared_ptr<textual::InlineObject> inline_object,
+    const Range& range) {
+
+    this->SetTextInRange(std::wstring(1, textual::InlineObjectChar), range);
+    this->AttachInlineObjectToRange(std::move(inline_object), { range.index, 1 });
+}
+
+
 zaf::TextAlignment TextualControl::TextAlignment() const {
     return text_alignment_;
 }

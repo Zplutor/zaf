@@ -548,6 +548,17 @@ TEST(TextualControlTest, AttachInlineObjectAlreadyAttached) {
 }
 
 
+TEST(TextualControlTest, SetInlineObjectToRange) {
+
+    auto control = Create<TextualControl>();
+
+    auto object = Create<TestInlineObject>();
+    control->SetInlineObjectInRange(object, {});
+    ASSERT_EQ(control->Text(), std::wstring(1, InlineObjectChar));
+    ASSERT_EQ(control->GetInlineObjectAtIndex(0), object);
+}
+
+
 TEST(TextualControlTest, RemoveInlineObjectOnTextChanged) {
 
     auto control = zaf::Create<zaf::TextualControl>();
