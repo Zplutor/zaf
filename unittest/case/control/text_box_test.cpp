@@ -48,6 +48,13 @@ TEST(TextBoxTest, IsEditable) {
 }
 
 
+TEST(TextBoxTest, MaxLength) {
+
+    auto control = Create<TextBox>();
+    ASSERT_FALSE(control->MaxLength().has_value());
+}
+
+
 TEST(TextBoxTest, AllowUndo) {
 
     //TextBox allows undo by default.
@@ -652,4 +659,37 @@ TEST(TextBoxTest, Paste) {
     ASSERT_TRUE(control->CanUndo());
     ASSERT_EQ(control->Text(), L"Thisline1 is a text in clipboard!");
     ASSERT_EQ(control->SelectionRange(), zaf::Range(9, 0));
+}
+
+
+TEST(TextBoxTest, Input) {
+
+    auto control = Create<TextBox>();
+
+    //A not editable text box can not input.
+    control->SetIsEditable(false);
+    ASSERT_FALSE(control->Input(L"abc"));
+    ASSERT_EQ(control->Text(), L"");
+
+    //An editable text box can input.
+    control->SetIsEditable(true);
+    ASSERT_TRUE(control->Input(L"abc"));
+    ASSERT_EQ(control->Text(), L"abc");
+    //Input an empty text.
+    ASSERT_FALSE(control->Input(L""));
+
+    //Text will be truncated if max length is set.
+    control->SetText({});
+    control->SetMaxLength(1);
+    ASSERT_TRUE(control->Input(L"1122"));
+    ASSERT_EQ(control->Text(), L"1");
+    ASSERT_FALSE(control->Input(L"33"));
+    ASSERT_EQ(control->Text(), L"1");
+
+    //CRLF will not be broken.
+    control->SetText({});
+    ASSERT_FALSE(control->Input(L"\r\n2"));
+    ASSERT_EQ(control->Text(), L"");
+    ASSERT_TRUE(control->Input(L"1\r\n2"));
+    ASSERT_EQ(control->Text(), L"1");
 }

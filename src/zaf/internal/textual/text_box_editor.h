@@ -27,6 +27,14 @@ public:
         return can_edit_changed_event_.GetObservable();
     }
 
+    std::optional<std::size_t> MaxLength() const noexcept {
+        return max_length_;
+    }
+
+    void SetMaxLength(std::size_t max_length) noexcept {
+        max_length_ = max_length;
+    }
+
     bool AllowUndo() const noexcept {
         return allow_undo_;
     }
@@ -34,56 +42,47 @@ public:
     void SetAllowUndo(bool allow_undo);
 
     bool CanUndo() const noexcept;
-    bool Undo();
+    bool PerformUndo();
 
     bool CanRedo() const noexcept;
-    bool Redo();
+    bool PerformRedo();
 
     void HandleKeyDown(const KeyDownInfo& event_info);
     void HandleCharInput(const CharInputInfo& event_info);
 
     /**
-    Performs a paste operation to paste the content in the clipboard to the text box.
-
-    @return
-        Returns true if the content in the clipboard is pasted to the text box. Returns false if 
-        the text box is not editable or the content is not accepted by the text box.
-
     @throw zaf::COMError
     @throw std::bad_alloc
     */
     bool PerformPaste();
 
     /**
-    Performs a cut operation to cut the selected text to the clipboard.
-
-    @return
-        Returns true if the selected text is cut to the clipboard. Returns false if the text box
-        is not editable or there is no selected text.
-
     @throw zaf::COMError
     @throw std::bad_alloc
     */
     bool PerformCut();
+
+    bool PerformInput(std::wstring_view text);
 
     bool IsEditing() const {
         return is_editing_;
     }
 
 private:
+    void HandleEnter();
+
     std::unique_ptr<TextBoxEditCommand> HandleKey(Key key);
-    std::unique_ptr<TextBoxEditCommand> HandleEnter();
     std::unique_ptr<TextBoxEditCommand> HandleDelete();
     std::unique_ptr<TextBoxEditCommand> HandleBatchDelete();
     std::unique_ptr<TextBoxEditCommand> HandleBatchBackspace();
-    void HandleCut();
-    bool InnerCut();
-    void HandlePaste();
-    bool InnerPaste();
-    std::unique_ptr<TextBoxEditCommand> HandleChar(wchar_t ch);
     std::unique_ptr<TextBoxEditCommand> HandleBackspace();
 
-    std::unique_ptr<TextBoxEditCommand> CreateInsertTextCommand(std::wstring new_text);
+    bool InnerPerformInput(std::wstring text, bool can_truncate);
+    bool InputStyledText(textual::StyledText styled_text, bool can_truncate);
+    bool EnforceMaxLength(
+        textual::StyledText& styled_text, 
+        const Range& selection_range,
+        bool can_truncate) const;
 
     std::unique_ptr<TextBoxEditCommand> CreateCommand(
         textual::StyledText new_text,
@@ -91,8 +90,6 @@ private:
         bool set_caret_to_begin) const;
 
     void ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command);
-    bool HandleUndo();
-    bool HandleRedo();
 
     void OnTextModelChanged();
     void ClearCommands();
@@ -103,6 +100,7 @@ private:
 
     bool allow_undo_{ true };
     bool is_editing_{};
+    std::optional<std::size_t> max_length_;
 
     std::vector<std::unique_ptr<TextBoxEditCommand>> edit_commands_;
     std::size_t next_command_index_{};

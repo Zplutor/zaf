@@ -345,6 +345,13 @@ Range StyledText::ReviseItemRangeForSettingSubText(
 }
 
 
+void StyledText::Truncate(std::size_t new_length) {
+
+    ZAF_EXPECT(new_length <= this->Length());
+    this->SetTextInRange({}, { new_length, this->Length() - new_length });
+}
+
+
 StyledText StyledText::Clone() const {
 
     StyledText result{ this->text_ };

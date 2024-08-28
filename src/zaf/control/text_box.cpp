@@ -229,6 +229,16 @@ void TextBox::SetIsCaretEnabledWhenNotEditable(bool value) {
 }
 
 
+std::optional<std::size_t> TextBox::MaxLength() const noexcept {
+    return module_context_->Editor().MaxLength();
+}
+
+
+void TextBox::SetMaxLength(std::size_t max_length) noexcept {
+    module_context_->Editor().SetMaxLength(max_length);
+}
+
+
 bool TextBox::AllowUndo() const noexcept {
     return module_context_->Editor().AllowUndo();
 }
@@ -245,7 +255,7 @@ bool TextBox::CanUndo() const noexcept {
 
 
 bool TextBox::Undo() {
-    return module_context_->Editor().Undo();
+    return module_context_->Editor().PerformUndo();
 }
 
 
@@ -255,7 +265,7 @@ bool TextBox::CanRedo() const noexcept {
 
 
 bool TextBox::Redo() {
-    return module_context_->Editor().Redo();
+    return module_context_->Editor().PerformRedo();
 }
 
 
@@ -555,6 +565,11 @@ void TextBox::EnsureCaretVisible(const zaf::Rect& char_rect_at_caret) {
     if (x_changed || y_changed) {
         UpdateTextRect(text_rect_);
     }
+}
+
+
+bool TextBox::Input(std::wstring_view text) {
+    return module_context_->Editor().PerformInput(text);
 }
 
 

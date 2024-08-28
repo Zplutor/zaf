@@ -121,6 +121,8 @@ public:
     */
     Range SetTextInRange(std::wstring_view text, const Range& range);
 
+    Range SetStyledTextInRange(const StyledText& styled_text, const Range& range);
+
     /**
     Appends the specified text to the end of the existing text.
 
@@ -235,7 +237,21 @@ public:
     */
     StyledText GetSubText(const Range& range) const;
 
-    Range SetStyledTextInRange(const StyledText& styled_text, const Range& range);
+    /**
+    Truncates the styled text to the specified length.
+
+    @param new_length
+        The new length of the styled text.
+
+    @pre
+        The new length is less than or equal to the current length.
+
+    @throw zaf::PreconditionError
+
+    @throw ...
+        Any exception thrown by the handling of inline object detaching.
+    */
+    void Truncate(std::size_t new_length);
 
     StyledText Clone() const;
 

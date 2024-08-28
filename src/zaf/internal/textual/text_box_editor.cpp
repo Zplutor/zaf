@@ -106,64 +106,48 @@ bool TextBoxEditor::CanUndo() const noexcept {
 }
 
 
-bool TextBoxEditor::Undo() {
-    auto auto_reset = MakeAutoReset(is_editing_, true);
-    return HandleUndo();
-}
-
-
 bool TextBoxEditor::CanRedo() const noexcept {
     return next_command_index_ < edit_commands_.size();
 }
 
 
-bool TextBoxEditor::Redo() {
-    auto auto_reset = MakeAutoReset(is_editing_, true);
-    return HandleRedo();
-}
-
-
 void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
 
-    if (!can_edit_) {
-        return;
+    try {
+        auto key = event_info.Message().Key();
+        if (key == Key::Enter) {
+            HandleEnter();
+        }
+        else if ((key == Key::X) && Keyboard::IsCtrlDown()) {
+            PerformCut();
+        }
+        else if ((key == Key::V) && Keyboard::IsCtrlDown()) {
+            PerformPaste();
+        }
+        else if ((key == Key::Z) && Keyboard::IsCtrlDown()) {
+            PerformUndo();
+        }
+        else if ((key == Key::Y) && Keyboard::IsCtrlDown()) {
+            PerformRedo();
+        }
+        else {
+            if (!CanEdit()) {
+                return;
+            }
+            auto auto_reset = MakeAutoReset(is_editing_, true);
+            auto command = HandleKey(key);
+            if (command) {
+                ExecuteCommand(std::move(command));
+            }
+        }
     }
+    catch (...) {
 
-    auto auto_reset = MakeAutoReset(is_editing_, true);
-
-    auto key = event_info.Message().Key();
-    auto command = HandleKey(key);
-    if (!command) {
-        return;
     }
-
-    ExecuteCommand(std::move(command));
-}
-
-
-void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
-
-    if (!can_edit_) {
-        return;
-    }
-
-    auto auto_reset = MakeAutoReset(is_editing_, true);
-
-    auto ch = event_info.Message().Char();
-    auto command = HandleChar(ch);
-    if (!command) {
-        return;
-    }
-
-    ExecuteCommand(std::move(command));
 }
 
 
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
-
-    if (key == Key::Enter) {
-        return HandleEnter();
-    }
 
     if (key == Key::Delete) {
         if (Keyboard::IsCtrlDown()) {
@@ -179,36 +163,15 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
         return HandleBackspace();
     }
 
-    if ((key == Key::X) && Keyboard::IsCtrlDown()) {
-        HandleCut();
-        return nullptr;
-    }
-
-    if ((key == Key::V) && Keyboard::IsCtrlDown()) {
-        HandlePaste();
-        return nullptr;
-    }
-
-    if ((key == Key::Z) && Keyboard::IsCtrlDown()) {
-        HandleUndo();
-        return nullptr;
-    }
-
-    if ((key == Key::Y) && Keyboard::IsCtrlDown()) {
-        HandleRedo();
-        return nullptr;
-    }
-
     return nullptr;
 }
 
 
-std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleEnter() {
+void TextBoxEditor::HandleEnter() {
 
     if (Context().TextModel().IsMultiline()) {
-        return CreateInsertTextCommand(L"\r\n");
+        InnerPerformInput(L"\r\n", false);
     }
-    return nullptr;
 }
 
 
@@ -289,93 +252,6 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
 }
 
 
-void TextBoxEditor::HandleCut() {
-    try {
-        InnerCut();
-    }
-    catch (...) {
-
-    }
-}
-
-
-bool TextBoxEditor::InnerCut() {
-
-    if (!CanEdit()) {
-        return false;
-    }
-
-    if (!Context().KeyboardInputHandler().PerformCopy()) {
-        return false;
-    }
-
-    //Remove the selected text.
-    auto selection_range = Context().SelectionManager().SelectionRange();
-    auto command = CreateCommand({}, selection_range, true);
-    ExecuteCommand(std::move(command));
-    return true;
-}
-
-
-bool TextBoxEditor::PerformCut() {
-    auto auto_reset = MakeAutoReset(is_editing_, true);
-    return InnerCut();
-}
-
-
-void TextBoxEditor::HandlePaste() {
-    try {
-        InnerPaste();
-    }
-    catch (...) {
-
-    }
-}
-
-
-bool TextBoxEditor::InnerPaste() {
-
-    if (!CanEdit()) {
-        return false;
-    }
-
-    textual::StyledText styled_text;
-    bool is_styled_text{};
-    bool is_loaded = LoadStyledTextFromClipboard(styled_text, is_styled_text);
-    if (!is_loaded) {
-        return false;
-    }
-
-    if (!is_styled_text) {
-        const auto& default_style = Context().TextModel().StyledText().DefaultStyle();
-        styled_text.SetDefaultStyle(default_style);
-    }
-
-    //Replace the current selection with the text in clipboard.
-    auto selection_range = Context().SelectionManager().SelectionRange();
-    auto command = CreateCommand(std::move(styled_text), selection_range, false);
-    ExecuteCommand(std::move(command));
-    return true;
-}
-
-
-bool TextBoxEditor::PerformPaste() {
-    auto auto_reset = MakeAutoReset(is_editing_, true);
-    return InnerPaste();
-}
-
-
-std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleChar(wchar_t ch) {
-
-    //Ignore specific control chars.
-    if (ShouldIgnoreChar(ch)) {
-        return nullptr;
-    }
-
-    return CreateInsertTextCommand(std::wstring(1, ch));
-}
-
-
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBackspace() {
 
     const auto& selection_range = Context().SelectionManager().SelectionRange();
@@ -399,15 +275,124 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBackspace() {
 }
 
 
-std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateInsertTextCommand(std::wstring new_text) {
+bool TextBoxEditor::PerformCut() {
 
-    const auto& selection_range = Context().SelectionManager().SelectionRange();
+    if (!CanEdit()) {
+        return false;
+    }
 
-    textual::StyledText styled_text{ std::move(new_text) };
-    //The default style should be the same as the current styled text.
-    styled_text.SetDefaultStyle(Context().TextModel().StyledText().DefaultStyle());
+    auto auto_reset = MakeAutoReset(is_editing_, true);
 
-    return CreateCommand(std::move(styled_text), selection_range, false);
+    if (!Context().KeyboardInputHandler().PerformCopy()) {
+        return false;
+    }
+
+    //Remove the selected text.
+    auto selection_range = Context().SelectionManager().SelectionRange();
+    auto command = CreateCommand({}, selection_range, true);
+    ExecuteCommand(std::move(command));
+    return true;
+}
+
+
+bool TextBoxEditor::PerformPaste() {
+
+    if (!CanEdit()) {
+        return false;
+    }
+
+    textual::StyledText styled_text;
+    bool is_styled_text{};
+    bool is_loaded = LoadStyledTextFromClipboard(styled_text, is_styled_text);
+    if (!is_loaded) {
+        return false;
+    }
+
+    if (!is_styled_text) {
+        const auto& default_style = Context().TextModel().StyledText().DefaultStyle();
+        styled_text.SetDefaultStyle(default_style);
+    }
+
+    return InputStyledText(std::move(styled_text), true);
+}
+
+
+void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
+
+    auto ch = event_info.Message().Char();
+    if (ShouldIgnoreChar(ch)) {
+        return;
+    }
+
+    InnerPerformInput(std::wstring(1, ch), false);
+}
+
+
+bool TextBoxEditor::PerformInput(std::wstring_view text) {
+    return InnerPerformInput(std::wstring{ text }, true);
+}
+
+
+bool TextBoxEditor::InnerPerformInput(std::wstring text, bool can_truncate) {
+
+    if (!CanEdit()) {
+        return false;
+    }
+
+    return InputStyledText(textual::StyledText{ std::move(text) }, can_truncate);
+}
+
+
+bool TextBoxEditor::InputStyledText(textual::StyledText styled_text, bool can_truncate) {
+
+    auto selection_range = Context().SelectionManager().SelectionRange();
+
+    if (!EnforceMaxLength(styled_text, selection_range, can_truncate)) {
+        return false;
+    }
+
+    if (styled_text.Text().empty()) {
+        return false;
+    }
+
+    auto command = CreateCommand(std::move(styled_text), selection_range, false);
+
+    auto auto_reset = MakeAutoReset(is_editing_, true);
+    ExecuteCommand(std::move(command));
+    return true;
+}
+
+
+bool TextBoxEditor::EnforceMaxLength(
+    textual::StyledText& styled_text,
+    const Range& selection_range, 
+    bool can_truncate) const {
+
+    if (!max_length_.has_value()) {
+        return true;
+    }
+
+    auto current_length = Context().TextModel().Text().length();
+    auto new_length = current_length - selection_range.length + styled_text.Length();
+    if (new_length <= *max_length_) {
+        return true;
+    }
+
+    if (!can_truncate) {
+        return false;
+    }
+
+    auto truncated_length = *max_length_ - current_length + selection_range.length;
+
+    //Do not break the \r\n sequence.
+    if (styled_text.Text()[truncated_length] == L'\n' && truncated_length > 0) {
+        if (styled_text.Text()[truncated_length - 1] == L'\r') {
+            --truncated_length;
+        }
+    }
+
+    styled_text.Truncate(truncated_length);
+    return true;
 }
 
 
@@ -454,11 +439,13 @@ void TextBoxEditor::ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command) 
 }
 
 
-bool TextBoxEditor::HandleUndo() {
+bool TextBoxEditor::PerformUndo() {
 
     if (!CanUndo()) {
         return false;
     }
+
+    auto auto_reset = MakeAutoReset(is_editing_, true);
 
     --next_command_index_;
     const auto& command = edit_commands_[next_command_index_];
@@ -467,11 +454,13 @@ bool TextBoxEditor::HandleUndo() {
 }
 
 
-bool TextBoxEditor::HandleRedo() {
+bool TextBoxEditor::PerformRedo() {
 
     if (!CanRedo()) {
         return false;
     }
+
+    auto auto_reset = MakeAutoReset(is_editing_, true);
 
     const auto& command = edit_commands_[next_command_index_];
     command->Do(Context());

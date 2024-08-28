@@ -59,6 +59,22 @@ public:
     void SetIsCaretEnabledWhenNotEditable(bool value);
 
     /**
+    Gets the maximum number of characters that can be manually inputted into the text box.
+
+    @return
+        The maximum number of characters. Maybe null if there is no limit.
+    */
+    std::optional<std::size_t> MaxLength() const noexcept;
+
+    /**
+    Sets the maximum number of characters that can be manually inputted into the text box.
+
+    @param max_length
+        The maximum number of characters.
+    */
+    void SetMaxLength(std::size_t max_length) noexcept;
+
+    /**
     Indicates whether the text box allows undo operations.
 
     @details
@@ -224,8 +240,10 @@ public:
     Pastes the content of the clipboard into the text box.
 
     @return
-        Returns true if the content of the clipboard is pasted into the text box. Returns false if
-        the text box is not editable or the content is not accepted by the text box.
+        Returns true if the content of the clipboard is pasted into the text box. Returns false if:
+        - the text box is not editable;
+        - the content is not accepted by the text box;
+        - no content is pasted as the max length of the text box is reached.
 
     @throw zaf::COMError
         Thrown if fails to access the clipboard.
@@ -255,6 +273,23 @@ public:
         This method is equivalent to press the Ctrl+X key combination.
     */
     bool Cut();
+
+    /**
+    Inputs the specified text to the text box.
+
+    @return
+        Returns true if the specified text is inputted to the text box. Returns false if:
+        - the text box is not editable;
+        - the text is empty;
+        - no text is inputted as the max length of the text box is reached.
+
+    @throw std::bad_alloc
+
+    @details
+        This method is equivalent to press keys to input the text. The text will be inserted at the 
+        caret, or replaced the selected text.
+    */
+    bool Input(std::wstring_view text);
 
     //Methods from SelfScrollControl
     void SetAllowVerticalScroll(bool allow) override;
