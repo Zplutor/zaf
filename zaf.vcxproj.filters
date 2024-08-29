@@ -1285,6 +1285,9 @@
     <ClCompile Include="src\zaf\internal\textual\line_utility.cpp">
       <Filter>zaf\internal\textual</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\textual\copying_info.cpp">
+      <Filter>zaf\control\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2955,6 +2958,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\textual\line_utility.h">
       <Filter>zaf\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\copying_info.h">
+      <Filter>zaf\control\textual</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

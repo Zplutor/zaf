@@ -317,6 +317,12 @@ bool TextBoxKeyboardInputHandler::PerformCopy() {
         return false;
     }
 
+    textual::CopyingInfo event_info{ As<TextBox>(Context().Owner().shared_from_this()) };
+    copying_event_.Raise(event_info);
+    if (event_info.IsHandled()) {
+        return true;
+    }
+
     auto selected_styled_text = Context().TextModel().StyledText().GetSubText(selection_range);
     internal::SaveStyledTextToClipboard(std::move(selected_styled_text));
     return true;

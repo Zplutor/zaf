@@ -603,6 +603,22 @@ TEST(TextBoxTest, Copy) {
 }
 
 
+TEST(TextBoxTest, CopingEvent) {
+
+    auto control = Create<TextBox>();
+    control->SetText(L"Text");
+    control->SetSelectionRange({ 0, 4 });
+
+    auto sub = control->CopyingEvent().Subscribe([](const CopyingInfo& event_info) {
+        clipboard::Clipboard::SetText(L"Text from event");
+        event_info.MarkAsHandled();
+    });
+
+    ASSERT_TRUE(control->Copy());
+    ASSERT_EQ(clipboard::Clipboard::GetText(), L"Text from event");
+}
+
+
 TEST(TextBoxTest, Cut) {
 
     auto control = zaf::Create<zaf::TextBox>();

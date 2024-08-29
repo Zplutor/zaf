@@ -1,7 +1,9 @@
 #pragma once
 
+#include <zaf/base/event/event.h>
 #include <zaf/base/range.h>
 #include <zaf/control/event/keyboard_event_info.h>
+#include <zaf/control/textual/copying_info.h>
 #include <zaf/internal/textual/text_box_module.h>
 
 namespace zaf::internal {
@@ -25,6 +27,10 @@ public:
     @throw std::bad_alloc
     */
     bool PerformCopy();
+
+    Observable<textual::CopyingInfo> CopyingEvent() const {
+        return copying_event_.GetObservable();
+    }
 
 private:
     class LineInfo {
@@ -55,6 +61,9 @@ private:
         bool update_caret_x);
     void HandleCopy();
     void HandleSelectAll();
+
+private:
+    Event<textual::CopyingInfo> copying_event_;
 };
 
 }

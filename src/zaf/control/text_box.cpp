@@ -53,6 +53,9 @@ void TextBox::Initialize() {
     Subscriptions() += module_context_->SelectionManager().SelectionChangedEvent().Subscribe(
         std::bind(&TextBox::OnInnerSelectionChanged, this, std::placeholders::_1));
 
+    Subscriptions() += module_context_->KeyboardInputHandler().CopyingEvent().Subscribe(
+        std::bind(&TextBox::OnInnerCopying, this, std::placeholders::_1));
+
     SetCanFocused(true);
     SetCanTabStop(true);
     SetCanDoubleClick(true);
@@ -740,6 +743,21 @@ std::size_t TextBox::LineCount() const {
 
 bool TextBox::Copy() const {
     return module_context_->KeyboardInputHandler().PerformCopy();
+}
+
+
+void TextBox::OnInnerCopying(const textual::CopyingInfo& event_info) {
+    OnCopying(event_info);
+}
+
+
+void TextBox::OnCopying(const textual::CopyingInfo& event_info) {
+    copying_event_.Raise(event_info);
+}
+
+
+Observable<textual::CopyingInfo> TextBox::CopyingEvent() const {
+    return copying_event_.GetObservable();
 }
 
 

@@ -9,6 +9,7 @@
 #include <zaf/control/self_scroll_control.h>
 #include <zaf/graphic/text/text_layout.h>
 #include <zaf/control/textual_control.h>
+#include <zaf/control/textual/copying_info.h>
 #include <zaf/control/textual/selection_changed_info.h>
 #include <zaf/control/textual/selection_option.h>
 #include <zaf/control/textual/word_extractor.h>
@@ -236,6 +237,8 @@ public:
     */
     bool Copy() const;
 
+    Observable<textual::CopyingInfo> CopyingEvent() const;
+
     /**
     Pastes the content of the clipboard into the text box.
 
@@ -340,6 +343,7 @@ protected:
     void OnIMEComposition(const IMECompositionInfo& event_info) override;
 
     virtual void OnSelectionChanged(const textual::SelectionChangedInfo& event_info);
+    virtual void OnCopying(const textual::CopyingInfo& event_info);
 
 private:
     friend class internal::TextBoxCaretManager;
@@ -355,6 +359,7 @@ private:
     void UpdateTextRectOnLayout();
 
     void OnInnerSelectionChanged(const internal::TextBoxSelectionChangedInfo& event_info);
+    void OnInnerCopying(const textual::CopyingInfo& event_info);
     void EnsureCaretVisible(const zaf::Rect& char_rect_at_caret);
     
     static void GetScrollValues(
@@ -385,6 +390,7 @@ private:
     Subscription ime_message_subscription_;
 
     Event<textual::SelectionChangedInfo> selection_changed_event_;
+    Event<textual::CopyingInfo> copying_event_;
 };
 
 ZAF_OBJECT_BEGIN(TextBox);
