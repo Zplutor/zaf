@@ -237,6 +237,14 @@ public:
     */
     bool Copy() const;
 
+    /**
+    Gets the copying event.
+
+    @details
+        This event is raised before the selected text is copied to the clipboard. Users can 
+        subscribe to the event to customize the behavior of the copying operation, and call 
+        MarkAsHandled() of the event info to prevent the default copying operation.
+    */
     Observable<textual::CopyingInfo> CopyingEvent() const;
 
     /**
@@ -343,6 +351,13 @@ protected:
     void OnIMEComposition(const IMECompositionInfo& event_info) override;
 
     virtual void OnSelectionChanged(const textual::SelectionChangedInfo& event_info);
+
+    /**
+    Handles the copying event.
+
+    @details
+        The default implementation raises the copying event.
+    */
     virtual void OnCopying(const textual::CopyingInfo& event_info);
 
 private:

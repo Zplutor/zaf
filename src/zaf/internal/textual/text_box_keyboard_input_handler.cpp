@@ -317,7 +317,11 @@ bool TextBoxKeyboardInputHandler::PerformCopy() {
         return false;
     }
 
-    textual::CopyingInfo event_info{ As<TextBox>(Context().Owner().shared_from_this()) };
+    textual::CopyingInfo event_info{ 
+        As<TextBox>(Context().Owner().shared_from_this()),
+        selection_range 
+    };
+
     copying_event_.Raise(event_info);
     if (event_info.IsHandled()) {
         return true;
