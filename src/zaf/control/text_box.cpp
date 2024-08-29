@@ -1,7 +1,7 @@
 #include <zaf/control/text_box.h>
 #include <zaf/base/as.h>
 #include <zaf/base/log.h>
-#include <zaf/control/textual/dynamic_inline_object.h>
+#include <zaf/control/textual/interactive_inline_object.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/input/mouse.h>
 #include <zaf/internal/textual/text_model.h>

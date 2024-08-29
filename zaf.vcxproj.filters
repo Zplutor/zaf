@@ -1102,7 +1102,7 @@
     <ClCompile Include="src\zaf\control\textual\inline_object_events.cpp">
       <Filter>zaf\control\textual</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\textual\dynamic_inline_object.cpp">
+    <ClCompile Include="src\zaf\control\textual\interactive_inline_object.cpp">
       <Filter>zaf\control\textual</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\textual\word_extractor.cpp">
@@ -1132,7 +1132,7 @@
     <ClCompile Include="src\zaf\internal\textual\text_model.cpp">
       <Filter>zaf\internal\textual</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\textual\dynamic_inline_object_events.cpp">
+    <ClCompile Include="src\zaf\control\textual\interactive_inline_object_events.cpp">
       <Filter>zaf\control\textual</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\textual\text_box_hit_test_manager.cpp">
@@ -2638,7 +2638,7 @@
     <ClInclude Include="src\zaf\control\textual\inline_object.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\textual\dynamic_inline_object.h">
+    <ClInclude Include="src\zaf\control\textual\interactive_inline_object.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual\selection_option.h">
@@ -2671,7 +2671,7 @@
     <ClInclude Include="src\zaf\internal\textual\text_model.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\textual\dynamic_inline_object_events.h">
+    <ClInclude Include="src\zaf\control\textual\interactive_inline_object_events.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\input\mouse.h">

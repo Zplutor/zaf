@@ -56,7 +56,6 @@
 #include <zaf/control/text_box.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/stroke_properties.h>
-#include <zaf/control/textual/dynamic_inline_object.h>
 #include <zaf/input/mouse.h>
 #include <zaf/control/control_object.h>
 

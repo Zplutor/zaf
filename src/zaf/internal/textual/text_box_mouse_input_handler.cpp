@@ -3,7 +3,7 @@
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/log.h>
 #include <zaf/control/text_box.h>
-#include <zaf/control/textual/dynamic_inline_object.h>
+#include <zaf/control/textual/interactive_inline_object.h>
 #include <zaf/input/keyboard.h>
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/internal/textual/text_box_hit_test_manager.h>
@@ -70,7 +70,7 @@ void TextBoxMouseInputHandler::HandleMouseOverInlineObject(
 }
 
 
-std::shared_ptr<textual::DynamicInlineObject> TextBoxMouseInputHandler::FindInlineObject(
+std::shared_ptr<textual::InteractiveInlineObject> TextBoxMouseInputHandler::FindInlineObject(
     const HitTestPointResult& hit_test_result) const {
 
     if (hit_test_result.Metrics().IsText()) {
@@ -79,7 +79,7 @@ std::shared_ptr<textual::DynamicInlineObject> TextBoxMouseInputHandler::FindInli
 
     auto text_index = hit_test_result.Metrics().TextIndex();
     auto inline_object = Context().TextModel().StyledText().GetInlineObjectAtIndex(text_index);
-    auto dynamic_inline_object = As<textual::DynamicInlineObject>(inline_object);
+    auto dynamic_inline_object = As<textual::InteractiveInlineObject>(inline_object);
     if (!dynamic_inline_object) {
         return nullptr;
     }

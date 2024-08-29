@@ -1,8 +1,8 @@
 #pragma once
 
 #include <zaf/base/event/event.h>
-#include <zaf/control/textual/dynamic_inline_object_events.h>
 #include <zaf/control/textual/inline_object.h>
+#include <zaf/control/textual/interactive_inline_object_events.h>
 
 namespace zaf {
 
@@ -15,7 +15,7 @@ class TextBoxMouseInputHandler;
 
 namespace textual {
 
-class DynamicInlineObject : public InlineObject {
+class InteractiveInlineObject : public InlineObject {
 public:
     ZAF_OBJECT;
 
@@ -98,7 +98,7 @@ private:
     Event<DoubleClickInfo> double_click_event_;
 };
 
-ZAF_OBJECT_BEGIN(DynamicInlineObject);
+ZAF_OBJECT_BEGIN(InteractiveInlineObject);
 ZAF_OBJECT_END;
 
 }
