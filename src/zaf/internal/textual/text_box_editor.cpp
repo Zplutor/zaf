@@ -170,7 +170,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
 void TextBoxEditor::HandleEnter() {
 
     if (Context().TextModel().IsMultiline()) {
-        InnerPerformInput(L"\r\n", false);
+        InnerPerformInputText(L"\r\n", false);
     }
 }
 
@@ -301,9 +301,21 @@ bool TextBoxEditor::PerformPaste() {
         return false;
     }
 
+    auto data_object = clipboard::Clipboard::GetDataObject();
+
+    textual::PastingInfo event_info{
+        As<TextBox>(Context().Owner().shared_from_this()),
+        data_object
+    };
+
+    pasting_event_.Raise(event_info);
+    if (event_info.IsHandled()) {
+        return true;
+    }
+
     textual::StyledText styled_text;
     bool is_styled_text{};
-    bool is_loaded = LoadStyledTextFromClipboard(styled_text, is_styled_text);
+    bool is_loaded = LoadStyledTextFromClipboard(data_object, styled_text, is_styled_text);
     if (!is_loaded) {
         return false;
     }
@@ -324,16 +336,26 @@ void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
         return;
     }
 
-    InnerPerformInput(std::wstring(1, ch), false);
+    InnerPerformInputText(std::wstring(1, ch), false);
 }
 
 
-bool TextBoxEditor::PerformInput(std::wstring_view text) {
-    return InnerPerformInput(std::wstring{ text }, true);
+bool TextBoxEditor::PerformInputText(std::wstring_view text) {
+    return InnerPerformInputText(std::wstring{ text }, true);
 }
 
 
-bool TextBoxEditor::InnerPerformInput(std::wstring text, bool can_truncate) {
+bool TextBoxEditor::PerformInputStyledText(textual::StyledText styled_text) {
+    
+    if (!CanEdit()) {
+        return false;
+    }
+
+    return InputStyledText(std::move(styled_text), true);
+}
+
+
+bool TextBoxEditor::InnerPerformInputText(std::wstring text, bool can_truncate) {
 
     if (!CanEdit()) {
         return false;

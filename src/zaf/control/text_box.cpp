@@ -56,6 +56,9 @@ void TextBox::Initialize() {
     Subscriptions() += module_context_->KeyboardInputHandler().CopyingEvent().Subscribe(
         std::bind(&TextBox::OnInnerCopying, this, std::placeholders::_1));
 
+    Subscriptions() += module_context_->Editor().PastingEvent().Subscribe(
+        std::bind(&TextBox::OnInnerPasting, this, std::placeholders::_1));
+
     SetCanFocused(true);
     SetCanTabStop(true);
     SetCanDoubleClick(true);
@@ -572,7 +575,12 @@ void TextBox::EnsureCaretVisible(const zaf::Rect& char_rect_at_caret) {
 
 
 bool TextBox::Input(std::wstring_view text) {
-    return module_context_->Editor().PerformInput(text);
+    return module_context_->Editor().PerformInputText(text);
+}
+
+
+bool TextBox::Input(textual::StyledText styled_text) {
+    return module_context_->Editor().PerformInputStyledText(std::move(styled_text));
 }
 
 
@@ -763,6 +771,21 @@ Observable<textual::CopyingInfo> TextBox::CopyingEvent() const {
 
 bool TextBox::Paste() {
     return module_context_->Editor().PerformPaste();
+}
+
+
+void TextBox::OnInnerPasting(const textual::PastingInfo& event_info) {
+    OnPasting(event_info);
+}
+
+
+void TextBox::OnPasting(const textual::PastingInfo& event_info) {
+    pasting_event_.Raise(event_info);
+}
+
+
+Observable<textual::PastingInfo> TextBox::PastingEvent() const {
+    return pasting_event_.GetObservable();
 }
 
 

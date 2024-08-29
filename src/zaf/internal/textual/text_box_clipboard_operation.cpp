@@ -29,9 +29,11 @@ void SaveStyledTextToClipboard(textual::StyledText styled_text) {
 }
 
 
-bool LoadStyledTextFromClipboard(textual::StyledText& styled_text, bool& is_styled_text) {
+bool LoadStyledTextFromClipboard(
+    const clipboard::DataObject& data_object,
+    textual::StyledText& styled_text, 
+    bool& is_styled_text) {
 
-    auto data_object = Clipboard::GetDataObject();
     auto enumerator = data_object.EnumerateDataDescriptors();
     enumerator.Reset();
 

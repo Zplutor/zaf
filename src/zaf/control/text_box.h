@@ -10,6 +10,7 @@
 #include <zaf/graphic/text/text_layout.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/control/textual/copying_info.h>
+#include <zaf/control/textual/pasting_info.h>
 #include <zaf/control/textual/selection_changed_info.h>
 #include <zaf/control/textual/selection_option.h>
 #include <zaf/control/textual/word_extractor.h>
@@ -263,9 +264,12 @@ public:
         Thrown if memory allocation fails during the pasting.
 
     @details
-        This method is equivalent to press the Ctrl+V key combination.
+        This method is equivalent to press the Ctrl+V key combination. The pasting operation will 
+        be added to the undo history.
     */
     bool Paste();
+
+    Observable<textual::PastingInfo> PastingEvent() const;
 
     /**
     Cuts the selected text to the clipboard.
@@ -281,12 +285,16 @@ public:
         Thrown if memory allocation fails during the cutting.
 
     @details
-        This method is equivalent to press the Ctrl+X key combination.
+        This method is equivalent to press the Ctrl+X key combination. The cutting operation will 
+        be added to the undo history.
     */
     bool Cut();
 
     /**
     Inputs the specified text to the text box.
+
+    @param text
+        The text to input.
 
     @return
         Returns true if the specified text is inputted to the text box. Returns false if:
@@ -298,9 +306,31 @@ public:
 
     @details
         This method is equivalent to press keys to input the text. The text will be inserted at the 
-        caret, or replaced the selected text.
+        caret, or replaced the selected text. The input operation will be added to the undo
+        history.
     */
     bool Input(std::wstring_view text);
+
+    /**
+    Inputs the specified styled text to the text box.
+
+    @param styled_text
+        The styled text to input.
+
+    @return
+        Returns true if the specified styled text is inputted to the text box. Returns false if:
+        - the text box is not editable;
+        - the styled text is empty;
+        - no text is inputted as the max length of the text box is reached.
+
+    @throw std::bad_alloc
+
+    @details
+        This method is equivalent to press keys to input the styled text. The styled text will be
+        inserted at the caret, or replaced the selected text. The input operation will be added to 
+        the undo history.
+    */
+    bool Input(textual::StyledText styled_text);
 
     //Methods from SelfScrollControl
     void SetAllowVerticalScroll(bool allow) override;
@@ -360,6 +390,8 @@ protected:
     */
     virtual void OnCopying(const textual::CopyingInfo& event_info);
 
+    virtual void OnPasting(const textual::PastingInfo& event_info);
+
 private:
     friend class internal::TextBoxCaretManager;
     friend class internal::TextBoxHitTestManager;
@@ -375,6 +407,7 @@ private:
 
     void OnInnerSelectionChanged(const internal::TextBoxSelectionChangedInfo& event_info);
     void OnInnerCopying(const textual::CopyingInfo& event_info);
+    void OnInnerPasting(const textual::PastingInfo& event_info);
     void EnsureCaretVisible(const zaf::Rect& char_rect_at_caret);
     
     static void GetScrollValues(
@@ -406,6 +439,7 @@ private:
 
     Event<textual::SelectionChangedInfo> selection_changed_event_;
     Event<textual::CopyingInfo> copying_event_;
+    Event<textual::PastingInfo> pasting_event_;
 };
 
 ZAF_OBJECT_BEGIN(TextBox);

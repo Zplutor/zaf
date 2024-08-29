@@ -217,6 +217,7 @@
     <ClCompile Include="src\zaf\control\textual\inline_object_store.cpp" />
     <ClCompile Include="src\zaf\control\textual\inline_object_events.cpp" />
     <ClCompile Include="src\zaf\control\textual\line_break.cpp" />
+    <ClCompile Include="src\zaf\control\textual\pasting_info.cpp" />
     <ClCompile Include="src\zaf\control\textual\ranged_text_style.cpp" />
     <ClCompile Include="src\zaf\control\textual\selection_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\textual\styled_text.cpp" />
@@ -660,6 +661,7 @@
     <ClInclude Include="src\zaf\control\textual\inline_object_store.h" />
     <ClInclude Include="src\zaf\control\textual\inline_object_events.h" />
     <ClInclude Include="src\zaf\control\textual\line_break.h" />
+    <ClInclude Include="src\zaf\control\textual\pasting_info.h" />
     <ClInclude Include="src\zaf\control\textual\ranged_text_style.h" />
     <ClInclude Include="src\zaf\control\textual\selection_changed_info.h" />
     <ClInclude Include="src\zaf\control\textual\selection_option.h" />

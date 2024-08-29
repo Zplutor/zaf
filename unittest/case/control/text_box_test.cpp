@@ -2,6 +2,7 @@
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/control/text_box.h>
 #include <zaf/control/textual/inline_object.h>
+#include <zaf/control/textual/styled_text.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 #include "utility/test_window.h"
@@ -678,7 +679,26 @@ TEST(TextBoxTest, Paste) {
 }
 
 
-TEST(TextBoxTest, Input) {
+TEST(TextBoxTest, PastingEvent) {
+
+    clipboard::Clipboard::SetText(L"PastingEvent");
+
+    auto control = Create<TextBox>();
+    control->SetIsEditable(true);
+
+    auto sub = control->PastingEvent().Subscribe([](const textual::PastingInfo& pasting_info) {
+        auto text_box = As<TextBox>(pasting_info.Source());
+        auto text = pasting_info.DataObject().GetText();
+        text_box->SetText(text);
+        pasting_info.MarkAsHandled();
+    });
+
+    ASSERT_TRUE(control->Paste());
+    ASSERT_EQ(control->Text(), L"PastingEvent");
+}
+
+
+TEST(TextBoxTest, InputText) {
 
     auto control = Create<TextBox>();
 
@@ -691,6 +711,8 @@ TEST(TextBoxTest, Input) {
     control->SetIsEditable(true);
     ASSERT_TRUE(control->Input(L"abc"));
     ASSERT_EQ(control->Text(), L"abc");
+    //The operation will be added to the undo history.
+    ASSERT_TRUE(control->CanUndo());
     //Input an empty text.
     ASSERT_FALSE(control->Input(L""));
 
@@ -708,4 +730,27 @@ TEST(TextBoxTest, Input) {
     ASSERT_EQ(control->Text(), L"");
     ASSERT_TRUE(control->Input(L"1\r\n2"));
     ASSERT_EQ(control->Text(), L"1");
+}
+
+
+TEST(TextBoxTest, InputStyledText) {
+
+    auto control = Create<TextBox>();
+
+    textual::StyledText styled_text{ L"styled" };
+
+    //A not editable text box can not input.
+    control->SetIsEditable(false);
+    ASSERT_FALSE(control->Input(styled_text.Clone()));
+    ASSERT_EQ(control->Text(), L"");
+
+    //An editable text box can input.
+    control->SetIsEditable(true);
+    ASSERT_TRUE(control->Input(styled_text.Clone()));
+    ASSERT_EQ(control->Text(), L"styled");
+    //The operation will be added to the undo history.
+    ASSERT_TRUE(control->CanUndo());
+
+    //Input an empty text.
+    ASSERT_FALSE(control->Input(L""));
 }
