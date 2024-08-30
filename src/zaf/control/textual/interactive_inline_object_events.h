@@ -51,32 +51,32 @@ private:
 
 namespace textual {
 
-class MouseEnterInfo : public EventInfo {
+class InlineObjectMouseEnterInfo : public EventInfo {
 public:
-    explicit MouseEnterInfo(std::shared_ptr<InteractiveInlineObject> source);
+    explicit InlineObjectMouseEnterInfo(std::shared_ptr<InteractiveInlineObject> source);
 };
 
 
-class MouseLeaveInfo : public EventInfo {
+class InlineObjectMouseLeaveInfo : public EventInfo {
 public:
-    explicit MouseLeaveInfo(std::shared_ptr<InteractiveInlineObject> source);
+    explicit InlineObjectMouseLeaveInfo(std::shared_ptr<InteractiveInlineObject> source);
 };
 
 
-class MouseCursorChangingInfo : public internal::HandleableInlineObjectEventInfo {
-public:
-    using HandleableInlineObjectEventInfo::HandleableInlineObjectEventInfo;
-};
-
-
-class DoubleClickInfo : public internal::HandleableInlineObjectEventInfo {
+class InlineObjectMouseCursorChangingInfo : public internal::HandleableInlineObjectEventInfo {
 public:
     using HandleableInlineObjectEventInfo::HandleableInlineObjectEventInfo;
 };
 
 
-using MouseDownInfo = internal::InlineObjectMouseEventInfo<__LINE__>;
-using MouseUpInfo = internal::InlineObjectMouseEventInfo<__LINE__>;
+class InlineObjectDoubleClickInfo : public internal::HandleableInlineObjectEventInfo {
+public:
+    using HandleableInlineObjectEventInfo::HandleableInlineObjectEventInfo;
+};
+
+
+using InlineObjectMouseDownInfo = internal::InlineObjectMouseEventInfo<__LINE__>;
+using InlineObjectMouseUpInfo = internal::InlineObjectMouseEventInfo<__LINE__>;
 
 }
 }

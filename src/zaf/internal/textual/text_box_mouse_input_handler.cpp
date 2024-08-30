@@ -55,11 +55,11 @@ void TextBoxMouseInputHandler::HandleMouseOverInlineObject(
     mouse_over_object_ = new_object;
 
     if (old_object) {
-        old_object->OnMouseLeave(textual::MouseLeaveInfo{ old_object });
+        old_object->OnMouseLeave(textual::InlineObjectMouseLeaveInfo{ old_object });
     }
 
     if (new_object) {
-        new_object->OnMouseEnter(textual::MouseEnterInfo{ new_object });
+        new_object->OnMouseEnter(textual::InlineObjectMouseEnterInfo{ new_object });
 
         //See also Window::SetMouseOverControl()
         auto window = Context().Owner().Window();
@@ -100,7 +100,7 @@ void TextBoxMouseInputHandler::HandleMouseCursorChanging(
         return;
     }
 
-    textual::MouseCursorChangingInfo object_event_info{ object };
+    textual::InlineObjectMouseCursorChangingInfo object_event_info{ object };
     object->OnMouseCursorChanging(object_event_info);
 
     if (object_event_info.IsHandled()) {
@@ -121,7 +121,7 @@ void TextBoxMouseInputHandler::HandleMouseDown(const MouseDownInfo& event_info) 
     auto inline_object = FindInlineObject(hit_test_result);
     if (inline_object) {
 
-        textual::MouseDownInfo object_event_info{ inline_object, event_info.Message() };
+        textual::InlineObjectMouseDownInfo object_event_info{ inline_object, event_info.Message() };
         inline_object->OnMouseDown(object_event_info);
         if (object_event_info.IsHandled()) {
             return;
@@ -152,7 +152,7 @@ void TextBoxMouseInputHandler::HandleMouseUp(const MouseUpInfo& event_info) {
     auto inline_object = FindInlineObject(hit_test_result);
     if (inline_object) {
 
-        textual::MouseUpInfo object_event_info{ inline_object, event_info.Message() };
+        textual::InlineObjectMouseUpInfo object_event_info{ inline_object, event_info.Message() };
         inline_object->OnMouseUp(object_event_info);
     }
 }
@@ -208,7 +208,7 @@ void TextBoxMouseInputHandler::HandleDoubleClick(const DoubleClickInfo& event_in
     auto inline_object = FindInlineObject(hit_test_result);
     if (inline_object) {
 
-        textual::DoubleClickInfo object_event_info{ inline_object };
+        textual::InlineObjectDoubleClickInfo object_event_info{ inline_object };
         inline_object->OnDoubleClick(object_event_info);
         if (object_event_info.IsHandled()) {
             return;

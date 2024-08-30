@@ -57,12 +57,13 @@ bool InteractiveInlineObject::HitTest(bool is_mouse_inside) {
 }
 
 
-void InteractiveInlineObject::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
+void InteractiveInlineObject::OnMouseCursorChanging(
+    const InlineObjectMouseCursorChangingInfo& event_info) {
 
 }
 
 
-void InteractiveInlineObject::OnMouseEnter(const MouseEnterInfo& event_info) {
+void InteractiveInlineObject::OnMouseEnter(const InlineObjectMouseEnterInfo& event_info) {
 
     is_mouse_over_ = true;
 
@@ -70,7 +71,7 @@ void InteractiveInlineObject::OnMouseEnter(const MouseEnterInfo& event_info) {
 }
 
 
-void InteractiveInlineObject::OnMouseLeave(const MouseLeaveInfo& event_info) {
+void InteractiveInlineObject::OnMouseLeave(const InlineObjectMouseLeaveInfo& event_info) {
 
     is_mouse_over_ = false;
 
@@ -78,19 +79,19 @@ void InteractiveInlineObject::OnMouseLeave(const MouseLeaveInfo& event_info) {
 }
 
 
-void InteractiveInlineObject::OnMouseDown(const MouseDownInfo& event_info) {
+void InteractiveInlineObject::OnMouseDown(const InlineObjectMouseDownInfo& event_info) {
 
     mouse_down_event_.Raise(event_info);
 }
 
 
-void InteractiveInlineObject::OnMouseUp(const MouseUpInfo& event_info) {
+void InteractiveInlineObject::OnMouseUp(const InlineObjectMouseUpInfo& event_info) {
 
     mouse_up_event_.Raise(event_info);
 }
 
 
-void InteractiveInlineObject::OnDoubleClick(const DoubleClickInfo& event_info) {
+void InteractiveInlineObject::OnDoubleClick(const InlineObjectDoubleClickInfo& event_info) {
 
     double_click_event_.Raise(event_info);
 }

@@ -25,23 +25,23 @@ public:
     bool IsMouseOver() const;
     bool IsInSelectionRange() const;
 
-    Observable<MouseEnterInfo> MouseEnterEvent() const {
+    Observable<InlineObjectMouseEnterInfo> MouseEnterEvent() const {
         return mouse_enter_event_.GetObservable();
     }
 
-    Observable<MouseLeaveInfo> MouseLeaveEvent() const {
+    Observable<InlineObjectMouseLeaveInfo> MouseLeaveEvent() const {
         return mouse_leave_event_.GetObservable();
     }
 
-    Observable<MouseDownInfo> MouseDownEvent() const {
+    Observable<InlineObjectMouseDownInfo> MouseDownEvent() const {
         return mouse_down_event_.GetObservable();
     }
 
-    Observable<MouseUpInfo> MouseUpEvent() const {
+    Observable<InlineObjectMouseUpInfo> MouseUpEvent() const {
         return mouse_up_event_.GetObservable();
     }
 
-    Observable<DoubleClickInfo> DoubleClickEvent() const {
+    Observable<InlineObjectDoubleClickInfo> DoubleClickEvent() const {
         return double_click_event_.GetObservable();
     }
 
@@ -76,14 +76,14 @@ protected:
     */
     virtual bool HitTest(bool is_mouse_inside);
 
-    virtual void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info);
-    virtual void OnMouseEnter(const MouseEnterInfo& event_info);
-    virtual void OnMouseLeave(const MouseLeaveInfo& event_info);
+    virtual void OnMouseCursorChanging(const InlineObjectMouseCursorChangingInfo& event_info);
+    virtual void OnMouseEnter(const InlineObjectMouseEnterInfo& event_info);
+    virtual void OnMouseLeave(const InlineObjectMouseLeaveInfo& event_info);
 
-    virtual void OnMouseDown(const MouseDownInfo& event_info);
-    virtual void OnMouseUp(const MouseUpInfo& event_info);
+    virtual void OnMouseDown(const InlineObjectMouseDownInfo& event_info);
+    virtual void OnMouseUp(const InlineObjectMouseUpInfo& event_info);
 
-    virtual void OnDoubleClick(const DoubleClickInfo& event_info);
+    virtual void OnDoubleClick(const InlineObjectDoubleClickInfo& event_info);
 
 private:
     friend class internal::TextBoxMouseInputHandler;
@@ -91,11 +91,11 @@ private:
 private:
     bool is_mouse_over_{};
 
-    Event<MouseEnterInfo> mouse_enter_event_;
-    Event<MouseLeaveInfo> mouse_leave_event_;
-    Event<MouseDownInfo> mouse_down_event_;
-    Event<MouseUpInfo> mouse_up_event_;
-    Event<DoubleClickInfo> double_click_event_;
+    Event<InlineObjectMouseEnterInfo> mouse_enter_event_;
+    Event<InlineObjectMouseLeaveInfo> mouse_leave_event_;
+    Event<InlineObjectMouseDownInfo> mouse_down_event_;
+    Event<InlineObjectMouseUpInfo> mouse_up_event_;
+    Event<InlineObjectDoubleClickInfo> double_click_event_;
 };
 
 ZAF_OBJECT_BEGIN(InteractiveInlineObject);

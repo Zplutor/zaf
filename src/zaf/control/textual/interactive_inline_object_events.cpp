@@ -16,13 +16,17 @@ HandleableInlineObjectEventInfo::HandleableInlineObjectEventInfo(
 
 namespace textual {
 
-MouseEnterInfo::MouseEnterInfo(std::shared_ptr<InteractiveInlineObject> source) :
+InlineObjectMouseEnterInfo::InlineObjectMouseEnterInfo(
+    std::shared_ptr<InteractiveInlineObject> source) 
+    :
     EventInfo(std::move(source)) {
 
 }
 
 
-MouseLeaveInfo::MouseLeaveInfo(std::shared_ptr<InteractiveInlineObject> source) :
+InlineObjectMouseLeaveInfo::InlineObjectMouseLeaveInfo(
+    std::shared_ptr<InteractiveInlineObject> source) 
+    :
     EventInfo(std::move(source)) {
 
 }
