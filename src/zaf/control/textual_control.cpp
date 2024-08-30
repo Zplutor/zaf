@@ -218,6 +218,10 @@ void TextualControl::SetTextInRange(std::wstring_view text, const Range& range) 
 }
 
 
+const textual::StyledText& TextualControl::StyledText() const noexcept {
+    return text_model_->StyledText();
+}
+
 void TextualControl::SetStyledText(textual::StyledText styled_text) {
     text_model_->SetStyledText(std::move(styled_text));
 }
@@ -387,7 +391,7 @@ void TextualControl::SetInlineObjectInRange(
     std::shared_ptr<textual::InlineObject> inline_object,
     const Range& range) {
 
-    this->SetTextInRange(std::wstring(1, textual::InlineObjectChar), range);
+    this->SetTextInRange(std::wstring(1, textual::ObjectReplacementChar), range);
     this->AttachInlineObjectToRange(std::move(inline_object), { range.index, 1 });
 }
 

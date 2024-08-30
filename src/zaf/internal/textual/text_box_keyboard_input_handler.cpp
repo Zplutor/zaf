@@ -1,5 +1,6 @@
 #include <zaf/internal/textual/text_box_keyboard_input_handler.h>
 #include <zaf/internal/textual/text_model.h>
+#include <zaf/clipboard/clipboard.h>
 #include <zaf/control/text_box.h>
 #include <zaf/creation.h>
 #include <zaf/internal/textual/text_box_caret_manager.h>
@@ -324,6 +325,13 @@ bool TextBoxKeyboardInputHandler::PerformCopy() {
 
     copying_event_.Raise(event_info);
     if (event_info.IsHandled()) {
+
+        const auto& data_object = event_info.DataObject();
+        if (!data_object) {
+            return false;
+        }
+
+        clipboard::Clipboard::SetDataObject(data_object);
         return true;
     }
 

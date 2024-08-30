@@ -80,6 +80,7 @@ public:
     */
     void SetTextInRange(std::wstring_view text, const Range& range);
 
+    const textual::StyledText& StyledText() const noexcept;
     void SetStyledText(textual::StyledText styled_text);
 
     bool IsMultiline() const noexcept;
@@ -292,8 +293,8 @@ public:
     @throw std::bad_alloc
 
     @details
-        This method is equivalent to calling SetTextInRange with the textual::InlineObjectChar and
-        then calling AttachInlineObjectToRange to attach the inline object to the character.
+        This method is equivalent to calling SetTextInRange with the textual::ObjectReplacementChar
+        and then calling AttachInlineObjectToRange to attach the inline object to the character.
     */
     void SetInlineObjectInRange(
         std::shared_ptr<textual::InlineObject> inline_object,

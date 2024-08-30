@@ -28,7 +28,7 @@ namespace textual {
 
 class InlineObjectStore;
 
-constexpr wchar_t InlineObjectChar = L'\uFFFC';
+constexpr wchar_t ObjectReplacementChar = L'\uFFFC';
 
 class InlineObject : 
     public Object, 

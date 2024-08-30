@@ -611,12 +611,22 @@ TEST(TextBoxTest, CopingEvent) {
     control->SetSelectionRange({ 0, 4 });
 
     auto sub = control->CopyingEvent().Subscribe([](const CopyingInfo& event_info) {
-        clipboard::Clipboard::SetText(L"Text from event");
         event_info.MarkAsHandled();
     });
 
+    clipboard::Clipboard::SetText(L"");
+    //No data object is provided, copy will fail.
+    ASSERT_FALSE(control->Copy());
+    ASSERT_EQ(clipboard::Clipboard::GetText(), L"");
+
+    sub = control->CopyingEvent().Subscribe([](const CopyingInfo& event_info) {
+        auto data_object = clipboard::DataObject::Create();
+        data_object.SetText(L"text from copying event");
+        event_info.SetDataObject(std::move(data_object));
+        event_info.MarkAsHandled();
+    });
     ASSERT_TRUE(control->Copy());
-    ASSERT_EQ(clipboard::Clipboard::GetText(), L"Text from event");
+    ASSERT_EQ(clipboard::Clipboard::GetText(), L"text from copying event");
 }
 
 

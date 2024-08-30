@@ -67,8 +67,7 @@ public:
     */
     bool PerformCut();
 
-    bool PerformInputText(std::wstring_view text);
-    bool PerformInputStyledText(textual::StyledText styled_text);
+    bool PerformInput(textual::StyledText styled_text);
 
     bool IsEditing() const {
         return is_editing_;
@@ -83,7 +82,7 @@ private:
     std::unique_ptr<TextBoxEditCommand> HandleBatchBackspace();
     std::unique_ptr<TextBoxEditCommand> HandleBackspace();
 
-    bool InnerPerformInputText(std::wstring text, bool can_truncate);
+    bool InnerPerformInput(textual::StyledText styled_text, bool can_truncate);
     bool InputStyledText(textual::StyledText styled_text, bool can_truncate);
     bool EnforceMaxLength(
         textual::StyledText& styled_text, 

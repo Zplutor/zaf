@@ -554,7 +554,7 @@ TEST(TextualControlTest, SetInlineObjectToRange) {
 
     auto object = Create<TestInlineObject>();
     control->SetInlineObjectInRange(object, {});
-    ASSERT_EQ(control->Text(), std::wstring(1, InlineObjectChar));
+    ASSERT_EQ(control->Text(), std::wstring(1, ObjectReplacementChar));
     ASSERT_EQ(control->GetInlineObjectAtIndex(0), object);
 }
 

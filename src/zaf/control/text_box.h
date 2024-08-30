@@ -353,6 +353,8 @@ public:
     */
     bool Input(textual::StyledText styled_text);
 
+    bool Input(std::shared_ptr<textual::InlineObject> inline_object);
+
     //Methods from SelfScrollControl
     void SetAllowVerticalScroll(bool allow) override;
     void SetAllowHorizontalScroll(bool allow) override;

@@ -170,7 +170,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
 void TextBoxEditor::HandleEnter() {
 
     if (Context().TextModel().IsMultiline()) {
-        InnerPerformInputText(L"\r\n", false);
+        InnerPerformInput(textual::StyledText{ L"\r\n" }, false);
     }
 }
 
@@ -336,32 +336,22 @@ void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
         return;
     }
 
-    InnerPerformInputText(std::wstring(1, ch), false);
+    InnerPerformInput(textual::StyledText{ std::wstring(1, ch) }, false);
 }
 
 
-bool TextBoxEditor::PerformInputText(std::wstring_view text) {
-    return InnerPerformInputText(std::wstring{ text }, true);
+bool TextBoxEditor::PerformInput(textual::StyledText styled_text) {
+    return InnerPerformInput(std::move(styled_text), true);
 }
 
 
-bool TextBoxEditor::PerformInputStyledText(textual::StyledText styled_text) {
-    
-    if (!CanEdit()) {
-        return false;
-    }
-
-    return InputStyledText(std::move(styled_text), true);
-}
-
-
-bool TextBoxEditor::InnerPerformInputText(std::wstring text, bool can_truncate) {
+bool TextBoxEditor::InnerPerformInput(textual::StyledText styled_text, bool can_truncate) {
 
     if (!CanEdit()) {
         return false;
     }
 
-    return InputStyledText(textual::StyledText{ std::move(text) }, can_truncate);
+    return InputStyledText(std::move(styled_text), can_truncate);
 }
 
 

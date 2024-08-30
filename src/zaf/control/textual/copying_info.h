@@ -7,6 +7,7 @@
 
 #include <zaf/base/event/event_info.h>
 #include <zaf/base/range.h>
+#include <zaf/clipboard/data_object.h>
 
 namespace zaf {
 
@@ -39,6 +40,14 @@ public:
         return selection_range_;
     }
 
+    const clipboard::DataObject& DataObject() const {
+        return *data_object_;
+    }
+
+    void SetDataObject(clipboard::DataObject data_object) const {
+        *data_object_ = std::move(data_object);
+    }
+
     /**
     Indicates whether the copy operation is handled.
     */
@@ -55,6 +64,7 @@ public:
 
 private:
     std::shared_ptr<bool> is_handled_;
+    std::shared_ptr<clipboard::DataObject> data_object_;
     Range selection_range_;
 };
 
