@@ -758,7 +758,7 @@
     <ClInclude Include="src\zaf\graphic\size_parser.h" />
     <ClInclude Include="src\zaf\graphic\stroke.h" />
     <ClInclude Include="src\zaf\graphic\stroke_properties.h" />
-    <ClInclude Include="src\zaf\graphic\text\hit_test_result.h" />
+    <ClInclude Include="src\zaf\graphic\text\hit_test_metrics.h" />
     <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_bridge.h" />
     <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_painter.h" />
     <ClInclude Include="src\zaf\graphic\text\line_metrics.h" />

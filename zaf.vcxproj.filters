@@ -2497,7 +2497,7 @@
     <ClInclude Include="src\zaf\base\range.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\hit_test_result.h">
+    <ClInclude Include="src\zaf\graphic\text\hit_test_metrics.h">
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\auto_reset.h">

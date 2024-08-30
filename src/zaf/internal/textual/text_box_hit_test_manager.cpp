@@ -14,7 +14,7 @@ void TextBoxHitTestManager::Initialize() {
 }
 
 
-HitTestPointResult TextBoxHitTestManager::HitTestAtPosition(
+HitTestPointMetrics TextBoxHitTestManager::HitTestAtPosition(
     const Point& position_in_text_box) const {
 
     const auto& text_box = Context().Owner();
@@ -28,7 +28,7 @@ HitTestPointResult TextBoxHitTestManager::HitTestAtPosition(
 
 
 std::size_t TextBoxHitTestManager::TextIndexFromHitTestResult(
-    const HitTestPointResult& hit_test_result) const {
+    const HitTestPointMetrics& hit_test_result) const {
 
     std::size_t result = hit_test_result.Metrics().TextIndex();
     if (hit_test_result.IsTrailingHit()) {

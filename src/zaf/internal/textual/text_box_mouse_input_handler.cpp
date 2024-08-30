@@ -43,7 +43,7 @@ void TextBoxMouseInputHandler::HandleMouseMove(const MouseMoveInfo& event_info) 
 
 
 void TextBoxMouseInputHandler::HandleMouseOverInlineObject(
-    const HitTestPointResult& hit_test_result,
+    const HitTestPointMetrics& hit_test_result,
     const MouseMessage& mouse_message) {
 
     auto new_object = FindInlineObject(hit_test_result);
@@ -71,7 +71,7 @@ void TextBoxMouseInputHandler::HandleMouseOverInlineObject(
 
 
 std::shared_ptr<textual::InteractiveInlineObject> TextBoxMouseInputHandler::FindInlineObject(
-    const HitTestPointResult& hit_test_result) const {
+    const HitTestPointMetrics& hit_test_result) const {
 
     if (hit_test_result.Metrics().IsText()) {
         return nullptr;

@@ -6,7 +6,7 @@
 #include <zaf/control/event/mouse_cursor_changing_info.h>
 #include <zaf/control/event/mouse_event_info.h>
 #include <zaf/control/textual/interactive_inline_object.h>
-#include <zaf/graphic/text/hit_test_result.h>
+#include <zaf/graphic/text/hit_test_metrics.h>
 #include <zaf/internal/textual/text_box_module.h>
 #include <zaf/rx/subscription_host.h>
 
@@ -29,11 +29,11 @@ private:
     void OnSelectionChanged();
 
     void HandleMouseOverInlineObject(
-        const HitTestPointResult& hit_test_result,
+        const HitTestPointMetrics& hit_test_result,
         const MouseMessage& mouse_message);
 
     std::shared_ptr<textual::InteractiveInlineObject> FindInlineObject(
-        const HitTestPointResult& hit_test_result) const;
+        const HitTestPointMetrics& hit_test_result) const;
 
 private:
     std::optional<std::size_t> begin_selecting_index_{};

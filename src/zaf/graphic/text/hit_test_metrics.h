@@ -49,7 +49,7 @@ public:
 };
 
 
-class HitTestIndexResult {
+class HitTestIndexMetrics {
 public:
     struct Data {
         float x{};
@@ -79,7 +79,7 @@ private:
 };
 
 
-class HitTestPointResult {
+class HitTestPointMetrics {
 public:
     struct Data {
         BOOL is_trailing_hit{};

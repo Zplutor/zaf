@@ -166,9 +166,9 @@ TextMetrics TextLayout::GetMetrics() const {
 }
 
 
-HitTestIndexResult TextLayout::HitTestIndex(std::size_t index, bool is_trailing_hit) const {
+HitTestIndexMetrics TextLayout::HitTestIndex(std::size_t index, bool is_trailing_hit) const {
 
-    HitTestIndexResult result;
+    HitTestIndexMetrics result;
     HRESULT hresult = Inner()->HitTestTextPosition(
         static_cast<UINT32>(index),
         is_trailing_hit,
@@ -181,9 +181,9 @@ HitTestIndexResult TextLayout::HitTestIndex(std::size_t index, bool is_trailing_
 }
 
 
-HitTestPointResult TextLayout::HitTestPoint(const Point& point) const {
+HitTestPointMetrics TextLayout::HitTestPoint(const Point& point) const {
 
-    HitTestPointResult result;
+    HitTestPointMetrics result;
     HRESULT hresult = Inner()->HitTestPoint(
         point.x,
         point.y,
