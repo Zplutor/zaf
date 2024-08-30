@@ -23,12 +23,29 @@ void InteractiveInlineObject::NeedRepaint() {
 }
 
 
-bool InteractiveInlineObject::IsMouseOver() const {
+std::optional<Point> InteractiveInlineObject::PositionInHost() const {
+
+    auto host = Host();
+    if (!host) {
+        return std::nullopt;
+    }
+
+    auto range_in_host = RangeInHost();
+    if (!range_in_host) {
+        return std::nullopt;
+    }
+
+    auto hit_test_result = host->HitTestAtIndex(range_in_host->index);
+    return hit_test_result.Rect().position;
+}
+
+
+bool InteractiveInlineObject::IsMouseOver() const noexcept {
     return is_mouse_over_;
 }
 
 
-bool InteractiveInlineObject::IsInSelectionRange() const {
+bool InteractiveInlineObject::IsInSelectionRange() const noexcept {
     
     auto host = Host();
     if (!host) {

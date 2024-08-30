@@ -754,3 +754,17 @@ TEST(TextBoxTest, InputStyledText) {
     //Input an empty text.
     ASSERT_FALSE(control->Input(L""));
 }
+
+
+TEST(TextBoxTest, HitTestAtIndex) {
+
+    auto control = Create<TextBox>();
+
+    //It's legal to hit test at the end of the text.
+    auto hit_test_result = control->HitTestAtIndex(0);
+    ASSERT_TRUE(hit_test_result.IsText());
+    ASSERT_EQ(hit_test_result.Rect().position, zaf::Point{});
+
+    //Throw exception if index is out of range.
+    ASSERT_THROW(control->HitTestAtIndex(1), zaf::PreconditionError);
+}

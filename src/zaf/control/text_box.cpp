@@ -341,6 +341,20 @@ bool TextBox::IsPositionInsideText(const Point& position) const {
 }
 
 
+textual::HitTestIndexResult TextBox::HitTestAtIndex(std::size_t index) const {
+    
+    ZAF_EXPECT(index <= this->TextLength());
+
+    auto hit_test_metrics = GetTextLayout().HitTestIndex(index, false);
+
+    auto rect = hit_test_metrics.Metrics().Rect();
+    rect.AddOffset(text_rect_.position);
+    rect.AddOffset(ContentRect().position);
+
+    return textual::HitTestIndexResult{ rect, hit_test_metrics.Metrics().IsText() };
+}
+
+
 void TextBox::OnDoubleClick(const DoubleClickInfo& event_info) {
 
     __super::OnDoubleClick(event_info);

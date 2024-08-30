@@ -655,6 +655,7 @@
     <ClInclude Include="src\zaf\control\style\property_value_pair.h" />
     <ClInclude Include="src\zaf\control\textual\copying_info.h" />
     <ClInclude Include="src\zaf\control\textual\default_text_style.h" />
+    <ClInclude Include="src\zaf\control\textual\hit_test_index_result.h" />
     <ClInclude Include="src\zaf\control\textual\interactive_inline_object.h" />
     <ClInclude Include="src\zaf\control\textual\interactive_inline_object_events.h" />
     <ClInclude Include="src\zaf\control\textual\inline_object.h" />

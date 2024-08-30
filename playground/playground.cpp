@@ -69,13 +69,13 @@ protected:
 
         __super::Initialize();
 
-        auto box = zaf::Create<zaf::ScrollBox>();
+        auto box = zaf::Create<zaf::TextBox>();
 
         RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
         RootControl()->AddChild(box);
         RootControl()->SetPadding(zaf::Frame{ 20 });
 
-        auto c = box->BackgroundColor();
+        auto s = box->HitTestAtIndex(0);
     }
 };
 

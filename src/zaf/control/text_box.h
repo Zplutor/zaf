@@ -11,6 +11,7 @@
 #include <zaf/control/textual_control.h>
 #include <zaf/control/textual/copying_info.h>
 #include <zaf/control/textual/pasting_info.h>
+#include <zaf/control/textual/hit_test_index_result.h>
 #include <zaf/control/textual/selection_changed_info.h>
 #include <zaf/control/textual/selection_option.h>
 #include <zaf/control/textual/word_extractor.h>
@@ -219,6 +220,26 @@ public:
         Thrown if the operation fails.
     */
     bool IsPositionInsideText(const Point& position) const;
+
+    /**
+    Performs a hit test at the specified character index of the existing text.
+
+    @param index
+        The index to hit test.
+
+    @pre
+        The index must be less than or equal to the length of the existing text.
+
+    @return
+        The hit test result that contains information of the character, such as its rect in the 
+        text box.
+
+    @throw zaf::PreconditionError
+
+    @throw zaf::COMError
+        Thrown if fails to perform the hit test.
+    */
+    textual::HitTestIndexResult HitTestAtIndex(std::size_t index) const;
 
     /**
     Copies the selected text to the clipboard.

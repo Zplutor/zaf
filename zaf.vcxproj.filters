@@ -2968,5 +2968,8 @@
     <ClInclude Include="src\zaf\control\textual\pasting_info.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\hit_test_index_result.h">
+      <Filter>zaf\control\textual</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

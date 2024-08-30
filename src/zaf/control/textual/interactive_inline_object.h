@@ -22,8 +22,9 @@ public:
 public:
     std::shared_ptr<TextBox> Host() const noexcept;
 
-    bool IsMouseOver() const;
-    bool IsInSelectionRange() const;
+    std::optional<Point> PositionInHost() const;
+    bool IsMouseOver() const noexcept;
+    bool IsInSelectionRange() const noexcept;
 
     Observable<InlineObjectMouseEnterInfo> MouseEnterEvent() const {
         return mouse_enter_event_.GetObservable();
