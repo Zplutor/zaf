@@ -1291,6 +1291,9 @@
     <ClCompile Include="src\zaf\control\textual\pasting_info.cpp">
       <Filter>zaf\control\textual</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\textual\styled_text_view.cpp">
+      <Filter>zaf\control\textual</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2969,6 +2972,9 @@
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual\hit_test_index_result.h">
+      <Filter>zaf\control\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\textual\styled_text_view.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
   </ItemGroup>

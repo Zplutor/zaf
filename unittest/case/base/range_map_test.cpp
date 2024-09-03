@@ -366,7 +366,7 @@ TEST(RangeMapTest, FindItemAtIndex) {
 
     map.AddRange(Range{ 1, 2 }, std::string{ "range1" });
     map.AddRange(Range{ 5, 1 }, std::string{ "range2" });
-    map.AddRange(Range{ 10, 5 }, std::string{ "range2" });
+    map.AddRange(Range{ 10, 5 }, std::string{ "range3" });
 
     //Invalid indexes.
     auto item = map.FindItemAtIndex(0);
@@ -412,4 +412,39 @@ TEST(RangeMapTest, FindItemAtIndex) {
 
     item = map.FindItemAtIndex(15);
     ASSERT_EQ(item, map.end());
+}
+
+
+TEST(RangeMapTest, FindFirstItemIntersectsWithRange) {
+
+    RangeMap<std::string> map;
+    ASSERT_EQ(map.FindFirstItemIntersectsWithRange({}), map.end());
+    ASSERT_EQ(map.FindFirstItemIntersectsWithRange({ 0, 1 }), map.end());
+
+    map.AddRange(Range{ 1, 2 }, std::string{ "range1" });
+    map.AddRange(Range{ 5, 1 }, std::string{ "range2" });
+    map.AddRange(Range{ 10, 5 }, std::string{ "range3" });
+
+    //Invalid ranges.
+    ASSERT_EQ(map.FindFirstItemIntersectsWithRange({}), map.end());
+    ASSERT_EQ(map.FindFirstItemIntersectsWithRange({ 0, 1 }), map.end());
+    ASSERT_EQ(map.FindFirstItemIntersectsWithRange({ 1, 0 }), map.end());
+    ASSERT_EQ(map.FindFirstItemIntersectsWithRange({ 2, 0 }), map.end());
+    ASSERT_EQ(map.FindFirstItemIntersectsWithRange({ 3, 1 }), map.end());
+    ASSERT_EQ(map.FindFirstItemIntersectsWithRange({ 4, 0 }), map.end());
+    ASSERT_EQ(map.FindFirstItemIntersectsWithRange({ 4, 1 }), map.end());
+
+    //First range.
+    auto iterator = map.FindFirstItemIntersectsWithRange({ 0, 20 });
+    ASSERT_NE(iterator, map.end());
+    ASSERT_EQ(iterator->Value(), "range1");
+
+    iterator = map.FindFirstItemIntersectsWithRange({ 2, 5 });
+    ASSERT_NE(iterator, map.end());
+    ASSERT_EQ(iterator->Value(), "range1");
+
+    //Second range.
+    iterator = map.FindFirstItemIntersectsWithRange({ 4, 4 });
+    ASSERT_NE(iterator, map.end());
+    ASSERT_EQ(iterator->Value(), "range2");
 }

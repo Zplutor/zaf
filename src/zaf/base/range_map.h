@@ -197,6 +197,28 @@ public:
         return mutable_this->FindItemAtIndex(index);
     }
 
+    iterator FindFirstItemIntersectsWithRange(const Range& range) noexcept {
+
+        auto iterator = std::lower_bound(
+            items_.begin(),
+            items_.end(),
+            range,
+            [](const Item& item, const Range& range) {
+                return item.Range().EndIndex() < range.index;
+            });
+
+        if (iterator != items_.end() && iterator->Range().Intersects(range)) {
+            return iterator;
+        }
+
+        return items_.end();
+    }
+
+    const_iterator FindFirstItemIntersectsWithRange(const Range& range) const noexcept {
+        auto mutable_this = const_cast<RangeMap<T>*>(this);
+        return mutable_this->FindFirstItemIntersectsWithRange(range);
+    }
+
     bool IsEmpty() const noexcept {
         return items_.empty();
     }

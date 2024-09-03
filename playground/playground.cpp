@@ -58,8 +58,14 @@
 #include <zaf/graphic/stroke_properties.h>
 #include <zaf/input/mouse.h>
 #include <zaf/control/control_object.h>
+#include <zaf/control/textual/interactive_inline_object.h>
 
 void BeginRun(const zaf::BeginRunInfo& event_info);
+
+class MyInlineObject : public zaf::textual::InteractiveInlineObject {
+public:
+
+};
 
 class Window : public zaf::Window {
 public:

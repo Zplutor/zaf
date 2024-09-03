@@ -222,6 +222,7 @@
     <ClCompile Include="src\zaf\control\textual\selection_changed_info.cpp" />
     <ClCompile Include="src\zaf\control\textual\styled_text.cpp" />
     <ClCompile Include="src\zaf\control\textual\styled_text_data.cpp" />
+    <ClCompile Include="src\zaf\control\textual\styled_text_view.cpp" />
     <ClCompile Include="src\zaf\control\textual\word_extractor.cpp" />
     <ClCompile Include="src\zaf\control\textual_control.cpp" />
     <ClCompile Include="src\zaf\control\rich_edit.cpp" />
@@ -668,6 +669,7 @@
     <ClInclude Include="src\zaf\control\textual\selection_option.h" />
     <ClInclude Include="src\zaf\control\textual\styled_text.h" />
     <ClInclude Include="src\zaf\control\textual\styled_text_data.h" />
+    <ClInclude Include="src\zaf\control\textual\styled_text_view.h" />
     <ClInclude Include="src\zaf\control\textual\text_style.h" />
     <ClInclude Include="src\zaf\control\textual\word_extractor.h" />
     <ClInclude Include="src\zaf\control\textual_control.h" />

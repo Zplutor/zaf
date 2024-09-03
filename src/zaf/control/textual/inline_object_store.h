@@ -49,6 +49,7 @@ public:
     void Clear();
 
     ItemList::const_iterator FindItemAtIndex(std::size_t index) const;
+    ItemList::const_iterator FindFirstItemIntersectsWithRange(const Range& range) const;
 
     const ItemList& Items() const {
         return items_;

@@ -766,6 +766,30 @@ TEST(TextBoxTest, InputStyledText) {
 }
 
 
+TEST(TextBoxTest, InputInlineObject) {
+
+    auto control = Create<TextBox>();
+
+    auto inline_object = Create<InlineObject>();
+
+    //A not editable text box can not input.
+    control->SetIsEditable(false);
+    ASSERT_FALSE(control->Input(inline_object));
+    ASSERT_EQ(control->Text(), L"");
+
+    //An editable text box can input.
+    control->SetIsEditable(true);
+    ASSERT_TRUE(control->Input(inline_object));
+    ASSERT_EQ(control->Text(), L"\ufffc");
+
+    //The object will have a host.
+    ASSERT_EQ(inline_object->Host(), control);
+
+    //The operation will be added to the undo history.
+    ASSERT_TRUE(control->CanUndo());
+}
+
+
 TEST(TextBoxTest, HitTestAtIndex) {
 
     auto control = Create<TextBox>();

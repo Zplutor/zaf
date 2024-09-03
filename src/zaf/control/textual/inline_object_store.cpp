@@ -117,6 +117,24 @@ InlineObjectStore::ItemList::const_iterator InlineObjectStore::FindItemAtIndex(
 }
 
 
+InlineObjectStore::ItemList::const_iterator InlineObjectStore::FindFirstItemIntersectsWithRange(
+    const Range& range) const {
+
+    auto iterator = std::lower_bound(
+        items_.begin(),
+        items_.end(),
+        range,
+        [](const Item& item, const Range& range) {
+            return item.Range().EndIndex() <= range.index;
+        });
+
+    if (iterator != items_.end() && iterator->Range().Intersects(range)) {
+        return iterator;
+    }
+    return items_.end();
+}
+
+
 InlineObjectStore InlineObjectStore::Clone() const {
 
     InlineObjectStore result;

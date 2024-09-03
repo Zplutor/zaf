@@ -31,19 +31,19 @@ public:
     }
 
     iterator FindItemAtIndex(std::size_t index) {
-        auto inner_iterator = map_.FindItemAtIndex(index);
-        if (inner_iterator != map_.end()) {
-            return inner_iterator;
-        }
-        return this->end();
+        return map_.FindItemAtIndex(index);
     }
 
     const_iterator FindItemAtIndex(std::size_t index) const {
-        auto inner_iterator = map_.FindItemAtIndex(index);
-        if (inner_iterator != map_.end()) {
-            return inner_iterator;
-        }
-        return this->end();
+        return map_.FindItemAtIndex(index);
+    }
+
+    iterator FindFirstItemIntersectsWithRange(const Range& range) {
+        return map_.FindFirstItemIntersectsWithRange(range);
+    }
+
+    const_iterator FindFirstItemIntersectsWithRange(const Range& range) const {
+        return map_.FindFirstItemIntersectsWithRange(range);
     }
 
     void VisitItemsInRange(
@@ -95,6 +95,7 @@ private:
 
 class InlineObjectAccessor : NonCopyableNonMovable {
 public:
+    using value_type = InlineObjectStore::Item;
     using iterator = InlineObjectStore::ItemList::iterator;
     using const_iterator = InlineObjectStore::ItemList::const_iterator;
 
@@ -113,6 +114,10 @@ public:
 
     const_iterator FindItemAtIndex(std::size_t index) const {
         return store_.FindItemAtIndex(index);
+    }
+
+    const_iterator FindFirstItemIntersectsWithRange(const Range& range) const {
+        return store_.FindFirstItemIntersectsWithRange(range);
     }
 
     void VisitItemsInRange(
