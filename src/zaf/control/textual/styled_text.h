@@ -244,10 +244,14 @@ public:
         The sub-portion of the styled text.
 
     @throw zaf::PreconditionError
-        Thrown if the precondition is violated.
-
     @throw std::bad_alloc
-        Thrown if fails to allocate the required memory.
+
+    @details
+        Inline objects in the sub-portion will be cloned to the new styled text.
+
+        This method copies the text and styles in the sub-portion, which may be a high-cost 
+        operation. Users can use the StyledTextView class to access the sub-portion without
+        copying.
     */
     StyledText GetSubText(const Range& range) const;
 
@@ -273,10 +277,6 @@ public:
     void ReadFromXML(XMLReader& reader) override;
 
 private:
-    static Range ReviseItemRangeForGettingSubText(
-        const Range& item_range, 
-        const Range& sub_text_range);
-
     static Range ReviseItemRangeForSettingSubText(
         const Range& item_range,
         const Range& sub_text_range);

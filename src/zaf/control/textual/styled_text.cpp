@@ -229,50 +229,8 @@ const InlineObjectAccessor& StyledText::InlineObjects() const {
 
 
 StyledText StyledText::GetSubText(const Range& range) const {
-
-    ZAF_EXPECT(range.index <= text_.length());
-
-    StyledText result;
-    result.default_style_ = this->default_style_;
-    result.text_ = text_.substr(range.index, range.length);
-
-    const auto revise_item_range = [&range, &result](const Range& item_range) {
-        return ReviseItemRangeForGettingSubText(
-            item_range,
-            Range{ range.index, result.text_.length() });
-    };
-    
-    //Fonts
-    ranged_style_.Fonts().VisitItemsInRange(
-        range, 
-        [&revise_item_range, &result](const auto& item) {
-            result.SetFontInRange(item.Value(), revise_item_range(item.Range()));
-        });
-
-    //Ranged text color pickers
-    ranged_style_.TextColors().VisitItemsInRange(
-        range, 
-        [&revise_item_range, &result](const auto& item) {
-            result.SetTextColorInRange(item.Value(), revise_item_range(item.Range()));
-        });
-
-    //Ranged background color pickers
-    ranged_style_.TextBackColors().VisitItemsInRange(
-        range,
-        [&revise_item_range, &result](const auto& item) {
-            result.SetTextBackColorInRange(item.Value(), revise_item_range(item.Range()));
-        });
-
-    //Inline objects.
-    ranged_style_.InlineObjects().VisitItemsInRange(
-        range, 
-        [&revise_item_range, &result](const auto& item) {
-            result.AttachInlineObjectToRange(
-                item.Object()->Clone(),
-                revise_item_range(item.Range()));
-        });
-
-    return result;
+    StyledTextView view{ *this, range };
+    return StyledText{ view };
 }
 
 
@@ -325,30 +283,6 @@ Range StyledText::SetStyledTextInRange(const StyledText& styled_text, const Rang
             revise_item_range(each_item.Range()));
     }
 
-    return new_range;
-}
-
-
-Range StyledText::ReviseItemRangeForGettingSubText(
-    const Range& item_range, 
-    const Range& sub_text_range) {
-
-    std::size_t index{};
-    std::size_t length{};
-
-    if (item_range.index < sub_text_range.index) {
-        index = 0;
-        length = item_range.length - (sub_text_range.index - item_range.index);
-    }
-    else {
-        index = item_range.index - sub_text_range.index;
-        length = item_range.length;
-    }
-
-    Range new_range{ index, length };
-    if (new_range.EndIndex() > sub_text_range.length) {
-        new_range.length -= new_range.EndIndex() - sub_text_range.length;
-    }
     return new_range;
 }
 
