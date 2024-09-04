@@ -40,11 +40,19 @@ public:
         return ViewIterator{ accessor_, previous_accessor_iterator, view_range_ };
     }
 
-    value_type operator*() const {
-        return value_type{
-            *accessor_iterator_,
-            Range::MakeIntersection(accessor_iterator_->Range(), view_range_)
-        };
+    const value_type& operator*() const {
+        auto new_range = Range::MakeIntersection(accessor_iterator_->Range(), view_range_);
+        new_range.index -= view_range_.index;
+        current_value_.emplace(*accessor_iterator_, new_range);
+        return *current_value_;
+    }
+
+    const value_type* operator->() const {
+        return &this->operator*();
+    }
+
+    bool operator==(const ViewIterator& other) const {
+        return this->accessor_iterator_ == other.accessor_iterator_;
     }
 
     bool operator!=(const ViewIterator& other) const {
@@ -65,7 +73,8 @@ private:
 private:
     const Accessor& accessor_;
     Accessor::const_iterator accessor_iterator_;
-    const Range& view_range_;
+    const Range view_range_;
+    mutable std::optional<value_type> current_value_;
 };
 
 
@@ -78,8 +87,8 @@ public:
     class value_type {
     public:
         value_type(const Accessor::value_type& item, const Range& range) noexcept :
-            range_(range),
-            item_(item) {
+            item_(item),
+            range_(range) {
 
         }
 
@@ -92,8 +101,8 @@ public:
         }
 
     private:
-        const zaf::Range& range_;
         const Accessor::value_type& item_;
+        const zaf::Range range_;
     };
 
     using iterator = ViewIterator<Accessor, value_type>;
@@ -106,9 +115,25 @@ public:
     
     }
 
+    std::size_t Count() const noexcept {
+
+        std::size_t count{};
+        auto iterator = accessor_.FindFirstItemIntersectsWithRange(view_range_);
+        for (; iterator != accessor_.end(); ++iterator) {
+
+            if (iterator->Range().Intersects(view_range_)) {
+                ++count;
+            }
+            else {
+                break;
+            }
+        }
+        return count;
+    }
+
     bool IsEmpty() const noexcept {
         auto iterator = accessor_.FindFirstItemIntersectsWithRange(view_range_);
-        return iterator != accessor_.end();
+        return iterator == accessor_.end();
     }
 
     iterator begin() const {
@@ -157,7 +182,7 @@ public:
 
     private:
         const InlineObjectAccessor::value_type& item_;
-        const zaf::Range& range_;
+        const zaf::Range range_;
     };
 
     using iterator = ViewIterator<InlineObjectAccessor, value_type>;
@@ -170,8 +195,29 @@ public:
 
     }
 
+    std::size_t Count() const noexcept {
+
+        std::size_t count{};
+        auto iterator = accessor_.FindFirstItemContainedInRange(view_range_);
+        for (; iterator != accessor_.end(); ++iterator) {
+
+            if (view_range_.Contains(iterator->Range())) {
+                ++count;
+            }
+            else {
+                break;
+            }
+        }
+        return count;
+    }
+
+    bool IsEmpty() const noexcept {
+        auto iterator = accessor_.FindFirstItemContainedInRange(view_range_);
+        return iterator == accessor_.end();
+    }
+
     iterator begin() const {
-        auto accessor_iterator = accessor_.FindFirstItemIntersectsWithRange(view_range_);
+        auto accessor_iterator = accessor_.FindFirstItemContainedInRange(view_range_);
         if (accessor_iterator != accessor_.end()) {
             return iterator{ accessor_, accessor_iterator, view_range_ };
         }

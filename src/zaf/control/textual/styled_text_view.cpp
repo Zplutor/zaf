@@ -34,7 +34,13 @@ const Font& StyledTextView::DefaultFont() const noexcept {
 
 
 const Font& StyledTextView::GetFontAtIndex(std::size_t index) const {
+
     ZAF_EXPECT(index <= view_range_.length);
+
+    if (index == view_range_.length) {
+        return this->DefaultFont();
+    }
+
     return styled_text_.GetFontAtIndex(index + view_range_.index);
 }
 
@@ -50,7 +56,13 @@ const Color& StyledTextView::DefaultTextColor() const noexcept {
 
 
 const Color& StyledTextView::GetTextColorAtIndex(std::size_t index) const {
+
     ZAF_EXPECT(index <= view_range_.length);
+
+    if (index == view_range_.length) {
+        return this->DefaultTextColor();
+    }
+
     return styled_text_.GetTextColorAtIndex(index + view_range_.index);
 }
 
@@ -66,7 +78,13 @@ const Color& StyledTextView::DefaultTextBackColor() const noexcept {
 
 
 const Color& StyledTextView::GetTextBackColorAtIndex(std::size_t index) const {
+
     ZAF_EXPECT(index <= view_range_.length);
+
+    if (index == view_range_.length) {
+        return this->DefaultTextBackColor();
+    }
+
     return styled_text_.GetTextBackColorAtIndex(index + view_range_.index);
 }
 
@@ -77,8 +95,23 @@ StyledTextView::RangedColorView StyledTextView::RangedTextBackColors() const noe
 
 
 std::shared_ptr<InlineObject> StyledTextView::GetInlineObjectAtIndex(std::size_t index) const {
+
     ZAF_EXPECT(index <= view_range_.length);
-    return styled_text_.GetInlineObjectAtIndex(index + view_range_.index);
+
+    if (index == view_range_.length) {
+        return nullptr;
+    }
+
+    auto item = styled_text_.InlineObjects().FindItemAtIndex(index + view_range_.index);
+    if (item == styled_text_.InlineObjects().end()) {
+        return nullptr;
+    }
+
+    if (!view_range_.Contains(item->Range())) {
+        return nullptr;
+    }
+
+    return item->Object();
 }
 
 

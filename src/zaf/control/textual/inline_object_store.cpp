@@ -117,8 +117,8 @@ InlineObjectStore::ItemList::const_iterator InlineObjectStore::FindItemAtIndex(
 }
 
 
-InlineObjectStore::ItemList::const_iterator InlineObjectStore::FindFirstItemIntersectsWithRange(
-    const Range& range) const {
+InlineObjectStore::ItemList::const_iterator InlineObjectStore::FindFirstItemContainedInRange(
+    const Range& range) const noexcept {
 
     auto iterator = std::lower_bound(
         items_.begin(),
@@ -128,9 +128,12 @@ InlineObjectStore::ItemList::const_iterator InlineObjectStore::FindFirstItemInte
             return item.Range().EndIndex() <= range.index;
         });
 
-    if (iterator != items_.end() && iterator->Range().Intersects(range)) {
-        return iterator;
+    for (; iterator != items_.end(); ++iterator) {
+        if (range.Contains(iterator->Range())) {
+            return iterator;
+        }
     }
+
     return items_.end();
 }
 

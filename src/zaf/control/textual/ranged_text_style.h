@@ -116,8 +116,8 @@ public:
         return store_.FindItemAtIndex(index);
     }
 
-    const_iterator FindFirstItemIntersectsWithRange(const Range& range) const {
-        return store_.FindFirstItemIntersectsWithRange(range);
+    const_iterator FindFirstItemContainedInRange(const Range& range) const noexcept {
+        return store_.FindFirstItemContainedInRange(range);
     }
 
     void VisitItemsInRange(
