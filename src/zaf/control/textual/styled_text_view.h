@@ -8,7 +8,7 @@ namespace zaf::textual {
 
 class StyledText;
 
-template<typename Accessor, typename Item>
+template<typename Accessor, typename Item, typename IsRangeInView>
 class ViewIterator {
 public:
     using iterator_category = std::forward_iterator_tag;
@@ -65,7 +65,7 @@ private:
         ++accessor_iterator_;
 
         if (accessor_iterator_ != accessor_.end() &&
-            !accessor_iterator_->Range().Intersects(view_range_)) {
+            !IsRangeInView()(accessor_iterator_->Range(), view_range_)) {
             accessor_iterator_ = accessor_.end();
         }
     }
@@ -82,6 +82,12 @@ template<typename T>
 class RangedItemView {
 private:
     using Accessor = RangedItemAccessor<T>;
+
+    struct IsRangeInView {
+        bool operator()(const Range& range, const Range& view_range) const {
+            return view_range.Intersects(range);
+        }
+    };
 
 public:
     class value_type {
@@ -105,7 +111,7 @@ public:
         const zaf::Range range_;
     };
 
-    using iterator = ViewIterator<Accessor, value_type>;
+    using iterator = ViewIterator<Accessor, value_type, IsRangeInView>;
     using const_iterator = iterator;
 
 public:
@@ -163,6 +169,13 @@ private:
 
 
 class InlineObjectView {
+private:
+    struct IsRangeInView {
+        bool operator()(const Range& range, const Range& view_range) const {
+            return view_range.Contains(range);
+        }
+    };
+
 public:
     class value_type {
     public:
@@ -185,7 +198,7 @@ public:
         const zaf::Range range_;
     };
 
-    using iterator = ViewIterator<InlineObjectAccessor, value_type>;
+    using iterator = ViewIterator<InlineObjectAccessor, value_type, IsRangeInView>;
     using const_iterator = iterator;
 
 public:
