@@ -69,7 +69,7 @@ public:
     @details
         Inline objects in the view will be cloned to the new styled text.
     */
-    explicit StyledText(StyledTextView styled_text_view);
+    explicit StyledText(const StyledTextView& styled_text_view);
 
     std::size_t Length() const noexcept {
         return text_.length();
@@ -111,6 +111,10 @@ public:
         range my exceed the length of the existing text; in such a case, the end index will be 
         revised to the length of the existing text.
 
+    @param old_styled_text
+        A pointer to a StyledText that will receive the old styled text in the range before
+        setting the new text.
+
     @pre 
         The start index of the range does not exceed the bounds of the existing txt.
 
@@ -118,10 +122,8 @@ public:
         The range of the new text within the whole text after setting.
 
     @throw zaf::PreconditionError
-        Thrown if the precondition is violated.
 
     @throw std::bad_alloc
-        Thrown if memory allocation fails.
 
     @throw ...
         Any exception thrown by the handling of inline object detaching.
@@ -133,9 +135,15 @@ public:
         After setting the new text, ranged styles that are within the bounds of the range will be 
         removed.
     */
-    Range SetTextInRange(std::wstring_view text, const Range& range);
+    Range SetTextInRange(
+        std::wstring_view text, 
+        const Range& range,
+        StyledText* old_styled_text = nullptr);
 
-    Range SetStyledTextInRange(const StyledText& styled_text, const Range& range);
+    Range SetStyledTextInRange(
+        const StyledText& styled_text,
+        const Range& range,
+        StyledText* old_styled_text = nullptr);
 
     /**
     Appends the specified text to the end of the existing text.
@@ -277,6 +285,11 @@ public:
     void ReadFromXML(XMLReader& reader) override;
 
 private:
+    static void AssignStyledTextFromView(
+        StyledText& styled_text,
+        const StyledTextView& view, 
+        bool assign_objects);
+
     static Range ReviseItemRangeForSettingSubText(
         const Range& item_range,
         const Range& sub_text_range);

@@ -17,25 +17,40 @@ StyledText::StyledText(std::wstring text) : text_(std::move(text)) {
 }
 
 
-StyledText::StyledText(StyledTextView styled_text_view) {
+StyledText::StyledText(const StyledTextView& styled_text_view) {
+    AssignStyledTextFromView(*this, styled_text_view, true);
+}
 
-    text_ = styled_text_view.Text();
-    default_style_ = styled_text_view.DefaultStyle();
 
-    for (const auto& each_item : styled_text_view.RangedFonts()) {
-        ranged_style_.SetFontInRange(each_item.Value(), each_item.Range());
+void StyledText::AssignStyledTextFromView(
+    StyledText& styled_text,
+    const StyledTextView& view,
+    bool assign_objects) {
+
+    //Use SetText() to clear all ranged styles.
+    styled_text.SetText(std::wstring{ view.Text() });
+    styled_text.default_style_ = view.DefaultStyle();
+
+    for (const auto& each_item : view.RangedFonts()) {
+        styled_text.ranged_style_.SetFontInRange(each_item.Value(), each_item.Range());
     }
 
-    for (const auto& each_item : styled_text_view.RangedTextColors()) {
-        ranged_style_.SetTextColorInRange(each_item.Value(), each_item.Range());
+    for (const auto& each_item : view.RangedTextColors()) {
+        styled_text.ranged_style_.SetTextColorInRange(each_item.Value(), each_item.Range());
     }
 
-    for (const auto& each_item : styled_text_view.RangedTextBackColors()) {
-        ranged_style_.SetTextBackColorInRange(each_item.Value(), each_item.Range());
+    for (const auto& each_item : view.RangedTextBackColors()) {
+        styled_text.ranged_style_.SetTextBackColorInRange(each_item.Value(), each_item.Range());
     }
 
-    for (const auto& each_item : styled_text_view.InlineObjects()) {
-        ranged_style_.AttachInlineObjectToRange(each_item.Object()->Clone(), each_item.Range());
+    if (assign_objects) {
+
+        for (const auto& each_item : view.InlineObjects()) {
+
+            styled_text.ranged_style_.AttachInlineObjectToRange(
+                each_item.Object()->Clone(),
+                each_item.Range());
+        }
     }
 }
 
@@ -47,12 +62,37 @@ void StyledText::SetText(std::wstring text) {
 }
 
 
-Range StyledText::SetTextInRange(std::wstring_view text, const Range& range) {
+Range StyledText::SetTextInRange(
+    std::wstring_view text, 
+    const Range& range,
+    StyledText* old_styled_text) {
 
     ZAF_EXPECT(range.index <= text_.length());
 
+    //Preserve the old styled text in the range.
+    //Inline objects should be handled carefully, as we want to return the original objects to 
+    //old_styled_text directly without cloning them.
+    std::vector<std::pair<Range, std::shared_ptr<InlineObject>>> inline_objects;
+    if (old_styled_text) {
+
+        StyledTextView view{ *this, range };
+        AssignStyledTextFromView(*old_styled_text, view, false);
+
+        for (const auto& each_item : view.InlineObjects()) {
+            inline_objects.emplace_back(each_item.Range(), each_item.Object());
+        }
+    }
+
     text_.replace(range.index, range.length, text);
     ranged_style_.ReplaceSpan(range, text.length());
+
+    if (old_styled_text) {
+        for (auto& each_item : inline_objects) {
+            old_styled_text->ranged_style_.AttachInlineObjectToRange(
+                std::move(each_item.second), 
+                each_item.first);
+        }
+    }
 
     return Range{ range.index, text.length() };
 }
@@ -234,10 +274,13 @@ StyledText StyledText::GetSubText(const Range& range) const {
 }
 
 
-Range StyledText::SetStyledTextInRange(const StyledText& styled_text, const Range& range) {
+Range StyledText::SetStyledTextInRange(
+    const StyledText& styled_text,
+    const Range& range,
+    StyledText* old_styled_text) {
 
     //Text
-    auto new_range = SetTextInRange(styled_text.Text(), range);
+    auto new_range = SetTextInRange(styled_text.Text(), range, old_styled_text);
 
     //Default style
     const auto& other_default_style = styled_text.DefaultStyle();

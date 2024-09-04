@@ -14,7 +14,7 @@ static_assert(!std::is_copy_assignable_v<StyledText>);
 static_assert(std::is_move_constructible_v<StyledText>);
 static_assert(std::is_move_assignable_v<StyledText>);
 
-TEST(StyledTextTest, ConstructFromStyledTestView) {
+TEST(StyledTextTest, ConstructFromStyledTextView) {
 
     StyledText original_styled_text{ L"0123456789" };
     original_styled_text.SetDefaultFont(Font{ L"default" });
@@ -83,6 +83,70 @@ TEST(StyledTextTest, SetTextInRange) {
     new_range = styled_text.SetTextInRange(L"tail", Range{ 12, 10 });
     ASSERT_EQ(new_range, Range(12, 4));
     ASSERT_EQ(styled_text.Text(), L"StylED--Texttail");
+}
+
+
+TEST(StyledTextTest, SetTextInRange_OldStyledText) {
+    
+    //The output argument will be clear.
+    {
+        StyledText old_styled_text{ L"0000" };
+        old_styled_text.SetFontInRange(Font{ L"range" }, Range{ 0, 3 });
+        old_styled_text.SetTextColorInRange(Color::Green(), Range{ 0, 3 });
+        old_styled_text.SetTextBackColorInRange(Color::Gray(), Range{ 0, 3 });
+        old_styled_text.AttachInlineObjectToRange(Create<InlineObject>(), Range{ 2, 1 });
+
+        StyledText styled_text{ L"123" };
+        styled_text.SetTextInRange(L"", {}, &old_styled_text);
+        ASSERT_TRUE(old_styled_text.Text().empty());
+        ASSERT_TRUE(old_styled_text.RangedFonts().IsEmpty());
+        ASSERT_TRUE(old_styled_text.RangedTextColors().IsEmpty());
+        ASSERT_TRUE(old_styled_text.RangedTextBackColors().IsEmpty());
+        ASSERT_TRUE(old_styled_text.InlineObjects().IsEmpty());
+    }
+
+    {
+        StyledText styled_text{ L"0123456789" };
+        styled_text.SetDefaultFont(Font{ L"default" });
+        styled_text.SetDefaultTextColor(Color::Cyan());
+        styled_text.SetDefaultTextBackColor(Color::Lime());
+
+        styled_text.SetFontInRange(Font{ L"range" }, Range{ 1, 8 });
+        styled_text.SetTextColorInRange(Color::Red(), Range{ 2, 7 });
+        styled_text.SetTextBackColorInRange(Color::Blue(), Range{ 3, 6 });
+
+        auto object = Create<InlineObject>();
+        styled_text.AttachInlineObjectToRange(object, Range{ 4, 2 });
+
+        StyledText old_styled_text;
+        styled_text.SetTextInRange(L"AAAAA", Range{ 3, 3 }, &old_styled_text);
+
+        ASSERT_EQ(old_styled_text.Text(), L"345");
+        ASSERT_EQ(old_styled_text.DefaultFont(), styled_text.DefaultFont());
+        ASSERT_EQ(old_styled_text.DefaultTextColor(), styled_text.DefaultTextColor());
+        ASSERT_EQ(old_styled_text.DefaultTextBackColor(), styled_text.DefaultTextBackColor());
+
+        const auto& ranged_fonts = old_styled_text.RangedFonts();
+        ASSERT_EQ(ranged_fonts.Count(), 1);
+        ASSERT_EQ(ranged_fonts.begin()->Range(), Range(0, 3));
+        ASSERT_EQ(ranged_fonts.begin()->Value().family_name, L"range");
+
+        const auto& ranged_text_colors = old_styled_text.RangedTextColors();
+        ASSERT_EQ(ranged_text_colors.Count(), 1);
+        ASSERT_EQ(ranged_text_colors.begin()->Range(), Range(0, 3));
+        ASSERT_EQ(ranged_text_colors.begin()->Value(), Color::Red());
+
+        const auto& ranged_text_back_colors = old_styled_text.RangedTextBackColors();
+        ASSERT_EQ(ranged_text_back_colors.Count(), 1);
+        ASSERT_EQ(ranged_text_back_colors.begin()->Range(), Range(0, 3));
+        ASSERT_EQ(ranged_text_back_colors.begin()->Value(), Color::Blue());
+
+        const auto& inline_objects = old_styled_text.InlineObjects();
+        ASSERT_EQ(inline_objects.Count(), 1);
+        ASSERT_EQ(inline_objects.begin()->Range(), Range(1, 2));
+        //The object won't be cloned.
+        ASSERT_EQ(inline_objects.begin()->Object(), object);
+    }
 }
 
 
