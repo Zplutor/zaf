@@ -12,6 +12,7 @@
 #include <zaf/control/textual/default_text_style.h>
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/control/textual/ranged_text_style.h>
+#include <zaf/control/textual/styled_text_view.h>
 #include <zaf/control/textual/text_style.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/xml/xml_serializable.h>
@@ -56,6 +57,19 @@ public:
         The text that the StyledText will own.
     */
     explicit StyledText(std::wstring text);
+
+    /**
+    Constructs a StyledText with the specified styled text view.
+
+    @param styled_text_view
+        The styled text view from which the new StyledText will copy.
+
+    @throw std::bad_alloc
+
+    @details
+        Inline objects in the view will be cloned to the new styled text.
+    */
+    explicit StyledText(StyledTextView styled_text_view);
 
     std::size_t Length() const noexcept {
         return text_.length();

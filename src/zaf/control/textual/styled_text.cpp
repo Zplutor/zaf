@@ -17,6 +17,29 @@ StyledText::StyledText(std::wstring text) : text_(std::move(text)) {
 }
 
 
+StyledText::StyledText(StyledTextView styled_text_view) {
+
+    text_ = styled_text_view.Text();
+    default_style_ = styled_text_view.DefaultStyle();
+
+    for (const auto& each_item : styled_text_view.RangedFonts()) {
+        ranged_style_.SetFontInRange(each_item.Value(), each_item.Range());
+    }
+
+    for (const auto& each_item : styled_text_view.RangedTextColors()) {
+        ranged_style_.SetTextColorInRange(each_item.Value(), each_item.Range());
+    }
+
+    for (const auto& each_item : styled_text_view.RangedTextBackColors()) {
+        ranged_style_.SetTextBackColorInRange(each_item.Value(), each_item.Range());
+    }
+
+    for (const auto& each_item : styled_text_view.InlineObjects()) {
+        ranged_style_.AttachInlineObjectToRange(each_item.Object()->Clone(), each_item.Range());
+    }
+}
+
+
 void StyledText::SetText(std::wstring text) {
 
     text_ = std::move(text);

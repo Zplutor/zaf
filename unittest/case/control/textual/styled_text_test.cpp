@@ -14,6 +14,51 @@ static_assert(!std::is_copy_assignable_v<StyledText>);
 static_assert(std::is_move_constructible_v<StyledText>);
 static_assert(std::is_move_assignable_v<StyledText>);
 
+TEST(StyledTextTest, ConstructFromStyledTestView) {
+
+    StyledText original_styled_text{ L"0123456789" };
+    original_styled_text.SetDefaultFont(Font{ L"default" });
+    original_styled_text.SetDefaultTextColor(Color::Cyan());
+    original_styled_text.SetDefaultTextBackColor(Color::Lime());
+
+    original_styled_text.SetFontInRange(Font{ L"ranged" }, Range{ 2, 3 });
+    original_styled_text.SetTextColorInRange(Color::Red(), Range{ 5, 3 });
+    original_styled_text.SetTextBackColorInRange(Color::Blue(), Range{ 0, 5 });
+
+    auto object = Create<InlineObject>();
+    original_styled_text.AttachInlineObjectToRange(object, Range{ 4, 2 });
+
+    StyledTextView view{ original_styled_text, Range{ 2, 6 } };
+
+    StyledText new_styled_text{ view };
+    ASSERT_EQ(new_styled_text.Text(), L"234567");
+    ASSERT_EQ(new_styled_text.DefaultFont().family_name, L"default");
+    ASSERT_EQ(new_styled_text.DefaultTextColor(), Color::Cyan());
+    ASSERT_EQ(new_styled_text.DefaultTextBackColor(), Color::Lime());
+
+    const auto& ranged_fonts = new_styled_text.RangedFonts();
+    ASSERT_EQ(ranged_fonts.Count(), 1);
+    ASSERT_EQ(ranged_fonts.begin()->Range(), Range(0, 3));
+    ASSERT_EQ(ranged_fonts.begin()->Value().family_name, L"ranged");
+
+    const auto& ranged_text_colors = new_styled_text.RangedTextColors();
+    ASSERT_EQ(ranged_text_colors.Count(), 1);
+    ASSERT_EQ(ranged_text_colors.begin()->Range(), Range(3, 3));
+    ASSERT_EQ(ranged_text_colors.begin()->Value(), Color::Red());
+
+    const auto& ranged_text_back_colors = new_styled_text.RangedTextBackColors();
+    ASSERT_EQ(ranged_text_back_colors.Count(), 1);
+    ASSERT_EQ(ranged_text_back_colors.begin()->Range(), Range(0, 3));
+    ASSERT_EQ(ranged_text_back_colors.begin()->Value(), Color::Blue());
+
+    const auto& inline_objects = new_styled_text.InlineObjects();
+    ASSERT_EQ(inline_objects.Count(), 1);
+    ASSERT_EQ(inline_objects.begin()->Range(), Range(2, 2));
+    //the object will be cloned.
+    ASSERT_NE(inline_objects.begin()->Object(), object);
+}
+
+
 TEST(StyledTextTest, SetTextInRange) {
 
     StyledText styled_text(L"Styled-Text");
