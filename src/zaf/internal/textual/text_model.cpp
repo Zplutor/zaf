@@ -100,32 +100,11 @@ void TextModel::SetStyledText(textual::StyledText styled_text) {
 }
 
 
-Range TextModel::SetStyledTextInRange(const textual::StyledText& styled_text, const Range& range) {
+Range TextModel::SetStyledTextInRange(textual::StyledText styled_text, const Range& range) {
 
-    auto revised_text = internal::ReviseLinesInStyledTextView(
-        styled_text, 
-        is_multiline_,
-        line_break_);
+    internal::ReviseLinesInStyledText(styled_text, is_multiline_, line_break_, nullptr);
 
-    const textual::StyledText* styled_text_to_set{};
-    if (std::holds_alternative<std::reference_wrapper<const textual::StyledText>>(revised_text)) {
-        styled_text_to_set = 
-            &std::get<std::reference_wrapper<const textual::StyledText>>(revised_text).get();
-    }
-    else {
-        styled_text_to_set = &std::get<textual::StyledText>(revised_text);
-    }
-
-    InnerSetStyledTextInRange(*styled_text_to_set, range);
-    return Range{ range.index, styled_text_to_set->Length() };
-}
-
-
-void TextModel::InnerSetStyledTextInRange(
-    const textual::StyledText& slice,
-    const Range& replaced_range) {
-
-    auto sub_text_range = styled_text_.SetStyledTextInRange(slice, replaced_range);
+    auto sub_text_range = styled_text_.SetStyledTextInRange(std::move(styled_text), range);
     ranged_text_color_pickers_.RemoveRange(sub_text_range);
     ranged_text_back_color_pickers_.RemoveRange(sub_text_range);
 
@@ -139,6 +118,7 @@ void TextModel::InnerSetStyledTextInRange(
 
     RaiseInlineObjectAttachedEvent(std::move(new_inline_objects));
     RaiseChangedEvent(TextModelAttribute::All);
+    return sub_text_range;
 }
 
 

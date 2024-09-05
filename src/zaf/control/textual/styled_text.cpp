@@ -275,7 +275,7 @@ StyledText StyledText::GetSubText(const Range& range) const {
 
 
 Range StyledText::SetStyledTextInRange(
-    const StyledText& styled_text,
+    StyledText styled_text,
     const Range& range,
     StyledText* old_styled_text) {
 
@@ -303,8 +303,10 @@ Range StyledText::SetStyledTextInRange(
     };
 
     //Ranged fonts
-    for (const auto& each_item : styled_text.RangedFonts()) {
-        ranged_style_.SetFontInRange(each_item.Value(), revise_item_range(each_item.Range()));
+    for (auto& each_item : styled_text.RangedFonts()) {
+        ranged_style_.SetFontInRange(
+            std::move(each_item.Value()), //Move fonts into the current styled text.
+            revise_item_range(each_item.Range()));
     }
 
     //Ranged text color
@@ -320,10 +322,16 @@ Range StyledText::SetStyledTextInRange(
     }
 
     //Inline objects
+    std::vector<std::pair<Range, std::shared_ptr<InlineObject>>> inline_objects;
     for (const auto& each_item : styled_text.InlineObjects()) {
+        inline_objects.emplace_back(each_item.Range(), each_item.Object());
+    }
+    styled_text.ClearInlineObjects();
+
+    for (auto& each_item : inline_objects) {
         ranged_style_.AttachInlineObjectToRange(
-            each_item.Object()->Clone(),
-            revise_item_range(each_item.Range()));
+            std::move(each_item.second),
+            revise_item_range(each_item.first));
     }
 
     return new_range;

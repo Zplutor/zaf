@@ -164,10 +164,12 @@ TEST(StyledTextTest, SetStyledTextInRange_Precondition) {
     StyledText slice;
 
     StyledText styled_text;
-    ASSERT_THROW(styled_text.SetStyledTextInRange(slice, Range{ 1, 0 }), PreconditionError);
-    ASSERT_THROW(styled_text.SetStyledTextInRange(slice, Range{ 1, 10 }), PreconditionError);
-    ASSERT_NO_THROW(styled_text.SetStyledTextInRange(slice, Range{ 0, 0 }));
-    ASSERT_NO_THROW(styled_text.SetStyledTextInRange(slice, Range{ 0, 10 }));
+    ASSERT_THROW(styled_text.SetStyledTextInRange(slice.Clone(), Range{1, 0}), PreconditionError);
+    ASSERT_THROW(
+        styled_text.SetStyledTextInRange(slice.Clone(), Range{ 1, 10 }), 
+        PreconditionError);
+    ASSERT_NO_THROW(styled_text.SetStyledTextInRange(slice.Clone(), Range{ 0, 0 }));
+    ASSERT_NO_THROW(styled_text.SetStyledTextInRange(slice.Clone(), Range{ 0, 10 }));
 }
 
 
@@ -216,7 +218,7 @@ TEST(StyledTextTest, SetStyledTextInRange_DefaultFont) {
 
         StyledText styled_text{ L"012345" };
         styled_text.SetDefaultFont(Font{ L"default" });
-        styled_text.SetStyledTextInRange(slice, Range{ 2, 2 });
+        styled_text.SetStyledTextInRange(slice.Clone(), Range{ 2, 2 });
         ASSERT_TRUE(styled_text.RangedFonts().IsEmpty());
     }
 
@@ -227,7 +229,7 @@ TEST(StyledTextTest, SetStyledTextInRange_DefaultFont) {
 
         StyledText styled_text{ L"012345" };
         styled_text.SetDefaultFont(Font{ L"default" });
-        styled_text.SetStyledTextInRange(slice, Range{ 2, 2 });
+        styled_text.SetStyledTextInRange(slice.Clone(), Range{ 2, 2 });
         ASSERT_EQ(styled_text.RangedFonts().Count(), 1);
         ASSERT_EQ(styled_text.RangedFonts().begin()->Range(), Range(2, 3));
         ASSERT_EQ(styled_text.RangedFonts().begin()->Value().family_name, L"slice");
@@ -242,7 +244,7 @@ TEST(StyledTextTest, SetStyledTextInRange_DefaultFont) {
         //012345 -> 01ABCD45
         StyledText styled_text{ L"012345" };
         styled_text.SetDefaultFont(Font{ L"default" });
-        styled_text.SetStyledTextInRange(slice, Range{ 2, 2 });
+        styled_text.SetStyledTextInRange(slice.Clone(), Range{ 2, 2 });
         ASSERT_EQ(styled_text.RangedFonts().Count(), 2);
 
         auto iterator = styled_text.RangedFonts().begin();
@@ -265,7 +267,7 @@ TEST(StyledTextTest, SetStyledTextInRange_RangedFonts) {
 
         // 012345 -> 012AABB5
         StyledText styled_text{ L"012345" };
-        styled_text.SetStyledTextInRange(slice, Range{ 3, 2 });
+        styled_text.SetStyledTextInRange(slice.Clone(), Range{ 3, 2 });
         ASSERT_EQ(styled_text.RangedFonts().Count(), 2);
 
         auto iterator = styled_text.RangedFonts().begin();
@@ -276,6 +278,23 @@ TEST(StyledTextTest, SetStyledTextInRange_RangedFonts) {
         ASSERT_EQ(iterator->Range(), Range(5, 2));
         ASSERT_EQ(iterator->Value().family_name, L"B");
     }
+}
+
+
+TEST(StyledTextTest, SetStyledTextInRange_InlineObjects) {
+
+    StyledText slice{ L"OBJ" };
+    auto object = Create<InlineObject>();
+    slice.AttachInlineObjectToRange(object, Range{ 0, 3 });
+
+    StyledText styled_text{ L"012345" };
+    styled_text.SetStyledTextInRange(std::move(slice), Range{2, 2});
+    ASSERT_EQ(styled_text.InlineObjects().Count(), 1);
+
+    auto iterator = styled_text.InlineObjects().begin();
+    ASSERT_EQ(iterator->Range(), Range(2, 3));
+    //The object won't be cloned.
+    ASSERT_EQ(iterator->Object(), object);
 }
 
 

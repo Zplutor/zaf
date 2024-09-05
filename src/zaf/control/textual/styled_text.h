@@ -141,7 +141,7 @@ public:
         StyledText* old_styled_text = nullptr);
 
     Range SetStyledTextInRange(
-        const StyledText& styled_text,
+        StyledText styled_text,
         const Range& range,
         StyledText* old_styled_text = nullptr);
 

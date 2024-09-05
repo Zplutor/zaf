@@ -110,7 +110,7 @@ public:
 
     textual::LineBreak LineBreak() const noexcept;
     void SetLineBreak(textual::LineBreak line_break);
-    Range SetStyledTextInRange(const textual::StyledText& styled_text, const Range& range);
+    Range SetStyledTextInRange(textual::StyledText styled_text, const Range& range);
 
     const textual::StyledText& StyledText() const noexcept;
     void SetStyledText(textual::StyledText styled_text);
@@ -162,10 +162,6 @@ private:
 
     void InnerSetTextBackColor(const Color& color);
     void InnerSetTextBackColorInRange(const Color& color, const Range& range);
-
-    void InnerSetStyledTextInRange(
-        const textual::StyledText& slice,
-        const Range& replaced_range);
 
     void RaiseInlineObjectAttachedEvent(
         std::vector<std::shared_ptr<textual::InlineObject>> objects);
