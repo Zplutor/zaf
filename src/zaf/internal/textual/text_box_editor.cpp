@@ -417,24 +417,25 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
     auto old_caret_index = selection_manager.CaretIndex();
     auto old_selection_range = selection_manager.SelectionRange();
 
-    const auto& styled_text = Context().TextModel().StyledText();
-    auto old_text = styled_text.GetSubText(replaced_selection_range);
-
-    TextBoxEditCommand::EditInfo undo_info{
-        .replaced_range = Range{ replaced_selection_range.index, new_text.Length() },
-        .styled_text_slice = std::move(old_text),
+    TextBoxEditCommand::SelectionInfo undo_selection_info{
         .set_caret_to_begin = old_caret_index == old_selection_range.index,
         .select_slice = true,
     };
 
-    TextBoxEditCommand::EditInfo do_info{
-        .replaced_range = replaced_selection_range,
-        .styled_text_slice = std::move(new_text),
+    TextBoxEditCommand::SelectionInfo do_selection_info{
         .set_caret_to_begin = set_caret_to_begin,
         .select_slice = false,
     };
 
-    return std::make_unique<TextBoxEditCommand>(std::move(do_info), std::move(undo_info));
+    TextBoxEditCommand::EditInfo edit_info{
+        .replaced_range = replaced_selection_range,
+        .styled_text_slice = std::move(new_text),
+    };
+
+    return std::make_unique<TextBoxEditCommand>(
+        std::move(edit_info), 
+        do_selection_info,
+        undo_selection_info);
 }
 
 

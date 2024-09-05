@@ -150,6 +150,24 @@ TEST(TextBoxTest, UndoRedo) {
 }
 
 
+TEST(TextBoxTest, UndoRedo_InlineObject) {
+
+    //During undo and redo, the inline object won't be cloned.
+    {
+        auto text_box = Create<TextBox>();
+        text_box->SetIsEditable(true);
+
+        auto object = Create<InlineObject>();
+        ASSERT_TRUE(text_box->Input(object));
+        ASSERT_TRUE(text_box->Undo());
+        ASSERT_TRUE(text_box->Redo());
+
+        auto object_in_text_box = text_box->GetInlineObjectAtIndex(0);
+        ASSERT_EQ(object_in_text_box, object);
+    }
+}
+
+
 TEST(TextBoxTest, SelectionRange) {
 
     auto text_box = zaf::Create<zaf::TextBox>();

@@ -100,11 +100,18 @@ void TextModel::SetStyledText(textual::StyledText styled_text) {
 }
 
 
-Range TextModel::SetStyledTextInRange(textual::StyledText styled_text, const Range& range) {
+Range TextModel::SetStyledTextInRange(
+    textual::StyledText styled_text,
+    const Range& range,
+    textual::StyledText* old_styled_text) {
 
     internal::ReviseLinesInStyledText(styled_text, is_multiline_, line_break_, nullptr);
 
-    auto sub_text_range = styled_text_.SetStyledTextInRange(std::move(styled_text), range);
+    auto sub_text_range = styled_text_.SetStyledTextInRange(
+        std::move(styled_text),
+        range,
+        old_styled_text);
+
     ranged_text_color_pickers_.RemoveRange(sub_text_range);
     ranged_text_back_color_pickers_.RemoveRange(sub_text_range);
 
