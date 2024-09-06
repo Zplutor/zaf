@@ -150,6 +150,21 @@ TEST(TextBoxTest, UndoRedo) {
 }
 
 
+TEST(TextBoxTest, UndoRedo_Selection) {
+
+    TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {
+
+        text_box.SetText(L"text");
+        text_box.SetSelectionRange(Range{ 4, 0 });
+        window.Messager().SendWMKEYDOWN(Key::Backspace);
+        ASSERT_TRUE(text_box.Undo());
+        ASSERT_EQ(text_box.Text(), L"text");
+        ASSERT_EQ(text_box.SelectionRange(), Range(4, 0));
+        ASSERT_EQ(text_box.CaretIndex(), 4);
+    });
+}
+
+
 TEST(TextBoxTest, UndoRedo_InlineObject) {
 
     //During undo and redo, the inline object won't be cloned.

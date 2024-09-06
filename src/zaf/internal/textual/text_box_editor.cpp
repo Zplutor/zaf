@@ -489,10 +489,11 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
     auto old_caret_index = selection_manager.CaretIndex();
     auto old_selection_range = selection_manager.SelectionRange();
 
-    TextBoxEditCommand::SelectionInfo undo_selection_info{
-        .set_caret_to_begin = old_caret_index == old_selection_range.index,
-        .select_slice = true,
-    };
+    TextBoxEditCommand::SelectionInfo undo_selection_info;
+    undo_selection_info.set_caret_to_begin = old_caret_index == replaced_selection_range.index;
+    if (!old_selection_range.IsEmpty() && old_selection_range == replaced_selection_range) {
+        undo_selection_info.select_slice = true;
+    }
 
     TextBoxEditCommand::SelectionInfo do_selection_info{
         .set_caret_to_begin = set_caret_to_begin,
