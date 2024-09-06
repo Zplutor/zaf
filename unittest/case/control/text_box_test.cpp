@@ -808,6 +808,65 @@ TEST(TextBoxTest, InputInlineObject) {
 }
 
 
+TEST(TextBoxTest, Input_DefaultStyle) {
+
+    auto control = Create<TextBox>();
+    control->SetIsEditable(true);
+    control->SetFontFamily(L"style");
+    control->SetTextColor(Color::Red());
+    control->SetTextBackColor(Color::Green());
+
+    //The input text will inherit the default style of the control.
+    ASSERT_TRUE(control->Input(L"text"));
+    ASSERT_EQ(control->GetFontAtIndex(0).family_name, L"style");
+    ASSERT_EQ(control->GetTextColorAtIndex(0), Color::Red());
+    ASSERT_EQ(control->GetTextBackColorAtIndex(0), Color::Green());
+
+    control->SetText({});
+    ASSERT_TRUE(control->Input(Create<InlineObject>()));
+    ASSERT_EQ(control->GetFontAtIndex(0).family_name, L"style");
+    ASSERT_EQ(control->GetTextColorAtIndex(0), Color::Red());
+    ASSERT_EQ(control->GetTextBackColorAtIndex(0), Color::Green());
+}
+
+
+TEST(TextBoxTest, Input_RangedStyle) {
+
+    auto test = [](
+        const Range& selection_range,
+        SelectionOption selection_option, 
+        std::size_t check_index,
+        bool check_equal_to_range) {
+
+        auto control = Create<TextBox>();
+        control->SetIsEditable(true);
+        control->SetText(L"ooo");
+        auto font = Font::Default();
+        font.size = 40;
+        control->SetFontInRange(font, Range{ 0, 2 });
+        control->SetTextColorInRange(Color::Red(), Range{ 0, 2 });
+        control->SetTextBackColorInRange(Color::Green(), Range{ 0, 2 });
+
+        control->SetSelectionRange(selection_range, selection_option);
+        control->Input(L"T");
+        bool is_equal_to_range = 
+            control->GetFontAtIndex(check_index).size == 40 &&
+            control->GetTextColorAtIndex(check_index) == Color::Red() &&
+            control->GetTextBackColorAtIndex(check_index) == Color::Green();
+        return is_equal_to_range == check_equal_to_range;
+    };
+
+    ASSERT_TRUE(test(Range(0, 0), SelectionOption::Default, 0, true));
+    ASSERT_TRUE(test(Range(1, 0), SelectionOption::Default, 1, true));
+    ASSERT_TRUE(test(Range(2, 0), SelectionOption::Default, 2, true));
+    ASSERT_TRUE(test(Range(0, 1), SelectionOption::SetCaretToBegin, 0, true));
+    ASSERT_TRUE(test(Range(0, 1), SelectionOption::SetCaretToEnd, 0, true));
+    ASSERT_TRUE(test(Range(0, 2), SelectionOption::SetCaretToEnd, 0, true));
+    ASSERT_TRUE(test(Range(0, 3), SelectionOption::SetCaretToBegin, 0, true));
+    ASSERT_TRUE(test(Range(0, 3), SelectionOption::SetCaretToEnd, 0, false));
+}
+
+
 TEST(TextBoxTest, HitTestAtIndex) {
 
     auto control = Create<TextBox>();

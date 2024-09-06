@@ -10,6 +10,8 @@
 #include <zaf/internal/textual/text_box_selection_manager.h>
 #include <zaf/input/keyboard.h>
 
+using namespace zaf::textual;
+
 namespace zaf::internal {
 namespace {
 
@@ -170,7 +172,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
 void TextBoxEditor::HandleEnter() {
 
     if (Context().TextModel().IsMultiline()) {
-        InnerPerformInput(textual::StyledText{ L"\r\n" }, false);
+        InnerPerformInputText(L"\r\n", false);
     }
 }
 
@@ -336,16 +338,86 @@ void TextBoxEditor::HandleCharInput(const CharInputInfo& event_info) {
         return;
     }
 
-    InnerPerformInput(textual::StyledText{ std::wstring(1, ch) }, false);
+    InnerPerformInputText(std::wstring_view(&ch, 1), false);
 }
 
 
-bool TextBoxEditor::PerformInput(textual::StyledText styled_text) {
-    return InnerPerformInput(std::move(styled_text), true);
+bool TextBoxEditor::PerformInputText(std::wstring_view text) {
+    return InnerPerformInputText(text, true);
 }
 
 
-bool TextBoxEditor::InnerPerformInput(textual::StyledText styled_text, bool can_truncate) {
+bool TextBoxEditor::InnerPerformInputText(std::wstring_view text, bool can_truncate) {
+
+    if (!CanEdit()) {
+        return false;
+    }
+
+    StyledText styled_text;
+    styled_text.SetText(std::wstring{ text });
+
+    FillTextStyleFromSelection(styled_text);
+    return InputStyledText(std::move(styled_text), can_truncate);
+}
+
+
+void TextBoxEditor::FillTextStyleFromSelection(StyledText& styled_text) const {
+
+    const auto& current_styled_text = Context().TextModel().StyledText();
+    std::size_t index_to_inherit{};
+
+    const auto& selection_manager = Context().SelectionManager();
+    auto selection_range = selection_manager.SelectionRange();
+    auto caret_index = selection_manager.CaretIndex();
+
+    if (selection_range.IsEmpty()) {
+        
+        if (caret_index > 0) {
+            index_to_inherit = caret_index - 1;
+        }
+        else {
+            index_to_inherit = caret_index;
+        }
+    }
+    else {
+
+        if (caret_index == selection_range.index) {
+            index_to_inherit = selection_range.index;
+        }
+        else {
+            index_to_inherit = selection_range.EndIndex() - 1;
+        }
+    }
+
+    styled_text.SetDefaultFont(current_styled_text.GetFontAtIndex(index_to_inherit));
+    styled_text.SetDefaultTextColor(current_styled_text.GetTextColorAtIndex(index_to_inherit));
+    styled_text.SetDefaultTextBackColor(
+        current_styled_text.GetTextBackColorAtIndex(index_to_inherit));
+}
+
+
+bool TextBoxEditor::PerformInputInlineObject(std::shared_ptr<InlineObject> inline_object) {
+
+    ZAF_EXPECT(inline_object);
+
+    if (!CanEdit()) {
+        return false;
+    }
+
+    StyledText styled_text{ std::wstring(1, ObjectReplacementChar) };
+    styled_text.AttachInlineObjectToRange(std::move(inline_object), Range{ 0, 1 });
+
+    FillTextStyleFromSelection(styled_text);
+    return InputStyledText(std::move(styled_text), false);
+}
+
+
+bool TextBoxEditor::PerformInputStyledText(StyledText styled_text) {
+    return InnerPerformInputStyledText(std::move(styled_text), true);
+}
+
+
+bool TextBoxEditor::InnerPerformInputStyledText(StyledText styled_text, bool can_truncate) {
 
     if (!CanEdit()) {
         return false;

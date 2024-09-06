@@ -589,20 +589,17 @@ void TextBox::EnsureCaretVisible(const zaf::Rect& char_rect_at_caret) {
 
 
 bool TextBox::Input(std::wstring_view text) {
-    return module_context_->Editor().PerformInput(textual::StyledText{ std::wstring{ text } });
+    return module_context_->Editor().PerformInputText(text);
 }
 
 
 bool TextBox::Input(textual::StyledText styled_text) {
-    return module_context_->Editor().PerformInput(std::move(styled_text));
+    return module_context_->Editor().PerformInputStyledText(std::move(styled_text));
 }
 
 
 bool TextBox::Input(std::shared_ptr<textual::InlineObject> inline_object) {
-
-    textual::StyledText styled_text{ std::wstring(1, textual::ObjectReplacementChar) };
-    styled_text.AttachInlineObjectToRange(std::move(inline_object), { 0, 1 });
-    return module_context_->Editor().PerformInput(std::move(styled_text));
+    return module_context_->Editor().PerformInputInlineObject(std::move(inline_object));
 }
 
 

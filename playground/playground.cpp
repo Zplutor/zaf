@@ -76,12 +76,17 @@ protected:
         __super::Initialize();
 
         auto box = zaf::Create<zaf::TextBox>();
+        box->SetIsEditable(true);
+        box->SetFontSize(30);
+        box->SetTextColor(zaf::Color::Red());
+        box->SetText(L"This is a text box.");
+
+        box->SetTextColorInRange(zaf::Color::Blue(), zaf::Range{ 10, 4 });
+        box->SetTextBackColorInRange(zaf::Color::Gray(), zaf::Range{ 10, 4 });
 
         RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
         RootControl()->AddChild(box);
         RootControl()->SetPadding(zaf::Frame{ 20 });
-
-        auto s = box->HitTestAtIndex(0);
     }
 };
 
