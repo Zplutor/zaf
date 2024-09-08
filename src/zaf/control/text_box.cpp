@@ -453,14 +453,9 @@ void TextBox::OnIMEComposition(const IMECompositionInfo& event_info) {
 
 void TextBox::OnTextChanged(const TextChangedInfo& event_info) {
 
-    //Clear previous text rect and re-calulate it.
+    //Clear previous text rect and re-calculate it.
     text_rect_ = {};
     NeedRelayout();
-
-    //Clear the selection range if it's not editing.
-    if (!module_context_->Editor().IsEditing()) {
-        SetSelectionRange(Range{});
-    }
 
     __super::OnTextChanged(event_info);
 }

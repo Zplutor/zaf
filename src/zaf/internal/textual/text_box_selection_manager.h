@@ -3,15 +3,17 @@
 #include <optional>
 #include <zaf/base/range.h>
 #include <zaf/internal/textual/text_box_module.h>
+#include <zaf/internal/textual/text_model.h>
 #include <zaf/control/textual/selection_option.h>
 #include <zaf/graphic/rect.h>
+#include <zaf/rx/subscription_host.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf::internal {
 
 class TextBoxSelectionChangedInfo;
 
-class TextBoxSelectionManager : public TextBoxModule {
+class TextBoxSelectionManager : public TextBoxModule, public SubscriptionHost {
 public:
     explicit TextBoxSelectionManager(TextBoxModuleContext* context);
 
@@ -44,6 +46,10 @@ public:
     }
 
 private:
+    void OnTextModelChanged(const TextModelChangedInfo& event_info);
+    Range ReviseSelectionRangeOnTextChanged(
+        const Range& changed_range, 
+        std::size_t new_length) const;
     void AfterSetCaretIndex(bool update_caret_x, bool scroll_to_caret);
 
 private:

@@ -240,6 +240,79 @@ TEST(TextBoxTest, SelectionChangedEvent) {
 }
 
 
+TEST(TextBoxTest, ReviseSelectionRangeOnTextChanged) {
+
+    const auto test = [](
+        const Range& old_selection_range,
+        bool set_caret_to_begin,
+        const std::wstring& new_text,
+        const Range& text_range,
+        const Range& expected_selection_range,
+        std::size_t expected_caret_index) {
+
+        auto text_box = Create<TextBox>();
+        text_box->SetText(L"012345");
+        text_box->SetSelectionRange(
+            old_selection_range,
+            set_caret_to_begin ?
+            SelectionOption::SetCaretToBegin :
+            SelectionOption::SetCaretToEnd);
+        text_box->SetTextInRange(new_text, text_range);
+        return
+            text_box->SelectionRange() == expected_selection_range &&
+            text_box->CaretIndex() == expected_caret_index;
+    };
+
+    //Changed text is before the selection range.
+    ASSERT_TRUE(test({ 3, 1 }, true, L"", { 1, 1 }, { 2, 1 }, 2));
+    ASSERT_TRUE(test({ 3, 1 }, false, L"", { 1, 1 }, { 2, 1 }, 3));
+    ASSERT_TRUE(test({ 3, 1 }, true, L"a", { 0, 3 }, { 1, 1 }, 1));
+    ASSERT_TRUE(test({ 3, 1 }, false, L"a", { 0, 3 }, { 1, 1 }, 2));
+    ASSERT_TRUE(test({ 3, 1 }, true, L"abcd", { 0, 2 }, { 5, 1 }, 5));
+    ASSERT_TRUE(test({ 3, 1 }, false, L"abcd", { 0, 2 }, { 5, 1 }, 6));
+
+    //Changed text contains the selection range.
+    ASSERT_TRUE(test({ 3, 0 }, true, L"", { 2, 3 }, { 2, 0 }, 2));
+    ASSERT_TRUE(test({ 3, 0 }, false, L"", { 2, 3 }, { 2, 0 }, 2));
+    ASSERT_TRUE(test({ 3, 1 }, true, L"", { 2, 3 }, { 2, 0 }, 2));
+    ASSERT_TRUE(test({ 3, 1 }, false, L"", { 2, 3 }, { 2, 0 }, 2));
+    ASSERT_TRUE(test({ 3, 2 }, true, L"a", { 2, 3 }, { 2, 0 }, 2));
+    // 012|34|5 -> 01a|5
+    ASSERT_TRUE(test({ 3, 2 }, false, L"a", { 2, 3 }, { 3, 0 }, 3));
+
+    //Changed text is part of the selection range.
+    // 0|1234|5 -> 0|1345
+    ASSERT_TRUE(test({ 1, 4 }, true, L"", { 2, 1 }, { 1, 0 }, 1));
+    // 0|1234|5 -> 0134|5
+    ASSERT_TRUE(test({ 1, 4 }, false, L"", { 2, 1 }, { 5, 0 }, 5));
+
+    //Changed text is overlapped with the head of the selection range.
+    // 0|1234|5 -> |345
+    ASSERT_TRUE(test({ 1, 4 }, true, L"", { 0, 3 }, { 0, 0 }, 0));
+    // 0|1234|5 -> 34|5
+    ASSERT_TRUE(test({ 1, 4 }, false, L"", { 0, 3 }, { 2, 0 }, 2));
+    // 0|1234|5 -> OO|345
+    ASSERT_TRUE(test({ 1, 4 }, true, L"OO", { 0, 3 }, { 2, 0 }, 2));
+    // 0|1234|5 -> OO34|5
+    ASSERT_TRUE(test({ 1, 4 }, false, L"OO", { 0, 3 }, { 4, 0 }, 4));
+
+    //Changed text is overlapped with the tail of the selection range.
+    // 0|1234|5 -> 0|12
+    ASSERT_TRUE(test({ 1, 4 }, true, L"", { 3, 3 }, { 1, 0 }, 1));
+    // 0|1234|5 -> 012|
+    ASSERT_TRUE(test({ 1, 4 }, false, L"", { 3, 3 }, { 3, 0 }, 3));
+    // 0|1234|5 -> 0|12OO
+    ASSERT_TRUE(test({ 1, 4 }, true, L"OO", { 3, 3 }, { 1, 0 }, 1));
+    // 0|1234|5 -> 012|OO
+    ASSERT_TRUE(test({ 1, 4 }, false, L"OO", { 3, 3 }, { 3, 0 }, 3));
+
+    //Changed text is after the selection changed.
+    // 012|3|45 -> 012|3|
+    ASSERT_TRUE(test({ 3, 1 }, true, L"", { 4, 2 }, { 3, 1 }, 3));
+    ASSERT_TRUE(test({ 3, 1 }, false, L"", { 4, 2 }, { 3, 1 }, 4));
+}
+
+
 TEST(TextBoxTest, SelectedText) {
 
     auto text_box = zaf::Create<zaf::TextBox>();
