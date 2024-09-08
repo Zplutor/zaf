@@ -64,6 +64,11 @@ void BeginRun(const zaf::BeginRunInfo& event_info);
 
 class MyInlineObject : public zaf::textual::InteractiveInlineObject {
 public:
+    void OnMouseCursorChanging(const zaf::textual::InlineObjectMouseCursorChangingInfo& event_info) override {
+
+        zaf::Mouse::SetCursor(zaf::Cursor::Normal());
+        event_info.MarkAsHandled();
+    }
 
 };
 
@@ -83,6 +88,9 @@ protected:
 
         box->SetTextColorInRange(zaf::Color::Blue(), zaf::Range{ 10, 4 });
         box->SetTextBackColorInRange(zaf::Color::Gray(), zaf::Range{ 10, 4 });
+
+        box->SetSelectionRange({ box->Text().length(), 0 });
+        box->Input(zaf::Create<MyInlineObject>());
 
         RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
         RootControl()->AddChild(box);

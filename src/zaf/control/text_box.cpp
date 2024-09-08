@@ -337,7 +337,7 @@ std::size_t TextBox::FindIndexAtPosition(const Point& position) const {
 
 
 bool TextBox::IsPositionInsideText(const Point& position) const {
-    return module_context_->HitTestManager().HitTestAtPosition(position).IsInside();
+    return module_context_->HitTestManager().HitTestAtPosition(position).metrics.IsInside();
 }
 
 

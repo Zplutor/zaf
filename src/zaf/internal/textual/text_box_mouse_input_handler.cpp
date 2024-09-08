@@ -6,7 +6,6 @@
 #include <zaf/control/textual/interactive_inline_object.h>
 #include <zaf/input/keyboard.h>
 #include <zaf/internal/textual/text_model.h>
-#include <zaf/internal/textual/text_box_hit_test_manager.h>
 #include <zaf/internal/textual/text_box_module_context.h>
 #include <zaf/internal/textual/text_box_selection_manager.h>
 #include <zaf/window/window.h>
@@ -43,7 +42,7 @@ void TextBoxMouseInputHandler::HandleMouseMove(const MouseMoveInfo& event_info) 
 
 
 void TextBoxMouseInputHandler::HandleMouseOverInlineObject(
-    const HitTestPointMetrics& hit_test_result,
+    const TextBoxHitTestManager::HitTestPositionResult& hit_test_result,
     const MouseMessage& mouse_message) {
 
     auto new_object = FindInlineObject(hit_test_result);
@@ -71,20 +70,30 @@ void TextBoxMouseInputHandler::HandleMouseOverInlineObject(
 
 
 std::shared_ptr<textual::InteractiveInlineObject> TextBoxMouseInputHandler::FindInlineObject(
-    const HitTestPointMetrics& hit_test_result) const {
+    const TextBoxHitTestManager::HitTestPositionResult& hit_test_result) const {
 
-    if (hit_test_result.Metrics().IsText()) {
+    const auto& metrics = hit_test_result.metrics.Metrics();
+    if (metrics.IsText()) {
         return nullptr;
     }
 
-    auto text_index = hit_test_result.Metrics().TextIndex();
+    //Do not return the object if the hit test position is at the left side or the right side to 
+    //the object.
+    if (!hit_test_result.metrics.IsInside()) {
+        if (hit_test_result.hit_test_position.x < metrics.Left() ||
+            hit_test_result.hit_test_position.y >= metrics.Left() + metrics.Width()) {
+            return nullptr;
+        }
+    }
+
+    auto text_index = hit_test_result.metrics.Metrics().TextIndex();
     auto inline_object = Context().TextModel().StyledText().GetInlineObjectAtIndex(text_index);
     auto dynamic_inline_object = As<textual::InteractiveInlineObject>(inline_object);
     if (!dynamic_inline_object) {
         return nullptr;
     }
 
-    if (!dynamic_inline_object->HitTest(hit_test_result.IsInside())) {
+    if (!dynamic_inline_object->HitTest(hit_test_result.metrics.IsInside())) {
         return nullptr;
     }
 

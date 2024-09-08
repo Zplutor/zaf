@@ -11,12 +11,19 @@ Provides common hit test logic interfaces.
 */
 class TextBoxHitTestManager : public TextBoxModule {
 public:
+    class HitTestPositionResult {
+    public:
+        Point hit_test_position;
+        HitTestPointMetrics metrics;
+    };
+
+public:
     explicit TextBoxHitTestManager(TextBoxModuleContext* context);
 
     void Initialize() override;
 
-    HitTestPointMetrics HitTestAtPosition(const Point& position_in_text_box) const;
-    std::size_t TextIndexFromHitTestResult(const HitTestPointMetrics& hit_test_result) const;
+    HitTestPositionResult HitTestAtPosition(const Point& position_in_text_box) const;
+    std::size_t TextIndexFromHitTestResult(const HitTestPositionResult& hit_test_result) const;
 };
 
 }
