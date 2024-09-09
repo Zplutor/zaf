@@ -14,7 +14,7 @@ static void GetLineCountAndRowCount(std::size_t cell_count, std::size_t& line_co
 static void DrawMemberAvatarImagesToConversationAvatarRenderer(
     const std::vector<zaf::wic::BitmapSource>& member_avatars,
     const std::vector<zaf::Rect>& member_avatar_rects,
-    zaf::Renderer& renderer);
+    zaf::d2d::Renderer& renderer);
 
 zaf::wic::BitmapSource ConversationAvatarManager::GetConversationAvatarImage(const std::shared_ptr<Conversation>& conversation) {
 
@@ -173,7 +173,7 @@ static void GetLineCountAndRowCount(std::size_t cell_count, std::size_t& line_co
 static void DrawMemberAvatarImagesToConversationAvatarRenderer(
     const std::vector<zaf::wic::BitmapSource>& member_avatars,
     const std::vector<zaf::Rect>& member_avatar_rects,
-    zaf::Renderer& renderer) {
+    zaf::d2d::Renderer& renderer) {
 
     renderer.BeginDraw();
     renderer.Clear(zaf::Color::FromRGB(0xD8DADC));

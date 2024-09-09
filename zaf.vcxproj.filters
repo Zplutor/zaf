@@ -214,6 +214,9 @@
     <Filter Include="zaf\control\style">
       <UniqueIdentifier>{75303be0-4d61-4ca8-b9ee-ea202ff596bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\d2d">
+      <UniqueIdentifier>{f24567d6-c5af-456c-a1f3-334971ed5ecd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -332,12 +335,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\image_box\gif_player.cpp">
       <Filter>zaf\control\internal\image_box</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\renderer\renderer.cpp">
-      <Filter>zaf\graphic\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\renderer\bitmap_renderer.cpp">
-      <Filter>zaf\graphic\renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\image\gif_metadata_querier.cpp">
       <Filter>zaf\graphic\image</Filter>
@@ -1294,6 +1291,15 @@
     <ClCompile Include="src\zaf\control\textual\styled_text_view.cpp">
       <Filter>zaf\control\textual</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\d2d\renderer.cpp">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\d2d\bitmap_renderer.cpp">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\d2d\window_renderer.cpp">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1550,15 +1556,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h">
       <Filter>zaf\control\internal\image_box</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\renderer\renderer.h">
-      <Filter>zaf\graphic\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\renderer\window_renderer.h">
-      <Filter>zaf\graphic\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\renderer\bitmap_renderer.h">
-      <Filter>zaf\graphic\renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\renderer\create_compatible_renderer_options.h">
       <Filter>zaf\graphic\renderer</Filter>
@@ -2976,6 +2973,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual\styled_text_view.h">
       <Filter>zaf\control\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\renderer.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\bitmap_renderer.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\window_renderer.h">
+      <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

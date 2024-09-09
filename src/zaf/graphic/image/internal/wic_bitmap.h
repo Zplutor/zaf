@@ -2,7 +2,7 @@
 
 #include <zaf/graphic/image/image.h>
 #include <zaf/graphic/image/wic/bitmap_source.h>
-#include <zaf/graphic/renderer/renderer.h>
+#include <zaf/graphic/d2d/renderer.h>
 
 namespace zaf::internal {
 
@@ -27,7 +27,7 @@ public:
     }
 
 
-    RenderBitmap CreateRenderBitmap(Renderer& renderer) override {
+    RenderBitmap CreateRenderBitmap(d2d::Renderer& renderer) override {
         return renderer.CreateBitmap(wic_bitmap_);
     }
 

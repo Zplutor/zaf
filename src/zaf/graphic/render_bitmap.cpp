@@ -1,10 +1,10 @@
 #include <zaf/graphic/render_bitmap.h>
-#include <zaf/graphic/renderer/renderer.h>
+#include <zaf/graphic/d2d/renderer.h>
 
 namespace zaf {
 
 void RenderBitmap::CopyFromRenderer(
-    const Renderer& renderer, 
+    const d2d::Renderer& renderer, 
     const Rect& renderer_rect, 
     const Point& to_position) {
 

@@ -10,7 +10,7 @@
 
 namespace zaf {
 
-Canvas::Canvas(zaf::Renderer& renderer) : renderer_(renderer) {
+Canvas::Canvas(d2d::Renderer& renderer) : renderer_(renderer) {
 
     //Add an initial state.
     internal::CanvasState initial_state;

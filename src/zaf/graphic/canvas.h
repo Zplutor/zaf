@@ -12,7 +12,7 @@
 #include <zaf/graphic/internal/canvas_region.h>
 #include <zaf/graphic/internal/canvas_state.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/graphic/renderer/renderer.h>
+#include <zaf/graphic/d2d/renderer.h>
 
 namespace zaf {
 
@@ -67,10 +67,10 @@ public:
     @param renderer
         The renderer to which the canvas paints to.
     */
-    explicit Canvas(Renderer& renderer);
+    explicit Canvas(d2d::Renderer& renderer);
     ~Canvas();
 
-    zaf::Renderer& Renderer() {
+    d2d::Renderer& Renderer() {
         return renderer_;
     }
 
@@ -230,7 +230,7 @@ private:
     }
 
 private:
-    zaf::Renderer renderer_;
+    d2d::Renderer renderer_;
     std::stack<internal::CanvasRegion> regions_;
     std::size_t current_clipping_tag_{};
     std::stack<internal::CanvasState> states_;

@@ -16,7 +16,7 @@
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
-#include <zaf/graphic/renderer/renderer.h>
+#include <zaf/graphic/d2d/renderer.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/internal/theme.h>
 #include <zaf/rx/scheduler.h>

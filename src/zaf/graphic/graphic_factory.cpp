@@ -35,7 +35,7 @@ GraphicFactory::~GraphicFactory() {
 }
 
 
-WindowRenderer GraphicFactory::CreateWindowRenderer(HWND window_handle) {
+d2d::WindowRenderer GraphicFactory::CreateWindowRenderer(HWND window_handle) {
 
     RECT window_rect = { 0 };
     if (! GetClientRect(window_handle, &window_rect)) {
@@ -60,11 +60,11 @@ WindowRenderer GraphicFactory::CreateWindowRenderer(HWND window_handle) {
     );
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return WindowRenderer(renderer_inner);
+    return d2d::WindowRenderer(renderer_inner);
 }
 
 
-Renderer GraphicFactory::CreateBitmapRenderer(
+d2d::Renderer GraphicFactory::CreateBitmapRenderer(
     const wic::Bitmap& image_source,
     const RendererProperties& properties) {
 
@@ -75,7 +75,7 @@ Renderer GraphicFactory::CreateBitmapRenderer(
         inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(com_error);
-    return Renderer(inner);
+    return d2d::Renderer(inner);
 }
 
 

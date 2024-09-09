@@ -118,7 +118,9 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 }
 
 
-void TextualControl::SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const {
+void TextualControl::SetTextColorsToTextLayout(
+    TextLayout& text_layout,
+    d2d::Renderer& renderer) const {
 
     for (const auto& each_item : text_model_->StyledText().RangedTextColors()) {
 

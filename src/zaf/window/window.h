@@ -7,7 +7,7 @@
 #include <zaf/base/none.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/graphic/renderer/window_renderer.h>
+#include <zaf/graphic/d2d/window_renderer.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/object/object.h>
 #include <zaf/object/property_support.h>
@@ -474,7 +474,7 @@ public:
     /**
      Get the renderer of the window.
      */
-    Renderer& Renderer() {
+    d2d::Renderer& Renderer() {
         return renderer_;
     }
 
@@ -916,7 +916,7 @@ private:
     HWND handle_{};
     std::weak_ptr<WindowHolder> holder_;
     zaf::Rect rect_{ 0, 0, 640, 480 };
-    WindowRenderer renderer_;
+    d2d::WindowRenderer renderer_;
 
     struct {
         bool is_sizing_or_moving{};

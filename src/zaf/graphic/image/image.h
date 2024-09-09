@@ -38,7 +38,7 @@ public:
 
     virtual std::pair<float, float> GetResolution() = 0;
 
-    virtual RenderBitmap CreateRenderBitmap(Renderer& renderer) = 0;
+    virtual RenderBitmap CreateRenderBitmap(d2d::Renderer& renderer) = 0;
 };
 
 
@@ -55,7 +55,7 @@ public:
 
     Size GetPixelSize() override;
     std::pair<float, float> GetResolution() override;
-    RenderBitmap CreateRenderBitmap(Renderer& renderer) override;
+    RenderBitmap CreateRenderBitmap(d2d::Renderer& renderer) override;
 
     const std::wstring& GetURI() const {
         return uri_;

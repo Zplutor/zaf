@@ -5,7 +5,7 @@
 #include <zaf/control/internal/image_box/image_player.h>
 #include <zaf/graphic/image/gif_metadata_querier.h>
 #include <zaf/graphic/image/wic/bitmap_decoder.h>
-#include <zaf/graphic/renderer/bitmap_renderer.h>
+#include <zaf/graphic/d2d/bitmap_renderer.h>
 #include <zaf/rx/subscription_host.h>
 
 namespace zaf {
@@ -16,13 +16,13 @@ public:
     GifPlayer(const wic::BitmapDecoder& image_decoder);
 
     void GetImageSize(Size& pixel_size, std::pair<float, float>& resolution) override;
-    RenderBitmap GetRenderBitmap(Renderer& renderer) override;
+    RenderBitmap GetRenderBitmap(d2d::Renderer& renderer) override;
     void Reset() override;
 
 private:
-    bool Initialize(Renderer& renderer);
+    bool Initialize(d2d::Renderer& renderer);
     void InitializeComposedFrameRenderer(
-        Renderer& renderer, 
+        d2d::Renderer& renderer, 
         const GifGlobalMetadataQuerier& metadata_querier);
     void InitializeBackgroundColor(const GifGlobalMetadataQuerier& metadata_querier);
     void ComposeNextFrame();
@@ -43,7 +43,7 @@ private:
 private:
     wic::BitmapDecoder image_decoder_;
     
-    BitmapRenderer composed_frame_renderer_;
+    d2d::BitmapRenderer composed_frame_renderer_;
     std::size_t frame_count_;
     Color background_color_;
     std::optional<std::size_t> total_loop_count_;

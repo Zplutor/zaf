@@ -243,6 +243,9 @@
     <ClCompile Include="src\zaf\graphic\canvas_region_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas_state_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\color_parser.cpp" />
+    <ClCompile Include="src\zaf\graphic\d2d\bitmap_renderer.cpp" />
+    <ClCompile Include="src\zaf\graphic\d2d\renderer.cpp" />
+    <ClCompile Include="src\zaf\graphic\d2d\window_renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_parser.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_style.cpp" />
     <ClCompile Include="src\zaf\graphic\font\font_weight.cpp" />
@@ -277,8 +280,6 @@
     <ClCompile Include="src\zaf\graphic\matrix.cpp" />
     <ClCompile Include="src\zaf\graphic\point.cpp" />
     <ClCompile Include="src\zaf\graphic\rect.cpp" />
-    <ClCompile Include="src\zaf\graphic\renderer\bitmap_renderer.cpp" />
-    <ClCompile Include="src\zaf\graphic\renderer\renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\graphic_factory.cpp" />
     <ClCompile Include="src\zaf\graphic\rounded_rect.cpp" />
     <ClCompile Include="src\zaf\graphic\size.cpp" />
@@ -694,6 +695,9 @@
     <ClInclude Include="src\zaf\graphic\canvas_region_guard.h" />
     <ClInclude Include="src\zaf\graphic\canvas_state_guard.h" />
     <ClInclude Include="src\zaf\graphic\color_parser.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\bitmap_renderer.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\renderer.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\window_renderer.h" />
     <ClInclude Include="src\zaf\graphic\dpi.h" />
     <ClInclude Include="src\zaf\graphic\font\font_parser.h" />
     <ClInclude Include="src\zaf\graphic\font\font_weight_parser.h" />
@@ -750,11 +754,8 @@
     <ClInclude Include="src\zaf\graphic\point.h" />
     <ClInclude Include="src\zaf\graphic\rect.h" />
     <ClInclude Include="src\zaf\graphic\renderer\antialias_mode.h" />
-    <ClInclude Include="src\zaf\graphic\renderer\bitmap_renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer\create_compatible_renderer_options.h" />
-    <ClInclude Include="src\zaf\graphic\renderer\renderer.h" />
     <ClInclude Include="src\zaf\graphic\renderer\renderer_properties.h" />
-    <ClInclude Include="src\zaf\graphic\renderer\window_renderer.h" />
     <ClInclude Include="src\zaf\graphic\graphic_factory.h" />
     <ClInclude Include="src\zaf\graphic\rounded_rect.h" />
     <ClInclude Include="src\zaf\graphic\size.h" />

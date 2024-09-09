@@ -17,7 +17,7 @@ void URIImagePlayer::GetImageSize(Size& pixel_size, std::pair<float, float>& res
 }
 
 
-RenderBitmap URIImagePlayer::GetRenderBitmap(Renderer& renderer) {
+RenderBitmap URIImagePlayer::GetRenderBitmap(d2d::Renderer& renderer) {
 
     CreateImagePlayerIfNot();
     return inner_->GetRenderBitmap(renderer);

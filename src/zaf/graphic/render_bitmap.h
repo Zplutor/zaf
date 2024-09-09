@@ -7,8 +7,9 @@
 #include <zaf/graphic/rect.h>
 
 namespace zaf {
-
+namespace d2d {
 class Renderer;
+}
 
 class RenderBitmap : public COMObject<ID2D1Bitmap> {
 public:
@@ -51,7 +52,7 @@ public:
     }
 
     void CopyFromRenderer(
-        const Renderer& renderer,
+        const d2d::Renderer& renderer,
         const Rect& renderer_rect,
         const Point& to_position);
 };

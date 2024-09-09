@@ -1,10 +1,10 @@
-#include <zaf/graphic/renderer/renderer.h>
+#include <zaf/graphic/d2d/renderer.h>
 #include <atlbase.h>
 #include <zaf/graphic/image/wic/imaging_factory.h>
-#include <zaf/graphic/renderer/bitmap_renderer.h>
+#include <zaf/graphic/d2d/bitmap_renderer.h>
 #include <zaf/graphic/graphic_factory.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 BitmapRenderer Renderer::CreateCompatibleRenderer(const CreateCompatibleRendererOptions& options) {
     

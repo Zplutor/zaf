@@ -24,7 +24,7 @@
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_layout.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 class BitmapRenderer;
 

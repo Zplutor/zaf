@@ -30,7 +30,7 @@
 #include <zaf/control/layout/layouter.h>
 #include <zaf/control/control_update_guard.h>
 #include <zaf/control/style/color_picker.h>
-#include <zaf/graphic/renderer/bitmap_renderer.h>
+#include <zaf/graphic/d2d/bitmap_renderer.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
@@ -52,7 +52,6 @@ class Canvas;
 class Message;
 class MouseMessage;
 class MouseWheelMessage;
-class Renderer;
 class HitTestMessage;
 class Window;
 enum class HitTestResult;
@@ -1086,7 +1085,7 @@ private:
     bool is_updating_style_{};
 
     bool is_cached_painting_enabled_{};
-    BitmapRenderer cached_renderer_;
+    d2d::BitmapRenderer cached_renderer_;
     zaf::Rect valid_cached_renderer_rect_;
 
     zaf::Anchor anchor_{ zaf::Anchor::None };

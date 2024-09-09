@@ -12,7 +12,7 @@
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/image/wic/bitmap.h>
 #include <zaf/graphic/renderer/renderer_properties.h>
-#include <zaf/graphic/renderer/window_renderer.h>
+#include <zaf/graphic/d2d/window_renderer.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/text/text_inline_object.h>
 #include <zaf/graphic/text/text_layout.h>
@@ -44,9 +44,9 @@ public:
      @return
          Return nullptr if failed.
      */
-    WindowRenderer CreateWindowRenderer(HWND window_handle);
+    d2d::WindowRenderer CreateWindowRenderer(HWND window_handle);
 
-    Renderer CreateBitmapRenderer(
+    d2d::Renderer CreateBitmapRenderer(
         const wic::Bitmap& image_source, 
         const RendererProperties& properties);
 

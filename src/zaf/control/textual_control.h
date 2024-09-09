@@ -403,7 +403,7 @@ protected:
     virtual void OnTextChanged(const TextChangedInfo& event_info);
 
 private:
-    void SetTextColorsToTextLayout(TextLayout& text_layout, Renderer& renderer) const;
+    void SetTextColorsToTextLayout(TextLayout& text_layout, d2d::Renderer& renderer) const;
     void PaintTextBackInRange(
         Canvas& canvas, 
         const TextLayout& text_layout, 

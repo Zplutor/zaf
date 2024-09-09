@@ -33,7 +33,7 @@ void GifPlayer::GetImageSize(Size& pixel_size, std::pair<float, float>& resoluti
 }
 
 
-RenderBitmap GifPlayer::GetRenderBitmap(Renderer& renderer) {
+RenderBitmap GifPlayer::GetRenderBitmap(d2d::Renderer& renderer) {
     
     try {
         if (Initialize(renderer)) {
@@ -47,7 +47,7 @@ RenderBitmap GifPlayer::GetRenderBitmap(Renderer& renderer) {
 }
 
 
-bool GifPlayer::Initialize(Renderer& renderer) {
+bool GifPlayer::Initialize(d2d::Renderer& renderer) {
 
     if (!composed_frame_renderer_) {
         return true;
@@ -75,7 +75,7 @@ bool GifPlayer::Initialize(Renderer& renderer) {
 
 
 void GifPlayer::InitializeComposedFrameRenderer(
-    Renderer& renderer,
+    d2d::Renderer& renderer,
     const GifGlobalMetadataQuerier& metadata_querier) {
 
     auto width = metadata_querier.GetWidth();

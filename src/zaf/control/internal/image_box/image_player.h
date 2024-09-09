@@ -5,7 +5,9 @@
 
 namespace zaf {
 
+namespace d2d {
 class Renderer;
+}
 
 namespace internal {
 
@@ -19,7 +21,7 @@ public:
 
     virtual void GetImageSize(Size& pixel_size, std::pair<float, float>& resolution) = 0;
 
-    virtual RenderBitmap GetRenderBitmap(Renderer& renderer) = 0;
+    virtual RenderBitmap GetRenderBitmap(d2d::Renderer& renderer) = 0;
 
     virtual void ChangeDPI(float dpi) { }
 

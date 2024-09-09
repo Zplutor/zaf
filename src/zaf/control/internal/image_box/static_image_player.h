@@ -17,7 +17,7 @@ public:
         resolution = image_->GetResolution();
     }
 
-    RenderBitmap GetRenderBitmap(Renderer& renderer) override {
+    RenderBitmap GetRenderBitmap(d2d::Renderer& renderer) override {
         return image_->CreateRenderBitmap(renderer);
     }
 
