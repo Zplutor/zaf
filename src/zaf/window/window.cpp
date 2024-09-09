@@ -641,7 +641,11 @@ void Window::PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect) 
 
         auto frame_geometry = canvas.CreatePathGeometry();
         auto sink = frame_geometry.Open();
-        Geometry::Combine(rect_geometry, excluded_geometry, Geometry::CombineMode::Exclude, sink);
+        d2d::Geometry::Combine(
+            rect_geometry, 
+            excluded_geometry, 
+            d2d::Geometry::CombineMode::Exclude, 
+            sink);
         sink.Close();
         
         auto color = Color::FromRGB(color_rgb);

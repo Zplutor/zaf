@@ -1,9 +1,9 @@
 #pragma once
 
-#include <zaf/graphic/geometry/geometry.h>
+#include <zaf/graphic/d2d/geometry.h>
 #include <zaf/graphic/matrix.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 /**
  Represents a geometry that has been transformed.

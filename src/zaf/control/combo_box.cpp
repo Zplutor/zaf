@@ -11,7 +11,7 @@
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
-#include <zaf/graphic/geometry/path_geometry.h>
+#include <zaf/graphic/d2d/path_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/window/message/keyboard_message.h>
@@ -184,10 +184,10 @@ void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
         return;
     }
 
-    sink.BeginFigure(left_point, GeometrySink::BeginFigureOption::Fill);
+    sink.BeginFigure(left_point, d2d::GeometrySink::BeginFigureOption::Fill);
     sink.AddLine(right_point);
     sink.AddLine(bottom_point);
-    sink.EndFigure(GeometrySink::EndFigureOption::Close);
+    sink.EndFigure(d2d::GeometrySink::EndFigureOption::Close);
     sink.Close();
 
     auto state_guard = canvas.PushState();

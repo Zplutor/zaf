@@ -1,10 +1,10 @@
 #pragma once
 
-#include <zaf/graphic/geometry/geometry.h>
+#include <zaf/graphic/d2d/geometry.h>
 
 namespace zaf::internal {
 
-Geometry CreateTriangleGeometry(
+d2d::Geometry CreateTriangleGeometry(
     float canvas_width, 
     float canvas_height, 
     float bottom_edge_length,

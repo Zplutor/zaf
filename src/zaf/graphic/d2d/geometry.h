@@ -4,9 +4,9 @@
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/graphic/geometry/geometry_sink.h>
+#include <zaf/graphic/d2d/geometry_sink.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 /**
  Represents a geometry resource.

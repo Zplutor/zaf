@@ -1,9 +1,9 @@
 #pragma once
 
-#include <zaf/graphic/geometry/geometry.h>
+#include <zaf/graphic/d2d/geometry.h>
 #include <zaf/graphic/rounded_rect.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 class RoundedRectangleGeometry : public Geometry {
 public:

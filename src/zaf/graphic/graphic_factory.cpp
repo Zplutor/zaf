@@ -79,7 +79,7 @@ d2d::Renderer GraphicFactory::CreateBitmapRenderer(
 }
 
 
-RectangleGeometry GraphicFactory::CreateRectangleGeometry(const Rect& rect) {
+d2d::RectangleGeometry GraphicFactory::CreateRectangleGeometry(const Rect& rect) {
 
     COMPtr<ID2D1RectangleGeometry> inner;
     HRESULT result = d2d_factory_handle_->CreateRectangleGeometry(
@@ -87,11 +87,11 @@ RectangleGeometry GraphicFactory::CreateRectangleGeometry(const Rect& rect) {
         inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return RectangleGeometry(inner);
+    return d2d::RectangleGeometry(inner);
 }
 
 
-RoundedRectangleGeometry GraphicFactory::CreateRoundedRectangleGeometry(
+d2d::RoundedRectangleGeometry GraphicFactory::CreateRoundedRectangleGeometry(
     const RoundedRect& rounded_rect) {
 
     COMPtr<ID2D1RoundedRectangleGeometry> inner;
@@ -100,11 +100,11 @@ RoundedRectangleGeometry GraphicFactory::CreateRoundedRectangleGeometry(
         inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return RoundedRectangleGeometry(inner);
+    return d2d::RoundedRectangleGeometry(inner);
 }
 
 
-EllipseGeometry GraphicFactory::CreateEllipseGeometry(const Ellipse& ellipse) {
+d2d::EllipseGeometry GraphicFactory::CreateEllipseGeometry(const Ellipse& ellipse) {
 
     COMPtr<ID2D1EllipseGeometry> inner;
     HRESULT result = d2d_factory_handle_->CreateEllipseGeometry(
@@ -112,22 +112,22 @@ EllipseGeometry GraphicFactory::CreateEllipseGeometry(const Ellipse& ellipse) {
         inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return EllipseGeometry{ inner };
+    return d2d::EllipseGeometry{ inner };
 }
 
 
-PathGeometry GraphicFactory::CreatePathGeometry() {
+d2d::PathGeometry GraphicFactory::CreatePathGeometry() {
 
     COMPtr<ID2D1PathGeometry> inner;
     HRESULT result = d2d_factory_handle_->CreatePathGeometry(inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return PathGeometry(inner);
+    return d2d::PathGeometry(inner);
 }
 
 
-TransformedGeometry GraphicFactory::CreateTransformedGeometry(
-    const Geometry& geometry,
+d2d::TransformedGeometry GraphicFactory::CreateTransformedGeometry(
+    const d2d::Geometry& geometry,
     const TransformMatrix& transform_matrix) {
 
     COMPtr<ID2D1TransformedGeometry> inner;
@@ -137,7 +137,7 @@ TransformedGeometry GraphicFactory::CreateTransformedGeometry(
         inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return TransformedGeometry(inner);
+    return d2d::TransformedGeometry(inner);
 }
 
 

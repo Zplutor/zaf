@@ -2,9 +2,9 @@
 #include <dwrite.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/graphic/alignment.h>
-#include <zaf/graphic/geometry/path_geometry.h>
-#include <zaf/graphic/geometry/rectangle_geometry.h>
-#include <zaf/graphic/geometry/rounded_rectangle_geometry.h>
+#include <zaf/graphic/d2d/path_geometry.h>
+#include <zaf/graphic/d2d/rectangle_geometry.h>
+#include <zaf/graphic/d2d/rounded_rectangle_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/text/text_format.h>
 

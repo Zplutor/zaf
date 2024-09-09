@@ -15,11 +15,12 @@
 #include <zaf/graphic/d2d/renderer.h>
 
 namespace zaf {
-
+namespace d2d {
 class EllipseGeometry;
 class PathGeometry;
 class RectangleGeometry;
 class RoundedRectangleGeometry;
+}
 
 class DrawImageOptions {
 public:
@@ -161,18 +162,22 @@ public:
         const d2d::Brush& brush,
         const d2d::Stroke& stroke);
 
-    void DrawGeometry(const Geometry& geometry);
-    void DrawGeometry(const Geometry& geometry, const d2d::Brush& brush);
+    void DrawGeometry(const d2d::Geometry& geometry);
+    void DrawGeometry(const d2d::Geometry& geometry, const d2d::Brush& brush);
 
-    void DrawGeometryFrame(const Geometry& geometry, float stroke_width);
-    void DrawGeometryFrame(const Geometry& geometry, float stroke_width, const d2d::Brush& brush);
+    void DrawGeometryFrame(const d2d::Geometry& geometry, float stroke_width);
     void DrawGeometryFrame(
-        const Geometry& geometry, 
+        const d2d::Geometry& geometry, 
+        float stroke_width, 
+        const d2d::Brush& brush);
+
+    void DrawGeometryFrame(
+        const d2d::Geometry& geometry,
         float stroke_width, 
         const d2d::Stroke& stroke);
 
     void DrawGeometryFrame(
-        const Geometry& geometry, 
+        const d2d::Geometry& geometry,
         float stroke_width, 
         const d2d::Brush& brush,
         const d2d::Stroke& stroke);
@@ -201,10 +206,11 @@ public:
         const Rect& destination_rect, 
         const DrawImageOptions& options = {});
 
-    PathGeometry CreatePathGeometry() const;
-    RectangleGeometry CreateRectangleGeometry(const Rect& rect) const;
-    RoundedRectangleGeometry CreateRoundedRectangleGeometry(const RoundedRect& rounded_rect) const;
-    EllipseGeometry CreateEllipseGeometry(const Ellipse& ellipse) const;
+    d2d::PathGeometry CreatePathGeometry() const;
+    d2d::RectangleGeometry CreateRectangleGeometry(const Rect& rect) const;
+    d2d::RoundedRectangleGeometry CreateRoundedRectangleGeometry(
+        const RoundedRect& rounded_rect) const;
+    d2d::EllipseGeometry CreateEllipseGeometry(const Ellipse& ellipse) const;
 
 private:
     friend class CanvasClippingGuard;

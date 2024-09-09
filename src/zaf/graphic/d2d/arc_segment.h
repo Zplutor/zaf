@@ -2,7 +2,7 @@
 
 #include <zaf/graphic/point.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 enum class SweepDirection {
     CounterClockwise = D2D1_SWEEP_DIRECTION_COUNTER_CLOCKWISE,
@@ -56,18 +56,18 @@ public:
     }
 
     SweepDirection SweepDirection() const {
-        return static_cast<zaf::SweepDirection>(value_.sweepDirection);
+        return static_cast<d2d::SweepDirection>(value_.sweepDirection);
     }
 
-    void SetSweepDirection(zaf::SweepDirection value) {
+    void SetSweepDirection(d2d::SweepDirection value) {
         value_.sweepDirection = static_cast<D2D1_SWEEP_DIRECTION>(value);
     }
 
     ArcSize ArcSize() const {
-        return static_cast<zaf::ArcSize>(value_.arcSize);
+        return static_cast<d2d::ArcSize>(value_.arcSize);
     }
 
-    void SetArcSize(zaf::ArcSize value) {
+    void SetArcSize(d2d::ArcSize value) {
         value_.arcSize = static_cast<D2D1_ARC_SIZE>(value);
     }
 

@@ -19,9 +19,6 @@
     <Filter Include="zaf\graphic\text">
       <UniqueIdentifier>{27b1fee3-ac73-4419-b095-24ff29ad3c11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\graphic\geometry">
-      <UniqueIdentifier>{588f47a2-5d14-49cc-95c1-251c2783efd8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\graphic\font">
       <UniqueIdentifier>{eb21b954-c3ad-4906-b14a-c400e7f6e3cb}</UniqueIdentifier>
     </Filter>
@@ -251,12 +248,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\check_box.cpp">
       <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\geometry\path_geometry.cpp">
-      <Filter>zaf\graphic\geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\geometry\geometry_sink.cpp">
-      <Filter>zaf\graphic\geometry</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\font\font_collection.cpp">
       <Filter>zaf\graphic\font</Filter>
@@ -1294,6 +1285,12 @@
     <ClCompile Include="src\zaf\graphic\d2d\window_renderer.cpp">
       <Filter>zaf\graphic\d2d</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\d2d\geometry_sink.cpp">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\d2d\path_geometry.cpp">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1315,9 +1312,6 @@
       <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\color.h">
-      <Filter>zaf\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\layer.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\control.h">
@@ -1358,15 +1352,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\word_wrapping.h">
       <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\geometry\geometry.h">
-      <Filter>zaf\graphic\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\geometry\path_geometry.h">
-      <Filter>zaf\graphic\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\geometry\geometry_sink.h">
-      <Filter>zaf\graphic\geometry</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\text_format_properties.h">
       <Filter>zaf\graphic\text</Filter>
@@ -1428,9 +1413,6 @@
     <ClInclude Include="src\zaf\control\self_scroll_control.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\geometry\rectangle_geometry.h">
-      <Filter>zaf\graphic\geometry</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\text_validator.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
@@ -1461,17 +1443,11 @@
     <ClInclude Include="src\zaf\graphic\matrix.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\geometry\transformed_geometry.h">
-      <Filter>zaf\graphic\geometry</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\graphic_factory.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\tab_stop_utility.h">
       <Filter>zaf\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\layer_parameters.h">
-      <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\message\keyboard_message.h">
       <Filter>zaf\window\message</Filter>
@@ -1520,9 +1496,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\rounded_rect.h">
       <Filter>zaf\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\geometry\rounded_rectangle_geometry.h">
-      <Filter>zaf\graphic\geometry</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\image\gif_metadata_querier.h">
       <Filter>zaf\graphic\image</Filter>
@@ -1977,12 +1950,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observable\async_customized_observable.h">
       <Filter>zaf\rx\internal\observable</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\geometry\ellipse_geometry.h">
-      <Filter>zaf\graphic\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\geometry\arc_segment.h">
-      <Filter>zaf\graphic\geometry</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\control_update_guard.h">
       <Filter>zaf\control</Filter>
@@ -2975,6 +2942,36 @@
       <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\d2d\stroke_properties.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\arc_segment.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\ellipse_geometry.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\geometry.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\geometry_sink.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\path_geometry.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\rectangle_geometry.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\rounded_rectangle_geometry.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\transformed_geometry.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\layer.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\layer_parameters.h">
       <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
   </ItemGroup>

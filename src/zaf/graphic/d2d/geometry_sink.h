@@ -6,11 +6,11 @@
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/flags_enum.h>
-#include <zaf/graphic/geometry/arc_segment.h>
+#include <zaf/graphic/d2d/arc_segment.h>
 #include <zaf/graphic/internal/alignment_info.h>
 #include <zaf/graphic/point.h>
 
-namespace zaf {
+namespace zaf::d2d {
     
 /**
 Describes a geometric path that can contain lines, arcs, cubic Bezier curves, and quadratic Bezier

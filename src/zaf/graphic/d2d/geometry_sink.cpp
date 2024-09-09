@@ -1,7 +1,7 @@
-#include <zaf/graphic/geometry/geometry_sink.h>
+#include <zaf/graphic/d2d/geometry_sink.h>
 #include <zaf/graphic/internal/alignment_helper.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 void GeometrySink::BeginFigure(const Point& start_position, BeginFigureOption option) {
 

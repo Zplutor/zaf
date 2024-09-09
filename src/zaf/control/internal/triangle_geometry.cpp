@@ -3,7 +3,7 @@
 
 namespace zaf::internal {
 
-Geometry CreateTriangleGeometry(
+d2d::Geometry CreateTriangleGeometry(
     float canvas_width,
     float canvas_height,
     float bottom_edge_length,
@@ -23,10 +23,10 @@ Geometry CreateTriangleGeometry(
 
     auto triangle_geometry = GraphicFactory::Instance().CreatePathGeometry();
     auto triangle_geometry_sink = triangle_geometry.Open();
-    triangle_geometry_sink.BeginFigure(top_point, GeometrySink::BeginFigureOption::Fill);
+    triangle_geometry_sink.BeginFigure(top_point, d2d::GeometrySink::BeginFigureOption::Fill);
     triangle_geometry_sink.AddLine(left_point);
     triangle_geometry_sink.AddLine(right_point);
-    triangle_geometry_sink.EndFigure(GeometrySink::EndFigureOption::Close);
+    triangle_geometry_sink.EndFigure(d2d::GeometrySink::EndFigureOption::Close);
     triangle_geometry_sink.Close();
 
     return GraphicFactory::Instance().CreateTransformedGeometry(

@@ -12,8 +12,8 @@
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font/font.h>
-#include <zaf/graphic/geometry/path_geometry.h>
-#include <zaf/graphic/geometry/rectangle_geometry.h>
+#include <zaf/graphic/d2d/path_geometry.h>
+#include <zaf/graphic/d2d/rectangle_geometry.h>
 #include <zaf/graphic/image/image.h>
 #include <zaf/internal/theme.h>
 #include <zaf/internal/window/window_focused_control_manager.h>
@@ -320,7 +320,11 @@ void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
     
     auto border_geometry = canvas.CreatePathGeometry();
     auto sink = border_geometry.Open();
-    Geometry::Combine(control_geometry, inner_geometry, Geometry::CombineMode::Exclude, sink);
+    d2d::Geometry::Combine(
+        control_geometry, 
+        inner_geometry, 
+        d2d::Geometry::CombineMode::Exclude, 
+        sink);
     sink.Close();
 
     canvas.SetBrushWithColor(BorderColor());

@@ -3,8 +3,8 @@
 #include <zaf/base/error/check.h>
 #include <zaf/base/error/contract_error.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/geometry/geometry_sink.h>
-#include <zaf/graphic/geometry/path_geometry.h>
+#include <zaf/graphic/d2d/geometry_sink.h>
+#include <zaf/graphic/d2d/path_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
@@ -116,10 +116,10 @@ void CheckBox::PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const {
         Point middle_point(mark_rect.position.x + mark_rect.size.width * 0.4f, mark_rect.position.y + mark_rect.size.height - 1);
         Point end_point(mark_rect.position.x, mark_rect.position.y + mark_rect.size.height * 0.4f);
 
-        sink.BeginFigure(start_point, GeometrySink::BeginFigureOption::Hollow);
+        sink.BeginFigure(start_point, d2d::GeometrySink::BeginFigureOption::Hollow);
         sink.AddLine(middle_point);
         sink.AddLine(end_point);
-        sink.EndFigure(GeometrySink::EndFigureOption::Open);
+        sink.EndFigure(d2d::GeometrySink::EndFigureOption::Open);
         sink.Close();
 
         canvas.DrawGeometryFrame(path, 1.5);

@@ -6,9 +6,9 @@
 #include <zaf/control/scroll_bar_thumb.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/geometry/geometry_sink.h>
-#include <zaf/graphic/geometry/path_geometry.h>
-#include <zaf/graphic/geometry/transformed_geometry.h>
+#include <zaf/graphic/d2d/geometry_sink.h>
+#include <zaf/graphic/d2d/path_geometry.h>
+#include <zaf/graphic/d2d/transformed_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/window/message/mouse_message.h>

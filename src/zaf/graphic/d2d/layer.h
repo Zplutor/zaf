@@ -4,7 +4,7 @@
 #include <zaf/base/direct2d.h>
 #include <zaf/graphic/size.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 class Layer : public COMObject<ID2D1Layer> {
 public:

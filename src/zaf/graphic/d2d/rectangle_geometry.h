@@ -1,9 +1,9 @@
 #pragma once
 
 #include <zaf/graphic/rect.h>
-#include <zaf/graphic/geometry/geometry.h>
+#include <zaf/graphic/d2d/geometry.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 /**
  Represents a rectangle.   

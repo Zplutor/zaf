@@ -3,10 +3,10 @@
 #include <memory>
 #include <optional>
 #include <zaf/graphic/internal/alignment_info.h>
-#include <zaf/graphic/geometry/geometry.h>
-#include <zaf/graphic/geometry/geometry_sink.h>
+#include <zaf/graphic/d2d/geometry.h>
+#include <zaf/graphic/d2d/geometry_sink.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 /**
 Represents a complex shape that may be composed of arcs, curves, and lines.

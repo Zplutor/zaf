@@ -1,10 +1,10 @@
 #pragma once
 
-#include <zaf/graphic/geometry/geometry.h>
+#include <zaf/graphic/d2d/geometry.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/rect.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 class LayerParameters {
 public:
