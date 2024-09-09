@@ -30,8 +30,8 @@ void TestWithTextBoxInWindow(
 
 TEST(TextBoxTest, IsEditable) {
 
-    //TextBox is not editable by default.
-    ASSERT_FALSE(zaf::Create<zaf::TextBox>()->IsEditable());
+    //TextBox is editable by default.
+    ASSERT_TRUE(zaf::Create<zaf::TextBox>()->IsEditable());
 
     TestWithTextBoxInWindow([](zaf::TextBox& text_box, zaf::Window& window) {
 

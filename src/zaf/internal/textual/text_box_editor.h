@@ -104,7 +104,7 @@ private:
     void ClearCommands();
 
 private:
-    bool can_edit_{};
+    bool can_edit_{ true };
     Event<bool> can_edit_changed_event_;
 
     bool allow_undo_{ true };

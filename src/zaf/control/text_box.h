@@ -38,8 +38,8 @@ public:
     Indicates whether the text box is editable.
 
     @details
-        A text box is not editable by default. A non-editable text box doesn't respond to user 
-        input that would modify the text.
+        A text box is editable by default. A non-editable text box doesn't respond to user input
+        that would modify the text.
     */
     bool IsEditable() const noexcept;
 
