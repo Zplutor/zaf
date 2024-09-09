@@ -81,7 +81,7 @@ std::shared_ptr<textual::InteractiveInlineObject> TextBoxMouseInputHandler::Find
     //the object.
     if (!hit_test_result.metrics.IsInside()) {
         if (hit_test_result.hit_test_position.x < metrics.Left() ||
-            hit_test_result.hit_test_position.y >= metrics.Left() + metrics.Width()) {
+            hit_test_result.hit_test_position.x >= metrics.Left() + metrics.Width()) {
             return nullptr;
         }
     }

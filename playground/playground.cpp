@@ -64,6 +64,15 @@ void BeginRun(const zaf::BeginRunInfo& event_info);
 
 class MyInlineObject : public zaf::textual::InteractiveInlineObject {
 public:
+    zaf::TextInlineObjectMetrics GetMetrics() const override {
+
+        zaf::TextInlineObjectMetrics result;
+        result.SetWidth(60);
+        result.SetHeight(28);
+        result.SetHeightAboveBaseline(22.4f);
+        return result;
+    }
+
     void OnMouseCursorChanging(const zaf::textual::InlineObjectMouseCursorChangingInfo& event_info) override {
 
         zaf::Mouse::SetCursor(zaf::Cursor::Normal());
@@ -73,8 +82,6 @@ public:
 };
 
 class Window : public zaf::Window {
-public:
-
 protected:
     void Initialize() override {
 
@@ -82,9 +89,13 @@ protected:
 
         auto box = zaf::Create<zaf::TextBox>();
         box->SetIsEditable(true);
-        box->SetFontSize(30);
+        box->SetFontSize(22);
         box->SetTextColor(zaf::Color::Red());
         box->SetText(L"This is a text box.");
+        box->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
+        box->SetFixedHeight(60);
+
+        auto size = box->CalculatePreferredSize();
 
         box->SetTextColorInRange(zaf::Color::Blue(), zaf::Range{ 10, 4 });
         box->SetTextBackColorInRange(zaf::Color::Gray(), zaf::Range{ 10, 4 });
