@@ -6,7 +6,7 @@
 
 namespace zaf::d2d {
 
-BitmapRenderer Renderer::CreateCompatibleRenderer(const CreateCompatibleRendererOptions& options) {
+BitmapRenderer Renderer::CreateCompatibleRenderer(const CompatibleRendererProperties& properties) {
     
     D2D1_SIZE_F d2d_desired_size;
     D2D1_SIZE_U d2d_desired_pixel_size;
@@ -14,13 +14,13 @@ BitmapRenderer Renderer::CreateCompatibleRenderer(const CreateCompatibleRenderer
     D2D1_SIZE_F* d2d_desired_size_pointer = nullptr;
     D2D1_SIZE_U* d2d_desired_pixel_size_pointer = nullptr;
 
-    const auto& desired_size = options.DesiredSize();
+    const auto& desired_size = properties.DesiredSize();
     if (desired_size.has_value()) {
         d2d_desired_size = desired_size->ToD2D1SIZEF();
         d2d_desired_size_pointer = &d2d_desired_size;
     }
 
-    const auto& desired_pixel_size = options.DesiredPixelSize();
+    const auto& desired_pixel_size = properties.DesiredPixelSize();
     if (desired_pixel_size.has_value()) {
         d2d_desired_pixel_size = desired_pixel_size->ToD2D1SIZEU();
         d2d_desired_pixel_size_pointer = &d2d_desired_pixel_size;
@@ -31,7 +31,7 @@ BitmapRenderer Renderer::CreateCompatibleRenderer(const CreateCompatibleRenderer
         d2d_desired_size_pointer, 
         d2d_desired_pixel_size_pointer,
         nullptr,
-        static_cast<D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS>(options.Flags()), 
+        static_cast<D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS>(properties.Flags()), 
         inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(com_error);

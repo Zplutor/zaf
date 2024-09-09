@@ -695,8 +695,11 @@
     <ClInclude Include="src\zaf\graphic\canvas_region_guard.h" />
     <ClInclude Include="src\zaf\graphic\canvas_state_guard.h" />
     <ClInclude Include="src\zaf\graphic\color_parser.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\antialias_mode.h" />
     <ClInclude Include="src\zaf\graphic\d2d\bitmap_renderer.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\compatible_renderer_properties.h" />
     <ClInclude Include="src\zaf\graphic\d2d\renderer.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\renderer_properties.h" />
     <ClInclude Include="src\zaf\graphic\d2d\window_renderer.h" />
     <ClInclude Include="src\zaf\graphic\dpi.h" />
     <ClInclude Include="src\zaf\graphic\font\font_parser.h" />
@@ -753,9 +756,6 @@
     <ClInclude Include="src\zaf\graphic\pixel_properties.h" />
     <ClInclude Include="src\zaf\graphic\point.h" />
     <ClInclude Include="src\zaf\graphic\rect.h" />
-    <ClInclude Include="src\zaf\graphic\renderer\antialias_mode.h" />
-    <ClInclude Include="src\zaf\graphic\renderer\create_compatible_renderer_options.h" />
-    <ClInclude Include="src\zaf\graphic\renderer\renderer_properties.h" />
     <ClInclude Include="src\zaf\graphic\graphic_factory.h" />
     <ClInclude Include="src\zaf\graphic\rounded_rect.h" />
     <ClInclude Include="src\zaf\graphic\size.h" />

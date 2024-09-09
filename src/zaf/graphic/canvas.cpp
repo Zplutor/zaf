@@ -95,7 +95,7 @@ CanvasClippingGuard Canvas::PushClipping(const Rect& clipping_rect) {
 
 CanvasClippingGuard Canvas::InnerPushClipping(const Rect& clipping_rect) {
 
-    renderer_.PushAxisAlignedClipping(clipping_rect, zaf::AntialiasMode::PerPrimitive);
+    renderer_.PushAxisAlignedClipping(clipping_rect, d2d::AntialiasMode::PerPrimitive);
     return CanvasClippingGuard{ this, ++current_clipping_tag_ };
 }
 

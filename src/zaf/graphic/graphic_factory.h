@@ -11,7 +11,7 @@
 #include <zaf/graphic/geometry/rounded_rectangle_geometry.h>
 #include <zaf/graphic/geometry/transformed_geometry.h>
 #include <zaf/graphic/image/wic/bitmap.h>
-#include <zaf/graphic/renderer/renderer_properties.h>
+#include <zaf/graphic/d2d/renderer_properties.h>
 #include <zaf/graphic/d2d/window_renderer.h>
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/text/text_inline_object.h>
@@ -48,7 +48,7 @@ public:
 
     d2d::Renderer CreateBitmapRenderer(
         const wic::Bitmap& image_source, 
-        const RendererProperties& properties);
+        const d2d::RendererProperties& properties);
 
     /**
      Create a rectangle geometry with specified rect.

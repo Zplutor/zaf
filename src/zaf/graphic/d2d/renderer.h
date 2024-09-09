@@ -19,8 +19,8 @@
 #include <zaf/graphic/stroke.h>
 #include <zaf/graphic/geometry/geometry.h>
 #include <zaf/graphic/render_bitmap.h>
-#include <zaf/graphic/renderer/antialias_mode.h>
-#include <zaf/graphic/renderer/create_compatible_renderer_options.h>
+#include <zaf/graphic/d2d/antialias_mode.h>
+#include <zaf/graphic/d2d/compatible_renderer_properties.h>
 #include <zaf/graphic/text/text_format.h>
 #include <zaf/graphic/text/text_layout.h>
 
@@ -45,7 +45,7 @@ public:
         Ptr()->SetDpi(dpi, dpi);
     }
 
-    BitmapRenderer CreateCompatibleRenderer(const CreateCompatibleRendererOptions& options);
+    BitmapRenderer CreateCompatibleRenderer(const CompatibleRendererProperties& properties);
 
     SolidColorBrush CreateSolidColorBrush(const Color& color);
 

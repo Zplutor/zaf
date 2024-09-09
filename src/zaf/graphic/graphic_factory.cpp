@@ -66,7 +66,7 @@ d2d::WindowRenderer GraphicFactory::CreateWindowRenderer(HWND window_handle) {
 
 d2d::Renderer GraphicFactory::CreateBitmapRenderer(
     const wic::Bitmap& image_source,
-    const RendererProperties& properties) {
+    const d2d::RendererProperties& properties) {
 
     COMPtr<ID2D1RenderTarget> inner;
     HRESULT com_error = d2d_factory_handle_->CreateWicBitmapRenderTarget(

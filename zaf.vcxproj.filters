@@ -52,9 +52,6 @@
     <Filter Include="zaf\control\internal\image_box">
       <UniqueIdentifier>{6783574a-ea9b-4f6e-9dca-10fff2f4fdcd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\graphic\renderer">
-      <UniqueIdentifier>{06391e47-8d87-4b81-bcba-95a163e421c9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\base\container">
       <UniqueIdentifier>{8f617298-ecbd-4034-9e95-5d4d9592fb2c}</UniqueIdentifier>
     </Filter>
@@ -1557,17 +1554,8 @@
     <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h">
       <Filter>zaf\control\internal\image_box</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\renderer\create_compatible_renderer_options.h">
-      <Filter>zaf\graphic\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\renderer\antialias_mode.h">
-      <Filter>zaf\graphic\renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\pixel_properties.h">
       <Filter>zaf\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\renderer\renderer_properties.h">
-      <Filter>zaf\graphic\renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\pixel_format.h">
       <Filter>zaf\graphic</Filter>
@@ -2981,6 +2969,15 @@
       <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\d2d\window_renderer.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\renderer_properties.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\antialias_mode.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\compatible_renderer_properties.h">
       <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
   </ItemGroup>

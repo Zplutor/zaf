@@ -81,9 +81,9 @@ void GifPlayer::InitializeComposedFrameRenderer(
     auto width = metadata_querier.GetWidth();
     auto height = metadata_querier.GetHeight();
 
-    CreateCompatibleRendererOptions options;
-    options.DesiredSize(Size(width, height));
-    composed_frame_renderer_ = renderer.CreateCompatibleRenderer(options);
+    d2d::CompatibleRendererProperties properties;
+    properties.DesiredSize(Size(width, height));
+    composed_frame_renderer_ = renderer.CreateCompatibleRenderer(properties);
 }
 
 
@@ -152,7 +152,9 @@ void GifPlayer::DisposeCurrentFrame() {
 void GifPlayer::ClearBackground() {
 
     composed_frame_renderer_.BeginDraw();
-    composed_frame_renderer_.PushAxisAlignedClipping(current_frame_rect_, AntialiasMode::PerPrimitive);
+    composed_frame_renderer_.PushAxisAlignedClipping(
+        current_frame_rect_, 
+        d2d::AntialiasMode::PerPrimitive);
     composed_frame_renderer_.Clear(background_color_);
     composed_frame_renderer_.PopAxisAlignedClipping();
     composed_frame_renderer_.EndDraw();

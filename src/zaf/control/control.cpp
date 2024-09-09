@@ -187,9 +187,9 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_
 
     //Create the cached renderer if it is not created.
     if (!cached_renderer_) {
-        CreateCompatibleRendererOptions options;
-        options.DesiredSize(control_size);
-        cached_renderer_ = canvas.Renderer().CreateCompatibleRenderer(options);
+        d2d::CompatibleRendererProperties properties;
+        properties.DesiredSize(control_size);
+        cached_renderer_ = canvas.Renderer().CreateCompatibleRenderer(properties);
         valid_cached_renderer_rect_ = zaf::Rect{};
     }
 

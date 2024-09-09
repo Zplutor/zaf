@@ -61,7 +61,7 @@ zaf::wic::BitmapSource ConversationAvatarManager::CombineMultiUserConversationAv
         return zaf::wic::BitmapSource();
     }
 
-    zaf::RendererProperties renderer_properties;
+    zaf::d2d::RendererProperties renderer_properties;
     auto renderer = 
         zaf::GraphicFactory::Instance().CreateBitmapRenderer(image_source, renderer_properties);
     if (!renderer) {

@@ -3,21 +3,21 @@
 #include <optional>
 #include <zaf/graphic/size.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
-enum class CreateCompatibleRendererFlags {
+enum class CompatibleRendererOptions {
     None = D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS_NONE,
-    GdiCompatible = D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS_GDI_COMPATIBLE,
+    GDICompatible = D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS_GDI_COMPATIBLE,
 };
 
 
-class CreateCompatibleRendererOptions {
+class CompatibleRendererProperties {
 public:
     const std::optional<Size>& DesiredSize() const {
         return desired_size_;
     }
 
-    CreateCompatibleRendererOptions& DesiredSize(const std::optional<Size>& size) {
+    CompatibleRendererProperties& DesiredSize(const std::optional<Size>& size) {
         desired_size_ = size;
         return *this;
     }
@@ -26,16 +26,16 @@ public:
         return desired_pixel_size_;
     }
 
-    CreateCompatibleRendererOptions& DesiredPixelSize(const std::optional<Size>& size) {
+    CompatibleRendererProperties& DesiredPixelSize(const std::optional<Size>& size) {
         desired_pixel_size_ = size;
         return *this;
     }
 
-    CreateCompatibleRendererFlags Flags() const {
+    CompatibleRendererOptions Flags() const {
         return flags_;
     }
 
-    CreateCompatibleRendererOptions& Flags(CreateCompatibleRendererFlags flags) {
+    CompatibleRendererProperties& Flags(CompatibleRendererOptions flags) {
         flags_ = flags;
         return *this;
     }
@@ -43,7 +43,7 @@ public:
 private:
     std::optional<Size> desired_size_;
     std::optional<Size> desired_pixel_size_;
-    CreateCompatibleRendererFlags flags_ = CreateCompatibleRendererFlags::GdiCompatible;
+    CompatibleRendererOptions flags_ = CompatibleRendererOptions::GDICompatible;
 };
 
 }

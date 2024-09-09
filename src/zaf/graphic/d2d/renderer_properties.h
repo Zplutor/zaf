@@ -3,7 +3,7 @@
 #include <zaf/base/direct2d.h>
 #include <zaf/graphic/pixel_properties.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 enum class RendererType {
     Default = D2D1_RENDER_TARGET_TYPE_DEFAULT,
