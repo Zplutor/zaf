@@ -2,7 +2,7 @@
 #include <zaf/application.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/error/win32_error.h>
-#include <zaf/graphic/stroke_properties.h>
+#include <zaf/graphic/d2d/stroke_properties.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/text/text_format_properties.h>
 
@@ -141,7 +141,7 @@ TransformedGeometry GraphicFactory::CreateTransformedGeometry(
 }
 
 
-Stroke GraphicFactory::CreateStroke(const StrokeProperties& properties) {
+d2d::Stroke GraphicFactory::CreateStroke(const d2d::StrokeProperties& properties) {
     
     COMPtr<ID2D1StrokeStyle> inner;
     HRESULT result = d2d_factory_handle_->CreateStrokeStyle(
@@ -152,7 +152,7 @@ Stroke GraphicFactory::CreateStroke(const StrokeProperties& properties) {
     );
 
     ZAF_THROW_IF_COM_ERROR(result);
-    return Stroke(inner);
+    return d2d::Stroke(inner);
 }
 
 

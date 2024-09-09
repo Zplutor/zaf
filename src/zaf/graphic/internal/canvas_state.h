@@ -1,14 +1,14 @@
 #pragma once
 
-#include <zaf/graphic/brush/brush.h>
-#include <zaf/graphic/stroke.h>
+#include <zaf/graphic/d2d/brush.h>
+#include <zaf/graphic/d2d/stroke.h>
 
 namespace zaf::internal {
 
 class CanvasState {
 public:
-    zaf::Brush brush;
-    zaf::Stroke stroke;
+    d2d::Brush brush;
+    d2d::Stroke stroke;
 };
 
 }

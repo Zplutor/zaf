@@ -4,8 +4,8 @@
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/graphic/brush/bitmap_brush.h>
-#include <zaf/graphic/brush/solid_color_brush.h>
+#include <zaf/graphic/d2d/bitmap_brush.h>
+#include <zaf/graphic/d2d/solid_color_brush.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
 #include <zaf/graphic/bitmap_properties.h>
@@ -16,7 +16,7 @@
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/rounded_rect.h>
-#include <zaf/graphic/stroke.h>
+#include <zaf/graphic/d2d/stroke.h>
 #include <zaf/graphic/geometry/geometry.h>
 #include <zaf/graphic/render_bitmap.h>
 #include <zaf/graphic/d2d/antialias_mode.h>

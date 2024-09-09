@@ -13,9 +13,6 @@
     <Filter Include="zaf\graphic">
       <UniqueIdentifier>{d45474f1-c5c4-40c0-a6e8-8d393e1f96bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\graphic\brush">
-      <UniqueIdentifier>{a3b014e0-ac1c-44fb-b20f-f4f77ebee9d7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\control">
       <UniqueIdentifier>{c624bfa0-8cda-4e20-9245-dde86f21842b}</UniqueIdentifier>
     </Filter>
@@ -1320,15 +1317,6 @@
     <ClInclude Include="src\zaf\graphic\color.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\brush\brush.h">
-      <Filter>zaf\graphic\brush</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h">
-      <Filter>zaf\graphic\brush</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\stroke.h">
-      <Filter>zaf\graphic</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\layer.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
@@ -1379,9 +1367,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\geometry\geometry_sink.h">
       <Filter>zaf\graphic\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\stroke_properties.h">
-      <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\text_format_properties.h">
       <Filter>zaf\graphic\text</Filter>
@@ -1532,9 +1517,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\com_ptr.h">
       <Filter>zaf\base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\brush\bitmap_brush.h">
-      <Filter>zaf\graphic\brush</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\rounded_rect.h">
       <Filter>zaf\graphic</Filter>
@@ -2978,6 +2960,21 @@
       <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\d2d\compatible_renderer_properties.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\bitmap_brush.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\brush.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\solid_color_brush.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\stroke.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\stroke_properties.h">
       <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
   </ItemGroup>

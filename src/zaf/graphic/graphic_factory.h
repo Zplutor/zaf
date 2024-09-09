@@ -13,15 +13,17 @@
 #include <zaf/graphic/image/wic/bitmap.h>
 #include <zaf/graphic/d2d/renderer_properties.h>
 #include <zaf/graphic/d2d/window_renderer.h>
-#include <zaf/graphic/stroke.h>
+#include <zaf/graphic/d2d/stroke.h>
 #include <zaf/graphic/text/text_inline_object.h>
 #include <zaf/graphic/text/text_layout.h>
 
 namespace zaf {
+namespace d2d {
+class StrokeProperties;
+}
 
 class Application;
 class Rect;
-class StrokeProperties;
 class TextFormatProperties;
 class TransformMatrix;
 
@@ -80,7 +82,7 @@ public:
      @return 
          Return nullptr if failed.
      */
-    Stroke CreateStroke(const StrokeProperties& properties);
+    d2d::Stroke CreateStroke(const d2d::StrokeProperties& properties);
 
     /**
      Create a text format with specified properties.

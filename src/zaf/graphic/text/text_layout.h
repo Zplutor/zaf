@@ -5,7 +5,7 @@
 #include <vector>
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/range.h>
-#include <zaf/graphic/brush/brush.h>
+#include <zaf/graphic/d2d/brush.h>
 #include <zaf/graphic/font/font_style.h>
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/text/hit_test_metrics.h>
@@ -204,7 +204,7 @@ public:
          by position. This means the run has the exact formatting as the position specified, including 
          but not limited to the drawing effect. This parameter can be nullptr.
      */
-    Brush GetBrush(std::size_t position, Range* range);
+    d2d::Brush GetBrush(std::size_t position, Range* range);
 
     /**
      Set brush for text within a specified text range.
@@ -215,7 +215,7 @@ public:
      @param range
          Text range to which this change applies.
      */
-    void SetBrush(const Brush& brush, const Range& range) {
+    void SetBrush(const d2d::Brush& brush, const Range& range) {
         HRESULT result = Inner()->SetDrawingEffect(
             brush.Ptr().Inner(),
             range.ToDWRITETEXTRANGE());

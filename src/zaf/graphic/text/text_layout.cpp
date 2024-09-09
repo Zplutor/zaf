@@ -112,7 +112,7 @@ bool TextLayout::HasUnderline(std::size_t position, Range* range) const {
 }
 
 
-Brush TextLayout::GetBrush(std::size_t position, Range* range) {
+d2d::Brush TextLayout::GetBrush(std::size_t position, Range* range) {
 
     IUnknown* drawing_effect = nullptr;
     DWRITE_TEXT_RANGE text_range = { 0 };
@@ -128,7 +128,7 @@ Brush TextLayout::GetBrush(std::size_t position, Range* range) {
     drawing_effect->Release();
     ZAF_THROW_IF_COM_ERROR(result);
 
-    return Brush(brush_inner);
+    return d2d::Brush(brush_inner);
 }
 
 

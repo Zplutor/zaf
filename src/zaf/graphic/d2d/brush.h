@@ -3,7 +3,7 @@
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 /**
  Represents a brush.

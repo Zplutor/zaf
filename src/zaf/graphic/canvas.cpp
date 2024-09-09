@@ -8,6 +8,8 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/text/text_format.h>
 
+using namespace zaf::d2d;
+
 namespace zaf {
 
 Canvas::Canvas(d2d::Renderer& renderer) : renderer_(renderer) {

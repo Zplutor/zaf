@@ -696,10 +696,15 @@
     <ClInclude Include="src\zaf\graphic\canvas_state_guard.h" />
     <ClInclude Include="src\zaf\graphic\color_parser.h" />
     <ClInclude Include="src\zaf\graphic\d2d\antialias_mode.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\bitmap_brush.h" />
     <ClInclude Include="src\zaf\graphic\d2d\bitmap_renderer.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\brush.h" />
     <ClInclude Include="src\zaf\graphic\d2d\compatible_renderer_properties.h" />
     <ClInclude Include="src\zaf\graphic\d2d\renderer.h" />
     <ClInclude Include="src\zaf\graphic\d2d\renderer_properties.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\solid_color_brush.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\stroke.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\stroke_properties.h" />
     <ClInclude Include="src\zaf\graphic\d2d\window_renderer.h" />
     <ClInclude Include="src\zaf\graphic\dpi.h" />
     <ClInclude Include="src\zaf\graphic\font\font_parser.h" />
@@ -727,9 +732,6 @@
     <ClInclude Include="src\zaf\graphic\point_parser.h" />
     <ClInclude Include="src\zaf\graphic\render_bitmap.h" />
     <ClInclude Include="src\zaf\graphic\bitmap_properties.h" />
-    <ClInclude Include="src\zaf\graphic\brush\bitmap_brush.h" />
-    <ClInclude Include="src\zaf\graphic\brush\brush.h" />
-    <ClInclude Include="src\zaf\graphic\brush\solid_color_brush.h" />
     <ClInclude Include="src\zaf\graphic\canvas.h" />
     <ClInclude Include="src\zaf\graphic\color.h" />
     <ClInclude Include="src\zaf\graphic\ellipse.h" />
@@ -760,8 +762,6 @@
     <ClInclude Include="src\zaf\graphic\rounded_rect.h" />
     <ClInclude Include="src\zaf\graphic\size.h" />
     <ClInclude Include="src\zaf\graphic\size_parser.h" />
-    <ClInclude Include="src\zaf\graphic\stroke.h" />
-    <ClInclude Include="src\zaf\graphic\stroke_properties.h" />
     <ClInclude Include="src\zaf\graphic\text\hit_test_metrics.h" />
     <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_bridge.h" />
     <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_painter.h" />

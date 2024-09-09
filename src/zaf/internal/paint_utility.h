@@ -10,7 +10,6 @@ namespace zaf {
 class Canvas;
 class ClickableControl;
 class Rect;
-class Stroke;
 class TextLayout;
 class TextualControl;
 

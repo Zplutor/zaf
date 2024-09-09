@@ -3,7 +3,7 @@
 #include <memory>
 #include <stack>
 #include <string>
-#include <zaf/graphic/brush/solid_color_brush.h>
+#include <zaf/graphic/d2d/solid_color_brush.h>
 #include <zaf/graphic/canvas_clipping_guard.h>
 #include <zaf/graphic/canvas_region_guard.h>
 #include <zaf/graphic/canvas_state_guard.h>
@@ -109,9 +109,9 @@ public:
     [[nodiscard]]
     CanvasStateGuard PushState();
 
-    void SetBrush(const Brush& brush);
+    void SetBrush(const d2d::Brush& brush);
     void SetBrushWithColor(const Color& color);
-    void SetStroke(const Stroke& stroke);
+    void SetStroke(const d2d::Stroke& stroke);
 
     void Clear();
 
@@ -119,59 +119,63 @@ public:
 
     void DrawRectangle(const Rect& rect);
     void DrawRectangle(const Rect& rect, const Color& color);
-    void DrawRectangle(const Rect& rect, const Brush& brush);
+    void DrawRectangle(const Rect& rect, const d2d::Brush& brush);
 
     void DrawRectangleFrame(const Rect& rect, float stroke_width);
-    void DrawRectangleFrame(const Rect& rect, float stroke_width, const Brush& brush);
-    void DrawRectangleFrame(const Rect& rect, float stroke_width, const Stroke& stroke);
+    void DrawRectangleFrame(const Rect& rect, float stroke_width, const d2d::Brush& brush);
+    void DrawRectangleFrame(const Rect& rect, float stroke_width, const d2d::Stroke& stroke);
     void DrawRectangleFrame(
         const Rect& rect,
         float stroke_width,
-        const Brush& brush,
-        const Stroke& stroke);
+        const d2d::Brush& brush,
+        const d2d::Stroke& stroke);
 
     void DrawRoundedRectangle(const RoundedRect& rounded_rect);
     void DrawRoundedRectangle(const RoundedRect& rounded_rect, const Color& color);
-    void DrawRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush);
+    void DrawRoundedRectangle(const RoundedRect& rounded_rect, const d2d::Brush& brush);
 
     void DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width);
     void DrawRoundedRectangleFrame(
         const RoundedRect& rounded_rect, 
         float stroke_width, 
-        const Brush& brush);
+        const d2d::Brush& brush);
     void DrawRoundedRectangleFrame(
         const RoundedRect& rounded_rect,
         float stroke_width,
-        const Stroke& stroke);
+        const d2d::Stroke& stroke);
     void DrawRoundedRectangleFrame(
         const RoundedRect& rounded_rect,
         float stroke_width,
-        const Brush& brush,
-        const Stroke& stroke);
+        const d2d::Brush& brush,
+        const d2d::Stroke& stroke);
 
     void DrawEllipse(const Ellipse& ellipse);
-    void DrawEllipse(const Ellipse& ellipse, const Brush& brush);
+    void DrawEllipse(const Ellipse& ellipse, const d2d::Brush& brush);
 
     void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width);
-    void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width, const Brush& brush);
-    void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width, const Stroke& stroke);
+    void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width, const d2d::Brush& brush);
+    void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width, const d2d::Stroke& stroke);
     void DrawEllipseFrame(
         const Ellipse& ellipse, 
         float stroke_width, 
-        const Brush& brush,
-        const Stroke& stroke);
+        const d2d::Brush& brush,
+        const d2d::Stroke& stroke);
 
     void DrawGeometry(const Geometry& geometry);
-    void DrawGeometry(const Geometry& geometry, const Brush& brush);
+    void DrawGeometry(const Geometry& geometry, const d2d::Brush& brush);
 
     void DrawGeometryFrame(const Geometry& geometry, float stroke_width);
-    void DrawGeometryFrame(const Geometry& geometry, float stroke_width, const Brush& brush);
-    void DrawGeometryFrame(const Geometry& geometry, float stroke_width, const Stroke& stroke);
+    void DrawGeometryFrame(const Geometry& geometry, float stroke_width, const d2d::Brush& brush);
     void DrawGeometryFrame(
         const Geometry& geometry, 
         float stroke_width, 
-        const Brush& brush, 
-        const Stroke& stroke);
+        const d2d::Stroke& stroke);
+
+    void DrawGeometryFrame(
+        const Geometry& geometry, 
+        float stroke_width, 
+        const d2d::Brush& brush,
+        const d2d::Stroke& stroke);
 
     void DrawTextFormat(const std::wstring& text, const TextFormat& text_format, const Rect& rect);
     void DrawTextFormat(
@@ -183,11 +187,14 @@ public:
         const std::wstring& text, 
         const TextFormat& text_format, 
         const Rect& rect,
-        const Brush& brush);
+        const d2d::Brush& brush);
 
     void DrawTextLayout(const TextLayout& text_layout, const Point& position);
     void DrawTextLayout(const TextLayout& text_layout, const Point& position, const Color& color);
-    void DrawTextLayout(const TextLayout& text_layout, const Point& position, const Brush& brush);
+    void DrawTextLayout(
+        const TextLayout& text_layout, 
+        const Point& position, 
+        const d2d::Brush& brush);
 
     void DrawBitmap(
         const RenderBitmap& bitmap,

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <zaf/graphic/stroke.h>
+#include <zaf/graphic/d2d/stroke.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 class StrokeProperties {
 public:

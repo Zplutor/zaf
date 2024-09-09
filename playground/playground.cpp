@@ -55,7 +55,6 @@
 #include <zaf/control/rich_edit/ole_callback.h>
 #include <zaf/control/text_box.h>
 #include <zaf/graphic/graphic_factory.h>
-#include <zaf/graphic/stroke_properties.h>
 #include <zaf/input/mouse.h>
 #include <zaf/control/control_object.h>
 #include <zaf/control/textual/interactive_inline_object.h>
