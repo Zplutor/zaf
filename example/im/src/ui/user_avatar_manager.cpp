@@ -1,7 +1,7 @@
 #include "ui/user_avatar_manager.h"
 #include <Windows.h>
 #include <zaf/application.h>
-#include <zaf/graphic/image/wic/imaging_factory.h>
+#include <zaf/graphic/wic/imaging_factory.h>
 #include "resource.h"
 
 static zaf::wic::BitmapSource CreateUserAvatarImage(Id user_id);

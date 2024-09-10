@@ -1,4 +1,4 @@
-#include <zaf/graphic/image/wic/container_format.h>
+#include <zaf/graphic/wic/container_format.h>
 
 namespace zaf::wic {
 

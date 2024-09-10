@@ -1,5 +1,5 @@
-#include <zaf/graphic/image/internal/utility.h>
-#include <zaf/graphic/image/wic/imaging_factory.h>
+#include <zaf/internal/graphic/utility.h>
+#include <zaf/graphic/wic/imaging_factory.h>
 
 namespace zaf::internal {
 

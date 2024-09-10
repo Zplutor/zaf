@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/graphic/image/image.h>
+#include <zaf/graphic/image.h>
 #include <zaf/control/internal/image_box/image_player.h>
 
 namespace zaf {

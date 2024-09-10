@@ -10,7 +10,7 @@
 #include <zaf/graphic/d2d/rectangle_geometry.h>
 #include <zaf/graphic/d2d/rounded_rectangle_geometry.h>
 #include <zaf/graphic/d2d/transformed_geometry.h>
-#include <zaf/graphic/image/wic/bitmap.h>
+#include <zaf/graphic/wic/bitmap.h>
 #include <zaf/graphic/d2d/renderer_properties.h>
 #include <zaf/graphic/d2d/window_renderer.h>
 #include <zaf/graphic/d2d/stroke.h>

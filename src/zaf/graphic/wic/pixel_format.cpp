@@ -1,4 +1,4 @@
-#include <zaf/graphic/image/wic/pixel_format.h>
+#include <zaf/graphic/wic/pixel_format.h>
 
 namespace zaf::wic {
 

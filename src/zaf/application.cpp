@@ -6,7 +6,7 @@
 #include <zaf/base/error/contract_error.h>
 #include <zaf/creation.h>
 #include <zaf/crypto/internal/crypto_manager.h>
-#include <zaf/graphic/image/wic/imaging_factory.h>
+#include <zaf/graphic/wic/imaging_factory.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/internal/system_message_window.h>

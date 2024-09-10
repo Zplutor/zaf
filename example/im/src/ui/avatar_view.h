@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/control/control.h>
-#include <zaf/graphic/image/wic/bitmap_source.h>
+#include <zaf/graphic/wic/bitmap_source.h>
 
 class AvatarView : public zaf::Control {
 public:

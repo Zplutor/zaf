@@ -1,4 +1,4 @@
-#include <zaf/graphic/image/gif_metadata_querier.h>
+#include <zaf/graphic/gif_metadata_querier.h>
 
 namespace zaf {
 

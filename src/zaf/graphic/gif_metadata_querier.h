@@ -1,7 +1,7 @@
 #pragma once
 
 #include <optional>
-#include <zaf/graphic/image/wic/metadata_query_reader.h>
+#include <zaf/graphic/wic/metadata_query_reader.h>
 
 namespace zaf {
 

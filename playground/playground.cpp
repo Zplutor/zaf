@@ -18,7 +18,7 @@
 #include <zaf/control/rich_edit.h>
 #include <zaf/window/message/hit_test_result.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/image/image.h>
+#include <zaf/graphic/image.h>
 #include <zaf/graphic/font.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/control/list_box.h>

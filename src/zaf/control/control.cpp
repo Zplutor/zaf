@@ -14,7 +14,7 @@
 #include <zaf/graphic/font.h>
 #include <zaf/graphic/d2d/path_geometry.h>
 #include <zaf/graphic/d2d/rectangle_geometry.h>
-#include <zaf/graphic/image/image.h>
+#include <zaf/graphic/image.h>
 #include <zaf/internal/theme.h>
 #include <zaf/internal/window/window_focused_control_manager.h>
 #include <zaf/rx/subject.h>

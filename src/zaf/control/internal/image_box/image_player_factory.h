@@ -4,8 +4,8 @@
 #include <memory>
 #include <string>
 #include <zaf/control/internal/image_box/image_player.h>
-#include <zaf/graphic/image/image.h>
-#include <zaf/graphic/image/wic/bitmap_decoder.h>
+#include <zaf/graphic/image.h>
+#include <zaf/graphic/wic/bitmap_decoder.h>
 
 namespace zaf::internal {
 

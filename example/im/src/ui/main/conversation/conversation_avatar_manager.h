@@ -2,7 +2,7 @@
 
 #include <map>
 #include <memory>
-#include <zaf/graphic/image/wic/bitmap_source.h>
+#include <zaf/graphic/wic/bitmap_source.h>
 #include "entity/conversation.h"
 
 class ConversationAvatarManager {

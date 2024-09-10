@@ -1,5 +1,5 @@
 #include <zaf/control/internal/image_box/gif_player.h>
-#include <zaf/graphic/image/wic/imaging_factory.h>
+#include <zaf/graphic/wic/imaging_factory.h>
 
 namespace zaf {
 namespace internal {

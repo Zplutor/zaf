@@ -1,7 +1,7 @@
 #pragma once
 
-#include <zaf/graphic/image/image.h>
-#include <zaf/graphic/image/wic/bitmap_source.h>
+#include <zaf/graphic/image.h>
+#include <zaf/graphic/wic/bitmap_source.h>
 #include <zaf/graphic/d2d/renderer.h>
 
 namespace zaf::internal {

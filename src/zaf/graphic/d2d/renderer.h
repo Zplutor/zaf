@@ -9,7 +9,7 @@
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
 #include <zaf/graphic/d2d/bitmap_properties.h>
-#include <zaf/graphic/image/wic/bitmap_source.h>
+#include <zaf/graphic/wic/bitmap_source.h>
 #include <zaf/graphic/d2d/interpolation_mode.h>
 #include <zaf/graphic/d2d/layer.h>
 #include <zaf/graphic/d2d/layer_parameters.h>

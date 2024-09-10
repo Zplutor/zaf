@@ -4,7 +4,7 @@
 #include <zaf/object/parsing/helpers.h>
 #include <zaf/object/parsing/xaml_reader.h>
 #include <zaf/object/object_type.h>
-#include <zaf/graphic/image/image.h>
+#include <zaf/graphic/image.h>
 
 using namespace zaf;
 

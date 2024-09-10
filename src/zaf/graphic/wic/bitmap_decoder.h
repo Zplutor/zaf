@@ -3,9 +3,9 @@
 #include <wincodec.h>
 #include <memory>
 #include <zaf/base/com_object.h>
-#include <zaf/graphic/image/wic/container_format.h>
-#include <zaf/graphic/image/wic/bitmap_decode_frame.h>
-#include <zaf/graphic/image/wic/metadata_query_reader.h>
+#include <zaf/graphic/wic/container_format.h>
+#include <zaf/graphic/wic/bitmap_decode_frame.h>
+#include <zaf/graphic/wic/metadata_query_reader.h>
 
 namespace zaf::wic {
 

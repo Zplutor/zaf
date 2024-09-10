@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/io/stream/stream.h>
-#include <zaf/graphic/image/wic/bitmap_decoder.h>
+#include <zaf/graphic/wic/bitmap_decoder.h>
 
 namespace zaf::internal {
 

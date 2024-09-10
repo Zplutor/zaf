@@ -1,4 +1,4 @@
-#include <zaf/graphic/image/wic/bitmap_decode_frame.h>
+#include <zaf/graphic/wic/bitmap_decode_frame.h>
 #include <zaf/base/error/com_error.h>
 
 namespace zaf::wic {

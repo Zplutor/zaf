@@ -1,6 +1,6 @@
-#include <zaf/graphic/image/wic/imaging_factory.h>
+#include <zaf/graphic/wic/imaging_factory.h>
 #include <zaf/application.h>
-#include <zaf/graphic/image/wic/stream.h>
+#include <zaf/graphic/wic/stream.h>
 
 namespace zaf::wic {
 

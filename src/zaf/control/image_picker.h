@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <zaf/graphic/image/image.h>
+#include <zaf/graphic/image.h>
 
 namespace zaf {
 

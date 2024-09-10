@@ -1,7 +1,7 @@
 #include <zaf/control/image_picker.h>
 #include <zaf/base/as.h>
 #include <zaf/control/control.h>
-#include <zaf/graphic/image/image.h>
+#include <zaf/graphic/image.h>
 
 namespace zaf {
 namespace {

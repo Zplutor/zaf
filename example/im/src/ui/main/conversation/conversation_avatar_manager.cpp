@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <zaf/application.h>
 #include <zaf/graphic/alignment.h>
-#include <zaf/graphic/image/wic/imaging_factory.h>
+#include <zaf/graphic/wic/imaging_factory.h>
 #include <zaf/graphic/graphic_factory.h>
 #include "logic/service.h"
 #include "ui/main/conversation/common_definition.h"

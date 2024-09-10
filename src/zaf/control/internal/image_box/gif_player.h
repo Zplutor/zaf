@@ -3,8 +3,8 @@
 #include <optional>
 #include <zaf/base/timer.h>
 #include <zaf/control/internal/image_box/image_player.h>
-#include <zaf/graphic/image/gif_metadata_querier.h>
-#include <zaf/graphic/image/wic/bitmap_decoder.h>
+#include <zaf/graphic/gif_metadata_querier.h>
+#include <zaf/graphic/wic/bitmap_decoder.h>
 #include <zaf/graphic/d2d/bitmap_renderer.h>
 #include <zaf/rx/subscription_host.h>
 

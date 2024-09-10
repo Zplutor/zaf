@@ -1,6 +1,6 @@
 #include <zaf/control/internal/image_box/uri_image_player.h>
 #include <zaf/control/internal/image_box/image_player_factory.h>
-#include <zaf/graphic/image/internal/utility.h>
+#include <zaf/internal/graphic/utility.h>
 #include <zaf/resource/resource_factory.h>
 
 namespace zaf::internal {

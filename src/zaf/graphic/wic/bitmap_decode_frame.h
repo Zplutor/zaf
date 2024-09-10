@@ -1,8 +1,8 @@
 #pragma once
 
 #include <wincodec.h>
-#include <zaf/graphic/image/wic/metadata_query_reader.h>
-#include <zaf/graphic/image/wic/bitmap_source.h>
+#include <zaf/graphic/wic/metadata_query_reader.h>
+#include <zaf/graphic/wic/bitmap_source.h>
 
 namespace zaf::wic {
 

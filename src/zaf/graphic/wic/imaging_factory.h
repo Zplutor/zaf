@@ -4,12 +4,12 @@
 #include <filesystem>
 #include <zaf/base/com_object.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/graphic/image/wic/bitmap.h>
-#include <zaf/graphic/image/wic/bitmap_decoder.h>
-#include <zaf/graphic/image/wic/bitmap_scaler.h>
-#include <zaf/graphic/image/wic/palette.h>
-#include <zaf/graphic/image/wic/pixel_format.h>
-#include <zaf/graphic/image/wic/stream.h>
+#include <zaf/graphic/wic/bitmap.h>
+#include <zaf/graphic/wic/bitmap_decoder.h>
+#include <zaf/graphic/wic/bitmap_scaler.h>
+#include <zaf/graphic/wic/palette.h>
+#include <zaf/graphic/wic/pixel_format.h>
+#include <zaf/graphic/wic/stream.h>
 
 namespace zaf {
 

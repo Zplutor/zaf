@@ -1,6 +1,6 @@
-#include <zaf/graphic/image/wic/bitmap.h>
+#include <zaf/graphic/wic/bitmap.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/graphic/image/wic/palette.h>
+#include <zaf/graphic/wic/palette.h>
 
 namespace zaf::wic {
 

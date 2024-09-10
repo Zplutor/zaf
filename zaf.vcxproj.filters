@@ -34,9 +34,6 @@
     <Filter Include="zaf\control\layout\internal">
       <UniqueIdentifier>{088ead32-06ab-409a-b21e-37aeb91334a3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\graphic\image">
-      <UniqueIdentifier>{ab9b298a-d82e-4aa0-8331-c0c22bc9ffff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\control\internal\image_box">
       <UniqueIdentifier>{6783574a-ea9b-4f6e-9dca-10fff2f4fdcd}</UniqueIdentifier>
     </Filter>
@@ -51,12 +48,6 @@
     </Filter>
     <Filter Include="zaf\base\registry">
       <UniqueIdentifier>{3a7441f4-3ab1-4236-afc5-24ba0fd93ca5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\graphic\image\wic">
-      <UniqueIdentifier>{34703fb0-a839-46c5-9f90-828e3ac139ef}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\graphic\image\internal">
-      <UniqueIdentifier>{51bfb241-b80c-4614-99dc-95b565164fff}</UniqueIdentifier>
     </Filter>
     <Filter Include="zaf\resource">
       <UniqueIdentifier>{cfdf8476-7527-420b-8c7a-f1b8da7ade39}</UniqueIdentifier>
@@ -202,6 +193,9 @@
     <Filter Include="zaf\internal\graphic">
       <UniqueIdentifier>{48107525-18aa-476b-a849-d9189954f57b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\wic">
+      <UniqueIdentifier>{bd9d3c5c-cbf5-4123-88dd-68415286d53b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -297,9 +291,6 @@
     <ClCompile Include="src\zaf\control\internal\image_box\gif_player.cpp">
       <Filter>zaf\control\internal\image_box</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\gif_metadata_querier.cpp">
-      <Filter>zaf\graphic\image</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\graphic\size.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
@@ -337,47 +328,17 @@
     <ClCompile Include="src\zaf\control\layout\internal\linear_layout_length_calculating.cpp">
       <Filter>zaf\control\layout\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\wic\bitmap_source.cpp">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\wic\bitmap.cpp">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\wic\pixel_format.cpp">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\wic\bitmap_decoder.cpp">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\wic\container_format.cpp">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\wic\bitmap_decode_frame.cpp">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\wic\palette.cpp">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\wic\imaging_factory.cpp">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\image_picker.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\image_box\image_drawing.cpp">
       <Filter>zaf\control\internal\image_box</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\image.cpp">
-      <Filter>zaf\graphic\image</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\resource\resource_factory.cpp">
       <Filter>zaf\resource</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp">
       <Filter>zaf\resource\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\internal\utility.cpp">
-      <Filter>zaf\graphic\image\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\base\error\com_error.cpp">
       <Filter>zaf\base\error</Filter>
@@ -1159,9 +1120,6 @@
     <ClCompile Include="src\zaf\graphic\frame_parser.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\image\uri_image_parser.cpp">
-      <Filter>zaf\graphic\image</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\graphic\point_parser.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
@@ -1284,6 +1242,42 @@
     </ClCompile>
     <ClCompile Include="src\zaf\internal\graphic\text_inline_object_bridge.cpp">
       <Filter>zaf\internal\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\wic\bitmap.cpp">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\wic\bitmap_decode_frame.cpp">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\wic\bitmap_decoder.cpp">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\wic\bitmap_source.cpp">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\wic\container_format.cpp">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\wic\imaging_factory.cpp">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\wic\palette.cpp">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\wic\pixel_format.cpp">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\graphic\utility.cpp">
+      <Filter>zaf\internal\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\gif_metadata_querier.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\image.cpp">
+      <Filter>zaf\graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\uri_image_parser.cpp">
+      <Filter>zaf\graphic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1446,9 +1440,6 @@
     <ClInclude Include="src\zaf\graphic\rounded_rect.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\gif_metadata_querier.h">
-      <Filter>zaf\graphic\image</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\internal\image_box\image_player.h">
       <Filter>zaf\control\internal\image_box</Filter>
     </ClInclude>
@@ -1543,45 +1534,6 @@
     <ClInclude Include="src\zaf\control\layout\internal\linear_layout_length_calculating.h">
       <Filter>zaf\control\layout\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\wic\bitmap_source.h">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\wic\bitmap.h">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\wic\bitmap_scaler.h">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\wic\stream.h">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\wic\pixel_format.h">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\wic\metadata_query_reader.h">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\wic\bitmap_decoder.h">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\wic\container_format.h">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\wic\bitmap_decode_frame.h">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\wic\palette.h">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\wic\imaging_factory.h">
-      <Filter>zaf\graphic\image\wic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\image.h">
-      <Filter>zaf\graphic\image</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\internal\wic_bitmap.h">
-      <Filter>zaf\graphic\image\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\image_picker.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
@@ -1599,9 +1551,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\resource\internal\uri_parsing.h">
       <Filter>zaf\resource\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\internal\utility.h">
-      <Filter>zaf\graphic\image\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\com_error.h">
       <Filter>zaf\base\error</Filter>
@@ -2704,9 +2653,6 @@
     <ClInclude Include="src\zaf\graphic\frame_parser.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\image\uri_image_parser.h">
-      <Filter>zaf\graphic\image</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\point_parser.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
@@ -2970,6 +2916,54 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\graphic\canvas_state.h">
       <Filter>zaf\internal\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\wic\bitmap.h">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\wic\bitmap_decode_frame.h">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\wic\bitmap_decoder.h">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\wic\bitmap_scaler.h">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\wic\bitmap_source.h">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\wic\container_format.h">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\wic\imaging_factory.h">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\wic\metadata_query_reader.h">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\wic\palette.h">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\wic\pixel_format.h">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\wic\stream.h">
+      <Filter>zaf\graphic\wic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\graphic\utility.h">
+      <Filter>zaf\internal\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\graphic\wic_bitmap.h">
+      <Filter>zaf\internal\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\gif_metadata_querier.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\image.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\uri_image_parser.h">
+      <Filter>zaf\graphic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
