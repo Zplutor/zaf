@@ -2872,7 +2872,7 @@
     <ClInclude Include="src\zaf\graphic\dwrite\text_inline_object.h">
       <Filter>zaf\graphic\dwrite</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\dwrite\text_inline_object_metrics.h">
+    <ClInclude Include="src\zaf\graphic\dwrite\inline_object_metrics.h">
       <Filter>zaf\graphic\dwrite</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\dwrite\text_layout.h">

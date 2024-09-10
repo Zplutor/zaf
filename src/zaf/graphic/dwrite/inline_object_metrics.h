@@ -5,9 +5,9 @@
 namespace zaf::dwrite {
 
 /**
-Contains properties describing the geometric measurement of an text inline object.
+Contains properties describing the geometric measurement of an inline object.
 */
-class TextInlineObjectMetrics : private DWRITE_INLINE_OBJECT_METRICS {
+class InlineObjectMetrics : private DWRITE_INLINE_OBJECT_METRICS {
 public:
     /**
     Gets the width of the object.
@@ -63,6 +63,6 @@ public:
     }
 };
 
-static_assert(sizeof(TextInlineObjectMetrics) == sizeof(DWRITE_INLINE_OBJECT_METRICS));
+static_assert(sizeof(InlineObjectMetrics) == sizeof(DWRITE_INLINE_OBJECT_METRICS));
 
 }

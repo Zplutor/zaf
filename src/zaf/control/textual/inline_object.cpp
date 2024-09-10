@@ -15,9 +15,9 @@ zaf::Size InlineObject::Size() const {
 }
 
 
-dwrite::TextInlineObjectMetrics InlineObject::GetMetrics() const {
+dwrite::InlineObjectMetrics InlineObject::GetMetrics() const {
 
-    dwrite::TextInlineObjectMetrics result;
+    dwrite::InlineObjectMetrics result;
     result.SetWidth(16);
     result.SetHeight(16);
     result.SetHeightAboveBaseline(16);

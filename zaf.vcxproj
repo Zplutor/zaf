@@ -735,7 +735,7 @@
     <ClInclude Include="src\zaf\graphic\dwrite\text_format.h" />
     <ClInclude Include="src\zaf\graphic\dwrite\text_format_properties.h" />
     <ClInclude Include="src\zaf\graphic\dwrite\text_inline_object.h" />
-    <ClInclude Include="src\zaf\graphic\dwrite\text_inline_object_metrics.h" />
+    <ClInclude Include="src\zaf\graphic\dwrite\inline_object_metrics.h" />
     <ClInclude Include="src\zaf\graphic\dwrite\text_layout.h" />
     <ClInclude Include="src\zaf\graphic\dwrite\text_metrics.h" />
     <ClInclude Include="src\zaf\graphic\dwrite\text_trimming.h" />

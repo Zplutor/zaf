@@ -63,9 +63,9 @@ void BeginRun(const zaf::BeginRunInfo& event_info);
 
 class MyInlineObject : public zaf::textual::InteractiveInlineObject {
 public:
-    zaf::dwrite::TextInlineObjectMetrics GetMetrics() const override {
+    zaf::dwrite::InlineObjectMetrics GetMetrics() const override {
 
-        zaf::dwrite::TextInlineObjectMetrics result;
+        zaf::dwrite::InlineObjectMetrics result;
         result.SetWidth(60);
         result.SetHeight(28);
         result.SetHeightAboveBaseline(22.4f);
