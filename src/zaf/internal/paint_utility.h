@@ -6,11 +6,13 @@
 #include <zaf/graphic/size.h>
 
 namespace zaf {
+namespace dwrite {
+class TextLayout;
+}
 
 class Canvas;
 class ClickableControl;
 class Rect;
-class TextLayout;
 class TextualControl;
 
 namespace internal {
@@ -21,7 +23,7 @@ constexpr float IconMargin = 5;
 void DrawTextWithIcon(
     Canvas& canvas, 
     const TextualControl& textual_control,
-    TextLayout& text_layout, 
+    dwrite::TextLayout& text_layout,
     const std::function<void(Canvas& canvas, const Rect& icon_rect)>& paint_icon_function);
 
 void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect);

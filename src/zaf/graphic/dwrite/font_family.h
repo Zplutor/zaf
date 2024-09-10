@@ -4,10 +4,10 @@
 #include <cstdint>
 #include <memory>
 #include <zaf/base/com_object.h>
-#include <zaf/graphic/font/font_face.h>
-#include <zaf/graphic/localized_strings.h>
+#include <zaf/graphic/dwrite/font_face.h>
+#include <zaf/graphic/dwrite/localized_strings.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 class FontCollection;
 

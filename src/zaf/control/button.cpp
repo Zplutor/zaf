@@ -29,8 +29,8 @@ void Button::Initialize() {
     __super::Initialize();
 
     SetBorder(Frame(1));
-    SetTextAlignment(TextAlignment::Center);
-    SetParagraphAlignment(ParagraphAlignment::Center);
+    SetTextAlignment(dwrite::TextAlignment::Center);
+    SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
 
     SetBackgroundColorPicker(ColorPicker([](const Control& control) {
 

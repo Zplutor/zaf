@@ -2,10 +2,10 @@
 
 #include <memory>
 #include <string>
-#include <zaf/graphic/font/font_style.h>
+#include <zaf/graphic/dwrite/font_style.h>
 #include <zaf/graphic/font/font_weight.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 class FontCollection;
 

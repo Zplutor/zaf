@@ -99,8 +99,8 @@ void Item::InitializeValueView() {
 std::shared_ptr<Label> Item::CreateLabel() {
 
     auto result = Create<Label>();
-    result->SetParagraphAlignment(ParagraphAlignment::Center);
-    result->SetTextTrimming(TextTrimmingGranularity::Character);
+    result->SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
+    result->SetTextTrimming(dwrite::TextTrimmingGranularity::Character);
     result->SetTextColorPicker(ColorPicker([this](const Control& control) {
     
         if (control.IsSelectedInContext()) {

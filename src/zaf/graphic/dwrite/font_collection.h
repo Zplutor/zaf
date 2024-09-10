@@ -4,10 +4,10 @@
 #include <memory>
 #include <string>
 #include <zaf/base/com_object.h>
-#include <zaf/graphic/font/font_family.h>
+#include <zaf/graphic/dwrite/font_family.h>
 #include <zaf/internal/enumerator.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 /**
  Encapsulates a set of fonts, such as the set of fonts installed on the system, or the set of fonts

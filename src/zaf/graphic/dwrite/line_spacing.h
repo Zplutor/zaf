@@ -2,7 +2,7 @@
 
 #include <dwrite.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 /**
 The method used for line spacing.

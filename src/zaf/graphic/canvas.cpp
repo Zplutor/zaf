@@ -6,9 +6,10 @@
 #include <zaf/graphic/d2d/rectangle_geometry.h>
 #include <zaf/graphic/d2d/rounded_rectangle_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
-#include <zaf/graphic/text/text_format.h>
+#include <zaf/graphic/dwrite/text_format.h>
 
 using namespace zaf::d2d;
+using namespace zaf::dwrite;
 
 namespace zaf {
 

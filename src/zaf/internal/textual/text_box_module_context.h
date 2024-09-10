@@ -2,7 +2,7 @@
 
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/text_box.h>
-#include <zaf/graphic/text/text_layout.h>
+#include <zaf/graphic/dwrite/text_layout.h>
 
 namespace zaf {
 namespace internal {
@@ -31,7 +31,7 @@ public:
         return owner_->TextModel();
     }
 
-    TextLayout GetTextLayout() const {
+    dwrite::TextLayout GetTextLayout() const {
         return owner_->GetTextLayout();
     }
 

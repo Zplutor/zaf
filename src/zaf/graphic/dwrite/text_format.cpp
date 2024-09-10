@@ -1,7 +1,7 @@
-#include <zaf/graphic/text/text_format.h>
+#include <zaf/graphic/dwrite/text_format.h>
 #include <zaf/base/error/com_error.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 TextTrimming TextFormat::GetTextTrimming() const {
 

@@ -4,7 +4,7 @@
 #include <wincodec.h>
 #include <memory>
 #include <zaf/base/direct2d.h>
-#include <zaf/graphic/font/font_collection.h>
+#include <zaf/graphic/dwrite/font_collection.h>
 #include <zaf/graphic/d2d/ellipse_geometry.h>
 #include <zaf/graphic/d2d/path_geometry.h>
 #include <zaf/graphic/d2d/rectangle_geometry.h>
@@ -14,17 +14,20 @@
 #include <zaf/graphic/d2d/renderer_properties.h>
 #include <zaf/graphic/d2d/window_renderer.h>
 #include <zaf/graphic/d2d/stroke.h>
-#include <zaf/graphic/text/text_inline_object.h>
-#include <zaf/graphic/text/text_layout.h>
+#include <zaf/graphic/dwrite/text_inline_object.h>
+#include <zaf/graphic/dwrite/text_layout.h>
 
 namespace zaf {
 namespace d2d {
 class StrokeProperties;
 }
 
+namespace dwrite {
+class TextFormatProperties;
+}
+
 class Application;
 class Rect;
-class TextFormatProperties;
 class TransformMatrix;
 
 /**
@@ -90,7 +93,7 @@ public:
      @return 
           Return nullptr if failed.
      */
-    TextFormat CreateTextFormat(const TextFormatProperties& properties);
+    dwrite::TextFormat CreateTextFormat(const dwrite::TextFormatProperties& properties);
 
     /**
     Create a text layout.
@@ -98,9 +101,9 @@ public:
     @throw zaf::Error 
         Thrown if fail.
     */
-    TextLayout CreateTextLayout(
+    dwrite::TextLayout CreateTextLayout(
         std::wstring_view text, 
-        const TextFormat& text_format,
+        const dwrite::TextFormat& text_format,
         const zaf::Size& layout_size);
 
     /**
@@ -109,9 +112,9 @@ public:
      @return 
          Return nullptr if failed.
      */
-    FontCollection GetSystemFontCollection();
+    dwrite::FontCollection GetSystemFontCollection();
 
-    TextInlineObject CreateEllipsisTrimmingSign(const TextFormat& text_format);
+    dwrite::TextInlineObject CreateEllipsisTrimmingSign(const dwrite::TextFormat& text_format);
 
     /**
      Get the underlying ID2D1Factory instance.

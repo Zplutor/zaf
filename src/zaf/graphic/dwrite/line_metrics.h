@@ -3,7 +3,7 @@
 #include <dwrite.h>
 #include <cstdint>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 /**
  Contains information about a formatted line of text.

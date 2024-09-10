@@ -54,7 +54,7 @@ void ComboBox::Initialize() {
     SetBorder(Frame{ 1 });
     SetTextInset(Frame{ 3, 1, 1, 1 });
     SetDropDownButtonColor(Color::Black());
-    SetParagraphAlignment(ParagraphAlignment::Center);
+    SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
 
     SetBackgroundColorPicker(ColorPicker([](const Control& control) {
 
@@ -121,7 +121,7 @@ void ComboBox::InitializeEditBox() {
     AddChild(edit_box_);
     edit_box_->SetIsVisible(IsEditable());
     edit_box_->SetBorder(Frame(0));
-    edit_box_->SetParagraphAlignment(ParagraphAlignment::Center);
+    edit_box_->SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
     edit_box_->SetIsMultiline(false);
     edit_box_->SetAcceptReturn(false);
 

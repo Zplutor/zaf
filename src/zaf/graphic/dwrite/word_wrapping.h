@@ -4,7 +4,7 @@
 #include <optional>
 #include <zaf/object/enum_support.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 /**
  Specifies the word wrapping to be used in a particular multiline paragraph.

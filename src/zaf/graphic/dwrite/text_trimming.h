@@ -2,11 +2,11 @@
 
 #include <dwrite.h>
 #include <cstdint>
-#include <zaf/graphic/text/text_inline_object.h>
+#include <zaf/graphic/dwrite/text_inline_object.h>
 #include <zaf/object/enum_support.h>
 #include <zaf/object/object.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 enum class TextTrimmingGranularity {
     None = DWRITE_TRIMMING_GRANULARITY_NONE,

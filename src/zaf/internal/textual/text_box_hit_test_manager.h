@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/graphic/text/hit_test_metrics.h>
+#include <zaf/graphic/dwrite/hit_test_metrics.h>
 #include <zaf/internal/textual/text_box_module.h>
 #include <zaf/internal/textual/text_model.h>
 
@@ -14,7 +14,7 @@ public:
     class HitTestPositionResult {
     public:
         Point hit_test_position;
-        HitTestPointMetrics metrics;
+        dwrite::HitTestPointMetrics metrics;
     };
 
 public:

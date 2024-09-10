@@ -102,7 +102,7 @@ static std::shared_ptr<zaf::Control> CreateColorListControl() {
 
         auto label = zaf::Create<zaf::Label>();
         label->SetText(each_item.name);
-        label->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
+        label->SetParagraphAlignment(zaf::dwrite::ParagraphAlignment::Center);
 
         auto color_control = zaf::Create<zaf::Control>();
         COLORREF color_rgb = GetSysColor(each_item.index);

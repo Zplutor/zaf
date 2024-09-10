@@ -10,7 +10,7 @@ void SpinEdit::Initialize() {
 
     SetPadding(zaf::Frame{ 4, 0, 0, 0 });
     SetBorder({});
-    SetParagraphAlignment(ParagraphAlignment::Center);
+    SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
     SetTextValidator(GetNumberTextValidator());
 }
 

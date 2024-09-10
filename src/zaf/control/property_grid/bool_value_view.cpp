@@ -9,7 +9,7 @@ void BoolValueView::Initialize() {
     __super::Initialize();
 
     check_box_ = Create<CheckBox>();
-    check_box_->SetParagraphAlignment(ParagraphAlignment::Center);
+    check_box_->SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
 
     Subscriptions() += check_box_->FocusGainedEvent().Subscribe(std::bind([this]() {
     

@@ -1,7 +1,7 @@
-#include <zaf/graphic/font/font_face.h>
-#include <zaf/graphic/font/font_family.h>
+#include <zaf/graphic/dwrite/font_face.h>
+#include <zaf/graphic/dwrite/font_family.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 const FontFamily FontFace::GetFontFamily() const {
 

@@ -5,7 +5,7 @@
 #include <string>
 #include <zaf/object/enum_support.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 /**
  Specifies the alignment of paragraph text along the reading direction axis,

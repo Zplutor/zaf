@@ -7,14 +7,16 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/text/internal/text_inline_object_bridge.h>
 #include <zaf/graphic/text/internal/text_inline_object_painter.h>
-#include <zaf/graphic/text/text_format_properties.h>
+#include <zaf/graphic/dwrite/text_format_properties.h>
 #include <zaf/internal/theme.h>
+
+using namespace zaf::dwrite;
 
 namespace zaf {
 namespace {
 
 void ReviseTextTrimmingSign(TextTrimming& text_trimming, const TextFormat& text_format) {
-    if (text_trimming.Granularity() != TextTrimmingGranularity::None) {
+    if (text_trimming.Granularity() != dwrite::TextTrimmingGranularity::None) {
         if (!text_trimming.Sign()) {
             text_trimming.SetSign(
                 GraphicFactory::Instance().CreateEllipsisTrimmingSign(text_format));
@@ -398,11 +400,11 @@ void TextualControl::SetInlineObjectInRange(
 }
 
 
-zaf::TextAlignment TextualControl::TextAlignment() const {
+dwrite::TextAlignment TextualControl::TextAlignment() const {
     return text_alignment_;
 }
 
-void TextualControl::SetTextAlignment(zaf::TextAlignment alignment) {
+void TextualControl::SetTextAlignment(dwrite::TextAlignment alignment) {
 
     text_alignment_ = alignment;
 
@@ -414,11 +416,11 @@ void TextualControl::SetTextAlignment(zaf::TextAlignment alignment) {
 }
 
 
-zaf::ParagraphAlignment TextualControl::ParagraphAlignment() const {
+dwrite::ParagraphAlignment TextualControl::ParagraphAlignment() const {
     return paragraph_alignment_;
 }
 
-void TextualControl::SetParagraphAlignment(zaf::ParagraphAlignment alignment) {
+void TextualControl::SetParagraphAlignment(dwrite::ParagraphAlignment alignment) {
 
     paragraph_alignment_ = alignment;
 
@@ -430,11 +432,11 @@ void TextualControl::SetParagraphAlignment(zaf::ParagraphAlignment alignment) {
 }
 
 
-WordWrapping TextualControl::WordWrapping() const {
+dwrite::WordWrapping TextualControl::WordWrapping() const {
     return word_wrapping_;
 }
 
-void TextualControl::SetWordWrapping(zaf::WordWrapping word_wrapping) {
+void TextualControl::SetWordWrapping(dwrite::WordWrapping word_wrapping) {
 
     word_wrapping_ = word_wrapping;
 
@@ -451,7 +453,7 @@ TextTrimming TextualControl::TextTrimming() const {
     return text_trimming_;
 }
 
-void TextualControl::SetTextTrimming(const zaf::TextTrimming& text_trimming) {
+void TextualControl::SetTextTrimming(const dwrite::TextTrimming& text_trimming) {
 
     text_trimming_ = text_trimming;
 
@@ -465,11 +467,11 @@ void TextualControl::SetTextTrimming(const zaf::TextTrimming& text_trimming) {
 }
 
 
-zaf::LineSpacing TextualControl::LineSpacing() const {
+dwrite::LineSpacing TextualControl::LineSpacing() const {
     return line_spacing_;
 }
 
-void TextualControl::SetLineSpacing(const zaf::LineSpacing& line_spacing) {
+void TextualControl::SetLineSpacing(const dwrite::LineSpacing& line_spacing) {
 
     line_spacing_ = line_spacing;
 

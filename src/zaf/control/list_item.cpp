@@ -12,7 +12,7 @@ void ListItem::Initialize() {
 
     __super::Initialize();
 
-    SetParagraphAlignment(ParagraphAlignment::Center);
+    SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
     SetPadding(Frame(2, 0, 2, 0));
 
     SetTextColorPicker(ColorPicker([](const Control& control) {

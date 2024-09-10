@@ -16,6 +16,8 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/window/window.h>
 
+using namespace zaf::dwrite;
+
 namespace zaf {
 
 ZAF_OBJECT_IMPL(TextBox);
@@ -107,7 +109,7 @@ void TextBox::UpdateTextRectOnLayout() {
     update_single_dimension(
         content_size.width, 
         text_size.width,
-        allow_horizontal_scroll_ && (WordWrapping() == WordWrapping::NoWrap),
+        allow_horizontal_scroll_ && (WordWrapping() == dwrite::WordWrapping::NoWrap),
         text_rect_.position.x,
         text_rect_.size.width);
 

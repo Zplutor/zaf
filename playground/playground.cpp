@@ -63,9 +63,9 @@ void BeginRun(const zaf::BeginRunInfo& event_info);
 
 class MyInlineObject : public zaf::textual::InteractiveInlineObject {
 public:
-    zaf::TextInlineObjectMetrics GetMetrics() const override {
+    zaf::dwrite::TextInlineObjectMetrics GetMetrics() const override {
 
-        zaf::TextInlineObjectMetrics result;
+        zaf::dwrite::TextInlineObjectMetrics result;
         result.SetWidth(60);
         result.SetHeight(28);
         result.SetHeightAboveBaseline(22.4f);
@@ -91,7 +91,7 @@ protected:
         box->SetFontSize(22);
         box->SetTextColor(zaf::Color::Red());
         box->SetText(L"This is a text box.");
-        box->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
+        box->SetParagraphAlignment(zaf::dwrite::ParagraphAlignment::Center);
         box->SetFixedHeight(60);
 
         auto size = box->CalculatePreferredSize();

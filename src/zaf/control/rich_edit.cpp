@@ -116,8 +116,8 @@ void RichEdit::Initialize() {
 
     //Initialize CHARFORMATW and PARAFORMAT.
     SetFont(Font::Default());
-    SetTextAlignment(TextAlignment::Leading);
-    SetParagraphAlignment(ParagraphAlignment::Near);
+    SetTextAlignment(dwrite::TextAlignment::Leading);
+    SetParagraphAlignment(dwrite::ParagraphAlignment::Near);
 
     SetBorderColor(Color::Black());
 
@@ -345,7 +345,7 @@ void RichEdit::PaintEmbeddedObjects(Canvas& canvas, const zaf::Rect& dirty_rect)
 float RichEdit::GetContentVerticalOffset() const {
 
     auto paragraph_alignment = ParagraphAlignment();
-    if (paragraph_alignment == ParagraphAlignment::Near) {
+    if (paragraph_alignment == dwrite::ParagraphAlignment::Near) {
         return 0;
     }
 
@@ -374,10 +374,10 @@ float RichEdit::GetContentVerticalOffset() const {
         cached_text_height_ = preferred_size.height;
     }
 
-    if (paragraph_alignment == ParagraphAlignment::Center) {
+    if (paragraph_alignment == dwrite::ParagraphAlignment::Center) {
         return (ContentSize().height - *cached_text_height_) / 2;
     }
-    else if (paragraph_alignment == ParagraphAlignment::Far) {
+    else if (paragraph_alignment == dwrite::ParagraphAlignment::Far) {
         return ContentSize().height - *cached_text_height_;
     }
     else {
@@ -586,33 +586,33 @@ void RichEdit::SetFontWeight(zaf::FontWeight weight) {
 }
 
 
-TextAlignment RichEdit::TextAlignment() const {
+dwrite::TextAlignment RichEdit::TextAlignment() const {
 
     switch (paragraph_format_.wAlignment) {
     case PFA_CENTER:
-        return TextAlignment::Center;
+        return dwrite::TextAlignment::Center;
     case PFA_LEFT:
-        return TextAlignment::Leading;
+        return dwrite::TextAlignment::Leading;
     case PFA_RIGHT:
-        return TextAlignment::Tailing;
+        return dwrite::TextAlignment::Tailing;
     default:
-        return TextAlignment::Leading;
+        return dwrite::TextAlignment::Leading;
     }
 }
 
 
-void RichEdit::SetTextAlignment(zaf::TextAlignment alignment) {
+void RichEdit::SetTextAlignment(zaf::dwrite::TextAlignment alignment) {
 
     paragraph_format_.dwMask |= PFM_ALIGNMENT;
 
     switch (alignment) {
-    case TextAlignment::Center:
+    case dwrite::TextAlignment::Center:
         paragraph_format_.wAlignment = PFA_CENTER;
         break;
-    case TextAlignment::Leading:
+    case dwrite::TextAlignment::Leading:
         paragraph_format_.wAlignment = PFA_LEFT;
         break;
-    case TextAlignment::Tailing:
+    case dwrite::TextAlignment::Tailing:
         paragraph_format_.wAlignment = PFA_RIGHT;
         break;
     default:
@@ -628,12 +628,12 @@ void RichEdit::SetTextAlignment(zaf::TextAlignment alignment) {
 }
 
 
-ParagraphAlignment RichEdit::ParagraphAlignment() const {
+dwrite::ParagraphAlignment RichEdit::ParagraphAlignment() const {
     return paragraph_alignment_;
 }
 
 
-void RichEdit::SetParagraphAlignment(zaf::ParagraphAlignment alignment) {
+void RichEdit::SetParagraphAlignment(dwrite::ParagraphAlignment alignment) {
 
     paragraph_alignment_ = alignment;
 
@@ -642,15 +642,18 @@ void RichEdit::SetParagraphAlignment(zaf::ParagraphAlignment alignment) {
 }
 
 
-WordWrapping RichEdit::WordWrapping() const {
-    return HasPropertyBit(TXTBIT_WORDWRAP) ? WordWrapping::Wrap : WordWrapping::NoWrap;
+dwrite::WordWrapping RichEdit::WordWrapping() const {
+    return 
+        HasPropertyBit(TXTBIT_WORDWRAP) ? 
+        dwrite::WordWrapping::Wrap : 
+        dwrite::WordWrapping::NoWrap;
 }
 
 
-void RichEdit::SetWordWrapping(zaf::WordWrapping word_wrapping) {
+void RichEdit::SetWordWrapping(dwrite::WordWrapping word_wrapping) {
 
     ResetCachedTextHeight();
-    ChangePropertyBit(TXTBIT_WORDWRAP, word_wrapping != WordWrapping::NoWrap);
+    ChangePropertyBit(TXTBIT_WORDWRAP, word_wrapping != dwrite::WordWrapping::NoWrap);
 }
 
 

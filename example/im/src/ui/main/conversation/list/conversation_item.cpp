@@ -7,7 +7,7 @@
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/d2d/stroke_properties.h>
-#include <zaf/graphic/text/text_format_properties.h>
+#include <zaf/graphic/dwrite/text_format_properties.h>
 #include "logic/service.h"
 #include "ui/main/conversation/common_definition.h"
 #include "ui/main/conversation/common/title_generating.h"
@@ -100,7 +100,7 @@ void ConversationItem::InitializeTitleLabel() {
     font.family_name = L"Î¢ÈíÑÅºÚ";
     font.size = 14;
     title_label_->SetFont(font);
-    title_label_->SetTextTrimming(zaf::TextTrimmingGranularity::Character);
+    title_label_->SetTextTrimming(zaf::dwrite::TextTrimmingGranularity::Character);
 
     AddChild(title_label_);
 }
@@ -124,7 +124,7 @@ void ConversationItem::InitializeDigestLabel() {
     font.family_name = L"Î¢ÈíÑÅºÚ";
     font.size = 12;
     digest_label_->SetFont(font);
-    digest_label_->SetTextTrimming(zaf::TextTrimmingGranularity::Character);
+    digest_label_->SetTextTrimming(zaf::dwrite::TextTrimmingGranularity::Character);
 
     AddChild(digest_label_);
 }
@@ -133,7 +133,7 @@ void ConversationItem::InitializeDigestLabel() {
 void ConversationItem::InitializeTimeLabel() {
 
     time_label_ = zaf::Create<zaf::Label>();
-    time_label_->SetTextAlignment(zaf::TextAlignment::Tailing);
+    time_label_->SetTextAlignment(zaf::dwrite::TextAlignment::Tailing);
 
     time_label_->SetTextColorPicker(zaf::ColorPicker([](const zaf::Control& control) {
         const auto& label = zaf::As<zaf::Label>(control);
@@ -372,7 +372,7 @@ void ConversationItem::UnreadCountBubble::PaintNormalBubble(zaf::Canvas& canvas)
     canvas.SetBrushWithColor(zaf::Color::FromRGB(0xFF6251));
     canvas.DrawRoundedRectangle(rounded_rect);
 
-    zaf::TextFormatProperties text_format_properties;
+    zaf::dwrite::TextFormatProperties text_format_properties;
     text_format_properties.font_family_name = L"Î¢ÈíÑÅºÚ";
     text_format_properties.font_size = 10;
     text_format_properties.font_weight = zaf::FontWeight::Regular;
@@ -381,9 +381,9 @@ void ConversationItem::UnreadCountBubble::PaintNormalBubble(zaf::Canvas& canvas)
         return;
     }
 
-    text_format.SetTextAlignment(zaf::TextAlignment::Center);
-    text_format.SetParagraphAlignment(zaf::ParagraphAlignment::Center);
-    text_format.SetWordWrapping(zaf::WordWrapping::NoWrap);
+    text_format.SetTextAlignment(zaf::dwrite::TextAlignment::Center);
+    text_format.SetParagraphAlignment(zaf::dwrite::ParagraphAlignment::Center);
+    text_format.SetWordWrapping(zaf::dwrite::WordWrapping::NoWrap);
 
     canvas.SetBrushWithColor(zaf::Color::White());
     canvas.DrawTextFormat(unread_count_text, text_format, rounded_rect.rect);

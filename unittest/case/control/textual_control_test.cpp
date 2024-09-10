@@ -328,7 +328,7 @@ TEST(TextualControlTest, AutoSizeOnWordWrappingChanged) {
     auto old_height = control->Height();
 
     //After setting word wrapping, the fixed height should be set to multi-line height.
-    control->SetWordWrapping(zaf::WordWrapping::Character);
+    control->SetWordWrapping(zaf::dwrite::WordWrapping::Character);
     ASSERT_NE(control->Height(), old_height);
     ASSERT_EQ(control->MinHeight(), control->Height());
     ASSERT_EQ(control->MaxHeight(), control->Height());
@@ -339,7 +339,7 @@ TEST(TextualControlTest, AutoSizeOnSizeChanged) {
 
     auto control = zaf::Create<zaf::TextualControl>();
     control->SetText(L"01234567890123456789");
-    control->SetWordWrapping(zaf::WordWrapping::Character);
+    control->SetWordWrapping(zaf::dwrite::WordWrapping::Character);
     control->SetWidth(10);
     control->SetAutoHeight(true);
 

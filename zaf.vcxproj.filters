@@ -208,6 +208,9 @@
     <Filter Include="zaf\graphic\d2d">
       <UniqueIdentifier>{f24567d6-c5af-456c-a1f3-334971ed5ecd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\dwrite">
+      <UniqueIdentifier>{4bef1a07-65e4-4e72-90a2-4ae7c328856f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -248,15 +251,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\check_box.cpp">
       <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\font\font_collection.cpp">
-      <Filter>zaf\graphic\font</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\font\font_face.cpp">
-      <Filter>zaf\graphic\font</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\text\text_layout.cpp">
-      <Filter>zaf\graphic\text</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\radio_button.cpp">
       <Filter>zaf\control</Filter>
@@ -309,12 +303,6 @@
     <ClCompile Include="src\zaf\control\split_control.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\font\font_family.cpp">
-      <Filter>zaf\graphic\font</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\localized_strings.cpp">
-      <Filter>zaf\graphic</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\image_box.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
@@ -323,9 +311,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\image\gif_metadata_querier.cpp">
       <Filter>zaf\graphic\image</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\text\text_format.cpp">
-      <Filter>zaf\graphic\text</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\size.cpp">
       <Filter>zaf\graphic</Filter>
@@ -346,9 +331,6 @@
       <Filter>zaf\base\string</Filter>
     </ClCompile>
     <ClCompile Include="src\precompiled.cpp" />
-    <ClCompile Include="src\zaf\graphic\text\text_trimming.cpp">
-      <Filter>zaf\graphic\text</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\window\message\internal\mouse_position_conversion.cpp">
       <Filter>zaf\window\message\internal</Filter>
     </ClCompile>
@@ -633,15 +615,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\check_state.cpp">
       <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\text\text_alignment.cpp">
-      <Filter>zaf\graphic\text</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\text\paragraph_alignment.cpp">
-      <Filter>zaf\graphic\text</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\text\word_wrapping.cpp">
-      <Filter>zaf\graphic\text</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\window\initial_rect_style.cpp">
       <Filter>zaf\window</Filter>
@@ -994,9 +967,6 @@
     <ClCompile Include="src\zaf\crypto\sha.cpp">
       <Filter>zaf\crypto</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\font\font_style.cpp">
-      <Filter>zaf\graphic\font</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\subject\inner_replay_subject.cpp">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClCompile>
@@ -1291,6 +1261,39 @@
     <ClCompile Include="src\zaf\graphic\d2d\render_bitmap.cpp">
       <Filter>zaf\graphic\d2d</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\dwrite\font_collection.cpp">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\dwrite\font_face.cpp">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\dwrite\font_family.cpp">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\dwrite\font_style.cpp">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\dwrite\localized_strings.cpp">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\dwrite\paragraph_alignment.cpp">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\dwrite\text_alignment.cpp">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\dwrite\text_format.cpp">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\dwrite\text_layout.cpp">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\dwrite\text_trimming.cpp">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\dwrite\word_wrapping.cpp">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1341,50 +1344,14 @@
     <ClInclude Include="src\zaf\control\anchor.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\text_format.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\text_alignment.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\paragraph_alignment.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\word_wrapping.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\text_format_properties.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\check_state.h">
       <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\font\font_collection.h">
-      <Filter>zaf\graphic\font</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\font\font_family.h">
-      <Filter>zaf\graphic\font</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\font\font_style.h">
-      <Filter>zaf\graphic\font</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\font\font_weight.h">
       <Filter>zaf\graphic\font</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\font\font.h">
       <Filter>zaf\graphic\font</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\font\font_face.h">
-      <Filter>zaf\graphic\font</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\text_layout.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\line_metrics.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\text_metrics.h">
-      <Filter>zaf\graphic\text</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\radio_button.h">
       <Filter>zaf\control</Filter>
@@ -1482,9 +1449,6 @@
     <ClInclude Include="src\zaf\base\relation_operator.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\localized_strings.h">
-      <Filter>zaf\graphic</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\internal\enumerator.h">
       <Filter>zaf\internal</Filter>
     </ClInclude>
@@ -1508,12 +1472,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h">
       <Filter>zaf\control\internal\image_box</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\text_inline_object.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\text_trimming.h">
-      <Filter>zaf\graphic\text</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\number.h">
       <Filter>zaf\base</Filter>
@@ -2419,9 +2377,6 @@
     <ClInclude Include="src\zaf\base\range.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\hit_test_metrics.h">
-      <Filter>zaf\graphic\text</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\base\auto_reset.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
@@ -2454,9 +2409,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\crypto\sha.h">
       <Filter>zaf\crypto</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\line_spacing.h">
-      <Filter>zaf\graphic\text</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subject\base_subject.h">
       <Filter>zaf\rx\internal\subject</Filter>
@@ -2553,9 +2505,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_painter.h">
       <Filter>zaf\graphic\text\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\text_inline_object_metrics.h">
-      <Filter>zaf\graphic\text</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\rich_edit\rich_edit_events.h">
       <Filter>zaf\control\rich_edit</Filter>
@@ -2973,6 +2922,60 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\d2d\render_bitmap.h">
       <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\font_collection.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\font_face.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\font_family.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\font_style.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\localized_strings.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\hit_test_metrics.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\line_metrics.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\line_spacing.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\paragraph_alignment.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\text_alignment.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\text_format.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\text_format_properties.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\text_inline_object.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\text_inline_object_metrics.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\text_layout.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\text_metrics.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\text_trimming.h">
+      <Filter>zaf\graphic\dwrite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\dwrite\word_wrapping.h">
+      <Filter>zaf\graphic\dwrite</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

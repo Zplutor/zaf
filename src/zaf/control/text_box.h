@@ -7,7 +7,7 @@
 
 #include <zaf/base/range.h>
 #include <zaf/control/self_scroll_control.h>
-#include <zaf/graphic/text/text_layout.h>
+#include <zaf/graphic/dwrite/text_layout.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/control/textual/copying_info.h>
 #include <zaf/control/textual/pasting_info.h>
@@ -389,7 +389,7 @@ protected:
     void PaintTextBack(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
-        const TextLayout& text_layout,
+        const dwrite::TextLayout& text_layout,
         const zaf::Rect& layout_rect) const override;
     void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
@@ -423,7 +423,7 @@ private:
     void PaintSelection(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
-        const TextLayout& text_layout,
+        const dwrite::TextLayout& text_layout,
         const zaf::Rect& layout_rect) const;
 
     void UpdateTextRectOnLayout();

@@ -3,7 +3,7 @@
 #include <dwrite.h>
 #include <zaf/graphic/rect.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 class HitTestMetrics : private DWRITE_HIT_TEST_METRICS {
 public:

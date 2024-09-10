@@ -1,8 +1,8 @@
-#include <zaf/graphic/text/text_layout.h>
+#include <zaf/graphic/dwrite/text_layout.h>
 #include <memory>
 #include <zaf/base/error/com_error.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 std::wstring TextLayout::GetFontFamilyName(std::size_t position, Range* range) const {
 

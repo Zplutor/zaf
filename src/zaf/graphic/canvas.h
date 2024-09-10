@@ -182,22 +182,28 @@ public:
         const d2d::Brush& brush,
         const d2d::Stroke& stroke);
 
-    void DrawTextFormat(const std::wstring& text, const TextFormat& text_format, const Rect& rect);
     void DrawTextFormat(
         const std::wstring& text,
-        const TextFormat& text_format,
+        const dwrite::TextFormat& text_format, 
+        const Rect& rect);
+    void DrawTextFormat(
+        const std::wstring& text,
+        const dwrite::TextFormat& text_format,
         const Rect& rect,
         const Color& color);
     void DrawTextFormat(
         const std::wstring& text, 
-        const TextFormat& text_format, 
+        const dwrite::TextFormat& text_format,
         const Rect& rect,
         const d2d::Brush& brush);
 
-    void DrawTextLayout(const TextLayout& text_layout, const Point& position);
-    void DrawTextLayout(const TextLayout& text_layout, const Point& position, const Color& color);
+    void DrawTextLayout(const dwrite::TextLayout& text_layout, const Point& position);
     void DrawTextLayout(
-        const TextLayout& text_layout, 
+        const dwrite::TextLayout& text_layout,
+        const Point& position, 
+        const Color& color);
+    void DrawTextLayout(
+        const dwrite::TextLayout& text_layout,
         const Point& position, 
         const d2d::Brush& brush);
 

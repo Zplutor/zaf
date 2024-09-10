@@ -26,9 +26,9 @@ void MenuItem::Initialize() {
 
     SetFixedHeight(30);
     SetPadding(Frame{ 8, 8, 8, 8 });
-    SetTextAlignment(TextAlignment::Left);
-    SetParagraphAlignment(ParagraphAlignment::Center);
-    SetTextTrimming(TextTrimmingGranularity::Word);
+    SetTextAlignment(dwrite::TextAlignment::Left);
+    SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
+    SetTextTrimming(dwrite::TextTrimmingGranularity::Word);
 }
 
 

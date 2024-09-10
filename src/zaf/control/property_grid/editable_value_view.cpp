@@ -12,7 +12,7 @@ void EditableValueView::Initialize() {
     rich_edit_ = Create<RichEdit>();
     rich_edit_->SetBorder(Frame{});
     rich_edit_->SetBackgroundColor(Color::Transparent());
-    rich_edit_->SetParagraphAlignment(ParagraphAlignment::Center);
+    rich_edit_->SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
     rich_edit_->SetAllowBeep(false);
 
     Subscriptions() += rich_edit_->FocusGainedEvent().Subscribe(std::bind([this]() {

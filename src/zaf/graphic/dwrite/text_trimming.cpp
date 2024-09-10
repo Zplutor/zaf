@@ -1,6 +1,6 @@
-#include <zaf/graphic/text/text_trimming.h>
+#include <zaf/graphic/dwrite/text_trimming.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 ZAF_ENUM_IMPL(TextTrimmingGranularity);
 ZAF_OBJECT_IMPL(TextTrimming);

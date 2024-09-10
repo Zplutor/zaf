@@ -9,7 +9,7 @@ void MemberItem::Initialize() {
 
     SetPadding(zaf::Frame(10, 0, 0, 0));
     SetTextColor(zaf::Color::Black());
-    SetParagraphAlignment(zaf::ParagraphAlignment::Center);
+    SetParagraphAlignment(zaf::dwrite::ParagraphAlignment::Center);
 
     SetBackgroundColorPicker(zaf::ColorPicker([](const zaf::Control& control) {
     

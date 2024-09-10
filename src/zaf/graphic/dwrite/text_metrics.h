@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 /**
  Contains the metrics associated with text after layout.

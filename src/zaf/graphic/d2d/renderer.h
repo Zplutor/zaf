@@ -21,8 +21,8 @@
 #include <zaf/graphic/d2d/render_bitmap.h>
 #include <zaf/graphic/d2d/antialias_mode.h>
 #include <zaf/graphic/d2d/compatible_renderer_properties.h>
-#include <zaf/graphic/text/text_format.h>
-#include <zaf/graphic/text/text_layout.h>
+#include <zaf/graphic/dwrite/text_format.h>
+#include <zaf/graphic/dwrite/text_layout.h>
 
 namespace zaf::d2d {
 
@@ -164,7 +164,7 @@ public:
 
     void DrawTextFormat(
         const std::wstring& text,
-        const TextFormat& text_format,
+        const dwrite::TextFormat& text_format,
         const Rect& rect,
         const Brush& brush) {
 
@@ -177,7 +177,7 @@ public:
     }
 
     void DrawTextLayout(
-        const TextLayout& text_layout,
+        const dwrite::TextLayout& text_layout,
         const Point& position,
         const Brush& brush) {
 

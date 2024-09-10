@@ -4,9 +4,9 @@
 #include <cstdint>
 #include <memory>
 #include <zaf/base/com_object.h>
-#include <zaf/graphic/font/font_style.h>
+#include <zaf/graphic/dwrite/font_style.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 class FontFamily;
 

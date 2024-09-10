@@ -1,7 +1,7 @@
-#include <zaf/graphic/localized_strings.h>
+#include <zaf/graphic/dwrite/localized_strings.h>
 #include <zaf/base/error/com_error.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 std::wstring LocalizedStrings::GetLocaleName(std::size_t index) const {
 

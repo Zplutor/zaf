@@ -57,14 +57,14 @@ public:
     FontWeight FontWeight() const;
     void SetFontWeight(zaf::FontWeight weight);
 
-    TextAlignment TextAlignment() const;
-    void SetTextAlignment(zaf::TextAlignment alignment);
+    dwrite::TextAlignment TextAlignment() const;
+    void SetTextAlignment(dwrite::TextAlignment alignment);
 
-    ParagraphAlignment ParagraphAlignment() const;
-    void SetParagraphAlignment(zaf::ParagraphAlignment alignment);
+    dwrite::ParagraphAlignment ParagraphAlignment() const;
+    void SetParagraphAlignment(dwrite::ParagraphAlignment alignment);
 
-    WordWrapping WordWrapping() const;
-    void SetWordWrapping(zaf::WordWrapping word_wrapping);
+    dwrite::WordWrapping WordWrapping() const;
+    void SetWordWrapping(dwrite::WordWrapping word_wrapping);
 
     Color TextColor() const;
     void SetTextColor(const Color& color);
@@ -422,7 +422,7 @@ private:
     DWORD property_bits_;
     CHARFORMATW character_format_;
     PARAFORMAT paragraph_format_;
-    zaf::ParagraphAlignment paragraph_alignment_{ zaf::ParagraphAlignment::Near };
+    dwrite::ParagraphAlignment paragraph_alignment_{ dwrite::ParagraphAlignment::Near };
     DWORD scroll_bar_property_;
     mutable std::optional<float> cached_text_height_;
     internal::ColorField text_color_field_;

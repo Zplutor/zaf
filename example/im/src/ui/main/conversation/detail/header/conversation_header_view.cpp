@@ -14,9 +14,9 @@ void ConversationHeaderView::Initialize() {
     SetLayouter(zaf::Create<zaf::HorizontalLayouter>());
 
     title_label_ = zaf::Create<zaf::Label>();
-    title_label_->SetTextAlignment(zaf::TextAlignment::Leading);
-    title_label_->SetParagraphAlignment(zaf::ParagraphAlignment::Center);
-    title_label_->SetTextTrimming(zaf::TextTrimmingGranularity::Character);
+    title_label_->SetTextAlignment(zaf::dwrite::TextAlignment::Leading);
+    title_label_->SetParagraphAlignment(zaf::dwrite::ParagraphAlignment::Center);
+    title_label_->SetTextTrimming(zaf::dwrite::TextTrimmingGranularity::Character);
     AddChild(title_label_);
 }
 

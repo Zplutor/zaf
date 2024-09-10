@@ -7,7 +7,7 @@
 #include <zaf/base/com_object.h>
 #include <zaf/internal/enumerator.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 /**
  Represents a collection of strings indexed by locale name.   

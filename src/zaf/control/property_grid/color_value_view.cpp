@@ -36,7 +36,7 @@ void ColorValueView::InitializeRichEdit() {
     color_edit_ = Create<RichEdit>();
     color_edit_->SetBorder(Frame{});
     color_edit_->SetBackgroundColor(Color::Transparent());
-    color_edit_->SetParagraphAlignment(ParagraphAlignment::Center);
+    color_edit_->SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
     color_edit_->SetAllowBeep(false);
 
     Subscriptions() += color_edit_->KeyDownEvent().Subscribe(

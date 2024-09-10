@@ -6,11 +6,11 @@
 #include <zaf/control/textual/line_break.h>
 #include <zaf/graphic/font/font.h>
 #include <zaf/graphic/font/font_weight.h>
-#include <zaf/graphic/text/line_spacing.h>
-#include <zaf/graphic/text/paragraph_alignment.h>
-#include <zaf/graphic/text/text_alignment.h>
-#include <zaf/graphic/text/text_trimming.h>
-#include <zaf/graphic/text/word_wrapping.h>
+#include <zaf/graphic/dwrite/line_spacing.h>
+#include <zaf/graphic/dwrite/paragraph_alignment.h>
+#include <zaf/graphic/dwrite/text_alignment.h>
+#include <zaf/graphic/dwrite/text_trimming.h>
+#include <zaf/graphic/dwrite/word_wrapping.h>
 
 namespace zaf {
 namespace internal {
@@ -26,8 +26,10 @@ class InlineObject;
 class StyledText;
 }
 
+namespace dwrite {
 class TextFormat;
 class TextLayout;
+}
 
 /**
 Represents a control that displays text.
@@ -305,48 +307,48 @@ public:
 
      The default value is TextAlignment::Leading.
      */
-    TextAlignment TextAlignment() const;
+    dwrite::TextAlignment TextAlignment() const;
 
     /**
      Set text alignment.
      */
-    void SetTextAlignment(zaf::TextAlignment alignment);
+    void SetTextAlignment(dwrite::TextAlignment alignment);
 
     /**
      Get paragraph alignment.
 
      The default value is ParagraphAlignment::Near;
     */
-    ParagraphAlignment ParagraphAlignment() const;
+    dwrite::ParagraphAlignment ParagraphAlignment() const;
 
     /**
      Set paragraph alignment.
      */
-    void SetParagraphAlignment(zaf::ParagraphAlignment alignment);
+    void SetParagraphAlignment(dwrite::ParagraphAlignment alignment);
 
     /**
      Get word wrapping.
 
      The default value is WordWrapping::NoWrap;
      */
-    WordWrapping WordWrapping() const;
+    dwrite::WordWrapping WordWrapping() const;
 
     /**
      Set word wrapping.
      */
-    void SetWordWrapping(zaf::WordWrapping word_wrapping);
+    void SetWordWrapping(dwrite::WordWrapping word_wrapping);
 
-    zaf::TextTrimming TextTrimming() const;
-    void SetTextTrimming(const zaf::TextTrimming& text_trimming);
+    dwrite::TextTrimming TextTrimming() const;
+    void SetTextTrimming(const dwrite::TextTrimming& text_trimming);
 
-    void SetTextTrimming(TextTrimmingGranularity text_trimming_granularity) {
-        zaf::TextTrimming text_trimming;
+    void SetTextTrimming(dwrite::TextTrimmingGranularity text_trimming_granularity) {
+        dwrite::TextTrimming text_trimming;
         text_trimming.SetGranularity(text_trimming_granularity);
         SetTextTrimming(text_trimming);
     }
 
-    zaf::LineSpacing LineSpacing() const;
-    void SetLineSpacing(const zaf::LineSpacing& line_spacing);
+    dwrite::LineSpacing LineSpacing() const;
+    void SetLineSpacing(const dwrite::LineSpacing& line_spacing);
 
     bool IgnoreTailingWhiteSpaces() const;
     void SetIgnoreTailingWhiteSpaces(bool value);
@@ -367,13 +369,13 @@ protected:
     virtual void PaintTextBack(
         Canvas& canvas, 
         const zaf::Rect& dirty_rect,
-        const TextLayout& text_layout,
+        const dwrite::TextLayout& text_layout,
         const zaf::Rect& layout_rect) const;
 
     virtual void PaintText(
         Canvas& canvas,
         const zaf::Rect& dirty_rect,
-        const TextLayout& text_layout,
+        const dwrite::TextLayout& text_layout,
         const zaf::Rect& layout_rect) const;
 
     void ReleaseRendererResources() override;
@@ -391,7 +393,7 @@ protected:
         return *text_model_;
     }
 
-    TextLayout GetTextLayout() const;
+    dwrite::TextLayout GetTextLayout() const;
 
     /**
     Handles text changed notification. This method would be called after the text of control is 
@@ -403,22 +405,22 @@ protected:
     virtual void OnTextChanged(const TextChangedInfo& event_info);
 
 private:
-    void SetTextColorsToTextLayout(TextLayout& text_layout, d2d::Renderer& renderer) const;
+    void SetTextColorsToTextLayout(dwrite::TextLayout& text_layout, d2d::Renderer& renderer) const;
     void PaintTextBackInRange(
         Canvas& canvas, 
-        const TextLayout& text_layout, 
+        const dwrite::TextLayout& text_layout, 
         const Range& range,
         const Color& color) const;
 
     void OnInlineObjectAttached(const internal::InlineObjectAttachedInfo&);
     void OnTextModelChanged(const internal::TextModelChangedInfo&);
 
-    TextLayout CreateTextLayout() const;
-    TextFormat CreateTextFormat() const;
+    dwrite::TextLayout CreateTextLayout() const;
+    dwrite::TextFormat CreateTextFormat() const;
     void SetInlineObjectToTextLayout(
         std::shared_ptr<textual::InlineObject> object,
         const Range& range,
-        TextLayout& text_layout) const;
+        dwrite::TextLayout& text_layout) const;
 
     void ReleaseTextLayout();
 
@@ -428,16 +430,16 @@ private:
 
     std::shared_ptr<internal::TextInlineObjectPainter> inline_object_painter_;
 
-    zaf::TextAlignment text_alignment_{ TextAlignment::Leading };
-    zaf::ParagraphAlignment paragraph_alignment_{ ParagraphAlignment::Near };
-    zaf::WordWrapping word_wrapping_{ WordWrapping::NoWrap };
-    zaf::TextTrimming text_trimming_;
-    zaf::LineSpacing line_spacing_;
+    dwrite::TextAlignment text_alignment_{ dwrite::TextAlignment::Leading };
+    dwrite::ParagraphAlignment paragraph_alignment_{ dwrite::ParagraphAlignment::Near };
+    dwrite::WordWrapping word_wrapping_{ dwrite::WordWrapping::NoWrap };
+    dwrite::TextTrimming text_trimming_;
+    dwrite::LineSpacing line_spacing_;
     Frame text_back_padding_;
     bool ignore_tailing_white_spaces_{};
 
     zaf::Rect text_rect_;
-    mutable TextLayout text_layout_;
+    mutable dwrite::TextLayout text_layout_;
 };
 
 ZAF_OBJECT_BEGIN(TextualControl);

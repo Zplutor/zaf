@@ -5,7 +5,7 @@ void MessageContentBubble::Initialize() {
 
     __super::Initialize();
 
-    SetWordWrapping(zaf::WordWrapping::Wrap);
+    SetWordWrapping(zaf::dwrite::WordWrapping::Wrap);
     SetBorder(zaf::Frame(1));
     SetBorderColor(zaf::Color::Transparent());
     SetBackgroundColor(zaf::Color::Transparent());

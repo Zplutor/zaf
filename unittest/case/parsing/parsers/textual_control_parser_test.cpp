@@ -42,7 +42,7 @@ TEST(TextualControlParser, ParseTextColor) {
 
 TEST(TextualControlParser, ParseTextAlignment) {
 
-    auto test = [](const std::string& value_string, zaf::TextAlignment expected_value) {
+    auto test = [](const std::string& value_string, zaf::dwrite::TextAlignment expected_value) {
     
         std::string xaml = R"(<TextualControl TextAlignment=")" + value_string + R"("/>)";
         auto control = CreateTextualControlFromXaml(xaml);
@@ -56,16 +56,18 @@ TEST(TextualControlParser, ParseTextAlignment) {
         ASSERT_EQ(control->TextAlignment(), expected_value);
     };
 
-    test("Leading", zaf::TextAlignment::Leading);
-    test("Tailing", zaf::TextAlignment::Tailing);
-    test("Center", zaf::TextAlignment::Center);
-    test("Justified", zaf::TextAlignment::Justified);
+    test("Leading", zaf::dwrite::TextAlignment::Leading);
+    test("Tailing", zaf::dwrite::TextAlignment::Tailing);
+    test("Center", zaf::dwrite::TextAlignment::Center);
+    test("Justified", zaf::dwrite::TextAlignment::Justified);
 }
 
 
 TEST(TextualControlParser, ParseParagraphAlignment) {
 
-    auto test = [](const std::string& value_string, zaf::ParagraphAlignment expected_value) {
+    auto test = [](
+        const std::string& value_string, 
+        zaf::dwrite::ParagraphAlignment expected_value) {
     
         std::string xaml = R"(<TextualControl ParagraphAlignment=")" + value_string + R"("/>)";
         auto control = CreateTextualControlFromXaml(xaml);
@@ -79,15 +81,15 @@ TEST(TextualControlParser, ParseParagraphAlignment) {
         ASSERT_EQ(control->ParagraphAlignment(), expected_value);
     };
 
-    test("Near", zaf::ParagraphAlignment::Near);
-    test("Far", zaf::ParagraphAlignment::Far);
-    test("Center", zaf::ParagraphAlignment::Center);
+    test("Near", zaf::dwrite::ParagraphAlignment::Near);
+    test("Far", zaf::dwrite::ParagraphAlignment::Far);
+    test("Center", zaf::dwrite::ParagraphAlignment::Center);
 }
 
 
 TEST(TextualControlParser, ParseWordWrapping) {
 
-    auto test = [](const std::string& value_string, zaf::WordWrapping expected_value) {
+    auto test = [](const std::string& value_string, zaf::dwrite::WordWrapping expected_value) {
     
         std::string xaml = R"(<TextualControl WordWrapping=")" + value_string + R"("/>)";
         auto control = CreateTextualControlFromXaml(xaml);
@@ -101,11 +103,11 @@ TEST(TextualControlParser, ParseWordWrapping) {
         ASSERT_EQ(control->WordWrapping(), expected_value);
     };
 
-    test("Wrap", zaf::WordWrapping::Wrap);
-    test("NoWrap", zaf::WordWrapping::NoWrap);
-    test("EmergencyBreak", zaf::WordWrapping::EmergencyBreak);
-    test("WholeWord", zaf::WordWrapping::WholeWord);
-    test("Character", zaf::WordWrapping::Character);
+    test("Wrap", zaf::dwrite::WordWrapping::Wrap);
+    test("NoWrap", zaf::dwrite::WordWrapping::NoWrap);
+    test("EmergencyBreak", zaf::dwrite::WordWrapping::EmergencyBreak);
+    test("WholeWord", zaf::dwrite::WordWrapping::WholeWord);
+    test("Character", zaf::dwrite::WordWrapping::Character);
 }
 
 

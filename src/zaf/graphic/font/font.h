@@ -4,7 +4,7 @@
 #include <string>
 #include <zaf/base/hash.h>
 #include <zaf/graphic/font/font_parser.h>
-#include <zaf/graphic/font/font_style.h>
+#include <zaf/graphic/dwrite/font_style.h>
 #include <zaf/graphic/font/font_weight.h>
 #include <zaf/object/object.h>
 #include <zaf/object/property_support.h>

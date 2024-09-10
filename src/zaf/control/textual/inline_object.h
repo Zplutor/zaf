@@ -6,7 +6,7 @@
 #include <zaf/base/range.h>
 #include <zaf/control/textual/inline_object_events.h>
 #include <zaf/graphic/size.h>
-#include <zaf/graphic/text/text_inline_object_metrics.h>
+#include <zaf/graphic/dwrite/text_inline_object_metrics.h>
 #include <zaf/object/object.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/xml/xml_serializable.h>
@@ -56,7 +56,7 @@ public:
     }
 
     zaf::Size Size() const;
-    virtual TextInlineObjectMetrics GetMetrics() const;
+    virtual dwrite::TextInlineObjectMetrics GetMetrics() const;
 
     /**
     Gets the range to which the inline object is attached in the host.

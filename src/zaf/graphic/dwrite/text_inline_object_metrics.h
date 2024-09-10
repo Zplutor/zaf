@@ -2,7 +2,7 @@
 
 #include <dwrite.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 /**
 Contains properties describing the geometric measurement of an text inline object.

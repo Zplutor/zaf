@@ -2,13 +2,13 @@
 
 #include <dwrite.h>
 #include <zaf/base/com_object.h>
-#include <zaf/graphic/text/line_spacing.h>
-#include <zaf/graphic/text/paragraph_alignment.h>
-#include <zaf/graphic/text/text_alignment.h>
-#include <zaf/graphic/text/text_trimming.h>
-#include <zaf/graphic/text/word_wrapping.h>
+#include <zaf/graphic/dwrite/line_spacing.h>
+#include <zaf/graphic/dwrite/paragraph_alignment.h>
+#include <zaf/graphic/dwrite/text_alignment.h>
+#include <zaf/graphic/dwrite/text_trimming.h>
+#include <zaf/graphic/dwrite/word_wrapping.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 /**
  Describes the font and paragraph properties used to format text.

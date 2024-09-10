@@ -1,8 +1,8 @@
-#include <zaf/graphic/font/font_family.h>
+#include <zaf/graphic/dwrite/font_family.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/graphic/font/font_collection.h>
+#include <zaf/graphic/dwrite/font_collection.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 FontCollection FontFamily::GetFontCollection() const {
 

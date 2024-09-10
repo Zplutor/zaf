@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/graphic/graphic_factory.h>
-#include <zaf/graphic/text/text_format_properties.h>
+#include <zaf/graphic/dwrite/text_format_properties.h>
 
 TEST(TextLayoutTest, GetLineMetrics) {
 

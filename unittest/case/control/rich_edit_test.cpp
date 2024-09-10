@@ -63,7 +63,7 @@ TEST(RichEditTest, CalculatePreferrenceSize) {
     //Make sure it has been resolved.
     auto rich_edit = zaf::Create<zaf::RichEdit>();
     rich_edit->SetFontSize(10);
-    rich_edit->SetWordWrapping(zaf::WordWrapping::Wrap);
+    rich_edit->SetWordWrapping(zaf::dwrite::WordWrapping::Wrap);
     rich_edit->SetIsMultiline(true);
     rich_edit->SetBorder(zaf::Frame{});
     rich_edit->SetText(L"abcdefghijklmn");

@@ -4,7 +4,9 @@
 #include <zaf/base/error/win32_error.h>
 #include <zaf/graphic/d2d/stroke_properties.h>
 #include <zaf/graphic/matrix.h>
-#include <zaf/graphic/text/text_format_properties.h>
+#include <zaf/graphic/dwrite/text_format_properties.h>
+
+using namespace zaf::dwrite;
 
 namespace zaf {
 

@@ -6,15 +6,15 @@
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/range.h>
 #include <zaf/graphic/d2d/brush.h>
-#include <zaf/graphic/font/font_style.h>
+#include <zaf/graphic/dwrite/font_style.h>
 #include <zaf/graphic/point.h>
-#include <zaf/graphic/text/hit_test_metrics.h>
-#include <zaf/graphic/text/line_metrics.h>
-#include <zaf/graphic/text/text_format.h>
-#include <zaf/graphic/text/text_inline_object.h>
-#include <zaf/graphic/text/text_metrics.h>
+#include <zaf/graphic/dwrite/hit_test_metrics.h>
+#include <zaf/graphic/dwrite/line_metrics.h>
+#include <zaf/graphic/dwrite/text_format.h>
+#include <zaf/graphic/dwrite/text_inline_object.h>
+#include <zaf/graphic/dwrite/text_metrics.h>
 
-namespace zaf {
+namespace zaf::dwrite {
 
 /**
  Represents a block of text after it has been fully analyzed and formatted.

@@ -6,7 +6,7 @@
 #include <zaf/control/event/mouse_cursor_changing_info.h>
 #include <zaf/control/event/mouse_event_info.h>
 #include <zaf/control/textual/interactive_inline_object.h>
-#include <zaf/graphic/text/hit_test_metrics.h>
+#include <zaf/graphic/dwrite/hit_test_metrics.h>
 #include <zaf/internal/textual/text_box_hit_test_manager.h>
 #include <zaf/internal/textual/text_box_module.h>
 #include <zaf/rx/subscription_host.h>
