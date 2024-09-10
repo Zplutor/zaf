@@ -2,7 +2,7 @@
 
 #include <imm.h>
 #include <zaf/base/non_copyable.h>
-#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font.h>
 #include <zaf/graphic/point.h>
 
 namespace zaf {

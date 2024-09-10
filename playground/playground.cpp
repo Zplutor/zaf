@@ -19,7 +19,7 @@
 #include <zaf/window/message/hit_test_result.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/image/image.h>
-#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/control/list_box.h>
 #include <zaf/object/object_type.h>

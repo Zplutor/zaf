@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/graphic/color.h>
-#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font.h>
 #include <zaf/xml/xml_serializable.h>
 
 namespace zaf::textual {

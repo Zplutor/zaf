@@ -13,7 +13,7 @@
 #include <zaf/control/property_grid/textual_control_config.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/color.h>
-#include <zaf/graphic/font/font_weight.h>
+#include <zaf/graphic/font_weight.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/point.h>

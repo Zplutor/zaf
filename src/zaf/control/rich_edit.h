@@ -11,7 +11,7 @@
 #include <zaf/control/self_scroll_control.h>
 #include <zaf/control/text_validator.h>
 #include <zaf/graphic/color.h>
-#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font.h>
 #include <zaf/control/rich_edit/rich_edit_events.h>
 #include <zaf/graphic/frame.h>
 

@@ -3,7 +3,7 @@
 #include <zaf/control/control_object.h>
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/text/internal/text_inline_object_bridge.h>
 #include <zaf/graphic/text/internal/text_inline_object_painter.h>

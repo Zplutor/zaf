@@ -4,8 +4,8 @@
 #include <zaf/control/control.h>
 #include <zaf/control/event/text_changed_info.h>
 #include <zaf/control/textual/line_break.h>
-#include <zaf/graphic/font/font.h>
-#include <zaf/graphic/font/font_weight.h>
+#include <zaf/graphic/font.h>
+#include <zaf/graphic/font_weight.h>
 #include <zaf/graphic/dwrite/line_spacing.h>
 #include <zaf/graphic/dwrite/paragraph_alignment.h>
 #include <zaf/graphic/dwrite/text_alignment.h>

@@ -2,7 +2,7 @@
 #include <zaf/base/error/invalid_type_error.h>
 #include <zaf/object/parsing/parse_error.h>
 #include <zaf/creation.h>
-#include <zaf/graphic/font/font_weight.h>
+#include <zaf/graphic/font_weight.h>
 #include <zaf/object/parsing/helpers.h>
 #include <zaf/object/object_type.h>
 #include <zaf/object/parsing/object_parser.h>

@@ -3,7 +3,7 @@
 #include <optional>
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/graphic/color.h>
-#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font.h>
 
 namespace zaf::textual {
 

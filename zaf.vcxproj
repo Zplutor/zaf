@@ -261,9 +261,10 @@
     <ClCompile Include="src\zaf\graphic\dwrite\text_layout.cpp" />
     <ClCompile Include="src\zaf\graphic\dwrite\text_trimming.cpp" />
     <ClCompile Include="src\zaf\graphic\dwrite\word_wrapping.cpp" />
-    <ClCompile Include="src\zaf\graphic\font\font_parser.cpp" />
-    <ClCompile Include="src\zaf\graphic\font\font_weight.cpp" />
-    <ClCompile Include="src\zaf\graphic\font\font_weight_parser.cpp" />
+    <ClCompile Include="src\zaf\graphic\font.cpp" />
+    <ClCompile Include="src\zaf\graphic\font_parser.cpp" />
+    <ClCompile Include="src\zaf\graphic\font_weight.cpp" />
+    <ClCompile Include="src\zaf\graphic\font_weight_parser.cpp" />
     <ClCompile Include="src\zaf\graphic\frame_parser.cpp" />
     <ClCompile Include="src\zaf\graphic\image\image.cpp" />
     <ClCompile Include="src\zaf\graphic\image\internal\utility.cpp" />
@@ -280,7 +281,6 @@
     <ClCompile Include="src\zaf\graphic\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />
     <ClCompile Include="src\zaf\graphic\ellipse.cpp" />
-    <ClCompile Include="src\zaf\graphic\font\font.cpp" />
     <ClCompile Include="src\zaf\graphic\frame.cpp" />
     <ClCompile Include="src\zaf\graphic\image\gif_metadata_querier.cpp" />
     <ClCompile Include="src\zaf\graphic\matrix.cpp" />
@@ -740,8 +740,10 @@
     <ClInclude Include="src\zaf\graphic\dwrite\text_metrics.h" />
     <ClInclude Include="src\zaf\graphic\dwrite\text_trimming.h" />
     <ClInclude Include="src\zaf\graphic\dwrite\word_wrapping.h" />
-    <ClInclude Include="src\zaf\graphic\font\font_parser.h" />
-    <ClInclude Include="src\zaf\graphic\font\font_weight_parser.h" />
+    <ClInclude Include="src\zaf\graphic\font.h" />
+    <ClInclude Include="src\zaf\graphic\font_parser.h" />
+    <ClInclude Include="src\zaf\graphic\font_weight.h" />
+    <ClInclude Include="src\zaf\graphic\font_weight_parser.h" />
     <ClInclude Include="src\zaf\graphic\frame_parser.h" />
     <ClInclude Include="src\zaf\graphic\image\image.h" />
     <ClInclude Include="src\zaf\graphic\image\internal\utility.h" />
@@ -764,8 +766,6 @@
     <ClInclude Include="src\zaf\graphic\canvas.h" />
     <ClInclude Include="src\zaf\graphic\color.h" />
     <ClInclude Include="src\zaf\graphic\ellipse.h" />
-    <ClInclude Include="src\zaf\graphic\font\font.h" />
-    <ClInclude Include="src\zaf\graphic\font\font_weight.h" />
     <ClInclude Include="src\zaf\graphic\frame.h" />
     <ClInclude Include="src\zaf\graphic\image\gif_metadata_querier.h" />
     <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h" />

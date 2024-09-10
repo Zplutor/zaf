@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font.h>
 #include <zaf/object/parsing/helpers.h>
 
 TEST(FontPraserTest, ParseFamilyName) {

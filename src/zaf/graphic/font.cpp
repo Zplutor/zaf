@@ -1,4 +1,4 @@
-#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font.h>
 #include <zaf/application.h>
 #include <zaf/base/string/to_string.h>
 #include <zaf/xml/xml_error.h>

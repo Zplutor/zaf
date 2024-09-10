@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/control/textual_control.h>
-#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font.h>
 #include "utility.h"
 
 std::shared_ptr<zaf::TextualControl> CreateTextualControlFromXaml(const std::string& xaml) {

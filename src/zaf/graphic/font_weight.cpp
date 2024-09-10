@@ -1,4 +1,4 @@
-#include <zaf/graphic/font/font_weight.h>
+#include <zaf/graphic/font_weight.h>
 
 namespace zaf {
 

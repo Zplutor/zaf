@@ -1,5 +1,5 @@
-#include <zaf/graphic/font/font_parser.h>
-#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font_parser.h>
+#include <zaf/graphic/font.h>
 
 namespace zaf {
 

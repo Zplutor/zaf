@@ -14,7 +14,7 @@
 #include <zaf/control/textual/ranged_text_style.h>
 #include <zaf/control/textual/styled_text_view.h>
 #include <zaf/control/textual/text_style.h>
-#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font.h>
 #include <zaf/xml/xml_serializable.h>
 
 namespace zaf::textual {

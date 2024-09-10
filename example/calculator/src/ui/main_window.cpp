@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/control/button.h>
 #include <zaf/creation.h>
-#include <zaf/graphic/font/font.h>
+#include <zaf/graphic/font.h>
 #include "logic/calculate_result.h"
 #include "logic/calculator.h"
 
