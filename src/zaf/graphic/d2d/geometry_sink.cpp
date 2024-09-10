@@ -1,5 +1,5 @@
 #include <zaf/graphic/d2d/geometry_sink.h>
-#include <zaf/graphic/internal/alignment_helper.h>
+#include <zaf/internal/graphic/alignment_helper.h>
 
 namespace zaf::d2d {
 

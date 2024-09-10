@@ -16,9 +16,6 @@
     <Filter Include="zaf\control">
       <UniqueIdentifier>{c624bfa0-8cda-4e20-9245-dde86f21842b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\graphic\text">
-      <UniqueIdentifier>{27b1fee3-ac73-4419-b095-24ff29ad3c11}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\control\layout">
       <UniqueIdentifier>{71859885-25bf-4217-93fc-5e753da7627c}</UniqueIdentifier>
     </Filter>
@@ -51,9 +48,6 @@
     </Filter>
     <Filter Include="zaf\window\message\internal">
       <UniqueIdentifier>{4d3ccef9-f4a7-4dd9-89de-203888e05c77}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\graphic\internal">
-      <UniqueIdentifier>{bac57db8-2209-4a31-825a-4fd930ca21cc}</UniqueIdentifier>
     </Filter>
     <Filter Include="zaf\base\registry">
       <UniqueIdentifier>{3a7441f4-3ab1-4236-afc5-24ba0fd93ca5}</UniqueIdentifier>
@@ -169,9 +163,6 @@
     <Filter Include="zaf\input">
       <UniqueIdentifier>{746b5796-3832-4421-abdb-fc0b372af572}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\graphic\text\internal">
-      <UniqueIdentifier>{1a0cdfc9-00f7-4f9e-a544-82f01a834e29}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\control\textual">
       <UniqueIdentifier>{fbe5ce84-c7cb-4322-8f83-777e157558a4}</UniqueIdentifier>
     </Filter>
@@ -207,6 +198,9 @@
     </Filter>
     <Filter Include="zaf\graphic\dwrite">
       <UniqueIdentifier>{4bef1a07-65e4-4e72-90a2-4ae7c328856f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\internal\graphic">
+      <UniqueIdentifier>{48107525-18aa-476b-a849-d9189954f57b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1027,9 +1021,6 @@
     <ClCompile Include="src\zaf\input\keyboard.cpp">
       <Filter>zaf\input</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\text\internal\text_inline_object_bridge.cpp">
-      <Filter>zaf\graphic\text\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\rich_edit\rich_edit_events.cpp">
       <Filter>zaf\control\rich_edit</Filter>
     </ClCompile>
@@ -1291,6 +1282,9 @@
     <ClCompile Include="src\zaf\graphic\font_weight_parser.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\internal\graphic\text_inline_object_bridge.cpp">
+      <Filter>zaf\internal\graphic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1521,9 +1515,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\alignment.h">
       <Filter>zaf\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\internal\alignment_helper.h">
-      <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\string\split.h">
       <Filter>zaf\base\string</Filter>
@@ -2254,9 +2245,6 @@
     <ClInclude Include="src\zaf\graphic\canvas_region_guard.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\internal\canvas_region.h">
-      <Filter>zaf\graphic\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\canvas_clipping_guard.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
@@ -2467,9 +2455,6 @@
     <ClInclude Include="src\zaf\control\scroll_box_parser.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\internal\alignment_info.h">
-      <Filter>zaf\graphic\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\internal\scroll_box\general_scroll_layouter.h">
       <Filter>zaf\control\internal\scroll_box</Filter>
     </ClInclude>
@@ -2490,12 +2475,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\range_set.h">
       <Filter>zaf\control\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_bridge.h">
-      <Filter>zaf\graphic\text\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\text\internal\text_inline_object_painter.h">
-      <Filter>zaf\graphic\text\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\rich_edit\rich_edit_events.h">
       <Filter>zaf\control\rich_edit</Filter>
@@ -2973,6 +2952,24 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\font_weight_parser.h">
       <Filter>zaf\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\graphic\text_inline_object_bridge.h">
+      <Filter>zaf\internal\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\graphic\text_inline_object_painter.h">
+      <Filter>zaf\internal\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\graphic\alignment_helper.h">
+      <Filter>zaf\internal\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\graphic\alignment_info.h">
+      <Filter>zaf\internal\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\graphic\canvas_region.h">
+      <Filter>zaf\internal\graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\graphic\canvas_state.h">
+      <Filter>zaf\internal\graphic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

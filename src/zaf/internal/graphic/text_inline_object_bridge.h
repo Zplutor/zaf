@@ -2,7 +2,7 @@
 
 #include <dwrite.h>
 #include <zaf/control/textual/inline_object.h>
-#include <zaf/graphic/text/internal/text_inline_object_painter.h>
+#include <zaf/internal/graphic/text_inline_object_painter.h>
 
 namespace zaf::internal {
 

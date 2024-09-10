@@ -5,8 +5,8 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/font.h>
 #include <zaf/graphic/graphic_factory.h>
-#include <zaf/graphic/text/internal/text_inline_object_bridge.h>
-#include <zaf/graphic/text/internal/text_inline_object_painter.h>
+#include <zaf/internal/graphic/text_inline_object_bridge.h>
+#include <zaf/internal/graphic/text_inline_object_painter.h>
 #include <zaf/graphic/dwrite/text_format_properties.h>
 #include <zaf/internal/theme.h>
 

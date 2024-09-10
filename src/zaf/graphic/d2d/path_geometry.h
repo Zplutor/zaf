@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <optional>
-#include <zaf/graphic/internal/alignment_info.h>
+#include <zaf/internal/graphic/alignment_info.h>
 #include <zaf/graphic/d2d/geometry.h>
 #include <zaf/graphic/d2d/geometry_sink.h>
 

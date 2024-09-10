@@ -8,9 +8,9 @@
 #include <zaf/graphic/canvas_region_guard.h>
 #include <zaf/graphic/canvas_state_guard.h>
 #include <zaf/graphic/color.h>
-#include <zaf/graphic/internal/alignment_helper.h>
-#include <zaf/graphic/internal/canvas_region.h>
-#include <zaf/graphic/internal/canvas_state.h>
+#include <zaf/internal/graphic/alignment_helper.h>
+#include <zaf/internal/graphic/canvas_region.h>
+#include <zaf/internal/graphic/canvas_state.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/d2d/renderer.h>
 

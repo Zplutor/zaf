@@ -7,7 +7,7 @@
 #include <zaf/base/error/com_error.h>
 #include <zaf/base/flags_enum.h>
 #include <zaf/graphic/d2d/arc_segment.h>
-#include <zaf/graphic/internal/alignment_info.h>
+#include <zaf/internal/graphic/alignment_info.h>
 #include <zaf/graphic/point.h>
 
 namespace zaf::d2d {
