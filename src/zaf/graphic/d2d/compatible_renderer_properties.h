@@ -31,19 +31,19 @@ public:
         return *this;
     }
 
-    CompatibleRendererOptions Flags() const {
-        return flags_;
+    CompatibleRendererOptions Options() const {
+        return options_;
     }
 
-    CompatibleRendererProperties& Flags(CompatibleRendererOptions flags) {
-        flags_ = flags;
+    CompatibleRendererProperties& Options(CompatibleRendererOptions options) {
+        options_ = options;
         return *this;
     }
 
 private:
     std::optional<Size> desired_size_;
     std::optional<Size> desired_pixel_size_;
-    CompatibleRendererOptions flags_ = CompatibleRendererOptions::GDICompatible;
+    CompatibleRendererOptions options_ = CompatibleRendererOptions::GDICompatible;
 };
 
 }

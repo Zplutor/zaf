@@ -31,7 +31,7 @@ BitmapRenderer Renderer::CreateCompatibleRenderer(const CompatibleRendererProper
         d2d_desired_size_pointer, 
         d2d_desired_pixel_size_pointer,
         nullptr,
-        static_cast<D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS>(properties.Flags()), 
+        static_cast<D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS>(properties.Options()), 
         inner.Reset());
 
     ZAF_THROW_IF_COM_ERROR(com_error);
