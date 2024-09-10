@@ -1,8 +1,8 @@
 #pragma once
 
-#include <zaf/graphic/pixel_format.h>
+#include <zaf/graphic/d2d/pixel_format.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 enum class PixelAlphaMode {
     Unknown = D2D1_ALPHA_MODE_UNKNOWN,

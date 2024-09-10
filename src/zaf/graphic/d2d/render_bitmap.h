@@ -3,13 +3,12 @@
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/graphic/bitmap_properties.h>
+#include <zaf/graphic/d2d/bitmap_properties.h>
 #include <zaf/graphic/rect.h>
 
-namespace zaf {
-namespace d2d {
+namespace zaf::d2d {
+
 class Renderer;
-}
 
 class RenderBitmap : public COMObject<ID2D1Bitmap> {
 public:

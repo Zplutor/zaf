@@ -8,9 +8,9 @@
 #include <zaf/graphic/d2d/solid_color_brush.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/ellipse.h>
-#include <zaf/graphic/bitmap_properties.h>
+#include <zaf/graphic/d2d/bitmap_properties.h>
 #include <zaf/graphic/image/wic/bitmap_source.h>
-#include <zaf/graphic/interpolation_mode.h>
+#include <zaf/graphic/d2d/interpolation_mode.h>
 #include <zaf/graphic/d2d/layer.h>
 #include <zaf/graphic/d2d/layer_parameters.h>
 #include <zaf/graphic/matrix.h>
@@ -18,7 +18,7 @@
 #include <zaf/graphic/rounded_rect.h>
 #include <zaf/graphic/d2d/stroke.h>
 #include <zaf/graphic/d2d/geometry.h>
-#include <zaf/graphic/render_bitmap.h>
+#include <zaf/graphic/d2d/render_bitmap.h>
 #include <zaf/graphic/d2d/antialias_mode.h>
 #include <zaf/graphic/d2d/compatible_renderer_properties.h>
 #include <zaf/graphic/text/text_format.h>

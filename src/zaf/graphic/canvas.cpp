@@ -423,7 +423,7 @@ void Canvas::DrawTextLayout(
 
 
 void Canvas::DrawBitmap(
-    const RenderBitmap& bitmap,
+    const d2d::RenderBitmap& bitmap,
     const Rect& destination_rect, 
     const DrawImageOptions& options) {
 

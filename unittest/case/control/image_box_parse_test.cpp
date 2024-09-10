@@ -30,7 +30,7 @@ TEST(ImageBoxParseTest, InterpolationMode) {
 
     auto image_box = CreateImageBoxFromXaml(R"(<ImageBox InterpolationMode="HighQualityCubic" />)");
     ASSERT_NE(image_box, nullptr);
-    ASSERT_EQ(image_box->InterpolationMode(), zaf::InterpolationMode::HighQualityCubic);
+    ASSERT_EQ(image_box->InterpolationMode(), zaf::d2d::InterpolationMode::HighQualityCubic);
 
     image_box = CreateImageBoxFromXaml(R"(
         <ImageBox>
@@ -38,7 +38,7 @@ TEST(ImageBoxParseTest, InterpolationMode) {
         </ImageBox>
     )");
     ASSERT_NE(image_box, nullptr);
-    ASSERT_EQ(image_box->InterpolationMode(), zaf::InterpolationMode::Anisotropic);
+    ASSERT_EQ(image_box->InterpolationMode(), zaf::d2d::InterpolationMode::Anisotropic);
 }
 
 

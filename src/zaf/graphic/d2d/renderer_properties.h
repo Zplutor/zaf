@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/direct2d.h>
-#include <zaf/graphic/pixel_properties.h>
+#include <zaf/graphic/d2d/pixel_properties.h>
 
 namespace zaf::d2d {
 

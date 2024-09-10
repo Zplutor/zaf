@@ -1,7 +1,7 @@
 #pragma once
 
 #include <functional>
-#include <zaf/graphic/render_bitmap.h>
+#include <zaf/graphic/d2d/render_bitmap.h>
 
 namespace zaf {
 
@@ -21,7 +21,7 @@ public:
 
     virtual void GetImageSize(Size& pixel_size, std::pair<float, float>& resolution) = 0;
 
-    virtual RenderBitmap GetRenderBitmap(d2d::Renderer& renderer) = 0;
+    virtual d2d::RenderBitmap GetRenderBitmap(d2d::Renderer& renderer) = 0;
 
     virtual void ChangeDPI(float dpi) { }
 

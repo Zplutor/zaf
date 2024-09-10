@@ -349,7 +349,7 @@ void Control::DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_re
         background_rect,
         BackgroundImageLayout(),
         render_bitmap,
-        InterpolationMode::Linear);
+        d2d::InterpolationMode::Linear);
 }
 
 

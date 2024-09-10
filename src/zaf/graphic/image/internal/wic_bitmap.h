@@ -27,7 +27,7 @@ public:
     }
 
 
-    RenderBitmap CreateRenderBitmap(d2d::Renderer& renderer) override {
+    d2d::RenderBitmap CreateRenderBitmap(d2d::Renderer& renderer) override {
         return renderer.CreateBitmap(wic_bitmap_);
     }
 

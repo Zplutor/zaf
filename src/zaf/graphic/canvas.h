@@ -33,11 +33,11 @@ public:
         return *this;
     }
 
-    InterpolationMode InterpolationMode() const {
+    d2d::InterpolationMode InterpolationMode() const {
         return interpolation_mode_;
     }
 
-    DrawImageOptions& InterpolationMode(zaf::InterpolationMode value) {
+    DrawImageOptions& InterpolationMode(d2d::InterpolationMode value) {
         interpolation_mode_ = value;
         return *this;
     }
@@ -54,7 +54,7 @@ public:
 
 private:
     float opacity_ = 1.f;
-    zaf::InterpolationMode interpolation_mode_ = InterpolationMode::Linear;
+    d2d::InterpolationMode interpolation_mode_ = d2d::InterpolationMode::Linear;
     bool has_source_rect = false;
     Rect source_rect;
 };
@@ -202,7 +202,7 @@ public:
         const d2d::Brush& brush);
 
     void DrawBitmap(
-        const RenderBitmap& bitmap,
+        const d2d::RenderBitmap& bitmap,
         const Rect& destination_rect, 
         const DrawImageOptions& options = {});
 

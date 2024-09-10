@@ -81,7 +81,7 @@ std::pair<float, float> URIImage::GetResolution() {
 }
 
 
-RenderBitmap URIImage::CreateRenderBitmap(d2d::Renderer& renderer) {
+d2d::RenderBitmap URIImage::CreateRenderBitmap(d2d::Renderer& renderer) {
 
     LoadImageIfNot();
     return image_->CreateRenderBitmap(renderer);

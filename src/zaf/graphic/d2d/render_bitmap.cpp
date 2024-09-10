@@ -1,7 +1,7 @@
-#include <zaf/graphic/render_bitmap.h>
+#include <zaf/graphic/d2d/render_bitmap.h>
 #include <zaf/graphic/d2d/renderer.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 void RenderBitmap::CopyFromRenderer(
     const d2d::Renderer& renderer, 

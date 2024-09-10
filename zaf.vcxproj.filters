@@ -388,9 +388,6 @@
     <ClCompile Include="src\zaf\graphic\image\wic\palette.cpp">
       <Filter>zaf\graphic\image\wic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\render_bitmap.cpp">
-      <Filter>zaf\graphic</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\graphic\image\wic\imaging_factory.cpp">
       <Filter>zaf\graphic\image\wic</Filter>
     </ClCompile>
@@ -684,9 +681,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\base\registry\registry_value.cpp">
       <Filter>zaf\base\registry</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\interpolation_mode.cpp">
-      <Filter>zaf\graphic</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid.cpp">
       <Filter>zaf\control</Filter>
@@ -1291,6 +1285,12 @@
     <ClCompile Include="src\zaf\graphic\d2d\path_geometry.cpp">
       <Filter>zaf\graphic\d2d</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\d2d\interpolation_mode.cpp">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\d2d\render_bitmap.cpp">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1509,18 +1509,6 @@
     <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h">
       <Filter>zaf\control\internal\image_box</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\pixel_properties.h">
-      <Filter>zaf\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\pixel_format.h">
-      <Filter>zaf\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\bitmap_properties.h">
-      <Filter>zaf\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\interpolation_mode.h">
-      <Filter>zaf\graphic</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\text\text_inline_object.h">
       <Filter>zaf\graphic\text</Filter>
     </ClInclude>
@@ -1644,9 +1632,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\image\wic\palette.h">
       <Filter>zaf\graphic\image\wic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\render_bitmap.h">
-      <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\image\wic\imaging_factory.h">
       <Filter>zaf\graphic\image\wic</Filter>
@@ -2972,6 +2957,21 @@
       <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\d2d\layer_parameters.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\bitmap_properties.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\interpolation_mode.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\pixel_format.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\pixel_properties.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\render_bitmap.h">
       <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <zaf/graphic/d2d/brush.h>
-#include <zaf/graphic/interpolation_mode.h>
-#include <zaf/graphic/render_bitmap.h>
+#include <zaf/graphic/d2d/interpolation_mode.h>
+#include <zaf/graphic/d2d/render_bitmap.h>
 
 namespace zaf::d2d {
 

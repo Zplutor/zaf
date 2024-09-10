@@ -3,7 +3,7 @@
 #include <zaf/base/direct2d.h>
 #include <zaf/object/enum_support.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 enum class InterpolationMode {
     NearestNeighbor = D2D1_INTERPOLATION_MODE_NEAREST_NEIGHBOR,

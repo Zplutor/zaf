@@ -1,8 +1,8 @@
 #pragma once
 
-#include <zaf/graphic/pixel_properties.h>
+#include <zaf/graphic/d2d/pixel_properties.h>
 
-namespace zaf {
+namespace zaf::d2d {
 
 class BitmapProperties {
 public:

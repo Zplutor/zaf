@@ -17,8 +17,8 @@ Rect MakeCenteredImageRect(const Rect& draw_rect, const Size& image_size) {
 void DrawImageWithCenterLayout(
     Canvas& canvas,
     const Rect& draw_rect,
-    const RenderBitmap& bitmap,
-    InterpolationMode interpolation_mode) {
+    const d2d::RenderBitmap& bitmap,
+    d2d::InterpolationMode interpolation_mode) {
 
     auto image_rect = MakeCenteredImageRect(draw_rect, bitmap.GetSize());
     canvas.DrawBitmap(bitmap, image_rect, DrawImageOptions().InterpolationMode(interpolation_mode));
@@ -28,8 +28,8 @@ void DrawImageWithCenterLayout(
 void DrawImageWithZoomLayout(
     Canvas& canvas,
     const Rect& draw_rect,
-    const RenderBitmap& bitmap,
-    InterpolationMode interpolation_mode) {
+    const d2d::RenderBitmap& bitmap,
+    d2d::InterpolationMode interpolation_mode) {
 
     auto image_size = bitmap.GetSize();
 
@@ -48,8 +48,8 @@ void DrawImageWithZoomLayout(
 void DrawImageWithTileLayout(
     Canvas& canvas,
     const Rect& draw_rect,
-    const RenderBitmap& bitmap,
-    InterpolationMode interpolation_mode) {
+    const d2d::RenderBitmap& bitmap,
+    d2d::InterpolationMode interpolation_mode) {
 
     auto image_size = bitmap.GetSize();
     auto positions = CalculateTiledImagePositions(draw_rect, image_size);
@@ -72,8 +72,8 @@ void DrawImage(
     Canvas& canvas,
     const Rect& draw_rect,
     ImageLayout image_layout,
-    const RenderBitmap& bitmap,
-    InterpolationMode interpolation_mode) {
+    const d2d::RenderBitmap& bitmap,
+    d2d::InterpolationMode interpolation_mode) {
 
     if (image_layout == ImageLayout::None) {
 

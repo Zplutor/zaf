@@ -1,7 +1,7 @@
 #pragma once
 
 #include <filesystem>
-#include <zaf/graphic/render_bitmap.h>
+#include <zaf/graphic/d2d/render_bitmap.h>
 #include <zaf/graphic/image/uri_image_parser.h>
 #include <zaf/object/custom_property_value_traits.h>
 #include <zaf/object/object.h>
@@ -38,7 +38,7 @@ public:
 
     virtual std::pair<float, float> GetResolution() = 0;
 
-    virtual RenderBitmap CreateRenderBitmap(d2d::Renderer& renderer) = 0;
+    virtual d2d::RenderBitmap CreateRenderBitmap(d2d::Renderer& renderer) = 0;
 };
 
 
@@ -55,7 +55,7 @@ public:
 
     Size GetPixelSize() override;
     std::pair<float, float> GetResolution() override;
-    RenderBitmap CreateRenderBitmap(d2d::Renderer& renderer) override;
+    d2d::RenderBitmap CreateRenderBitmap(d2d::Renderer& renderer) override;
 
     const std::wstring& GetURI() const {
         return uri_;

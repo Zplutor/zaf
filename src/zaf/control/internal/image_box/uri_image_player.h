@@ -10,7 +10,7 @@ public:
     URIImagePlayer(const std::wstring& uri, float dpi);
 
     void GetImageSize(Size& pixel_size, std::pair<float, float>& resolution) override;
-    RenderBitmap GetRenderBitmap(d2d::Renderer& renderer) override;
+    d2d::RenderBitmap GetRenderBitmap(d2d::Renderer& renderer) override;
     void ChangeDPI(float dpi) override;
 
 private:

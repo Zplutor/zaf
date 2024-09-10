@@ -121,11 +121,11 @@ void ImageBox::SetImageLayout(zaf::ImageLayout image_layout) {
 }
 
 
-InterpolationMode ImageBox::InterpolationMode() const {
+d2d::InterpolationMode ImageBox::InterpolationMode() const {
     return interpolation_mode_;
 }
 
-void ImageBox::SetInterpolationMode(zaf::InterpolationMode mode) {
+void ImageBox::SetInterpolationMode(d2d::InterpolationMode mode) {
 
     interpolation_mode_ = mode;
     NeedRepaint();

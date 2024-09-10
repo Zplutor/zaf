@@ -33,7 +33,7 @@ void GifPlayer::GetImageSize(Size& pixel_size, std::pair<float, float>& resoluti
 }
 
 
-RenderBitmap GifPlayer::GetRenderBitmap(d2d::Renderer& renderer) {
+d2d::RenderBitmap GifPlayer::GetRenderBitmap(d2d::Renderer& renderer) {
     
     try {
         if (Initialize(renderer)) {
@@ -205,7 +205,7 @@ void GifPlayer::OverlayNextFrame() {
             bitmap, 
             current_frame_rect_,
             1,
-            InterpolationMode::Linear, 
+            d2d::InterpolationMode::Linear, 
             nullptr);
     }
 
@@ -230,7 +230,7 @@ void GifPlayer::SaveFrame() {
         auto size = current_bitmap.GetPixelSize();
         auto dpi = current_bitmap.GetDpi();
 
-        BitmapProperties bitmap_properties;
+        d2d::BitmapProperties bitmap_properties;
         bitmap_properties.SetDPIX(dpi.first);
         bitmap_properties.SetDPIY(dpi.second);
         bitmap_properties.SetPixelProperties(current_bitmap.GetPixelProperties());

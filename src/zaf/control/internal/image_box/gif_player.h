@@ -16,7 +16,7 @@ public:
     GifPlayer(const wic::BitmapDecoder& image_decoder);
 
     void GetImageSize(Size& pixel_size, std::pair<float, float>& resolution) override;
-    RenderBitmap GetRenderBitmap(d2d::Renderer& renderer) override;
+    d2d::RenderBitmap GetRenderBitmap(d2d::Renderer& renderer) override;
     void Reset() override;
 
 private:
@@ -53,7 +53,7 @@ private:
     std::uint16_t current_frame_delay_;
     GifDisposal current_frame_disposal_;
     Rect current_frame_rect_;
-    RenderBitmap saved_frame_bitmap_;
+    d2d::RenderBitmap saved_frame_bitmap_;
     std::size_t current_loop_count_;
 };
 

@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <zaf/control/control.h>
 #include <zaf/control/image_layout.h>
-#include <zaf/graphic/interpolation_mode.h>
+#include <zaf/graphic/d2d/interpolation_mode.h>
 
 namespace zaf {
 namespace wic {
@@ -32,8 +32,8 @@ public:
     ImageLayout ImageLayout() const;
     void SetImageLayout(zaf::ImageLayout image_layout);
 
-    InterpolationMode InterpolationMode() const;
-    void SetInterpolationMode(zaf::InterpolationMode mode);
+    d2d::InterpolationMode InterpolationMode() const;
+    void SetInterpolationMode(d2d::InterpolationMode mode);
 
 protected:
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
@@ -48,7 +48,7 @@ private:
 private:
     std::unique_ptr<internal::ImagePlayer> image_player_;
     zaf::ImageLayout image_layout_{ zaf::ImageLayout::None };
-    zaf::InterpolationMode interpolation_mode_{ zaf::InterpolationMode::Linear };
+    d2d::InterpolationMode interpolation_mode_{ d2d::InterpolationMode::Linear };
 };
 
 ZAF_OBJECT_BEGIN(ImageBox)
