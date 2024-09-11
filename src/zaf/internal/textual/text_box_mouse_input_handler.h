@@ -5,7 +5,7 @@
 #include <zaf/control/event/double_click_info.h>
 #include <zaf/control/event/mouse_cursor_changing_info.h>
 #include <zaf/control/event/mouse_event_info.h>
-#include <zaf/control/textual/interactive_inline_object.h>
+#include <zaf/control/textual/active_inline_object.h>
 #include <zaf/graphic/dwrite/hit_test_metrics.h>
 #include <zaf/internal/textual/text_box_hit_test_manager.h>
 #include <zaf/internal/textual/text_box_module.h>
@@ -33,14 +33,14 @@ private:
         const TextBoxHitTestManager::HitTestPositionResult& hit_test_result,
         const MouseMessage& mouse_message);
 
-    std::shared_ptr<textual::InteractiveInlineObject> FindInlineObject(
+    std::shared_ptr<textual::ActiveInlineObject> FindInlineObject(
         const TextBoxHitTestManager::HitTestPositionResult& hit_test_result) const;
 
 private:
     std::optional<std::size_t> begin_selecting_index_{};
     bool is_setting_selection_range_{};
 
-    std::weak_ptr<textual::InteractiveInlineObject> mouse_over_object_;
+    std::weak_ptr<textual::ActiveInlineObject> mouse_over_object_;
 };
 
 }

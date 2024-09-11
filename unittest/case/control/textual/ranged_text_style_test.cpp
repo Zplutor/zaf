@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/as.h>
-#include <zaf/control/textual/interactive_inline_object.h>
+#include <zaf/control/textual/active_inline_object.h>
 #include <zaf/control/textual/ranged_text_style.h>
 #include <zaf/creation.h>
 #include <zaf/xml/xml_error.h>
@@ -349,7 +349,7 @@ TEST(RangedTextStyleTest, WriteToXML) {
         style.SetTextColorInRange(Color{ 1.f, 0, 0, 1.f }, Range{ 2, 5 });
         style.SetTextBackColorInRange(Color{ 0, 1.f, 0, 0.5f }, Range{ 0, 10 });
         style.SetTextBackColorInRange(Color{ 0, 0, 1.f, 0.5f }, Range{ 11, 10 });
-        style.AttachInlineObjectToRange(Create<InteractiveInlineObject>(), Range{ 0, 1 });
+        style.AttachInlineObjectToRange(Create<ActiveInlineObject>(), Range{ 0, 1 });
         ASSERT_TRUE(test(
             style,
             R"(<RangedTextStyle>)"
@@ -379,8 +379,8 @@ TEST(RangedTextStyleTest, WriteToXML) {
             R"(<InlineObjects>)"
             R"(<InlineObjectItem>)"
             R"(<Range Index="0" Length="1" />)"
-            R"(<Object Type="InteractiveInlineObject">)"
-            R"(<InteractiveInlineObject />)"
+            R"(<Object Type="ActiveInlineObject">)"
+            R"(<ActiveInlineObject />)"
             R"(</Object>)"
             R"(</InlineObjectItem>)"
             R"(</InlineObjects>)"
@@ -488,8 +488,8 @@ TEST(RangedTextStyleTest, ReadFromXML) {
             R"(<InlineObjects>)"
             R"(<InlineObjectItem>)"
             R"(<Range Index="0" Length="1" />)"
-            R"(<Object Type="InteractiveInlineObject">)"
-            R"(<InteractiveInlineObject />)"
+            R"(<Object Type="ActiveInlineObject">)"
+            R"(<ActiveInlineObject />)"
             R"(</Object>)"
             R"(</InlineObjectItem>)"
             R"(</InlineObjects>)"
@@ -516,6 +516,6 @@ TEST(RangedTextStyleTest, ReadFromXML) {
         ASSERT_EQ(style.InlineObjects().Count(), 1);
         auto inline_object_item = style.InlineObjects().begin();
         ASSERT_EQ(inline_object_item->Range(), Range(0, 1));
-        ASSERT_NE(As<InteractiveInlineObject>(inline_object_item->Object()), nullptr);
+        ASSERT_NE(As<ActiveInlineObject>(inline_object_item->Object()), nullptr);
     }
 }

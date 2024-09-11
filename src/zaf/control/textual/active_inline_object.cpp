@@ -1,4 +1,4 @@
-#include <zaf/control/textual/interactive_inline_object.h>
+#include <zaf/control/textual/active_inline_object.h>
 #include <zaf/base/as.h>
 #include <zaf/control/text_box.h>
 #include <zaf/xml/xml_reader.h>
@@ -6,15 +6,15 @@
 
 namespace zaf::textual {
 
-ZAF_OBJECT_IMPL(InteractiveInlineObject);
+ZAF_OBJECT_IMPL(ActiveInlineObject);
 
 
-std::shared_ptr<TextBox> InteractiveInlineObject::Host() const noexcept {
+std::shared_ptr<TextBox> ActiveInlineObject::Host() const noexcept {
     return As<TextBox>(__super::Host());
 }
 
 
-void InteractiveInlineObject::NeedRepaint() {
+void ActiveInlineObject::NeedRepaint() {
 
     auto text_box = Host();
     if (text_box) {
@@ -23,7 +23,7 @@ void InteractiveInlineObject::NeedRepaint() {
 }
 
 
-std::optional<Point> InteractiveInlineObject::PositionInHost() const {
+std::optional<Point> ActiveInlineObject::PositionInHost() const {
 
     auto host = Host();
     if (!host) {
@@ -40,12 +40,12 @@ std::optional<Point> InteractiveInlineObject::PositionInHost() const {
 }
 
 
-bool InteractiveInlineObject::IsMouseOver() const noexcept {
+bool ActiveInlineObject::IsMouseOver() const noexcept {
     return is_mouse_over_;
 }
 
 
-bool InteractiveInlineObject::IsInSelectionRange() const noexcept {
+bool ActiveInlineObject::IsInSelectionRange() const noexcept {
     
     auto host = Host();
     if (!host) {
@@ -61,7 +61,7 @@ bool InteractiveInlineObject::IsInSelectionRange() const noexcept {
 }
 
 
-void InteractiveInlineObject::OnDetached(const DetachedInfo& event_info) {
+void ActiveInlineObject::OnDetached(const DetachedInfo& event_info) {
 
     is_mouse_over_ = false;
 
@@ -69,18 +69,18 @@ void InteractiveInlineObject::OnDetached(const DetachedInfo& event_info) {
 }
 
 
-bool InteractiveInlineObject::HitTest(bool is_mouse_inside) {
+bool ActiveInlineObject::HitTest(bool is_mouse_inside) {
     return true;
 }
 
 
-void InteractiveInlineObject::OnMouseCursorChanging(
+void ActiveInlineObject::OnMouseCursorChanging(
     const InlineObjectMouseCursorChangingInfo& event_info) {
 
 }
 
 
-void InteractiveInlineObject::OnMouseEnter(const InlineObjectMouseEnterInfo& event_info) {
+void ActiveInlineObject::OnMouseEnter(const InlineObjectMouseEnterInfo& event_info) {
 
     is_mouse_over_ = true;
 
@@ -88,7 +88,7 @@ void InteractiveInlineObject::OnMouseEnter(const InlineObjectMouseEnterInfo& eve
 }
 
 
-void InteractiveInlineObject::OnMouseLeave(const InlineObjectMouseLeaveInfo& event_info) {
+void ActiveInlineObject::OnMouseLeave(const InlineObjectMouseLeaveInfo& event_info) {
 
     is_mouse_over_ = false;
 
@@ -96,32 +96,32 @@ void InteractiveInlineObject::OnMouseLeave(const InlineObjectMouseLeaveInfo& eve
 }
 
 
-void InteractiveInlineObject::OnMouseDown(const InlineObjectMouseDownInfo& event_info) {
+void ActiveInlineObject::OnMouseDown(const InlineObjectMouseDownInfo& event_info) {
 
     mouse_down_event_.Raise(event_info);
 }
 
 
-void InteractiveInlineObject::OnMouseUp(const InlineObjectMouseUpInfo& event_info) {
+void ActiveInlineObject::OnMouseUp(const InlineObjectMouseUpInfo& event_info) {
 
     mouse_up_event_.Raise(event_info);
 }
 
 
-void InteractiveInlineObject::OnDoubleClick(const InlineObjectDoubleClickInfo& event_info) {
+void ActiveInlineObject::OnDoubleClick(const InlineObjectDoubleClickInfo& event_info) {
 
     double_click_event_.Raise(event_info);
 }
 
 
-void InteractiveInlineObject::WriteToXML(XMLWriter& writer) const {
-    writer.WriteElementStart(L"InteractiveInlineObject");
+void ActiveInlineObject::WriteToXML(XMLWriter& writer) const {
+    writer.WriteElementStart(L"ActiveInlineObject");
     writer.WriteElementEnd();
 }
 
 
-void InteractiveInlineObject::ReadFromXML(XMLReader& reader) {
-    auto [is_empty] = reader.ReadElementStart(L"InteractiveInlineObject");
+void ActiveInlineObject::ReadFromXML(XMLReader& reader) {
+    auto [is_empty] = reader.ReadElementStart(L"ActiveInlineObject");
     if (!is_empty) {
         reader.ReadElementEnd();
     }

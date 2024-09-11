@@ -5,14 +5,14 @@
 
 namespace zaf {
 namespace textual {
-class InteractiveInlineObject;
+class ActiveInlineObject;
 }
 
 namespace internal {
 
 class HandleableInlineObjectEventInfo : public EventInfo {
 public:
-    explicit HandleableInlineObjectEventInfo(std::shared_ptr<textual::InteractiveInlineObject> source);
+    explicit HandleableInlineObjectEventInfo(std::shared_ptr<textual::ActiveInlineObject> source);
 
     bool IsHandled() const {
         return *is_handled_;
@@ -31,7 +31,7 @@ template<int>
 class InlineObjectMouseEventInfo : public HandleableInlineObjectEventInfo {
 public:
     InlineObjectMouseEventInfo(
-        std::shared_ptr<textual::InteractiveInlineObject> source, 
+        std::shared_ptr<textual::ActiveInlineObject> source, 
         const MouseMessage& message)
         : 
         HandleableInlineObjectEventInfo(std::move(source)),
@@ -53,13 +53,13 @@ namespace textual {
 
 class InlineObjectMouseEnterInfo : public EventInfo {
 public:
-    explicit InlineObjectMouseEnterInfo(std::shared_ptr<InteractiveInlineObject> source);
+    explicit InlineObjectMouseEnterInfo(std::shared_ptr<ActiveInlineObject> source);
 };
 
 
 class InlineObjectMouseLeaveInfo : public EventInfo {
 public:
-    explicit InlineObjectMouseLeaveInfo(std::shared_ptr<InteractiveInlineObject> source);
+    explicit InlineObjectMouseLeaveInfo(std::shared_ptr<ActiveInlineObject> source);
 };
 
 

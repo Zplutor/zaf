@@ -2,7 +2,7 @@
 
 #include <zaf/base/event/event.h>
 #include <zaf/control/textual/inline_object.h>
-#include <zaf/control/textual/interactive_inline_object_events.h>
+#include <zaf/control/textual/active_inline_object_events.h>
 
 namespace zaf {
 
@@ -15,7 +15,7 @@ class TextBoxMouseInputHandler;
 
 namespace textual {
 
-class InteractiveInlineObject : public InlineObject {
+class ActiveInlineObject : public InlineObject {
 public:
     ZAF_OBJECT;
 
@@ -99,7 +99,7 @@ private:
     Event<InlineObjectDoubleClickInfo> double_click_event_;
 };
 
-ZAF_OBJECT_BEGIN(InteractiveInlineObject);
+ZAF_OBJECT_BEGIN(ActiveInlineObject);
 ZAF_OBJECT_END;
 
 }
