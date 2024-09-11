@@ -19,8 +19,7 @@ dwrite::InlineObjectMetrics InlineObject::GetMetrics() const {
 
     dwrite::InlineObjectMetrics result;
     result.SetWidth(16);
-    result.SetHeight(16);
-    result.SetHeightAboveBaseline(16);
+    result.SetHeightAndBaseline(16);
     return result;
 }
 

@@ -121,6 +121,9 @@
     <Filter Include="case\internal\textual">
       <UniqueIdentifier>{10f44d7b-fd58-4bc9-b148-a030fb782291}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\graphic\dwrite">
+      <UniqueIdentifier>{5315c647-c8d1-4cdc-b519-9ffd426a5303}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -595,6 +598,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\textual\styled_text_view_test.cpp">
       <Filter>case\control\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\graphic\dwrite\inline_object_metrics_test.cpp">
+      <Filter>case\graphic\dwrite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

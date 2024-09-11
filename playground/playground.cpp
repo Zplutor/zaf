@@ -68,7 +68,7 @@ public:
         zaf::dwrite::InlineObjectMetrics result;
         result.SetWidth(60);
         result.SetHeight(28);
-        result.SetHeightAboveBaseline(22.4f);
+        result.SetBaseline(22.4f);
         return result;
     }
 
