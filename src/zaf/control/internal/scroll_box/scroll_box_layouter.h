@@ -1,34 +1,34 @@
 #pragma once
 
 #include <memory>
+#include <zaf/base/non_copyable.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_box.h>
 
 namespace zaf::internal {
 
-class ScrollBoxLayouter {
+class ScrollBoxLayouter : NonCopyableNonMovable {
 public:
-    ScrollBoxLayouter(ScrollBox* scrollable_control);
+    explicit ScrollBoxLayouter(zaf::ScrollBox* scroll_box);
     virtual ~ScrollBoxLayouter();
 
-    ScrollBoxLayouter(const ScrollBoxLayouter&) = delete;
-    ScrollBoxLayouter& operator=(const ScrollBoxLayouter&) = delete;
-
-    void ScrollBarChange(bool is_horizontal, const std::shared_ptr<ScrollBar>& previous_scroll_bar);
+    void ScrollBarChange(
+        bool is_horizontal, 
+        const std::shared_ptr<ScrollBar>& previous_scroll_bar);
 
     virtual void Layout() = 0;
 
 protected:
-    ScrollBox* GetScrollableControl() const {
-        return scrollable_control_;
+    zaf::ScrollBox* ScrollBox() const {
+        return scroll_box_;
     }
 
-    const std::shared_ptr<ScrollBar>& GetVerticalScrollBar() const {
-        return GetScrollableControl()->VerticalScrollBar();
+    const std::shared_ptr<ScrollBar>& VerticalScrollBar() const {
+        return ScrollBox()->VerticalScrollBar();
     }
 
-    const std::shared_ptr<ScrollBar>& GetHorizontalScrollBar() const {
-        return GetScrollableControl()->HorizontalScrollBar();
+    const std::shared_ptr<ScrollBar>& HorizontalScrollBar() const {
+        return ScrollBox()->HorizontalScrollBar();
     }
 
     void LayoutScrollBars(bool need_vertical_scroll_bar, bool need_horizontal_scroll_bar);
@@ -43,7 +43,7 @@ private:
     void UnregisterScrollBarEvent(bool is_horizontal);
 
 private:
-    ScrollBox* scrollable_control_;
+    zaf::ScrollBox* scroll_box_{};
 
     Subscription horizontal_scroll_bar_subscription_;
     Subscription vertical_scroll_bar_subscription_;

@@ -6,7 +6,7 @@ namespace zaf::internal {
 
 class GeneralScrollLayouter : public ScrollBoxLayouter {
 public:
-    GeneralScrollLayouter(ScrollBox* scrollable_control);
+    using ScrollBoxLayouter::ScrollBoxLayouter;
 
     void Layout() override;
 

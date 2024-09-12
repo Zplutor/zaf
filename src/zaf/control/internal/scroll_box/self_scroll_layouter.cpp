@@ -8,15 +8,15 @@
 namespace zaf {
 namespace internal {
 
-SelfScrollLayouter::SelfScrollLayouter(ScrollBox* scrollable_control) : 
-    ScrollBoxLayouter(scrollable_control) {
+SelfScrollLayouter::SelfScrollLayouter(zaf::ScrollBox* scroll_box) :
+    ScrollBoxLayouter(scroll_box) {
 
-    auto self_scrolling_control = GetSelfScrollingControl();
+    auto self_scroll_control = SelfScrollControl();
 
-    Subscriptions() += self_scrolling_control->ScrollBarChangeEvent().Subscribe(
+    Subscriptions() += self_scroll_control->ScrollBarChangeEvent().Subscribe(
         std::bind(&SelfScrollLayouter::SelfScrollingControlScrollBarChange, this));
 
-    Subscriptions() += self_scrolling_control->ScrollValuesChangeEvent().Subscribe(
+    Subscriptions() += self_scroll_control->ScrollValuesChangeEvent().Subscribe(
        std::bind(
            &SelfScrollLayouter::SelfScrollingControlScrollValuesChange, 
            this, 
@@ -35,23 +35,30 @@ void SelfScrollLayouter::Layout() {
     ZAF_EXPECT(!is_layouting_);
     auto auto_reset = MakeAutoReset(is_layouting_, true);
 
-    auto scrollable_control = GetScrollableControl();
-    auto self_scrolling_control = GetSelfScrollingControl();
+    auto scroll_box = ScrollBox();
+    auto self_scroll_control = SelfScrollControl();
 
     bool need_vertical_scroll_bar = 
-        scrollable_control->AllowVerticalScroll() && 
-        self_scrolling_control->CanShowVerticalScrollBar();
+        scroll_box->AllowVerticalScroll() && 
+        self_scroll_control->CanShowVerticalScrollBar();
 
     bool need_horizontal_scroll_bar = 
-        scrollable_control->AllowHorizontalScroll() && 
-        self_scrolling_control->CanShowHorizontalScrollBar();
+        scroll_box->AllowHorizontalScroll() && 
+        self_scroll_control->CanShowHorizontalScrollBar();
 
     LayoutScrollBars(need_vertical_scroll_bar, need_horizontal_scroll_bar);
     LayoutScrollContainerControl(need_vertical_scroll_bar, need_horizontal_scroll_bar);
 
-    scrollable_control->ScrollContent()->SetRect(
-        Rect(Point(),
-        scrollable_control->GetScrollContainerControl()->Size()));
+    auto scroll_content = scroll_box->ScrollContent();
+    Rect content_rect{ Point{}, scroll_box->GetScrollContainerControl()->Size() };
+    content_rect.Deflate(scroll_content->Margin());
+    if (content_rect.size.width < 0) {
+        content_rect.size.width = 0;
+    }
+    if (content_rect.size.height < 0) {
+        content_rect.size.height = 0;
+    }
+    scroll_content->SetRect(content_rect);
 
     AdjustScrollBarValue(true);
     AdjustScrollBarValue(false);
@@ -60,8 +67,8 @@ void SelfScrollLayouter::Layout() {
 
 void SelfScrollLayouter::AdjustScrollBarValue(bool is_horizontal) {
 
-    auto scrollable_control = GetScrollableControl();
-    auto self_scrolling_content = GetSelfScrollingControl();
+    auto scrollable_control = ScrollBox();
+    auto self_scrolling_content = SelfScrollControl();
 
     bool is_enabled{};
     int current_value{};
@@ -80,7 +87,7 @@ void SelfScrollLayouter::AdjustScrollBarValue(bool is_horizontal) {
             max_value, 
             page_value);
 
-        scroll_bar = GetHorizontalScrollBar();
+        scroll_bar = HorizontalScrollBar();
     }
     else {
 
@@ -92,7 +99,7 @@ void SelfScrollLayouter::AdjustScrollBarValue(bool is_horizontal) {
             max_value,
             page_value);
 
-        scroll_bar = GetVerticalScrollBar();
+        scroll_bar = VerticalScrollBar();
     }
 
     auto update_guard = scroll_bar->BeginUpdate();
@@ -113,16 +120,16 @@ void SelfScrollLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) 
 
     int value = scroll_bar->Value();
     if (scroll_bar->IsHorizontal()) {
-        GetSelfScrollingControl()->HorizontallyScroll(value);
+        SelfScrollControl()->HorizontallyScroll(value);
     }
     else {
-        GetSelfScrollingControl()->VerticallyScroll(value);
+        SelfScrollControl()->VerticallyScroll(value);
     }
 }
 
 
 void SelfScrollLayouter::SelfScrollingControlScrollBarChange() {
-    GetScrollableControl()->NeedRelayout();
+    ScrollBox()->NeedRelayout();
 }
 
 

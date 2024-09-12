@@ -9,7 +9,7 @@ namespace internal {
 
 class SelfScrollLayouter : public ScrollBoxLayouter, public SubscriptionHost {
 public:
-    SelfScrollLayouter(ScrollBox* scrollable_control);
+    explicit SelfScrollLayouter(zaf::ScrollBox* scroll_box);
     ~SelfScrollLayouter();
 
     void Layout() override;
@@ -18,8 +18,8 @@ protected:
     void ScrollBarScroll(const ScrollBarScrollInfo& event_info) override;
 
 private:
-    SelfScrollControl* GetSelfScrollingControl() const {
-        return GetScrollableControl()->GetSelfScrollingControl();
+    SelfScrollControl* SelfScrollControl() const {
+        return ScrollBox()->GetSelfScrollingControl();
     }
 
     void AdjustScrollBarValue(bool is_horizontal);

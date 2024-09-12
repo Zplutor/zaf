@@ -5,12 +5,6 @@
 
 namespace zaf::internal {
 
-GeneralScrollLayouter::GeneralScrollLayouter(ScrollBox* scrollable_control) : 
-    ScrollBoxLayouter(scrollable_control) {
-
-}
-
-
 void GeneralScrollLayouter::Layout() {
 
     bool need_vertical_scroll_bar = false;
@@ -39,14 +33,14 @@ Size GeneralScrollLayouter::DeterminateScrollContentSize(
             return false;
         }
 
-        if (!GetScrollableControl()->AutoHideScrollBars()) {
+        if (!ScrollBox()->AutoHideScrollBars()) {
             return true;
         } 
         
         return content_length > container_length;
     };
 
-    auto scrollable_control = GetScrollableControl();
+    auto scrollable_control = ScrollBox();
     auto container_size = scrollable_control->ContentSize();
 
     const auto& content_control = scrollable_control->ScrollContent();
@@ -108,13 +102,13 @@ Size GeneralScrollLayouter::DeterminateScrollContentSize(
 
 void GeneralScrollLayouter::AdjustScrollBarValueRanges(const zaf::Size& scroll_content_size) {
 
-    const auto& scroll_container_control = GetScrollableControl()->GetScrollContainerControl();
-    const auto& vertical_scroll_bar = GetVerticalScrollBar();
-    const auto& horizontal_scroll_bar = GetHorizontalScrollBar();
+    const auto& scroll_container_control = ScrollBox()->GetScrollContainerControl();
+    const auto& vertical_scroll_bar = VerticalScrollBar();
+    const auto& horizontal_scroll_bar = HorizontalScrollBar();
 
     const Size& scroll_size = CalculateScrollSize(scroll_content_size);
     const Size& container_size = scroll_container_control->ContentSize();
-    auto auto_adjust_large_change = GetScrollableControl()->AutoScrollBarLargeChange();
+    auto auto_adjust_large_change = ScrollBox()->AutoScrollBarLargeChange();
 
     {
         auto update_guard = vertical_scroll_bar->BeginUpdate();
@@ -146,7 +140,7 @@ void GeneralScrollLayouter::AdjustScrollBarValueRanges(const zaf::Size& scroll_c
 
 Size GeneralScrollLayouter::CalculateScrollSize(const Size& expected_content_size) const {
 
-    const auto& scroll_content_control = GetScrollableControl()->ScrollContent();
+    const auto& scroll_content_control = ScrollBox()->ScrollContent();
     const auto& margin = scroll_content_control->Margin();
 
     auto result = expected_content_size;
@@ -158,12 +152,12 @@ Size GeneralScrollLayouter::CalculateScrollSize(const Size& expected_content_siz
 
 void GeneralScrollLayouter::LayoutScrollContentControl(const zaf::Size& scroll_content_size) {
 
-    const auto& scroll_content_control = GetScrollableControl()->ScrollContent();
+    const auto& scroll_content_control = ScrollBox()->ScrollContent();
     const auto& margin = scroll_content_control->Margin();
 
     Rect new_rect;
-    new_rect.position.x = margin.left - static_cast<float>(GetHorizontalScrollBar()->Value());
-    new_rect.position.y = margin.top - static_cast<float>(GetVerticalScrollBar()->Value());
+    new_rect.position.x = margin.left - static_cast<float>(HorizontalScrollBar()->Value());
+    new_rect.position.y = margin.top - static_cast<float>(VerticalScrollBar()->Value());
     new_rect.size = scroll_content_size;
 
     scroll_content_control->SetRect(new_rect);
@@ -172,7 +166,7 @@ void GeneralScrollLayouter::LayoutScrollContentControl(const zaf::Size& scroll_c
 
 void GeneralScrollLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) {
 
-    const auto& scroll_content_control = GetScrollableControl()->ScrollContent();
+    const auto& scroll_content_control = ScrollBox()->ScrollContent();
     Rect content_rect = scroll_content_control->Rect();
 
     auto scroll_bar = As<ScrollBar>(event_info.Source());

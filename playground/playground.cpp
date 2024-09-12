@@ -86,24 +86,15 @@ protected:
 
         __super::Initialize();
 
-        auto box = zaf::Create<zaf::TextBox>();
-        box->SetIsEditable(true);
-        box->SetFontSize(22);
-        box->SetTextColor(zaf::Color::Red());
-        box->SetText(L"This is a text box.");
-        box->SetParagraphAlignment(zaf::dwrite::ParagraphAlignment::Center);
-        box->SetFixedHeight(60);
+        auto scroll_box = zaf::Create<zaf::ScrollBox>();
 
-        auto size = box->CalculatePreferredSize();
-
-        box->SetTextColorInRange(zaf::Color::Blue(), zaf::Range{ 10, 4 });
-        box->SetTextBackColorInRange(zaf::Color::Gray(), zaf::Range{ 10, 4 });
-
-        box->SetSelectionRange({ box->Text().length(), 0 });
-        box->Input(zaf::Create<MyInlineObject>());
+        auto content = zaf::Create<zaf::TextBox>();
+        content->SetBackgroundColor(zaf::Color::Green());
+        content->SetMargin(zaf::Frame{ 10 });
+        scroll_box->SetScrollContent(content);
 
         RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
-        RootControl()->AddChild(box);
+        RootControl()->AddChild(scroll_box);
         RootControl()->SetPadding(zaf::Frame{ 20 });
     }
 };
