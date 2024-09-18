@@ -89,8 +89,8 @@ protected:
         auto scroll_box = zaf::Create<zaf::ScrollBox>();
 
         auto content = zaf::Create<zaf::TextBox>();
-        content->SetBackgroundColor(zaf::Color::Green());
         content->SetMargin(zaf::Frame{ 10 });
+        
         scroll_box->SetScrollContent(content);
 
         RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());

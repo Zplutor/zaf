@@ -552,14 +552,14 @@ void TextBox::EnsureCaretVisible(const zaf::Rect& char_rect_at_caret) {
     }
 
     //Update x.
-    auto x_changed = update_single_dimension(
+    auto x_changed = allow_horizontal_scroll_ && update_single_dimension(
         content_size.width,
         char_rect_at_caret.Left(),
         char_rect_at_caret.size.width,
         text_rect_.position.x);
 
     //Update y.
-    auto y_changed = update_single_dimension(
+    auto y_changed = allow_vertical_scroll_ && update_single_dimension(
         content_size.height, 
         char_rect_at_caret.Top(),
         char_rect_at_caret.size.height,
