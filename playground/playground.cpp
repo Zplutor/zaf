@@ -61,42 +61,14 @@
 
 void BeginRun(const zaf::BeginRunInfo& event_info);
 
-class MyInlineObject : public zaf::textual::ActiveInlineObject {
-public:
-    zaf::dwrite::InlineObjectMetrics GetMetrics() const override {
-
-        zaf::dwrite::InlineObjectMetrics result;
-        result.SetWidth(60);
-        result.SetHeight(28);
-        result.SetBaseline(22.4f);
-        return result;
-    }
-
-    void OnMouseCursorChanging(const zaf::textual::InlineObjectMouseCursorChangingInfo& event_info) override {
-
-        zaf::Mouse::SetCursor(zaf::Cursor::Normal());
-        event_info.MarkAsHandled();
-    }
-
-};
-
 class Window : public zaf::Window {
 protected:
     void Initialize() override {
 
         __super::Initialize();
-
-        auto scroll_box = zaf::Create<zaf::ScrollBox>();
-
-        auto content = zaf::Create<zaf::TextBox>();
-        content->SetMargin(zaf::Frame{ 10 });
-        
-        scroll_box->SetScrollContent(content);
-
-        RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
-        RootControl()->AddChild(scroll_box);
-        RootControl()->SetPadding(zaf::Frame{ 20 });
     }
+
+private:
 };
 
 

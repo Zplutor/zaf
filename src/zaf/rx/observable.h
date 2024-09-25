@@ -16,6 +16,7 @@ public:
     explicit Observable(std::shared_ptr<internal::InnerObservable> inner) : 
         inner_(std::move(inner)) { }
 
+    [[nodiscard]]
     Subscription Subscribe() {
         return Subscribe(nullptr, nullptr, nullptr);
     }
