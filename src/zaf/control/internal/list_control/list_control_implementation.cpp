@@ -172,9 +172,10 @@ void ListControlImplementation::InstallDataSource(
 
     data_source_ = data_source;
 
-    //Re-create item height manager once data source is changed, bacause item height manager 
+    //Re-create item height manager once data source is changed, because item height manager 
     //depends on notifications of data source.
     item_height_manager_ = std::make_shared<internal::ListControlItemHeightManager>(data_source_);
+    item_height_manager_->ResetDelegate(delegate_);
 
     item_container_->SetSelectStrategy(CreateSelectStrategy());
 
