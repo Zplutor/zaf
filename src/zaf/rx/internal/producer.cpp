@@ -10,30 +10,42 @@ Producer::Producer(std::shared_ptr<InnerObserver> observer) :
 
 
 void Producer::EmitOnNext(const std::any& any) {
-    if (observer_) {
-        observer_->OnNext(any);
+    if (auto observer = observer_) {
+        observer->OnNext(any);
     }
 }
 
 
 void Producer::EmitOnError(const std::exception_ptr& error) {
+
     auto keep_alive = shared_from_this();
-    if (observer_) {
-        observer_->OnError(error);
+    {
+        auto observer = observer_;
+        if (observer) {
+            observer->OnError(error);
+        }
     }
     TerminateProduce();
 }
 
 
 void Producer::EmitOnCompleted() {
+
     //There is a delicate protection here. 
     //During the OnCompleted() notification chain, current producer might be released, causing a 
     //dangling pointer. Exception would occur if execution continue.
     //So we have to retain a shared pointer to keep producer alive during the notification.
     auto keep_alive = shared_from_this();
-    if (observer_) {
-        observer_->OnCompleted();
+
+    {
+        //Here is a similar protection as above. observer_ may be reset in Dispose() during the 
+        //OnCompleted() call, so we retain a new shared pointer to keep it alive. 
+        auto observer = observer_;
+        if (observer) {
+            observer->OnCompleted();
+        }
     }
+    
     TerminateProduce();
 }
 
