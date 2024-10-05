@@ -142,8 +142,8 @@ private:
     std::shared_ptr<ListItem> CreateItem(std::size_t index);
     void RecoverLastFocusedItem(const std::vector<std::shared_ptr<ListItem>>& items);
 
-    void OnItemAdd(const ListDataSourceDataAddInfo& event_info);
-    void HandleItemAdd(const ListDataSourceDataAddInfo& event_info);
+    void OnItemAdd(const ListDataAddedInfo& event_info);
+    void HandleItemAdd(const ListDataAddedInfo& event_info);
     void AddItemsBeforeVisibleItems(
         std::size_t index, 
         std::size_t count, 
@@ -153,8 +153,8 @@ private:
         std::size_t count, 
         float position_difference);
 
-    void OnItemRemove(const ListDataSourceDataRemoveInfo& event_info);
-    void HandleItemRemove(const ListDataSourceDataRemoveInfo& event_info);
+    void OnItemRemove(const ListDataRemovedInfo& event_info);
+    void HandleItemRemove(const ListDataRemovedInfo& event_info);
     void RemoveItemsBeforeVisibleItems(
         std::size_t index, 
         std::size_t count, 
@@ -164,8 +164,8 @@ private:
         std::size_t count, 
         float position_difference);
 
-    void OnItemUpdate(const ListDataSourceDataUpdateInfo& event_info);
-    void HandleItemUpdate(const ListDataSourceDataUpdateInfo& event_info);
+    void OnItemUpdate(const ListDataUpdatedInfo& event_info);
+    void HandleItemUpdate(const ListDataUpdatedInfo& event_info);
     void AdjustVisibleItemPositionsByUpdatingItems(
         std::size_t index, 
         std::size_t count, 

@@ -190,19 +190,19 @@ void ListControlImplementation::RegisterDataSourceEvents() {
         return;
     }
 
-    data_source_subscriptions_ += data_source->DataAddEvent().Subscribe(
+    data_source_subscriptions_ += data_source->DataAddedEvent().Subscribe(
         std::bind(
             &ListControlImplementation::OnItemAdd, 
             this, 
             std::placeholders::_1));
 
-    data_source_subscriptions_ += data_source->DataRemoveEvent().Subscribe(
+    data_source_subscriptions_ += data_source->DataRemovedEvent().Subscribe(
         std::bind(
             &ListControlImplementation::OnItemRemove,
             this, 
             std::placeholders::_1));
 
-    data_source_subscriptions_ += data_source->DataUpdateEvent().Subscribe(
+    data_source_subscriptions_ += data_source->DataUpdatedEvent().Subscribe(
         std::bind(
             &ListControlImplementation::OnItemUpdate,
             this, 
@@ -623,7 +623,7 @@ std::shared_ptr<ListItem> ListControlImplementation::CreateItem(std::size_t inde
 }
 
 
-void ListControlImplementation::OnItemAdd(const ListDataSourceDataAddInfo& event_info) {
+void ListControlImplementation::OnItemAdd(const ListDataAddedInfo& event_info) {
 
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
@@ -636,7 +636,7 @@ void ListControlImplementation::OnItemAdd(const ListDataSourceDataAddInfo& event
 }
 
 
-void ListControlImplementation::HandleItemAdd(const ListDataSourceDataAddInfo& event_info) {
+void ListControlImplementation::HandleItemAdd(const ListDataAddedInfo& event_info) {
 
     //Adjust scroll bar small change if there is no items before adding.
     bool need_adjust_scroll_bar_small_change = visible_items_.empty();
@@ -710,7 +710,7 @@ void ListControlImplementation::AddItemsInMiddleOfVisibleItems(
 }
 
 
-void ListControlImplementation::OnItemRemove(const ListDataSourceDataRemoveInfo& event_info) {
+void ListControlImplementation::OnItemRemove(const ListDataRemovedInfo& event_info) {
 
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
@@ -723,7 +723,7 @@ void ListControlImplementation::OnItemRemove(const ListDataSourceDataRemoveInfo&
 }
 
 
-void ListControlImplementation::HandleItemRemove(const ListDataSourceDataRemoveInfo& event_info) {
+void ListControlImplementation::HandleItemRemove(const ListDataRemovedInfo& event_info) {
 
     bool selection_changed = item_selection_manager_.AdjustSelectionByRemovingIndexes(
         event_info.index,
@@ -783,7 +783,7 @@ void ListControlImplementation::RemoveItemsInMiddleOfVisibleItems(
 }
 
 
-void ListControlImplementation::OnItemUpdate(const ListDataSourceDataUpdateInfo& event_info) {
+void ListControlImplementation::OnItemUpdate(const ListDataUpdatedInfo& event_info) {
 
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
@@ -796,7 +796,7 @@ void ListControlImplementation::OnItemUpdate(const ListDataSourceDataUpdateInfo&
 }
 
 
-void ListControlImplementation::HandleItemUpdate(const ListDataSourceDataUpdateInfo& event_info) {
+void ListControlImplementation::HandleItemUpdate(const ListDataUpdatedInfo& event_info) {
 
     auto update_guard = item_container_->BeginUpdate();
 

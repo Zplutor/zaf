@@ -11,7 +11,7 @@ void ListControlItemHeightStrategy::Initialize(
 
 
 void ListControlItemHeightStrategy::OnItemAdd(
-    const ListDataSourceDataAddInfo& event_info,
+    const ListDataAddedInfo& event_info,
     ListDataSource& data_source,
     ListControlDelegate& delegate) {
 
@@ -20,14 +20,14 @@ void ListControlItemHeightStrategy::OnItemAdd(
 
 
 void ListControlItemHeightStrategy::OnItemUpdate(
-    const ListDataSourceDataUpdateInfo& event_info,
+    const ListDataUpdatedInfo& event_info,
     ListDataSource& data_source,
     ListControlDelegate& delegate) {
 
 }
 
 
-void ListControlItemHeightStrategy::OnItemRemove(const ListDataSourceDataRemoveInfo& event_info) {
+void ListControlItemHeightStrategy::OnItemRemove(const ListDataRemovedInfo& event_info) {
 
     item_count_ -= event_info.count;
 }

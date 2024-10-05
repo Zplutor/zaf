@@ -1,18 +1,16 @@
 #pragma once
 
 #include <memory>
+#include <zaf/base/non_copyable.h>
 #include <zaf/control/list_item.h>
 #include <zaf/creation.h>
 
 namespace zaf {
 
-class ListControlDelegate {
+class ListControlDelegate : NonCopyableNonMovable {
 public:
     ListControlDelegate() = default;
     virtual ~ListControlDelegate() = default;
-
-    ListControlDelegate(const ListControlDelegate&) = delete;
-    ListControlDelegate& operator=(const ListControlDelegate&) = delete;
 
     /**
      Get a value indicating that whether each item has different height.

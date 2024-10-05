@@ -117,7 +117,7 @@ float ListControlVariableItemHeightStrategy::GetTotalHeight() {
 
 
 void ListControlVariableItemHeightStrategy::OnItemAdd(
-    const ListDataSourceDataAddInfo& event_info,
+    const ListDataAddedInfo& event_info,
     ListDataSource& data_source,
     ListControlDelegate& delegate) {
 
@@ -152,7 +152,7 @@ void ListControlVariableItemHeightStrategy::OnItemAdd(
 
 
 void ListControlVariableItemHeightStrategy::OnItemUpdate(
-    const ListDataSourceDataUpdateInfo& event_info,
+    const ListDataUpdatedInfo& event_info,
     ListDataSource& data_source,
     ListControlDelegate& delegate) {
 
@@ -185,7 +185,7 @@ void ListControlVariableItemHeightStrategy::OnItemUpdate(
 
 
 void ListControlVariableItemHeightStrategy::OnItemRemove(
-    const ListDataSourceDataRemoveInfo& event_info) {
+    const ListDataRemovedInfo& event_info) {
 
     __super::OnItemRemove(event_info);
 

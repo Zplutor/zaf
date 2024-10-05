@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/base/non_copyable.h>
 #include <zaf/creation.h>
 #include <zaf/object/object.h>
 #include <zaf/rx/observable.h>
@@ -7,18 +8,14 @@
 
 namespace zaf {
 
-class Object;
-class ListDataSourceDataAddInfo;
-class ListDataSourceDataRemoveInfo;
-class ListDataSourceDataUpdateInfo;
+class ListDataAddedInfo;
+class ListDataRemovedInfo;
+class ListDataUpdatedInfo;
 
-class ListDataSource {
+class ListDataSource : NonCopyableNonMovable {
 public:
     ListDataSource() = default;
     virtual ~ListDataSource() = default;
-
-    ListDataSource(const ListDataSource&) = delete;
-    ListDataSource& operator=(const ListDataSource&) = delete;
 
     virtual std::size_t GetDataCount() {
         return 0;
@@ -31,22 +28,22 @@ public:
     /**
      Get item add event.
      */
-    Observable<ListDataSourceDataAddInfo> DataAddEvent() {
-        return data_add_event_.AsObservable();
+    Observable<ListDataAddedInfo> DataAddedEvent() const {
+        return data_added_event_.AsObservable();
     }
 
     /**
      Get item remove event.
      */
-    Observable<ListDataSourceDataRemoveInfo> DataRemoveEvent() {
-        return data_remove_event_.AsObservable();
+    Observable<ListDataRemovedInfo> DataRemovedEvent() const {
+        return data_removed_event_.AsObservable();
     }
 
     /**
      Get item update event.
      */
-    Observable<ListDataSourceDataUpdateInfo> DataUpdateEvent() {
-        return data_update_event_.AsObservable();
+    Observable<ListDataUpdatedInfo> DataUpdatedEvent() const {
+        return data_updated_event_.AsObservable();
     }
 
 protected:
@@ -93,27 +90,27 @@ protected:
     void NotifyDataUpdate(std::size_t index, std::size_t count);
 
 private:
-    Subject<ListDataSourceDataAddInfo> data_add_event_;
-    Subject<ListDataSourceDataRemoveInfo> data_remove_event_;
-    Subject<ListDataSourceDataUpdateInfo> data_update_event_;
+    Subject<ListDataAddedInfo> data_added_event_;
+    Subject<ListDataRemovedInfo> data_removed_event_;
+    Subject<ListDataUpdatedInfo> data_updated_event_;
 };
 
 
-class ListDataSourceDataAddInfo {
+class ListDataAddedInfo {
 public:
     std::size_t index{};
     std::size_t count{};
 };
 
 
-class ListDataSourceDataRemoveInfo {
+class ListDataRemovedInfo {
 public:
     std::size_t index{};
     std::size_t count{};
 };
 
 
-class ListDataSourceDataUpdateInfo {
+class ListDataUpdatedInfo {
 public:
     std::size_t index{};
     std::size_t count{};

@@ -41,9 +41,9 @@ private:
     void RegisterDataSourceEvents();
     void UnregisterDataSourceEvents();
 
-    void ItemAdd(const ListDataSourceDataAddInfo& event_info);
-    void ItemRemove(const ListDataSourceDataRemoveInfo& event_info);
-    void ItemUpdate(const ListDataSourceDataUpdateInfo& event_info);
+    void ItemAdd(const ListDataAddedInfo& event_info);
+    void ItemRemove(const ListDataRemovedInfo& event_info);
+    void ItemUpdate(const ListDataUpdatedInfo& event_info);
 
 private:
     std::weak_ptr<ListDataSource> data_source_{};

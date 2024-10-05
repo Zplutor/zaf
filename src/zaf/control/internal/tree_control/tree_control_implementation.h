@@ -16,8 +16,7 @@ namespace zaf::internal {
 class TreeControlImplementation : 
     public ListDataSource, 
     public ListControlDelegate,
-    public std::enable_shared_from_this<TreeControlImplementation>,
-    NonCopyableNonMovable {
+    public std::enable_shared_from_this<TreeControlImplementation> {
 
 public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<TreeDataSource>&)>;

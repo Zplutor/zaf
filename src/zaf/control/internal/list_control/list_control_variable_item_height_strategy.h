@@ -21,16 +21,16 @@ public:
     float GetTotalHeight() override;
 
     void OnItemAdd(
-        const ListDataSourceDataAddInfo& event_info,
+        const ListDataAddedInfo& event_info,
         ListDataSource& data_source,
         ListControlDelegate& delegate) override;
 
     void OnItemUpdate(
-        const ListDataSourceDataUpdateInfo& event_info,
+        const ListDataUpdatedInfo& event_info,
         ListDataSource& data_source,
         ListControlDelegate& delegate) override;
 
-    void OnItemRemove(const ListDataSourceDataRemoveInfo& event_info) override;
+    void OnItemRemove(const ListDataRemovedInfo& event_info) override;
 
 private:
     std::pair<float, float> InnerGetItemPositionAndHeight(std::size_t index) const;
