@@ -59,7 +59,7 @@ protected:
      You must call this method to update the list control after adding
      items to data source.
      */
-    void NotifyDataAdd(std::size_t index, std::size_t count);
+    void NotifyDataAdded(std::size_t index, std::size_t count);
 
     /**
      Raise an item remove event.
@@ -73,7 +73,7 @@ protected:
      You must call this method to update the list control after removing
      items from data source.
      */
-    void NotifyDataRemove(std::size_t index, std::size_t count);
+    void NotifyDataRemoved(std::size_t index, std::size_t count);
 
     /**
      Raise an item update event.
@@ -87,7 +87,7 @@ protected:
      You must call this method to update the list control after updating
      items in data source.
      */
-    void NotifyDataUpdate(std::size_t index, std::size_t count);
+    void NotifyDataUpdated(std::size_t index, std::size_t count);
 
 private:
     Subject<ListDataAddedInfo> data_added_event_;

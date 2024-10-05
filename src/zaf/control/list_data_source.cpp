@@ -18,17 +18,17 @@ void RaiseEvent(Subject<T>& subject, std::size_t index, std::size_t count) {
 
 }
 
-void ListDataSource::NotifyDataAdd(std::size_t index, std::size_t count) {
+void ListDataSource::NotifyDataAdded(std::size_t index, std::size_t count) {
     RaiseEvent(data_added_event_, index, count);
 }
 
 
-void ListDataSource::NotifyDataRemove(std::size_t index, std::size_t count) {
+void ListDataSource::NotifyDataRemoved(std::size_t index, std::size_t count) {
     RaiseEvent(data_removed_event_, index, count);
 }
 
 
-void ListDataSource::NotifyDataUpdate(std::size_t index, std::size_t count) {
+void ListDataSource::NotifyDataUpdated(std::size_t index, std::size_t count) {
     RaiseEvent(data_updated_event_, index, count);
 }
 

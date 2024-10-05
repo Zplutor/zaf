@@ -31,7 +31,7 @@ public:
     }
 
     void NotifyUpdate() {
-        NotifyDataUpdate(0, 1);
+        NotifyDataUpdated(0, 1);
     }
 
 private:

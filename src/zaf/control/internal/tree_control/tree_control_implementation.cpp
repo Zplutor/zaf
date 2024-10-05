@@ -516,7 +516,7 @@ bool TreeControlImplementation::ExpandItemUI(
     }
 
     if (list_index) {
-        NotifyDataAdd(*list_index + 1, expanded_count);
+        NotifyDataAdded(*list_index + 1, expanded_count);
     }
 
     if (update_item) {
@@ -648,7 +648,7 @@ bool TreeControlImplementation::CollapseItemUI(
     }
 
     if (list_index) {
-        NotifyDataRemove(*list_index + 1, removed_count);
+        NotifyDataRemoved(*list_index + 1, removed_count);
     }
 
     if (update_item) {
@@ -761,7 +761,7 @@ void TreeControlImplementation::UpdateItem(const IndexPath& index_path) {
     }
 
     CheckIfItemHasChildren(index_path, *list_index);
-    NotifyDataUpdate(*list_index, 1);
+    NotifyDataUpdated(*list_index, 1);
 }
 
 
@@ -794,7 +794,7 @@ void TreeControlImplementation::CheckIfItemHasChildren(
         return;
     }
 
-    NotifyDataRemove(list_index + 1, remove_count);
+    NotifyDataRemoved(list_index + 1, remove_count);
 }
 
 
@@ -911,7 +911,7 @@ void TreeControlImplementation::OnDataAdd(const TreeDataSourceDataAddInfo& event
             tree_index_mapping_.AddChildren(*parent_index_path, event_info.index, event_info.count);
 
             //Raise event.
-            NotifyDataAdd(*list_index, event_info.count);
+            NotifyDataAdded(*list_index, event_info.count);
         }
     }
 
@@ -997,7 +997,7 @@ void TreeControlImplementation::OnDataRemove(const TreeDataSourceDataRemoveInfo&
             event_info.count);
 
         //Raise event.
-        NotifyDataRemove(*list_index, total_remove_count);
+        NotifyDataRemoved(*list_index, total_remove_count);
     }
 
     //Update parent item.
@@ -1024,7 +1024,7 @@ void TreeControlImplementation::OnDataUpdate(const TreeDataSourceDataUpdateInfo&
 
     //Raise events.
     for (const auto& each_range : updated_index_ranges) {
-        NotifyDataUpdate(each_range.first, each_range.second);
+        NotifyDataUpdated(each_range.first, each_range.second);
     }
 }
 

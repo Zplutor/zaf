@@ -104,7 +104,7 @@ void ConversationListView::ConversationUpdate(const std::shared_ptr<Conversation
     bool is_selected = IsItemSelectedAtIndex(old_index);
 
     conversations_.erase(iterator);
-    NotifyDataRemove(old_index, 1);
+    NotifyDataRemoved(old_index, 1);
 
     auto insert_iterator = std::lower_bound(
         conversations_.begin(),
@@ -115,7 +115,7 @@ void ConversationListView::ConversationUpdate(const std::shared_ptr<Conversation
     insert_iterator = conversations_.insert(insert_iterator, updated_conversation);
 
     std::size_t new_index = std::distance(conversations_.begin(), insert_iterator);
-    NotifyDataAdd(new_index, 1);
+    NotifyDataAdded(new_index, 1);
 
     if (is_selected) {
         SelectItemAtIndex(new_index);

@@ -54,7 +54,7 @@ void ConversationMessageListView::Layout(const zaf::Rect& previous_rect) {
 
     //Update all items' height if width is changed.
     if (previous_rect.size.width != Size().width) {
-        NotifyDataUpdate(0, message_item_infos_.size());
+        NotifyDataUpdated(0, message_item_infos_.size());
     }
 }
 
@@ -113,7 +113,7 @@ void ConversationMessageListView::OnMessageAdd(const std::shared_ptr<Message>& m
     insert_iterator = message_item_infos_.insert(insert_iterator, message_item_info);
 
     std::size_t insert_index = std::distance(message_item_infos_.begin(), insert_iterator);
-    NotifyDataAdd(insert_index, 1);
+    NotifyDataAdded(insert_index, 1);
     ScrollToBottom();
 
     Service::GetInstance().RemoveConversationAllUnreadMessages(conversation_id_);

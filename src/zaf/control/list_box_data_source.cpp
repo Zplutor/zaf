@@ -9,7 +9,7 @@ void ListBoxDataSource::AddDataAtIndex(std::size_t index, const std::shared_ptr<
 
     data_list_.insert(std::next(data_list_.begin(), index), data);
 
-    NotifyDataAdd(index, 1);
+    NotifyDataAdded(index, 1);
 }
 
 
@@ -19,7 +19,7 @@ void ListBoxDataSource::RemoveDataAtIndex(std::size_t index) {
 
     data_list_.erase(std::next(data_list_.begin(), index));
 
-    NotifyDataRemove(index, 1);
+    NotifyDataRemoved(index, 1);
 }
 
 
@@ -31,7 +31,7 @@ void ListBoxDataSource::RemoveAllData() {
 
     auto item_count = data_list_.size();
     data_list_.clear();
-    NotifyDataRemove(0, item_count);
+    NotifyDataRemoved(0, item_count);
 }
 
 }

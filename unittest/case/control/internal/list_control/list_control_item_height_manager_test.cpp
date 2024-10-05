@@ -34,16 +34,16 @@ public:
 
     void AddItems(std::size_t index, std::size_t count) {
         item_count += count;
-        NotifyDataAdd(index, count);
+        NotifyDataAdded(index, count);
     }
 
     void RemoveItems(std::size_t index, std::size_t count) {
         item_count -= count;
-        NotifyDataRemove(index, count);
+        NotifyDataRemoved(index, count);
     }
 
     void UpdateItems(std::size_t index, std::size_t count) {
-        NotifyDataUpdate(index, count);
+        NotifyDataUpdated(index, count);
     }
 
 public:
