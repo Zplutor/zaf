@@ -2965,5 +2965,8 @@
     <ClInclude Include="src\zaf\graphic\uri_image_parser.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\control\event\list_data_event_infos.h">
+      <Filter>zaf\control\event</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -642,24 +642,30 @@ void ListControlImplementation::HandleItemAdd(const ListDataAddedInfo& event_inf
     bool need_adjust_scroll_bar_small_change = visible_items_.empty();
 
     bool selection_changed = item_selection_manager_.AdjustSelectionByAddingIndexes(
-        event_info.index, 
-        event_info.count);
+        event_info.Index(),
+        event_info.Count());
 
     auto update_gurad = item_container_->BeginUpdate();
 
     float position_difference = AdjustContentHeight();
 
-    if (event_info.index >= first_visible_item_index_ + visible_items_.size()) {
+    if (event_info.Index() >= first_visible_item_index_ + visible_items_.size()) {
         
         UpdateVisibleItems();
     }
     else {
 
-        if (event_info.index <= first_visible_item_index_) {
-            AddItemsBeforeVisibleItems(event_info.index, event_info.count, position_difference);
+        if (event_info.Index() <= first_visible_item_index_) {
+            AddItemsBeforeVisibleItems(
+                event_info.Index(),
+                event_info.Count(),
+                position_difference);
         }
         else {
-            AddItemsInMiddleOfVisibleItems(event_info.index, event_info.count, position_difference);
+            AddItemsInMiddleOfVisibleItems(
+                event_info.Index(),
+                event_info.Count(),
+                position_difference);
         }
     }
 
@@ -726,22 +732,25 @@ void ListControlImplementation::OnItemRemove(const ListDataRemovedInfo& event_in
 void ListControlImplementation::HandleItemRemove(const ListDataRemovedInfo& event_info) {
 
     bool selection_changed = item_selection_manager_.AdjustSelectionByRemovingIndexes(
-        event_info.index,
-        event_info.count);
+        event_info.Index(),
+        event_info.Count());
 
     auto update_gurad = item_container_->BeginUpdate();
 
     float position_difference = AdjustContentHeight();
 
-    if (event_info.index >= first_visible_item_index_ + visible_items_.size()) {
+    if (event_info.Index() >= first_visible_item_index_ + visible_items_.size()) {
         return;
     }
 
-    if (event_info.index < first_visible_item_index_) {
-        RemoveItemsBeforeVisibleItems(event_info.index, event_info.count, position_difference);
+    if (event_info.Index() < first_visible_item_index_) {
+        RemoveItemsBeforeVisibleItems(event_info.Index(), event_info.Count(), position_difference);
     }
     else {
-        RemoveItemsInMiddleOfVisibleItems(event_info.index, event_info.count, position_difference);
+        RemoveItemsInMiddleOfVisibleItems(
+            event_info.Index(), 
+            event_info.Count(), 
+            position_difference);
     }
 
     if (selection_changed) {
@@ -802,16 +811,16 @@ void ListControlImplementation::HandleItemUpdate(const ListDataUpdatedInfo& even
 
     float position_difference = AdjustContentHeight();
 
-    if (event_info.index >= first_visible_item_index_ + visible_items_.size()) {
+    if (event_info.Index() >= first_visible_item_index_ + visible_items_.size()) {
         return;
     }
 
     AdjustVisibleItemPositionsByUpdatingItems(
-        event_info.index,
-        event_info.count, 
+        event_info.Index(),
+        event_info.Count(),
         position_difference);
 
-    UpdateVisibleItemsByUpdatingItems(event_info.index, event_info.count);
+    UpdateVisibleItemsByUpdatingItems(event_info.Index(), event_info.Count());
 }
 
 

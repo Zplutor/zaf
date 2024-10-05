@@ -124,16 +124,16 @@ void ListControlVariableItemHeightStrategy::OnItemAdd(
     __super::OnItemAdd(event_info, data_source, delegate);
 
     item_positions_.insert(
-        std::next(item_positions_.begin(), event_info.index),
-        event_info.count,
+        std::next(item_positions_.begin(), event_info.Index()),
+        event_info.Count(),
         0);
 
-    auto old_item_index = event_info.index + event_info.count;
+    auto old_item_index = event_info.Index() + event_info.Count();
     float old_position = item_positions_[old_item_index];
     float current_position = old_position;
 
     //Set position for new items.
-    for (std::size_t current_index = event_info.index;
+    for (std::size_t current_index = event_info.Index();
         current_index < old_item_index;
         ++current_index) {
 
@@ -158,12 +158,12 @@ void ListControlVariableItemHeightStrategy::OnItemUpdate(
 
     __super::OnItemUpdate(event_info, data_source, delegate);
 
-    float position = item_positions_[event_info.index];
-    float previous_heights = item_positions_[event_info.index + event_info.count] - position;
+    float position = item_positions_[event_info.Index()];
+    float previous_heights = item_positions_[event_info.Index() + event_info.Count()] - position;
     float current_heights = 0;
 
-    for (std::size_t current_index = event_info.index;
-        current_index < event_info.index + event_info.count;
+    for (std::size_t current_index = event_info.Index();
+        current_index < event_info.Index() + event_info.Count();
         ++current_index) {
 
         item_positions_[current_index] = position + current_heights;
@@ -175,7 +175,7 @@ void ListControlVariableItemHeightStrategy::OnItemUpdate(
 
     float difference = current_heights - previous_heights;
 
-    for (std::size_t current_index = event_info.index + event_info.count;
+    for (std::size_t current_index = event_info.Index() + event_info.Count();
         current_index < item_positions_.size();
         ++current_index) {
 
@@ -190,12 +190,12 @@ void ListControlVariableItemHeightStrategy::OnItemRemove(
     __super::OnItemRemove(event_info);
 
     float position_decreasement =
-        item_positions_[event_info.index + event_info.count] - item_positions_[event_info.index];
+        item_positions_[event_info.Index() + event_info.Count()] - item_positions_[event_info.Index()];
 
-    auto erase_iterator = std::next(item_positions_.begin(), event_info.index);
+    auto erase_iterator = std::next(item_positions_.begin(), event_info.Index());
     auto remain_iterator = item_positions_.erase(
         erase_iterator,
-        std::next(erase_iterator, event_info.count));
+        std::next(erase_iterator, event_info.Count()));
 
     for (; remain_iterator != item_positions_.end(); ++remain_iterator) {
         *remain_iterator -= position_decreasement;

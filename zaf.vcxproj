@@ -526,6 +526,7 @@
     <ClInclude Include="src\zaf\control\event\keyboard_event_info.h" />
     <ClInclude Include="src\zaf\control\event\list_control_item_double_click_info.h" />
     <ClInclude Include="src\zaf\control\event\list_control_selection_changed_info.h" />
+    <ClInclude Include="src\zaf\control\event\list_data_event_infos.h" />
     <ClInclude Include="src\zaf\control\event\mouse_capture_event_info.h" />
     <ClInclude Include="src\zaf\control\event\mouse_cursor_changing_info.h" />
     <ClInclude Include="src\zaf\control\event\mouse_event_info.h" />

@@ -15,7 +15,7 @@ void ListControlItemHeightStrategy::OnItemAdd(
     ListDataSource& data_source,
     ListControlDelegate& delegate) {
 
-    item_count_ += event_info.count;
+    item_count_ += event_info.Count();
 }
 
 
@@ -29,7 +29,7 @@ void ListControlItemHeightStrategy::OnItemUpdate(
 
 void ListControlItemHeightStrategy::OnItemRemove(const ListDataRemovedInfo& event_info) {
 
-    item_count_ -= event_info.count;
+    item_count_ -= event_info.Count();
 }
 
 }

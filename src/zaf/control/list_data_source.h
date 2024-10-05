@@ -1,16 +1,13 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
+#include <zaf/control/event/list_data_event_infos.h>
 #include <zaf/creation.h>
 #include <zaf/object/object.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf {
-
-class ListDataAddedInfo;
-class ListDataRemovedInfo;
-class ListDataUpdatedInfo;
 
 class ListDataSource : NonCopyableNonMovable {
 public:
@@ -93,27 +90,6 @@ private:
     Subject<ListDataAddedInfo> data_added_event_;
     Subject<ListDataRemovedInfo> data_removed_event_;
     Subject<ListDataUpdatedInfo> data_updated_event_;
-};
-
-
-class ListDataAddedInfo {
-public:
-    std::size_t index{};
-    std::size_t count{};
-};
-
-
-class ListDataRemovedInfo {
-public:
-    std::size_t index{};
-    std::size_t count{};
-};
-
-
-class ListDataUpdatedInfo {
-public:
-    std::size_t index{};
-    std::size_t count{};
 };
 
 }

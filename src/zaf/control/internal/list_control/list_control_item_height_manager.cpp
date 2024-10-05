@@ -148,7 +148,7 @@ void ListControlItemHeightManager::ItemAdd(const ListDataAddedInfo& event_info) 
         return;
     }
 
-    if (event_info.index > strategy_->ItemCount()) {
+    if (event_info.Index() > strategy_->ItemCount()) {
         ZAF_ALERT();
         return;
     }
@@ -163,12 +163,12 @@ void ListControlItemHeightManager::ItemRemove(const ListDataRemovedInfo& event_i
         return;
     }
 
-    if (event_info.index >= strategy_->ItemCount()) {
+    if (event_info.Index() >= strategy_->ItemCount()) {
         ZAF_ALERT();
         return;
     }
 
-    if (event_info.count > strategy_->ItemCount() - event_info.index) {
+    if (event_info.Count() > strategy_->ItemCount() - event_info.Index()) {
         ZAF_ALERT();
         return;
     }
@@ -193,12 +193,12 @@ void ListControlItemHeightManager::ItemUpdate(const ListDataUpdatedInfo& event_i
         return;
     }
 
-    if (event_info.index >= strategy_->ItemCount()) {
+    if (event_info.Index() >= strategy_->ItemCount()) {
         ZAF_ALERT();
         return;
     }
 
-    if (event_info.count > strategy_->ItemCount() - event_info.index) {
+    if (event_info.Count() > strategy_->ItemCount() - event_info.Index()) {
         ZAF_ALERT();
         return;
     }
