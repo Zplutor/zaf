@@ -34,7 +34,7 @@ void ConversationListView::Initialize() {
 }
 
 
-std::size_t ConversationListView::GetDataCount() {
+std::size_t ConversationListView::GetDataCount() const {
     return conversations_.size();
 }
 

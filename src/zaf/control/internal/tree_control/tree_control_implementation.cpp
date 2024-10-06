@@ -320,12 +320,12 @@ void TreeControlImplementation::ReloadItem(const std::shared_ptr<Object>& data) 
 }
 
 
-std::size_t TreeControlImplementation::GetDataCount() {
+std::size_t TreeControlImplementation::GetDataCount() const {
     return tree_index_mapping_.GetNodeCount();
 }
 
 
-std::shared_ptr<Object> TreeControlImplementation::GetDataAtIndex(std::size_t index) {
+std::shared_ptr<Object> TreeControlImplementation::GetDataAtIndex(std::size_t index) const {
 
     auto index_path = tree_index_mapping_.GetIndexPathAtIndex(index);
     auto tree_node = tree_data_manager_.GetNodeAtIndexPath(index_path);

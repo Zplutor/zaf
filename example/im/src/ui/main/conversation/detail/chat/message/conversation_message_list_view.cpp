@@ -120,7 +120,7 @@ void ConversationMessageListView::OnMessageAdd(const std::shared_ptr<Message>& m
 }
 
 
-std::size_t ConversationMessageListView::GetDataCount() {
+std::size_t ConversationMessageListView::GetDataCount() const {
     return message_item_infos_.size();
 }
 

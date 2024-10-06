@@ -8,7 +8,7 @@
 
 class FakeItemSource : public zaf::ListDataSource, public zaf::ListControlDelegate {
 public:
-    std::size_t GetDataCount() override {
+    std::size_t GetDataCount() const override {
         return item_count;
     }
 

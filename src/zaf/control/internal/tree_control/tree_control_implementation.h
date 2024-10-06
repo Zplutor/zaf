@@ -68,8 +68,8 @@ public:
 
     void ReloadItem(const std::shared_ptr<Object>& data);
 
-    std::size_t GetDataCount() override;
-    std::shared_ptr<Object> GetDataAtIndex(std::size_t index) override;
+    std::size_t GetDataCount() const override;
+    std::shared_ptr<Object> GetDataAtIndex(std::size_t index) const override;
     
     bool HasVariableItemHeight() override;
 

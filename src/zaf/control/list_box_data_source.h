@@ -10,11 +10,11 @@ public:
     void RemoveDataAtIndex(std::size_t index);
     void RemoveAllData();
 
-    std::size_t GetDataCount() override {
+    std::size_t GetDataCount() const override {
         return data_list_.size();
     }
 
-    std::shared_ptr<Object> GetDataAtIndex(std::size_t index) override {
+    std::shared_ptr<Object> GetDataAtIndex(std::size_t index) const override {
         return data_list_[index];
     }
 

@@ -17,7 +17,7 @@ public:
 
     void Initialize() override;
 
-    std::size_t GetDataCount() override;
+    std::size_t GetDataCount() const override;
     bool HasVariableItemHeight() override;
 
     float EstimateItemHeight(

@@ -14,11 +14,11 @@ public:
     ListDataSource() = default;
     virtual ~ListDataSource() = default;
 
-    virtual std::size_t GetDataCount() {
+    virtual std::size_t GetDataCount() const {
         return 0;
     }
 
-    virtual std::shared_ptr<Object> GetDataAtIndex(std::size_t index) {
+    virtual std::shared_ptr<Object> GetDataAtIndex(std::size_t index) const {
         return Create<Object>();
     }
 
@@ -56,7 +56,7 @@ protected:
      You must call this method to update the list control after adding
      items to data source.
      */
-    void NotifyDataAdded(std::size_t index, std::size_t count);
+    void NotifyDataAdded(std::size_t index, std::size_t count) const;
 
     /**
      Raise an item remove event.
@@ -70,7 +70,7 @@ protected:
      You must call this method to update the list control after removing
      items from data source.
      */
-    void NotifyDataRemoved(std::size_t index, std::size_t count);
+    void NotifyDataRemoved(std::size_t index, std::size_t count) const;
 
     /**
      Raise an item update event.
@@ -84,7 +84,7 @@ protected:
      You must call this method to update the list control after updating
      items in data source.
      */
-    void NotifyDataUpdated(std::size_t index, std::size_t count);
+    void NotifyDataUpdated(std::size_t index, std::size_t count) const;
 
 private:
     Subject<ListDataAddedInfo> data_added_event_;

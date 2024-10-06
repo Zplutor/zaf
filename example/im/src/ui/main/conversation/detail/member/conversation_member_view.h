@@ -13,7 +13,7 @@ class ConversationMemberView :
 public:
     void Initialize() override;
 
-    std::size_t GetDataCount() override;
+    std::size_t GetDataCount() const override;
     float EstimateItemHeight(std::size_t index, const std::shared_ptr<zaf::Object>& data) override;
 
     std::shared_ptr<zaf::ListItem> CreateItem(

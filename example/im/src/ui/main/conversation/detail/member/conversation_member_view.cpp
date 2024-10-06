@@ -18,7 +18,7 @@ void ConversationMemberView::Initialize() {
 }
 
 
-std::size_t ConversationMemberView::GetDataCount() {
+std::size_t ConversationMemberView::GetDataCount() const {
     return members_.size();
 }
 
