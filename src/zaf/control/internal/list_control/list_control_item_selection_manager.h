@@ -56,11 +56,25 @@ public:
         return false;
     }
 
+    bool AdjustSelectionByMovingIndex(std::size_t old_index, std::size_t new_index) {
+        if (old_index == new_index) {
+            return false;
+        }
+        range_set_.EraseSpan(Range{ old_index, 1 });
+        if (range_set_.IsEmpty()) {
+            range_set_.AddRange(Range{ new_index, 1 });
+        }
+        else {
+            range_set_.InsertSpan(Range{ new_index, 1 });
+        }
+        return true;
+    }
+
     bool IsIndexSelected(std::size_t index) const {
         return range_set_.ContainsIndex(index);
     }
 
-    std::optional<std::size_t> GetFirstSelectedIndex() const {
+    std::optional<std::size_t> GetFirstSelectedIndex() const noexcept {
 
         if (!range_set_.IsEmpty()) {
             return range_set_.begin()->index;

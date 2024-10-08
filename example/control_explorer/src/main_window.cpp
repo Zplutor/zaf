@@ -95,7 +95,7 @@ void MainWindow::InitializeControlExplorePanel() {
 
 void MainWindow::ControlListBoxSelectionChange() {
 
-    auto selected_data = control_list_box_->GetFirstSelectedItemData();
+    auto selected_data = control_list_box_->FirstSelectedItemData();
     if (!selected_data) {
         return;
     }

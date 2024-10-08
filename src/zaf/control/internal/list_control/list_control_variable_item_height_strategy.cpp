@@ -116,12 +116,12 @@ float ListControlVariableItemHeightStrategy::GetTotalHeight() {
 }
 
 
-void ListControlVariableItemHeightStrategy::OnItemAdd(
+void ListControlVariableItemHeightStrategy::OnDataAdded(
     const ListDataAddedInfo& event_info,
     ListDataSource& data_source,
     ListControlDelegate& delegate) {
 
-    __super::OnItemAdd(event_info, data_source, delegate);
+    __super::OnDataAdded(event_info, data_source, delegate);
 
     item_positions_.insert(
         std::next(item_positions_.begin(), event_info.Index()),
@@ -151,19 +151,48 @@ void ListControlVariableItemHeightStrategy::OnItemAdd(
 }
 
 
-void ListControlVariableItemHeightStrategy::OnItemUpdate(
+void ListControlVariableItemHeightStrategy::OnDataUpdated(
     const ListDataUpdatedInfo& event_info,
     ListDataSource& data_source,
     ListControlDelegate& delegate) {
 
-    __super::OnItemUpdate(event_info, data_source, delegate);
+    __super::OnDataUpdated(event_info, data_source, delegate);
 
-    float position = item_positions_[event_info.Index()];
-    float previous_heights = item_positions_[event_info.Index() + event_info.Count()] - position;
+    UpdateItemHeightsInRange(
+        Range{ event_info.Index(), event_info.Count() },
+        data_source,
+        delegate);
+}
+
+
+void ListControlVariableItemHeightStrategy::OnDataMoved(
+    const ListDataMovedInfo& event_info,
+    ListDataSource& data_source,
+    ListControlDelegate& delegate) {
+
+    __super::OnDataMoved(event_info, data_source, delegate);
+
+    auto min_index = std::min(event_info.PreviousIndex(), event_info.NewIndex());
+    auto max_index = std::max(event_info.PreviousIndex(), event_info.NewIndex());
+
+    UpdateItemHeightsInRange(
+        Range::FromIndexPair(min_index, max_index + 1), 
+        data_source, 
+        delegate);
+}
+
+
+void ListControlVariableItemHeightStrategy::UpdateItemHeightsInRange(
+    const Range& range, 
+    ListDataSource& data_source, 
+    ListControlDelegate& delegate) {
+
+    float position = item_positions_[range.Index()];
+    float previous_heights = item_positions_[range.EndIndex()] - position;
     float current_heights = 0;
 
-    for (std::size_t current_index = event_info.Index();
-        current_index < event_info.Index() + event_info.Count();
+    for (std::size_t current_index = range.Index();
+        current_index < range.EndIndex();
         ++current_index) {
 
         item_positions_[current_index] = position + current_heights;
@@ -175,7 +204,7 @@ void ListControlVariableItemHeightStrategy::OnItemUpdate(
 
     float difference = current_heights - previous_heights;
 
-    for (std::size_t current_index = event_info.Index() + event_info.Count();
+    for (std::size_t current_index = range.EndIndex();
         current_index < item_positions_.size();
         ++current_index) {
 
@@ -184,10 +213,10 @@ void ListControlVariableItemHeightStrategy::OnItemUpdate(
 }
 
 
-void ListControlVariableItemHeightStrategy::OnItemRemove(
+void ListControlVariableItemHeightStrategy::OnDataRemoved(
     const ListDataRemovedInfo& event_info) {
 
-    __super::OnItemRemove(event_info);
+    __super::OnDataRemoved(event_info);
 
     float position_decreasement =
         item_positions_[event_info.Index() + event_info.Count()] - item_positions_[event_info.Index()];

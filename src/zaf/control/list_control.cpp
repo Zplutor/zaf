@@ -110,6 +110,11 @@ std::shared_ptr<Object> ListControl::GetItemDataAtIndex(std::size_t index) const
 }
 
 
+std::shared_ptr<ListItem> ListControl::GetVisibleItemAtIndex(std::size_t index) const noexcept {
+    return implementation_->GetVisibleItemAtIndex(index);
+}
+
+
 bool ListControl::AutoAdjustScrollBarSmallChange() const {
     return implementation_->AutoAdjustScrollBarSmallChange();
 }
@@ -158,14 +163,14 @@ std::vector<std::size_t> ListControl::GetAllSelectedItemIndexes() const {
 }
 
 
-std::optional<std::size_t> ListControl::GetFirstSelectedItemIndex() const {
+std::optional<std::size_t> ListControl::FirstSelectedItemIndex() const noexcept {
     return implementation_->GetFirstSelectedItemIndex();
 }
 
 
-std::shared_ptr<Object> ListControl::GetFirstSelectedItemData() const {
+std::shared_ptr<Object> ListControl::FirstSelectedItemData() const {
 
-    auto index = GetFirstSelectedItemIndex();
+    auto index = FirstSelectedItemIndex();
     if (!index) {
         return nullptr;
     }

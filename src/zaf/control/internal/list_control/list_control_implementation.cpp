@@ -190,29 +190,23 @@ void ListControlImplementation::RegisterDataSourceEvents() {
         return;
     }
 
-    data_source_subscriptions_ += data_source->DataAddedEvent().Subscribe(
-        std::bind(
-            &ListControlImplementation::OnItemAdd, 
-            this, 
-            std::placeholders::_1));
+    data_source_subs_ += data_source->DataAddedEvent().Subscribe(
+        std::bind_front(&ListControlImplementation::OnDataAdded, this));
 
-    data_source_subscriptions_ += data_source->DataRemovedEvent().Subscribe(
-        std::bind(
-            &ListControlImplementation::OnItemRemove,
-            this, 
-            std::placeholders::_1));
+    data_source_subs_ += data_source->DataRemovedEvent().Subscribe(
+        std::bind_front(&ListControlImplementation::OnDataRemoved, this));
 
-    data_source_subscriptions_ += data_source->DataUpdatedEvent().Subscribe(
-        std::bind(
-            &ListControlImplementation::OnItemUpdate,
-            this, 
-            std::placeholders::_1));
+    data_source_subs_ += data_source->DataUpdatedEvent().Subscribe(
+        std::bind_front(&ListControlImplementation::OnDataUpdated, this));
+
+    data_source_subs_ += data_source->DataMovedEvent().Subscribe(
+        std::bind_front(&ListControlImplementation::OnDataMoved, this));
 }
 
 
 void ListControlImplementation::UnregisterDataSourceEvents() {
 
-    data_source_subscriptions_.Clear();
+    data_source_subs_.Clear();
 }
 
 
@@ -623,7 +617,7 @@ std::shared_ptr<ListItem> ListControlImplementation::CreateItem(std::size_t inde
 }
 
 
-void ListControlImplementation::OnItemAdd(const ListDataAddedInfo& event_info) {
+void ListControlImplementation::OnDataAdded(const ListDataAddedInfo& event_info) {
 
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
@@ -631,12 +625,12 @@ void ListControlImplementation::OnItemAdd(const ListDataAddedInfo& event_info) {
     }
 
     auto auto_reset = MakeAutoReset(is_handling_data_source_event_, true);
-    HandleItemAdd(event_info);
+    HandleDataAdded(event_info);
     RefreshItemsIfNeeded();
 }
 
 
-void ListControlImplementation::HandleItemAdd(const ListDataAddedInfo& event_info) {
+void ListControlImplementation::HandleDataAdded(const ListDataAddedInfo& event_info) {
 
     //Adjust scroll bar small change if there is no items before adding.
     bool need_adjust_scroll_bar_small_change = visible_items_.empty();
@@ -645,29 +639,15 @@ void ListControlImplementation::HandleItemAdd(const ListDataAddedInfo& event_inf
         event_info.Index(),
         event_info.Count());
 
-    auto update_gurad = item_container_->BeginUpdate();
+    auto update_guard = item_container_->BeginUpdate();
 
     float position_difference = AdjustContentHeight();
 
-    if (event_info.Index() >= first_visible_item_index_ + visible_items_.size()) {
-        
-        UpdateVisibleItems();
+    auto first_need_update_index = AddVisibleItems(event_info.Index(), event_info.Count());
+    if (first_need_update_index) {
+        AdjustVisibleItemPositions(*first_need_update_index, position_difference);
     }
-    else {
-
-        if (event_info.Index() <= first_visible_item_index_) {
-            AddItemsBeforeVisibleItems(
-                event_info.Index(),
-                event_info.Count(),
-                position_difference);
-        }
-        else {
-            AddItemsInMiddleOfVisibleItems(
-                event_info.Index(),
-                event_info.Count(),
-                position_difference);
-        }
-    }
+    UpdateVisibleItems();
 
     if (selection_changed) {
         NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
@@ -679,44 +659,49 @@ void ListControlImplementation::HandleItemAdd(const ListDataAddedInfo& event_inf
 }
 
 
-void ListControlImplementation::AddItemsBeforeVisibleItems(
+//Returns the index of the first visible item which needs to be adjusted its position.
+std::optional<std::size_t> ListControlImplementation::AddVisibleItems(
     std::size_t index,
-    std::size_t count,
-    float position_difference) {
+    std::size_t count) {
 
-    first_visible_item_index_ += count;
-    AdjustVisibleItemPositions(0, position_difference);
-    UpdateVisibleItems();
+    if (index >= first_visible_item_index_ + visible_items_.size()) {
+        return std::nullopt;
+    }
+
+    if (index <= first_visible_item_index_) {
+        first_visible_item_index_ += count;
+        return 0;
+    }
+
+    return AddMiddleVisibleItems(index, count);
 }
 
 
-void ListControlImplementation::AddItemsInMiddleOfVisibleItems(
+std::optional<std::size_t> ListControlImplementation::AddMiddleVisibleItems(
     std::size_t index,
-    std::size_t count,
-    float position_difference) {
+    std::size_t count) {
 
     std::size_t insert_index = index - first_visible_item_index_;
     std::size_t need_adjust_position_count = visible_items_.size() - insert_index;
 
     if (count >= need_adjust_position_count) {
-
         RemoveTailVisibleItems(need_adjust_position_count);
-        UpdateVisibleItems();
+        return std::nullopt;
     }
     else {
-
-        AdjustVisibleItemPositions(insert_index, position_difference);
 
         auto new_items = CreateItems(index, count);
         visible_items_.insert(
             std::next(visible_items_.begin(), insert_index),
             new_items.begin(), 
             new_items.end());
+
+        return insert_index + new_items.size();
     }
 }
 
 
-void ListControlImplementation::OnItemRemove(const ListDataRemovedInfo& event_info) {
+void ListControlImplementation::OnDataRemoved(const ListDataRemovedInfo& event_info) {
 
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
@@ -724,33 +709,25 @@ void ListControlImplementation::OnItemRemove(const ListDataRemovedInfo& event_in
     }
 
     auto auto_reset = MakeAutoReset(is_handling_data_source_event_, true);
-    HandleItemRemove(event_info);
+    HandleDataRemoved(event_info);
     RefreshItemsIfNeeded();
 }
 
 
-void ListControlImplementation::HandleItemRemove(const ListDataRemovedInfo& event_info) {
+void ListControlImplementation::HandleDataRemoved(const ListDataRemovedInfo& event_info) {
 
     bool selection_changed = item_selection_manager_.AdjustSelectionByRemovingIndexes(
         event_info.Index(),
         event_info.Count());
 
-    auto update_gurad = item_container_->BeginUpdate();
+    auto update_guard = item_container_->BeginUpdate();
 
     float position_difference = AdjustContentHeight();
 
-    if (event_info.Index() >= first_visible_item_index_ + visible_items_.size()) {
-        return;
-    }
-
-    if (event_info.Index() < first_visible_item_index_) {
-        RemoveItemsBeforeVisibleItems(event_info.Index(), event_info.Count(), position_difference);
-    }
-    else {
-        RemoveItemsInMiddleOfVisibleItems(
-            event_info.Index(), 
-            event_info.Count(), 
-            position_difference);
+    auto first_need_update_index = RemoveVisibleItems(event_info.Index(), event_info.Count());
+    if (first_need_update_index) {
+        AdjustVisibleItemPositions(*first_need_update_index, position_difference);
+        UpdateVisibleItems();
     }
 
     if (selection_changed) {
@@ -759,21 +736,27 @@ void ListControlImplementation::HandleItemRemove(const ListDataRemovedInfo& even
 }
 
 
-void ListControlImplementation::RemoveItemsBeforeVisibleItems(
-    std::size_t index,
-    std::size_t count,
-    float position_difference) {
+//Returns the index of the first visible item which needs to be adjusted its position.
+std::optional<std::size_t> ListControlImplementation::RemoveVisibleItems(
+    std::size_t index, 
+    std::size_t count) {
+    
+    if (index >= first_visible_item_index_ + visible_items_.size()) {
+        return std::nullopt;
+    }
 
-    first_visible_item_index_ -= count;
-    AdjustVisibleItemPositions(0, position_difference);
-    UpdateVisibleItems();
+    if (index < first_visible_item_index_) {
+        first_visible_item_index_ -= count;
+        return 0;
+    }
+
+    return RemoveMiddleVisibleItems(index, count);
 }
 
 
-void ListControlImplementation::RemoveItemsInMiddleOfVisibleItems(
+std::size_t ListControlImplementation::RemoveMiddleVisibleItems(
     std::size_t index,
-    std::size_t count,
-    float position_difference) {
+    std::size_t count) {
 
     std::size_t remove_index = index - first_visible_item_index_;
     std::size_t remove_count = (std::min)(count, visible_items_.size() - remove_index);
@@ -786,13 +769,11 @@ void ListControlImplementation::RemoveItemsInMiddleOfVisibleItems(
     }
 
     visible_items_.erase(begin_erase_iterator, end_erase_iterator);
-
-    AdjustVisibleItemPositions(remove_index, position_difference);
-    UpdateVisibleItems();
+    return remove_index;
 }
 
 
-void ListControlImplementation::OnItemUpdate(const ListDataUpdatedInfo& event_info) {
+void ListControlImplementation::OnDataUpdated(const ListDataUpdatedInfo& event_info) {
 
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
@@ -800,12 +781,12 @@ void ListControlImplementation::OnItemUpdate(const ListDataUpdatedInfo& event_in
     }
 
     auto auto_reset = MakeAutoReset(is_handling_data_source_event_, true);
-    HandleItemUpdate(event_info);
+    HandleDataUpdated(event_info);
     RefreshItemsIfNeeded();
 }
 
 
-void ListControlImplementation::HandleItemUpdate(const ListDataUpdatedInfo& event_info) {
+void ListControlImplementation::HandleDataUpdated(const ListDataUpdatedInfo& event_info) {
 
     auto update_guard = item_container_->BeginUpdate();
 
@@ -881,6 +862,49 @@ void ListControlImplementation::UpdateVisibleItemsByUpdatingItems(
     }
 
     RecoverLastFocusedItem(new_items);
+}
+
+
+void ListControlImplementation::OnDataMoved(const ListDataMovedInfo& event_info) {
+
+    if (is_handling_data_source_event_) {
+        refresh_after_data_source_event_ = true;
+        return;
+    }
+
+    auto auto_reset = MakeAutoReset(is_handling_data_source_event_, true);
+    HandleDataMoved(event_info);
+    RefreshItemsIfNeeded();
+}
+
+
+void ListControlImplementation::HandleDataMoved(const ListDataMovedInfo& event_info) {
+
+    bool has_selection = !!item_selection_manager_.GetFirstSelectedIndex();
+
+    item_selection_manager_.AdjustSelectionByMovingIndex(
+        event_info.PreviousIndex(),
+        event_info.NewIndex());
+
+    auto update_guard = item_container_->BeginUpdate();
+
+    float position_difference = AdjustContentHeight();
+
+    RemoveVisibleItems(event_info.PreviousIndex(), 1);
+    AddVisibleItems(event_info.NewIndex(), 1);
+
+    for (auto visible_index : Range{ 0, visible_items_.size() }) {
+
+        auto item_index = visible_index + first_visible_item_index_;
+        auto [position, height] = item_height_manager_->GetItemPositionAndHeight(item_index);
+        visible_items_[visible_index]->SetY(position);
+    }
+
+    UpdateVisibleItems();
+
+    if (has_selection) {
+        NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
+    }
 }
 
 
@@ -998,12 +1022,25 @@ std::size_t ListControlImplementation::GetItemCount() {
 }
 
 
+std::shared_ptr<ListItem> ListControlImplementation::GetVisibleItemAtIndex(
+    std::size_t index) const noexcept {
+
+    if (index < first_visible_item_index_ || 
+        index >= first_visible_item_index_ + visible_items_.size()) {
+        return nullptr;
+    }
+
+    auto index_in_visible_items = index - first_visible_item_index_;
+    return visible_items_[index_in_visible_items];
+}
+
+
 std::size_t ListControlImplementation::GetSelectedItemCount() {
     return item_selection_manager_.GetAllSelectedCount();
 }
 
 
-std::optional<std::size_t> ListControlImplementation::GetFirstSelectedItemIndex() {
+std::optional<std::size_t> ListControlImplementation::GetFirstSelectedItemIndex() const noexcept {
     return item_selection_manager_.GetFirstSelectedIndex();
 }
 

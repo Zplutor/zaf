@@ -24,17 +24,22 @@ public:
 
     virtual float GetTotalHeight() = 0;
 
-    virtual void OnItemAdd(
+    virtual void OnDataAdded(
         const ListDataAddedInfo& event_info,
         ListDataSource& data_source,
         ListControlDelegate& delegate);
 
-    virtual void OnItemUpdate(
+    virtual void OnDataUpdated(
         const ListDataUpdatedInfo& event_info,
         ListDataSource& data_source,
         ListControlDelegate& delegate);
 
-    virtual void OnItemRemove(const ListDataRemovedInfo& event_info);
+    virtual void OnDataMoved(
+        const ListDataMovedInfo& event_info,
+        ListDataSource& data_source,
+        ListControlDelegate& delegate);
+
+    virtual void OnDataRemoved(const ListDataRemovedInfo& event_info);
 
     std::size_t ItemCount() const {
         return item_count_;

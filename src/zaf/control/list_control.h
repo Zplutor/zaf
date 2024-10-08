@@ -70,11 +70,23 @@ public:
     void Reload();
 
     /**
-     Get total count of items.
-     */
+    Get total count of items.
+    */
     std::size_t GetItemCount() const;
 
     std::shared_ptr<Object> GetItemDataAtIndex(std::size_t index) const;
+
+    /**
+    Gets the visible list item at the specified index.
+
+    @param index
+        The index of the list item.
+
+    @return
+        The visible list item at the specified index, or null if the index is out of the visible 
+        range.
+    */
+    std::shared_ptr<ListItem> GetVisibleItemAtIndex(std::size_t index) const noexcept;
 
     bool AutoAdjustScrollBarSmallChange() const;
     void SetAutoAdjustScrollBarSmallChange(bool value);
@@ -87,7 +99,7 @@ public:
     SelectionMode SelectionMode() const;
 
     /**
-     Set seletion mode.
+     Set selection mode.
 
      All selected items would be unselected if selection mode is set
      to None; and only the first selected item would remain selected
@@ -133,9 +145,12 @@ public:
     std::vector<std::size_t> GetAllSelectedItemIndexes() const;
 
     /**
-     Get the index of the first selected item.
-     */
-    std::optional<std::size_t> GetFirstSelectedItemIndex() const;
+    Gets the index of the first selected item.
+
+    @return
+        The index of the first selected item, or null if there is no selection.
+    */
+    std::optional<std::size_t> FirstSelectedItemIndex() const noexcept;
 
     /**
      Get data of the first selected item.
@@ -143,7 +158,7 @@ public:
      @return
          Return nullptr if there is no selection.
      */
-    std::shared_ptr<Object> GetFirstSelectedItemData() const;
+    std::shared_ptr<Object> FirstSelectedItemData() const;
 
     /**
      Determinate whether the item at specified index is selected.

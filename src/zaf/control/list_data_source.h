@@ -9,87 +9,132 @@
 
 namespace zaf {
 
+/**
+An interface that provides data for a ListControl.
+*/
 class ListDataSource : NonCopyableNonMovable {
 public:
     ListDataSource() = default;
     virtual ~ListDataSource() = default;
 
+    /**
+    Gets the count of data.
+    */
     virtual std::size_t GetDataCount() const {
         return 0;
     }
 
+    /**
+    Gets data at the specified index.
+    */
     virtual std::shared_ptr<Object> GetDataAtIndex(std::size_t index) const {
         return Create<Object>();
     }
 
     /**
-     Get item add event.
-     */
+    Gets the data added event.
+
+    @details
+        This event is raised after data being added to the data source.
+    */
     Observable<ListDataAddedInfo> DataAddedEvent() const {
         return data_added_event_.AsObservable();
     }
 
     /**
-     Get item remove event.
-     */
+    Gets the data removed event.
+
+    @details
+        This event is raised after data being removed from the data source.
+    */
     Observable<ListDataRemovedInfo> DataRemovedEvent() const {
         return data_removed_event_.AsObservable();
     }
 
     /**
-     Get item update event.
-     */
+    Gets the data updated event.
+
+    @details
+        This event is raised after data being updated.
+    */
     Observable<ListDataUpdatedInfo> DataUpdatedEvent() const {
         return data_updated_event_.AsObservable();
     }
 
+    /**
+    Gets the data moved event.
+
+    @details
+        This event is raised after data being moved to a new index.
+    */
+    Observable<ListDataMovedInfo> DataMovedEvent() const {
+        return data_moved_event_.AsObservable();
+    }
+
 protected:
     /**
-     Raise an item add event.
+    Raises the data added event.
 
-     @param index
-         The index where items are added.
+    @param index
+        The index where data is added.
 
-     @param count
-         The count of items added.
+    @param count
+        The count of data is added.
 
-     You must call this method to update the list control after adding
-     items to data source.
-     */
+    @details
+        Derived classes should call this method to raise the data added event after adding data.
+    */
     void NotifyDataAdded(std::size_t index, std::size_t count) const;
 
     /**
-     Raise an item remove event.
+    Raises the data removed event.
 
-     @param index
-         The index of the first item removed.
+    @param index
+        The index of the first data removed.
 
-     @param count
-         The count of items removed.
+    @param count
+        The count of data removed.
 
-     You must call this method to update the list control after removing
-     items from data source.
-     */
+    @details
+        Derived classes should call this method to raise the data removed event after removing
+        data.
+    */
     void NotifyDataRemoved(std::size_t index, std::size_t count) const;
 
     /**
-     Raise an item update event.
+    Raises the data updated event.
 
-     @param index
-         The index of the first item updated.
+    @param index
+        The index of the first data updated.
 
-     @param count
-         The count of items updated.
+    @param count
+        The count of data updated.
 
-     You must call this method to update the list control after updating
-     items in data source.
-     */
+    @details
+        Derived classes should call this method to raise the data updated event after updating 
+        data.
+    */
     void NotifyDataUpdated(std::size_t index, std::size_t count) const;
+
+    /**
+    Raises the data moved event.
+
+    @param previous_index
+        The index of the data before moving.
+
+    @param new_index
+        The index of the data after moving.
+
+    @details
+        Derived classes should call this method to raise the data moved event after moving data.
+    */
+    void NotifyDataMoved(std::size_t previous_index, std::size_t new_index) const;
 
 private:
     Subject<ListDataAddedInfo> data_added_event_;
     Subject<ListDataRemovedInfo> data_removed_event_;
     Subject<ListDataUpdatedInfo> data_updated_event_;
+    Subject<ListDataMovedInfo> data_moved_event_;
 };
 
 }

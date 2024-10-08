@@ -41,14 +41,15 @@ private:
     void RegisterDataSourceEvents();
     void UnregisterDataSourceEvents();
 
-    void ItemAdd(const ListDataAddedInfo& event_info);
-    void ItemRemove(const ListDataRemovedInfo& event_info);
-    void ItemUpdate(const ListDataUpdatedInfo& event_info);
+    void OnDataAdded(const ListDataAddedInfo& event_info);
+    void OnDataRemoved(const ListDataRemovedInfo& event_info);
+    void OnDataUpdated(const ListDataUpdatedInfo& event_info);
+    void OnDataMoved(const ListDataMovedInfo& event_info);
 
 private:
     std::weak_ptr<ListDataSource> data_source_{};
     std::weak_ptr<ListControlDelegate> delegate_{};
-    SubscriptionSet data_source_subscriptions_;
+    SubscriptionSet data_source_subs;
     std::unique_ptr<ListControlItemHeightStrategy> strategy_;
 };
 

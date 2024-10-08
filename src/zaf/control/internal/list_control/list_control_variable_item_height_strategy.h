@@ -20,21 +20,30 @@ public:
 
     float GetTotalHeight() override;
 
-    void OnItemAdd(
+    void OnDataAdded(
         const ListDataAddedInfo& event_info,
         ListDataSource& data_source,
         ListControlDelegate& delegate) override;
 
-    void OnItemUpdate(
+    void OnDataUpdated(
         const ListDataUpdatedInfo& event_info,
         ListDataSource& data_source,
         ListControlDelegate& delegate) override;
 
-    void OnItemRemove(const ListDataRemovedInfo& event_info) override;
+    void OnDataMoved(
+        const ListDataMovedInfo& event_info,
+        ListDataSource& data_source,
+        ListControlDelegate& delegate) override;
+
+    void OnDataRemoved(const ListDataRemovedInfo& event_info) override;
 
 private:
     std::pair<float, float> InnerGetItemPositionAndHeight(std::size_t index) const;
     std::optional<std::size_t> InnerGetItemIndex(float position, bool skip_spacing) const;
+    void UpdateItemHeightsInRange(
+        const Range& range,
+        ListDataSource& data_source,
+        ListControlDelegate& delegate);
 
 private:
     std::vector<float> item_positions_;

@@ -444,6 +444,7 @@
     <ClCompile Include="unittest\case\control\layout\linear_layouter_test.cpp" />
     <ClCompile Include="unittest\case\control\layout\stretch_layouter.cpp" />
     <ClCompile Include="unittest\case\control\linear_box_test.cpp" />
+    <ClCompile Include="unittest\case\control\list_control_move_test.cpp" />
     <ClCompile Include="unittest\case\control\list_control_reenter_test.cpp" />
     <ClCompile Include="unittest\case\control\rich_edit\internal\ole_helper_test.cpp" />
     <ClCompile Include="unittest\case\control\rich_edit_test.cpp" />

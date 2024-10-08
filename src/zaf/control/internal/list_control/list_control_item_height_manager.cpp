@@ -24,29 +24,23 @@ void ListControlItemHeightManager::RegisterDataSourceEvents() {
         return;
     }
 
-    data_source_subscriptions_ += data_source->DataAddedEvent().Subscribe(
-        std::bind(
-            &ListControlItemHeightManager::ItemAdd, 
-            this, 
-            std::placeholders::_1));
+    data_source_subs += data_source->DataAddedEvent().Subscribe(
+        std::bind_front(&ListControlItemHeightManager::OnDataAdded, this));
 
-    data_source_subscriptions_ += data_source->DataRemovedEvent().Subscribe(
-        std::bind(
-            &ListControlItemHeightManager::ItemRemove, 
-            this,
-            std::placeholders::_1));
+    data_source_subs += data_source->DataRemovedEvent().Subscribe(
+        std::bind_front(&ListControlItemHeightManager::OnDataRemoved, this));
 
-    data_source_subscriptions_ += data_source->DataUpdatedEvent().Subscribe(
-        std::bind(
-            &ListControlItemHeightManager::ItemUpdate, 
-            this, 
-            std::placeholders::_1));
+    data_source_subs += data_source->DataUpdatedEvent().Subscribe(
+        std::bind_front(&ListControlItemHeightManager::OnDataUpdated, this));
+
+    data_source_subs += data_source->DataMovedEvent().Subscribe(
+        std::bind_front(&ListControlItemHeightManager::OnDataMoved, this));
 }
 
 
 void ListControlItemHeightManager::UnregisterDataSourceEvents() {
 
-    data_source_subscriptions_.Clear();
+    data_source_subs.Clear();
 }
 
 
@@ -132,7 +126,7 @@ float ListControlItemHeightManager::GetTotalHeight() const {
 }
 
 
-void ListControlItemHeightManager::ItemAdd(const ListDataAddedInfo& event_info) {
+void ListControlItemHeightManager::OnDataAdded(const ListDataAddedInfo& event_info) {
 
     if (!strategy_) {
         return;
@@ -153,11 +147,11 @@ void ListControlItemHeightManager::ItemAdd(const ListDataAddedInfo& event_info) 
         return;
     }
 
-    strategy_->OnItemAdd(event_info, *data_source, *delegate);
+    strategy_->OnDataAdded(event_info, *data_source, *delegate);
 }
 
 
-void ListControlItemHeightManager::ItemRemove(const ListDataRemovedInfo& event_info) {
+void ListControlItemHeightManager::OnDataRemoved(const ListDataRemovedInfo& event_info) {
 
     if (!strategy_) {
         return;
@@ -173,11 +167,11 @@ void ListControlItemHeightManager::ItemRemove(const ListDataRemovedInfo& event_i
         return;
     }
 
-    strategy_->OnItemRemove(event_info);
+    strategy_->OnDataRemoved(event_info);
 }
 
 
-void ListControlItemHeightManager::ItemUpdate(const ListDataUpdatedInfo& event_info) {
+void ListControlItemHeightManager::OnDataUpdated(const ListDataUpdatedInfo& event_info) {
 
     if (!strategy_) {
         return;
@@ -203,7 +197,27 @@ void ListControlItemHeightManager::ItemUpdate(const ListDataUpdatedInfo& event_i
         return;
     }
 
-    strategy_->OnItemUpdate(event_info, *data_source, *delegate);
+    strategy_->OnDataUpdated(event_info, *data_source, *delegate);
+}
+
+
+void ListControlItemHeightManager::OnDataMoved(const ListDataMovedInfo& event_info) {
+
+    if (!strategy_) {
+        return;
+    }
+
+    auto data_source = data_source_.lock();
+    if (!data_source) {
+        return;
+    }
+
+    auto delegate = delegate_.lock();
+    if (!delegate) {
+        return;
+    }
+
+    strategy_->OnDataMoved(event_info, *data_source, *delegate);
 }
 
 }

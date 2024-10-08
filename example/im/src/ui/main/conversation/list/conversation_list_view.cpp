@@ -125,7 +125,7 @@ void ConversationListView::ConversationUpdate(const std::shared_ptr<Conversation
 
 std::shared_ptr<Conversation> ConversationListView::GetSelectedConversation() {
 
-    auto selected_index = GetFirstSelectedItemIndex();
+    auto selected_index = FirstSelectedItemIndex();
     if (!selected_index) {
         return nullptr;
     }

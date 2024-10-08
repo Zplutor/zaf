@@ -18,11 +18,11 @@ namespace {
 
 class DataSource : public zaf::ListDataSource {
 public:
-    std::size_t GetDataCount() {
+    std::size_t GetDataCount() const override {
         return 1;
     }
 
-    std::shared_ptr<zaf::Object> GetDataAtIndex(std::size_t index) {
+    std::shared_ptr<zaf::Object> GetDataAtIndex(std::size_t index) const override {
         return zaf::Box(value_);
     }
 

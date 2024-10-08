@@ -327,7 +327,7 @@ void ComboBox::OnClick(const ClickInfo& event_info) {
     __super::OnClick(event_info);
 
     //Save current selected index in order to recover when the window closed.
-    recovered_selected_index_ = drop_down_list_box_->GetFirstSelectedItemIndex();
+    recovered_selected_index_ = drop_down_list_box_->FirstSelectedItemIndex();
     need_recover_selected_index_ = true;
 
     PopupDropDownWindow();
@@ -460,7 +460,7 @@ bool ComboBox::SelectNextDropDownListItem(bool reverse) {
         return false;
     }
 
-    auto old_selected_index = drop_down_list_box_->GetFirstSelectedItemIndex();
+    auto old_selected_index = drop_down_list_box_->FirstSelectedItemIndex();
 
     std::size_t new_selected_index{};
     if (!old_selected_index) {
@@ -502,7 +502,7 @@ void ComboBox::DropDownListBoxSelectionChange() {
     //Selection is changed, do not recover previous selected index.
     need_recover_selected_index_ = false;
 
-    auto selected_index = drop_down_list_box_->GetFirstSelectedItemIndex();
+    auto selected_index = drop_down_list_box_->FirstSelectedItemIndex();
     if (selected_index) {
 
         std::wstring text;

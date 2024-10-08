@@ -1,6 +1,7 @@
 #pragma once
 
 #include <deque>
+#include <zaf/base/non_copyable.h>
 #include <zaf/control/internal/list_control/list_control_item_selection_manager.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
@@ -23,7 +24,10 @@ enum class ListSelectionChangeReason {
     RemoveSelection,
 };
 
-class ListControlImplementation : public std::enable_shared_from_this<ListControlImplementation> {
+class ListControlImplementation :
+    public std::enable_shared_from_this<ListControlImplementation>,
+    NonCopyableNonMovable {
+
 public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<ListDataSource>&)>;
     using DelegateChangeEvent = std::function<void(const std::shared_ptr<ListControlDelegate>&)>;
@@ -50,9 +54,6 @@ public:
     ListControlImplementation(ScrollBox& owner);
     ~ListControlImplementation();
 
-    ListControlImplementation(const ListControlImplementation&) = delete;
-    ListControlImplementation& operator=(const ListControlImplementation&) = delete;
-
     void Initialize(const InitializeParameters& parameters);
     void SetDataSource(const std::weak_ptr<ListDataSource>& data_source);
     void SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
@@ -74,8 +75,9 @@ public:
     void UnselectItemAtIndex(std::size_t index);
 
     std::size_t GetItemCount();
+    std::shared_ptr<ListItem> GetVisibleItemAtIndex(std::size_t index) const noexcept;
     std::size_t GetSelectedItemCount();
-    std::optional<std::size_t> GetFirstSelectedItemIndex();
+    std::optional<std::size_t> GetFirstSelectedItemIndex() const noexcept;
     std::vector<std::size_t> GetAllSelectedItemIndexes();
     bool IsItemSelectedAtIndex(std::size_t index);
 
@@ -142,35 +144,26 @@ private:
     std::shared_ptr<ListItem> CreateItem(std::size_t index);
     void RecoverLastFocusedItem(const std::vector<std::shared_ptr<ListItem>>& items);
 
-    void OnItemAdd(const ListDataAddedInfo& event_info);
-    void HandleItemAdd(const ListDataAddedInfo& event_info);
-    void AddItemsBeforeVisibleItems(
-        std::size_t index, 
-        std::size_t count, 
-        float position_difference);
-    void AddItemsInMiddleOfVisibleItems(
-        std::size_t index, 
-        std::size_t count, 
-        float position_difference);
+    void OnDataAdded(const ListDataAddedInfo& event_info);
+    void HandleDataAdded(const ListDataAddedInfo& event_info);
+    std::optional<std::size_t> AddVisibleItems(std::size_t index, std::size_t count);
+    std::optional<std::size_t> AddMiddleVisibleItems(std::size_t index, std::size_t count);
 
-    void OnItemRemove(const ListDataRemovedInfo& event_info);
-    void HandleItemRemove(const ListDataRemovedInfo& event_info);
-    void RemoveItemsBeforeVisibleItems(
-        std::size_t index, 
-        std::size_t count, 
-        float position_difference);
-    void RemoveItemsInMiddleOfVisibleItems(
-        std::size_t index, 
-        std::size_t count, 
-        float position_difference);
+    void OnDataRemoved(const ListDataRemovedInfo& event_info);
+    void HandleDataRemoved(const ListDataRemovedInfo& event_info);
+    std::optional<std::size_t> RemoveVisibleItems(std::size_t index, std::size_t count);
+    std::size_t RemoveMiddleVisibleItems(std::size_t index, std::size_t count);
 
-    void OnItemUpdate(const ListDataUpdatedInfo& event_info);
-    void HandleItemUpdate(const ListDataUpdatedInfo& event_info);
+    void OnDataUpdated(const ListDataUpdatedInfo& event_info);
+    void HandleDataUpdated(const ListDataUpdatedInfo& event_info);
     void AdjustVisibleItemPositionsByUpdatingItems(
         std::size_t index, 
         std::size_t count, 
         float position_difference);
     void UpdateVisibleItemsByUpdatingItems(std::size_t index, std::size_t count);
+
+    void OnDataMoved(const ListDataMovedInfo& event_info);
+    void HandleDataMoved(const ListDataMovedInfo& event_info);
 
     void RefreshItemsIfNeeded();
     float AdjustContentHeight();
@@ -188,7 +181,7 @@ private:
     std::weak_ptr<ListDataSource> data_source_;
     std::weak_ptr<ListControlDelegate> delegate_;
 
-    SubscriptionSet data_source_subscriptions_;
+    SubscriptionSet data_source_subs_;
     SubscriptionSet item_container_subscriptions_;
 
     std::shared_ptr<ListControlItemHeightManager> item_height_manager_;

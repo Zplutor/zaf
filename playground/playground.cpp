@@ -58,17 +58,92 @@
 #include <zaf/input/mouse.h>
 #include <zaf/control/control_object.h>
 #include <zaf/control/textual/active_inline_object.h>
+#include <zaf/control/list_data_source.h>
 
 void BeginRun(const zaf::BeginRunInfo& event_info);
+
+class DataSource : public zaf::ListDataSource {
+public:
+    DataSource() {
+
+        data_ = {
+            zaf::Box(L"A"),
+            zaf::Box(L"B"),
+            zaf::Box(L"C"),
+            zaf::Box(L"D"),
+            zaf::Box(L"E"),
+        };
+    }
+
+    std::size_t GetDataCount() const override {
+        return data_.size();
+    }
+
+    std::shared_ptr<zaf::Object> GetDataAtIndex(std::size_t index) const override {
+        return data_[index];
+    }
+
+    void Move() {
+
+        auto data = data_[0];
+        data_.erase(data_.begin());
+        data_.insert(std::next(data_.begin(), 2), data);
+
+        NotifyDataMoved(0, 2);
+    }
+
+private:
+    std::vector<std::shared_ptr<zaf::WideString>> data_;
+};
+
+
+class Delegate : public zaf::ListControlDelegate {
+public:
+    float EstimateItemHeight(
+        std::size_t item_index,
+        const std::shared_ptr<zaf::Object>& item_data) override {
+
+        return 40;
+    }
+
+    std::wstring GetItemText(
+        std::size_t item_index,
+        const std::shared_ptr<zaf::Object>& item_data) override {
+
+        return item_data->ToString();
+    }
+};
+
 
 class Window : public zaf::Window {
 protected:
     void Initialize() override {
 
         __super::Initialize();
+
+        this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
+
+        data_source_ = zaf::Create<DataSource>();
+        delegate_ = zaf::Create<Delegate>();
+
+        auto list = zaf::Create<zaf::ListControl>();
+        list->SetDataSource(data_source_);
+        list->SetDelegate(delegate_);
+
+        this->RootControl()->AddChild(list);
+
+        auto button = zaf::Create<zaf::Button>();
+        button->SetFixedHeight(30);
+        button->SetText(L"Move");
+        Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
+            data_source_->Move();
+        }));
+        this->RootControl()->AddChild(button);
     }
 
 private:
+    std::shared_ptr<DataSource> data_source_;
+    std::shared_ptr<Delegate> delegate_;
 };
 
 

@@ -602,6 +602,9 @@
     <ClCompile Include="unittest\case\graphic\dwrite\inline_object_metrics_test.cpp">
       <Filter>case\graphic\dwrite</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\control\list_control_move_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

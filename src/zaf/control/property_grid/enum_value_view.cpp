@@ -64,7 +64,7 @@ void EnumValueView::InitializeComboBoxValues(
 
 void EnumValueView::OnSelectionChanged() {
 
-    NotifyValueChanged(combo_box_->DropDownListBox()->GetFirstSelectedItemData());
+    NotifyValueChanged(combo_box_->DropDownListBox()->FirstSelectedItemData());
 }
 
 
