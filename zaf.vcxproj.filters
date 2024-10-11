@@ -1279,6 +1279,9 @@
     <ClCompile Include="src\zaf\graphic\uri_image_parser.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observable\concat_observable.cpp">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2967,6 +2970,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\list_data_event_infos.h">
       <Filter>zaf\control\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable\concat_observable.h">
+      <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

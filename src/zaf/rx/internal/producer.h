@@ -10,15 +10,16 @@
 namespace zaf::internal {
 
 /**
-A producer is responsible for emmiting data sequence.
+A producer is responsible for emitting data sequence.
 
-There are two states of a producer: terminated and disposed.
+@details
+    There are two states of a producer: terminated and disposed.
 
-Terminated state indicates that the data sequence has ended. It's often set after OnError and 
-OnCompleted, or after calling Dispose() explicitly.
+    Terminated state indicates that the data sequence has ended. It's often set after OnError and 
+    OnCompleted, or after calling Dispose() explicitly.
 
-Disposed state indicates that any resource held by the producer has been destroyed. A disposed
-state always follows after a terminated state. It can only be set after calling Dispose().
+    Disposed state indicates that any resource held by the producer has been destroyed. A disposed
+    state always follows after a terminated state. It can only be set after calling Dispose().
 */
 class Producer : public std::enable_shared_from_this<Producer>, NonCopyableNonMovable {
 public:
@@ -54,7 +55,7 @@ public:
 
 protected:
     /**
-    Overrided by derived classes to do specific disposal work.
+    Overriden by derived classes to do specific disposal work.
 
     Any shared pointer should be reset in this method, in order to break potential circular 
     references.

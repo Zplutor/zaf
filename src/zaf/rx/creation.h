@@ -2,6 +2,7 @@
 
 #include <zaf/rx/observable.h>
 #include <zaf/rx/internal/observable/async_customized_observable.h>
+#include <zaf/rx/internal/observable/concat_observable.h>
 #include <zaf/rx/internal/observable/customized_observable.h>
 #include <zaf/rx/internal/observable/empty_observable.h>
 #include <zaf/rx/internal/observable/just_observable.h>
@@ -49,6 +50,22 @@ Observable<T> Throw(E error) {
 template<typename T>
 Observable<T> Just(const T& value) {
     return Observable<T>(std::make_shared<internal::JustObservable>(std::any{ value }));
+}
+
+
+template<typename T, typename C>
+Observable<T> Concat(const C& container) {
+    internal::ObservableList observables;
+    for (const auto& each_observable : container) {
+        observables.push_back(each_observable.Inner());
+    }
+    return Observable<T>(std::make_shared<internal::ConcatObservable>(std::move(observables)));
+}
+
+
+template<typename T>
+Observable<T> Concat(std::initializer_list<Observable<T>> observables) {
+    return Concat<T, std::initializer_list<Observable<T>>>(observables);
 }
 
 
