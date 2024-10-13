@@ -13,6 +13,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cwctype>
+#include <deque>
 #include <filesystem>
 #include <functional>
 #include <map>

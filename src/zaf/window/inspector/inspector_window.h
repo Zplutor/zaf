@@ -34,7 +34,7 @@ public:
 
     void HighlightControl(const std::shared_ptr<Control>& control) override;
     void SelectControl(const std::shared_ptr<Control>& control) override;
-    void ControlAddChild(const std::shared_ptr<Control>& parent) override;
+    void ControlAddChild(const std::shared_ptr<Control>& parent, std::size_t added_index) override;
     void ControlRemoveChild(
         const std::shared_ptr<Control>& parent,
         std::size_t removed_index) override;

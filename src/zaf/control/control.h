@@ -416,10 +416,14 @@ public:
      */
     void AddChild(const std::shared_ptr<Control>& child);
 
+    void AddChildAtIndex(const std::shared_ptr<Control>& child, std::size_t index);
+
     /**
      Add specified children to the control.
      */
     void AddChildren(const std::vector<std::shared_ptr<Control>>& children);
+
+    void AddChildrenAtIndex(const std::vector<std::shared_ptr<Control>>& children);
 
     /**
     Removes a child at the specified index.

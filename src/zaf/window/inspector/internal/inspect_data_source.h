@@ -10,7 +10,7 @@ class InspectDataSource : public TreeDataSource {
 public:
     InspectDataSource(const std::shared_ptr<Window>& window);
 
-    void ControlAddChild(const std::shared_ptr<Control>& parent);
+    void ControlAddChild(const std::shared_ptr<Control>& parent, std::size_t added_index);
     void ControlRemoveChild(const std::shared_ptr<Control>& parent, std::size_t removed_index);
 
     bool DoesDataHasChildren(const std::shared_ptr<Object>& data) override;

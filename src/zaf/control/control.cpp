@@ -1103,8 +1103,14 @@ void Control::SetChildren(const std::vector<std::shared_ptr<Control>>& children)
 
 
 void Control::AddChild(const std::shared_ptr<Control>& child) {
+    AddChildAtIndex(child, children_.size());
+}
+
+
+void Control::AddChildAtIndex(const std::shared_ptr<Control>& child, std::size_t index) {
 
     ZAF_EXPECT(child.get() != this);
+    ZAF_EXPECT(index <= children_.size());
 
     auto previous_parent = child->Parent();
     if (previous_parent.get() == this) {
@@ -1117,7 +1123,7 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
         previous_parent->InnerRemoveChild(child, false);
     }
 
-    children_.push_back(child);
+    children_.insert(std::next(children_.begin(), index), child);
     child->SetParent(shared_from_this());
 
     NeedRelayout();
@@ -1127,7 +1133,7 @@ void Control::AddChild(const std::shared_ptr<Control>& child) {
 
     auto inspector_port = GetInspectorPort();
     if (inspector_port) {
-        inspector_port->ControlAddChild(shared_from_this());
+        inspector_port->ControlAddChild(shared_from_this(), index);
     }
 }
 
@@ -1138,6 +1144,16 @@ void Control::AddChildren(const std::vector<std::shared_ptr<Control>>& children)
 
     for (const auto& each_child : children) {
         AddChild(each_child);
+    }
+}
+
+
+void Control::AddChildrenAtIndex(const std::vector<std::shared_ptr<Control>>& children) {
+
+    auto update_guard = BeginUpdate();
+
+    for (auto iterator = children.rbegin(); iterator != children.rend(); ++iterator) {
+        AddChildAtIndex(*iterator, 0);
     }
 }
 

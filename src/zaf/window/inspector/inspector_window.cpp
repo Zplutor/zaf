@@ -282,9 +282,11 @@ void InspectorWindow::SelectControl(const std::shared_ptr<Control>& control) {
 }
 
 
-void InspectorWindow::ControlAddChild(const std::shared_ptr<Control>& parent) {
+void InspectorWindow::ControlAddChild(
+    const std::shared_ptr<Control>& parent,
+    std::size_t added_index) {
 
-    data_source_->ControlAddChild(parent);
+    data_source_->ControlAddChild(parent, added_index);
 }
 
 

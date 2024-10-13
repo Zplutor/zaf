@@ -11,7 +11,9 @@ public:
     virtual void HighlightControl(const std::shared_ptr<Control>& control) = 0;
     virtual void SelectControl(const std::shared_ptr<Control>&) = 0;
 
-    virtual void ControlAddChild(const std::shared_ptr<Control>& parent) = 0;
+    virtual void ControlAddChild(
+        const std::shared_ptr<Control>& parent, 
+        std::size_t added_index) = 0;
 
     virtual void ControlRemoveChild(
         const std::shared_ptr<Control>& parent, 

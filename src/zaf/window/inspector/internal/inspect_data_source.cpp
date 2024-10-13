@@ -8,13 +8,11 @@ InspectDataSource::InspectDataSource(const std::shared_ptr<Window>& window) : wi
 }
 
 
-void InspectDataSource::ControlAddChild(const std::shared_ptr<Control>& parent) {
+void InspectDataSource::ControlAddChild(
+    const std::shared_ptr<Control>& parent, 
+    std::size_t added_index) {
 
-    auto old_child_count = parent->ChildCount();
-    if (old_child_count > 0) {
-        old_child_count--;
-    }
-    NotifyDataAdd(parent, old_child_count, 1);
+    NotifyDataAdd(parent, added_index, 1);
 }
 
 
