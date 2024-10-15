@@ -49,6 +49,7 @@ protected:
     }
 
 private:
+    //This method is re-entrant.
     void SubscribeToNextObservable() {
 
         if (!current_index_) {
@@ -64,8 +65,15 @@ private:
             return;
         }
 
+        std::size_t current_call_index = *current_index_;
+
         const auto& observable = observables[*current_index_];
-        current_sub_ = observable->Subscribe(As<InnerObserver>(shared_from_this()));
+        auto sub = observable->Subscribe(As<InnerObserver>(shared_from_this()));
+
+        //Don't override the subscription of re-entrant calls.
+        if (current_call_index == *current_index_) {
+            current_sub_ = std::move(sub);
+        }
     }
 
 private:

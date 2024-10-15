@@ -2,8 +2,13 @@
 
 namespace zaf::internal {
 
+
 std::shared_ptr<InnerSubscription> InnerReplaySubject::Subscribe(
     const std::shared_ptr<InnerObserver>& observer) {
+
+    //This instance may be destroyed during the emissions.
+    //Keep it alive here.
+    auto shared_this = shared_from_this();
 
     for (const auto& each_item : replay_items_) {
 

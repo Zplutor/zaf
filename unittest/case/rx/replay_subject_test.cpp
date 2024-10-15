@@ -1,5 +1,9 @@
+#include <mutex>
 #include <gtest/gtest.h>
+#include <zaf/rx/creation.h>
 #include <zaf/rx/subject.h>
+
+using namespace zaf;
 
 static_assert(!std::is_copy_assignable_v<zaf::ReplaySubject<int>>);
 static_assert(!std::is_copy_constructible_v<zaf::ReplaySubject<int>>);
@@ -73,4 +77,25 @@ TEST(RxReplaySubjectTest, ReplayError) {
     ASSERT_EQ(sequence, expected);
     ASSERT_TRUE(has_error);
     ASSERT_FALSE(is_completed);
+}
+
+
+//The subject is destroyed during the emission. Make sure it is handled properly.
+TEST(RxReplaySubjectTest, DestroySubjectDuringEmission) {
+
+    std::optional<ReplaySubject<int>> subject;
+    subject.emplace();
+
+    subject->AsObserver().OnNext(0);
+    subject->AsObserver().OnNext(1);
+    subject->AsObserver().OnNext(2);
+    subject->AsObserver().OnCompleted();
+
+    auto observable = subject->AsObservable();
+    auto sub = observable.Subscribe([&](int value) {
+        if (value == 1) {
+            subject.reset();
+            observable = rx::Empty<int>();
+        }
+    });
 }
