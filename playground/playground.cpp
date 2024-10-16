@@ -112,6 +112,26 @@ public:
 
         return item_data->ToString();
     }
+
+    std::shared_ptr<zaf::ListItem> CreateItem(
+        std::size_t item_index,
+        const std::shared_ptr<zaf::Object>& item_data) {
+
+        auto result = __super::CreateItem(item_index, item_data);
+
+        result->SetBackgroundColorPicker(zaf::ColorPicker{ [](const zaf::Control& control) {
+        
+            if (control.IsFocused()) {
+                return zaf::Color::Green();
+            }
+            if (control.IsSelected()) {
+                return zaf::Color::Blue();
+            }
+            return zaf::Color::Transparent();
+        } });
+
+        return result;
+    }
 };
 
 
@@ -129,6 +149,22 @@ protected:
         auto list = zaf::Create<zaf::ListControl>();
         list->SetDataSource(data_source_);
         list->SetDelegate(delegate_);
+        
+        Subscriptions() += list->ContextMenuEvent().Subscribe(
+            [](const zaf::ListControlContextMenuInfo& event_info) {
+        
+                auto menu_item1 = zaf::Create<zaf::MenuItem>();
+                menu_item1->SetText(L"Menu1");
+
+                auto menu_item2 = zaf::Create<zaf::MenuItem>();
+                menu_item2->SetText(L"Menu2");
+
+                auto menu = zaf::Create<zaf::PopupMenu>();
+                menu->AddMenuItem(menu_item1);
+                menu->AddMenuItem(menu_item2);
+
+                event_info.SetMenu(menu);
+            });
 
         this->RootControl()->AddChild(list);
 

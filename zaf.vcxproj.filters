@@ -751,10 +751,7 @@
     <ClCompile Include="src\zaf\window\event\window_focus_event_info.cpp">
       <Filter>zaf\window\event</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\event\list_control_selection_changed_info.cpp">
-      <Filter>zaf\control\event</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\event\list_control_item_double_click_info.cpp">
+    <ClCompile Include="src\zaf\control\event\list_control_event_infos.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\window\popup_menu.cpp">
@@ -2140,10 +2137,7 @@
     <ClInclude Include="src\zaf\window\event\window_focus_event_info.h">
       <Filter>zaf\window\event</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\event\list_control_selection_changed_info.h">
-      <Filter>zaf\control\event</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\event\list_control_item_double_click_info.h">
+    <ClInclude Include="src\zaf\control\event\list_control_event_infos.h">
       <Filter>zaf\control\event</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\popup_menu.h">

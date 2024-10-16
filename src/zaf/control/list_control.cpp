@@ -35,15 +35,17 @@ void ListControl::Initialize() {
     init_params.item_container = item_container_;
 
     init_params.data_source_change_event = 
-        std::bind(&ListControl::OnDataSourceChanged, this, std::placeholders::_1);
+        std::bind_front(&ListControl::OnDataSourceChanged, this);
     init_params.delegate_change_event = 
-        std::bind(&ListControl::OnDelegateChanged, this, std::placeholders::_1);
+        std::bind_front(&ListControl::OnDelegateChanged, this);
     init_params.item_container_change_event = 
-        std::bind(&ListControl::OnItemContainerChanged, this, std::placeholders::_1);
+        std::bind_front(&ListControl::OnItemContainerChanged, this);
     init_params.selection_change_event = 
         std::bind(&ListControl::OnCoreSelectionChanged, this);
     init_params.item_double_click_event = 
-        std::bind(&ListControl::OnItemDoubleClick, this, std::placeholders::_1);
+        std::bind_front(&ListControl::OnCoreItemDoubleClick, this);
+    init_params.context_menu_event =
+        std::bind_front(&ListControl::OnCoreContextMenu, this);
 
     core_->Initialize(init_params);
 }
@@ -210,7 +212,7 @@ Observable<ListControlSelectionChangedInfo> ListControl::SelectionChangedEvent()
 }
 
 
-void ListControl::OnItemDoubleClick(std::size_t item_index) {
+void ListControl::OnCoreItemDoubleClick(std::size_t item_index) {
 
     item_double_click_event_.Raise(ListControlItemDoubleClickInfo{
         As<ListControl>(shared_from_this()),
@@ -221,6 +223,30 @@ void ListControl::OnItemDoubleClick(std::size_t item_index) {
 
 Observable<ListControlItemDoubleClickInfo> ListControl::ItemDoubleClickEvent() const {
     return item_double_click_event_.GetObservable();
+}
+
+
+std::shared_ptr<PopupMenu> ListControl::OnCoreContextMenu(
+    std::optional<std::size_t> item_index,
+    const std::shared_ptr<Object>& item_data) {
+
+    ListControlContextMenuInfo event_info{ 
+        As<ListControl>(shared_from_this()),
+        item_index,
+        item_data,
+    };
+    OnContextMenu(event_info);
+    return event_info.Menu();
+}
+
+
+void ListControl::OnContextMenu(const ListControlContextMenuInfo& event_info) {
+    context_menu_event_.Raise(event_info);
+}
+
+
+Observable<ListControlContextMenuInfo> ListControl::ContextMenuEvent() const {
+    return context_menu_event_.GetObservable();
 }
 
 }

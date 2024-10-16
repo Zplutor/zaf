@@ -90,6 +90,7 @@ void ListControlCore::Initialize(const InitializeParameters& parameters) {
     item_container_change_event_ = parameters.item_container_change_event;
     selection_change_event_ = parameters.selection_change_event;
     item_double_click_event_ = parameters.item_double_click_event;
+    context_menu_event_ = parameters.context_menu_event;
 
     //Item container must be the first.
     InstallItemContainer(parameters.item_container);
@@ -106,7 +107,7 @@ void ListControlCore::RegisterScrollBarEvents() {
 
     auto vertical_scroll_bar = owner_.VerticalScrollBar();
 
-    vertical_scroll_bar_subscription_ = vertical_scroll_bar->ScrollEvent().Subscribe(
+    vertical_scroll_bar_sub_ = vertical_scroll_bar->ScrollEvent().Subscribe(
         std::bind(&ListControlCore::UpdateVisibleItems, this));
 }
 
@@ -114,7 +115,7 @@ void ListControlCore::RegisterScrollBarEvents() {
 void ListControlCore::UnregisterScrollBarEvents(
     const std::shared_ptr<ScrollBar>& scroll_bar) {
 
-    vertical_scroll_bar_subscription_.Unsubscribe();
+    vertical_scroll_bar_sub_.Unsubscribe();
 }
 
 
@@ -241,7 +242,7 @@ void ListControlCore::SetItemContainer(
 
     auto previous_item_container = item_container_;
 
-    item_container_subscriptions_.Clear();
+    item_container_subs_.Clear();
     InstallItemContainer(item_container);
 
     if (item_container_change_event_) {
@@ -260,23 +261,17 @@ void ListControlCore::InstallItemContainer(
     item_container_ = item_container;
     item_container_->SetSelectStrategy(CreateSelectStrategy());
 
-    item_container_subscriptions_ += item_container_->DoubleClickEvent().Subscribe(
-        std::bind(
-            &ListControlCore::OnItemContainerDoubleClick, 
-            this, 
-            std::placeholders::_1));
+    item_container_subs_ += item_container_->DoubleClickEvent().Subscribe(
+        std::bind_front(&ListControlCore::OnItemContainerDoubleClick, this));
 
-    item_container_subscriptions_ += item_container_->FocusGainedEvent().Subscribe(
-        std::bind(
-            &ListControlCore::OnItemContainerGainedFocus,
-            this,
-            std::placeholders::_1));
+    item_container_subs_ += item_container_->MouseUpEvent().Subscribe(
+        std::bind_front(&ListControlCore::OnItemContainerMouseUp, this));
 
-    item_container_subscriptions_ += item_container_->FocusLostEvent().Subscribe(
-        std::bind(
-            &ListControlCore::OnItemContainerLostFocus,
-            this,
-            std::placeholders::_1));
+    item_container_subs_ += item_container_->FocusGainedEvent().Subscribe(
+        std::bind_front(&ListControlCore::OnItemContainerGainedFocus, this));
+
+    item_container_subs_ += item_container_->FocusLostEvent().Subscribe(
+        std::bind_front(&ListControlCore::OnItemContainerLostFocus, this));
 
     owner_.SetScrollContent(item_container_);
 }
@@ -292,6 +287,38 @@ void ListControlCore::OnItemContainerDoubleClick(const DoubleClickInfo& event_in
     if (index) {
         item_double_click_event_(*index);
     }
+}
+
+
+void ListControlCore::OnItemContainerMouseUp(const MouseUpInfo& event_info) {
+
+    //Only handle right button event for now.
+    if (event_info.Message().MouseButton() != MouseButton::Right) {
+        return;
+    }
+
+    if (!context_menu_event_) {
+        return;
+    }
+
+    auto item_index = item_height_manager_->GetItemIndex(event_info.PositionAtSender().y);
+
+    std::shared_ptr<Object> item_data;
+    if (item_index) {
+        auto data_source = data_source_.lock();
+        if (!data_source) {
+            return;
+        }
+        item_data = data_source->GetDataAtIndex(*item_index);
+    }
+
+    auto menu = context_menu_event_(item_index, item_data);
+    if (!menu) {
+        return;
+    }
+
+    menu->PopupOnControl(item_container_, event_info.PositionAtSender());
+    event_info.MarkAsHandled();
 }
 
 

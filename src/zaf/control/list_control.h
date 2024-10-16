@@ -2,8 +2,7 @@
 
 #include <deque>
 #include <zaf/base/define.h>
-#include <zaf/control/event/list_control_item_double_click_info.h>
-#include <zaf/control/event/list_control_selection_changed_info.h>
+#include <zaf/control/event/list_control_event_infos.h>
 #include <zaf/control/list_item.h>
 #include <zaf/control/scroll_box.h>
 #include <zaf/control/selection_mode.h>
@@ -182,6 +181,8 @@ public:
 
     Observable<ListControlItemDoubleClickInfo> ItemDoubleClickEvent() const;
 
+    Observable<ListControlContextMenuInfo> ContextMenuEvent() const;
+
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect& previous_rect) override;
@@ -208,9 +209,14 @@ protected:
 
     virtual void OnSelectionChanged(const ListControlSelectionChangedInfo& event_info);
 
+    virtual void OnContextMenu(const ListControlContextMenuInfo& event_info);
+
 private:
     void OnCoreSelectionChanged();
-    void OnItemDoubleClick(std::size_t item_index);
+    void OnCoreItemDoubleClick(std::size_t item_index);
+    std::shared_ptr<PopupMenu> OnCoreContextMenu(
+        std::optional<std::size_t> item_index,
+        const std::shared_ptr<Object>& item_data);
 
 private:
     std::shared_ptr<ListItemContainer> item_container_;
@@ -220,6 +226,7 @@ private:
 
     Event<ListControlSelectionChangedInfo> selection_changed_event_;
     Event<ListControlItemDoubleClickInfo> item_double_click_event_;
+    Event<ListControlContextMenuInfo> context_menu_event_;
 };
 
 ZAF_OBJECT_BEGIN(ListControl);

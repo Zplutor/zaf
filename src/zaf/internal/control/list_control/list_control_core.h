@@ -11,6 +11,7 @@
 #include <zaf/control/scroll_box.h>
 #include <zaf/control/selection_mode.h>
 #include <zaf/rx/subscription_set.h>
+#include <zaf/window/popup_menu.h>
 
 namespace zaf::internal {
 
@@ -37,6 +38,11 @@ public:
         std::size_t index, 
         std::size_t count)>;
     using ItemDoubleClickEvent = std::function<void(std::size_t)>;
+    using ContextMenuEvent = std::function<
+        std::shared_ptr<PopupMenu>(
+            std::optional<std::size_t> item_index, 
+            const std::shared_ptr<Object>& item_data)
+    >;
 
     class InitializeParameters {
     public:
@@ -48,6 +54,7 @@ public:
         ItemContainerChangeEvent item_container_change_event;
         SelectionChangeEvent selection_change_event;
         ItemDoubleClickEvent item_double_click_event;
+        ContextMenuEvent context_menu_event;
     };
 
 public:
@@ -116,6 +123,7 @@ private:
     void InstallDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
     void InstallItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
     void OnItemContainerDoubleClick(const DoubleClickInfo& event_info);
+    void OnItemContainerMouseUp(const MouseUpInfo& event_info);
     void OnItemContainerGainedFocus(const FocusGainedInfo& event_info);
     void OnItemContainerLostFocus(const FocusLostInfo& event_info);
 
@@ -182,13 +190,13 @@ private:
     std::weak_ptr<ListControlDelegate> delegate_;
 
     SubscriptionSet data_source_subs_;
-    SubscriptionSet item_container_subscriptions_;
+    SubscriptionSet item_container_subs_;
 
     std::shared_ptr<ListControlItemHeightManager> item_height_manager_;
     ListControlItemSelectionManager item_selection_manager_;
     std::weak_ptr<Object> last_focused_item_data_;
 
-    Subscription vertical_scroll_bar_subscription_;
+    Subscription vertical_scroll_bar_sub_;
 
     float current_total_height_{};
     std::size_t first_visible_item_index_{};
@@ -205,6 +213,7 @@ private:
     ItemContainerChangeEvent item_container_change_event_;
     SelectionChangeEvent selection_change_event_;
     ItemDoubleClickEvent item_double_click_event_;
+    ContextMenuEvent context_menu_event_;
 };
 
 }
