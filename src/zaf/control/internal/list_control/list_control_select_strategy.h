@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <zaf/control/internal/list_control/list_control_implementation.h>
+#include <zaf/internal/control/list_control/list_control_core.h>
 
 namespace zaf {
 
@@ -18,11 +18,11 @@ public:
     ListControlSelectStrategy() = default;
     virtual ~ListControlSelectStrategy() = default;
 
-    std::shared_ptr<ListControlImplementation> GetListControl() const {
+    std::shared_ptr<ListControlCore> GetListControl() const {
         return list_control_.lock();
     }
 
-    void SetListControl(const std::weak_ptr<ListControlImplementation> list_control) {
+    void SetListControl(const std::weak_ptr<ListControlCore> list_control) {
         list_control_ = list_control;
     }
 
@@ -49,7 +49,7 @@ protected:
         std::size_t& new_index);
     
 private:
-    std::weak_ptr<ListControlImplementation> list_control_;
+    std::weak_ptr<ListControlCore> list_control_;
     std::shared_ptr<ListControlItemHeightManager> item_height_manager_;
 };
 

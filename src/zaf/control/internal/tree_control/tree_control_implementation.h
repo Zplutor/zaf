@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/control/internal/list_control/list_control_implementation.h>
+#include <zaf/internal/control/list_control/list_control_core.h>
 #include <zaf/control/internal/tree_control/tree_data_manager.h>
 #include <zaf/control/internal/tree_control/tree_index_mapping.h>
 #include <zaf/control/internal/tree_control/tree_visitor.h>
@@ -32,7 +32,7 @@ public:
         std::weak_ptr<TreeControlDelegate> delegate;
         DataSourceChangeEvent data_source_change_event;
         DelegateChangeEvent delegate_change_event;
-        ListControlImplementation::ItemContainerChangeEvent item_container_change_event;
+        ListControlCore::ItemContainerChangeEvent item_container_change_event;
         SelectionChangeEvent selection_change_event;
         ItemExpandEvent item_expand_event;
         ItemCollapseEvent item_collapse_event;
@@ -42,7 +42,7 @@ public:
     TreeControlImplementation(ScrollBox& owner);
     ~TreeControlImplementation() = default;
 
-    internal::ListControlImplementation& GetListImplementation() const {
+    internal::ListControlCore& GetListImplementation() const {
         return *list_implementation_;
     }
 
@@ -170,7 +170,7 @@ private:
         std::size_t& child_index);
 
 private:
-    std::shared_ptr<internal::ListControlImplementation> list_implementation_;
+    std::shared_ptr<internal::ListControlCore> list_implementation_;
     std::weak_ptr<TreeDataSource> data_source_;
     std::weak_ptr<TreeControlDelegate> delegate_;
 

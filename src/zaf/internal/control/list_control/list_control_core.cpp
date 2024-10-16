@@ -1,4 +1,4 @@
-#include <zaf/control/internal/list_control/list_control_implementation.h>
+#include <zaf/internal/control/list_control/list_control_core.h>
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/error/contract_error.h>
@@ -66,20 +66,20 @@ void CalculateRangeDifference(
 
 }
 
-ListControlImplementation::ListControlImplementation(ScrollBox& owner) : 
+ListControlCore::ListControlCore(ScrollBox& owner) : 
     owner_(owner) {
 
 }
 
 
-ListControlImplementation::~ListControlImplementation() {
+ListControlCore::~ListControlCore() {
 
     UnregisterScrollBarEvents(owner_.VerticalScrollBar());
     UnregisterDataSourceEvents();
 }
 
 
-void ListControlImplementation::Initialize(const InitializeParameters& parameters) {
+void ListControlCore::Initialize(const InitializeParameters& parameters) {
 
     owner_.SetBackgroundColor(Color::White());
     owner_.SetBorder(Frame(1));
@@ -102,23 +102,23 @@ void ListControlImplementation::Initialize(const InitializeParameters& parameter
 }
 
 
-void ListControlImplementation::RegisterScrollBarEvents() {
+void ListControlCore::RegisterScrollBarEvents() {
 
     auto vertical_scroll_bar = owner_.VerticalScrollBar();
 
     vertical_scroll_bar_subscription_ = vertical_scroll_bar->ScrollEvent().Subscribe(
-        std::bind(&ListControlImplementation::UpdateVisibleItems, this));
+        std::bind(&ListControlCore::UpdateVisibleItems, this));
 }
 
 
-void ListControlImplementation::UnregisterScrollBarEvents(
+void ListControlCore::UnregisterScrollBarEvents(
     const std::shared_ptr<ScrollBar>& scroll_bar) {
 
     vertical_scroll_bar_subscription_.Unsubscribe();
 }
 
 
-void ListControlImplementation::AdjustScrollBarSmallChange() {
+void ListControlCore::AdjustScrollBarSmallChange() {
 
     if (!AutoAdjustScrollBarSmallChange()) {
         return;
@@ -151,7 +151,7 @@ void ListControlImplementation::AdjustScrollBarSmallChange() {
 }
 
 
-void ListControlImplementation::SetDataSource(const std::weak_ptr<ListDataSource>& data_source) {
+void ListControlCore::SetDataSource(const std::weak_ptr<ListDataSource>& data_source) {
 
     UnregisterDataSourceEvents();
 
@@ -167,7 +167,7 @@ void ListControlImplementation::SetDataSource(const std::weak_ptr<ListDataSource
 }
 
 
-void ListControlImplementation::InstallDataSource(
+void ListControlCore::InstallDataSource(
     const std::weak_ptr<ListDataSource>& data_source) {
 
     data_source_ = data_source;
@@ -183,7 +183,7 @@ void ListControlImplementation::InstallDataSource(
 }
 
 
-void ListControlImplementation::RegisterDataSourceEvents() {
+void ListControlCore::RegisterDataSourceEvents() {
 
     auto data_source = data_source_.lock();
     if (!data_source) {
@@ -191,26 +191,26 @@ void ListControlImplementation::RegisterDataSourceEvents() {
     }
 
     data_source_subs_ += data_source->DataAddedEvent().Subscribe(
-        std::bind_front(&ListControlImplementation::OnDataAdded, this));
+        std::bind_front(&ListControlCore::OnDataAdded, this));
 
     data_source_subs_ += data_source->DataRemovedEvent().Subscribe(
-        std::bind_front(&ListControlImplementation::OnDataRemoved, this));
+        std::bind_front(&ListControlCore::OnDataRemoved, this));
 
     data_source_subs_ += data_source->DataUpdatedEvent().Subscribe(
-        std::bind_front(&ListControlImplementation::OnDataUpdated, this));
+        std::bind_front(&ListControlCore::OnDataUpdated, this));
 
     data_source_subs_ += data_source->DataMovedEvent().Subscribe(
-        std::bind_front(&ListControlImplementation::OnDataMoved, this));
+        std::bind_front(&ListControlCore::OnDataMoved, this));
 }
 
 
-void ListControlImplementation::UnregisterDataSourceEvents() {
+void ListControlCore::UnregisterDataSourceEvents() {
 
     data_source_subs_.Clear();
 }
 
 
-void ListControlImplementation::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
+void ListControlCore::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
 
     auto previous_delegate = delegate_;
     
@@ -224,7 +224,7 @@ void ListControlImplementation::SetDelegate(const std::weak_ptr<ListControlDeleg
 }
 
 
-void ListControlImplementation::InstallDelegate(
+void ListControlCore::InstallDelegate(
     const std::weak_ptr<ListControlDelegate>& delegate) {
 
     delegate_ = delegate;
@@ -232,7 +232,7 @@ void ListControlImplementation::InstallDelegate(
 }
 
 
-void ListControlImplementation::SetItemContainer(
+void ListControlCore::SetItemContainer(
     const std::shared_ptr<ListItemContainer>& item_container) {
 
     if (item_container_ == item_container) {
@@ -252,7 +252,7 @@ void ListControlImplementation::SetItemContainer(
 }
 
 
-void ListControlImplementation::InstallItemContainer(
+void ListControlCore::InstallItemContainer(
     const std::shared_ptr<ListItemContainer>& item_container) {
 
     ZAF_EXPECT(item_container);
@@ -262,19 +262,19 @@ void ListControlImplementation::InstallItemContainer(
 
     item_container_subscriptions_ += item_container_->DoubleClickEvent().Subscribe(
         std::bind(
-            &ListControlImplementation::OnItemContainerDoubleClick, 
+            &ListControlCore::OnItemContainerDoubleClick, 
             this, 
             std::placeholders::_1));
 
     item_container_subscriptions_ += item_container_->FocusGainedEvent().Subscribe(
         std::bind(
-            &ListControlImplementation::OnItemContainerGainedFocus,
+            &ListControlCore::OnItemContainerGainedFocus,
             this,
             std::placeholders::_1));
 
     item_container_subscriptions_ += item_container_->FocusLostEvent().Subscribe(
         std::bind(
-            &ListControlImplementation::OnItemContainerLostFocus,
+            &ListControlCore::OnItemContainerLostFocus,
             this,
             std::placeholders::_1));
 
@@ -282,7 +282,7 @@ void ListControlImplementation::InstallItemContainer(
 }
 
 
-void ListControlImplementation::OnItemContainerDoubleClick(const DoubleClickInfo& event_info) {
+void ListControlCore::OnItemContainerDoubleClick(const DoubleClickInfo& event_info) {
 
     if (!item_double_click_event_) {
         return;
@@ -295,7 +295,7 @@ void ListControlImplementation::OnItemContainerDoubleClick(const DoubleClickInfo
 }
 
 
-void ListControlImplementation::OnItemContainerGainedFocus(const FocusGainedInfo& event_info) {
+void ListControlCore::OnItemContainerGainedFocus(const FocusGainedInfo& event_info) {
 
     auto focused_control = As<Control>(event_info.Source());
     if (!focused_control) {
@@ -316,7 +316,7 @@ void ListControlImplementation::OnItemContainerGainedFocus(const FocusGainedInfo
 }
 
 
-void ListControlImplementation::OnItemContainerLostFocus(const FocusLostInfo& event_info) {
+void ListControlCore::OnItemContainerLostFocus(const FocusLostInfo& event_info) {
 
     //Focus was taken from other control outside list control, clear last_focused_item_data_.
     auto last_focused_item_data = last_focused_item_data_.lock();
@@ -330,7 +330,7 @@ void ListControlImplementation::OnItemContainerLostFocus(const FocusLostInfo& ev
 }
 
 
-void ListControlImplementation::SetSelectionMode(SelectionMode mode) {
+void ListControlCore::SetSelectionMode(SelectionMode mode) {
 
     selection_mode_ = mode;
 
@@ -354,7 +354,7 @@ void ListControlImplementation::SetSelectionMode(SelectionMode mode) {
 }
 
 
-void ListControlImplementation::OnLayout() {
+void ListControlCore::OnLayout() {
 
     if (!disable_on_layout_) {
         UpdateVisibleItems();
@@ -362,7 +362,7 @@ void ListControlImplementation::OnLayout() {
 }
 
 
-void ListControlImplementation::OnVerticalScrollBarChange(
+void ListControlCore::OnVerticalScrollBarChange(
     const std::shared_ptr<ScrollBar>& previous_scroll_bar) {
 
     if (previous_scroll_bar) {
@@ -374,12 +374,12 @@ void ListControlImplementation::OnVerticalScrollBarChange(
 }
 
 
-void ListControlImplementation::Reload() {
+void ListControlCore::Reload() {
     InnerReload(false);
 }
 
 
-void ListControlImplementation::InnerReload(bool retain_state) {
+void ListControlCore::InnerReload(bool retain_state) {
 
     if (!retain_state) {
         //Remove selected indexes.
@@ -408,14 +408,14 @@ void ListControlImplementation::InnerReload(bool retain_state) {
 }
 
 
-void ListControlImplementation::UpdateContentHeight() {
+void ListControlCore::UpdateContentHeight() {
 
     item_height_manager_->ReloadItemHeights();
     SetScrollContentHeight(item_height_manager_->GetTotalHeight());
 }
 
 
-void ListControlImplementation::UpdateVisibleItems() {
+void ListControlCore::UpdateVisibleItems() {
 
     std::size_t old_index = first_visible_item_index_;
     std::size_t old_count = visible_items_.size();
@@ -457,7 +457,7 @@ void ListControlImplementation::UpdateVisibleItems() {
 }
 
 
-void ListControlImplementation::GetVisibleItemsRange(std::size_t& index, std::size_t& count) {
+void ListControlCore::GetVisibleItemsRange(std::size_t& index, std::size_t& count) {
 
     auto visible_rect = owner_.GetVisibleScrollContentRect();
     float begin_position = visible_rect.position.y;
@@ -489,7 +489,7 @@ void ListControlImplementation::GetVisibleItemsRange(std::size_t& index, std::si
 }
 
 
-void ListControlImplementation::AdjustVisibleItems(
+void ListControlCore::AdjustVisibleItems(
     std::size_t new_index,
     std::size_t new_count,
     bool remove_head,
@@ -523,7 +523,7 @@ void ListControlImplementation::AdjustVisibleItems(
 }
 
 
-void ListControlImplementation::RemoveHeadVisibleItems(std::size_t count) {
+void ListControlCore::RemoveHeadVisibleItems(std::size_t count) {
 
     for (std::size_t current_count = 0; current_count < count; ++current_count) {
         auto item = visible_items_.front();
@@ -533,7 +533,7 @@ void ListControlImplementation::RemoveHeadVisibleItems(std::size_t count) {
 }
 
 
-void ListControlImplementation::RemoveTailVisibleItems(std::size_t count) {
+void ListControlCore::RemoveTailVisibleItems(std::size_t count) {
 
     for (std::size_t current_count = 0; current_count < count; ++current_count) {
         auto item = visible_items_.back();
@@ -543,7 +543,7 @@ void ListControlImplementation::RemoveTailVisibleItems(std::size_t count) {
 }
 
 
-void ListControlImplementation::RecoverLastFocusedItem(
+void ListControlCore::RecoverLastFocusedItem(
     const std::vector<std::shared_ptr<ListItem>>& items) {
 
     auto last_focused_item_data = last_focused_item_data_.lock();
@@ -561,7 +561,7 @@ void ListControlImplementation::RecoverLastFocusedItem(
 }
 
 
-std::vector<std::shared_ptr<ListItem>> ListControlImplementation::CreateItems(
+std::vector<std::shared_ptr<ListItem>> ListControlCore::CreateItems(
     std::size_t index,
     std::size_t count) {
 
@@ -583,7 +583,7 @@ std::vector<std::shared_ptr<ListItem>> ListControlImplementation::CreateItems(
 }
 
 
-std::shared_ptr<ListItem> ListControlImplementation::CreateItem(std::size_t index) {
+std::shared_ptr<ListItem> ListControlCore::CreateItem(std::size_t index) {
 
     auto data_source = data_source_.lock();
     if (!data_source) {
@@ -617,7 +617,7 @@ std::shared_ptr<ListItem> ListControlImplementation::CreateItem(std::size_t inde
 }
 
 
-void ListControlImplementation::OnDataAdded(const ListDataAddedInfo& event_info) {
+void ListControlCore::OnDataAdded(const ListDataAddedInfo& event_info) {
 
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
@@ -630,7 +630,7 @@ void ListControlImplementation::OnDataAdded(const ListDataAddedInfo& event_info)
 }
 
 
-void ListControlImplementation::HandleDataAdded(const ListDataAddedInfo& event_info) {
+void ListControlCore::HandleDataAdded(const ListDataAddedInfo& event_info) {
 
     //Adjust scroll bar small change if there is no items before adding.
     bool need_adjust_scroll_bar_small_change = visible_items_.empty();
@@ -660,7 +660,7 @@ void ListControlImplementation::HandleDataAdded(const ListDataAddedInfo& event_i
 
 
 //Returns the index of the first visible item which needs to be adjusted its position.
-std::optional<std::size_t> ListControlImplementation::AddVisibleItems(
+std::optional<std::size_t> ListControlCore::AddVisibleItems(
     std::size_t index,
     std::size_t count) {
 
@@ -677,7 +677,7 @@ std::optional<std::size_t> ListControlImplementation::AddVisibleItems(
 }
 
 
-std::optional<std::size_t> ListControlImplementation::AddMiddleVisibleItems(
+std::optional<std::size_t> ListControlCore::AddMiddleVisibleItems(
     std::size_t index,
     std::size_t count) {
 
@@ -701,7 +701,7 @@ std::optional<std::size_t> ListControlImplementation::AddMiddleVisibleItems(
 }
 
 
-void ListControlImplementation::OnDataRemoved(const ListDataRemovedInfo& event_info) {
+void ListControlCore::OnDataRemoved(const ListDataRemovedInfo& event_info) {
 
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
@@ -714,7 +714,7 @@ void ListControlImplementation::OnDataRemoved(const ListDataRemovedInfo& event_i
 }
 
 
-void ListControlImplementation::HandleDataRemoved(const ListDataRemovedInfo& event_info) {
+void ListControlCore::HandleDataRemoved(const ListDataRemovedInfo& event_info) {
 
     bool selection_changed = item_selection_manager_.AdjustSelectionByRemovingIndexes(
         event_info.Index(),
@@ -737,7 +737,7 @@ void ListControlImplementation::HandleDataRemoved(const ListDataRemovedInfo& eve
 
 
 //Returns the index of the first visible item which needs to be adjusted its position.
-std::optional<std::size_t> ListControlImplementation::RemoveVisibleItems(
+std::optional<std::size_t> ListControlCore::RemoveVisibleItems(
     std::size_t index, 
     std::size_t count) {
     
@@ -754,7 +754,7 @@ std::optional<std::size_t> ListControlImplementation::RemoveVisibleItems(
 }
 
 
-std::size_t ListControlImplementation::RemoveMiddleVisibleItems(
+std::size_t ListControlCore::RemoveMiddleVisibleItems(
     std::size_t index,
     std::size_t count) {
 
@@ -773,7 +773,7 @@ std::size_t ListControlImplementation::RemoveMiddleVisibleItems(
 }
 
 
-void ListControlImplementation::OnDataUpdated(const ListDataUpdatedInfo& event_info) {
+void ListControlCore::OnDataUpdated(const ListDataUpdatedInfo& event_info) {
 
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
@@ -786,7 +786,7 @@ void ListControlImplementation::OnDataUpdated(const ListDataUpdatedInfo& event_i
 }
 
 
-void ListControlImplementation::HandleDataUpdated(const ListDataUpdatedInfo& event_info) {
+void ListControlCore::HandleDataUpdated(const ListDataUpdatedInfo& event_info) {
 
     auto update_guard = item_container_->BeginUpdate();
 
@@ -805,7 +805,7 @@ void ListControlImplementation::HandleDataUpdated(const ListDataUpdatedInfo& eve
 }
 
 
-void ListControlImplementation::AdjustVisibleItemPositionsByUpdatingItems(
+void ListControlCore::AdjustVisibleItemPositionsByUpdatingItems(
     std::size_t index,
     std::size_t count,
     float position_difference) {
@@ -829,7 +829,7 @@ void ListControlImplementation::AdjustVisibleItemPositionsByUpdatingItems(
 }
 
 
-void ListControlImplementation::UpdateVisibleItemsByUpdatingItems(
+void ListControlCore::UpdateVisibleItemsByUpdatingItems(
     std::size_t index, 
     std::size_t count) {
 
@@ -865,7 +865,7 @@ void ListControlImplementation::UpdateVisibleItemsByUpdatingItems(
 }
 
 
-void ListControlImplementation::OnDataMoved(const ListDataMovedInfo& event_info) {
+void ListControlCore::OnDataMoved(const ListDataMovedInfo& event_info) {
 
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
@@ -878,7 +878,7 @@ void ListControlImplementation::OnDataMoved(const ListDataMovedInfo& event_info)
 }
 
 
-void ListControlImplementation::HandleDataMoved(const ListDataMovedInfo& event_info) {
+void ListControlCore::HandleDataMoved(const ListDataMovedInfo& event_info) {
 
     bool has_selection = !!item_selection_manager_.GetFirstSelectedIndex();
 
@@ -908,7 +908,7 @@ void ListControlImplementation::HandleDataMoved(const ListDataMovedInfo& event_i
 }
 
 
-void ListControlImplementation::RefreshItemsIfNeeded() {
+void ListControlCore::RefreshItemsIfNeeded() {
 
     if (!refresh_after_data_source_event_) {
         return;
@@ -919,7 +919,7 @@ void ListControlImplementation::RefreshItemsIfNeeded() {
 }
 
 
-float ListControlImplementation::AdjustContentHeight() {
+float ListControlCore::AdjustContentHeight() {
 
     float old_total_height = current_total_height_;
     float new_total_height = item_height_manager_->GetTotalHeight();
@@ -937,14 +937,14 @@ float ListControlImplementation::AdjustContentHeight() {
 }
 
 
-void ListControlImplementation::SetScrollContentHeight(float height) {
+void ListControlCore::SetScrollContentHeight(float height) {
 
     current_total_height_ = height;
     item_container_->SetFixedHeight(height);
 }
 
 
-void ListControlImplementation::AdjustVisibleItemPositions(
+void ListControlCore::AdjustVisibleItemPositions(
     std::size_t begin_adjust_index, 
     float difference) {
 
@@ -958,7 +958,7 @@ void ListControlImplementation::AdjustVisibleItemPositions(
 }
 
 
-void ListControlImplementation::SelectAllItems() {
+void ListControlCore::SelectAllItems() {
 
     std::size_t item_count = GetItemCount();
     std::size_t selected_count = GetSelectedItemCount();
@@ -970,7 +970,7 @@ void ListControlImplementation::SelectAllItems() {
 }
 
 
-void ListControlImplementation::UnselectAllItems() {
+void ListControlCore::UnselectAllItems() {
 
     std::size_t selected_count = GetSelectedItemCount();
     if (selected_count != 0) {
@@ -981,7 +981,7 @@ void ListControlImplementation::UnselectAllItems() {
 }
 
 
-void ListControlImplementation::SelectItemAtIndex(std::size_t index) {
+void ListControlCore::SelectItemAtIndex(std::size_t index) {
 
     if ((index >= GetItemCount()) || IsItemSelectedAtIndex(index)) {
         return;
@@ -1006,7 +1006,7 @@ void ListControlImplementation::SelectItemAtIndex(std::size_t index) {
 }
 
 
-void ListControlImplementation::UnselectItemAtIndex(std::size_t index) {
+void ListControlCore::UnselectItemAtIndex(std::size_t index) {
 
     if ((index >= GetItemCount()) || !IsItemSelectedAtIndex(index)) {
         return;
@@ -1017,12 +1017,12 @@ void ListControlImplementation::UnselectItemAtIndex(std::size_t index) {
 }
 
 
-std::size_t ListControlImplementation::GetItemCount() {
+std::size_t ListControlCore::GetItemCount() {
     return item_height_manager_->GetItemCount();
 }
 
 
-std::shared_ptr<ListItem> ListControlImplementation::GetVisibleItemAtIndex(
+std::shared_ptr<ListItem> ListControlCore::GetVisibleItemAtIndex(
     std::size_t index) const noexcept {
 
     if (index < first_visible_item_index_ || 
@@ -1035,27 +1035,27 @@ std::shared_ptr<ListItem> ListControlImplementation::GetVisibleItemAtIndex(
 }
 
 
-std::size_t ListControlImplementation::GetSelectedItemCount() {
+std::size_t ListControlCore::GetSelectedItemCount() {
     return item_selection_manager_.GetAllSelectedCount();
 }
 
 
-std::optional<std::size_t> ListControlImplementation::GetFirstSelectedItemIndex() const noexcept {
+std::optional<std::size_t> ListControlCore::GetFirstSelectedItemIndex() const noexcept {
     return item_selection_manager_.GetFirstSelectedIndex();
 }
 
 
-std::vector<std::size_t> ListControlImplementation::GetAllSelectedItemIndexes() {
+std::vector<std::size_t> ListControlCore::GetAllSelectedItemIndexes() {
     return item_selection_manager_.GetAllSelectedIndexes();
 }
 
 
-bool ListControlImplementation::IsItemSelectedAtIndex(std::size_t index) {
+bool ListControlCore::IsItemSelectedAtIndex(std::size_t index) {
     return item_selection_manager_.IsIndexSelected(index);
 }
 
 
-void ListControlImplementation::ScrollToItemAtIndex(std::size_t index) {
+void ListControlCore::ScrollToItemAtIndex(std::size_t index) {
 
     auto position_and_height = item_height_manager_->GetItemPositionAndHeight(index);
 
@@ -1077,7 +1077,7 @@ void ListControlImplementation::ScrollToItemAtIndex(std::size_t index) {
 }
 
 
-std::optional<std::size_t> ListControlImplementation::FindItemIndexAtPosition(
+std::optional<std::size_t> ListControlCore::FindItemIndexAtPosition(
     const Point& position) {
 
     auto visible_scroll_content_rect = owner_.GetVisibleScrollContentRect();
@@ -1091,7 +1091,7 @@ std::optional<std::size_t> ListControlImplementation::FindItemIndexAtPosition(
 }
 
 
-std::optional<std::size_t> ListControlImplementation::GetListItemIndex(
+std::optional<std::size_t> ListControlCore::GetListItemIndex(
     const std::shared_ptr<ListItem>& item) {
 
     for (auto index : Range(0, visible_items_.size())) {
@@ -1105,7 +1105,7 @@ std::optional<std::size_t> ListControlImplementation::GetListItemIndex(
 }
 
 
-void ListControlImplementation::ReplaceSelection(std::size_t index, std::size_t count) {
+void ListControlCore::ReplaceSelection(std::size_t index, std::size_t count) {
 
     item_selection_manager_.ReplaceSelection(index, count);
 
@@ -1122,7 +1122,7 @@ void ListControlImplementation::ReplaceSelection(std::size_t index, std::size_t 
 }
 
 
-bool ListControlImplementation::RevertSelection(std::size_t index) {
+bool ListControlCore::RevertSelection(std::size_t index) {
 
     bool is_selected = item_selection_manager_.RevertSelection(index);
 
@@ -1136,17 +1136,17 @@ bool ListControlImplementation::RevertSelection(std::size_t index) {
 }
 
 
-void ListControlImplementation::AddSelection(std::size_t index, std::size_t count) {
+void ListControlCore::AddSelection(std::size_t index, std::size_t count) {
     ChangeSelection(index, count, true);
 }
 
 
-void ListControlImplementation::RemoveSelection(std::size_t index, std::size_t count) {
+void ListControlCore::RemoveSelection(std::size_t index, std::size_t count) {
     ChangeSelection(index, count, false);
 }
 
 
-void ListControlImplementation::ChangeSelection(std::size_t index, std::size_t count, bool is_add) {
+void ListControlCore::ChangeSelection(std::size_t index, std::size_t count, bool is_add) {
 
     if (is_add) {
         item_selection_manager_.AddSelection(index, count);
@@ -1172,7 +1172,7 @@ void ListControlImplementation::ChangeSelection(std::size_t index, std::size_t c
 }
 
 
-void ListControlImplementation::NotifySelectionChange(
+void ListControlCore::NotifySelectionChange(
     ListSelectionChangeReason change_type,
     std::size_t index,
     std::size_t count) {
@@ -1184,7 +1184,7 @@ void ListControlImplementation::NotifySelectionChange(
 
 
 std::shared_ptr<internal::ListControlSelectStrategy> 
-    ListControlImplementation::CreateSelectStrategy() {
+    ListControlCore::CreateSelectStrategy() {
 
     std::shared_ptr<internal::ListControlSelectStrategy> select_strategy;
 

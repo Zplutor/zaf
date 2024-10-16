@@ -45,7 +45,7 @@ std::vector<std::pair<std::size_t, std::size_t>> MergeAdjacentListIndexes(
 }
 
 TreeControlImplementation::TreeControlImplementation(ScrollBox& owner) :
-    list_implementation_(std::make_shared<internal::ListControlImplementation>(owner)) {
+    list_implementation_(std::make_shared<internal::ListControlCore>(owner)) {
 
 }
 
@@ -75,7 +75,7 @@ void TreeControlImplementation::Initialize(const InitializeParameters& parameter
 void TreeControlImplementation::InitializeListImplementation(
     const InitializeParameters& parameters) {
 
-    ListControlImplementation::InitializeParameters list_initialize_parameters;
+    ListControlCore::InitializeParameters list_initialize_parameters;
     list_initialize_parameters.item_container = parameters.item_container;
     list_initialize_parameters.data_source = As<ListDataSource>(shared_from_this());
     list_initialize_parameters.delegate = As<ListControlDelegate>(shared_from_this());

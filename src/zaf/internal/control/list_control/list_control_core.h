@@ -24,8 +24,8 @@ enum class ListSelectionChangeReason {
     RemoveSelection,
 };
 
-class ListControlImplementation :
-    public std::enable_shared_from_this<ListControlImplementation>,
+class ListControlCore :
+    public std::enable_shared_from_this<ListControlCore>,
     NonCopyableNonMovable {
 
 public:
@@ -51,8 +51,8 @@ public:
     };
 
 public:
-    ListControlImplementation(ScrollBox& owner);
-    ~ListControlImplementation();
+    ListControlCore(ScrollBox& owner);
+    ~ListControlCore();
 
     void Initialize(const InitializeParameters& parameters);
     void SetDataSource(const std::weak_ptr<ListDataSource>& data_source);

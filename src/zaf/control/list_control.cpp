@@ -1,7 +1,7 @@
 #include <zaf/control/list_control.h>
 #include <algorithm>
 #include <zaf/base/error/contract_error.h>
-#include <zaf/control/internal/list_control/list_control_implementation.h>
+#include <zaf/internal/control/list_control/list_control_core.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/list_item_container.h>
@@ -15,8 +15,7 @@ namespace zaf {
 ZAF_OBJECT_IMPL(ListControl);
 
 
-ListControl::ListControl() : 
-    implementation_(std::make_shared<internal::ListControlImplementation>(*this)){
+ListControl::ListControl() : core_(std::make_shared<internal::ListControlCore>(*this)){
 
 }
 
@@ -32,21 +31,21 @@ void ListControl::Initialize() {
 
     item_container_ = Create<ListItemContainer>();
 
-    internal::ListControlImplementation::InitializeParameters initialize_parameters;
-    initialize_parameters.item_container = item_container_;
+    internal::ListControlCore::InitializeParameters init_params;
+    init_params.item_container = item_container_;
 
-    initialize_parameters.data_source_change_event = 
+    init_params.data_source_change_event = 
         std::bind(&ListControl::OnDataSourceChanged, this, std::placeholders::_1);
-    initialize_parameters.delegate_change_event = 
+    init_params.delegate_change_event = 
         std::bind(&ListControl::OnDelegateChanged, this, std::placeholders::_1);
-    initialize_parameters.item_container_change_event = 
+    init_params.item_container_change_event = 
         std::bind(&ListControl::OnItemContainerChanged, this, std::placeholders::_1);
-    initialize_parameters.selection_change_event = 
+    init_params.selection_change_event = 
         std::bind(&ListControl::OnCoreSelectionChanged, this);
-    initialize_parameters.item_double_click_event = 
+    init_params.item_double_click_event = 
         std::bind(&ListControl::OnItemDoubleClick, this, std::placeholders::_1);
 
-    implementation_->Initialize(initialize_parameters);
+    core_->Initialize(init_params);
 }
 
 
@@ -54,7 +53,7 @@ void ListControl::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    implementation_->OnLayout();
+    core_->OnLayout();
 }
 
 
@@ -63,21 +62,21 @@ void ListControl::OnVerticalScrollBarChanged(
 
     __super::OnVerticalScrollBarChanged(previous_scroll_bar);
 
-    implementation_->OnVerticalScrollBarChange(previous_scroll_bar);
+    core_->OnVerticalScrollBarChange(previous_scroll_bar);
 }
 
 
 void ListControl::SetDataSource(const std::weak_ptr<ListDataSource>& data_source) {
 
     data_source_ = data_source;
-    implementation_->SetDataSource(data_source_);
+    core_->SetDataSource(data_source_);
 }
 
 
 void ListControl::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
 
     delegate_ = delegate;
-    implementation_->SetDelegate(delegate_);
+    core_->SetDelegate(delegate_);
 }
 
 
@@ -86,17 +85,17 @@ void ListControl::SetItemContainer(const std::shared_ptr<ListItemContainer>& ite
     ZAF_EXPECT(item_container);
 
     item_container_ = item_container;
-    implementation_->SetItemContainer(item_container_);
+    core_->SetItemContainer(item_container_);
 }
 
 
 void ListControl::Reload() {
-    implementation_->Reload();
+    core_->Reload();
 }
 
 
 std::size_t ListControl::GetItemCount() const {
-    return implementation_->GetItemCount();
+    return core_->GetItemCount();
 }
 
 
@@ -111,60 +110,60 @@ std::shared_ptr<Object> ListControl::GetItemDataAtIndex(std::size_t index) const
 
 
 std::shared_ptr<ListItem> ListControl::GetVisibleItemAtIndex(std::size_t index) const noexcept {
-    return implementation_->GetVisibleItemAtIndex(index);
+    return core_->GetVisibleItemAtIndex(index);
 }
 
 
 bool ListControl::AutoAdjustScrollBarSmallChange() const {
-    return implementation_->AutoAdjustScrollBarSmallChange();
+    return core_->AutoAdjustScrollBarSmallChange();
 }
 
 void ListControl::SetAutoAdjustScrollBarSmallChange(bool value) {
-    implementation_->SetAutoAdjustScrollBarSmallChange(value);
+    core_->SetAutoAdjustScrollBarSmallChange(value);
 }
 
 
 SelectionMode ListControl::SelectionMode() const {
-    return implementation_->GetSelectionMode();
+    return core_->GetSelectionMode();
 }
 
 void ListControl::SetSelectionMode(zaf::SelectionMode selection_mode) {
-    implementation_->SetSelectionMode(selection_mode);
+    core_->SetSelectionMode(selection_mode);
 }
 
 
 void ListControl::SelectItemAtIndex(std::size_t index) {
-    implementation_->SelectItemAtIndex(index);
+    core_->SelectItemAtIndex(index);
 }
 
 
 void ListControl::UnselectItemAtIndex(std::size_t index) {
-    implementation_->UnselectItemAtIndex(index);
+    core_->UnselectItemAtIndex(index);
 }
 
 
 void ListControl::SelectAllItems() {
-    implementation_->SelectAllItems();
+    core_->SelectAllItems();
 }
 
 
 void ListControl::UnselectAllItems() {
-    implementation_->UnselectAllItems();
+    core_->UnselectAllItems();
 }
 
 
 std::size_t ListControl::GetSelectedItemCount() const {
-    return implementation_->GetSelectedItemCount();
+    return core_->GetSelectedItemCount();
 }
 
 
 std::vector<std::size_t> ListControl::GetAllSelectedItemIndexes() const {
-    return implementation_->GetAllSelectedItemIndexes();
+    return core_->GetAllSelectedItemIndexes();
 }
 
 
 std::optional<std::size_t> ListControl::FirstSelectedItemIndex() const noexcept {
-    return implementation_->GetFirstSelectedItemIndex();
+    return core_->GetFirstSelectedItemIndex();
 }
 
 
@@ -180,17 +179,17 @@ std::shared_ptr<Object> ListControl::FirstSelectedItemData() const {
 
 
 bool ListControl::IsItemSelectedAtIndex(std::size_t index) const {
-    return implementation_->IsItemSelectedAtIndex(index);
+    return core_->IsItemSelectedAtIndex(index);
 }
 
 
 void ListControl::ScrollToItemAtIndex(std::size_t index) {
-    implementation_->ScrollToItemAtIndex(index);
+    core_->ScrollToItemAtIndex(index);
 }
 
 
 std::optional<std::size_t> ListControl::FindItemIndexAtPosition(const Point& position) const {
-    return implementation_->FindItemIndexAtPosition(position);
+    return core_->FindItemIndexAtPosition(position);
 }
 
 

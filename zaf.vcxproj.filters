@@ -196,6 +196,9 @@
     <Filter Include="zaf\graphic\wic">
       <UniqueIdentifier>{bd9d3c5c-cbf5-4123-88dd-68415286d53b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\internal\control\list_control">
+      <UniqueIdentifier>{274fb623-0cf9-4067-b96b-2c5f85b3ac77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -383,9 +386,6 @@
       <Filter>zaf\control\internal\list_control</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\list_control\list_control_single_select_strategy.cpp">
-      <Filter>zaf\control\internal\list_control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\list_control\list_control_implementation.cpp">
       <Filter>zaf\control\internal\list_control</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\list_item_container.cpp">
@@ -1282,6 +1282,9 @@
     <ClCompile Include="src\zaf\rx\internal\observable\concat_observable.cpp">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\internal\control\list_control\list_control_core.cpp">
+      <Filter>zaf\internal\control\list_control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1620,9 +1623,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\selection_mode.h">
       <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\list_control\list_control_implementation.h">
-      <Filter>zaf\control\internal\list_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\list_item_container.h">
       <Filter>zaf\control</Filter>
@@ -2973,6 +2973,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observable\concat_observable.h">
       <Filter>zaf\rx\internal\observable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\control\list_control\list_control_core.h">
+      <Filter>zaf\internal\control\list_control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

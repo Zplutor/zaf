@@ -11,10 +11,11 @@
 #include <zaf/creation.h>
 #include <zaf/rx/observable.h>
 
-namespace zaf {
-namespace internal {
-class ListControlImplementation;
+namespace zaf::internal {
+class ListControlCore;
 }
+
+namespace zaf {
 
 class ListItemContainer;
 class ListControlDelegate;
@@ -59,8 +60,6 @@ public:
 
     /**
      Set item container.
-
-     If nullptr is set, a default item container would be used.
      */
     void SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
 
@@ -217,7 +216,7 @@ private:
     std::shared_ptr<ListItemContainer> item_container_;
     std::weak_ptr<ListDataSource> data_source_;
     std::weak_ptr<ListControlDelegate> delegate_;
-    std::shared_ptr<internal::ListControlImplementation> implementation_;
+    std::shared_ptr<internal::ListControlCore> core_;
 
     Event<ListControlSelectionChangedInfo> selection_changed_event_;
     Event<ListControlItemDoubleClickInfo> item_double_click_event_;

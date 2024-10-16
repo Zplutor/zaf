@@ -4,7 +4,7 @@
 
 namespace zaf {
 namespace internal {
-class ListControlImplementation;
+class ListControlCore;
 }
 
 class ListItem : public TextualControl {
@@ -18,7 +18,7 @@ protected:
     virtual void RecoverFocus();
 
 private:
-    friend class internal::ListControlImplementation;
+    friend class internal::ListControlCore;
 
     void SetItemData(const std::shared_ptr<Object>& data) {
         ZAF_EXPECT(data);

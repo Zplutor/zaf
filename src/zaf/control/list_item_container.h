@@ -4,7 +4,7 @@
 
 namespace zaf {
 namespace internal {
-class ListControlImplementation;
+class ListControlCore;
 class ListControlSelectStrategy;
 }
 
@@ -25,7 +25,7 @@ protected:
     void OnFocusLost(const FocusLostInfo& event_info) override;
 
 private:
-    friend class internal::ListControlImplementation;
+    friend class internal::ListControlCore;
 
     void SetSelectStrategy(
         const std::shared_ptr<internal::ListControlSelectStrategy>& select_strategy) {
