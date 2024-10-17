@@ -61,7 +61,7 @@ public:
         
         item_source_ = std::make_shared<FakeItemSource>();
 
-        item_height_manager_ = std::make_shared<zaf::internal::ListControlItemHeightManager>(
+        item_height_manager_ = std::make_shared<zaf::internal::ListItemHeightManager>(
             item_source_);
 
         item_height_manager_->ResetDelegate(item_source_);
@@ -134,7 +134,7 @@ protected:
 
 protected:
     std::shared_ptr<FakeItemSource> item_source_;
-    std::shared_ptr<zaf::internal::ListControlItemHeightManager> item_height_manager_;
+    std::shared_ptr<zaf::internal::ListItemHeightManager> item_height_manager_;
 };
 
 

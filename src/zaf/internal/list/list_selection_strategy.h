@@ -12,7 +12,7 @@ class Point;
 
 namespace internal {
     
-class ListControlItemHeightManager;
+class ListItemHeightManager;
 
 class ListSelectionStrategy : NonCopyableNonMovable {
 public:
@@ -27,11 +27,11 @@ public:
         list_control_ = list_control;
     }
 
-    const std::shared_ptr<ListControlItemHeightManager>& GetItemHeightManager() const {
+    const std::shared_ptr<ListItemHeightManager>& GetItemHeightManager() const {
         return item_height_manager_;
     }
 
-    void SetItemHeightManager(std::shared_ptr<ListControlItemHeightManager> item_height_manager) {
+    void SetItemHeightManager(std::shared_ptr<ListItemHeightManager> item_height_manager) {
         item_height_manager_ = std::move(item_height_manager);
     }
 
@@ -65,7 +65,7 @@ protected:
     
 private:
     std::weak_ptr<ListControlCore> list_control_;
-    std::shared_ptr<ListControlItemHeightManager> item_height_manager_;
+    std::shared_ptr<ListItemHeightManager> item_height_manager_;
 };
 
 

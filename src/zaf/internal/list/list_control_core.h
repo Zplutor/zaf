@@ -15,8 +15,8 @@
 
 namespace zaf::internal {
 
-class ListControlItemHeightManager;
-class ListControlItemSelectionManager;
+class ListItemHeightManager;
+class ListItemSelectionManager;
 
 enum class ListSelectionChangeReason {
     ItemChange,
@@ -192,8 +192,8 @@ private:
     SubscriptionSet data_source_subs_;
     SubscriptionSet item_container_subs_;
 
-    std::shared_ptr<ListControlItemHeightManager> item_height_manager_;
-    ListControlItemSelectionManager item_selection_manager_;
+    std::shared_ptr<ListItemHeightManager> item_height_manager_;
+    ListItemSelectionManager item_selection_manager_;
     std::weak_ptr<Object> last_focused_item_data_;
 
     Subscription vertical_scroll_bar_sub_;

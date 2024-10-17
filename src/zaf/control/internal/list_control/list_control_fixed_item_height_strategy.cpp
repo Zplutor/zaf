@@ -2,7 +2,7 @@
 
 namespace zaf::internal {
 
-void ListControlFixedItemHeightStrategy::Initialize(
+void ListFixedItemHeightStrategy::Initialize(
     ListDataSource& data_source,
     ListControlDelegate& delegate) {
 
@@ -13,7 +13,7 @@ void ListControlFixedItemHeightStrategy::Initialize(
 }
 
 
-std::pair<float, float> ListControlFixedItemHeightStrategy::GetItemPositionAndHeight(
+std::pair<float, float> ListFixedItemHeightStrategy::GetItemPositionAndHeight(
     std::size_t index) {
 
     float position = GetItemPosition(index);
@@ -21,17 +21,17 @@ std::pair<float, float> ListControlFixedItemHeightStrategy::GetItemPositionAndHe
 }
 
 
-float ListControlFixedItemHeightStrategy::GetItemPosition(std::size_t index) const {
+float ListFixedItemHeightStrategy::GetItemPosition(std::size_t index) const {
     return index * item_height_ + index * item_spacing_;
 }
 
 
-std::optional<std::size_t> ListControlFixedItemHeightStrategy::GetItemIndex(float position) {
+std::optional<std::size_t> ListFixedItemHeightStrategy::GetItemIndex(float position) {
     return InnerGetItemIndex(position, false);
 }
 
 
-std::optional<std::size_t> ListControlFixedItemHeightStrategy::InnerGetItemIndex(
+std::optional<std::size_t> ListFixedItemHeightStrategy::InnerGetItemIndex(
     float position, 
     bool skip_spacing) const {
 
@@ -52,7 +52,7 @@ std::optional<std::size_t> ListControlFixedItemHeightStrategy::InnerGetItemIndex
 }
 
 
-std::pair<std::size_t, std::size_t> ListControlFixedItemHeightStrategy::GetItemRange(
+std::pair<std::size_t, std::size_t> ListFixedItemHeightStrategy::GetItemRange(
     float begin_position,
     float end_position) {
 
@@ -76,7 +76,7 @@ std::pair<std::size_t, std::size_t> ListControlFixedItemHeightStrategy::GetItemR
 }
 
 
-float ListControlFixedItemHeightStrategy::GetTotalHeight() {
+float ListFixedItemHeightStrategy::GetTotalHeight() {
 
     if (ItemCount() == 0) {
         return 0;

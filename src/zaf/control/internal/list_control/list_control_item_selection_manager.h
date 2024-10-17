@@ -7,9 +7,9 @@
 namespace zaf {
 namespace internal {
 
-class ListControlItemSelectionManager : NonCopyableNonMovable {
+class ListItemSelectionManager : NonCopyableNonMovable {
 public:
-    ListControlItemSelectionManager() {
+    ListItemSelectionManager() {
 
     }
 

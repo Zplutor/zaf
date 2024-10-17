@@ -10,10 +10,10 @@
 
 namespace zaf::internal {
 
-class ListControlItemHeightManager : NonCopyableNonMovable {
+class ListItemHeightManager : NonCopyableNonMovable {
 public:
-    ListControlItemHeightManager(const std::weak_ptr<ListDataSource>& data_source);
-    ~ListControlItemHeightManager();
+    ListItemHeightManager(const std::weak_ptr<ListDataSource>& data_source);
+    ~ListItemHeightManager();
 
     void ResetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
 
@@ -50,7 +50,7 @@ private:
     std::weak_ptr<ListDataSource> data_source_{};
     std::weak_ptr<ListControlDelegate> delegate_{};
     SubscriptionSet data_source_subs;
-    std::unique_ptr<ListControlItemHeightStrategy> strategy_;
+    std::unique_ptr<ListItemHeightStrategy> strategy_;
 };
 
 }

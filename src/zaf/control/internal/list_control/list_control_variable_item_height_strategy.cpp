@@ -2,7 +2,7 @@
 
 namespace zaf::internal {
 
-void ListControlVariableItemHeightStrategy::Initialize(
+void ListVariableItemHeightStrategy::Initialize(
     ListDataSource& data_source,
     ListControlDelegate& delegate) {
 
@@ -24,14 +24,14 @@ void ListControlVariableItemHeightStrategy::Initialize(
 }
 
 
-std::pair<float, float> ListControlVariableItemHeightStrategy::GetItemPositionAndHeight(
+std::pair<float, float> ListVariableItemHeightStrategy::GetItemPositionAndHeight(
     std::size_t index) {
 
     return InnerGetItemPositionAndHeight(index);
 }
 
 
-std::pair<float, float> ListControlVariableItemHeightStrategy::InnerGetItemPositionAndHeight(
+std::pair<float, float> ListVariableItemHeightStrategy::InnerGetItemPositionAndHeight(
     std::size_t index) const {
 
     ZAF_EXPECT(index < item_positions_.size() - 1);
@@ -43,12 +43,12 @@ std::pair<float, float> ListControlVariableItemHeightStrategy::InnerGetItemPosit
 }
 
 
-std::optional<std::size_t> ListControlVariableItemHeightStrategy::GetItemIndex(float position) {
+std::optional<std::size_t> ListVariableItemHeightStrategy::GetItemIndex(float position) {
     return InnerGetItemIndex(position, false);
 }
 
 
-std::optional<std::size_t> ListControlVariableItemHeightStrategy::InnerGetItemIndex(
+std::optional<std::size_t> ListVariableItemHeightStrategy::InnerGetItemIndex(
     float position,
     bool skip_spacing) const {
 
@@ -77,7 +77,7 @@ std::optional<std::size_t> ListControlVariableItemHeightStrategy::InnerGetItemIn
 }
 
 
-std::pair<std::size_t, std::size_t> ListControlVariableItemHeightStrategy::GetItemRange(
+std::pair<std::size_t, std::size_t> ListVariableItemHeightStrategy::GetItemRange(
     float begin_position,
     float end_position) {
 
@@ -105,7 +105,7 @@ std::pair<std::size_t, std::size_t> ListControlVariableItemHeightStrategy::GetIt
 }
 
 
-float ListControlVariableItemHeightStrategy::GetTotalHeight() {
+float ListVariableItemHeightStrategy::GetTotalHeight() {
 
     if (item_positions_.size() > 1) {
         return item_positions_.back() - item_spacing_;
@@ -116,7 +116,7 @@ float ListControlVariableItemHeightStrategy::GetTotalHeight() {
 }
 
 
-void ListControlVariableItemHeightStrategy::OnDataAdded(
+void ListVariableItemHeightStrategy::OnDataAdded(
     const ListDataAddedInfo& event_info,
     ListDataSource& data_source,
     ListControlDelegate& delegate) {
@@ -151,7 +151,7 @@ void ListControlVariableItemHeightStrategy::OnDataAdded(
 }
 
 
-void ListControlVariableItemHeightStrategy::OnDataUpdated(
+void ListVariableItemHeightStrategy::OnDataUpdated(
     const ListDataUpdatedInfo& event_info,
     ListDataSource& data_source,
     ListControlDelegate& delegate) {
@@ -165,7 +165,7 @@ void ListControlVariableItemHeightStrategy::OnDataUpdated(
 }
 
 
-void ListControlVariableItemHeightStrategy::OnDataMoved(
+void ListVariableItemHeightStrategy::OnDataMoved(
     const ListDataMovedInfo& event_info,
     ListDataSource& data_source,
     ListControlDelegate& delegate) {
@@ -182,7 +182,7 @@ void ListControlVariableItemHeightStrategy::OnDataMoved(
 }
 
 
-void ListControlVariableItemHeightStrategy::UpdateItemHeightsInRange(
+void ListVariableItemHeightStrategy::UpdateItemHeightsInRange(
     const Range& range, 
     ListDataSource& data_source, 
     ListControlDelegate& delegate) {
@@ -213,7 +213,7 @@ void ListControlVariableItemHeightStrategy::UpdateItemHeightsInRange(
 }
 
 
-void ListControlVariableItemHeightStrategy::OnDataRemoved(
+void ListVariableItemHeightStrategy::OnDataRemoved(
     const ListDataRemovedInfo& event_info) {
 
     __super::OnDataRemoved(event_info);

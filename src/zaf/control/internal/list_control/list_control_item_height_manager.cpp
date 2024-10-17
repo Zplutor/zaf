@@ -5,19 +5,19 @@
 
 namespace zaf::internal {
 
-ListControlItemHeightManager::ListControlItemHeightManager(
+ListItemHeightManager::ListItemHeightManager(
     const std::weak_ptr<ListDataSource>& data_source) : data_source_(data_source) {
 
     RegisterDataSourceEvents();
 }
 
 
-ListControlItemHeightManager::~ListControlItemHeightManager() {
+ListItemHeightManager::~ListItemHeightManager() {
     UnregisterDataSourceEvents();
 }
 
 
-void ListControlItemHeightManager::RegisterDataSourceEvents() {
+void ListItemHeightManager::RegisterDataSourceEvents() {
 
     auto data_source = data_source_.lock();
     if (!data_source) {
@@ -25,26 +25,26 @@ void ListControlItemHeightManager::RegisterDataSourceEvents() {
     }
 
     data_source_subs += data_source->DataAddedEvent().Subscribe(
-        std::bind_front(&ListControlItemHeightManager::OnDataAdded, this));
+        std::bind_front(&ListItemHeightManager::OnDataAdded, this));
 
     data_source_subs += data_source->DataRemovedEvent().Subscribe(
-        std::bind_front(&ListControlItemHeightManager::OnDataRemoved, this));
+        std::bind_front(&ListItemHeightManager::OnDataRemoved, this));
 
     data_source_subs += data_source->DataUpdatedEvent().Subscribe(
-        std::bind_front(&ListControlItemHeightManager::OnDataUpdated, this));
+        std::bind_front(&ListItemHeightManager::OnDataUpdated, this));
 
     data_source_subs += data_source->DataMovedEvent().Subscribe(
-        std::bind_front(&ListControlItemHeightManager::OnDataMoved, this));
+        std::bind_front(&ListItemHeightManager::OnDataMoved, this));
 }
 
 
-void ListControlItemHeightManager::UnregisterDataSourceEvents() {
+void ListItemHeightManager::UnregisterDataSourceEvents() {
 
     data_source_subs.Clear();
 }
 
 
-void ListControlItemHeightManager::ResetDelegate(
+void ListItemHeightManager::ResetDelegate(
     const std::weak_ptr<ListControlDelegate>& delegate) {
 
     delegate_ = delegate;
@@ -52,7 +52,7 @@ void ListControlItemHeightManager::ResetDelegate(
 }
 
 
-void ListControlItemHeightManager::ReloadItemHeights() {
+void ListItemHeightManager::ReloadItemHeights() {
 
     auto data_source = data_source_.lock();
     if (!data_source) {
@@ -65,17 +65,17 @@ void ListControlItemHeightManager::ReloadItemHeights() {
     }
 
     if (delegate->HasVariableItemHeight()) {
-        strategy_ = std::make_unique<ListControlVariableItemHeightStrategy>();
+        strategy_ = std::make_unique<ListVariableItemHeightStrategy>();
     }
     else {
-        strategy_ = std::make_unique<ListControlFixedItemHeightStrategy>();
+        strategy_ = std::make_unique<ListFixedItemHeightStrategy>();
     }
 
     strategy_->Initialize(*data_source, *delegate);
 }
 
 
-std::pair<float, float> ListControlItemHeightManager::GetItemPositionAndHeight(
+std::pair<float, float> ListItemHeightManager::GetItemPositionAndHeight(
     std::size_t index) const {
 
     if (strategy_) {
@@ -87,7 +87,7 @@ std::pair<float, float> ListControlItemHeightManager::GetItemPositionAndHeight(
 }
 
 
-std::optional<std::size_t> ListControlItemHeightManager::GetItemIndex(float position) const {
+std::optional<std::size_t> ListItemHeightManager::GetItemIndex(float position) const {
 
     if (position < 0) {
         return std::nullopt;
@@ -101,7 +101,7 @@ std::optional<std::size_t> ListControlItemHeightManager::GetItemIndex(float posi
 }
 
 
-std::pair<std::size_t, std::size_t> ListControlItemHeightManager::GetItemRange(
+std::pair<std::size_t, std::size_t> ListItemHeightManager::GetItemRange(
     float begin_position, 
     float end_position) const {
 
@@ -117,7 +117,7 @@ std::pair<std::size_t, std::size_t> ListControlItemHeightManager::GetItemRange(
 }
 
 
-float ListControlItemHeightManager::GetTotalHeight() const {
+float ListItemHeightManager::GetTotalHeight() const {
 
     if (strategy_) {
         return strategy_->GetTotalHeight();
@@ -126,7 +126,7 @@ float ListControlItemHeightManager::GetTotalHeight() const {
 }
 
 
-void ListControlItemHeightManager::OnDataAdded(const ListDataAddedInfo& event_info) {
+void ListItemHeightManager::OnDataAdded(const ListDataAddedInfo& event_info) {
 
     if (!strategy_) {
         return;
@@ -151,7 +151,7 @@ void ListControlItemHeightManager::OnDataAdded(const ListDataAddedInfo& event_in
 }
 
 
-void ListControlItemHeightManager::OnDataRemoved(const ListDataRemovedInfo& event_info) {
+void ListItemHeightManager::OnDataRemoved(const ListDataRemovedInfo& event_info) {
 
     if (!strategy_) {
         return;
@@ -171,7 +171,7 @@ void ListControlItemHeightManager::OnDataRemoved(const ListDataRemovedInfo& even
 }
 
 
-void ListControlItemHeightManager::OnDataUpdated(const ListDataUpdatedInfo& event_info) {
+void ListItemHeightManager::OnDataUpdated(const ListDataUpdatedInfo& event_info) {
 
     if (!strategy_) {
         return;
@@ -201,7 +201,7 @@ void ListControlItemHeightManager::OnDataUpdated(const ListDataUpdatedInfo& even
 }
 
 
-void ListControlItemHeightManager::OnDataMoved(const ListDataMovedInfo& event_info) {
+void ListItemHeightManager::OnDataMoved(const ListDataMovedInfo& event_info) {
 
     if (!strategy_) {
         return;

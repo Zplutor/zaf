@@ -7,7 +7,7 @@ class ListControlItemSelectionManagerTest : public testing::Test {
 public:
     void SetUp() override {
 
-        item_selection_manager_ = std::make_shared<zaf::internal::ListControlItemSelectionManager>();
+        item_selection_manager_ = std::make_shared<zaf::internal::ListItemSelectionManager>();
     }
 
 protected:
@@ -33,7 +33,7 @@ protected:
     }
 
 protected:
-    std::shared_ptr<zaf::internal::ListControlItemSelectionManager> item_selection_manager_;
+    std::shared_ptr<zaf::internal::ListItemSelectionManager> item_selection_manager_;
 };
 
 

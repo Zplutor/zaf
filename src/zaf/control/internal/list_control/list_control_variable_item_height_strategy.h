@@ -4,7 +4,7 @@
 
 namespace zaf::internal {
 
-class ListControlVariableItemHeightStrategy : public ListControlItemHeightStrategy {
+class ListVariableItemHeightStrategy : public ListItemHeightStrategy {
 public:
     void Initialize(
         ListDataSource& data_source,
