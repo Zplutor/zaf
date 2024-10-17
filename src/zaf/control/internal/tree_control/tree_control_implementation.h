@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/internal/control/list_control/list_control_core.h>
+#include <zaf/internal/list/list_control_core.h>
 #include <zaf/control/internal/tree_control/tree_data_manager.h>
 #include <zaf/control/internal/tree_control/tree_index_mapping.h>
 #include <zaf/control/internal/tree_control/tree_visitor.h>

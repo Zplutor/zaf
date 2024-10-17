@@ -1,6 +1,6 @@
 #include <zaf/control/list_item_container.h>
 #include <zaf/base/as.h>
-#include <zaf/control/internal/list_control/list_control_single_select_strategy.h>
+#include <zaf/internal/list/list_single_selection_strategy.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {

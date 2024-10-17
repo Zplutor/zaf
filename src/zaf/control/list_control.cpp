@@ -1,7 +1,7 @@
 #include <zaf/control/list_control.h>
 #include <algorithm>
 #include <zaf/base/error/contract_error.h>
-#include <zaf/internal/control/list_control/list_control_core.h>
+#include <zaf/internal/list/list_control_core.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/list_item_container.h>

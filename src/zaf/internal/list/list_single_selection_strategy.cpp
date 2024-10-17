@@ -1,4 +1,4 @@
-#include <zaf/control/internal/list_control/list_control_single_select_strategy.h>
+#include <zaf/internal/list/list_single_selection_strategy.h>
 #include <zaf/control/internal/list_control/list_control_item_height_manager.h>
 #include <zaf/control/list_control.h>
 

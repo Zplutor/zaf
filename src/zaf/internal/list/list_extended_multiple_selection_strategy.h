@@ -1,7 +1,7 @@
 #pragma once
 
 #include <set>
-#include <zaf/control/internal/list_control/list_control_select_strategy.h>
+#include <zaf/internal/list/list_selection_strategy.h>
 
 namespace zaf {
 namespace internal {

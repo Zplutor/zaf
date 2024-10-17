@@ -1,18 +1,18 @@
 #pragma once
 
-#include <zaf/control/internal/list_control/list_control_select_strategy.h>
+#include <zaf/internal/list/list_selection_strategy.h>
 
 namespace zaf {
 namespace internal {
 
-class ListSingleSelectionStrategy : public ListSelectionStrategy {
+class ListSimpleMultipleSelectionStrategy : public ListSelectionStrategy {
 public:
     void BeginChangingSelectionByMouseDown(
-        const Point& position,
+        const Point& position, 
         const MouseMessage& message) override;
 
     void ChangeSelectionByMouseMove(
-        const Point& position,
+        const Point& position, 
         const MouseMessage& message) override;
 
     void EndChangingSelectionByMouseUp(
@@ -22,10 +22,8 @@ public:
     bool ChangeSelectionByKeyDown(const KeyMessage& message) override;
 
 private:
-    void SelectItemWithMouseEvent(const Point& position);
-
-private:
     std::optional<std::size_t> mouse_selected_index_;
+    bool is_mouse_selected_index_selected_{};
 };
 
 }

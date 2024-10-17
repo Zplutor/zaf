@@ -1,12 +1,12 @@
-#include <zaf/internal/control/list_control/list_control_core.h>
+#include <zaf/internal/list/list_control_core.h>
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/range.h>
-#include <zaf/control/internal/list_control/list_control_extended_multiple_select_strategy.h>
+#include <zaf/internal/list/list_extended_multiple_selection_strategy.h>
 #include <zaf/control/internal/list_control/list_control_item_height_manager.h>
-#include <zaf/control/internal/list_control/list_control_simple_multiple_select_strategy.h>
-#include <zaf/control/internal/list_control/list_control_single_select_strategy.h>
+#include <zaf/internal/list/list_simple_multiple_selection_strategy.h>
+#include <zaf/internal/list/list_single_selection_strategy.h>
 
 namespace zaf::internal {
 namespace {
