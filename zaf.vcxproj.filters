@@ -67,9 +67,6 @@
     <Filter Include="zaf\object\internal">
       <UniqueIdentifier>{e9dd3b55-91ef-4199-a0db-c321364db7b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\control\internal\list_control">
-      <UniqueIdentifier>{ee7cd62b-5636-4a18-b27a-7674b271936a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\rx">
       <UniqueIdentifier>{d12ecaff-7f5d-4ebc-ab47-74e894015d2a}</UniqueIdentifier>
     </Filter>
@@ -370,12 +367,6 @@
     <ClCompile Include="src\zaf\control\list_box_delegate.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\list_control\list_control_item_height_manager.cpp">
-      <Filter>zaf\control\internal\list_control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\list_control\list_control_item_selection_manager.cpp">
-      <Filter>zaf\control\internal\list_control</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\list_item_container.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
@@ -591,15 +582,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid.cpp">
       <Filter>zaf\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\list_control\list_control_fixed_item_height_strategy.cpp">
-      <Filter>zaf\control\internal\list_control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\list_control\list_control_item_height_strategy.cpp">
-      <Filter>zaf\control\internal\list_control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\list_control\list_control_variable_item_height_strategy.cpp">
-      <Filter>zaf\control\internal\list_control</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid\type_config_factory.cpp">
       <Filter>zaf\control\property_grid</Filter>
@@ -1282,6 +1264,21 @@
     <ClCompile Include="src\zaf\internal\list\list_single_selection_strategy.cpp">
       <Filter>zaf\internal\list</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\internal\list\list_fixed_item_height_strategy.cpp">
+      <Filter>zaf\internal\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\list\list_item_height_manager.cpp">
+      <Filter>zaf\internal\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\list\list_item_height_strategy.cpp">
+      <Filter>zaf\internal\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\list\list_item_selection_manager.cpp">
+      <Filter>zaf\internal\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\list\list_variable_item_height_strategy.cpp">
+      <Filter>zaf\internal\list</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1599,12 +1596,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\tree_data_source.h">
       <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\list_control\list_control_item_height_manager.h">
-      <Filter>zaf\control\internal\list_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\list_control\list_control_item_selection_manager.h">
-      <Filter>zaf\control\internal\list_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\selection_mode.h">
       <Filter>zaf\control</Filter>
@@ -1941,15 +1932,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid.h">
       <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\list_control\list_control_item_height_strategy.h">
-      <Filter>zaf\control\internal\list_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\list_control\list_control_fixed_item_height_strategy.h">
-      <Filter>zaf\control\internal\list_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\list_control\list_control_variable_item_height_strategy.h">
-      <Filter>zaf\control\internal\list_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\type_config_factory.h">
       <Filter>zaf\control\property_grid</Filter>
@@ -2969,6 +2951,21 @@
       <Filter>zaf\internal\list</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\list\list_single_selection_strategy.h">
+      <Filter>zaf\internal\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\list\list_fixed_item_height_strategy.h">
+      <Filter>zaf\internal\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\list\list_item_height_manager.h">
+      <Filter>zaf\internal\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\list\list_item_height_strategy.h">
+      <Filter>zaf\internal\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\list\list_item_selection_manager.h">
+      <Filter>zaf\internal\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\list\list_variable_item_height_strategy.h">
       <Filter>zaf\internal\list</Filter>
     </ClInclude>
   </ItemGroup>

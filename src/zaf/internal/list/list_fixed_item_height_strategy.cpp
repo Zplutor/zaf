@@ -1,4 +1,4 @@
-#include <zaf/control/internal/list_control/list_control_fixed_item_height_strategy.h>
+#include <zaf/internal/list/list_fixed_item_height_strategy.h>
 
 namespace zaf::internal {
 

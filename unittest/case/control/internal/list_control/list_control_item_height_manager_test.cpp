@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include <zaf/base/range.h>
 #include <zaf/base/define.h>
-#include <zaf/control/internal/list_control/list_control_item_height_manager.h>
+#include <zaf/internal/list/list_item_height_manager.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 

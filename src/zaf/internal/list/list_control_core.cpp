@@ -4,7 +4,7 @@
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/range.h>
 #include <zaf/internal/list/list_extended_multiple_selection_strategy.h>
-#include <zaf/control/internal/list_control/list_control_item_height_manager.h>
+#include <zaf/internal/list/list_item_height_manager.h>
 #include <zaf/internal/list/list_simple_multiple_selection_strategy.h>
 #include <zaf/internal/list/list_single_selection_strategy.h>
 

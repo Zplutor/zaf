@@ -1,6 +1,6 @@
 #include <zaf/internal/list/list_extended_multiple_selection_strategy.h>
 #include <algorithm>
-#include <zaf/control/internal/list_control/list_control_item_height_manager.h>
+#include <zaf/internal/list/list_item_height_manager.h>
 #include <zaf/control/list_control.h>
 
 #undef max

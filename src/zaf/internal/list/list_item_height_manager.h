@@ -3,7 +3,7 @@
 #include <memory>
 #include <optional>
 #include <zaf/base/non_copyable.h>
-#include <zaf/control/internal/list_control/list_control_item_height_strategy.h>
+#include <zaf/internal/list/list_item_height_strategy.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/rx/subscription_set.h>

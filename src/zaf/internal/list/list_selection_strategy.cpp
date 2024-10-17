@@ -1,6 +1,6 @@
 #include <zaf/internal/list/list_selection_strategy.h>
 #include <zaf/base/define.h>
-#include <zaf/control/internal/list_control/list_control_item_height_manager.h>
+#include <zaf/internal/list/list_item_height_manager.h>
 #include <zaf/window/message/keyboard_message.h>
 
 namespace zaf {

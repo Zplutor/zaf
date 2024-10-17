@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/control/internal/list_control/list_control_item_height_strategy.h>
+#include <zaf/internal/list/list_item_height_strategy.h>
 
 namespace zaf::internal {
 
