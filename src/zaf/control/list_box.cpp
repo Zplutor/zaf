@@ -73,7 +73,7 @@ void ListBox::SetDefaultItemHeight(float item_height) {
 
 
 void ListBox::AddItem(const std::shared_ptr<Object>& data) {
-    AddItemAtIndex(GetItemCount(), data);
+    AddItemAtIndex(ItemCount(), data);
 }
 
 

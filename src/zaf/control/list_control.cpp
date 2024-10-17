@@ -82,11 +82,11 @@ void ListControl::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate
 }
 
 
-void ListControl::SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container) {
+void ListControl::SetItemContainer(std::shared_ptr<ListItemContainer> item_container) {
 
     ZAF_EXPECT(item_container);
 
-    item_container_ = item_container;
+    item_container_ = std::move(item_container);
     core_->SetItemContainer(item_container_);
 }
 
@@ -96,7 +96,7 @@ void ListControl::Reload() {
 }
 
 
-std::size_t ListControl::GetItemCount() const {
+std::size_t ListControl::ItemCount() const {
     return core_->GetItemCount();
 }
 
@@ -154,12 +154,12 @@ void ListControl::UnselectAllItems() {
 }
 
 
-std::size_t ListControl::GetSelectedItemCount() const {
+std::size_t ListControl::SelectedItemCount() const {
     return core_->GetSelectedItemCount();
 }
 
 
-std::vector<std::size_t> ListControl::GetAllSelectedItemIndexes() const {
+std::vector<std::size_t> ListControl::SelectedItemIndexes() const {
     return core_->GetAllSelectedItemIndexes();
 }
 

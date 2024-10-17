@@ -345,7 +345,7 @@ void ComboBox::PopupDropDownWindow() {
     window_rect.Inflate(-1, 0);
     window_rect.position.y += Height() - 2;
 
-    std::size_t visible_item_count = drop_down_list_box_->GetItemCount();
+    std::size_t visible_item_count = drop_down_list_box_->ItemCount();
     visible_item_count = (std::max)(visible_item_count, MinVisibleItemCount());
     visible_item_count = (std::min)(visible_item_count, MaxVisibleItemCount());
 
@@ -455,7 +455,7 @@ void ComboBox::OnKeyDown(const KeyDownInfo& event_info) {
 
 bool ComboBox::SelectNextDropDownListItem(bool reverse) {
 
-    auto item_count = drop_down_list_box_->GetItemCount();
+    auto item_count = drop_down_list_box_->ItemCount();
     if (item_count == 0) {
         return false;
     }
@@ -545,7 +545,7 @@ void ComboBox::EditBoxTextChange() {
 void ComboBox::ConfirmSelection(bool discard_drop_down_list_selection) {
 
     //There is selection in drop down list.
-    if (drop_down_list_box_->GetSelectedItemCount() > 0) {
+    if (drop_down_list_box_->SelectedItemCount() > 0) {
 
         if (discard_drop_down_list_selection) {
             drop_down_window_->Close();

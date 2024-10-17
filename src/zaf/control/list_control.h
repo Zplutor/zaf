@@ -53,14 +53,14 @@ public:
     /**
      Get item container.
      */
-    const std::shared_ptr<ListItemContainer>& ItemContainer() const {
+    const std::shared_ptr<ListItemContainer>& ItemContainer() const noexcept {
         return item_container_;
     }
 
     /**
      Set item container.
      */
-    void SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
+    void SetItemContainer(std::shared_ptr<ListItemContainer> item_container);
 
     /**
      Reload items.
@@ -70,7 +70,7 @@ public:
     /**
     Get total count of items.
     */
-    std::size_t GetItemCount() const;
+    std::size_t ItemCount() const;
 
     std::shared_ptr<Object> GetItemDataAtIndex(std::size_t index) const;
 
@@ -135,12 +135,12 @@ public:
     /**
      Get total count of selected items.
      */
-    std::size_t GetSelectedItemCount() const;
+    std::size_t SelectedItemCount() const;
 
     /**
      Get indexes of selected items.
      */
-    std::vector<std::size_t> GetAllSelectedItemIndexes() const;
+    std::vector<std::size_t> SelectedItemIndexes() const;
 
     /**
     Gets the index of the first selected item.
