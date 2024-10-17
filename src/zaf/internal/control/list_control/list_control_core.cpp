@@ -1210,26 +1210,25 @@ void ListControlCore::NotifySelectionChange(
 }
 
 
-std::shared_ptr<internal::ListControlSelectStrategy> 
-    ListControlCore::CreateSelectStrategy() {
+std::shared_ptr<internal::ListSelectionStrategy> ListControlCore::CreateSelectStrategy() {
 
-    std::shared_ptr<internal::ListControlSelectStrategy> select_strategy;
+    std::shared_ptr<internal::ListSelectionStrategy> select_strategy;
 
     switch (GetSelectionMode()) {
     case SelectionMode::Single:
-        select_strategy = std::make_shared<internal::ListControlSingleSelectStrategy>();
+        select_strategy = std::make_shared<internal::ListSingleSelectionStrategy>();
         break;
 
     case SelectionMode::SimpleMultiple:
-        select_strategy = std::make_shared<internal::ListControlSimpleMultipleSelectStrategy>();
+        select_strategy = std::make_shared<internal::ListSimpleMultipleSelectionStrategy>();
         break;
 
     case SelectionMode::ExtendedMultiple:
-        select_strategy = std::make_shared<internal::ListControlExtendedMultipleSelectStrategy>();
+        select_strategy = std::make_shared<internal::ListExtendedMultipleSelectionStrategy>();
         break;
 
     default:
-        select_strategy = std::make_shared<internal::ListControlNoSelectStrategy>();
+        select_strategy = std::make_shared<internal::ListNoSelectionStrategy>();
         break;
     }
 

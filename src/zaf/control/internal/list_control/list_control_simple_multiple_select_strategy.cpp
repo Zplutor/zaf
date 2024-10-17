@@ -5,7 +5,7 @@
 namespace zaf {
 namespace internal {
 
-void ListControlSimpleMultipleSelectStrategy::BeginChangingSelectionByMouseDown(const Point& position, const MouseMessage& message) {
+void ListSimpleMultipleSelectionStrategy::BeginChangingSelectionByMouseDown(const Point& position, const MouseMessage& message) {
 
     mouse_selected_index_ = GetItemHeightManager()->GetItemIndex(position.y);
     if (!mouse_selected_index_) {
@@ -23,13 +23,13 @@ void ListControlSimpleMultipleSelectStrategy::BeginChangingSelectionByMouseDown(
 }
 
 
-void ListControlSimpleMultipleSelectStrategy::ChangeSelectionByMouseMove(const Point& position, const MouseMessage& message) {
+void ListSimpleMultipleSelectionStrategy::ChangeSelectionByMouseMove(const Point& position, const MouseMessage& message) {
 
     //Cannot change selection while moving mouse.
 }
 
 
-void ListControlSimpleMultipleSelectStrategy::EndChangingSelectionByMouseUp(const Point& position, const MouseMessage& message) {
+void ListSimpleMultipleSelectionStrategy::EndChangingSelectionByMouseUp(const Point& position, const MouseMessage& message) {
 
     if (!mouse_selected_index_) {
         return;
@@ -46,7 +46,7 @@ void ListControlSimpleMultipleSelectStrategy::EndChangingSelectionByMouseUp(cons
 }
 
 
-bool ListControlSimpleMultipleSelectStrategy::ChangeSelectionByKeyDown(const KeyMessage& message) {
+bool ListSimpleMultipleSelectionStrategy::ChangeSelectionByKeyDown(const KeyMessage& message) {
 
     //Cannot change selection using keys.
     return false;

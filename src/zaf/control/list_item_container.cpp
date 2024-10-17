@@ -17,13 +17,7 @@ void ListItemContainer::Initialize() {
     SetBackgroundColor(Color::Transparent());
     SetCanFocused(true);
     SetCanDoubleClick(true);
-    SetLayouter(CreateLayouter(std::bind(
-        &ListItemContainer::LayoutItems,
-        this,
-        std::placeholders::_1,
-        std::placeholders::_2,
-        std::placeholders::_3
-    )));
+    SetLayouter(CreateLayouter(std::bind_front(&ListItemContainer::LayoutItems, this)));
 }
 
 

@@ -20,7 +20,7 @@ inline void MakeSelectionRange(
 }
 
 
-ListControlExtendedMultipleSelectStrategy::ListControlExtendedMultipleSelectStrategy() : 
+ListExtendedMultipleSelectionStrategy::ListExtendedMultipleSelectionStrategy() : 
     is_focused_index_orginally_selected_(false),
     orginally_recorded_index_(0),
     orginally_recorded_count_(0) {
@@ -28,7 +28,7 @@ ListControlExtendedMultipleSelectStrategy::ListControlExtendedMultipleSelectStra
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::BeginChangingSelectionByMouseDown(
+void ListExtendedMultipleSelectionStrategy::BeginChangingSelectionByMouseDown(
     const Point& position,
     const MouseMessage& message) {
 
@@ -36,7 +36,7 @@ void ListControlExtendedMultipleSelectStrategy::BeginChangingSelectionByMouseDow
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::ChangeSelectionByMouseMove(
+void ListExtendedMultipleSelectionStrategy::ChangeSelectionByMouseMove(
     const Point& position,
     const MouseMessage& message) {
 
@@ -44,7 +44,7 @@ void ListControlExtendedMultipleSelectStrategy::ChangeSelectionByMouseMove(
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEvent(
+void ListExtendedMultipleSelectionStrategy::SelectItemsByMouseEvent(
     const Point& position,
     bool is_mouse_moving) {
 
@@ -80,7 +80,7 @@ void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEvent(
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::SelectItemsBetweenFocusedAndSpecified(
+void ListExtendedMultipleSelectionStrategy::SelectItemsBetweenFocusedAndSpecified(
     std::size_t index) {
 
     if (!focused_index_) {
@@ -105,7 +105,7 @@ void ListControlExtendedMultipleSelectStrategy::SelectItemsBetweenFocusedAndSpec
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEventWithControlKey(
+void ListExtendedMultipleSelectionStrategy::SelectItemsByMouseEventWithControlKey(
     std::size_t current_index, 
     bool is_mouse_moving) {
 
@@ -158,7 +158,7 @@ void ListControlExtendedMultipleSelectStrategy::SelectItemsByMouseEventWithContr
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::RecoverSelectionStatesNotInRange(
+void ListExtendedMultipleSelectionStrategy::RecoverSelectionStatesNotInRange(
     std::size_t index,
     std::size_t count) {
 
@@ -184,7 +184,7 @@ void ListControlExtendedMultipleSelectStrategy::RecoverSelectionStatesNotInRange
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::RecordSelectionStatesInRange(
+void ListExtendedMultipleSelectionStrategy::RecordSelectionStatesInRange(
     std::size_t index,
     std::size_t count) {
 
@@ -221,7 +221,7 @@ void ListControlExtendedMultipleSelectStrategy::RecordSelectionStatesInRange(
 }
 
 
-void ListControlExtendedMultipleSelectStrategy::EndChangingSelectionByMouseUp(
+void ListExtendedMultipleSelectionStrategy::EndChangingSelectionByMouseUp(
     const Point& position,
     const MouseMessage& message) {
 
@@ -246,7 +246,7 @@ void ListControlExtendedMultipleSelectStrategy::EndChangingSelectionByMouseUp(
 }
 
 
-bool ListControlExtendedMultipleSelectStrategy::ChangeSelectionByKeyDown(
+bool ListExtendedMultipleSelectionStrategy::ChangeSelectionByKeyDown(
     const KeyMessage& message) {
 
     bool is_pressing_shift_key = (GetKeyState(VK_SHIFT) < 0);

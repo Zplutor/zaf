@@ -5,7 +5,7 @@
 namespace zaf {
 namespace internal {
 class ListControlCore;
-class ListControlSelectStrategy;
+class ListSelectionStrategy;
 }
 
 /**
@@ -28,7 +28,7 @@ private:
     friend class internal::ListControlCore;
 
     void SetSelectStrategy(
-        const std::shared_ptr<internal::ListControlSelectStrategy>& select_strategy) {
+        const std::shared_ptr<internal::ListSelectionStrategy>& select_strategy) {
         select_strategy_ = select_strategy;
     }
 
@@ -49,7 +49,7 @@ private:
     void RepaintSelectedItems();
 
 private:
-    std::shared_ptr<internal::ListControlSelectStrategy> select_strategy_;
+    std::shared_ptr<internal::ListSelectionStrategy> select_strategy_;
 };
 
 }

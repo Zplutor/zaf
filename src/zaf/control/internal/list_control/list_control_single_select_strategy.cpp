@@ -5,7 +5,7 @@
 namespace zaf {
 namespace internal {
 
-void ListControlSingleSelectStrategy::BeginChangingSelectionByMouseDown(
+void ListSingleSelectionStrategy::BeginChangingSelectionByMouseDown(
     const Point& position,
     const MouseMessage& message) {
 
@@ -13,7 +13,7 @@ void ListControlSingleSelectStrategy::BeginChangingSelectionByMouseDown(
 }
 
 
-void ListControlSingleSelectStrategy::ChangeSelectionByMouseMove(
+void ListSingleSelectionStrategy::ChangeSelectionByMouseMove(
     const Point& position,
     const MouseMessage& message) {
 
@@ -21,7 +21,7 @@ void ListControlSingleSelectStrategy::ChangeSelectionByMouseMove(
 }
 
 
-void ListControlSingleSelectStrategy::EndChangingSelectionByMouseUp(
+void ListSingleSelectionStrategy::EndChangingSelectionByMouseUp(
     const Point& position,
     const MouseMessage& message) {
 
@@ -40,7 +40,7 @@ void ListControlSingleSelectStrategy::EndChangingSelectionByMouseUp(
 }
 
 
-bool ListControlSingleSelectStrategy::ChangeSelectionByKeyDown(const KeyMessage& message) {
+bool ListSingleSelectionStrategy::ChangeSelectionByKeyDown(const KeyMessage& message) {
 
     auto list_control = GetListControl();
     if (!list_control) {
@@ -65,7 +65,7 @@ bool ListControlSingleSelectStrategy::ChangeSelectionByKeyDown(const KeyMessage&
 }
 
 
-void ListControlSingleSelectStrategy::SelectItemWithMouseEvent(const Point& position) {
+void ListSingleSelectionStrategy::SelectItemWithMouseEvent(const Point& position) {
     
     mouse_selected_index_ = GetItemHeightManager()->GetItemIndex(position.y);
     if (!mouse_selected_index_) {

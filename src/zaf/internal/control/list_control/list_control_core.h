@@ -105,9 +105,9 @@ public:
     }
 
 private:
-    friend class ListControlExtendedMultipleSelectStrategy;
-    friend class ListControlSingleSelectStrategy;
-    friend class ListControlSimpleMultipleSelectStrategy;
+    friend class ListExtendedMultipleSelectionStrategy;
+    friend class ListSingleSelectionStrategy;
+    friend class ListSimpleMultipleSelectionStrategy;
 
     void ReplaceSelection(std::size_t index, std::size_t count);
     bool RevertSelection(std::size_t index);
@@ -180,7 +180,7 @@ private:
 
     void ChangeSelection(std::size_t index, std::size_t count, bool is_add);
 
-    std::shared_ptr<internal::ListControlSelectStrategy> CreateSelectStrategy();
+    std::shared_ptr<internal::ListSelectionStrategy> CreateSelectStrategy();
 
 private:
     ScrollBox& owner_;

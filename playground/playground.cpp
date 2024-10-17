@@ -119,15 +119,14 @@ public:
 
         auto result = __super::CreateItem(item_index, item_data);
 
-        result->SetBackgroundColorPicker(zaf::ColorPicker{ [](const zaf::Control& control) {
+        auto old_picker = result->BackgroundColorPicker();
+
+        result->SetBackgroundColorPicker(zaf::ColorPicker{ [old_picker](const zaf::Control& control) {
         
             if (control.IsFocused()) {
                 return zaf::Color::Green();
             }
-            if (control.IsSelected()) {
-                return zaf::Color::Blue();
-            }
-            return zaf::Color::Transparent();
+            return old_picker(control);
         } });
 
         return result;
@@ -149,6 +148,7 @@ protected:
         auto list = zaf::Create<zaf::ListControl>();
         list->SetDataSource(data_source_);
         list->SetDelegate(delegate_);
+        list->SetSelectionMode(zaf::SelectionMode::ExtendedMultiple);
         
         Subscriptions() += list->ContextMenuEvent().Subscribe(
             [](const zaf::ListControlContextMenuInfo& event_info) {

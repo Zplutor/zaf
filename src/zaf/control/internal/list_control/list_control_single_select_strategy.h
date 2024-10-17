@@ -5,7 +5,7 @@
 namespace zaf {
 namespace internal {
 
-class ListControlSingleSelectStrategy : public ListControlSelectStrategy {
+class ListSingleSelectionStrategy : public ListSelectionStrategy {
 public:
     void BeginChangingSelectionByMouseDown(
         const Point& position,

@@ -6,7 +6,7 @@
 namespace zaf {
 namespace internal {
 
-bool ListControlSelectStrategy::ChangeIndexByKeyDown(
+bool ListSelectionStrategy::ChangeIndexByKeyDown(
     const KeyMessage& key_message, 
     const std::optional<std::size_t>& previous_index, 
     std::size_t& new_index) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <zaf/base/non_copyable.h>
 #include <zaf/internal/control/list_control/list_control_core.h>
 
 namespace zaf {
@@ -13,10 +14,10 @@ namespace internal {
     
 class ListControlItemHeightManager;
 
-class ListControlSelectStrategy {
+class ListSelectionStrategy : NonCopyableNonMovable {
 public:
-    ListControlSelectStrategy() = default;
-    virtual ~ListControlSelectStrategy() = default;
+    ListSelectionStrategy() = default;
+    virtual ~ListSelectionStrategy() = default;
 
     std::shared_ptr<ListControlCore> GetListControl() const {
         return list_control_.lock();
@@ -30,17 +31,31 @@ public:
         return item_height_manager_;
     }
 
-    void SetItemHeightManager(const std::shared_ptr<ListControlItemHeightManager>& item_height_manager) {
-        item_height_manager_ = item_height_manager;
+    void SetItemHeightManager(std::shared_ptr<ListControlItemHeightManager> item_height_manager) {
+        item_height_manager_ = std::move(item_height_manager);
     }
 
-    virtual void BeginChangingSelectionByMouseDown(const Point& position, const MouseMessage& message) { }
-    virtual void ChangeSelectionByMouseMove(const Point& position, const MouseMessage& message) { }
-    virtual void EndChangingSelectionByMouseUp(const Point& position, const MouseMessage& message) { }
-    virtual bool ChangeSelectionByKeyDown(const KeyMessage& message) { return false; }
+    virtual void BeginChangingSelectionByMouseDown(
+        const Point& position, 
+        const MouseMessage& message) {
 
-    ListControlSelectStrategy(const ListControlSelectStrategy&) = delete;
-    ListControlSelectStrategy& operator=(const ListControlSelectStrategy&) = delete;
+    }
+
+    virtual void ChangeSelectionByMouseMove(
+        const Point& position,
+        const MouseMessage& message) {
+    
+    }
+
+    virtual void EndChangingSelectionByMouseUp(
+        const Point& position, 
+        const MouseMessage& message) {
+
+    }
+
+    virtual bool ChangeSelectionByKeyDown(const KeyMessage& message) {
+        return false;
+    }
 
 protected:
     bool ChangeIndexByKeyDown(
@@ -53,7 +68,8 @@ private:
     std::shared_ptr<ListControlItemHeightManager> item_height_manager_;
 };
 
-typedef ListControlSelectStrategy ListControlNoSelectStrategy;
+
+using ListNoSelectionStrategy = ListSelectionStrategy;
 
 }
 }
