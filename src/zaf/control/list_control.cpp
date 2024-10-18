@@ -7,6 +7,7 @@
 #include <zaf/control/list_item_container.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/creation.h>
+#include <zaf/internal/list/list_control_part_context.h>
 #include <zaf/internal/theme.h>
 #include <zaf/rx/subject.h>
 
@@ -56,6 +57,30 @@ void ListControl::Layout(const zaf::Rect& previous_rect) {
     __super::Layout(previous_rect);
 
     core_->OnLayout();
+}
+
+
+void ListControl::OnMouseDown(const MouseDownInfo& event_info) {
+    __super::OnMouseDown(event_info);
+    core_->PartContext().InputHandler().HandleMouseDownEvent(event_info);
+}
+
+
+void ListControl::OnMouseMove(const MouseMoveInfo& event_info) {
+    __super::OnMouseMove(event_info);
+    core_->PartContext().InputHandler().HandleMouseMoveEvent(event_info);
+}
+
+
+void ListControl::OnMouseUp(const MouseUpInfo& event_info) {
+    __super::OnMouseUp(event_info);
+    core_->PartContext().InputHandler().HandleMouseUpEvent(event_info);
+}
+
+
+void ListControl::OnKeyDown(const KeyDownInfo& event_info) {
+    __super::OnKeyDown(event_info);
+    core_->PartContext().InputHandler().HandleKeyDownEvent(event_info);
 }
 
 

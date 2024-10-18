@@ -12,9 +12,9 @@ namespace zaf::internal {
 
 class ListItemHeightManager : NonCopyableNonMovable {
 public:
-    ListItemHeightManager(const std::weak_ptr<ListDataSource>& data_source);
-    ~ListItemHeightManager();
+    ListItemHeightManager() = default;
 
+    void ResetDataSource(std::weak_ptr<ListDataSource> data_source);
     void ResetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
 
     void ReloadItemHeights();
@@ -39,7 +39,6 @@ public:
 
 private:
     void RegisterDataSourceEvents();
-    void UnregisterDataSourceEvents();
 
     void OnDataAdded(const ListDataAddedInfo& event_info);
     void OnDataRemoved(const ListDataRemovedInfo& event_info);
@@ -49,7 +48,7 @@ private:
 private:
     std::weak_ptr<ListDataSource> data_source_{};
     std::weak_ptr<ListControlDelegate> delegate_{};
-    SubscriptionSet data_source_subs;
+    SubscriptionSet data_source_subs_;
     std::unique_ptr<ListItemHeightStrategy> strategy_;
 };
 

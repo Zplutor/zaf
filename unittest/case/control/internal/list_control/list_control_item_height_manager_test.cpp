@@ -61,9 +61,9 @@ public:
         
         item_source_ = std::make_shared<FakeItemSource>();
 
-        item_height_manager_ = std::make_shared<zaf::internal::ListItemHeightManager>(
-            item_source_);
+        item_height_manager_ = std::make_shared<zaf::internal::ListItemHeightManager>();
 
+        item_height_manager_->ResetDataSource(item_source_);
         item_height_manager_->ResetDelegate(item_source_);
     }
 

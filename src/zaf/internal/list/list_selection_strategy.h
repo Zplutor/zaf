@@ -2,7 +2,8 @@
 
 #include <memory>
 #include <zaf/base/non_copyable.h>
-#include <zaf/internal/list/list_control_core.h>
+#include <zaf/internal/list/list_control_part_context.h>
+#include <zaf/internal/list/list_item_height_manager.h>
 
 namespace zaf {
 
@@ -12,43 +13,33 @@ class Point;
 
 namespace internal {
     
-class ListItemHeightManager;
-
 class ListSelectionStrategy : NonCopyableNonMovable {
 public:
-    ListSelectionStrategy() = default;
+    explicit ListSelectionStrategy(const ListControlPartContext* context);
     virtual ~ListSelectionStrategy() = default;
 
-    std::shared_ptr<ListControlCore> GetListControl() const {
-        return list_control_.lock();
+    ListControlCore& GetListControl() const {
+        return part_context_->Owner();
     }
 
-    void SetListControl(const std::weak_ptr<ListControlCore> list_control) {
-        list_control_ = list_control;
-    }
-
-    const std::shared_ptr<ListItemHeightManager>& GetItemHeightManager() const {
-        return item_height_manager_;
-    }
-
-    void SetItemHeightManager(std::shared_ptr<ListItemHeightManager> item_height_manager) {
-        item_height_manager_ = std::move(item_height_manager);
+    ListItemHeightManager& GetItemHeightManager() const {
+        return part_context_->ItemHeightManager();
     }
 
     virtual void BeginChangingSelectionByMouseDown(
-        const Point& position, 
+        const Point& position_in_item_container, 
         const MouseMessage& message) {
 
     }
 
     virtual void ChangeSelectionByMouseMove(
-        const Point& position,
+        const Point& position_in_item_container,
         const MouseMessage& message) {
     
     }
 
     virtual void EndChangingSelectionByMouseUp(
-        const Point& position, 
+        const Point& position_in_item_container,
         const MouseMessage& message) {
 
     }
@@ -64,8 +55,7 @@ protected:
         std::size_t& new_index);
     
 private:
-    std::weak_ptr<ListControlCore> list_control_;
-    std::shared_ptr<ListItemHeightManager> item_height_manager_;
+    const ListControlPartContext* part_context_{};
 };
 
 

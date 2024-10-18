@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <zaf/internal/list/list_control_core.h>
 #include <zaf/internal/list/list_selection_strategy.h>
 
 namespace zaf {
@@ -8,7 +9,7 @@ namespace internal {
 
 class ListExtendedMultipleSelectionStrategy : public ListSelectionStrategy {
 public:
-    ListExtendedMultipleSelectionStrategy();
+    using ListSelectionStrategy::ListSelectionStrategy;
 
     void BeginChangingSelectionByMouseDown(
         const Point& position, 
@@ -33,10 +34,10 @@ private:
 
 private:
     std::optional<std::size_t> focused_index_;
-    bool is_focused_index_orginally_selected_;
+    bool is_focused_index_orginally_selected_{};
     
-    std::size_t orginally_recorded_index_;
-    std::size_t orginally_recorded_count_;
+    std::size_t orginally_recorded_index_{};
+    std::size_t orginally_recorded_count_{};
     std::set<std::size_t> orginally_selected_indexes_;
 
     std::optional<std::size_t> last_focused_index_with_shift_key_;

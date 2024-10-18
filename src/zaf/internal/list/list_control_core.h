@@ -15,8 +15,8 @@
 
 namespace zaf::internal {
 
-class ListItemHeightManager;
 class ListItemSelectionManager;
+class ListControlPartContext;
 
 enum class ListSelectionChangeReason {
     ItemChange,
@@ -58,13 +58,17 @@ public:
     };
 
 public:
-    ListControlCore(ScrollBox& owner);
+    explicit ListControlCore(ScrollBox& owner);
     ~ListControlCore();
 
     void Initialize(const InitializeParameters& parameters);
     void SetDataSource(const std::weak_ptr<ListDataSource>& data_source);
     void SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
     void SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
+
+    const std::shared_ptr<ListItemContainer>& ItemContainer() const {
+        return item_container_;
+    }
 
     SelectionMode GetSelectionMode() const {
         return selection_mode_;
@@ -104,6 +108,10 @@ public:
         }
     }
 
+    const ListControlPartContext& PartContext() const {
+        return *part_context_;
+    }
+
 private:
     friend class ListExtendedMultipleSelectionStrategy;
     friend class ListSingleSelectionStrategy;
@@ -132,7 +140,6 @@ private:
     void AdjustScrollBarSmallChange();
 
     void RegisterDataSourceEvents();
-    void UnregisterDataSourceEvents();
 
     void InnerReload(bool retain_state);
 
@@ -180,9 +187,8 @@ private:
 
     void ChangeSelection(std::size_t index, std::size_t count, bool is_add);
 
-    std::shared_ptr<internal::ListSelectionStrategy> CreateSelectStrategy();
-
 private:
+    std::unique_ptr<ListControlPartContext> part_context_;
     ScrollBox& owner_;
 
     std::shared_ptr<ListItemContainer> item_container_;
@@ -192,7 +198,6 @@ private:
     SubscriptionSet data_source_subs_;
     SubscriptionSet item_container_subs_;
 
-    std::shared_ptr<ListItemHeightManager> item_height_manager_;
     ListItemSelectionManager item_selection_manager_;
     std::weak_ptr<Object> last_focused_item_data_;
 

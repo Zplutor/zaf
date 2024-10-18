@@ -172,7 +172,7 @@ protected:
         button->SetFixedHeight(30);
         button->SetText(L"Move");
         Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
-            data_source_->Move();
+            //data_source_->Move();
         }));
         this->RootControl()->AddChild(button);
     }

@@ -7,6 +7,8 @@ namespace internal {
 
 class ListSingleSelectionStrategy : public ListSelectionStrategy {
 public:
+    using ListSelectionStrategy::ListSelectionStrategy;
+
     void BeginChangingSelectionByMouseDown(
         const Point& position,
         const MouseMessage& message) override;

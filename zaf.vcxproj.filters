@@ -1279,6 +1279,15 @@
     <ClCompile Include="src\zaf\internal\list\list_variable_item_height_strategy.cpp">
       <Filter>zaf\internal\list</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\internal\list\list_focus_manager.cpp">
+      <Filter>zaf\internal\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\list\list_control_part_context.cpp">
+      <Filter>zaf\internal\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\list\list_input_handler.cpp">
+      <Filter>zaf\internal\list</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2966,6 +2975,18 @@
       <Filter>zaf\internal\list</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\list\list_variable_item_height_strategy.h">
+      <Filter>zaf\internal\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\list\list_focus_manager.h">
+      <Filter>zaf\internal\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\list\list_control_part.h">
+      <Filter>zaf\internal\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\list\list_control_part_context.h">
+      <Filter>zaf\internal\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\list\list_input_handler.h">
       <Filter>zaf\internal\list</Filter>
     </ClInclude>
   </ItemGroup>

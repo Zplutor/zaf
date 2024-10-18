@@ -1,5 +1,6 @@
 #include <zaf/internal/list/list_extended_multiple_selection_strategy.h>
 #include <algorithm>
+#include <zaf/internal/list/list_control_core.h>
 #include <zaf/internal/list/list_item_height_manager.h>
 #include <zaf/control/list_control.h>
 
@@ -17,14 +18,6 @@ inline void MakeSelectionRange(
 
     select_index = std::min(index1, index2);
     select_count = std::max(index1, index2) - select_index + 1;
-}
-
-
-ListExtendedMultipleSelectionStrategy::ListExtendedMultipleSelectionStrategy() : 
-    is_focused_index_orginally_selected_(false),
-    orginally_recorded_index_(0),
-    orginally_recorded_count_(0) {
-
 }
 
 
@@ -48,7 +41,7 @@ void ListExtendedMultipleSelectionStrategy::SelectItemsByMouseEvent(
     const Point& position,
     bool is_mouse_moving) {
 
-    auto index = GetItemHeightManager()->GetItemIndex(position.y);
+    auto index = GetItemHeightManager().GetItemIndex(position.y);
     if (!index) {
         return;
     }
@@ -91,13 +84,9 @@ void ListExtendedMultipleSelectionStrategy::SelectItemsBetweenFocusedAndSpecifie
     std::size_t select_count = 0;
     MakeSelectionRange(index, *focused_index_, select_index, select_count);
 
-    auto list_control = GetListControl();
-    if (!list_control) {
-        return;
-    }
-
-    list_control->ReplaceSelection(select_index, select_count);
-    list_control->ScrollToItemAtIndex(index);
+    auto& list_control = GetListControl();
+    list_control.ReplaceSelection(select_index, select_count);
+    list_control.ScrollToItemAtIndex(index);
 
     selection_change_reason_ = ListSelectionChangeReason::ReplaceSelection;
     selection_change_index_ = select_index;
@@ -137,24 +126,22 @@ void ListExtendedMultipleSelectionStrategy::SelectItemsByMouseEventWithControlKe
             orginally_selected_indexes_.find(current_index) != orginally_selected_indexes_.end();
     }
 
-    auto list_control = GetListControl();
-    if (list_control != nullptr) {
+    auto& list_control = GetListControl();
     
-        //Add or remove newly selection.
-        if (is_focused_index_orginally_selected_) {
-            list_control->RemoveSelection(select_index, select_count);
-            selection_change_reason_ = ListSelectionChangeReason::RemoveSelection;
-        }
-        else {
-            list_control->AddSelection(select_index, select_count);
-            selection_change_reason_ = ListSelectionChangeReason::AddSelection;
-        }
-
-        selection_change_index_ = select_index;
-        selection_change_count_ = select_count;
-
-        list_control->ScrollToItemAtIndex(current_index);
+    //Add or remove newly selection.
+    if (is_focused_index_orginally_selected_) {
+        list_control.RemoveSelection(select_index, select_count);
+        selection_change_reason_ = ListSelectionChangeReason::RemoveSelection;
     }
+    else {
+        list_control.AddSelection(select_index, select_count);
+        selection_change_reason_ = ListSelectionChangeReason::AddSelection;
+    }
+
+    selection_change_index_ = select_index;
+    selection_change_count_ = select_count;
+
+    list_control.ScrollToItemAtIndex(current_index);
 }
 
 
@@ -162,10 +149,7 @@ void ListExtendedMultipleSelectionStrategy::RecoverSelectionStatesNotInRange(
     std::size_t index,
     std::size_t count) {
 
-    auto list_control = GetListControl();
-    if (list_control == nullptr) {
-        return;
-    }
+    auto& list_control = GetListControl();
 
     for (std::size_t current_index = orginally_recorded_index_;
          current_index != orginally_recorded_index_ + orginally_recorded_count_;
@@ -174,10 +158,10 @@ void ListExtendedMultipleSelectionStrategy::RecoverSelectionStatesNotInRange(
         if ((current_index < index) || (index + count <= current_index)) {
 
             if (orginally_selected_indexes_.find(current_index) == orginally_selected_indexes_.end()) {
-                list_control->RemoveSelection(current_index, 1);
+                list_control.RemoveSelection(current_index, 1);
             }
             else {
-                list_control->AddSelection(current_index, 1);
+                list_control.AddSelection(current_index, 1);
             }
         }
     }
@@ -188,17 +172,14 @@ void ListExtendedMultipleSelectionStrategy::RecordSelectionStatesInRange(
     std::size_t index,
     std::size_t count) {
 
-    auto list_control = GetListControl();
-    if (list_control == nullptr) {
-        return;
-    }
+    auto& list_control = GetListControl();
 
     for (std::size_t current_index = index; current_index != index + count; ++current_index) {
 
         if ((current_index < orginally_recorded_index_) || 
             (orginally_recorded_index_ + orginally_recorded_count_ <= current_index)) {
 
-            bool is_selected = list_control->IsItemSelectedAtIndex(current_index);
+            bool is_selected = list_control.IsItemSelectedAtIndex(current_index);
             if (is_selected) {
                 orginally_selected_indexes_.insert(current_index);
             }
@@ -231,14 +212,10 @@ void ListExtendedMultipleSelectionStrategy::EndChangingSelectionByMouseUp(
 
     if (selection_change_count_ != 0) {
 
-        auto list_control = GetListControl();
-        if (list_control) {
-
-            list_control->NotifySelectionChange(
-                selection_change_reason_,
-                selection_change_index_,
-                selection_change_count_);
-        }
+        GetListControl().NotifySelectionChange(
+            selection_change_reason_,
+            selection_change_index_,
+            selection_change_count_);
 
         selection_change_index_ = 0;
         selection_change_count_ = 0;
@@ -283,17 +260,14 @@ bool ListExtendedMultipleSelectionStrategy::ChangeSelectionByKeyDown(
 
     last_focused_index_with_shift_key_ = new_index;
 
-    auto list_control = GetListControl();
-    if (list_control) {
+    auto& list_control = GetListControl();
+    list_control.ReplaceSelection(select_range_index, select_range_count);
+    list_control.ScrollToItemAtIndex(new_index);
 
-        list_control->ReplaceSelection(select_range_index, select_range_count);
-        list_control->ScrollToItemAtIndex(new_index);
-
-        list_control->NotifySelectionChange(
-            ListSelectionChangeReason::ReplaceSelection,
-            select_range_index, 
-            select_range_count);
-    }
+    list_control.NotifySelectionChange(
+        ListSelectionChangeReason::ReplaceSelection,
+        select_range_index, 
+        select_range_count);
 
     return true;
 }

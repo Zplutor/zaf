@@ -5,42 +5,34 @@
 
 namespace zaf::internal {
 
-ListItemHeightManager::ListItemHeightManager(
-    const std::weak_ptr<ListDataSource>& data_source) : data_source_(data_source) {
-
-    RegisterDataSourceEvents();
-}
-
-
-ListItemHeightManager::~ListItemHeightManager() {
-    UnregisterDataSourceEvents();
-}
-
-
 void ListItemHeightManager::RegisterDataSourceEvents() {
+
+    data_source_subs_.Clear();
 
     auto data_source = data_source_.lock();
     if (!data_source) {
         return;
     }
 
-    data_source_subs += data_source->DataAddedEvent().Subscribe(
+    data_source_subs_ += data_source->DataAddedEvent().Subscribe(
         std::bind_front(&ListItemHeightManager::OnDataAdded, this));
 
-    data_source_subs += data_source->DataRemovedEvent().Subscribe(
+    data_source_subs_ += data_source->DataRemovedEvent().Subscribe(
         std::bind_front(&ListItemHeightManager::OnDataRemoved, this));
 
-    data_source_subs += data_source->DataUpdatedEvent().Subscribe(
+    data_source_subs_ += data_source->DataUpdatedEvent().Subscribe(
         std::bind_front(&ListItemHeightManager::OnDataUpdated, this));
 
-    data_source_subs += data_source->DataMovedEvent().Subscribe(
+    data_source_subs_ += data_source->DataMovedEvent().Subscribe(
         std::bind_front(&ListItemHeightManager::OnDataMoved, this));
 }
 
 
-void ListItemHeightManager::UnregisterDataSourceEvents() {
+void ListItemHeightManager::ResetDataSource(std::weak_ptr<ListDataSource> data_source) {
 
-    data_source_subs.Clear();
+    data_source_ = std::move(data_source);
+    RegisterDataSourceEvents();
+    ReloadItemHeights();
 }
 
 

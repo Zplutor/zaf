@@ -676,6 +676,13 @@ public:
     void CaptureMouse();
 
     /**
+    Indicates whether the control is capturing the mouse.
+    */
+    bool IsCapturingMouse() const noexcept {
+        return is_capturing_mouse_;
+    }
+
+    /**
     Gets mouse captured event. This event is raised after the control calling CaptureMouse() and 
     capturing mouse successfully.
     */
@@ -871,13 +878,6 @@ protected:
 
     void RaiseContentChangedEvent();
     void RaiseDoubleClickEvent(const Point& position);
-
-    /**
-     Get a value indicating that whether the control is capturing the mouse.
-     */
-    bool IsCapturingMouse() const {
-        return is_capturing_mouse_;
-    }
 
     virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
 

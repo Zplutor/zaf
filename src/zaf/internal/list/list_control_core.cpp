@@ -3,10 +3,7 @@
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/range.h>
-#include <zaf/internal/list/list_extended_multiple_selection_strategy.h>
-#include <zaf/internal/list/list_item_height_manager.h>
-#include <zaf/internal/list/list_simple_multiple_selection_strategy.h>
-#include <zaf/internal/list/list_single_selection_strategy.h>
+#include <zaf/internal/list/list_control_part_context.h>
 
 namespace zaf::internal {
 namespace {
@@ -66,7 +63,8 @@ void CalculateRangeDifference(
 
 }
 
-ListControlCore::ListControlCore(ScrollBox& owner) : 
+ListControlCore::ListControlCore(ScrollBox& owner) :
+    part_context_(std::make_unique<ListControlPartContext>(this)),
     owner_(owner) {
 
 }
@@ -75,12 +73,12 @@ ListControlCore::ListControlCore(ScrollBox& owner) :
 ListControlCore::~ListControlCore() {
 
     UnregisterScrollBarEvents(owner_.VerticalScrollBar());
-    UnregisterDataSourceEvents();
 }
 
 
 void ListControlCore::Initialize(const InitializeParameters& parameters) {
 
+    owner_.SetCanFocused(true);
     owner_.SetBackgroundColor(Color::White());
     owner_.SetBorder(Frame(1));
     owner_.SetBorderColor(Color::Black());
@@ -97,6 +95,7 @@ void ListControlCore::Initialize(const InitializeParameters& parameters) {
     InstallDataSource(parameters.data_source);
     InstallDelegate(parameters.delegate);
 
+    SetSelectionMode(SelectionMode::Single);
     RegisterScrollBarEvents();
 
     Reload();
@@ -154,7 +153,7 @@ void ListControlCore::AdjustScrollBarSmallChange() {
 
 void ListControlCore::SetDataSource(const std::weak_ptr<ListDataSource>& data_source) {
 
-    UnregisterDataSourceEvents();
+    data_source_subs_.Clear();
 
     auto previous_data_source = data_source_;
 
@@ -173,12 +172,7 @@ void ListControlCore::InstallDataSource(
 
     data_source_ = data_source;
 
-    //Re-create item height manager once data source is changed, because item height manager 
-    //depends on notifications of data source.
-    item_height_manager_ = std::make_shared<internal::ListItemHeightManager>(data_source_);
-    item_height_manager_->ResetDelegate(delegate_);
-
-    item_container_->SetSelectStrategy(CreateSelectStrategy());
+    part_context_->ItemHeightManager().ResetDataSource(data_source);
 
     RegisterDataSourceEvents();
 }
@@ -205,12 +199,6 @@ void ListControlCore::RegisterDataSourceEvents() {
 }
 
 
-void ListControlCore::UnregisterDataSourceEvents() {
-
-    data_source_subs_.Clear();
-}
-
-
 void ListControlCore::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
 
     auto previous_delegate = delegate_;
@@ -229,7 +217,7 @@ void ListControlCore::InstallDelegate(
     const std::weak_ptr<ListControlDelegate>& delegate) {
 
     delegate_ = delegate;
-    item_height_manager_->ResetDelegate(delegate_);
+    part_context_->ItemHeightManager().ResetDelegate(delegate_);
 }
 
 
@@ -259,7 +247,6 @@ void ListControlCore::InstallItemContainer(
     ZAF_EXPECT(item_container);
 
     item_container_ = item_container;
-    item_container_->SetSelectStrategy(CreateSelectStrategy());
 
     item_container_subs_ += item_container_->DoubleClickEvent().Subscribe(
         std::bind_front(&ListControlCore::OnItemContainerDoubleClick, this));
@@ -283,7 +270,7 @@ void ListControlCore::OnItemContainerDoubleClick(const DoubleClickInfo& event_in
         return;
     }
 
-    auto index = item_height_manager_->GetItemIndex(event_info.Position().y);
+    auto index = part_context_->ItemHeightManager().GetItemIndex(event_info.Position().y);
     if (index) {
         item_double_click_event_(*index);
     }
@@ -301,7 +288,7 @@ void ListControlCore::OnItemContainerMouseUp(const MouseUpInfo& event_info) {
         return;
     }
 
-    auto item_index = item_height_manager_->GetItemIndex(event_info.PositionAtSender().y);
+    auto item_index = part_context_->ItemHeightManager().GetItemIndex(event_info.PositionAtSender().y);
 
     std::shared_ptr<Object> item_data;
     if (item_index) {
@@ -361,7 +348,7 @@ void ListControlCore::SetSelectionMode(SelectionMode mode) {
 
     selection_mode_ = mode;
 
-    item_container_->SetSelectStrategy(CreateSelectStrategy());
+    part_context_->InputHandler().ResetSelectionStrategy(mode);
 
     if (selection_mode_ == SelectionMode::Single) {
 
@@ -437,8 +424,8 @@ void ListControlCore::InnerReload(bool retain_state) {
 
 void ListControlCore::UpdateContentHeight() {
 
-    item_height_manager_->ReloadItemHeights();
-    SetScrollContentHeight(item_height_manager_->GetTotalHeight());
+    part_context_->ItemHeightManager().ReloadItemHeights();
+    SetScrollContentHeight(part_context_->ItemHeightManager().GetTotalHeight());
 }
 
 
@@ -497,7 +484,7 @@ void ListControlCore::GetVisibleItemsRange(std::size_t& index, std::size_t& coun
         return;
     }
 
-    auto index_and_count = item_height_manager_->GetItemRange(begin_position, end_position);
+    auto index_and_count = part_context_->ItemHeightManager().GetItemRange(begin_position, end_position);
     index = index_and_count.first;
     count = index_and_count.second;
 
@@ -633,7 +620,7 @@ std::shared_ptr<ListItem> ListControlCore::CreateItem(std::size_t index) {
     
     delegate->LoadItem(list_item, index);
 
-    auto position_and_height = item_height_manager_->GetItemPositionAndHeight(index);
+    auto position_and_height = part_context_->ItemHeightManager().GetItemPositionAndHeight(index);
     Rect item_rect;
     item_rect.position.y = position_and_height.first;
     item_rect.size.height = position_and_height.second;
@@ -923,7 +910,7 @@ void ListControlCore::HandleDataMoved(const ListDataMovedInfo& event_info) {
     for (auto visible_index : Range{ 0, visible_items_.size() }) {
 
         auto item_index = visible_index + first_visible_item_index_;
-        auto [position, height] = item_height_manager_->GetItemPositionAndHeight(item_index);
+        auto [position, height] = part_context_->ItemHeightManager().GetItemPositionAndHeight(item_index);
         visible_items_[visible_index]->SetY(position);
     }
 
@@ -949,7 +936,7 @@ void ListControlCore::RefreshItemsIfNeeded() {
 float ListControlCore::AdjustContentHeight() {
 
     float old_total_height = current_total_height_;
-    float new_total_height = item_height_manager_->GetTotalHeight();
+    float new_total_height = part_context_->ItemHeightManager().GetTotalHeight();
 
     if (old_total_height != new_total_height) {
 
@@ -1045,7 +1032,7 @@ void ListControlCore::UnselectItemAtIndex(std::size_t index) {
 
 
 std::size_t ListControlCore::GetItemCount() {
-    return item_height_manager_->GetItemCount();
+    return part_context_->ItemHeightManager().GetItemCount();
 }
 
 
@@ -1084,7 +1071,7 @@ bool ListControlCore::IsItemSelectedAtIndex(std::size_t index) {
 
 void ListControlCore::ScrollToItemAtIndex(std::size_t index) {
 
-    auto position_and_height = item_height_manager_->GetItemPositionAndHeight(index);
+    auto position_and_height = part_context_->ItemHeightManager().GetItemPositionAndHeight(index);
 
     Rect visible_scroll_area_rect = owner_.GetVisibleScrollContentRect();
     if (position_and_height.first < visible_scroll_area_rect.position.y) {
@@ -1114,7 +1101,7 @@ std::optional<std::size_t> ListControlCore::FindItemIndexAtPosition(
     }
 
     float adjusted_position = position.y + visible_scroll_content_rect.position.y;
-    return item_height_manager_->GetItemIndex(adjusted_position);
+    return part_context_->ItemHeightManager().GetItemIndex(adjusted_position);
 }
 
 
@@ -1208,34 +1195,5 @@ void ListControlCore::NotifySelectionChange(
         selection_change_event_(change_type, index, count);
     }
 }
-
-
-std::shared_ptr<internal::ListSelectionStrategy> ListControlCore::CreateSelectStrategy() {
-
-    std::shared_ptr<internal::ListSelectionStrategy> select_strategy;
-
-    switch (GetSelectionMode()) {
-    case SelectionMode::Single:
-        select_strategy = std::make_shared<internal::ListSingleSelectionStrategy>();
-        break;
-
-    case SelectionMode::SimpleMultiple:
-        select_strategy = std::make_shared<internal::ListSimpleMultipleSelectionStrategy>();
-        break;
-
-    case SelectionMode::ExtendedMultiple:
-        select_strategy = std::make_shared<internal::ListExtendedMultipleSelectionStrategy>();
-        break;
-
-    default:
-        select_strategy = std::make_shared<internal::ListNoSelectionStrategy>();
-        break;
-    }
-
-    select_strategy->SetListControl(shared_from_this());
-    select_strategy->SetItemHeightManager(item_height_manager_);
-    return select_strategy;
-}
-
 
 }

@@ -15,7 +15,7 @@ void ListItemContainer::Initialize() {
     __super::Initialize();
 
     SetBackgroundColor(Color::Transparent());
-    SetCanFocused(true);
+    SetCanFocused(false);
     SetCanDoubleClick(true);
     SetLayouter(CreateLayouter(std::bind_front(&ListItemContainer::LayoutItems, this)));
 }
@@ -37,86 +37,6 @@ void ListItemContainer::LayoutItems(
 
         child_rect.size.width = width;
         each_child->SetRect(child_rect);
-    }
-}
-
-
-void ListItemContainer::OnMouseDown(const MouseDownInfo& event_info) {
-
-    __super::OnMouseDown(event_info);
-
-    if (event_info.IsHandled()) {
-        return;
-    }
-
-    SetIsFocused(true);
-
-    if (event_info.Message().MouseButton() == MouseButton::Left) {
-
-        CaptureMouse();
-
-        select_strategy_->BeginChangingSelectionByMouseDown(
-            event_info.PositionAtSender(), 
-            event_info.Message());
-    }
-
-    event_info.MarkAsHandled();
-}
-
-
-void ListItemContainer::OnMouseMove(const MouseMoveInfo& event_info) {
-
-    __super::OnMouseMove(event_info);
-
-    if (event_info.IsHandled()) {
-        return;
-    }
-
-    if (IsCapturingMouse()) {
-
-        select_strategy_->ChangeSelectionByMouseMove(
-            event_info.PositionAtSender(),
-            event_info.Message());
-
-        event_info.MarkAsHandled();
-    }
-}
-
-
-void ListItemContainer::OnMouseUp(const MouseUpInfo& event_info) {
-
-    __super::OnMouseUp(event_info);
-
-    if (event_info.IsHandled()) {
-        return;
-    }
-
-    if (event_info.Message().MouseButton() == MouseButton::Left) {
-    
-        if (IsCapturingMouse()) {
-            ReleaseMouse();
-        }
-
-        select_strategy_->EndChangingSelectionByMouseUp(
-            event_info.PositionAtSender(), 
-            event_info.Message());
-
-        event_info.MarkAsHandled();
-    }
-}
-
-
-void ListItemContainer::OnKeyDown(const KeyDownInfo& event_info) {
-
-    __super::OnKeyDown(event_info);
-
-    if (event_info.IsHandled()) {
-        return;
-    }
-
-    bool is_handled = select_strategy_->ChangeSelectionByKeyDown(event_info.Message());
-    if (is_handled) {
-        event_info.MarkAsHandled();
     }
 }
 
