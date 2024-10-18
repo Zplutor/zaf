@@ -296,7 +296,7 @@
     <ClCompile Include="src\zaf\internal\list\list_input_handler.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_item_height_manager.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_item_height_strategy.cpp" />
-    <ClCompile Include="src\zaf\internal\list\list_item_selection_manager.cpp" />
+    <ClCompile Include="src\zaf\internal\list\list_selection_store.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_selection_strategy.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_simple_multiple_selection_strategy.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_single_selection_strategy.cpp" />
@@ -795,7 +795,7 @@
     <ClInclude Include="src\zaf\internal\list\list_input_handler.h" />
     <ClInclude Include="src\zaf\internal\list\list_item_height_manager.h" />
     <ClInclude Include="src\zaf\internal\list\list_item_height_strategy.h" />
-    <ClInclude Include="src\zaf\internal\list\list_item_selection_manager.h" />
+    <ClInclude Include="src\zaf\internal\list\list_selection_store.h" />
     <ClInclude Include="src\zaf\internal\list\list_selection_strategy.h" />
     <ClInclude Include="src\zaf\internal\list\list_simple_multiple_selection_strategy.h" />
     <ClInclude Include="src\zaf\internal\list\list_single_selection_strategy.h" />

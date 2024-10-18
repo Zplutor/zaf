@@ -7,9 +7,12 @@
 namespace zaf {
 namespace internal {
 
-class ListItemSelectionManager : NonCopyableNonMovable {
+/**
+A passive object that stores selected indexes in a list control.
+*/
+class ListSelectionStore : NonCopyableNonMovable {
 public:
-    ListItemSelectionManager() {
+    ListSelectionStore() {
 
     }
 

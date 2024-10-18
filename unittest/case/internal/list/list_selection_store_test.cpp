@@ -1,13 +1,13 @@
 #include <memory>
 #include <set>
 #include <gtest/gtest.h>
-#include <zaf/internal/list/list_item_selection_manager.h>
+#include <zaf/internal/list/list_selection_store.h>
 
-class ListControlItemSelectionManagerTest : public testing::Test {
+class ListSelectionStoreTest : public testing::Test {
 public:
     void SetUp() override {
 
-        item_selection_manager_ = std::make_shared<zaf::internal::ListItemSelectionManager>();
+        item_selection_manager_ = std::make_shared<zaf::internal::ListSelectionStore>();
     }
 
 protected:
@@ -33,11 +33,11 @@ protected:
     }
 
 protected:
-    std::shared_ptr<zaf::internal::ListItemSelectionManager> item_selection_manager_;
+    std::shared_ptr<zaf::internal::ListSelectionStore> item_selection_manager_;
 };
 
 
-TEST_F(ListControlItemSelectionManagerTest, ReplaceSelection) {
+TEST_F(ListSelectionStoreTest, ReplaceSelection) {
     
     auto test = [this](
         std::size_t replace_index, 
@@ -65,7 +65,7 @@ TEST_F(ListControlItemSelectionManagerTest, ReplaceSelection) {
 }
 
 
-TEST_F(ListControlItemSelectionManagerTest, RevertSelection) {
+TEST_F(ListSelectionStoreTest, RevertSelection) {
 
     auto test = [this](
         std::size_t revert_index,
@@ -93,7 +93,7 @@ TEST_F(ListControlItemSelectionManagerTest, RevertSelection) {
 }
 
 
-TEST_F(ListControlItemSelectionManagerTest, AddSelection) {
+TEST_F(ListSelectionStoreTest, AddSelection) {
 
     auto test = [this](
         std::size_t add_index,
@@ -145,7 +145,7 @@ TEST_F(ListControlItemSelectionManagerTest, AddSelection) {
 }
 
 
-TEST_F(ListControlItemSelectionManagerTest, RemoveSelection) {
+TEST_F(ListSelectionStoreTest, RemoveSelection) {
 
     auto test = [this](
         std::size_t remove_index,
@@ -198,7 +198,7 @@ TEST_F(ListControlItemSelectionManagerTest, RemoveSelection) {
 }
 
 
-TEST_F(ListControlItemSelectionManagerTest, AdjustSelectionByAddingIndexes) {
+TEST_F(ListSelectionStoreTest, AdjustSelectionByAddingIndexes) {
 
     auto test = [this](
         std::size_t add_index,
@@ -248,7 +248,7 @@ TEST_F(ListControlItemSelectionManagerTest, AdjustSelectionByAddingIndexes) {
 }
 
 
-TEST_F(ListControlItemSelectionManagerTest, AdjustSelectionByRemovingIndexes) {
+TEST_F(ListSelectionStoreTest, AdjustSelectionByRemovingIndexes) {
 
     auto test = [this](
         std::size_t remove_index,

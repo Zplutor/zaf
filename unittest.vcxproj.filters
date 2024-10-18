@@ -52,9 +52,6 @@
     <Filter Include="case\object">
       <UniqueIdentifier>{e27ffe32-9b94-4112-99c4-4433a094ccfd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="case\control\internal\list_control">
-      <UniqueIdentifier>{4f47d1ac-5e7c-4c72-9450-0cd297522179}</UniqueIdentifier>
-    </Filter>
     <Filter Include="case\rx">
       <UniqueIdentifier>{c51fbcf6-ce47-450d-b621-e27038c0a645}</UniqueIdentifier>
     </Filter>
@@ -123,6 +120,9 @@
     </Filter>
     <Filter Include="case\graphic\dwrite">
       <UniqueIdentifier>{5315c647-c8d1-4cdc-b519-9ffd426a5303}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\internal\list">
+      <UniqueIdentifier>{3c6f3d95-1877-4986-8782-80f302286d23}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -228,12 +228,6 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\linear_box_test.cpp">
       <Filter>case\control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\internal\list_control\list_control_item_height_manager_test.cpp">
-      <Filter>case\control\internal\list_control</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\control\internal\list_control\list_control_item_selection_manager_test.cpp">
-      <Filter>case\control\internal\list_control</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\container\utility\copy_test.cpp">
       <Filter>case\base\container\utility</Filter>
@@ -607,6 +601,12 @@
     </ClCompile>
     <ClCompile Include="unittest\case\rx\concat_test.cpp">
       <Filter>case\rx</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\internal\list\list_item_height_manager_test.cpp">
+      <Filter>case\internal\list</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\internal\list\list_selection_store_test.cpp">
+      <Filter>case\internal\list</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

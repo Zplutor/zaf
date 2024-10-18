@@ -437,8 +437,6 @@
     <ClCompile Include="unittest\case\control\control_style_test.cpp" />
     <ClCompile Include="unittest\case\control\image_box_parse_test.cpp" />
     <ClCompile Include="unittest\case\control\internal\image_box\image_drawing_test.cpp" />
-    <ClCompile Include="unittest\case\control\internal\list_control\list_control_item_height_manager_test.cpp" />
-    <ClCompile Include="unittest\case\control\internal\list_control\list_control_item_selection_manager_test.cpp" />
     <ClCompile Include="unittest\case\control\internal\tree_control\tree_index_mapping_test.cpp" />
     <ClCompile Include="unittest\case\control\layout\internal\linear_layout_length_calculating_test.cpp" />
     <ClCompile Include="unittest\case\control\layout\linear_layouter_test.cpp" />
@@ -480,6 +478,8 @@
     <ClCompile Include="unittest\case\graphic\size_parser_test.cpp" />
     <ClCompile Include="unittest\case\graphic\size_test.cpp" />
     <ClCompile Include="unittest\case\graphic\text\text_layout_test.cpp" />
+    <ClCompile Include="unittest\case\internal\list\list_item_height_manager_test.cpp" />
+    <ClCompile Include="unittest\case\internal\list\list_selection_store_test.cpp" />
     <ClCompile Include="unittest\case\internal\textual\line_utility_test.cpp" />
     <ClCompile Include="unittest\case\io\stream\byte_array_stream_test.cpp" />
     <ClCompile Include="unittest\case\io\stream\plain_memory_stream_test.cpp" />

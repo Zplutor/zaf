@@ -2,7 +2,7 @@
 
 #include <deque>
 #include <zaf/base/non_copyable.h>
-#include <zaf/internal/list/list_item_selection_manager.h>
+#include <zaf/internal/list/list_selection_store.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/list_item.h>
@@ -15,7 +15,7 @@
 
 namespace zaf::internal {
 
-class ListItemSelectionManager;
+class ListSelectionStore;
 class ListControlPartContext;
 
 enum class ListSelectionChangeReason {
@@ -198,7 +198,7 @@ private:
     SubscriptionSet data_source_subs_;
     SubscriptionSet item_container_subs_;
 
-    ListItemSelectionManager item_selection_manager_;
+    ListSelectionStore item_selection_manager_;
     std::weak_ptr<Object> last_focused_item_data_;
 
     Subscription vertical_scroll_bar_sub_;
