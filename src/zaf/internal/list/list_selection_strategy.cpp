@@ -1,5 +1,6 @@
 #include <zaf/internal/list/list_selection_strategy.h>
 #include <zaf/base/define.h>
+#include <zaf/internal/list/list_control_part_context.h>
 #include <zaf/window/message/keyboard_message.h>
 
 namespace zaf {
@@ -8,6 +9,16 @@ namespace internal {
 ListSelectionStrategy::ListSelectionStrategy(const ListControlPartContext* context) : 
     part_context_(context) {
 
+}
+
+
+ListControlCore& ListSelectionStrategy::GetListControl() const {
+    return part_context_->Owner();
+}
+
+
+ListItemHeightManager& ListSelectionStrategy::GetItemHeightManager() const {
+    return part_context_->ItemHeightManager();
 }
 
 

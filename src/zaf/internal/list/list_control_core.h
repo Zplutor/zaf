@@ -2,7 +2,6 @@
 
 #include <deque>
 #include <zaf/base/non_copyable.h>
-#include <zaf/internal/list/list_selection_store.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/list_item.h>
@@ -15,7 +14,6 @@
 
 namespace zaf::internal {
 
-class ListSelectionStore;
 class ListControlPartContext;
 
 enum class ListSelectionChangeReason {
@@ -70,10 +68,7 @@ public:
         return item_container_;
     }
 
-    SelectionMode GetSelectionMode() const {
-        return selection_mode_;
-    }
-
+    SelectionMode GetSelectionMode() const noexcept;
     void SetSelectionMode(SelectionMode mode);
 
     void OnLayout();
@@ -198,7 +193,6 @@ private:
     SubscriptionSet data_source_subs_;
     SubscriptionSet item_container_subs_;
 
-    ListSelectionStore item_selection_manager_;
     std::weak_ptr<Object> last_focused_item_data_;
 
     Subscription vertical_scroll_bar_sub_;
@@ -210,7 +204,6 @@ private:
     bool is_handling_data_source_event_{};
     bool refresh_after_data_source_event_{};
 
-    SelectionMode selection_mode_{ SelectionMode::Single };
     bool auto_adjust_scroll_bar_small_change_{ true };
 
     DataSourceChangeEvent data_source_change_event_;

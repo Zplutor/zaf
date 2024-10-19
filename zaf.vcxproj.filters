@@ -1288,6 +1288,9 @@
     <ClCompile Include="src\zaf\internal\list\list_input_handler.cpp">
       <Filter>zaf\internal\list</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\internal\list\list_selection_manager.cpp">
+      <Filter>zaf\internal\list</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -2987,6 +2990,9 @@
       <Filter>zaf\internal\list</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\list\list_input_handler.h">
+      <Filter>zaf\internal\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\list\list_selection_manager.h">
       <Filter>zaf\internal\list</Filter>
     </ClInclude>
   </ItemGroup>

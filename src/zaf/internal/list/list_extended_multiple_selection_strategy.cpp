@@ -22,16 +22,13 @@ inline void MakeSelectionRange(
 
 
 void ListExtendedMultipleSelectionStrategy::BeginChangingSelectionByMouseDown(
-    const Point& position,
-    const MouseMessage& message) {
+    const Point& position) {
 
     SelectItemsByMouseEvent(position, false);
 }
 
 
-void ListExtendedMultipleSelectionStrategy::ChangeSelectionByMouseMove(
-    const Point& position,
-    const MouseMessage& message) {
+void ListExtendedMultipleSelectionStrategy::ChangeSelectionByMouseMove(const Point& position) {
 
     SelectItemsByMouseEvent(position, true);
 }
@@ -202,9 +199,7 @@ void ListExtendedMultipleSelectionStrategy::RecordSelectionStatesInRange(
 }
 
 
-void ListExtendedMultipleSelectionStrategy::EndChangingSelectionByMouseUp(
-    const Point& position,
-    const MouseMessage& message) {
+void ListExtendedMultipleSelectionStrategy::EndChangingSelectionByMouseUp(const Point& position) {
 
     orginally_recorded_index_ = 0;
     orginally_recorded_count_ = 0;

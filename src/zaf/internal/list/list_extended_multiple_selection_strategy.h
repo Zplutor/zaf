@@ -11,17 +11,11 @@ class ListExtendedMultipleSelectionStrategy : public ListSelectionStrategy {
 public:
     using ListSelectionStrategy::ListSelectionStrategy;
 
-    void BeginChangingSelectionByMouseDown(
-        const Point& position, 
-        const MouseMessage& message) override;
+    void BeginChangingSelectionByMouseDown(const Point& position) override;
 
-    void ChangeSelectionByMouseMove(
-        const Point& position, 
-        const MouseMessage& message) override;
+    void ChangeSelectionByMouseMove(const Point& position) override;
 
-    void EndChangingSelectionByMouseUp(
-        const Point& position,
-        const MouseMessage& message) override;
+    void EndChangingSelectionByMouseUp(const Point& position) override;
 
     bool ChangeSelectionByKeyDown(const KeyMessage& message) override;
 

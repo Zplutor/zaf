@@ -2,10 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/control/list_control.h>
 #include <zaf/internal/list/list_control_core.h>
-#include <zaf/internal/list/list_extended_multiple_selection_strategy.h>
-#include <zaf/internal/list/list_selection_strategy.h>
-#include <zaf/internal/list/list_single_selection_strategy.h>
-#include <zaf/internal/list/list_simple_multiple_selection_strategy.h>
+#include <zaf/internal/list/list_control_part_context.h>
 
 namespace zaf::internal {
 
@@ -17,29 +14,6 @@ ListInputHandler::ListInputHandler(const ListControlPartContext* context) :
 
 ListInputHandler::~ListInputHandler() {
 
-}
-
-
-void ListInputHandler::ResetSelectionStrategy(SelectionMode selection_mode) {
-
-    selection_strategy_ = [this, selection_mode]() -> std::unique_ptr<ListSelectionStrategy> {
-    
-        auto context = &Context();
-
-        switch (selection_mode) {
-        case SelectionMode::Single:
-            return std::make_unique<ListSingleSelectionStrategy>(context);
-
-        case SelectionMode::SimpleMultiple:
-            return std::make_unique<ListSimpleMultipleSelectionStrategy>(context);
-
-        case SelectionMode::ExtendedMultiple:
-            return std::make_unique<ListExtendedMultipleSelectionStrategy>(context);
-
-        default:
-            return std::make_unique<ListNoSelectionStrategy>(context);
-        }
-    }();
 }
 
 
@@ -63,9 +37,8 @@ void ListInputHandler::HandleMouseDownEvent(const MouseDownInfo& event_info) {
         auto position_in_container = 
             list_control->ItemContainer()->TranslateFromParent(event_info.PositionAtSender());
 
-        selection_strategy_->BeginChangingSelectionByMouseDown(
-            position_in_container, 
-            event_info.Message());
+        auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
+        selection_strategy.BeginChangingSelectionByMouseDown(position_in_container);
     }
 
     event_info.MarkAsHandled();
@@ -88,9 +61,8 @@ void ListInputHandler::HandleMouseMoveEvent(const MouseMoveInfo& event_info) {
         auto position_in_container =
             list_control->ItemContainer()->TranslateFromParent(event_info.PositionAtSender());
 
-        selection_strategy_->ChangeSelectionByMouseMove(
-            position_in_container,
-            event_info.Message());
+        auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
+        selection_strategy.ChangeSelectionByMouseMove(position_in_container);
 
         event_info.MarkAsHandled();
     }
@@ -117,9 +89,8 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
         auto position_in_container =
             list_control->ItemContainer()->TranslateFromParent(event_info.PositionAtSender());
 
-        selection_strategy_->EndChangingSelectionByMouseUp(
-            position_in_container,
-            event_info.Message());
+        auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
+        selection_strategy.EndChangingSelectionByMouseUp(position_in_container);
 
         event_info.MarkAsHandled();
     }
@@ -132,7 +103,8 @@ void ListInputHandler::HandleKeyDownEvent(const KeyDownInfo& event_info) {
         return;
     }
 
-    bool is_handled = selection_strategy_->ChangeSelectionByKeyDown(event_info.Message());
+    auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
+    bool is_handled = selection_strategy.ChangeSelectionByKeyDown(event_info.Message());
     if (is_handled) {
         event_info.MarkAsHandled();
     }

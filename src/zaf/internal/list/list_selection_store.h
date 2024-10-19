@@ -12,10 +12,6 @@ A passive object that stores selected indexes in a list control.
 */
 class ListSelectionStore : NonCopyableNonMovable {
 public:
-    ListSelectionStore() {
-
-    }
-
     void ReplaceSelection(std::size_t index, std::size_t count) {
 
         range_set_.Clear();

@@ -7,24 +7,19 @@ namespace zaf {
 namespace internal {
 
 void ListSingleSelectionStrategy::BeginChangingSelectionByMouseDown(
-    const Point& position,
-    const MouseMessage& message) {
+    const Point& position) {
 
     SelectItemWithMouseEvent(position);
 }
 
 
-void ListSingleSelectionStrategy::ChangeSelectionByMouseMove(
-    const Point& position,
-    const MouseMessage& message) {
+void ListSingleSelectionStrategy::ChangeSelectionByMouseMove(const Point& position) {
 
     SelectItemWithMouseEvent(position);
 }
 
 
-void ListSingleSelectionStrategy::EndChangingSelectionByMouseUp(
-    const Point& position,
-    const MouseMessage& message) {
+void ListSingleSelectionStrategy::EndChangingSelectionByMouseUp(const Point& position) {
 
     if (!mouse_selected_index_) {
         return;

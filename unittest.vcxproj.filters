@@ -608,6 +608,12 @@
     <ClCompile Include="unittest\case\internal\list\list_selection_store_test.cpp">
       <Filter>case\internal\list</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\control\list_control_selection_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\list_control_focus_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

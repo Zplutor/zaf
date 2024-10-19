@@ -14,15 +14,10 @@ public:
     explicit ListInputHandler(const ListControlPartContext* context);
     ~ListInputHandler();
 
-    void ResetSelectionStrategy(SelectionMode selection_mode);
-
     void HandleMouseDownEvent(const MouseDownInfo& event_info);
     void HandleMouseMoveEvent(const MouseMoveInfo& event_info);
     void HandleMouseUpEvent(const MouseUpInfo& event_info);
     void HandleKeyDownEvent(const KeyDownInfo& event_info);
-
-private:
-    std::unique_ptr<ListSelectionStrategy> selection_strategy_;
 };
 
 }

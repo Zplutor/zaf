@@ -344,13 +344,16 @@ void ListControlCore::OnItemContainerLostFocus(const FocusLostInfo& event_info) 
 }
 
 
+SelectionMode ListControlCore::GetSelectionMode() const noexcept {
+    return part_context_->SelectionManager().SelectionMode();
+}
+
+
 void ListControlCore::SetSelectionMode(SelectionMode mode) {
 
-    selection_mode_ = mode;
+    part_context_->SelectionManager().SetSelectionMode(mode);
 
-    part_context_->InputHandler().ResetSelectionStrategy(mode);
-
-    if (selection_mode_ == SelectionMode::Single) {
+    if (mode == SelectionMode::Single) {
 
         auto first_selected_index = GetFirstSelectedItemIndex();
         if (first_selected_index) {
@@ -362,7 +365,7 @@ void ListControlCore::SetSelectionMode(SelectionMode mode) {
                 1);
         }
     }
-    else if (selection_mode_ == SelectionMode::None) {
+    else if (mode == SelectionMode::None) {
         UnselectAllItems();
     }
 }
@@ -626,7 +629,7 @@ std::shared_ptr<ListItem> ListControlCore::CreateItem(std::size_t index) {
     item_rect.size.height = position_and_height.second;
     list_item->SetRect(item_rect);
 
-    list_item->SetIsSelected(item_selection_manager_.IsIndexSelected(index));
+    list_item->SetIsSelected(part_context_->SelectionStore().IsIndexSelected(index));
     return list_item;
 }
 
@@ -649,7 +652,7 @@ void ListControlCore::HandleDataAdded(const ListDataAddedInfo& event_info) {
     //Adjust scroll bar small change if there is no items before adding.
     bool need_adjust_scroll_bar_small_change = visible_items_.empty();
 
-    bool selection_changed = item_selection_manager_.AdjustSelectionByAddingIndexes(
+    bool selection_changed = part_context_->SelectionStore().AdjustSelectionByAddingIndexes(
         event_info.Index(),
         event_info.Count());
 
@@ -730,7 +733,7 @@ void ListControlCore::OnDataRemoved(const ListDataRemovedInfo& event_info) {
 
 void ListControlCore::HandleDataRemoved(const ListDataRemovedInfo& event_info) {
 
-    bool selection_changed = item_selection_manager_.AdjustSelectionByRemovingIndexes(
+    bool selection_changed = part_context_->SelectionStore().AdjustSelectionByRemovingIndexes(
         event_info.Index(),
         event_info.Count());
 
@@ -894,9 +897,9 @@ void ListControlCore::OnDataMoved(const ListDataMovedInfo& event_info) {
 
 void ListControlCore::HandleDataMoved(const ListDataMovedInfo& event_info) {
 
-    bool has_selection = !!item_selection_manager_.GetFirstSelectedIndex();
+    bool has_selection = !!part_context_->SelectionStore().GetFirstSelectedIndex();
 
-    item_selection_manager_.AdjustSelectionByMovingIndex(
+    part_context_->SelectionStore().AdjustSelectionByMovingIndex(
         event_info.PreviousIndex(),
         event_info.NewIndex());
 
@@ -1050,22 +1053,22 @@ std::shared_ptr<ListItem> ListControlCore::GetVisibleItemAtIndex(
 
 
 std::size_t ListControlCore::GetSelectedItemCount() {
-    return item_selection_manager_.GetAllSelectedCount();
+    return part_context_->SelectionStore().GetAllSelectedCount();
 }
 
 
 std::optional<std::size_t> ListControlCore::GetFirstSelectedItemIndex() const noexcept {
-    return item_selection_manager_.GetFirstSelectedIndex();
+    return part_context_->SelectionStore().GetFirstSelectedIndex();
 }
 
 
 std::vector<std::size_t> ListControlCore::GetAllSelectedItemIndexes() {
-    return item_selection_manager_.GetAllSelectedIndexes();
+    return part_context_->SelectionStore().GetAllSelectedIndexes();
 }
 
 
 bool ListControlCore::IsItemSelectedAtIndex(std::size_t index) {
-    return item_selection_manager_.IsIndexSelected(index);
+    return part_context_->SelectionStore().IsIndexSelected(index);
 }
 
 
@@ -1121,7 +1124,7 @@ std::optional<std::size_t> ListControlCore::GetListItemIndex(
 
 void ListControlCore::ReplaceSelection(std::size_t index, std::size_t count) {
 
-    item_selection_manager_.ReplaceSelection(index, count);
+    part_context_->SelectionStore().ReplaceSelection(index, count);
 
     for (std::size_t visible_item_index = 0; 
          visible_item_index < visible_items_.size(); 
@@ -1138,7 +1141,7 @@ void ListControlCore::ReplaceSelection(std::size_t index, std::size_t count) {
 
 bool ListControlCore::RevertSelection(std::size_t index) {
 
-    bool is_selected = item_selection_manager_.RevertSelection(index);
+    bool is_selected = part_context_->SelectionStore().RevertSelection(index);
 
     if ((first_visible_item_index_ <= index) && (index < first_visible_item_index_ + visible_items_.size())) {
 
@@ -1163,10 +1166,10 @@ void ListControlCore::RemoveSelection(std::size_t index, std::size_t count) {
 void ListControlCore::ChangeSelection(std::size_t index, std::size_t count, bool is_add) {
 
     if (is_add) {
-        item_selection_manager_.AddSelection(index, count);
+        part_context_->SelectionStore().AddSelection(index, count);
     }
     else {
-        item_selection_manager_.RemoveSelection(index, count);
+        part_context_->SelectionStore().RemoveSelection(index, count);
     }
 
     std::size_t intersect_begin_index = (std::max)(index, first_visible_item_index_);
