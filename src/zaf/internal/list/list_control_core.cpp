@@ -95,6 +95,14 @@ void ListControlCore::Initialize(const InitializeParameters& parameters) {
     InstallDataSource(parameters.data_source);
     InstallDelegate(parameters.delegate);
 
+    //Temporary solution.
+    Subscriptions() += part_context_->SelectionManager().SelectionChangedEvent().Subscribe(
+        [this](const ListSelectionChangedInfo& event_info) {
+            if (selection_change_event_) {
+                selection_change_event_(event_info.reason, event_info.index, event_info.count);
+            }
+        });
+
     SetSelectionMode(SelectionMode::Single);
     RegisterScrollBarEvents();
 
@@ -975,26 +983,8 @@ void ListControlCore::AdjustVisibleItemPositions(
 }
 
 
-void ListControlCore::SelectAllItems() {
-
-    std::size_t item_count = GetItemCount();
-    std::size_t selected_count = GetSelectedItemCount();
-    if (selected_count != item_count) {
-
-        ReplaceSelection(0, item_count);
-        NotifySelectionChange(ListSelectionChangeReason::ReplaceSelection, 0, item_count);
-    }
-}
-
-
 void ListControlCore::UnselectAllItems() {
-
-    std::size_t selected_count = GetSelectedItemCount();
-    if (selected_count != 0) {
-
-        ReplaceSelection(0, 0);
-        NotifySelectionChange(ListSelectionChangeReason::ReplaceSelection, 0, 0);
-    }
+    part_context_->SelectionManager().UnselectAllItems();
 }
 
 

@@ -170,7 +170,7 @@ void ListControl::UnselectItemAtIndex(std::size_t index) {
 
 
 void ListControl::SelectAllItems() {
-    core_->SelectAllItems();
+    core_->PartContext().SelectionManager().SelectAllItems();
 }
 
 

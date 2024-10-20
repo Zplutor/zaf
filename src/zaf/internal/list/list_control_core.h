@@ -9,22 +9,17 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_box.h>
 #include <zaf/control/selection_mode.h>
-#include <zaf/rx/subscription_set.h>
+#include <zaf/internal/list/list_selection_manager.h>
+#include <zaf/rx/subscription_host.h>
 #include <zaf/window/popup_menu.h>
 
 namespace zaf::internal {
 
 class ListControlPartContext;
 
-enum class ListSelectionChangeReason {
-    ItemChange,
-    ReplaceSelection,
-    AddSelection,
-    RemoveSelection,
-};
-
 class ListControlCore :
     public std::enable_shared_from_this<ListControlCore>,
+    SubscriptionHost,
     NonCopyableNonMovable {
 
 public:
@@ -60,13 +55,22 @@ public:
     ~ListControlCore();
 
     void Initialize(const InitializeParameters& parameters);
+
+    std::shared_ptr<ListDataSource> DataSource() const noexcept {
+        return data_source_.lock();
+    }
+
     void SetDataSource(const std::weak_ptr<ListDataSource>& data_source);
+
+    std::shared_ptr<ListControlDelegate> Delegate() const noexcept {
+        return delegate_.lock();
+    }
     void SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
-    void SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
 
     const std::shared_ptr<ListItemContainer>& ItemContainer() const {
         return item_container_;
     }
+    void SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
 
     SelectionMode GetSelectionMode() const noexcept;
     void SetSelectionMode(SelectionMode mode);
@@ -75,7 +79,6 @@ public:
     void OnVerticalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar);
 
     void Reload();
-    void SelectAllItems();
     void UnselectAllItems();
     void SelectItemAtIndex(std::size_t index);
     void UnselectItemAtIndex(std::size_t index);
