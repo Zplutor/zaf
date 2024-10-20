@@ -112,6 +112,25 @@ void ListSelectionManager::SelectItemAtIndex(std::size_t index) {
 }
 
 
+void ListSelectionManager::UnselectItemAtIndex(std::size_t index) {
+
+    auto data_source = Context().Owner().DataSource();
+    if (!data_source) {
+        return;
+    }
+
+    ZAF_EXPECT(index < data_source->GetDataCount());
+
+    auto& selection_store = Context().SelectionStore();
+    if (!selection_store.IsIndexSelected(index)) {
+        return;
+    }
+
+    selection_store.RemoveSelection(index, 1);
+    NotifySelectionChanged(ListSelectionChangeReason::RemoveSelection, index, 1);
+}
+
+
 void ListSelectionManager::NotifySelectionChanged(
     ListSelectionChangeReason reason, 
     std::size_t index, 

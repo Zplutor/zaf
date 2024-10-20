@@ -37,6 +37,7 @@ public:
     void UnselectAllItems();
 
     void SelectItemAtIndex(std::size_t index);
+    void UnselectItemAtIndex(std::size_t index);
 
     zaf::Observable<ListSelectionChangedInfo> SelectionChangedEvent() const {
         return selection_changed_event_.AsObservable();

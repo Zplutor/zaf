@@ -994,13 +994,7 @@ void ListControlCore::SelectItemAtIndex(std::size_t index) {
 
 
 void ListControlCore::UnselectItemAtIndex(std::size_t index) {
-
-    if ((index >= GetItemCount()) || !IsItemSelectedAtIndex(index)) {
-        return;
-    }
-
-    RemoveSelection(index, 1);
-    NotifySelectionChange(ListSelectionChangeReason::RemoveSelection, index, 1);
+    part_context_->SelectionManager().UnselectItemAtIndex(index);
 }
 
 

@@ -134,6 +134,7 @@ TEST(ListControlTest, SelectItemAtIndex) {
         list->SelectItemAtIndex(0);
         list->SelectItemAtIndex(5);
         list->SelectItemAtIndex(4);
+        list->SelectItemAtIndex(4); //This call won't raise selection changed event.
         ASSERT_EQ(list->SelectedItemCount(), 1);
         ASSERT_EQ(list->FirstSelectedItemIndex(), 4);
         ASSERT_EQ(selection_changed_count, 3);
@@ -163,5 +164,60 @@ TEST(ListControlTest, SelectItemAtIndex) {
         std::vector<std::size_t> expected_selected_indexes{ 3, 8 };
         ASSERT_EQ(list->SelectedItemIndexes(), expected_selected_indexes);
         ASSERT_EQ(selection_changed_count, 2);
+    }
+}
+
+
+TEST(ListControlTest, UnselectItemAtIndex) {
+
+    auto list = Create<TestListControl>();
+
+    std::size_t selection_changed_count{};
+    auto sub = list->SelectionChangedEvent().Subscribe(std::bind([&selection_changed_count]() {
+        selection_changed_count++;
+    }));
+
+    //Exception will be throw if index is out of bounds.
+    {
+        ASSERT_THROW(list->UnselectItemAtIndex(10), PreconditionError);
+    }
+
+    //Unselect item in single selection mode.
+    {
+        list->SetSelectionMode(SelectionMode::Single);
+        list->SelectItemAtIndex(1);
+        selection_changed_count = 0;
+
+        list->UnselectItemAtIndex(0);
+        ASSERT_EQ(selection_changed_count, 0);
+        ASSERT_EQ(list->FirstSelectedItemIndex(), 1);
+
+        list->UnselectItemAtIndex(1);
+        ASSERT_EQ(selection_changed_count, 1);
+        ASSERT_EQ(list->SelectedItemCount(), 0);
+    }
+
+    //Unselect item in multiple selection mode.
+    {
+        list->SetSelectionMode(SelectionMode::ExtendedMultiple);
+        list->SelectItemAtIndex(1);
+        list->SelectItemAtIndex(2);
+        list->SelectItemAtIndex(3);
+        selection_changed_count = 0;
+
+        list->UnselectItemAtIndex(2);
+        ASSERT_EQ(selection_changed_count, 1);
+        std::vector<std::size_t> expected_selected_indexes{ 1, 3 };
+        ASSERT_EQ(list->SelectedItemIndexes(), expected_selected_indexes);
+
+        list->UnselectItemAtIndex(3);
+        ASSERT_EQ(selection_changed_count, 2);
+        expected_selected_indexes = { 1 };
+        ASSERT_EQ(list->SelectedItemIndexes(), expected_selected_indexes);
+
+        list->UnselectItemAtIndex(1);
+        ASSERT_EQ(selection_changed_count, 3);
+        expected_selected_indexes = {};
+        ASSERT_EQ(list->SelectedItemIndexes(), expected_selected_indexes);
     }
 }

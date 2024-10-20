@@ -126,8 +126,16 @@ public:
     void SelectItemAtIndex(std::size_t index);
 
     /**
-     Unselect the item at specified index.
-     */
+    Unselects the item at the specified index.
+
+    @param index
+        The index of the item to unselect.
+
+    @pre
+        The index is less than the total count of items.
+
+    @throw zaf::PreconditionError
+    */
     void UnselectItemAtIndex(std::size_t index);
 
     /**
