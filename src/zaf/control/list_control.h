@@ -113,8 +113,16 @@ public:
     Observable<ListControlSelectionChangedInfo> SelectionChangedEvent() const;
 
     /**
-     Select the item at specifed index.
-     */
+    Selects the item at the specified index.
+
+    @param index
+        The index of the item to select.
+
+    @pre
+        The index is less than the total count of items.
+        
+    @throw zaf::PreconditionError
+    */
     void SelectItemAtIndex(std::size_t index);
 
     /**

@@ -36,12 +36,20 @@ public:
     void SelectAllItems();
     void UnselectAllItems();
 
+    void SelectItemAtIndex(std::size_t index);
+
     zaf::Observable<ListSelectionChangedInfo> SelectionChangedEvent() const {
         return selection_changed_event_.AsObservable();
     }
 
 private:
-    zaf::SelectionMode selection_model_{ zaf::SelectionMode::None };
+    void NotifySelectionChanged(
+        ListSelectionChangeReason reason, 
+        std::size_t index, 
+        std::size_t count);
+
+private:
+    zaf::SelectionMode selection_mode_{ zaf::SelectionMode::None };
     std::unique_ptr<ListSelectionStrategy> selection_strategy_;
     zaf::Subject<ListSelectionChangedInfo> selection_changed_event_;
 };

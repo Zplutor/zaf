@@ -8,19 +8,19 @@
 namespace zaf::internal {
 
 zaf::SelectionMode ListSelectionManager::SelectionMode() const noexcept {
-    return selection_model_;
+    return selection_mode_;
 }
 
 
 void ListSelectionManager::SetSelectionMode(zaf::SelectionMode mode) {
 
-    selection_model_ = mode;
+    selection_mode_ = mode;
 
     selection_strategy_ = [this]() -> std::unique_ptr<ListSelectionStrategy> {
 
         auto context = &Context();
 
-        switch (selection_model_) {
+        switch (selection_mode_) {
         case SelectionMode::Single:
             return std::make_unique<ListSingleSelectionStrategy>(context);
 
@@ -75,10 +75,52 @@ void ListSelectionManager::UnselectAllItems() {
     }
 
     selection_store.ReplaceSelection(0, 0);
+    NotifySelectionChanged(ListSelectionChangeReason::ReplaceSelection, 0, 0);
+}
+
+
+void ListSelectionManager::SelectItemAtIndex(std::size_t index) {
+
+    auto data_source = Context().Owner().DataSource();
+    if (!data_source) {
+        return;
+    }
+
+    ZAF_EXPECT(index < data_source->GetDataCount());
+
+    auto& selection_store = Context().SelectionStore();
+    if (selection_store.IsIndexSelected(index)) {
+        return;
+    }
+
+    switch (selection_mode_) {
+
+    case SelectionMode::Single:
+        selection_store.ReplaceSelection(index, 1);
+        NotifySelectionChanged(ListSelectionChangeReason::ReplaceSelection, index, 1);
+        break;
+
+    case SelectionMode::SimpleMultiple:
+    case SelectionMode::ExtendedMultiple:
+        selection_store.AddSelection(index, 1);
+        NotifySelectionChanged(ListSelectionChangeReason::AddSelection, index, 1);
+        break;
+
+    default:
+        break;
+    }
+}
+
+
+void ListSelectionManager::NotifySelectionChanged(
+    ListSelectionChangeReason reason, 
+    std::size_t index, 
+    std::size_t count) {
+
     selection_changed_event_.AsObserver().OnNext(ListSelectionChangedInfo{
-        .reason = ListSelectionChangeReason::ReplaceSelection,
-        .index = 0,
-        .count = 0,
+        .reason = reason,
+        .index = index,
+        .count = count,
     });
 }
 

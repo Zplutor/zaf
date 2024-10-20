@@ -989,27 +989,7 @@ void ListControlCore::UnselectAllItems() {
 
 
 void ListControlCore::SelectItemAtIndex(std::size_t index) {
-
-    if ((index >= GetItemCount()) || IsItemSelectedAtIndex(index)) {
-        return;
-    }
-
-    switch (GetSelectionMode()) {
-
-    case SelectionMode::Single:
-        ReplaceSelection(index, 1);
-        NotifySelectionChange(ListSelectionChangeReason::ReplaceSelection, index, 1);
-        break;
-
-    case SelectionMode::SimpleMultiple:
-    case SelectionMode::ExtendedMultiple:
-        AddSelection(index, 1);
-        NotifySelectionChange(ListSelectionChangeReason::AddSelection, index, 1);
-        break;
-
-    default:
-        return;
-    }
+    part_context_->SelectionManager().SelectItemAtIndex(index);
 }
 
 
