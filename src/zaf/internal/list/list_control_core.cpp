@@ -358,24 +358,7 @@ SelectionMode ListControlCore::GetSelectionMode() const noexcept {
 
 
 void ListControlCore::SetSelectionMode(SelectionMode mode) {
-
     part_context_->SelectionManager().SetSelectionMode(mode);
-
-    if (mode == SelectionMode::Single) {
-
-        auto first_selected_index = GetFirstSelectedItemIndex();
-        if (first_selected_index) {
-
-            ReplaceSelection(*first_selected_index, 1);
-            NotifySelectionChange(
-                ListSelectionChangeReason::ReplaceSelection,
-                *first_selected_index, 
-                1);
-        }
-    }
-    else if (mode == SelectionMode::None) {
-        UnselectAllItems();
-    }
 }
 
 

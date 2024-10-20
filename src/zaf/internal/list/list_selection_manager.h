@@ -44,6 +44,9 @@ public:
     }
 
 private:
+    void ReviseSelectionBySelectionMode();
+    void ResetSelectionStrategy();
+
     void NotifySelectionChanged(
         ListSelectionChangeReason reason, 
         std::size_t index, 

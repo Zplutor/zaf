@@ -61,6 +61,92 @@ TEST(ListControlTest, DefaultSelectionMode) {
 }
 
 
+TEST(ListControlTest, SetSelectionMode) {
+
+    auto list = Create<TestListControl>();
+    std::size_t selection_changed_count{};
+    auto sub = list->SelectionChangedEvent().Subscribe(std::bind([&selection_changed_count]() {
+        selection_changed_count++;
+    }));
+
+    //Change selection mode to none while there is no selection.
+    {
+        list->SetSelectionMode(SelectionMode::Single);
+        list->UnselectAllItems();
+        selection_changed_count = 0;
+        list->SetSelectionMode(SelectionMode::None);
+        ASSERT_EQ(selection_changed_count, 0);
+    }
+
+    //Change selection mode to none while there is selection.
+    {
+        list->SetSelectionMode(SelectionMode::Single);
+        list->SelectItemAtIndex(6);
+        selection_changed_count = 0;
+        list->SetSelectionMode(SelectionMode::None);
+        ASSERT_EQ(selection_changed_count, 1);
+        ASSERT_EQ(list->SelectedItemCount(), 0);
+    }
+
+    //Change selection mode to single while there is no selection.
+    {
+        list->SetSelectionMode(SelectionMode::Single);
+        list->UnselectAllItems();
+        selection_changed_count = 0;
+        list->SetSelectionMode(SelectionMode::Single);
+        ASSERT_EQ(selection_changed_count, 0);
+    }
+
+    //Change selection mode to single while there is one selection.
+    {
+        list->SetSelectionMode(SelectionMode::Single);
+        list->SelectItemAtIndex(7);
+        selection_changed_count = 0;
+        list->SetSelectionMode(SelectionMode::Single);
+        ASSERT_EQ(selection_changed_count, 0);
+        ASSERT_EQ(list->FirstSelectedItemIndex(), 7);
+    }
+
+    //Change selection mode to single while there is multiple selection.
+    {
+        list->SetSelectionMode(SelectionMode::SimpleMultiple);
+        list->SelectItemAtIndex(7);
+        list->SelectItemAtIndex(8);
+        list->SelectItemAtIndex(4);
+        selection_changed_count = 0;
+        list->SetSelectionMode(SelectionMode::Single);
+        ASSERT_EQ(selection_changed_count, 1);
+        ASSERT_EQ(list->FirstSelectedItemIndex(), 4);
+    }
+
+    //Change selection mode to multiple while there is one selection.
+    {
+        list->SetSelectionMode(SelectionMode::Single);
+        list->SelectItemAtIndex(3);
+        selection_changed_count = 0;
+        list->SetSelectionMode(SelectionMode::SimpleMultiple);
+        ASSERT_EQ(selection_changed_count, 0);
+        ASSERT_EQ(list->SelectedItemCount(), 1);
+
+        list->SetSelectionMode(SelectionMode::ExtendedMultiple);
+        ASSERT_EQ(selection_changed_count, 0);
+        ASSERT_EQ(list->SelectedItemCount(), 1);
+    }
+
+    //Change selection mode to multiple while there multiple selection.
+    {
+        list->SetSelectionMode(SelectionMode::SimpleMultiple);
+        list->SelectItemAtIndex(3);
+        list->SelectItemAtIndex(2);
+        list->SelectItemAtIndex(0);
+        selection_changed_count = 0;
+        list->SetSelectionMode(SelectionMode::ExtendedMultiple);
+        ASSERT_EQ(selection_changed_count, 0);
+        ASSERT_EQ(list->SelectedItemCount(), 3);
+    }
+}
+
+
 TEST(ListControlTest, SelectAllItems) {
 
     auto list = Create<TestListControl>();
