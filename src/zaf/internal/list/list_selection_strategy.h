@@ -6,7 +6,6 @@
 
 namespace zaf {
 class KeyMessage;
-class MouseMessage;
 class Point;
 }
 

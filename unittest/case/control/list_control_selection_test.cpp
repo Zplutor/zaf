@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/control/list_control.h>
+#include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/creation.h>
 #include <zaf/object/boxing/numeric.h>
@@ -38,18 +39,36 @@ private:
 };
 
 
+class TestDelegate : public ListControlDelegate {
+public:
+    float EstimateItemHeight(
+        std::size_t item_index, 
+        const std::shared_ptr<Object>& item_data) override {
+
+        return 10;
+    }
+};
+
+
 class TestListControl : public ListControl {
 protected:
     void Initialize() override {
 
         __super::Initialize();
 
+        SetBorder({});
+        SetPadding({});
+        SetHeight(100);
+
         data_source_ = Create<TestDataSource>();
+        delegate_ = Create<TestDelegate>();
         SetDataSource(data_source_);
+        SetDelegate(delegate_);
     }
 
 private:
     std::shared_ptr<TestDataSource> data_source_;
+    std::shared_ptr<TestDelegate> delegate_;
 };
 
 }
@@ -161,6 +180,11 @@ TEST(ListControlTest, SelectAllItems) {
     ASSERT_EQ(list->SelectedItemCount(), 10);
     ASSERT_EQ(selection_changed_count, 1);
 
+    for (auto index : Range(0, list->ItemCount())) {
+        auto visible_item = list->GetVisibleItemAtIndex(index);
+        ASSERT_TRUE(visible_item->IsSelected());
+    }
+
     //Selection won't changed if all items are already selected.
     list->SelectAllItems();
     ASSERT_EQ(list->SelectedItemCount(), 10);
@@ -187,6 +211,11 @@ TEST(ListControlTest, UnselectAllItems) {
     list->UnselectAllItems();
     ASSERT_EQ(list->SelectedItemCount(), 0);
     ASSERT_EQ(selection_changed_count, 2);
+
+    for (auto index : Range(0, list->ItemCount())) {
+        auto visible_item = list->GetVisibleItemAtIndex(index);
+        ASSERT_FALSE(visible_item->IsSelected());
+    }
 }
 
 
@@ -223,6 +252,7 @@ TEST(ListControlTest, SelectItemAtIndex) {
         list->SelectItemAtIndex(4); //This call won't raise selection changed event.
         ASSERT_EQ(list->SelectedItemCount(), 1);
         ASSERT_EQ(list->FirstSelectedItemIndex(), 4);
+        ASSERT_TRUE(list->GetVisibleItemAtIndex(4)->IsSelected());
         ASSERT_EQ(selection_changed_count, 3);
     }
 
@@ -237,6 +267,9 @@ TEST(ListControlTest, SelectItemAtIndex) {
         list->SelectItemAtIndex(4);
         std::vector<std::size_t> expected_selected_indexes{ 1, 2, 4, 9 };
         ASSERT_EQ(list->SelectedItemIndexes(), expected_selected_indexes);
+        for (auto index : expected_selected_indexes) {
+            ASSERT_TRUE(list->GetVisibleItemAtIndex(index)->IsSelected());
+        }
         ASSERT_EQ(selection_changed_count, 4);
     }
 
@@ -249,6 +282,9 @@ TEST(ListControlTest, SelectItemAtIndex) {
         list->SelectItemAtIndex(8);
         std::vector<std::size_t> expected_selected_indexes{ 3, 8 };
         ASSERT_EQ(list->SelectedItemIndexes(), expected_selected_indexes);
+        for (auto index : expected_selected_indexes) {
+            ASSERT_TRUE(list->GetVisibleItemAtIndex(index)->IsSelected());
+        }
         ASSERT_EQ(selection_changed_count, 2);
     }
 }
@@ -281,6 +317,7 @@ TEST(ListControlTest, UnselectItemAtIndex) {
         list->UnselectItemAtIndex(1);
         ASSERT_EQ(selection_changed_count, 1);
         ASSERT_EQ(list->SelectedItemCount(), 0);
+        ASSERT_FALSE(list->GetVisibleItemAtIndex(1)->IsSelected());
     }
 
     //Unselect item in multiple selection mode.

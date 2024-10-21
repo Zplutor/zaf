@@ -145,12 +145,12 @@ protected:
         data_source_ = zaf::Create<DataSource>();
         delegate_ = zaf::Create<Delegate>();
 
-        auto list = zaf::Create<zaf::ListControl>();
-        list->SetDataSource(data_source_);
-        list->SetDelegate(delegate_);
-        list->SetSelectionMode(zaf::SelectionMode::ExtendedMultiple);
+        list_ = zaf::Create<zaf::ListControl>();
+        list_->SetDataSource(data_source_);
+        list_->SetDelegate(delegate_);
+        list_->SetSelectionMode(zaf::SelectionMode::Single);
         
-        Subscriptions() += list->ContextMenuEvent().Subscribe(
+        Subscriptions() += list_->ContextMenuEvent().Subscribe(
             [](const zaf::ListControlContextMenuInfo& event_info) {
         
                 auto menu_item1 = zaf::Create<zaf::MenuItem>();
@@ -166,18 +166,19 @@ protected:
                 event_info.SetMenu(menu);
             });
 
-        this->RootControl()->AddChild(list);
+        this->RootControl()->AddChild(list_);
 
         auto button = zaf::Create<zaf::Button>();
         button->SetFixedHeight(30);
         button->SetText(L"Move");
         Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
-            //data_source_->Move();
+            list_->SelectItemAtIndex(2);
         }));
         this->RootControl()->AddChild(button);
     }
 
 private:
+    std::shared_ptr<zaf::ListControl> list_;
     std::shared_ptr<DataSource> data_source_;
     std::shared_ptr<Delegate> delegate_;
 };
