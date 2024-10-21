@@ -5,6 +5,7 @@
 #include <zaf/internal/list/list_item_height_manager.h>
 #include <zaf/internal/list/list_selection_manager.h>
 #include <zaf/internal/list/list_selection_store.h>
+#include <zaf/internal/list/list_visible_item_manager.h>
 
 namespace zaf::internal {
 
@@ -34,6 +35,10 @@ public:
         return *selection_store_;
     }
 
+    ListVisibleItemManager& VisibleItemManager() const {
+        return *visible_item_manager_;
+    }
+
 private:
     ListControlCore* owner_;
 
@@ -41,6 +46,7 @@ private:
     std::unique_ptr<ListItemHeightManager> item_height_manager_;
     std::unique_ptr<ListSelectionManager> selection_manager_;
     std::unique_ptr<ListSelectionStore> selection_store_;
+    std::unique_ptr<ListVisibleItemManager> visible_item_manager_;
 };
 
 }

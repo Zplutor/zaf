@@ -2,10 +2,12 @@
 
 #include <zaf/control/textual_control.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 class ListControlCore;
+class ListVisibleItemManager;
 }
+
+namespace zaf {
 
 class ListItem : public TextualControl {
 public:
@@ -19,6 +21,7 @@ protected:
 
 private:
     friend class internal::ListControlCore;
+    friend class internal::ListVisibleItemManager;
 
     void SetItemData(const std::shared_ptr<Object>& data) {
         ZAF_EXPECT(data);

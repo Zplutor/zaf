@@ -137,7 +137,7 @@ std::shared_ptr<Object> ListControl::GetItemDataAtIndex(std::size_t index) const
 
 
 std::shared_ptr<ListItem> ListControl::GetVisibleItemAtIndex(std::size_t index) const noexcept {
-    return core_->GetVisibleItemAtIndex(index);
+    return core_->PartContext().VisibleItemManager().GetVisibleItemAtIndex(index);
 }
 
 

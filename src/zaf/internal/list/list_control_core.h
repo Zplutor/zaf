@@ -51,10 +51,14 @@ public:
     };
 
 public:
-    explicit ListControlCore(ScrollBox& owner);
+    explicit ListControlCore(zaf::ScrollBox& owner);
     ~ListControlCore();
 
     void Initialize(const InitializeParameters& parameters);
+
+    zaf::ScrollBox& ScrollBox() {
+        return owner_;
+    }
 
     std::shared_ptr<ListDataSource> DataSource() const noexcept {
         return data_source_.lock();
@@ -84,7 +88,6 @@ public:
     void UnselectItemAtIndex(std::size_t index);
 
     std::size_t GetItemCount();
-    std::shared_ptr<ListItem> GetVisibleItemAtIndex(std::size_t index) const noexcept;
     std::size_t GetSelectedItemCount();
     std::optional<std::size_t> GetFirstSelectedItemIndex() const noexcept;
     std::vector<std::size_t> GetAllSelectedItemIndexes();
@@ -142,38 +145,16 @@ private:
     void InnerReload(bool retain_state);
 
     void UpdateContentHeight();
-    void UpdateVisibleItems();
-    void GetVisibleItemsRange(std::size_t& index, std::size_t& count);
-    void AdjustVisibleItems(
-        std::size_t new_index,
-        std::size_t new_count,
-        bool remove_head,
-        std::size_t head_change_count,
-        bool remove_tail,
-        std::size_t tail_change_count);
-    void RemoveHeadVisibleItems(std::size_t count);
-    void RemoveTailVisibleItems(std::size_t count);
-    std::vector<std::shared_ptr<ListItem>> CreateItems(std::size_t index, std::size_t count);
-    std::shared_ptr<ListItem> CreateItem(std::size_t index);
     void RecoverLastFocusedItem(const std::vector<std::shared_ptr<ListItem>>& items);
 
     void OnDataAdded(const ListDataAddedInfo& event_info);
     void HandleDataAdded(const ListDataAddedInfo& event_info);
-    std::optional<std::size_t> AddVisibleItems(std::size_t index, std::size_t count);
-    std::optional<std::size_t> AddMiddleVisibleItems(std::size_t index, std::size_t count);
 
     void OnDataRemoved(const ListDataRemovedInfo& event_info);
     void HandleDataRemoved(const ListDataRemovedInfo& event_info);
-    std::optional<std::size_t> RemoveVisibleItems(std::size_t index, std::size_t count);
-    std::size_t RemoveMiddleVisibleItems(std::size_t index, std::size_t count);
 
     void OnDataUpdated(const ListDataUpdatedInfo& event_info);
     void HandleDataUpdated(const ListDataUpdatedInfo& event_info);
-    void AdjustVisibleItemPositionsByUpdatingItems(
-        std::size_t index, 
-        std::size_t count, 
-        float position_difference);
-    void UpdateVisibleItemsByUpdatingItems(std::size_t index, std::size_t count);
 
     void OnDataMoved(const ListDataMovedInfo& event_info);
     void HandleDataMoved(const ListDataMovedInfo& event_info);
@@ -181,13 +162,12 @@ private:
     void RefreshItemsIfNeeded();
     float AdjustContentHeight();
     void SetScrollContentHeight(float height);
-    void AdjustVisibleItemPositions(std::size_t begin_adjust_index, float difference);
 
     void ChangeSelection(std::size_t index, std::size_t count, bool is_add);
 
 private:
     std::unique_ptr<ListControlPartContext> part_context_;
-    ScrollBox& owner_;
+    zaf::ScrollBox& owner_;
 
     std::shared_ptr<ListItemContainer> item_container_;
     std::weak_ptr<ListDataSource> data_source_;

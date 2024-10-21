@@ -6,64 +6,8 @@
 #include <zaf/internal/list/list_control_part_context.h>
 
 namespace zaf::internal {
-namespace {
 
-void CalculateRangeDifference(
-    std::size_t new_index,
-    std::size_t new_count,
-    std::size_t old_index,
-    std::size_t old_count,
-    bool& remove_head,
-    std::size_t& head_change_count,
-    bool& remove_tail,
-    std::size_t& tail_change_count) {
-
-    if (old_count == 0) {
-        remove_head = false;
-        head_change_count = 0;
-        remove_tail = false;
-        tail_change_count = new_count;
-        return;
-    }
-
-    std::size_t new_end_index = new_index + new_count;
-    std::size_t old_end_index = old_index + old_count;
-
-    //Exclude
-    if ((new_end_index <= old_index) || (new_index >= old_end_index)) {
-
-        remove_head = true;
-        head_change_count = old_count;
-
-        remove_tail = false;
-        tail_change_count = new_count;
-    }
-    //Intersect
-    else {
-
-        if (new_index > old_index) {
-            remove_head = true;
-            head_change_count = new_index - old_index;
-        }
-        else {
-            remove_head = false;
-            head_change_count = old_index - new_index;
-        }
-
-        if (new_end_index > old_end_index) {
-            remove_tail = false;
-            tail_change_count = new_end_index - old_end_index;
-        }
-        else {
-            remove_tail = true;
-            tail_change_count = old_end_index - new_end_index;
-        }
-    }
-}
-
-}
-
-ListControlCore::ListControlCore(ScrollBox& owner) :
+ListControlCore::ListControlCore(zaf::ScrollBox& owner) :
     part_context_(std::make_unique<ListControlPartContext>(this)),
     owner_(owner) {
 
@@ -114,8 +58,9 @@ void ListControlCore::RegisterScrollBarEvents() {
 
     auto vertical_scroll_bar = owner_.VerticalScrollBar();
 
-    vertical_scroll_bar_sub_ = vertical_scroll_bar->ScrollEvent().Subscribe(
-        std::bind(&ListControlCore::UpdateVisibleItems, this));
+    vertical_scroll_bar_sub_ = vertical_scroll_bar->ScrollEvent().Subscribe(std::bind([this]() {
+        part_context_->VisibleItemManager().UpdateVisibleItems();
+    }));
 }
 
 
@@ -365,7 +310,7 @@ void ListControlCore::SetSelectionMode(SelectionMode mode) {
 void ListControlCore::OnLayout() {
 
     if (!disable_on_layout_) {
-        UpdateVisibleItems();
+        part_context_->VisibleItemManager().UpdateVisibleItems();
     }
 }
 
@@ -411,7 +356,7 @@ void ListControlCore::InnerReload(bool retain_state) {
     }
 
     UpdateContentHeight();
-    UpdateVisibleItems();
+    part_context_->VisibleItemManager().UpdateVisibleItems();
     AdjustScrollBarSmallChange();
 }
 
@@ -420,134 +365,6 @@ void ListControlCore::UpdateContentHeight() {
 
     part_context_->ItemHeightManager().ReloadItemHeights();
     SetScrollContentHeight(part_context_->ItemHeightManager().GetTotalHeight());
-}
-
-
-void ListControlCore::UpdateVisibleItems() {
-
-    std::size_t old_index = first_visible_item_index_;
-    std::size_t old_count = visible_items_.size();
-
-    //Get new visible items range.
-    std::size_t new_index = 0;
-    std::size_t new_count = 0;
-    GetVisibleItemsRange(new_index, new_count);
-
-    //Calculate the difference.
-    bool remove_head = false;
-    std::size_t head_change_count = 0;
-    bool remove_tail = false;
-    std::size_t tail_change_count = 0;
-
-    CalculateRangeDifference(
-        new_index,
-        new_count,
-        old_index,
-        old_count,
-        remove_head,
-        head_change_count,
-        remove_tail,
-        tail_change_count);
-
-    if ((head_change_count == 0) && (tail_change_count == 0)) {
-        return;
-    }
-
-    AdjustVisibleItems(
-        new_index,
-        new_count,
-        remove_head,
-        head_change_count,
-        remove_tail,
-        tail_change_count);
-
-    first_visible_item_index_ = new_index;
-}
-
-
-void ListControlCore::GetVisibleItemsRange(std::size_t& index, std::size_t& count) {
-
-    auto visible_rect = owner_.GetVisibleScrollContentRect();
-    float begin_position = visible_rect.position.y;
-    float end_position = begin_position + visible_rect.size.height;
-
-    //No need further calculation if the rect is abnormal.
-    if (end_position <= begin_position) {
-        index = 0;
-        count = 0;
-        return;
-    }
-
-    auto index_and_count = part_context_->ItemHeightManager().GetItemRange(begin_position, end_position);
-    index = index_and_count.first;
-    count = index_and_count.second;
-
-    if (index > 2) {
-        index -= 2;
-    }
-    else {
-        index = 0;
-    }
-
-    count += 2;
-    std::size_t max_count = GetItemCount() - index;
-    if (count > max_count) {
-        count = max_count;
-    }
-}
-
-
-void ListControlCore::AdjustVisibleItems(
-    std::size_t new_index,
-    std::size_t new_count,
-    bool remove_head,
-    std::size_t head_change_count,
-    bool remove_tail,
-    std::size_t tail_change_count) {
-
-    auto update_guard = item_container_->BeginUpdate();
-
-    if (remove_head) {
-        RemoveHeadVisibleItems(head_change_count);
-    }
-    else {
-        if (head_change_count > 0) {
-            auto new_head_items = CreateItems(new_index, head_change_count);
-            visible_items_.insert(visible_items_.begin(), new_head_items.begin(), new_head_items.end());
-            RecoverLastFocusedItem(new_head_items);
-        }
-    }
-
-    if (remove_tail) {
-        RemoveTailVisibleItems(tail_change_count);
-    }
-    else {
-        if (tail_change_count > 0) {
-            auto new_tail_items = CreateItems(new_index + new_count - tail_change_count, tail_change_count);
-            visible_items_.insert(visible_items_.end(), new_tail_items.begin(), new_tail_items.end());
-            RecoverLastFocusedItem(new_tail_items);
-        }
-    }
-}
-
-
-void ListControlCore::RemoveHeadVisibleItems(std::size_t count) {
-
-    for (std::size_t current_count = 0; current_count < count; ++current_count) {
-        auto item = visible_items_.front();
-        visible_items_.pop_front();
-        item_container_->RemoveChild(item);
-    }
-}
-
-
-void ListControlCore::RemoveTailVisibleItems(std::size_t count) {
-
-    for (std::size_t current_count = 0; current_count < count; ++current_count) {
-        auto item = visible_items_.back();
-        visible_items_.pop_back();
-        item_container_->RemoveChild(item);
-    }
 }
 
 
@@ -568,63 +385,6 @@ void ListControlCore::RecoverLastFocusedItem(
     }
 }
 
-
-std::vector<std::shared_ptr<ListItem>> ListControlCore::CreateItems(
-    std::size_t index,
-    std::size_t count) {
-
-    std::vector<std::shared_ptr<ListItem>> items;
-    items.reserve(count);
-
-    for (std::size_t current_index = index; current_index < index + count; ++current_index) {
-
-        auto new_item = CreateItem(current_index);
-        if (!new_item) {
-            continue;
-        }
-
-        item_container_->AddChild(new_item);
-        items.push_back(new_item);
-    }
-
-    return items;
-}
-
-
-std::shared_ptr<ListItem> ListControlCore::CreateItem(std::size_t index) {
-
-    auto data_source = data_source_.lock();
-    if (!data_source) {
-        return nullptr;
-    }
-
-    auto delegate = delegate_.lock();
-    if (!delegate) {
-        return nullptr;
-    }
-
-    auto item_data = data_source->GetDataAtIndex(index);
-    auto list_item = delegate->CreateItem(index, item_data);
-    list_item->SetItemData(item_data);
-
-    auto item_text = delegate->GetItemText(index, item_data);
-    if (!item_text.empty()) {
-        list_item->SetText(item_text);
-    }
-    
-    delegate->LoadItem(list_item, index);
-
-    auto position_and_height = part_context_->ItemHeightManager().GetItemPositionAndHeight(index);
-    Rect item_rect;
-    item_rect.position.y = position_and_height.first;
-    item_rect.size.height = position_and_height.second;
-    list_item->SetRect(item_rect);
-
-    list_item->SetIsSelected(part_context_->SelectionStore().IsIndexSelected(index));
-    return list_item;
-}
-
-
 void ListControlCore::OnDataAdded(const ListDataAddedInfo& event_info) {
 
     if (is_handling_data_source_event_) {
@@ -641,7 +401,8 @@ void ListControlCore::OnDataAdded(const ListDataAddedInfo& event_info) {
 void ListControlCore::HandleDataAdded(const ListDataAddedInfo& event_info) {
 
     //Adjust scroll bar small change if there is no items before adding.
-    bool need_adjust_scroll_bar_small_change = visible_items_.empty();
+    bool need_adjust_scroll_bar_small_change = 
+        !part_context_->VisibleItemManager().HasVisibleItem();
 
     bool selection_changed = part_context_->SelectionStore().AdjustSelectionByAddingIndexes(
         event_info.Index(),
@@ -651,11 +412,9 @@ void ListControlCore::HandleDataAdded(const ListDataAddedInfo& event_info) {
 
     float position_difference = AdjustContentHeight();
 
-    auto first_need_update_index = AddVisibleItems(event_info.Index(), event_info.Count());
-    if (first_need_update_index) {
-        AdjustVisibleItemPositions(*first_need_update_index, position_difference);
-    }
-    UpdateVisibleItems();
+    part_context_->VisibleItemManager().HandleDataAdded(
+        Range{ event_info.Index(), event_info.Count() },
+        position_difference);
 
     if (selection_changed) {
         NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
@@ -663,48 +422,6 @@ void ListControlCore::HandleDataAdded(const ListDataAddedInfo& event_info) {
 
     if (need_adjust_scroll_bar_small_change) {
         AdjustScrollBarSmallChange();
-    }
-}
-
-
-//Returns the index of the first visible item which needs to be adjusted its position.
-std::optional<std::size_t> ListControlCore::AddVisibleItems(
-    std::size_t index,
-    std::size_t count) {
-
-    if (index >= first_visible_item_index_ + visible_items_.size()) {
-        return std::nullopt;
-    }
-
-    if (index <= first_visible_item_index_) {
-        first_visible_item_index_ += count;
-        return 0;
-    }
-
-    return AddMiddleVisibleItems(index, count);
-}
-
-
-std::optional<std::size_t> ListControlCore::AddMiddleVisibleItems(
-    std::size_t index,
-    std::size_t count) {
-
-    std::size_t insert_index = index - first_visible_item_index_;
-    std::size_t need_adjust_position_count = visible_items_.size() - insert_index;
-
-    if (count >= need_adjust_position_count) {
-        RemoveTailVisibleItems(need_adjust_position_count);
-        return std::nullopt;
-    }
-    else {
-
-        auto new_items = CreateItems(index, count);
-        visible_items_.insert(
-            std::next(visible_items_.begin(), insert_index),
-            new_items.begin(), 
-            new_items.end());
-
-        return insert_index + new_items.size();
     }
 }
 
@@ -732,52 +449,13 @@ void ListControlCore::HandleDataRemoved(const ListDataRemovedInfo& event_info) {
 
     float position_difference = AdjustContentHeight();
 
-    auto first_need_update_index = RemoveVisibleItems(event_info.Index(), event_info.Count());
-    if (first_need_update_index) {
-        AdjustVisibleItemPositions(*first_need_update_index, position_difference);
-        UpdateVisibleItems();
-    }
+    part_context_->VisibleItemManager().HandleDataRemoved(
+        Range{ event_info.Index(), event_info.Count() },
+        position_difference);
 
     if (selection_changed) {
         NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
     }
-}
-
-
-//Returns the index of the first visible item which needs to be adjusted its position.
-std::optional<std::size_t> ListControlCore::RemoveVisibleItems(
-    std::size_t index, 
-    std::size_t count) {
-    
-    if (index >= first_visible_item_index_ + visible_items_.size()) {
-        return std::nullopt;
-    }
-
-    if (index < first_visible_item_index_) {
-        first_visible_item_index_ -= count;
-        return 0;
-    }
-
-    return RemoveMiddleVisibleItems(index, count);
-}
-
-
-std::size_t ListControlCore::RemoveMiddleVisibleItems(
-    std::size_t index,
-    std::size_t count) {
-
-    std::size_t remove_index = index - first_visible_item_index_;
-    std::size_t remove_count = (std::min)(count, visible_items_.size() - remove_index);
-
-    auto begin_erase_iterator = std::next(visible_items_.begin(), remove_index);
-    auto end_erase_iterator = std::next(begin_erase_iterator, remove_count);
-
-    for (auto iterator = begin_erase_iterator; iterator != end_erase_iterator; ++iterator) {
-        item_container_->RemoveChild(*iterator);
-    }
-
-    visible_items_.erase(begin_erase_iterator, end_erase_iterator);
-    return remove_index;
 }
 
 
@@ -800,76 +478,9 @@ void ListControlCore::HandleDataUpdated(const ListDataUpdatedInfo& event_info) {
 
     float position_difference = AdjustContentHeight();
 
-    if (event_info.Index() >= first_visible_item_index_ + visible_items_.size()) {
-        return;
-    }
-
-    AdjustVisibleItemPositionsByUpdatingItems(
-        event_info.Index(),
-        event_info.Count(),
+    part_context_->VisibleItemManager().HandleDataUpdated(
+        Range{ event_info.Index(), event_info.Count() }, 
         position_difference);
-
-    UpdateVisibleItemsByUpdatingItems(event_info.Index(), event_info.Count());
-}
-
-
-void ListControlCore::AdjustVisibleItemPositionsByUpdatingItems(
-    std::size_t index,
-    std::size_t count,
-    float position_difference) {
-
-    if (position_difference == 0) {
-        return;
-    }
-
-    std::size_t end_update_index = index + count;
-    std::size_t begin_adjust_index{};
-
-    if (end_update_index <= first_visible_item_index_) {
-        begin_adjust_index = 0;
-    }
-    else if (end_update_index < first_visible_item_index_ + visible_items_.size()) {
-        begin_adjust_index = end_update_index - first_visible_item_index_;
-    }
-
-    AdjustVisibleItemPositions(begin_adjust_index, position_difference);
-    UpdateVisibleItems();
-}
-
-
-void ListControlCore::UpdateVisibleItemsByUpdatingItems(
-    std::size_t index, 
-    std::size_t count) {
-
-    std::size_t end_update_index = index + count;
-    std::size_t end_visible_item_index = first_visible_item_index_ + visible_items_.size();
-
-    if ((index >= end_visible_item_index) || (first_visible_item_index_ >= end_update_index)) {
-        return;
-    }
-
-    std::size_t intersect_begin_update_index = (std::max)(index, first_visible_item_index_);
-    std::size_t intersect_end_update_index = (std::min)(end_update_index, end_visible_item_index);
-
-    std::vector<std::shared_ptr<ListItem>> new_items;
-
-    for (std::size_t current_index = intersect_begin_update_index; 
-         current_index < intersect_end_update_index; 
-         ++current_index) {
-
-        std::size_t visible_item_index = current_index - first_visible_item_index_;
-
-        auto current_item = visible_items_[visible_item_index];
-        item_container_->RemoveChild(current_item);
-
-        auto new_item = CreateItem(current_index);
-        item_container_->AddChild(new_item);
-        visible_items_[visible_item_index] = new_item;
-
-        new_items.push_back(new_item);
-    }
-
-    RecoverLastFocusedItem(new_items);
 }
 
 
@@ -898,17 +509,9 @@ void ListControlCore::HandleDataMoved(const ListDataMovedInfo& event_info) {
 
     float position_difference = AdjustContentHeight();
 
-    RemoveVisibleItems(event_info.PreviousIndex(), 1);
-    AddVisibleItems(event_info.NewIndex(), 1);
-
-    for (auto visible_index : Range{ 0, visible_items_.size() }) {
-
-        auto item_index = visible_index + first_visible_item_index_;
-        auto [position, height] = part_context_->ItemHeightManager().GetItemPositionAndHeight(item_index);
-        visible_items_[visible_index]->SetY(position);
-    }
-
-    UpdateVisibleItems();
+    part_context_->VisibleItemManager().HandleDataMoved(
+        event_info.PreviousIndex(), 
+        event_info.NewIndex());
 
     if (has_selection) {
         NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
@@ -952,20 +555,6 @@ void ListControlCore::SetScrollContentHeight(float height) {
 }
 
 
-void ListControlCore::AdjustVisibleItemPositions(
-    std::size_t begin_adjust_index, 
-    float difference) {
-
-    for (std::size_t index = begin_adjust_index; index < visible_items_.size(); ++index) {
-
-        const auto& item = visible_items_[index];
-        auto rect = item->Rect();
-        rect.position.y += difference;
-        item->SetRect(rect);
-    }
-}
-
-
 void ListControlCore::UnselectAllItems() {
     part_context_->SelectionManager().UnselectAllItems();
 }
@@ -983,19 +572,6 @@ void ListControlCore::UnselectItemAtIndex(std::size_t index) {
 
 std::size_t ListControlCore::GetItemCount() {
     return part_context_->ItemHeightManager().GetItemCount();
-}
-
-
-std::shared_ptr<ListItem> ListControlCore::GetVisibleItemAtIndex(
-    std::size_t index) const noexcept {
-
-    if (index < first_visible_item_index_ || 
-        index >= first_visible_item_index_ + visible_items_.size()) {
-        return nullptr;
-    }
-
-    auto index_in_visible_items = index - first_visible_item_index_;
-    return visible_items_[index_in_visible_items];
 }
 
 
@@ -1058,14 +634,7 @@ std::optional<std::size_t> ListControlCore::FindItemIndexAtPosition(
 std::optional<std::size_t> ListControlCore::GetListItemIndex(
     const std::shared_ptr<ListItem>& item) {
 
-    for (auto index : Range(0, visible_items_.size())) {
-
-        if (visible_items_[index] == item) {
-            return index + first_visible_item_index_;
-        }
-    }
-
-    return std::nullopt;
+    return part_context_->VisibleItemManager().GetIndexOfVisibleItem(*item);
 }
 
 
