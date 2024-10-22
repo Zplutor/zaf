@@ -30,7 +30,7 @@ void ListControlCore::Initialize(const InitializeParameters& parameters) {
     data_source_change_event_ = parameters.data_source_change_event;
     delegate_change_event_ = parameters.delegate_change_event;
     item_container_change_event_ = parameters.item_container_change_event;
-    selection_change_event_ = parameters.selection_change_event;
+    selection_changed_event_ = parameters.selection_changed_event;
     item_double_click_event_ = parameters.item_double_click_event;
     context_menu_event_ = parameters.context_menu_event;
 
@@ -39,16 +39,11 @@ void ListControlCore::Initialize(const InitializeParameters& parameters) {
     InstallDataSource(parameters.data_source);
     InstallDelegate(parameters.delegate);
 
-    //Temporary solution.
-    Subscriptions() += part_context_->SelectionManager().SelectionChangedEvent().Subscribe(
-        [this](const ListSelectionChangedInfo& event_info) {
-            if (selection_change_event_) {
-                selection_change_event_(event_info.reason, event_info.index, event_info.count);
-            }
-        });
-
     SetSelectionMode(SelectionMode::Single);
     RegisterScrollBarEvents();
+
+    Subscriptions() += part_context_->SelectionStore().ChangedEvent().Subscribe(
+        std::bind_front(&ListControlCore::OnSelectionStoreChanged, this));
 
     Reload();
 }
@@ -340,23 +335,11 @@ void ListControlCore::InnerReload(bool retain_state) {
     }
 
     //Remove all visible items.
-    if (!visible_items_.empty()) {
-
-        auto update_guard = item_container_->BeginUpdate();
-        for (const auto& each_item : visible_items_) {
-            item_container_->RemoveChild(each_item);
-        }
-
-        visible_items_.clear();
-
-        if (!retain_state) {
-            first_visible_item_index_ = 0;
-            last_focused_item_data_.reset();
-        }
-    }
+    auto& visible_item_manager = part_context_->VisibleItemManager();
+    visible_item_manager.ClearVisibleItems();
 
     UpdateContentHeight();
-    part_context_->VisibleItemManager().UpdateVisibleItems();
+    visible_item_manager.UpdateVisibleItems();
     AdjustScrollBarSmallChange();
 }
 
@@ -417,7 +400,7 @@ void ListControlCore::HandleDataAdded(const ListDataAddedInfo& event_info) {
         position_difference);
 
     if (selection_changed) {
-        NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
+        //NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
     }
 
     if (need_adjust_scroll_bar_small_change) {
@@ -454,7 +437,7 @@ void ListControlCore::HandleDataRemoved(const ListDataRemovedInfo& event_info) {
         position_difference);
 
     if (selection_changed) {
-        NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
+        //NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
     }
 }
 
@@ -514,7 +497,7 @@ void ListControlCore::HandleDataMoved(const ListDataMovedInfo& event_info) {
         event_info.NewIndex());
 
     if (has_selection) {
-        NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
+        //NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
     }
 }
 
@@ -545,6 +528,22 @@ float ListControlCore::AdjustContentHeight() {
     else {
         return 0;
     }
+}
+
+
+void ListControlCore::OnSelectionStoreChanged(const ListSelectionStoreChangedInfo& event_info) {
+
+    part_context_->VisibleItemManager().ChangeVisibleItemSelection(
+        event_info.reason,
+        event_info.changed_range);
+
+    exit_handle_mouse_event_sub_ = 
+        part_context_->InputHandler().WhenNotHandlingMouseEvent().Subscribe([this](None) {
+    
+        if (selection_changed_event_) {
+            selection_changed_event_();
+        }
+    });
 }
 
 
@@ -635,84 +634,6 @@ std::optional<std::size_t> ListControlCore::GetListItemIndex(
     const std::shared_ptr<ListItem>& item) {
 
     return part_context_->VisibleItemManager().GetIndexOfVisibleItem(*item);
-}
-
-
-void ListControlCore::ReplaceSelection(std::size_t index, std::size_t count) {
-
-    part_context_->SelectionStore().ReplaceSelection(index, count);
-
-    for (std::size_t visible_item_index = 0; 
-         visible_item_index < visible_items_.size(); 
-         ++visible_item_index) {
-
-        const auto& each_visible_item = visible_items_[visible_item_index];
-
-        std::size_t item_index = first_visible_item_index_ + visible_item_index;
-        bool is_selected = (index <= item_index) && (item_index < index + count);
-        each_visible_item->SetIsSelected(is_selected);
-    }
-}
-
-
-bool ListControlCore::RevertSelection(std::size_t index) {
-
-    bool is_selected = part_context_->SelectionStore().RevertSelection(index);
-
-    if ((first_visible_item_index_ <= index) && (index < first_visible_item_index_ + visible_items_.size())) {
-
-        const auto& visible_item = visible_items_[index - first_visible_item_index_];
-        visible_item->SetIsSelected(!visible_item->IsSelected());
-    }
-
-    return is_selected;
-}
-
-
-void ListControlCore::AddSelection(std::size_t index, std::size_t count) {
-    ChangeSelection(index, count, true);
-}
-
-
-void ListControlCore::RemoveSelection(std::size_t index, std::size_t count) {
-    ChangeSelection(index, count, false);
-}
-
-
-void ListControlCore::ChangeSelection(std::size_t index, std::size_t count, bool is_add) {
-
-    if (is_add) {
-        part_context_->SelectionStore().AddSelection(index, count);
-    }
-    else {
-        part_context_->SelectionStore().RemoveSelection(index, count);
-    }
-
-    std::size_t intersect_begin_index = (std::max)(index, first_visible_item_index_);
-    std::size_t intersect_end_index = 
-        (std::min)(index + count, first_visible_item_index_ + visible_items_.size());
-
-    if (intersect_begin_index >= intersect_end_index) {
-        return;
-    }
-
-    for (std::size_t visible_item_index = intersect_begin_index - first_visible_item_index_;
-        visible_item_index < intersect_end_index - first_visible_item_index_;
-        ++visible_item_index) {
-
-        visible_items_[visible_item_index]->SetIsSelected(is_add);
-    }
-}
-
-
-void ListControlCore::NotifySelectionChange(
-    ListSelectionChangeReason change_type,
-    std::size_t index,
-    std::size_t count) {
-
-    if (selection_change_event_) {
-        selection_change_event_(change_type, index, count);
-    }
 }
 
 }

@@ -11,16 +11,14 @@ class ListExtendedMultipleSelectionStrategy : public ListSelectionStrategy {
 public:
     using ListSelectionStrategy::ListSelectionStrategy;
 
-    void BeginChangingSelectionByMouseDown(const Point& position) override;
+    void ChangeSelectionOnMouseDown(std::size_t item_index) override;
+    void ChangeSelectionOnMouseMove(std::size_t item_index) override;
+    void ChangeSelectionOnMouseUp(std::size_t item_index) override;
 
-    void ChangeSelectionByMouseMove(const Point& position) override;
-
-    void EndChangingSelectionByMouseUp(const Point& position) override;
-
-    bool ChangeSelectionByKeyDown(const KeyMessage& message) override;
+    std::optional<std::size_t> ChangeSelectionOnKeyDown(const KeyMessage& message) override;
 
 private:
-    void SelectItemsByMouseEvent(const Point& position, bool is_mouse_moving);
+    void SelectItemsByMouseEvent(std::size_t item_index, bool is_mouse_moving);
     void SelectItemsBetweenFocusedAndSpecified(std::size_t index);
     void SelectItemsByMouseEventWithControlKey(std::size_t current_index, bool is_mouse_moving);
     void RecoverSelectionStatesNotInRange(std::size_t index, std::size_t count);
@@ -35,10 +33,6 @@ private:
     std::set<std::size_t> orginally_selected_indexes_;
 
     std::optional<std::size_t> last_focused_index_with_shift_key_;
-
-    ListSelectionChangeReason selection_change_reason_{ ListSelectionChangeReason::AddSelection };
-    std::size_t selection_change_index_{};
-    std::size_t selection_change_count_{};
 };
 
 }

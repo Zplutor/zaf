@@ -66,13 +66,9 @@ class DataSource : public zaf::ListDataSource {
 public:
     DataSource() {
 
-        data_ = {
-            zaf::Box(L"A"),
-            zaf::Box(L"B"),
-            zaf::Box(L"C"),
-            zaf::Box(L"D"),
-            zaf::Box(L"E"),
-        };
+        for (auto index : zaf::Range(0, 100)) {
+            data_.push_back(zaf::Box(std::to_wstring(index)));
+        }
     }
 
     std::size_t GetDataCount() const override {
@@ -149,6 +145,10 @@ protected:
         list_->SetDataSource(data_source_);
         list_->SetDelegate(delegate_);
         list_->SetSelectionMode(zaf::SelectionMode::Single);
+
+        Subscriptions() += list_->SelectionChangedEvent().Subscribe(std::bind([]() {
+            OutputDebugString(L"List selection changed.\r\n");
+        }));
         
         Subscriptions() += list_->ContextMenuEvent().Subscribe(
             [](const zaf::ListControlContextMenuInfo& event_info) {

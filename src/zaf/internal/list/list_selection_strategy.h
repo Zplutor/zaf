@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <zaf/base/non_copyable.h>
+#include <zaf/internal/list/list_control_part.h>
 #include <zaf/internal/list/list_item_height_manager.h>
 
 namespace zaf {
@@ -13,28 +14,25 @@ namespace zaf::internal {
     
 class ListControlPartContext;
 
-class ListSelectionStrategy : NonCopyableNonMovable {
+class ListSelectionStrategy : public ListControlPart {
 public:
-    explicit ListSelectionStrategy(const ListControlPartContext* context);
+    using ListControlPart::ListControlPart;
     virtual ~ListSelectionStrategy() = default;
 
-    ListControlCore& GetListControl() const;
-    ListItemHeightManager& GetItemHeightManager() const;
-
-    virtual void BeginChangingSelectionByMouseDown(const Point& position_in_item_container) {
+    virtual void ChangeSelectionOnMouseDown(std::size_t item_index) {
 
     }
 
-    virtual void ChangeSelectionByMouseMove(const Point& position_in_item_container) {
-    
-    }
-
-    virtual void EndChangingSelectionByMouseUp(const Point& position_in_item_container) {
+    virtual void ChangeSelectionOnMouseMove(std::size_t item_index) {
 
     }
 
-    virtual bool ChangeSelectionByKeyDown(const KeyMessage& message) {
-        return false;
+    virtual void ChangeSelectionOnMouseUp(std::size_t item_index) {
+
+    }
+
+    virtual std::optional<std::size_t> ChangeSelectionOnKeyDown(const KeyMessage& message) {
+        return std::nullopt;
     }
 
 protected:
@@ -42,9 +40,6 @@ protected:
         const KeyMessage& key_message, 
         const std::optional<std::size_t>& previous_index, 
         std::size_t& new_index);
-    
-private:
-    const ListControlPartContext* part_context_{};
 };
 
 

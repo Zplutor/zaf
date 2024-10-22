@@ -2,6 +2,7 @@
 
 #include <zaf/control/list_item.h>
 #include <zaf/internal/list/list_control_part.h>
+#include <zaf/internal/list/list_selection_change_reason.h>
 
 namespace zaf::internal {
 
@@ -19,6 +20,12 @@ public:
     void HandleDataMoved(std::size_t previous_index, std::size_t new_index);
 
     void UpdateVisibleItems();
+
+    void ChangeVisibleItemSelection(
+        ListSelectionChangeReason change_reason,
+        const Range& changed_range);
+
+    void ClearVisibleItems();
 
 private:
     std::optional<std::size_t> AddVisibleItems(const Range& added_range);
@@ -46,6 +53,12 @@ private:
     void RemoveTailVisibleItems(std::size_t count);
     std::vector<std::shared_ptr<ListItem>> CreateItems(std::size_t index, std::size_t count);
     std::shared_ptr<ListItem> CreateItem(std::size_t index);
+
+    void ChangeVisibleItemSelectionByAddingOrRemoving(
+        const Range& changed_range, 
+        bool is_adding);
+    void ChangeVisibleItemSelectionByReplacing(const Range& changed_range);
+    void ChangeVisibleItemSelectionByRefreshing();
 
 private:
     std::size_t first_visible_item_index_{};

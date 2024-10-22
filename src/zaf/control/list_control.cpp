@@ -41,7 +41,7 @@ void ListControl::Initialize() {
         std::bind_front(&ListControl::OnDelegateChanged, this);
     init_params.item_container_change_event = 
         std::bind_front(&ListControl::OnItemContainerChanged, this);
-    init_params.selection_change_event = 
+    init_params.selection_changed_event = 
         std::bind(&ListControl::OnCoreSelectionChanged, this);
     init_params.item_double_click_event = 
         std::bind_front(&ListControl::OnCoreItemDoubleClick, this);

@@ -6,6 +6,7 @@
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/range.h>
 #include <zaf/control/internal/tree_control/utility.h>
+#include <zaf/internal/list/list_control_part_context.h>
 
 namespace zaf::internal {
 namespace {
@@ -81,12 +82,8 @@ void TreeControlImplementation::InitializeListImplementation(
     list_initialize_parameters.delegate = As<ListControlDelegate>(shared_from_this());
     list_initialize_parameters.item_container_change_event = parameters.item_container_change_event;
 
-    list_initialize_parameters.selection_change_event = std::bind(
-        &TreeControlImplementation::OnListSelectionChange,
-        this,
-        std::placeholders::_1,
-        std::placeholders::_2,
-        std::placeholders::_3);
+    list_initialize_parameters.selection_changed_event = std::bind(
+        &TreeControlImplementation::OnListSelectionChange, this);
 
     list_initialize_parameters.item_double_click_event = std::bind(
         &TreeControlImplementation::OnListItemDoubleClick, 
@@ -94,6 +91,10 @@ void TreeControlImplementation::InitializeListImplementation(
         std::placeholders::_1);
 
     list_implementation_->Initialize(list_initialize_parameters);
+
+    Subscriptions() +=
+        list_implementation_->PartContext().SelectionStore().ChangedEvent().Subscribe(
+            std::bind(&TreeControlImplementation::OnListSelectionChange, this));
 }
 
 
@@ -798,9 +799,9 @@ void TreeControlImplementation::CheckIfItemHasChildren(
 }
 
 
-void TreeControlImplementation::OnListSelectionChange(
-    ListSelectionChangeReason reason,
-    std::size_t index,
+void TreeControlImplementation::OnListSelectionStoreChanged(
+    ListSelectionChangeReason reason, 
+    std::size_t index, 
     std::size_t count) {
 
     switch (reason) {
@@ -817,7 +818,10 @@ void TreeControlImplementation::OnListSelectionChange(
     default:
         return;
     }
+}
 
+
+void TreeControlImplementation::OnListSelectionChange() {
     NotifySelectionChange();
 }
 

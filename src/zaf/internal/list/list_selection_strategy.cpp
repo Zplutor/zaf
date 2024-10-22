@@ -6,22 +6,6 @@
 namespace zaf {
 namespace internal {
 
-ListSelectionStrategy::ListSelectionStrategy(const ListControlPartContext* context) : 
-    part_context_(context) {
-
-}
-
-
-ListControlCore& ListSelectionStrategy::GetListControl() const {
-    return part_context_->Owner();
-}
-
-
-ListItemHeightManager& ListSelectionStrategy::GetItemHeightManager() const {
-    return part_context_->ItemHeightManager();
-}
-
-
 bool ListSelectionStrategy::ChangeIndexByKeyDown(
     const KeyMessage& key_message, 
     const std::optional<std::size_t>& previous_index, 
@@ -33,7 +17,7 @@ bool ListSelectionStrategy::ChangeIndexByKeyDown(
             if (!previous_index) {
                 new_index = 0;
             }
-            else if (*previous_index < GetItemHeightManager().GetItemCount() - 1) {
+            else if (*previous_index < Context().ItemHeightManager().GetItemCount() - 1) {
                 new_index = *previous_index + 1;
             }
             else {
@@ -43,7 +27,7 @@ bool ListSelectionStrategy::ChangeIndexByKeyDown(
 
         case VK_UP:
             if (!previous_index) {
-                new_index = GetItemHeightManager().GetItemCount() - 1;
+                new_index = Context().ItemHeightManager().GetItemCount() - 1;
             }
             else if (*previous_index > 0) {
                 new_index = *previous_index - 1;
@@ -58,7 +42,7 @@ bool ListSelectionStrategy::ChangeIndexByKeyDown(
             return true;
 
         case VK_END:
-            new_index = GetItemHeightManager().GetItemCount() - 1;
+            new_index = Context().ItemHeightManager().GetItemCount() - 1;
             return true;
 
         default:

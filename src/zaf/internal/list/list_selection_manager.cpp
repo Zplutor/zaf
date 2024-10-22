@@ -38,10 +38,6 @@ void ListSelectionManager::ReviseSelectionBySelectionMode() {
         }
 
         selection_store.ReplaceSelection(*first_selected_index, 1);
-        NotifySelectionChanged(
-            ListSelectionChangeReason::ReplaceSelection,
-            *first_selected_index,
-            1);
     }
 }
 
@@ -90,11 +86,6 @@ void ListSelectionManager::SelectAllItems() {
     }
 
     selection_store.ReplaceSelection(0, all_item_count);
-    selection_changed_event_.AsObserver().OnNext(ListSelectionChangedInfo{
-        .reason = ListSelectionChangeReason::ReplaceSelection,
-        .index = 0,
-        .count = all_item_count,
-    });
 }
 
 
@@ -107,7 +98,6 @@ void ListSelectionManager::UnselectAllItems() {
     }
 
     selection_store.ReplaceSelection(0, 0);
-    NotifySelectionChanged(ListSelectionChangeReason::ReplaceSelection, 0, 0);
 }
 
 
@@ -129,13 +119,11 @@ void ListSelectionManager::SelectItemAtIndex(std::size_t index) {
 
     case SelectionMode::Single:
         selection_store.ReplaceSelection(index, 1);
-        NotifySelectionChanged(ListSelectionChangeReason::ReplaceSelection, index, 1);
         break;
 
     case SelectionMode::SimpleMultiple:
     case SelectionMode::ExtendedMultiple:
         selection_store.AddSelection(index, 1);
-        NotifySelectionChanged(ListSelectionChangeReason::AddSelection, index, 1);
         break;
 
     default:
@@ -159,20 +147,6 @@ void ListSelectionManager::UnselectItemAtIndex(std::size_t index) {
     }
 
     selection_store.RemoveSelection(index, 1);
-    NotifySelectionChanged(ListSelectionChangeReason::RemoveSelection, index, 1);
-}
-
-
-void ListSelectionManager::NotifySelectionChanged(
-    ListSelectionChangeReason reason, 
-    std::size_t index, 
-    std::size_t count) {
-
-    selection_changed_event_.AsObserver().OnNext(ListSelectionChangedInfo{
-        .reason = reason,
-        .index = index,
-        .count = count,
-    });
 }
 
 }

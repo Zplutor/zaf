@@ -2,27 +2,16 @@
 
 #include <zaf/internal/list/list_selection_strategy.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 
 class ListSingleSelectionStrategy : public ListSelectionStrategy {
 public:
     using ListSelectionStrategy::ListSelectionStrategy;
 
-    void BeginChangingSelectionByMouseDown(const Point& position) override;
+    void ChangeSelectionOnMouseDown(std::size_t item_index) override;
+    void ChangeSelectionOnMouseMove(std::size_t item_index) override;
 
-    void ChangeSelectionByMouseMove(const Point& position) override;
-
-    void EndChangingSelectionByMouseUp(const Point& position) override;
-
-    bool ChangeSelectionByKeyDown(const KeyMessage& message) override;
-
-private:
-    void SelectItemWithMouseEvent(const Point& position);
-
-private:
-    std::optional<std::size_t> mouse_selected_index_;
+    std::optional<std::size_t> ChangeSelectionOnKeyDown(const KeyMessage& message) override;
 };
 
-}
 }

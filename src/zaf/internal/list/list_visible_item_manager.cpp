@@ -481,4 +481,95 @@ std::shared_ptr<ListItem> ListVisibleItemManager::CreateItem(std::size_t index) 
     return list_item;
 }
 
+
+void ListVisibleItemManager::ChangeVisibleItemSelection(
+    ListSelectionChangeReason change_reason, 
+    const Range& changed_range) {
+
+    const auto& item_container = Context().Owner().ItemContainer();
+    auto update_guard = item_container->BeginUpdate();
+
+    switch (change_reason) {
+    case ListSelectionChangeReason::AddSelection:
+        ChangeVisibleItemSelectionByAddingOrRemoving(changed_range, true);
+        break;
+    case ListSelectionChangeReason::RemoveSelection:
+        ChangeVisibleItemSelectionByAddingOrRemoving(changed_range, false);
+        break;
+    case ListSelectionChangeReason::ReplaceSelection:
+        ChangeVisibleItemSelectionByReplacing(changed_range);
+        break;
+    default:
+        ChangeVisibleItemSelectionByRefreshing();
+        break;
+    }
+}
+
+
+void ListVisibleItemManager::ChangeVisibleItemSelectionByAddingOrRemoving(
+    const Range& changed_range, 
+    bool is_adding) {
+
+    std::size_t intersect_begin_index = (std::max)(changed_range.index, first_visible_item_index_);
+    std::size_t intersect_end_index =
+        (std::min)(changed_range.EndIndex(), first_visible_item_index_ + visible_items_.size());
+
+    if (intersect_begin_index >= intersect_end_index) {
+        return;
+    }
+
+    for (auto item_index : Range::FromIndexPair(intersect_begin_index, intersect_end_index)) {
+        auto visible_item_index = item_index - first_visible_item_index_;
+        visible_items_[visible_item_index]->SetIsSelected(is_adding);
+    }
+}
+
+
+void ListVisibleItemManager::ChangeVisibleItemSelectionByReplacing(const Range& changed_range) {
+
+    for (auto index : Range(0, visible_items_.size())) {
+
+        const auto& visible_item = visible_items_[index];
+
+        std::size_t item_index = first_visible_item_index_ + index;
+        bool is_selected = changed_range.Contains(item_index);
+        
+        visible_item->SetIsSelected(is_selected);
+    }
+}
+
+
+void ListVisibleItemManager::ChangeVisibleItemSelectionByRefreshing() {
+
+    auto& selection_store = Context().SelectionStore();
+
+    for (auto index : Range(0, visible_items_.size())) {
+
+        const auto& visible_item = visible_items_[index];
+
+        std::size_t item_index = first_visible_item_index_ + index;
+        bool is_selected = selection_store.IsIndexSelected(item_index);
+
+        visible_item->SetIsSelected(is_selected);
+    }
+}
+
+
+void ListVisibleItemManager::ClearVisibleItems() {
+
+    if (visible_items_.empty()) {
+        return;
+    }
+
+    const auto& item_container = Context().Owner().ItemContainer();
+    auto update_guard = item_container->BeginUpdate();
+
+    for (const auto& each_item : visible_items_) {
+        item_container->RemoveChild(each_item);
+    }
+
+    visible_items_.clear();
+    first_visible_item_index_ = 0;
+}
+
 }

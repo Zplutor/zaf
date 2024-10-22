@@ -1,69 +1,34 @@
 #include <zaf/internal/list/list_single_selection_strategy.h>
 #include <zaf/internal/list/list_control_core.h>
+#include <zaf/internal/list/list_control_part_context.h>
 #include <zaf/internal/list/list_item_height_manager.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 
-void ListSingleSelectionStrategy::BeginChangingSelectionByMouseDown(
-    const Point& position) {
-
-    SelectItemWithMouseEvent(position);
+void ListSingleSelectionStrategy::ChangeSelectionOnMouseDown(std::size_t item_index) {
+    Context().SelectionStore().ReplaceSelection(item_index, 1);
 }
 
 
-void ListSingleSelectionStrategy::ChangeSelectionByMouseMove(const Point& position) {
-
-    SelectItemWithMouseEvent(position);
+void ListSingleSelectionStrategy::ChangeSelectionOnMouseMove(std::size_t item_index) {
+    Context().SelectionStore().ReplaceSelection(item_index, 1);
 }
 
 
-void ListSingleSelectionStrategy::EndChangingSelectionByMouseUp(const Point& position) {
+std::optional<std::size_t> ListSingleSelectionStrategy::ChangeSelectionOnKeyDown(
+    const KeyMessage& message) {
 
-    if (!mouse_selected_index_) {
-        return;
-    }
+    auto& selection_store = Context().SelectionStore();
 
-    GetListControl().NotifySelectionChange(
-        ListSelectionChangeReason::ReplaceSelection, 
-        *mouse_selected_index_,
-        1);
-}
-
-
-bool ListSingleSelectionStrategy::ChangeSelectionByKeyDown(const KeyMessage& message) {
-
-    auto& list_control = GetListControl();
-    
-    auto previous_selected_index = list_control.GetFirstSelectedItemIndex();
+    auto previous_selected_index = selection_store.GetFirstSelectedIndex();
     std::size_t new_selected_index{};
     bool change_index = ChangeIndexByKeyDown(message, previous_selected_index, new_selected_index);
     if (!change_index) {
-        return false;
+        return std::nullopt;
     }
 
-    list_control.ReplaceSelection(new_selected_index, 1);
-    list_control.ScrollToItemAtIndex(new_selected_index);
-    list_control.NotifySelectionChange(
-        ListSelectionChangeReason::ReplaceSelection, 
-        new_selected_index, 
-        1);
-
-    return true;
+    selection_store.ReplaceSelection(new_selected_index, 1);
+    return new_selected_index;
 }
 
-
-void ListSingleSelectionStrategy::SelectItemWithMouseEvent(const Point& position) {
-    
-    mouse_selected_index_ = GetItemHeightManager().GetItemIndex(position.y);
-    if (!mouse_selected_index_) {
-        return;
-    }
-
-    auto& list_control = GetListControl();
-    list_control.ReplaceSelection(*mouse_selected_index_, 1);
-    list_control.ScrollToItemAtIndex(*mouse_selected_index_);
-}
-
-}
 }

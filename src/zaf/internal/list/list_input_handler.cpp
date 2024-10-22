@@ -3,14 +3,9 @@
 #include <zaf/control/list_control.h>
 #include <zaf/internal/list/list_control_core.h>
 #include <zaf/internal/list/list_control_part_context.h>
+#include <zaf/rx/creation.h>
 
 namespace zaf::internal {
-
-ListInputHandler::ListInputHandler(const ListControlPartContext* context) :
-    ListControlPart(context) {
-
-}
-
 
 ListInputHandler::~ListInputHandler() {
 
@@ -30,15 +25,22 @@ void ListInputHandler::HandleMouseDownEvent(const MouseDownInfo& event_info) {
 
     list_control->SetIsFocused(true);
 
-    if (event_info.Message().MouseButton() == MouseButton::Left) {
+    auto position_in_container = 
+        list_control->ItemContainer()->TranslateFromParent(event_info.PositionAtSender());
 
-        list_control->CaptureMouse();
+    auto item_index = Context().ItemHeightManager().GetItemIndex(position_in_container.y);
+    if (item_index) {
 
-        auto position_in_container = 
-            list_control->ItemContainer()->TranslateFromParent(event_info.PositionAtSender());
+        if (event_info.Message().MouseButton() == MouseButton::Left) {
 
-        auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
-        selection_strategy.BeginChangingSelectionByMouseDown(position_in_container);
+            is_handling_mouse_event_ = true;
+            list_control->CaptureMouse();
+
+            auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
+            selection_strategy.ChangeSelectionOnMouseDown(*item_index);
+        }
+
+        list_control->ScrollToItemAtIndex(*item_index);
     }
 
     event_info.MarkAsHandled();
@@ -56,16 +58,24 @@ void ListInputHandler::HandleMouseMoveEvent(const MouseMoveInfo& event_info) {
         return;
     }
 
-    if (list_control->IsCapturingMouse()) {
+    //Handle mouse move only when the list control is capturing the mouse.
+    if (!list_control->IsCapturingMouse()) {
+        return;
+    }
 
-        auto position_in_container =
-            list_control->ItemContainer()->TranslateFromParent(event_info.PositionAtSender());
+    auto position_in_container =
+        list_control->ItemContainer()->TranslateFromParent(event_info.PositionAtSender());
+
+    auto item_index = Context().ItemHeightManager().GetItemIndex(position_in_container.y);
+    if (item_index) {
 
         auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
-        selection_strategy.ChangeSelectionByMouseMove(position_in_container);
+        selection_strategy.ChangeSelectionOnMouseMove(*item_index);
 
-        event_info.MarkAsHandled();
+        list_control->ScrollToItemAtIndex(*item_index);
     }
+
+    event_info.MarkAsHandled();
 }
 
 
@@ -89,11 +99,37 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
         auto position_in_container =
             list_control->ItemContainer()->TranslateFromParent(event_info.PositionAtSender());
 
-        auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
-        selection_strategy.EndChangingSelectionByMouseUp(position_in_container);
+        auto item_index = Context().ItemHeightManager().GetItemIndex(position_in_container.y);
+        if (item_index) {
+
+            auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
+            selection_strategy.ChangeSelectionOnMouseUp(*item_index);
+        }
+
+        is_handling_mouse_event_ = false;
+        if (exit_handle_mouse_event_subject_) {
+            auto observer = exit_handle_mouse_event_subject_->AsObserver();
+            observer.OnNext(None{});
+            observer.OnCompleted();
+            exit_handle_mouse_event_subject_.reset();
+        }
 
         event_info.MarkAsHandled();
     }
+}
+
+
+Observable<None> ListInputHandler::WhenNotHandlingMouseEvent() const {
+
+    if (!is_handling_mouse_event_) {
+        return zaf::rx::Just(None{});
+    }
+
+    if (!exit_handle_mouse_event_subject_) {
+        exit_handle_mouse_event_subject_.emplace();
+    }
+
+    return exit_handle_mouse_event_subject_->AsObservable();
 }
 
 
@@ -103,9 +139,16 @@ void ListInputHandler::HandleKeyDownEvent(const KeyDownInfo& event_info) {
         return;
     }
 
+    auto list_control = As<ListControl>(event_info.Sender());
+    if (!list_control) {
+        return;
+    }
+
     auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
-    bool is_handled = selection_strategy.ChangeSelectionByKeyDown(event_info.Message());
-    if (is_handled) {
+    auto new_selected_index = selection_strategy.ChangeSelectionOnKeyDown(event_info.Message());
+    if (new_selected_index) {
+
+        list_control->ScrollToItemAtIndex(*new_selected_index);
         event_info.MarkAsHandled();
     }
 }

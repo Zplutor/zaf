@@ -9,7 +9,7 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_box.h>
 #include <zaf/control/selection_mode.h>
-#include <zaf/internal/list/list_selection_manager.h>
+#include <zaf/internal/list/list_selection_store.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/window/popup_menu.h>
 
@@ -26,10 +26,7 @@ public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<ListDataSource>&)>;
     using DelegateChangeEvent = std::function<void(const std::shared_ptr<ListControlDelegate>&)>;
     using ItemContainerChangeEvent = std::function<void(const std::shared_ptr<ListItemContainer>&)>;
-    using SelectionChangeEvent = std::function<void(
-        ListSelectionChangeReason change_type, 
-        std::size_t index, 
-        std::size_t count)>;
+    using SelectionChangedEvent = std::function<void()>;
     using ItemDoubleClickEvent = std::function<void(std::size_t)>;
     using ContextMenuEvent = std::function<
         std::shared_ptr<PopupMenu>(
@@ -45,7 +42,7 @@ public:
         DataSourceChangeEvent data_source_change_event;
         DelegateChangeEvent delegate_change_event;
         ItemContainerChangeEvent item_container_change_event;
-        SelectionChangeEvent selection_change_event;
+        SelectionChangedEvent selection_changed_event;
         ItemDoubleClickEvent item_double_click_event;
         ContextMenuEvent context_menu_event;
     };
@@ -114,20 +111,6 @@ public:
     }
 
 private:
-    friend class ListExtendedMultipleSelectionStrategy;
-    friend class ListSingleSelectionStrategy;
-    friend class ListSimpleMultipleSelectionStrategy;
-
-    void ReplaceSelection(std::size_t index, std::size_t count);
-    bool RevertSelection(std::size_t index);
-    void AddSelection(std::size_t index, std::size_t count);
-    void RemoveSelection(std::size_t index, std::size_t count);
-    void NotifySelectionChange(
-        ListSelectionChangeReason change_type, 
-        std::size_t index,
-        std::size_t count);
-
-private:
     void InstallDataSource(const std::weak_ptr<ListDataSource>& data_source);
     void InstallDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
     void InstallItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
@@ -163,7 +146,7 @@ private:
     float AdjustContentHeight();
     void SetScrollContentHeight(float height);
 
-    void ChangeSelection(std::size_t index, std::size_t count, bool is_add);
+    void OnSelectionStoreChanged(const ListSelectionStoreChangedInfo& event_info);
 
 private:
     std::unique_ptr<ListControlPartContext> part_context_;
@@ -179,10 +162,9 @@ private:
     std::weak_ptr<Object> last_focused_item_data_;
 
     Subscription vertical_scroll_bar_sub_;
+    Subscription exit_handle_mouse_event_sub_;
 
     float current_total_height_{};
-    std::size_t first_visible_item_index_{};
-    std::deque<std::shared_ptr<ListItem>> visible_items_;
     bool disable_on_layout_{};
     bool is_handling_data_source_event_{};
     bool refresh_after_data_source_event_{};
@@ -192,7 +174,7 @@ private:
     DataSourceChangeEvent data_source_change_event_;
     DelegateChangeEvent delegate_change_event_;
     ItemContainerChangeEvent item_container_change_event_;
-    SelectionChangeEvent selection_change_event_;
+    SelectionChangedEvent selection_changed_event_;
     ItemDoubleClickEvent item_double_click_event_;
     ContextMenuEvent context_menu_event_;
 };

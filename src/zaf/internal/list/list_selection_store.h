@@ -3,71 +3,33 @@
 #include <optional>
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/internal/range_set.h>
+#include <zaf/internal/list/list_selection_change_reason.h>
+#include <zaf/rx/subject.h>
 
 namespace zaf {
 namespace internal {
+
+struct ListSelectionStoreChangedInfo {
+    ListSelectionChangeReason reason{};
+    Range changed_range;
+};
 
 /**
 A passive object that stores selected indexes in a list control.
 */
 class ListSelectionStore : NonCopyableNonMovable {
 public:
-    void ReplaceSelection(std::size_t index, std::size_t count) {
-
-        range_set_.Clear();
-        range_set_.AddRange({ index, count });
-    }
+    void ReplaceSelection(std::size_t index, std::size_t count);
 
     //Reverts selection at index, and returns new selection state.
-    bool RevertSelection(std::size_t index) {
+    bool RevertSelection(std::size_t index);
 
-        if (range_set_.ContainsIndex(index)) {
-            range_set_.RemoveRange({ index, 1 });
-            return false;
-        }
-        else {
-            range_set_.AddRange({ index, 1 });
-            return true;
-        }
-    }
-
-    void AddSelection(std::size_t index, std::size_t count) {
-        range_set_.AddRange({ index, count });
-    }
-
-    void RemoveSelection(std::size_t index, std::size_t count) {
-        range_set_.RemoveRange({ index, count });
-    }
+    void AddSelection(std::size_t index, std::size_t count);
+    void RemoveSelection(std::size_t index, std::size_t count);
     
-    bool AdjustSelectionByAddingIndexes(std::size_t add_index, std::size_t add_count) {
-        if (add_count > 0) {
-            range_set_.InsertSpan(Range{ add_index, add_count });
-            return true;
-        }
-        return false;
-    }
-
-    bool AdjustSelectionByRemovingIndexes(std::size_t remove_index, std::size_t remove_count) {
-        if (remove_count > 0) {
-            range_set_.EraseSpan(Range{ remove_index, remove_count });
-            return true;
-        }
-        return false;
-    }
-
-    bool AdjustSelectionByMovingIndex(std::size_t old_index, std::size_t new_index) {
-        if (old_index == new_index) {
-            return false;
-        }
-        range_set_.EraseSpan(Range{ old_index, 1 });
-        if (range_set_.IsEmpty()) {
-            range_set_.AddRange(Range{ new_index, 1 });
-        }
-        else {
-            range_set_.InsertSpan(Range{ new_index, 1 });
-        }
-        return true;
-    }
+    bool AdjustSelectionByAddingIndexes(std::size_t add_index, std::size_t add_count);
+    bool AdjustSelectionByRemovingIndexes(std::size_t remove_index, std::size_t remove_count);
+    bool AdjustSelectionByMovingIndex(std::size_t old_index, std::size_t new_index);
 
     bool IsIndexSelected(std::size_t index) const {
         return range_set_.ContainsIndex(index);
@@ -86,8 +48,13 @@ public:
     std::size_t GetAllSelectedCount() const;
     std::vector<std::size_t> GetAllSelectedIndexes() const;
 
+    zaf::Observable<ListSelectionStoreChangedInfo> ChangedEvent() const {
+        return changed_event_.AsObservable();
+    }
+
 private:
     RangeSet range_set_;
+    zaf::Subject<ListSelectionStoreChangedInfo> changed_event_;
 };
 
 }

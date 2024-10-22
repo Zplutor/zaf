@@ -16,7 +16,8 @@ namespace zaf::internal {
 class TreeControlImplementation : 
     public ListDataSource, 
     public ListControlDelegate,
-    public std::enable_shared_from_this<TreeControlImplementation> {
+    public std::enable_shared_from_this<TreeControlImplementation>,
+    SubscriptionHost {
 
 public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<TreeDataSource>&)>;
@@ -136,10 +137,12 @@ private:
     void UpdateItem(const IndexPath& index_path);
     void CheckIfItemHasChildren(const IndexPath& index_path, std::size_t list_index);
 
-    void OnListSelectionChange(
+    void OnListSelectionStoreChanged(
         ListSelectionChangeReason reason,
         std::size_t index,
         std::size_t count);
+
+    void OnListSelectionChange();
 
     void NotifySelectionChange();
 

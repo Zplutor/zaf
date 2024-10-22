@@ -3001,5 +3001,8 @@
     <ClInclude Include="src\zaf\internal\list\list_visible_item_manager.h">
       <Filter>zaf\internal\list</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\internal\list\list_selection_change_reason.h">
+      <Filter>zaf\internal\list</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

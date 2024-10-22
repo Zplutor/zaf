@@ -1,6 +1,8 @@
 #include <zaf/internal/list/list_extended_multiple_selection_strategy.h>
 #include <algorithm>
+#include <zaf/input/keyboard.h>
 #include <zaf/internal/list/list_control_core.h>
+#include <zaf/internal/list/list_control_part_context.h>
 #include <zaf/internal/list/list_item_height_manager.h>
 #include <zaf/control/list_control.h>
 
@@ -21,30 +23,22 @@ inline void MakeSelectionRange(
 }
 
 
-void ListExtendedMultipleSelectionStrategy::BeginChangingSelectionByMouseDown(
-    const Point& position) {
-
-    SelectItemsByMouseEvent(position, false);
+void ListExtendedMultipleSelectionStrategy::ChangeSelectionOnMouseDown(std::size_t item_index) {
+    SelectItemsByMouseEvent(item_index, false);
 }
 
 
-void ListExtendedMultipleSelectionStrategy::ChangeSelectionByMouseMove(const Point& position) {
-
-    SelectItemsByMouseEvent(position, true);
+void ListExtendedMultipleSelectionStrategy::ChangeSelectionOnMouseMove(std::size_t item_index) {
+    SelectItemsByMouseEvent(item_index, true);
 }
 
 
 void ListExtendedMultipleSelectionStrategy::SelectItemsByMouseEvent(
-    const Point& position,
+    std::size_t item_index,
     bool is_mouse_moving) {
 
-    auto index = GetItemHeightManager().GetItemIndex(position.y);
-    if (!index) {
-        return;
-    }
-
-    bool is_pressing_shift_key = GetKeyState(VK_SHIFT) < 0;
-    bool is_pressing_control_key = GetKeyState(VK_CONTROL) < 0;
+    bool is_pressing_shift_key = Keyboard::IsShiftDown();
+    bool is_pressing_control_key = Keyboard::IsCtrlDown();
 
     //Cannot press shift and control at the same time.
     if (is_pressing_shift_key && is_pressing_control_key) {
@@ -52,20 +46,18 @@ void ListExtendedMultipleSelectionStrategy::SelectItemsByMouseEvent(
     }
 
     if (is_pressing_shift_key) {
-
-        SelectItemsBetweenFocusedAndSpecified(*index);
+        SelectItemsBetweenFocusedAndSpecified(item_index);
     }
     else if (is_pressing_control_key) {
-
-        SelectItemsByMouseEventWithControlKey(*index, is_mouse_moving);
+        SelectItemsByMouseEventWithControlKey(item_index, is_mouse_moving);
     }
     else {
 
         if (! is_mouse_moving) {
-            focused_index_ = *index;
+            focused_index_ = item_index;
         }
 
-        SelectItemsBetweenFocusedAndSpecified(*index);
+        SelectItemsBetweenFocusedAndSpecified(item_index);
     }
 }
 
@@ -81,13 +73,7 @@ void ListExtendedMultipleSelectionStrategy::SelectItemsBetweenFocusedAndSpecifie
     std::size_t select_count = 0;
     MakeSelectionRange(index, *focused_index_, select_index, select_count);
 
-    auto& list_control = GetListControl();
-    list_control.ReplaceSelection(select_index, select_count);
-    list_control.ScrollToItemAtIndex(index);
-
-    selection_change_reason_ = ListSelectionChangeReason::ReplaceSelection;
-    selection_change_index_ = select_index;
-    selection_change_count_ = select_count;
+    Context().SelectionStore().ReplaceSelection(select_index, select_count);
 }
 
 
@@ -123,22 +109,13 @@ void ListExtendedMultipleSelectionStrategy::SelectItemsByMouseEventWithControlKe
             orginally_selected_indexes_.find(current_index) != orginally_selected_indexes_.end();
     }
 
-    auto& list_control = GetListControl();
-    
     //Add or remove newly selection.
     if (is_focused_index_orginally_selected_) {
-        list_control.RemoveSelection(select_index, select_count);
-        selection_change_reason_ = ListSelectionChangeReason::RemoveSelection;
+        Context().SelectionStore().RemoveSelection(select_index, select_count);
     }
     else {
-        list_control.AddSelection(select_index, select_count);
-        selection_change_reason_ = ListSelectionChangeReason::AddSelection;
+        Context().SelectionStore().AddSelection(select_index, select_count);
     }
-
-    selection_change_index_ = select_index;
-    selection_change_count_ = select_count;
-
-    list_control.ScrollToItemAtIndex(current_index);
 }
 
 
@@ -146,7 +123,7 @@ void ListExtendedMultipleSelectionStrategy::RecoverSelectionStatesNotInRange(
     std::size_t index,
     std::size_t count) {
 
-    auto& list_control = GetListControl();
+    auto& selection_store = Context().SelectionStore();
 
     for (std::size_t current_index = orginally_recorded_index_;
          current_index != orginally_recorded_index_ + orginally_recorded_count_;
@@ -155,10 +132,10 @@ void ListExtendedMultipleSelectionStrategy::RecoverSelectionStatesNotInRange(
         if ((current_index < index) || (index + count <= current_index)) {
 
             if (orginally_selected_indexes_.find(current_index) == orginally_selected_indexes_.end()) {
-                list_control.RemoveSelection(current_index, 1);
+                selection_store.RemoveSelection(current_index, 1);
             }
             else {
-                list_control.AddSelection(current_index, 1);
+                selection_store.AddSelection(current_index, 1);
             }
         }
     }
@@ -169,14 +146,14 @@ void ListExtendedMultipleSelectionStrategy::RecordSelectionStatesInRange(
     std::size_t index,
     std::size_t count) {
 
-    auto& list_control = GetListControl();
+    auto& selection_store = Context().SelectionStore();
 
     for (std::size_t current_index = index; current_index != index + count; ++current_index) {
 
         if ((current_index < orginally_recorded_index_) || 
             (orginally_recorded_index_ + orginally_recorded_count_ <= current_index)) {
 
-            bool is_selected = list_control.IsItemSelectedAtIndex(current_index);
+            bool is_selected = selection_store.IsIndexSelected(current_index);
             if (is_selected) {
                 orginally_selected_indexes_.insert(current_index);
             }
@@ -199,26 +176,15 @@ void ListExtendedMultipleSelectionStrategy::RecordSelectionStatesInRange(
 }
 
 
-void ListExtendedMultipleSelectionStrategy::EndChangingSelectionByMouseUp(const Point& position) {
+void ListExtendedMultipleSelectionStrategy::ChangeSelectionOnMouseUp(std::size_t) {
 
     orginally_recorded_index_ = 0;
     orginally_recorded_count_ = 0;
     orginally_selected_indexes_.clear();
-
-    if (selection_change_count_ != 0) {
-
-        GetListControl().NotifySelectionChange(
-            selection_change_reason_,
-            selection_change_index_,
-            selection_change_count_);
-
-        selection_change_index_ = 0;
-        selection_change_count_ = 0;
-    }
 }
 
 
-bool ListExtendedMultipleSelectionStrategy::ChangeSelectionByKeyDown(
+std::optional<std::size_t> ListExtendedMultipleSelectionStrategy::ChangeSelectionOnKeyDown(
     const KeyMessage& message) {
 
     bool is_pressing_shift_key = (GetKeyState(VK_SHIFT) < 0);
@@ -235,7 +201,7 @@ bool ListExtendedMultipleSelectionStrategy::ChangeSelectionByKeyDown(
     std::size_t new_index = 0;
     bool is_changed = ChangeIndexByKeyDown(message, previous_index, new_index);
     if (! is_changed) {
-        return false;
+        return std::nullopt;
     }
 
     std::size_t select_range_index = 0;
@@ -255,16 +221,8 @@ bool ListExtendedMultipleSelectionStrategy::ChangeSelectionByKeyDown(
 
     last_focused_index_with_shift_key_ = new_index;
 
-    auto& list_control = GetListControl();
-    list_control.ReplaceSelection(select_range_index, select_range_count);
-    list_control.ScrollToItemAtIndex(new_index);
-
-    list_control.NotifySelectionChange(
-        ListSelectionChangeReason::ReplaceSelection,
-        select_range_index, 
-        select_range_count);
-
-    return true;
+    Context().SelectionStore().ReplaceSelection(select_range_index, select_range_count);
+    return new_index;
 }
 
 }
