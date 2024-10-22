@@ -63,15 +63,63 @@ public:
     void PostWMSETCURSOR(const MouseMessage& mouse_message);
 
     /**
+    Sends a WM_LBUTTONDOWN message with the specified position to the window.
+
+    @param position
+        The position set to the LPARAM parameter of the WM_LBUTTONDOWN message. It is expressed in 
+        the coordinate space of the window's client area and is in DIPs.
+
+    @return
+        The result of the message processing.
+
+    @details
+        The WPARAM parameter of the message is set to MK_LBUTTON.
+    */
+    LRESULT SendWMLBUTTONDOWN(const Point& position);
+
+    /**
+    Sends a WM_LBUTTONUP message with the specified position to the window.
+
+    @param position
+        The position set to the LPARAM parameter of the WM_LBUTTONUP message. It is expressed in
+        the coordinate space of the window's client area and is in DIPs.
+
+    @return
+        The result of the message processing.
+
+    @details
+        The WPARAM parameter of the message is set to 0.
+    */
+    LRESULT SendWMLBUTTONUP(const Point& position);
+
+    /**
+    Sends a WM_MOUSEMOVE message with the specified position to the window.
+
+    @param position
+        The position set to the LPARAM parameter of the WM_MOUSEMOVE message. It is expressed in
+        the coordinate space of the window's client area and is in DIPs.
+
+    @return
+        The result of the message processing.
+
+    @details
+        The WPARAM parameter of the message is set to 0.
+    */
+    LRESULT SendWMMOUSEMOVE(const Point& position);
+
+    /**
     Sends a WM_KEYDOWN message with the specified key to the window.
 
     @param key
-        The key set to the WPARAM arguemnt of the WM_KEYDOWN message.
+        The key set to the WPARAM parameter of the WM_KEYDOWN message.
 
     @return
         The result of the message processing.
     */
     LRESULT SendWMKEYDOWN(Key key);
+
+private:
+    LPARAM ToLPARAM(const Point& point) const;
 
 private:
     HWND window_handle_{};
