@@ -387,10 +387,6 @@ void ListControlCore::HandleDataAdded(const ListDataAddedInfo& event_info) {
     bool need_adjust_scroll_bar_small_change = 
         !part_context_->VisibleItemManager().HasVisibleItem();
 
-    bool selection_changed = part_context_->SelectionStore().AdjustSelectionByAddingIndexes(
-        event_info.Index(),
-        event_info.Count());
-
     auto update_guard = item_container_->BeginUpdate();
 
     float position_difference = AdjustContentHeight();
@@ -399,9 +395,9 @@ void ListControlCore::HandleDataAdded(const ListDataAddedInfo& event_info) {
         Range{ event_info.Index(), event_info.Count() },
         position_difference);
 
-    if (selection_changed) {
-        //NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
-    }
+    part_context_->SelectionStore().AdjustSelectionByAddingIndexes(
+        event_info.Index(),
+        event_info.Count());
 
     if (need_adjust_scroll_bar_small_change) {
         AdjustScrollBarSmallChange();
@@ -424,10 +420,6 @@ void ListControlCore::OnDataRemoved(const ListDataRemovedInfo& event_info) {
 
 void ListControlCore::HandleDataRemoved(const ListDataRemovedInfo& event_info) {
 
-    bool selection_changed = part_context_->SelectionStore().AdjustSelectionByRemovingIndexes(
-        event_info.Index(),
-        event_info.Count());
-
     auto update_guard = item_container_->BeginUpdate();
 
     float position_difference = AdjustContentHeight();
@@ -436,9 +428,9 @@ void ListControlCore::HandleDataRemoved(const ListDataRemovedInfo& event_info) {
         Range{ event_info.Index(), event_info.Count() },
         position_difference);
 
-    if (selection_changed) {
-        //NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
-    }
+    part_context_->SelectionStore().AdjustSelectionByRemovingIndexes(
+        event_info.Index(),
+        event_info.Count());
 }
 
 
@@ -482,23 +474,17 @@ void ListControlCore::OnDataMoved(const ListDataMovedInfo& event_info) {
 
 void ListControlCore::HandleDataMoved(const ListDataMovedInfo& event_info) {
 
-    bool has_selection = !!part_context_->SelectionStore().GetFirstSelectedIndex();
-
-    part_context_->SelectionStore().AdjustSelectionByMovingIndex(
-        event_info.PreviousIndex(),
-        event_info.NewIndex());
-
     auto update_guard = item_container_->BeginUpdate();
 
-    float position_difference = AdjustContentHeight();
+    AdjustContentHeight();
 
     part_context_->VisibleItemManager().HandleDataMoved(
         event_info.PreviousIndex(), 
         event_info.NewIndex());
 
-    if (has_selection) {
-        //NotifySelectionChange(ListSelectionChangeReason::ItemChange, 0, 0);
-    }
+    part_context_->SelectionStore().AdjustSelectionByMovingIndex(
+        event_info.PreviousIndex(),
+        event_info.NewIndex());
 }
 
 
