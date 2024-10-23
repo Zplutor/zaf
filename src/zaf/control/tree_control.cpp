@@ -49,7 +49,7 @@ void TreeControl::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    implementation_->GetListImplementation().OnLayout();
+    implementation_->ListCore().OnLayout();
 }
 
 
@@ -68,16 +68,16 @@ void TreeControl::SetDelegate(const std::weak_ptr<TreeControlDelegate>& delegate
 
 
 bool TreeControl::AutoAdjustScrollBarSmallChange() const {
-    return implementation_->GetListImplementation().AutoAdjustScrollBarSmallChange();
+    return implementation_->ListCore().AutoAdjustScrollBarSmallChange();
 }
 
 void TreeControl::SetAutoAdjustScrollBarSmallChange(bool value) {
-    implementation_->GetListImplementation().SetAutoAdjustScrollBarSmallChange(value);
+    implementation_->ListCore().SetAutoAdjustScrollBarSmallChange(value);
 }
 
 
 void TreeControl::SetSelectionMode(SelectionMode selection_mode) {
-    auto& list_parts = implementation_->GetListImplementation().PartContext();
+    auto& list_parts = implementation_->ListCore().PartContext();
     list_parts.SelectionManager().SetSelectionMode(selection_mode);
 }
 

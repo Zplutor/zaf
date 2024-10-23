@@ -53,7 +53,7 @@ void PropertyGrid::Layout(const zaf::Rect& previous_rect) {
 
     split_distance_manager_->UpdateDefaultDistance(this->ScrollContent()->Width() / 2);
 
-    tree_implementation_->GetListImplementation().OnLayout();
+    tree_implementation_->ListCore().OnLayout();
 }
 
 

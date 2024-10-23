@@ -43,8 +43,8 @@ public:
     TreeControlImplementation(ScrollBox& owner);
     ~TreeControlImplementation() = default;
 
-    internal::ListControlCore& GetListImplementation() const {
-        return *list_implementation_;
+    internal::ListControlCore& ListCore() const {
+        return *list_core_;
     }
 
     void Initialize(const InitializeParameters& parameters);
@@ -173,7 +173,7 @@ private:
         std::size_t& child_index);
 
 private:
-    std::shared_ptr<internal::ListControlCore> list_implementation_;
+    std::shared_ptr<internal::ListControlCore> list_core_;
     std::weak_ptr<TreeDataSource> data_source_;
     std::weak_ptr<TreeControlDelegate> delegate_;
 
