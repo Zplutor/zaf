@@ -4,6 +4,7 @@
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/tree_data_source.h>
 #include <zaf/control/tree_item_container.h>
+#include <zaf/internal/list/list_control_part_context.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf {
@@ -76,7 +77,8 @@ void TreeControl::SetAutoAdjustScrollBarSmallChange(bool value) {
 
 
 void TreeControl::SetSelectionMode(SelectionMode selection_mode) {
-    implementation_->GetListImplementation().SetSelectionMode(selection_mode);
+    auto& list_parts = implementation_->GetListImplementation().PartContext();
+    list_parts.SelectionManager().SetSelectionMode(selection_mode);
 }
 
 

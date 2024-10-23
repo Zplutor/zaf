@@ -25,7 +25,8 @@ class ListControlCore :
 public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<ListDataSource>&)>;
     using DelegateChangeEvent = std::function<void(const std::shared_ptr<ListControlDelegate>&)>;
-    using ItemContainerChangeEvent = std::function<void(const std::shared_ptr<ListItemContainer>&)>;
+    using ItemContainerChangeEvent = 
+        std::function<void(const std::shared_ptr<ListItemContainer>&)>;
     using SelectionChangedEvent = std::function<void()>;
     using ItemDoubleClickEvent = std::function<void(std::size_t)>;
     using ContextMenuEvent = std::function<
@@ -73,27 +74,16 @@ public:
     }
     void SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
 
-    SelectionMode GetSelectionMode() const noexcept;
-    void SetSelectionMode(SelectionMode mode);
-
     void OnLayout();
     void OnVerticalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar);
 
     void Reload();
-    void UnselectAllItems();
-    void SelectItemAtIndex(std::size_t index);
-    void UnselectItemAtIndex(std::size_t index);
 
     std::size_t GetItemCount();
-    std::size_t GetSelectedItemCount();
-    std::optional<std::size_t> GetFirstSelectedItemIndex() const noexcept;
-    std::vector<std::size_t> GetAllSelectedItemIndexes();
-    bool IsItemSelectedAtIndex(std::size_t index);
 
     void ScrollToItemAtIndex(std::size_t index);
 
     std::optional<std::size_t> FindItemIndexAtPosition(const Point& position);
-    std::optional<std::size_t> GetListItemIndex(const std::shared_ptr<ListItem>& item);
 
     bool AutoAdjustScrollBarSmallChange() const {
         return auto_adjust_scroll_bar_small_change_;
@@ -120,7 +110,7 @@ private:
     void OnItemContainerLostFocus(const FocusLostInfo& event_info);
 
     void RegisterScrollBarEvents();
-    void UnregisterScrollBarEvents(const std::shared_ptr<ScrollBar>& scroll_bar);
+    void UnregisterScrollBarEvents();
     void AdjustScrollBarSmallChange();
 
     void RegisterDataSourceEvents();

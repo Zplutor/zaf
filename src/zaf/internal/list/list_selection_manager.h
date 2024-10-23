@@ -13,7 +13,7 @@ mouse input and keyboard input.
 */
 class ListSelectionManager : public ListControlPart {
 public:
-    using ListControlPart::ListControlPart;
+    explicit ListSelectionManager(ListControlPartContext* context);
 
     zaf::SelectionMode SelectionMode() const noexcept;
     void SetSelectionMode(zaf::SelectionMode mode);

@@ -250,7 +250,7 @@ void TreeControlImplementation::SelectItem(const std::shared_ptr<Object>& data) 
         return;
     }
 
-    list_implementation_->SelectItemAtIndex(*list_index);
+    list_implementation_->PartContext().SelectionManager().SelectItemAtIndex(*list_index);
 }
 
 
@@ -261,7 +261,7 @@ void TreeControlImplementation::UnselectItem(const std::shared_ptr<Object>& data
         return;
     }
 
-    list_implementation_->UnselectItemAtIndex(*list_index);
+    list_implementation_->PartContext().SelectionManager().UnselectItemAtIndex(*list_index);
 }
 
 
@@ -668,7 +668,8 @@ bool TreeControlImplementation::ChangeItemExpandState(
     const std::shared_ptr<TreeItem>& item, 
     bool new_is_expanded) {
 
-    auto list_item_index = list_implementation_->GetListItemIndex(item);
+    auto& visible_item_manager = list_implementation_->PartContext().VisibleItemManager();
+    auto list_item_index = visible_item_manager.GetIndexOfVisibleItem(*item);
     if (!list_item_index) {
         return false;
     }
@@ -706,11 +707,13 @@ void TreeControlImplementation::OnListItemDoubleClick(std::size_t list_index) {
 void TreeControlImplementation::OnChangeExpandStateByArrowKeys(bool is_to_expand) {
 
     //Support changing expand state with arrow keys in only single selection mode.
-    if (list_implementation_->GetSelectionMode() != SelectionMode::Single) {
+    auto selection_mode = list_implementation_->PartContext().SelectionManager().SelectionMode();
+    if (selection_mode != SelectionMode::Single) {
         return;
     }
 
-    auto selected_index = list_implementation_->GetFirstSelectedItemIndex();
+    auto& selection_store = list_implementation_->PartContext().SelectionStore();
+    auto selected_index = selection_store.GetFirstSelectedIndex(); 
     if (!selected_index) {
         return;
     }
@@ -730,7 +733,8 @@ void TreeControlImplementation::OnChangeExpandStateByArrowKeys(bool is_to_expand
         else {
             selected_index = GetChildListIndex(index_path, 0);
             if (selected_index) {
-                list_implementation_->SelectItemAtIndex(*selected_index);
+                auto& selection_manager = list_implementation_->PartContext().SelectionManager();
+                selection_manager.SelectItemAtIndex(*selected_index);
             }
         }
     }
@@ -743,7 +747,8 @@ void TreeControlImplementation::OnChangeExpandStateByArrowKeys(bool is_to_expand
             parent_index_path.pop_back();
             selected_index = tree_index_mapping_.GetIndexAtIndexPath(parent_index_path);
             if (selected_index) {
-                list_implementation_->SelectItemAtIndex(*selected_index);
+                auto& selection_manager = list_implementation_->PartContext().SelectionManager();
+                selection_manager.SelectItemAtIndex(*selected_index);
             }
         }
     }

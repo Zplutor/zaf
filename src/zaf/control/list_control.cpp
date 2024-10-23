@@ -151,21 +151,21 @@ void ListControl::SetAutoAdjustScrollBarSmallChange(bool value) {
 
 
 SelectionMode ListControl::SelectionMode() const {
-    return core_->GetSelectionMode();
+    return core_->PartContext().SelectionManager().SelectionMode();
 }
 
 void ListControl::SetSelectionMode(zaf::SelectionMode selection_mode) {
-    core_->SetSelectionMode(selection_mode);
+    core_->PartContext().SelectionManager().SetSelectionMode(selection_mode);
 }
 
 
 void ListControl::SelectItemAtIndex(std::size_t index) {
-    core_->SelectItemAtIndex(index);
+    core_->PartContext().SelectionManager().SelectItemAtIndex(index);
 }
 
 
 void ListControl::UnselectItemAtIndex(std::size_t index) {
-    core_->UnselectItemAtIndex(index);
+    core_->PartContext().SelectionManager().UnselectItemAtIndex(index);
 }
 
 
@@ -175,22 +175,22 @@ void ListControl::SelectAllItems() {
 
 
 void ListControl::UnselectAllItems() {
-    core_->UnselectAllItems();
+    core_->PartContext().SelectionManager().UnselectAllItems();
 }
 
 
 std::size_t ListControl::SelectedItemCount() const {
-    return core_->GetSelectedItemCount();
+    return core_->PartContext().SelectionStore().GetAllSelectedCount();
 }
 
 
 std::vector<std::size_t> ListControl::SelectedItemIndexes() const {
-    return core_->GetAllSelectedItemIndexes();
+    return core_->PartContext().SelectionStore().GetAllSelectedIndexes();
 }
 
 
 std::optional<std::size_t> ListControl::FirstSelectedItemIndex() const noexcept {
-    return core_->GetFirstSelectedItemIndex();
+    return core_->PartContext().SelectionStore().GetFirstSelectedIndex();
 }
 
 
@@ -206,7 +206,7 @@ std::shared_ptr<Object> ListControl::FirstSelectedItemData() const {
 
 
 bool ListControl::IsItemSelectedAtIndex(std::size_t index) const {
-    return core_->IsItemSelectedAtIndex(index);
+    return core_->PartContext().SelectionStore().IsIndexSelected(index);
 }
 
 

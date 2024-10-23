@@ -15,8 +15,7 @@ ListControlCore::ListControlCore(zaf::ScrollBox& owner) :
 
 
 ListControlCore::~ListControlCore() {
-
-    UnregisterScrollBarEvents(owner_.VerticalScrollBar());
+    UnregisterScrollBarEvents();
 }
 
 
@@ -39,7 +38,6 @@ void ListControlCore::Initialize(const InitializeParameters& parameters) {
     InstallDataSource(parameters.data_source);
     InstallDelegate(parameters.delegate);
 
-    SetSelectionMode(SelectionMode::Single);
     RegisterScrollBarEvents();
 
     Subscriptions() += part_context_->SelectionStore().ChangedEvent().Subscribe(
@@ -59,9 +57,7 @@ void ListControlCore::RegisterScrollBarEvents() {
 }
 
 
-void ListControlCore::UnregisterScrollBarEvents(
-    const std::shared_ptr<ScrollBar>& scroll_bar) {
-
+void ListControlCore::UnregisterScrollBarEvents() {
     vertical_scroll_bar_sub_.Unsubscribe();
 }
 
@@ -292,16 +288,6 @@ void ListControlCore::OnItemContainerLostFocus(const FocusLostInfo& event_info) 
 }
 
 
-SelectionMode ListControlCore::GetSelectionMode() const noexcept {
-    return part_context_->SelectionManager().SelectionMode();
-}
-
-
-void ListControlCore::SetSelectionMode(SelectionMode mode) {
-    part_context_->SelectionManager().SetSelectionMode(mode);
-}
-
-
 void ListControlCore::OnLayout() {
 
     if (!disable_on_layout_) {
@@ -313,10 +299,7 @@ void ListControlCore::OnLayout() {
 void ListControlCore::OnVerticalScrollBarChange(
     const std::shared_ptr<ScrollBar>& previous_scroll_bar) {
 
-    if (previous_scroll_bar) {
-        UnregisterScrollBarEvents(previous_scroll_bar);
-    }
-
+    UnregisterScrollBarEvents();
     RegisterScrollBarEvents();
     AdjustScrollBarSmallChange();
 }
@@ -331,7 +314,7 @@ void ListControlCore::InnerReload(bool retain_state) {
 
     if (!retain_state) {
         //Remove selected indexes.
-        UnselectAllItems();
+        part_context_->SelectionManager().UnselectAllItems();
     }
 
     //Remove all visible items.
@@ -540,43 +523,8 @@ void ListControlCore::SetScrollContentHeight(float height) {
 }
 
 
-void ListControlCore::UnselectAllItems() {
-    part_context_->SelectionManager().UnselectAllItems();
-}
-
-
-void ListControlCore::SelectItemAtIndex(std::size_t index) {
-    part_context_->SelectionManager().SelectItemAtIndex(index);
-}
-
-
-void ListControlCore::UnselectItemAtIndex(std::size_t index) {
-    part_context_->SelectionManager().UnselectItemAtIndex(index);
-}
-
-
 std::size_t ListControlCore::GetItemCount() {
     return part_context_->ItemHeightManager().GetItemCount();
-}
-
-
-std::size_t ListControlCore::GetSelectedItemCount() {
-    return part_context_->SelectionStore().GetAllSelectedCount();
-}
-
-
-std::optional<std::size_t> ListControlCore::GetFirstSelectedItemIndex() const noexcept {
-    return part_context_->SelectionStore().GetFirstSelectedIndex();
-}
-
-
-std::vector<std::size_t> ListControlCore::GetAllSelectedItemIndexes() {
-    return part_context_->SelectionStore().GetAllSelectedIndexes();
-}
-
-
-bool ListControlCore::IsItemSelectedAtIndex(std::size_t index) {
-    return part_context_->SelectionStore().IsIndexSelected(index);
 }
 
 
@@ -613,13 +561,6 @@ std::optional<std::size_t> ListControlCore::FindItemIndexAtPosition(
 
     float adjusted_position = position.y + visible_scroll_content_rect.position.y;
     return part_context_->ItemHeightManager().GetItemIndex(adjusted_position);
-}
-
-
-std::optional<std::size_t> ListControlCore::GetListItemIndex(
-    const std::shared_ptr<ListItem>& item) {
-
-    return part_context_->VisibleItemManager().GetIndexOfVisibleItem(*item);
 }
 
 }

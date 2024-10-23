@@ -7,6 +7,13 @@
 
 namespace zaf::internal {
 
+ListSelectionManager::ListSelectionManager(ListControlPartContext* context) :
+    ListControlPart(context) {
+
+    ResetSelectionStrategy();
+}
+
+
 zaf::SelectionMode ListSelectionManager::SelectionMode() const noexcept {
     return selection_mode_;
 }
