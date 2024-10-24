@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <zaf/base/non_copyable.h>
-#include <zaf/internal/list/list_control_part.h>
+#include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/internal/list/list_item_height_manager.h>
 
 namespace zaf {
@@ -12,11 +12,11 @@ class Point;
 
 namespace zaf::internal {
     
-class ListControlPartContext;
+class ListControlPartsContext;
 
-class ListSelectionStrategy : public ListControlPart {
+class ListSelectionStrategy : public ListControlPartsBased {
 public:
-    using ListControlPart::ListControlPart;
+    using ListControlPartsBased::ListControlPartsBased;
     virtual ~ListSelectionStrategy() = default;
 
     virtual void ChangeSelectionOnMouseDown(std::size_t item_index) {

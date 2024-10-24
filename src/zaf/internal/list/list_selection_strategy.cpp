@@ -1,6 +1,6 @@
 #include <zaf/internal/list/list_selection_strategy.h>
 #include <zaf/base/define.h>
-#include <zaf/internal/list/list_control_part_context.h>
+#include <zaf/internal/list/list_control_parts_context.h>
 #include <zaf/window/message/keyboard_message.h>
 
 namespace zaf {
@@ -17,7 +17,7 @@ bool ListSelectionStrategy::ChangeIndexByKeyDown(
             if (!previous_index) {
                 new_index = 0;
             }
-            else if (*previous_index < Context().ItemHeightManager().GetItemCount() - 1) {
+            else if (*previous_index < Parts().ItemHeightManager().GetItemCount() - 1) {
                 new_index = *previous_index + 1;
             }
             else {
@@ -27,7 +27,7 @@ bool ListSelectionStrategy::ChangeIndexByKeyDown(
 
         case VK_UP:
             if (!previous_index) {
-                new_index = Context().ItemHeightManager().GetItemCount() - 1;
+                new_index = Parts().ItemHeightManager().GetItemCount() - 1;
             }
             else if (*previous_index > 0) {
                 new_index = *previous_index - 1;
@@ -42,7 +42,7 @@ bool ListSelectionStrategy::ChangeIndexByKeyDown(
             return true;
 
         case VK_END:
-            new_index = Context().ItemHeightManager().GetItemCount() - 1;
+            new_index = Parts().ItemHeightManager().GetItemCount() - 1;
             return true;
 
         default:

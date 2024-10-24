@@ -4,16 +4,16 @@
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/event/mouse_event_info.h>
 #include <zaf/control/selection_mode.h>
-#include <zaf/internal/list/list_control_part.h>
+#include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf::internal {
 
 class ListSelectionStrategy;
 
-class ListInputHandler : public ListControlPart {
+class ListInputHandler : public ListControlPartsBased {
 public:
-    using ListControlPart::ListControlPart;
+    using ListControlPartsBased::ListControlPartsBased;
     ~ListInputHandler();
 
     void HandleMouseDownEvent(const MouseDownInfo& event_info);

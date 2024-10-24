@@ -1,14 +1,14 @@
 #pragma once
 
 #include <zaf/control/list_item.h>
-#include <zaf/internal/list/list_control_part.h>
+#include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/internal/list/list_selection_change_reason.h>
 
 namespace zaf::internal {
 
-class ListVisibleItemManager : public ListControlPart {
+class ListVisibleItemManager : public ListControlPartsBased {
 public:
-    using ListControlPart::ListControlPart;
+    using ListControlPartsBased::ListControlPartsBased;
 
     bool HasVisibleItem() const noexcept;
     std::shared_ptr<ListItem> GetVisibleItemAtIndex(std::size_t index) const noexcept;

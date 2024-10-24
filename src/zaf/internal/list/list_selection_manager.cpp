@@ -1,14 +1,14 @@
 #include <zaf/internal/list/list_selection_manager.h>
 #include <zaf/control/list_control.h>
-#include <zaf/internal/list/list_control_part_context.h>
+#include <zaf/internal/list/list_control_parts_context.h>
 #include <zaf/internal/list/list_extended_multiple_selection_strategy.h>
 #include <zaf/internal/list/list_single_selection_strategy.h>
 #include <zaf/internal/list/list_simple_multiple_selection_strategy.h>
 
 namespace zaf::internal {
 
-ListSelectionManager::ListSelectionManager(ListControlPartContext* context) :
-    ListControlPart(context) {
+ListSelectionManager::ListSelectionManager(ListControlPartsContext* context) :
+    ListControlPartsBased(context) {
 
     ResetSelectionStrategy();
 }
@@ -34,7 +34,7 @@ void ListSelectionManager::ReviseSelectionBySelectionMode() {
     }
     else if (selection_mode_ == SelectionMode::Single) {
 
-        auto& selection_store = Context().SelectionStore();
+        auto& selection_store = Parts().SelectionStore();
         if (selection_store.GetAllSelectedCount() <= 1) {
             return;
         }
@@ -53,7 +53,7 @@ void ListSelectionManager::ResetSelectionStrategy() {
 
     selection_strategy_ = [this]() -> std::unique_ptr<ListSelectionStrategy> {
 
-        auto context = &Context();
+        auto context = &Parts();
 
         switch (selection_mode_) {
         case SelectionMode::Single:
@@ -79,14 +79,14 @@ ListSelectionStrategy& ListSelectionManager::SelectionStrategy() const noexcept 
 
 void ListSelectionManager::SelectAllItems() {
 
-    auto data_source = Context().Owner().DataSource();
+    auto data_source = Parts().Core().DataSource();
     if (!data_source) {
         return;
     }
 
     auto all_item_count = data_source->GetDataCount();
 
-    auto& selection_store = Context().SelectionStore();
+    auto& selection_store = Parts().SelectionStore();
     auto selected_count = selection_store.GetAllSelectedCount();
     if (all_item_count == selected_count) {
         return;
@@ -98,7 +98,7 @@ void ListSelectionManager::SelectAllItems() {
 
 void ListSelectionManager::UnselectAllItems() {
 
-    auto& selection_store = Context().SelectionStore();
+    auto& selection_store = Parts().SelectionStore();
     auto selected_count = selection_store.GetAllSelectedCount();
     if (selected_count == 0) {
         return;
@@ -110,14 +110,14 @@ void ListSelectionManager::UnselectAllItems() {
 
 void ListSelectionManager::SelectItemAtIndex(std::size_t index) {
 
-    auto data_source = Context().Owner().DataSource();
+    auto data_source = Parts().Core().DataSource();
     if (!data_source) {
         return;
     }
 
     ZAF_EXPECT(index < data_source->GetDataCount());
 
-    auto& selection_store = Context().SelectionStore();
+    auto& selection_store = Parts().SelectionStore();
     if (selection_store.IsIndexSelected(index)) {
         return;
     }
@@ -141,14 +141,14 @@ void ListSelectionManager::SelectItemAtIndex(std::size_t index) {
 
 void ListSelectionManager::UnselectItemAtIndex(std::size_t index) {
 
-    auto data_source = Context().Owner().DataSource();
+    auto data_source = Parts().Core().DataSource();
     if (!data_source) {
         return;
     }
 
     ZAF_EXPECT(index < data_source->GetDataCount());
 
-    auto& selection_store = Context().SelectionStore();
+    auto& selection_store = Parts().SelectionStore();
     if (!selection_store.IsIndexSelected(index)) {
         return;
     }

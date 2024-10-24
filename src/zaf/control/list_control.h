@@ -11,7 +11,7 @@
 #include <zaf/rx/observable.h>
 
 namespace zaf::internal {
-class ListControlCore;
+class ListControlPartsContext;
 }
 
 namespace zaf {
@@ -53,9 +53,7 @@ public:
     /**
      Get item container.
      */
-    const std::shared_ptr<ListItemContainer>& ItemContainer() const noexcept {
-        return item_container_;
-    }
+    const std::shared_ptr<ListItemContainer>& ItemContainer() const noexcept;
 
     /**
      Set item container.
@@ -242,10 +240,9 @@ private:
         const std::shared_ptr<Object>& item_data);
 
 private:
-    std::shared_ptr<ListItemContainer> item_container_;
+    std::unique_ptr<internal::ListControlPartsContext> parts_;
     std::weak_ptr<ListDataSource> data_source_;
     std::weak_ptr<ListControlDelegate> delegate_;
-    std::shared_ptr<internal::ListControlCore> core_;
 
     Event<ListControlSelectionChangedInfo> selection_changed_event_;
     Event<ListControlItemDoubleClickInfo> item_double_click_event_;

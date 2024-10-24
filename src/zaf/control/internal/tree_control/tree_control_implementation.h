@@ -1,7 +1,6 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/internal/list/list_control_core.h>
 #include <zaf/control/internal/tree_control/tree_data_manager.h>
 #include <zaf/control/internal/tree_control/tree_index_mapping.h>
 #include <zaf/control/internal/tree_control/tree_visitor.h>
@@ -10,6 +9,7 @@
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/tree_data_source.h>
 #include <zaf/control/tree_item_container.h>
+#include <zaf/internal/list/list_control_parts_context.h>
 
 namespace zaf::internal {
 
@@ -43,8 +43,8 @@ public:
     TreeControlImplementation(ScrollBox& owner);
     ~TreeControlImplementation() = default;
 
-    internal::ListControlCore& ListCore() const {
-        return *list_core_;
+    ListControlPartsContext& ListParts() {
+        return list_parts_;
     }
 
     void Initialize(const InitializeParameters& parameters);
@@ -173,7 +173,7 @@ private:
         std::size_t& child_index);
 
 private:
-    std::shared_ptr<internal::ListControlCore> list_core_;
+    ListControlPartsContext list_parts_;
     std::weak_ptr<TreeDataSource> data_source_;
     std::weak_ptr<TreeControlDelegate> delegate_;
 

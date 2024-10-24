@@ -1,6 +1,8 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
+#include <zaf/control/scroll_box.h>
+#include <zaf/internal/list/list_control_core.h>
 #include <zaf/internal/list/list_input_handler.h>
 #include <zaf/internal/list/list_item_height_manager.h>
 #include <zaf/internal/list/list_selection_manager.h>
@@ -9,14 +11,16 @@
 
 namespace zaf::internal {
 
-class ListControlCore;
-
-class ListControlPartContext : NonCopyableNonMovable {
+class ListControlPartsContext : NonCopyableNonMovable {
 public:
-    explicit ListControlPartContext(ListControlCore* owner);
+    explicit ListControlPartsContext(ScrollBox* owner);
 
-    ListControlCore& Owner() const {
+    ScrollBox& Owner() const {
         return *owner_;
+    }
+
+    ListControlCore& Core() const {
+        return *core_;
     }
 
     ListInputHandler& InputHandler() const {
@@ -40,8 +44,8 @@ public:
     }
 
 private:
-    ListControlCore* owner_;
-
+    ScrollBox* owner_{};
+    std::unique_ptr<ListControlCore> core_;
     std::unique_ptr<ListInputHandler> input_handler_;
     std::unique_ptr<ListItemHeightManager> item_height_manager_;
     std::unique_ptr<ListSelectionManager> selection_manager_;

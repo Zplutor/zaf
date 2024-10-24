@@ -6,7 +6,7 @@
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/range.h>
 #include <zaf/control/internal/tree_control/utility.h>
-#include <zaf/internal/list/list_control_part_context.h>
+#include <zaf/internal/list/list_control_parts_context.h>
 
 namespace zaf::internal {
 namespace {
@@ -45,8 +45,7 @@ std::vector<std::pair<std::size_t, std::size_t>> MergeAdjacentListIndexes(
 
 }
 
-TreeControlImplementation::TreeControlImplementation(ScrollBox& owner) :
-    list_core_(std::make_shared<internal::ListControlCore>(owner)) {
+TreeControlImplementation::TreeControlImplementation(ScrollBox& owner) : list_parts_(&owner) {
 
 }
 
@@ -90,10 +89,10 @@ void TreeControlImplementation::InitializeListImplementation(
         this, 
         std::placeholders::_1);
 
-    list_core_->Initialize(list_initialize_parameters);
+    list_parts_.Core().Initialize(list_initialize_parameters);
 
     Subscriptions() +=
-        list_core_->PartContext().SelectionStore().ChangedEvent().Subscribe(
+        list_parts_.SelectionStore().ChangedEvent().Subscribe(
             std::bind(&TreeControlImplementation::OnListSelectionChange, this));
 }
 
@@ -169,7 +168,7 @@ void TreeControlImplementation::Reload() {
 
     ReloadRootNode();
 
-    list_core_->Reload();
+    list_parts_.Core().Reload();
 }
 
 
@@ -250,7 +249,7 @@ void TreeControlImplementation::SelectItem(const std::shared_ptr<Object>& data) 
         return;
     }
 
-    list_core_->PartContext().SelectionManager().SelectItemAtIndex(*list_index);
+    list_parts_.SelectionManager().SelectItemAtIndex(*list_index);
 }
 
 
@@ -261,7 +260,7 @@ void TreeControlImplementation::UnselectItem(const std::shared_ptr<Object>& data
         return;
     }
 
-    list_core_->PartContext().SelectionManager().UnselectItemAtIndex(*list_index);
+    list_parts_.SelectionManager().UnselectItemAtIndex(*list_index);
 }
 
 
@@ -306,7 +305,7 @@ void TreeControlImplementation::ScrollToItem(const std::shared_ptr<Object>& data
         return;
     }
 
-    list_core_->ScrollToItemAtIndex(*list_index);
+    list_parts_.Core().ScrollToItemAtIndex(*list_index);
 }
 
 
@@ -668,7 +667,7 @@ bool TreeControlImplementation::ChangeItemExpandState(
     const std::shared_ptr<TreeItem>& item, 
     bool new_is_expanded) {
 
-    auto& visible_item_manager = list_core_->PartContext().VisibleItemManager();
+    auto& visible_item_manager = list_parts_.VisibleItemManager();
     auto list_item_index = visible_item_manager.GetIndexOfVisibleItem(*item);
     if (!list_item_index) {
         return false;
@@ -707,12 +706,12 @@ void TreeControlImplementation::OnListItemDoubleClick(std::size_t list_index) {
 void TreeControlImplementation::OnChangeExpandStateByArrowKeys(bool is_to_expand) {
 
     //Support changing expand state with arrow keys in only single selection mode.
-    auto selection_mode = list_core_->PartContext().SelectionManager().SelectionMode();
+    auto selection_mode = list_parts_.SelectionManager().SelectionMode();
     if (selection_mode != SelectionMode::Single) {
         return;
     }
 
-    auto& selection_store = list_core_->PartContext().SelectionStore();
+    auto& selection_store = list_parts_.SelectionStore();
     auto selected_index = selection_store.GetFirstSelectedIndex(); 
     if (!selected_index) {
         return;
@@ -733,7 +732,7 @@ void TreeControlImplementation::OnChangeExpandStateByArrowKeys(bool is_to_expand
         else {
             selected_index = GetChildListIndex(index_path, 0);
             if (selected_index) {
-                auto& selection_manager = list_core_->PartContext().SelectionManager();
+                auto& selection_manager = list_parts_.SelectionManager();
                 selection_manager.SelectItemAtIndex(*selected_index);
             }
         }
@@ -747,14 +746,14 @@ void TreeControlImplementation::OnChangeExpandStateByArrowKeys(bool is_to_expand
             parent_index_path.pop_back();
             selected_index = tree_index_mapping_.GetIndexAtIndexPath(parent_index_path);
             if (selected_index) {
-                auto& selection_manager = list_core_->PartContext().SelectionManager();
+                auto& selection_manager = list_parts_.SelectionManager();
                 selection_manager.SelectItemAtIndex(*selected_index);
             }
         }
     }
 
     if (selected_index) {
-        list_core_->ScrollToItemAtIndex(*selected_index);
+        list_parts_.Core().ScrollToItemAtIndex(*selected_index);
     }
 }
 

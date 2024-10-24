@@ -1,8 +1,7 @@
 #include <zaf/internal/list/list_extended_multiple_selection_strategy.h>
 #include <algorithm>
 #include <zaf/input/keyboard.h>
-#include <zaf/internal/list/list_control_core.h>
-#include <zaf/internal/list/list_control_part_context.h>
+#include <zaf/internal/list/list_control_parts_context.h>
 #include <zaf/internal/list/list_item_height_manager.h>
 #include <zaf/control/list_control.h>
 
@@ -73,7 +72,7 @@ void ListExtendedMultipleSelectionStrategy::SelectItemsBetweenFocusedAndSpecifie
     std::size_t select_count = 0;
     MakeSelectionRange(index, *focused_index_, select_index, select_count);
 
-    Context().SelectionStore().ReplaceSelection(select_index, select_count);
+    Parts().SelectionStore().ReplaceSelection(select_index, select_count);
 }
 
 
@@ -111,10 +110,10 @@ void ListExtendedMultipleSelectionStrategy::SelectItemsByMouseEventWithControlKe
 
     //Add or remove newly selection.
     if (is_focused_index_orginally_selected_) {
-        Context().SelectionStore().RemoveSelection(select_index, select_count);
+        Parts().SelectionStore().RemoveSelection(select_index, select_count);
     }
     else {
-        Context().SelectionStore().AddSelection(select_index, select_count);
+        Parts().SelectionStore().AddSelection(select_index, select_count);
     }
 }
 
@@ -123,7 +122,7 @@ void ListExtendedMultipleSelectionStrategy::RecoverSelectionStatesNotInRange(
     std::size_t index,
     std::size_t count) {
 
-    auto& selection_store = Context().SelectionStore();
+    auto& selection_store = Parts().SelectionStore();
 
     for (std::size_t current_index = orginally_recorded_index_;
          current_index != orginally_recorded_index_ + orginally_recorded_count_;
@@ -146,7 +145,7 @@ void ListExtendedMultipleSelectionStrategy::RecordSelectionStatesInRange(
     std::size_t index,
     std::size_t count) {
 
-    auto& selection_store = Context().SelectionStore();
+    auto& selection_store = Parts().SelectionStore();
 
     for (std::size_t current_index = index; current_index != index + count; ++current_index) {
 
@@ -221,7 +220,7 @@ std::optional<std::size_t> ListExtendedMultipleSelectionStrategy::ChangeSelectio
 
     last_focused_index_with_shift_key_ = new_index;
 
-    Context().SelectionStore().ReplaceSelection(select_range_index, select_range_count);
+    Parts().SelectionStore().ReplaceSelection(select_range_index, select_range_count);
     return new_index;
 }
 

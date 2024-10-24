@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/control/list_control.h>
 #include <zaf/internal/list/list_control_core.h>
-#include <zaf/internal/list/list_control_part_context.h>
+#include <zaf/internal/list/list_control_parts_context.h>
 #include <zaf/rx/creation.h>
 
 namespace zaf::internal {
@@ -28,7 +28,7 @@ void ListInputHandler::HandleMouseDownEvent(const MouseDownInfo& event_info) {
     auto position_in_container = 
         list_control->ItemContainer()->TranslateFromParent(event_info.PositionAtSender());
 
-    auto item_index = Context().ItemHeightManager().GetItemIndex(position_in_container.y);
+    auto item_index = Parts().ItemHeightManager().GetItemIndex(position_in_container.y);
     if (item_index) {
 
         if (event_info.Message().MouseButton() == MouseButton::Left) {
@@ -36,7 +36,7 @@ void ListInputHandler::HandleMouseDownEvent(const MouseDownInfo& event_info) {
             is_handling_mouse_event_ = true;
             list_control->CaptureMouse();
 
-            auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
+            auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
             selection_strategy.ChangeSelectionOnMouseDown(*item_index);
         }
 
@@ -66,10 +66,10 @@ void ListInputHandler::HandleMouseMoveEvent(const MouseMoveInfo& event_info) {
     auto position_in_container =
         list_control->ItemContainer()->TranslateFromParent(event_info.PositionAtSender());
 
-    auto item_index = Context().ItemHeightManager().GetItemIndex(position_in_container.y);
+    auto item_index = Parts().ItemHeightManager().GetItemIndex(position_in_container.y);
     if (item_index) {
 
-        auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
+        auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
         selection_strategy.ChangeSelectionOnMouseMove(*item_index);
 
         list_control->ScrollToItemAtIndex(*item_index);
@@ -99,10 +99,10 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
         auto position_in_container =
             list_control->ItemContainer()->TranslateFromParent(event_info.PositionAtSender());
 
-        auto item_index = Context().ItemHeightManager().GetItemIndex(position_in_container.y);
+        auto item_index = Parts().ItemHeightManager().GetItemIndex(position_in_container.y);
         if (item_index) {
 
-            auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
+            auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
             selection_strategy.ChangeSelectionOnMouseUp(*item_index);
         }
 
@@ -144,7 +144,7 @@ void ListInputHandler::HandleKeyDownEvent(const KeyDownInfo& event_info) {
         return;
     }
 
-    auto& selection_strategy = Context().SelectionManager().SelectionStrategy();
+    auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
     auto new_selected_index = selection_strategy.ChangeSelectionOnKeyDown(event_info.Message());
     if (new_selected_index) {
 

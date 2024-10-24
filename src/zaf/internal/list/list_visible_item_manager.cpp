@@ -1,6 +1,6 @@
 #include <zaf/internal/list/list_visible_item_manager.h>
 #include <zaf/internal/list/list_control_core.h>
-#include <zaf/internal/list/list_control_part_context.h>
+#include <zaf/internal/list/list_control_parts_context.h>
 
 namespace zaf::internal {
 namespace {
@@ -178,7 +178,7 @@ std::size_t ListVisibleItemManager::RemoveMiddleVisibleItems(const Range& remove
     auto begin_erase_iterator = std::next(visible_items_.begin(), remove_index);
     auto end_erase_iterator = std::next(begin_erase_iterator, remove_count);
 
-    const auto& item_container = Context().Owner().ItemContainer();
+    const auto& item_container = Parts().Core().ItemContainer();
     for (auto iterator = begin_erase_iterator; iterator != end_erase_iterator; ++iterator) {
         item_container->RemoveChild(*iterator);
     }
@@ -239,7 +239,7 @@ void ListVisibleItemManager::UpdateVisibleItemsByUpdatingItems(const Range& upda
     std::size_t intersect_end_update_index = (std::min)(end_update_index, end_visible_item_index);
 
     std::vector<std::shared_ptr<ListItem>> new_items;
-    const auto& item_container = Context().Owner().ItemContainer();
+    const auto& item_container = Parts().Core().ItemContainer();
     for (std::size_t current_index = intersect_begin_update_index;
         current_index < intersect_end_update_index;
         ++current_index) {
@@ -279,7 +279,7 @@ void ListVisibleItemManager::HandleDataMoved(std::size_t previous_index, std::si
     RemoveVisibleItems(Range{ previous_index, 1 });
     AddVisibleItems(Range{ new_index, 1 });
 
-    auto& item_height_manager = Context().ItemHeightManager();
+    auto& item_height_manager = Parts().ItemHeightManager();
     for (auto visible_index : Range{ 0, visible_items_.size() }) {
 
         auto item_index = visible_index + first_visible_item_index_;
@@ -335,7 +335,7 @@ void ListVisibleItemManager::UpdateVisibleItems() {
 
 void ListVisibleItemManager::GetVisibleItemsRange(std::size_t& index, std::size_t& count) {
 
-    auto visible_rect = Context().Owner().ScrollBox().GetVisibleScrollContentRect();
+    auto visible_rect = Parts().Owner().GetVisibleScrollContentRect();
     float begin_position = visible_rect.position.y;
     float end_position = begin_position + visible_rect.size.height;
 
@@ -346,7 +346,7 @@ void ListVisibleItemManager::GetVisibleItemsRange(std::size_t& index, std::size_
         return;
     }
 
-    auto& item_height_manager = Context().ItemHeightManager();
+    auto& item_height_manager = Parts().ItemHeightManager();
 
     auto index_and_count = item_height_manager.GetItemRange(begin_position, end_position);
     index = index_and_count.first;
@@ -375,7 +375,7 @@ void ListVisibleItemManager::AdjustVisibleItems(
     bool remove_tail,
     std::size_t tail_change_count) {
 
-    auto update_guard = Context().Owner().ItemContainer()->BeginUpdate();
+    auto update_guard = Parts().Core().ItemContainer()->BeginUpdate();
 
     if (remove_head) {
         RemoveHeadVisibleItems(head_change_count);
@@ -403,7 +403,7 @@ void ListVisibleItemManager::AdjustVisibleItems(
 
 void ListVisibleItemManager::RemoveHeadVisibleItems(std::size_t count) {
 
-    const auto& item_container = Context().Owner().ItemContainer();
+    const auto& item_container = Parts().Core().ItemContainer();
 
     for (auto index : Range(0, count)) {
         auto item = visible_items_.front();
@@ -415,7 +415,7 @@ void ListVisibleItemManager::RemoveHeadVisibleItems(std::size_t count) {
 
 void ListVisibleItemManager::RemoveTailVisibleItems(std::size_t count) {
 
-    const auto& item_container = Context().Owner().ItemContainer();
+    const auto& item_container = Parts().Core().ItemContainer();
 
     for (auto index : Range(0, count)) {
         auto item = visible_items_.back();
@@ -432,7 +432,7 @@ std::vector<std::shared_ptr<ListItem>> ListVisibleItemManager::CreateItems(
     std::vector<std::shared_ptr<ListItem>> items;
     items.reserve(count);
 
-    const auto& item_container = Context().Owner().ItemContainer();
+    const auto& item_container = Parts().Core().ItemContainer();
     for (auto current_index : Range(index, count)) {
 
         auto new_item = CreateItem(current_index);
@@ -450,12 +450,12 @@ std::vector<std::shared_ptr<ListItem>> ListVisibleItemManager::CreateItems(
 
 std::shared_ptr<ListItem> ListVisibleItemManager::CreateItem(std::size_t index) {
 
-    auto data_source = Context().Owner().DataSource();
+    auto data_source = Parts().Core().DataSource();
     if (!data_source) {
         return nullptr;
     }
 
-    auto delegate = Context().Owner().Delegate();
+    auto delegate = Parts().Core().Delegate();
     if (!delegate) {
         return nullptr;
     }
@@ -471,13 +471,13 @@ std::shared_ptr<ListItem> ListVisibleItemManager::CreateItem(std::size_t index) 
 
     delegate->LoadItem(list_item, index);
 
-    auto position_and_height = Context().ItemHeightManager().GetItemPositionAndHeight(index);
+    auto position_and_height = Parts().ItemHeightManager().GetItemPositionAndHeight(index);
     Rect item_rect;
     item_rect.position.y = position_and_height.first;
     item_rect.size.height = position_and_height.second;
     list_item->SetRect(item_rect);
 
-    list_item->SetIsSelected(Context().SelectionStore().IsIndexSelected(index));
+    list_item->SetIsSelected(Parts().SelectionStore().IsIndexSelected(index));
     return list_item;
 }
 
@@ -486,7 +486,7 @@ void ListVisibleItemManager::ChangeVisibleItemSelection(
     ListSelectionChangeReason change_reason, 
     const Range& changed_range) {
 
-    const auto& item_container = Context().Owner().ItemContainer();
+    const auto& item_container = Parts().Core().ItemContainer();
     auto update_guard = item_container->BeginUpdate();
 
     switch (change_reason) {
@@ -541,7 +541,7 @@ void ListVisibleItemManager::ChangeVisibleItemSelectionByReplacing(const Range& 
 
 void ListVisibleItemManager::ChangeVisibleItemSelectionByRefreshing() {
 
-    auto& selection_store = Context().SelectionStore();
+    auto& selection_store = Parts().SelectionStore();
 
     for (auto index : Range(0, visible_items_.size())) {
 
@@ -561,7 +561,7 @@ void ListVisibleItemManager::ClearVisibleItems() {
         return;
     }
 
-    const auto& item_container = Context().Owner().ItemContainer();
+    const auto& item_container = Parts().Core().ItemContainer();
     auto update_guard = item_container->BeginUpdate();
 
     for (const auto& each_item : visible_items_) {

@@ -4,7 +4,7 @@
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/tree_data_source.h>
 #include <zaf/control/tree_item_container.h>
-#include <zaf/internal/list/list_control_part_context.h>
+#include <zaf/internal/list/list_control_parts_context.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf {
@@ -49,7 +49,7 @@ void TreeControl::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    implementation_->ListCore().OnLayout();
+    implementation_->ListParts().Core().OnLayout();
 }
 
 
@@ -68,16 +68,16 @@ void TreeControl::SetDelegate(const std::weak_ptr<TreeControlDelegate>& delegate
 
 
 bool TreeControl::AutoAdjustScrollBarSmallChange() const {
-    return implementation_->ListCore().AutoAdjustScrollBarSmallChange();
+    return implementation_->ListParts().Core().AutoAdjustScrollBarSmallChange();
 }
 
 void TreeControl::SetAutoAdjustScrollBarSmallChange(bool value) {
-    implementation_->ListCore().SetAutoAdjustScrollBarSmallChange(value);
+    implementation_->ListParts().Core().SetAutoAdjustScrollBarSmallChange(value);
 }
 
 
 void TreeControl::SetSelectionMode(SelectionMode selection_mode) {
-    auto& list_parts = implementation_->ListCore().PartContext();
+    auto& list_parts = implementation_->ListParts();
     list_parts.SelectionManager().SetSelectionMode(selection_mode);
 }
 

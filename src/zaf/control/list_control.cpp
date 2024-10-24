@@ -7,7 +7,7 @@
 #include <zaf/control/list_item_container.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/creation.h>
-#include <zaf/internal/list/list_control_part_context.h>
+#include <zaf/internal/list/list_control_parts_context.h>
 #include <zaf/internal/theme.h>
 #include <zaf/rx/subject.h>
 
@@ -15,8 +15,7 @@ namespace zaf {
 
 ZAF_OBJECT_IMPL(ListControl);
 
-
-ListControl::ListControl() : core_(std::make_shared<internal::ListControlCore>(*this)){
+ListControl::ListControl() : parts_(std::make_unique<internal::ListControlPartsContext>(this)) {
 
 }
 
@@ -30,10 +29,10 @@ void ListControl::Initialize() {
 
     __super::Initialize();
 
-    item_container_ = Create<ListItemContainer>();
+    auto item_container = Create<ListItemContainer>();
 
     internal::ListControlCore::InitializeParameters init_params;
-    init_params.item_container = item_container_;
+    init_params.item_container = item_container;
 
     init_params.data_source_change_event = 
         std::bind_front(&ListControl::OnDataSourceChanged, this);
@@ -48,7 +47,7 @@ void ListControl::Initialize() {
     init_params.context_menu_event =
         std::bind_front(&ListControl::OnCoreContextMenu, this);
 
-    core_->Initialize(init_params);
+    parts_->Core().Initialize(init_params);
 }
 
 
@@ -56,31 +55,31 @@ void ListControl::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    core_->OnLayout();
+    parts_->Core().OnLayout();
 }
 
 
 void ListControl::OnMouseDown(const MouseDownInfo& event_info) {
     __super::OnMouseDown(event_info);
-    core_->PartContext().InputHandler().HandleMouseDownEvent(event_info);
+    parts_->InputHandler().HandleMouseDownEvent(event_info);
 }
 
 
 void ListControl::OnMouseMove(const MouseMoveInfo& event_info) {
     __super::OnMouseMove(event_info);
-    core_->PartContext().InputHandler().HandleMouseMoveEvent(event_info);
+    parts_->InputHandler().HandleMouseMoveEvent(event_info);
 }
 
 
 void ListControl::OnMouseUp(const MouseUpInfo& event_info) {
     __super::OnMouseUp(event_info);
-    core_->PartContext().InputHandler().HandleMouseUpEvent(event_info);
+    parts_->InputHandler().HandleMouseUpEvent(event_info);
 }
 
 
 void ListControl::OnKeyDown(const KeyDownInfo& event_info) {
     __super::OnKeyDown(event_info);
-    core_->PartContext().InputHandler().HandleKeyDownEvent(event_info);
+    parts_->InputHandler().HandleKeyDownEvent(event_info);
 }
 
 
@@ -89,40 +88,42 @@ void ListControl::OnVerticalScrollBarChanged(
 
     __super::OnVerticalScrollBarChanged(previous_scroll_bar);
 
-    core_->OnVerticalScrollBarChange();
+    parts_->Core().OnVerticalScrollBarChange();
 }
 
 
 void ListControl::SetDataSource(const std::weak_ptr<ListDataSource>& data_source) {
 
     data_source_ = data_source;
-    core_->SetDataSource(data_source_);
+    parts_->Core().SetDataSource(data_source_);
 }
 
 
 void ListControl::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
 
     delegate_ = delegate;
-    core_->SetDelegate(delegate_);
+    parts_->Core().SetDelegate(delegate_);
 }
 
+
+const std::shared_ptr<ListItemContainer>& ListControl::ItemContainer() const noexcept {
+    return parts_->Core().ItemContainer();
+}
 
 void ListControl::SetItemContainer(std::shared_ptr<ListItemContainer> item_container) {
 
     ZAF_EXPECT(item_container);
-
-    item_container_ = std::move(item_container);
-    core_->SetItemContainer(item_container_);
+    parts_->Core().SetItemContainer(std::move(item_container));
 }
 
 
 void ListControl::Reload() {
-    core_->Reload();
+    parts_->Core().Reload();
 }
 
 
 std::size_t ListControl::ItemCount() const {
-    return core_->GetItemCount();
+    return parts_->Core().GetItemCount();
 }
 
 
@@ -137,60 +138,60 @@ std::shared_ptr<Object> ListControl::GetItemDataAtIndex(std::size_t index) const
 
 
 std::shared_ptr<ListItem> ListControl::GetVisibleItemAtIndex(std::size_t index) const noexcept {
-    return core_->PartContext().VisibleItemManager().GetVisibleItemAtIndex(index);
+    return parts_->VisibleItemManager().GetVisibleItemAtIndex(index);
 }
 
 
 bool ListControl::AutoAdjustScrollBarSmallChange() const {
-    return core_->AutoAdjustScrollBarSmallChange();
+    return parts_->Core().AutoAdjustScrollBarSmallChange();
 }
 
 void ListControl::SetAutoAdjustScrollBarSmallChange(bool value) {
-    core_->SetAutoAdjustScrollBarSmallChange(value);
+    parts_->Core().SetAutoAdjustScrollBarSmallChange(value);
 }
 
 
 SelectionMode ListControl::SelectionMode() const {
-    return core_->PartContext().SelectionManager().SelectionMode();
+    return parts_->SelectionManager().SelectionMode();
 }
 
 void ListControl::SetSelectionMode(zaf::SelectionMode selection_mode) {
-    core_->PartContext().SelectionManager().SetSelectionMode(selection_mode);
+    parts_->SelectionManager().SetSelectionMode(selection_mode);
 }
 
 
 void ListControl::SelectItemAtIndex(std::size_t index) {
-    core_->PartContext().SelectionManager().SelectItemAtIndex(index);
+    parts_->SelectionManager().SelectItemAtIndex(index);
 }
 
 
 void ListControl::UnselectItemAtIndex(std::size_t index) {
-    core_->PartContext().SelectionManager().UnselectItemAtIndex(index);
+    parts_->SelectionManager().UnselectItemAtIndex(index);
 }
 
 
 void ListControl::SelectAllItems() {
-    core_->PartContext().SelectionManager().SelectAllItems();
+    parts_->SelectionManager().SelectAllItems();
 }
 
 
 void ListControl::UnselectAllItems() {
-    core_->PartContext().SelectionManager().UnselectAllItems();
+    parts_->SelectionManager().UnselectAllItems();
 }
 
 
 std::size_t ListControl::SelectedItemCount() const {
-    return core_->PartContext().SelectionStore().GetAllSelectedCount();
+    return parts_->SelectionStore().GetAllSelectedCount();
 }
 
 
 std::vector<std::size_t> ListControl::SelectedItemIndexes() const {
-    return core_->PartContext().SelectionStore().GetAllSelectedIndexes();
+    return parts_->SelectionStore().GetAllSelectedIndexes();
 }
 
 
 std::optional<std::size_t> ListControl::FirstSelectedItemIndex() const noexcept {
-    return core_->PartContext().SelectionStore().GetFirstSelectedIndex();
+    return parts_->SelectionStore().GetFirstSelectedIndex();
 }
 
 
@@ -206,17 +207,17 @@ std::shared_ptr<Object> ListControl::FirstSelectedItemData() const {
 
 
 bool ListControl::IsItemSelectedAtIndex(std::size_t index) const {
-    return core_->PartContext().SelectionStore().IsIndexSelected(index);
+    return parts_->SelectionStore().IsIndexSelected(index);
 }
 
 
 void ListControl::ScrollToItemAtIndex(std::size_t index) {
-    core_->ScrollToItemAtIndex(index);
+    parts_->Core().ScrollToItemAtIndex(index);
 }
 
 
 std::optional<std::size_t> ListControl::FindItemIndexAtPosition(const Point& position) const {
-    return core_->FindItemIndexAtPosition(position);
+    return parts_->Core().FindItemIndexAtPosition(position);
 }
 
 

@@ -1,9 +1,10 @@
-#include <zaf/internal/list/list_control_part_context.h>
+#include <zaf/internal/list/list_control_parts_context.h>
 
 namespace zaf::internal {
 
-ListControlPartContext::ListControlPartContext(ListControlCore* owner) :
+ListControlPartsContext::ListControlPartsContext(ScrollBox* owner) :
     owner_(owner),
+    core_(std::make_unique<ListControlCore>(this)),
     input_handler_(std::make_unique<ListInputHandler>(this)),
     item_height_manager_(std::make_unique<ListItemHeightManager>()),
     selection_manager_(std::make_unique<ListSelectionManager>(this)),

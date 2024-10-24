@@ -9,19 +9,14 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_box.h>
 #include <zaf/control/selection_mode.h>
+#include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/internal/list/list_selection_store.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/window/popup_menu.h>
 
 namespace zaf::internal {
 
-class ListControlPartContext;
-
-class ListControlCore :
-    public std::enable_shared_from_this<ListControlCore>,
-    SubscriptionHost,
-    NonCopyableNonMovable {
-
+class ListControlCore : public ListControlPartsBased, SubscriptionHost {
 public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<ListDataSource>&)>;
     using DelegateChangeEvent = std::function<void(const std::shared_ptr<ListControlDelegate>&)>;
@@ -49,14 +44,9 @@ public:
     };
 
 public:
-    explicit ListControlCore(zaf::ScrollBox& owner);
-    ~ListControlCore();
+    using ListControlPartsBased::ListControlPartsBased;
 
     void Initialize(const InitializeParameters& parameters);
-
-    zaf::ScrollBox& ScrollBox() {
-        return owner_;
-    }
 
     std::shared_ptr<ListDataSource> DataSource() const noexcept {
         return data_source_.lock();
@@ -69,9 +59,7 @@ public:
     }
     void SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
 
-    const std::shared_ptr<ListItemContainer>& ItemContainer() const {
-        return item_container_;
-    }
+    const std::shared_ptr<ListItemContainer>& ItemContainer() const noexcept;
     void SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
 
     void OnLayout();
@@ -94,10 +82,6 @@ public:
         if (auto_adjust_scroll_bar_small_change_) {
             AdjustScrollBarSmallChange();
         }
-    }
-
-    const ListControlPartContext& PartContext() const {
-        return *part_context_;
     }
 
 private:
@@ -139,9 +123,6 @@ private:
     void OnSelectionStoreChanged(const ListSelectionStoreChangedInfo& event_info);
 
 private:
-    std::unique_ptr<ListControlPartContext> part_context_;
-    zaf::ScrollBox& owner_;
-
     std::shared_ptr<ListItemContainer> item_container_;
     std::weak_ptr<ListDataSource> data_source_;
     std::weak_ptr<ListControlDelegate> delegate_;
