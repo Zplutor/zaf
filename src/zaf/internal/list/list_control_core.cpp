@@ -296,8 +296,7 @@ void ListControlCore::OnLayout() {
 }
 
 
-void ListControlCore::OnVerticalScrollBarChange(
-    const std::shared_ptr<ScrollBar>& previous_scroll_bar) {
+void ListControlCore::OnVerticalScrollBarChange() {
 
     UnregisterScrollBarEvents();
     RegisterScrollBarEvents();

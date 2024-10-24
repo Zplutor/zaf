@@ -75,7 +75,7 @@ public:
     void SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
 
     void OnLayout();
-    void OnVerticalScrollBarChange(const std::shared_ptr<ScrollBar>& previous_scroll_bar);
+    void OnVerticalScrollBarChange();
 
     void Reload();
 

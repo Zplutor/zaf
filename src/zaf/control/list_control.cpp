@@ -89,7 +89,7 @@ void ListControl::OnVerticalScrollBarChanged(
 
     __super::OnVerticalScrollBarChanged(previous_scroll_bar);
 
-    core_->OnVerticalScrollBarChange(previous_scroll_bar);
+    core_->OnVerticalScrollBarChange();
 }
 
 
