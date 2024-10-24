@@ -48,15 +48,10 @@ public:
 
     void Initialize(const InitializeParameters& parameters);
 
-    std::shared_ptr<ListDataSource> DataSource() const noexcept {
-        return data_source_.lock();
-    }
-
+    std::shared_ptr<ListDataSource> DataSource() const noexcept;
     void SetDataSource(const std::weak_ptr<ListDataSource>& data_source);
 
-    std::shared_ptr<ListControlDelegate> Delegate() const noexcept {
-        return delegate_.lock();
-    }
+    std::shared_ptr<ListControlDelegate> Delegate() const noexcept;
     void SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
 
     const std::shared_ptr<ListItemContainer>& ItemContainer() const noexcept;
@@ -66,8 +61,6 @@ public:
     void OnVerticalScrollBarChange();
 
     void Reload();
-
-    std::size_t GetItemCount();
 
     void ScrollToItemAtIndex(std::size_t index);
 

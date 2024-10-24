@@ -2,22 +2,32 @@
 
 namespace zaf::internal {
 
-void ListVariableItemHeightStrategy::Initialize(
-    ListDataSource& data_source,
-    ListControlDelegate& delegate) {
+void ListVariableItemHeightStrategy::Initialize() {
 
-    __super::Initialize(data_source, delegate);
+    __super::Initialize();
 
-    item_spacing_ = delegate.GetItemSpacing();
-    item_positions_.reserve(ItemCount() + 1);
+    auto data_source = DataSource();
+    if (!data_source) {
+        return;
+    }
+
+    auto delegate = Delegate();
+    if (!delegate) {
+        return;
+    }
+
+    item_spacing_ = delegate->GetItemSpacing();
+
+    auto data_count = data_source->GetDataCount();
+    item_positions_.reserve(data_count + 1);
 
     float position = 0;
-    for (std::size_t index = 0; index < ItemCount(); ++index) {
+    for (std::size_t index = 0; index < data_count; ++index) {
 
         item_positions_.push_back(position);
 
-        auto item_data = data_source.GetDataAtIndex(index);
-        position += delegate.EstimateItemHeight(index, item_data) + item_spacing_;
+        auto item_data = data_source->GetDataAtIndex(index);
+        position += delegate->EstimateItemHeight(index, item_data) + item_spacing_;
     }
 
     item_positions_.push_back(position);
@@ -26,6 +36,15 @@ void ListVariableItemHeightStrategy::Initialize(
 
 std::pair<float, float> ListVariableItemHeightStrategy::GetItemPositionAndHeight(
     std::size_t index) {
+
+    auto data_source = DataSource();
+    if (!data_source) {
+        return {};
+    }
+
+    if (index >= data_source->GetDataCount()) {
+        return {};
+    }
 
     return InnerGetItemPositionAndHeight(index);
 }
@@ -52,6 +71,11 @@ std::optional<std::size_t> ListVariableItemHeightStrategy::InnerGetItemIndex(
     float position,
     bool skip_spacing) const {
 
+    auto data_source = DataSource();
+    if (!data_source) {
+        return std::nullopt;
+    }
+
     auto iterator = std::upper_bound(item_positions_.begin(), item_positions_.end(), position);
     if (iterator == item_positions_.begin() ||
         iterator == item_positions_.end()) {
@@ -63,14 +87,14 @@ std::optional<std::size_t> ListVariableItemHeightStrategy::InnerGetItemIndex(
 
     auto item_position_height = InnerGetItemPositionAndHeight(index);
     if (item_position_height.first + item_position_height.second <= position) {
-        //Psition is in spacing.
+        //Position is in spacing.
         if (!skip_spacing) {
             return std::nullopt;
         }
         index++;
     }
 
-    if (index >= ItemCount()) {
+    if (index >= data_source->GetDataCount()) {
         return std::nullopt;
     }
     return index;
@@ -82,6 +106,11 @@ std::pair<std::size_t, std::size_t> ListVariableItemHeightStrategy::GetItemRange
     float end_position) {
 
     ZAF_EXPECT(begin_position < end_position);
+
+    auto data_source = DataSource();
+    if (!data_source) {
+        return {};
+    }
 
     auto begin_index = InnerGetItemIndex(begin_position, true);
     if (!begin_index) {
@@ -98,7 +127,7 @@ std::pair<std::size_t, std::size_t> ListVariableItemHeightStrategy::GetItemRange
         end_index = std::distance(item_positions_.begin(), end_iterator);
     }
     else {
-        end_index = ItemCount();
+        end_index = data_source->GetDataCount();
     }
 
     return std::make_pair(*begin_index, end_index - *begin_index);
@@ -116,12 +145,19 @@ float ListVariableItemHeightStrategy::GetTotalHeight() {
 }
 
 
-void ListVariableItemHeightStrategy::OnDataAdded(
-    const ListDataAddedInfo& event_info,
-    ListDataSource& data_source,
-    ListControlDelegate& delegate) {
+void ListVariableItemHeightStrategy::OnDataAdded(const ListDataAddedInfo& event_info) {
 
-    __super::OnDataAdded(event_info, data_source, delegate);
+    __super::OnDataAdded(event_info);
+
+    auto data_source = DataSource();
+    if (!data_source) {
+        return;
+    }
+
+    auto delegate = Delegate();
+    if (!delegate) {
+        return;
+    }
 
     item_positions_.insert(
         std::next(item_positions_.begin(), event_info.Index()),
@@ -139,53 +175,51 @@ void ListVariableItemHeightStrategy::OnDataAdded(
 
         item_positions_[current_index] = current_position;
 
-        auto item_data = data_source.GetDataAtIndex(current_index);
-        current_position += delegate.EstimateItemHeight(current_index, item_data) + item_spacing_;
+        auto item_data = data_source->GetDataAtIndex(current_index);
+        current_position += delegate->EstimateItemHeight(current_index, item_data) + item_spacing_;
     }
 
     //Update position for old items.
     float position_increasement = current_position - old_position;
-    for (std::size_t current_index = old_item_index; current_index < item_positions_.size(); ++current_index) {
+    for (std::size_t current_index = old_item_index; 
+         current_index < item_positions_.size(); 
+         ++current_index) {
+
         item_positions_[current_index] += position_increasement;
     }
 }
 
 
-void ListVariableItemHeightStrategy::OnDataUpdated(
-    const ListDataUpdatedInfo& event_info,
-    ListDataSource& data_source,
-    ListControlDelegate& delegate) {
+void ListVariableItemHeightStrategy::OnDataUpdated(const ListDataUpdatedInfo& event_info) {
 
-    __super::OnDataUpdated(event_info, data_source, delegate);
+    __super::OnDataUpdated(event_info);
 
-    UpdateItemHeightsInRange(
-        Range{ event_info.Index(), event_info.Count() },
-        data_source,
-        delegate);
+    UpdateItemHeightsInRange(Range{ event_info.Index(), event_info.Count() });
 }
 
 
-void ListVariableItemHeightStrategy::OnDataMoved(
-    const ListDataMovedInfo& event_info,
-    ListDataSource& data_source,
-    ListControlDelegate& delegate) {
+void ListVariableItemHeightStrategy::OnDataMoved(const ListDataMovedInfo& event_info) {
 
-    __super::OnDataMoved(event_info, data_source, delegate);
+    __super::OnDataMoved(event_info);
 
     auto min_index = std::min(event_info.PreviousIndex(), event_info.NewIndex());
     auto max_index = std::max(event_info.PreviousIndex(), event_info.NewIndex());
 
-    UpdateItemHeightsInRange(
-        Range::FromIndexPair(min_index, max_index + 1), 
-        data_source, 
-        delegate);
+    UpdateItemHeightsInRange(Range::FromIndexPair(min_index, max_index + 1));
 }
 
 
-void ListVariableItemHeightStrategy::UpdateItemHeightsInRange(
-    const Range& range, 
-    ListDataSource& data_source, 
-    ListControlDelegate& delegate) {
+void ListVariableItemHeightStrategy::UpdateItemHeightsInRange(const Range& range) {
+
+    auto data_source = DataSource();
+    if (!data_source) {
+        return;
+    }
+
+    auto delegate = Delegate();
+    if (!delegate) {
+        return;
+    }
 
     float position = item_positions_[range.Index()];
     float previous_heights = item_positions_[range.EndIndex()] - position;
@@ -197,8 +231,8 @@ void ListVariableItemHeightStrategy::UpdateItemHeightsInRange(
 
         item_positions_[current_index] = position + current_heights;
 
-        auto item_data = data_source.GetDataAtIndex(current_index);
-        float height = delegate.EstimateItemHeight(current_index, item_data);
+        auto item_data = data_source->GetDataAtIndex(current_index);
+        float height = delegate->EstimateItemHeight(current_index, item_data);
         current_heights += height + item_spacing_;
     }
 
@@ -213,13 +247,13 @@ void ListVariableItemHeightStrategy::UpdateItemHeightsInRange(
 }
 
 
-void ListVariableItemHeightStrategy::OnDataRemoved(
-    const ListDataRemovedInfo& event_info) {
+void ListVariableItemHeightStrategy::OnDataRemoved(const ListDataRemovedInfo& event_info) {
 
     __super::OnDataRemoved(event_info);
 
     float position_decreasement =
-        item_positions_[event_info.Index() + event_info.Count()] - item_positions_[event_info.Index()];
+        item_positions_[event_info.Index() + event_info.Count()] -
+        item_positions_[event_info.Index()];
 
     auto erase_iterator = std::next(item_positions_.begin(), event_info.Index());
     auto remain_iterator = item_positions_.erase(

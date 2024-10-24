@@ -8,11 +8,13 @@ namespace zaf::internal {
 
 class ListItemHeightStrategy : NonCopyableNonMovable {
 public:
+    ListItemHeightStrategy(
+        std::weak_ptr<ListDataSource> data_source,
+        std::weak_ptr<ListControlDelegate> delegate);
+
     virtual ~ListItemHeightStrategy() = default;
 
-    virtual void Initialize(
-        ListDataSource& data_source,
-        ListControlDelegate& delegate);
+    virtual void Initialize();
 
     virtual std::pair<float, float> GetItemPositionAndHeight(std::size_t index) = 0;
 
@@ -24,29 +26,23 @@ public:
 
     virtual float GetTotalHeight() = 0;
 
-    virtual void OnDataAdded(
-        const ListDataAddedInfo& event_info,
-        ListDataSource& data_source,
-        ListControlDelegate& delegate);
-
-    virtual void OnDataUpdated(
-        const ListDataUpdatedInfo& event_info,
-        ListDataSource& data_source,
-        ListControlDelegate& delegate);
-
-    virtual void OnDataMoved(
-        const ListDataMovedInfo& event_info,
-        ListDataSource& data_source,
-        ListControlDelegate& delegate);
-
+    virtual void OnDataAdded(const ListDataAddedInfo& event_info);
+    virtual void OnDataUpdated(const ListDataUpdatedInfo& event_info);
+    virtual void OnDataMoved(const ListDataMovedInfo& event_info);
     virtual void OnDataRemoved(const ListDataRemovedInfo& event_info);
 
-    std::size_t ItemCount() const {
-        return item_count_;
+protected:
+    std::shared_ptr<ListDataSource> DataSource() const {
+        return data_source_.lock();
+    }
+
+    std::shared_ptr<ListControlDelegate> Delegate() const {
+        return delegate_.lock();
     }
 
 private:
-    std::size_t item_count_{};
+    std::weak_ptr<ListDataSource> data_source_;
+    std::weak_ptr<ListControlDelegate> delegate_;
 };
 
 }

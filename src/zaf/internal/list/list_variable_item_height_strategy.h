@@ -6,9 +6,9 @@ namespace zaf::internal {
 
 class ListVariableItemHeightStrategy : public ListItemHeightStrategy {
 public:
-    void Initialize(
-        ListDataSource& data_source,
-        ListControlDelegate& delegate) override;
+    using ListItemHeightStrategy::ListItemHeightStrategy;
+
+    void Initialize() override;
 
     std::pair<float, float> GetItemPositionAndHeight(std::size_t index) override;
 
@@ -20,30 +20,15 @@ public:
 
     float GetTotalHeight() override;
 
-    void OnDataAdded(
-        const ListDataAddedInfo& event_info,
-        ListDataSource& data_source,
-        ListControlDelegate& delegate) override;
-
-    void OnDataUpdated(
-        const ListDataUpdatedInfo& event_info,
-        ListDataSource& data_source,
-        ListControlDelegate& delegate) override;
-
-    void OnDataMoved(
-        const ListDataMovedInfo& event_info,
-        ListDataSource& data_source,
-        ListControlDelegate& delegate) override;
-
+    void OnDataAdded(const ListDataAddedInfo& event_info) override;
+    void OnDataUpdated(const ListDataUpdatedInfo& event_info) override;
+    void OnDataMoved(const ListDataMovedInfo& event_info) override;
     void OnDataRemoved(const ListDataRemovedInfo& event_info) override;
 
 private:
     std::pair<float, float> InnerGetItemPositionAndHeight(std::size_t index) const;
     std::optional<std::size_t> InnerGetItemIndex(float position, bool skip_spacing) const;
-    void UpdateItemHeightsInRange(
-        const Range& range,
-        ListDataSource& data_source,
-        ListControlDelegate& delegate);
+    void UpdateItemHeightsInRange(const Range& range);
 
 private:
     std::vector<float> item_positions_;

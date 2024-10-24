@@ -2,19 +2,30 @@
 
 namespace zaf::internal {
 
-void ListFixedItemHeightStrategy::Initialize(
-    ListDataSource& data_source,
-    ListControlDelegate& delegate) {
+void ListFixedItemHeightStrategy::Initialize() {
 
-    __super::Initialize(data_source, delegate);
+    __super::Initialize();
 
-    item_height_ = delegate.EstimateItemHeight(0, nullptr);
-    item_spacing_ = delegate.GetItemSpacing();
+    auto delegate = Delegate();
+    if (!delegate) {
+        return;
+    }
+
+    item_height_ = delegate->EstimateItemHeight(0, nullptr);
+    item_spacing_ = delegate->GetItemSpacing();
 }
 
 
-std::pair<float, float> ListFixedItemHeightStrategy::GetItemPositionAndHeight(
-    std::size_t index) {
+std::pair<float, float> ListFixedItemHeightStrategy::GetItemPositionAndHeight(std::size_t index) {
+
+    auto data_source = DataSource();
+    if (!data_source) {
+        return {};
+    }
+
+    if (index >= data_source->GetDataCount()) {
+        return {};
+    }
 
     float position = GetItemPosition(index);
     return std::make_pair(position, item_height_);
@@ -35,6 +46,11 @@ std::optional<std::size_t> ListFixedItemHeightStrategy::InnerGetItemIndex(
     float position, 
     bool skip_spacing) const {
 
+    auto data_source = DataSource();
+    if (!data_source) {
+        return std::nullopt;
+    }
+
     auto index = static_cast<std::size_t>(position / (item_height_ + item_spacing_));
 
     if (GetItemPosition(index) + item_height_ <= position) {
@@ -45,7 +61,7 @@ std::optional<std::size_t> ListFixedItemHeightStrategy::InnerGetItemIndex(
         index++;
     }
 
-    if (index >= ItemCount()) {
+    if (index >= data_source->GetDataCount()) {
         return std::nullopt;
     }
     return index;
@@ -58,6 +74,11 @@ std::pair<std::size_t, std::size_t> ListFixedItemHeightStrategy::GetItemRange(
 
     ZAF_EXPECT(begin_position < end_position);
 
+    auto data_source = DataSource();
+    if (!data_source) {
+        return {};
+    }
+
     //Find index of the first item.
     auto begin_index = InnerGetItemIndex(begin_position, true);
     if (!begin_index) {
@@ -68,8 +89,9 @@ std::pair<std::size_t, std::size_t> ListFixedItemHeightStrategy::GetItemRange(
     auto end_index = 
         static_cast<std::size_t>(std::ceil(end_position / (item_height_ + item_spacing_)));
 
-    if (end_index > ItemCount()) {
-        end_index = ItemCount();
+    auto data_count = data_source->GetDataCount();
+    if (end_index > data_count) {
+        end_index = data_count;
     }
 
     return std::make_pair(*begin_index, end_index - *begin_index);
@@ -78,15 +100,19 @@ std::pair<std::size_t, std::size_t> ListFixedItemHeightStrategy::GetItemRange(
 
 float ListFixedItemHeightStrategy::GetTotalHeight() {
 
-    if (ItemCount() == 0) {
+    auto data_source = DataSource();
+    if (!data_source) {
+        return 0;
+    }
+
+    auto data_count = data_source->GetDataCount();
+    if (data_count == 0) {
         return 0;
     }
 
     return 
-        ItemCount() * item_height_ + 
-        (ItemCount() - 1) * item_spacing_;
+        data_count * item_height_ +
+        (data_count - 1) * item_spacing_;
 }
-
-
 
 }

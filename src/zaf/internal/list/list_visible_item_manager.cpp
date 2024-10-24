@@ -335,6 +335,11 @@ void ListVisibleItemManager::UpdateVisibleItems() {
 
 void ListVisibleItemManager::GetVisibleItemsRange(std::size_t& index, std::size_t& count) {
 
+    auto data_source = Parts().Core().DataSource();
+    if (!data_source) {
+        return;
+    }
+
     auto visible_rect = Parts().Owner().GetVisibleScrollContentRect();
     float begin_position = visible_rect.position.y;
     float end_position = begin_position + visible_rect.size.height;
@@ -360,7 +365,7 @@ void ListVisibleItemManager::GetVisibleItemsRange(std::size_t& index, std::size_
     }
 
     count += 2;
-    std::size_t max_count = item_height_manager.GetItemCount() - index;
+    std::size_t max_count = data_source->GetDataCount() - index;
     if (count > max_count) {
         count = max_count;
     }

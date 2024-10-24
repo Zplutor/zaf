@@ -38,16 +38,10 @@ public:
     ListControl();
     ~ListControl();
 
-    std::shared_ptr<ListDataSource> DataSource() const {
-        return data_source_.lock();
-    }
-
+    std::shared_ptr<ListDataSource> DataSource() const noexcept;
     void SetDataSource(const std::weak_ptr<ListDataSource>& data_source);
 
-    std::shared_ptr<ListControlDelegate> Delegate() const {
-        return delegate_.lock();
-    }
-
+    std::shared_ptr<ListControlDelegate> Delegate() const noexcept;
     void SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
 
     /**
@@ -241,8 +235,6 @@ private:
 
 private:
     std::unique_ptr<internal::ListControlPartsContext> parts_;
-    std::weak_ptr<ListDataSource> data_source_;
-    std::weak_ptr<ListControlDelegate> delegate_;
 
     Event<ListControlSelectionChangedInfo> selection_changed_event_;
     Event<ListControlItemDoubleClickInfo> item_double_click_event_;

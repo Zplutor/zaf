@@ -15,7 +15,7 @@ public:
     ListItemHeightManager() = default;
 
     void ResetDataSource(std::weak_ptr<ListDataSource> data_source);
-    void ResetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
+    void ResetDelegate(std::weak_ptr<ListControlDelegate> delegate);
 
     void ReloadItemHeights();
 
@@ -30,16 +30,6 @@ public:
 
     float GetTotalHeight() const;
 
-    std::size_t GetItemCount() const {
-        if (strategy_) {
-            return strategy_->ItemCount();
-        }
-        return 0;
-    }
-
-private:
-    void RegisterDataSourceEvents();
-
     void OnDataAdded(const ListDataAddedInfo& event_info);
     void OnDataRemoved(const ListDataRemovedInfo& event_info);
     void OnDataUpdated(const ListDataUpdatedInfo& event_info);
@@ -48,7 +38,6 @@ private:
 private:
     std::weak_ptr<ListDataSource> data_source_{};
     std::weak_ptr<ListControlDelegate> delegate_{};
-    SubscriptionSet data_source_subs_;
     std::unique_ptr<ListItemHeightStrategy> strategy_;
 };
 

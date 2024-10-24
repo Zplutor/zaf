@@ -6,9 +6,9 @@ namespace zaf::internal {
 
 class ListFixedItemHeightStrategy : public ListItemHeightStrategy {
 public:
-    void Initialize(
-        ListDataSource& data_source,
-        ListControlDelegate& delegate) override;
+    using ListItemHeightStrategy::ListItemHeightStrategy;
+
+    void Initialize() override;
 
     std::pair<float, float> GetItemPositionAndHeight(std::size_t index) override;
 

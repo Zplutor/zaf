@@ -11,13 +11,18 @@ bool ListSelectionStrategy::ChangeIndexByKeyDown(
     const std::optional<std::size_t>& previous_index, 
     std::size_t& new_index) {
 
+    auto data_source = Parts().Core().DataSource();
+    if (!data_source) {
+        return false;
+    }
+
     switch (key_message.WParam()) {
 
         case VK_DOWN:
             if (!previous_index) {
                 new_index = 0;
             }
-            else if (*previous_index < Parts().ItemHeightManager().GetItemCount() - 1) {
+            else if (*previous_index < data_source->GetDataCount() - 1) {
                 new_index = *previous_index + 1;
             }
             else {
@@ -27,7 +32,7 @@ bool ListSelectionStrategy::ChangeIndexByKeyDown(
 
         case VK_UP:
             if (!previous_index) {
-                new_index = Parts().ItemHeightManager().GetItemCount() - 1;
+                new_index = data_source->GetDataCount() - 1;
             }
             else if (*previous_index > 0) {
                 new_index = *previous_index - 1;
@@ -42,7 +47,7 @@ bool ListSelectionStrategy::ChangeIndexByKeyDown(
             return true;
 
         case VK_END:
-            new_index = Parts().ItemHeightManager().GetItemCount() - 1;
+            new_index = data_source->GetDataCount() - 1;
             return true;
 
         default:

@@ -92,17 +92,21 @@ void ListControl::OnVerticalScrollBarChanged(
 }
 
 
-void ListControl::SetDataSource(const std::weak_ptr<ListDataSource>& data_source) {
+std::shared_ptr<ListDataSource> ListControl::DataSource() const noexcept {
+    return parts_->Core().DataSource();
+}
 
-    data_source_ = data_source;
-    parts_->Core().SetDataSource(data_source_);
+std::shared_ptr<ListControlDelegate> ListControl::Delegate() const noexcept {
+    return parts_->Core().Delegate();
 }
 
 
-void ListControl::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
+void ListControl::SetDataSource(const std::weak_ptr<ListDataSource>& data_source) {
+    parts_->Core().SetDataSource(data_source);
+}
 
-    delegate_ = delegate;
-    parts_->Core().SetDelegate(delegate_);
+void ListControl::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
+    parts_->Core().SetDelegate(delegate);
 }
 
 
@@ -123,13 +127,18 @@ void ListControl::Reload() {
 
 
 std::size_t ListControl::ItemCount() const {
-    return parts_->Core().GetItemCount();
+    
+    auto data_source = DataSource();
+    if (data_source) {
+        return data_source->GetDataCount();
+    }
+    return 0;
 }
 
 
 std::shared_ptr<Object> ListControl::GetItemDataAtIndex(std::size_t index) const {
 
-    auto data_source = data_source_.lock();
+    auto data_source = DataSource();
     if (data_source) {
         return data_source->GetDataAtIndex(index);
     }

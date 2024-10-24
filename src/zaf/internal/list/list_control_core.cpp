@@ -84,6 +84,11 @@ void ListControlCore::AdjustScrollBarSmallChange() {
 }
 
 
+std::shared_ptr<ListDataSource> ListControlCore::DataSource() const noexcept {
+    return data_source_.lock();
+}
+
+
 void ListControlCore::SetDataSource(const std::weak_ptr<ListDataSource>& data_source) {
 
     data_source_subs_.Clear();
@@ -100,8 +105,7 @@ void ListControlCore::SetDataSource(const std::weak_ptr<ListDataSource>& data_so
 }
 
 
-void ListControlCore::InstallDataSource(
-    const std::weak_ptr<ListDataSource>& data_source) {
+void ListControlCore::InstallDataSource(const std::weak_ptr<ListDataSource>& data_source) {
 
     data_source_ = data_source;
 
@@ -132,6 +136,11 @@ void ListControlCore::RegisterDataSourceEvents() {
 }
 
 
+std::shared_ptr<ListControlDelegate> ListControlCore::Delegate() const noexcept {
+    return delegate_.lock();
+}
+
+
 void ListControlCore::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
 
     auto previous_delegate = delegate_;
@@ -146,8 +155,7 @@ void ListControlCore::SetDelegate(const std::weak_ptr<ListControlDelegate>& dele
 }
 
 
-void ListControlCore::InstallDelegate(
-    const std::weak_ptr<ListControlDelegate>& delegate) {
+void ListControlCore::InstallDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
 
     delegate_ = delegate;
     Parts().ItemHeightManager().ResetDelegate(delegate_);
@@ -159,8 +167,7 @@ const std::shared_ptr<ListItemContainer>& ListControlCore::ItemContainer() const
 }
 
 
-void ListControlCore::SetItemContainer(
-    const std::shared_ptr<ListItemContainer>& item_container) {
+void ListControlCore::SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container) {
 
     if (item_container_ == item_container) {
         return;
@@ -346,6 +353,8 @@ void ListControlCore::RecoverLastFocusedItem(
 
 void ListControlCore::OnDataAdded(const ListDataAddedInfo& event_info) {
 
+    Parts().ItemHeightManager().OnDataAdded(event_info);
+
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
         return;
@@ -383,6 +392,8 @@ void ListControlCore::HandleDataAdded(const ListDataAddedInfo& event_info) {
 
 void ListControlCore::OnDataRemoved(const ListDataRemovedInfo& event_info) {
 
+    Parts().ItemHeightManager().OnDataRemoved(event_info);
+
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
         return;
@@ -412,6 +423,8 @@ void ListControlCore::HandleDataRemoved(const ListDataRemovedInfo& event_info) {
 
 void ListControlCore::OnDataUpdated(const ListDataUpdatedInfo& event_info) {
 
+    Parts().ItemHeightManager().OnDataUpdated(event_info);
+
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
         return;
@@ -436,6 +449,8 @@ void ListControlCore::HandleDataUpdated(const ListDataUpdatedInfo& event_info) {
 
 
 void ListControlCore::OnDataMoved(const ListDataMovedInfo& event_info) {
+
+    Parts().ItemHeightManager().OnDataMoved(event_info);
 
     if (is_handling_data_source_event_) {
         refresh_after_data_source_event_ = true;
@@ -513,11 +528,6 @@ void ListControlCore::SetScrollContentHeight(float height) {
 
     current_total_height_ = height;
     item_container_->SetFixedHeight(height);
-}
-
-
-std::size_t ListControlCore::GetItemCount() {
-    return Parts().ItemHeightManager().GetItemCount();
 }
 
 

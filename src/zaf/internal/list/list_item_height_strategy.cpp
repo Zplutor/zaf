@@ -2,42 +2,38 @@
 
 namespace zaf::internal {
 
-void ListItemHeightStrategy::Initialize(
-    ListDataSource& data_source,
-    ListControlDelegate& delegate) {
-
-    item_count_ = data_source.GetDataCount();
-}
-
-
-void ListItemHeightStrategy::OnDataAdded(
-    const ListDataAddedInfo& event_info,
-    ListDataSource& data_source,
-    ListControlDelegate& delegate) {
-
-    item_count_ += event_info.Count();
-}
-
-
-void ListItemHeightStrategy::OnDataUpdated(
-    const ListDataUpdatedInfo& event_info,
-    ListDataSource& data_source,
-    ListControlDelegate& delegate) {
+ListItemHeightStrategy::ListItemHeightStrategy(
+    std::weak_ptr<ListDataSource> data_source, 
+    std::weak_ptr<ListControlDelegate> delegate) 
+    :
+    data_source_(data_source),
+    delegate_(delegate) {
 
 }
 
 
-void ListItemHeightStrategy::OnDataMoved(
-    const ListDataMovedInfo& event_info,
-    ListDataSource& data_source,
-    ListControlDelegate& delegate) {
+void ListItemHeightStrategy::Initialize() {
+
+}
+
+
+void ListItemHeightStrategy::OnDataAdded(const ListDataAddedInfo& event_info) {
+
+}
+
+
+void ListItemHeightStrategy::OnDataUpdated(const ListDataUpdatedInfo& event_info) {
+
+}
+
+
+void ListItemHeightStrategy::OnDataMoved(const ListDataMovedInfo& event_info) {
 
 }
 
 
 void ListItemHeightStrategy::OnDataRemoved(const ListDataRemovedInfo& event_info) {
 
-    item_count_ -= event_info.Count();
 }
 
 }

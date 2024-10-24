@@ -5,6 +5,7 @@
 #include <zaf/internal/list/list_item_height_manager.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
+#include <zaf/rx/subscription_host.h>
 
 class FakeItemSource : public zaf::ListDataSource, public zaf::ListControlDelegate {
 public:
@@ -55,14 +56,33 @@ public:
 };
 
 
-class ListControlItemHeightManagerTest : public testing::Test {
+class ListControlItemHeightManagerTest : public testing::Test, zaf::SubscriptionHost {
 public:
     void SetUp() override {
         
         item_source_ = std::make_shared<FakeItemSource>();
 
-        item_height_manager_ = std::make_shared<zaf::internal::ListItemHeightManager>();
+        Subscriptions() += item_source_->DataAddedEvent().Subscribe(
+            [this](const zaf::ListDataAddedInfo& event_info) {
+                item_height_manager_->OnDataAdded(event_info);
+            });
 
+        Subscriptions() += item_source_->DataRemovedEvent().Subscribe(
+            [this](const zaf::ListDataRemovedInfo& event_info) {
+                item_height_manager_->OnDataRemoved(event_info);
+            });
+
+        Subscriptions() += item_source_->DataUpdatedEvent().Subscribe(
+            [this](const zaf::ListDataUpdatedInfo& event_info) {
+                item_height_manager_->OnDataUpdated(event_info);
+            });
+
+        Subscriptions() += item_source_->DataMovedEvent().Subscribe(
+            [this](const zaf::ListDataMovedInfo& event_info) {
+                item_height_manager_->OnDataMoved(event_info);
+            });
+
+        item_height_manager_ = std::make_shared<zaf::internal::ListItemHeightManager>();
         item_height_manager_->ResetDataSource(item_source_);
         item_height_manager_->ResetDelegate(item_source_);
     }
@@ -70,8 +90,9 @@ public:
 protected:
     void CheckItemHeightManagerWithFixedItemHeights() const {
 
-        ASSERT_EQ(item_source_->item_count, item_height_manager_->GetItemCount());
-        ASSERT_EQ(item_source_->item_count * item_source_->item_height, item_height_manager_->GetTotalHeight());
+        ASSERT_EQ(
+            item_source_->item_count * item_source_->item_height, 
+            item_height_manager_->GetTotalHeight());
 
         for (std::size_t index = 0; index < item_source_->item_count; ++index) {
 
@@ -87,8 +108,6 @@ protected:
 
 
     void CheckItemHeightManagerWithVariableItemHeights(const std::vector<float>& expected_item_heights) const {
-
-        ASSERT_EQ(item_source_->item_count, item_height_manager_->GetItemCount());
 
         float total_height = 0;
 
@@ -118,10 +137,6 @@ protected:
 
     bool CheckItemPositionsAndHeights(const std::vector<std::pair<float, float>>& expected) {
 
-        if (item_height_manager_->GetItemCount() != expected.size()) {
-            return false;
-        }
-
         for (auto index : zaf::Range(0, expected.size())) {
             if (item_height_manager_->GetItemPositionAndHeight(index) != expected[index]) {
                 return false;
@@ -136,36 +151,6 @@ protected:
     std::shared_ptr<FakeItemSource> item_source_;
     std::shared_ptr<zaf::internal::ListItemHeightManager> item_height_manager_;
 };
-
-
-TEST_F(ListControlItemHeightManagerTest, GetItemCount) {
-
-    auto test = [this]() {
-
-        //No item
-        item_source_->item_count = 0;
-        item_height_manager_->ReloadItemHeights();
-        ASSERT_EQ(0, item_height_manager_->GetItemCount());
-
-        //One item
-        item_source_->item_count = 1;
-        item_height_manager_->ReloadItemHeights();
-        ASSERT_EQ(1, item_height_manager_->GetItemCount());
-
-        //Many items
-        item_source_->item_count = 999;
-        item_height_manager_->ReloadItemHeights();
-        ASSERT_EQ(999, item_height_manager_->GetItemCount());
-    };
-    
-    //Fixed item heights
-    item_source_->has_variable_item_heights = false;
-    test();
-
-    //Variable item heights
-    item_source_->has_variable_item_heights = true;
-    test();
-}
 
 
 TEST_F(ListControlItemHeightManagerTest, GetTotalHeight) {
