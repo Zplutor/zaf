@@ -269,7 +269,7 @@ void ListControlCore::OnItemContainerGainedFocus(const FocusGainedInfo& event_in
 
         auto list_item = As<ListItem>(control);
         if (list_item) {
-            last_focused_item_data_ = list_item->ItemData();
+            //last_focused_item_data_ = list_item->ItemData();
         }
     }
 }
@@ -278,6 +278,7 @@ void ListControlCore::OnItemContainerGainedFocus(const FocusGainedInfo& event_in
 void ListControlCore::OnItemContainerLostFocus(const FocusLostInfo& event_info) {
 
     //Focus was taken from other control outside list control, clear last_focused_item_data_.
+    /*
     auto last_focused_item_data = last_focused_item_data_.lock();
     if (last_focused_item_data == event_info.Source()) {
 
@@ -286,6 +287,7 @@ void ListControlCore::OnItemContainerLostFocus(const FocusLostInfo& event_info) 
             return;
         }
     }
+    */
 }
 
 
@@ -333,23 +335,6 @@ void ListControlCore::UpdateContentHeight() {
     SetScrollContentHeight(Parts().ItemHeightManager().GetTotalHeight());
 }
 
-
-void ListControlCore::RecoverLastFocusedItem(
-    const std::vector<std::shared_ptr<ListItem>>& items) {
-
-    auto last_focused_item_data = last_focused_item_data_.lock();
-    if (!last_focused_item_data) {
-        return;
-    }
-
-    for (const auto& each_item : items) {
-
-        if (each_item->ItemData() == last_focused_item_data) {
-            each_item->RecoverFocus();
-            break;
-        }
-    }
-}
 
 void ListControlCore::OnDataAdded(const ListDataAddedInfo& event_info) {
 

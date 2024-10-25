@@ -264,7 +264,7 @@ void ListVisibleItemManager::AdjustVisibleItemPositions(
     std::size_t begin_adjust_index,
     float difference) {
 
-    for (auto index : Range(begin_adjust_index, visible_items_.size())) {
+    for (auto index : Range::FromIndexPair(begin_adjust_index, visible_items_.size())) {
 
         const auto& item = visible_items_[index];
         auto rect = item->Rect();

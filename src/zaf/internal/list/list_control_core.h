@@ -95,7 +95,6 @@ private:
     void InnerReload(bool retain_state);
 
     void UpdateContentHeight();
-    void RecoverLastFocusedItem(const std::vector<std::shared_ptr<ListItem>>& items);
 
     void OnDataAdded(const ListDataAddedInfo& event_info);
     void HandleDataAdded(const ListDataAddedInfo& event_info);
@@ -122,8 +121,6 @@ private:
 
     SubscriptionSet data_source_subs_;
     SubscriptionSet item_container_subs_;
-
-    std::weak_ptr<Object> last_focused_item_data_;
 
     Subscription vertical_scroll_bar_sub_;
     Subscription exit_handle_mouse_event_sub_;

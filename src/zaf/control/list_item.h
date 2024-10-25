@@ -3,7 +3,6 @@
 #include <zaf/control/textual_control.h>
 
 namespace zaf::internal {
-class ListControlCore;
 class ListVisibleItemManager;
 }
 
@@ -17,10 +16,10 @@ public:
 
 protected:
     void Initialize() override;
+
     virtual void RecoverFocus();
 
 private:
-    friend class internal::ListControlCore;
     friend class internal::ListVisibleItemManager;
 
     void SetItemData(const std::shared_ptr<Object>& data) {
