@@ -49,7 +49,7 @@ void TestWithListControl(const std::function<void(Window&, ListControl&)> test) 
         auto list_control = Create<ListControl>();
         list_control->SetBorder({});
         list_control->SetPadding({});
-        list_control->SetFixedHeight(100);
+        list_control->SetFixedHeight(200);
 
         auto data_source = Create<TestDataSource>();
         list_control->SetDataSource(data_source);
@@ -111,5 +111,46 @@ TEST(ListControlTest, MouseDown_SingleSelectionMode) {
         ASSERT_EQ(list_control.GetVisibleItemAtIndex(1)->IsSelected(), false);
         ASSERT_EQ(list_control.GetVisibleItemAtIndex(2)->IsSelected(), true);
         ASSERT_EQ(selection_changed_count, 1);
+    });
+}
+
+
+TEST(ListControlTest, SetFocusToItemOnMouseEvent) {
+
+    TestWithListControl([](Window& window, ListControl& list_control) {
+
+        window.Messager().SendWMLBUTTONDOWN(Point{ 10, 35 });
+        ASSERT_EQ(list_control.GetVisibleItemAtIndex(3)->IsFocused(), true);
+
+        window.Messager().SendWMMOUSEMOVE(Point{ 10, 15 });
+        ASSERT_EQ(list_control.GetVisibleItemAtIndex(1)->IsFocused(), true);
+        
+        window.Messager().SendWMMOUSEMOVE(Point{ 10, 45 });
+        ASSERT_EQ(list_control.GetVisibleItemAtIndex(4)->IsFocused(), true);
+    });
+}
+
+
+TEST(ListControlTest, SetFocusToListControlOnLeftClick) {
+
+    TestWithListControl([](Window& window, ListControl& list_control) {
+
+        window.Messager().SendWMLBUTTONDOWN(Point{ 10, 105 });
+        ASSERT_EQ(list_control.IsFocused(), true);
+    });
+}
+
+
+TEST(ListControlTest, SetFocusToListControlOnRightClick) {
+
+    TestWithListControl([](Window& window, ListControl& list_control) {
+
+        window.Messager().SendWMRBUTTONDOWN(Point{ 10, 10 });
+        ASSERT_EQ(list_control.IsFocused(), true);
+
+        list_control.SetIsFocused(false);
+
+        window.Messager().SendWMRBUTTONDOWN(Point{ 10, 105 });
+        ASSERT_EQ(list_control.IsFocused(), true);
     });
 }

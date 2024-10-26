@@ -7,6 +7,10 @@
 #include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/rx/subject.h>
 
+namespace zaf {
+class ListControl;
+}
+
 namespace zaf::internal {
 
 class ListSelectionStrategy;
@@ -14,18 +18,21 @@ class ListSelectionStrategy;
 class ListInputHandler : public ListControlPartsBased {
 public:
     using ListControlPartsBased::ListControlPartsBased;
-    ~ListInputHandler();
 
     void HandleMouseDownEvent(const MouseDownInfo& event_info);
     void HandleMouseMoveEvent(const MouseMoveInfo& event_info);
     void HandleMouseUpEvent(const MouseUpInfo& event_info);
     void HandleKeyDownEvent(const KeyDownInfo& event_info);
 
-    Observable<None> WhenNotHandlingMouseEvent() const;
+    Observable<None> WhenNotSelectingByMouse() const;
 
 private:
-    bool is_handling_mouse_event_{};
-    mutable std::optional<Subject<None>> exit_handle_mouse_event_subject_;
+    bool HandleLeftButtonDown(ListControl& list_control, std::optional<std::size_t> item_index);
+    bool HandleRightButtonDown(ListControl& list_control, std::optional<std::size_t> item_index);
+
+private:
+    bool is_selecting_by_mouse_{};
+    mutable std::optional<Subject<None>> exit_select_by_mouse_subject_;
 };
 
 }

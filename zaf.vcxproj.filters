@@ -1279,7 +1279,7 @@
     <ClCompile Include="src\zaf\internal\list\list_variable_item_height_strategy.cpp">
       <Filter>zaf\internal\list</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\list\list_focus_manager.cpp">
+    <ClCompile Include="src\zaf\internal\list\list_focus_store.cpp">
       <Filter>zaf\internal\list</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\list\list_control_parts_context.cpp">
@@ -2983,7 +2983,7 @@
     <ClInclude Include="src\zaf\internal\list\list_variable_item_height_strategy.h">
       <Filter>zaf\internal\list</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\list\list_focus_manager.h">
+    <ClInclude Include="src\zaf\internal\list\list_focus_store.h">
       <Filter>zaf\internal\list</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\list\list_control_parts_based.h">

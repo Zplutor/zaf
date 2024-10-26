@@ -10,6 +10,7 @@
 #include <zaf/control/scroll_box.h>
 #include <zaf/control/selection_mode.h>
 #include <zaf/internal/list/list_control_parts_based.h>
+#include <zaf/internal/list/list_focus_store.h>
 #include <zaf/internal/list/list_selection_store.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/window/popup_menu.h>
@@ -60,6 +61,9 @@ public:
     void OnLayout();
     void OnVerticalScrollBarChange();
 
+    void HandleFocusGainedEvent(const FocusGainedInfo& event_info);
+    void HandleFocusLostEvent(const FocusLostInfo& event_info);
+
     void Reload();
 
     void ScrollToItemAtIndex(std::size_t index);
@@ -83,14 +87,14 @@ private:
     void InstallItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
     void OnItemContainerDoubleClick(const DoubleClickInfo& event_info);
     void OnItemContainerMouseUp(const MouseUpInfo& event_info);
-    void OnItemContainerGainedFocus(const FocusGainedInfo& event_info);
-    void OnItemContainerLostFocus(const FocusLostInfo& event_info);
 
     void RegisterScrollBarEvents();
     void UnregisterScrollBarEvents();
     void AdjustScrollBarSmallChange();
 
     void RegisterDataSourceEvents();
+
+    void RepaintSelectedItems();
 
     void InnerReload(bool retain_state);
 
@@ -113,6 +117,7 @@ private:
     void SetScrollContentHeight(float height);
 
     void OnSelectionStoreChanged(const ListSelectionStoreChangedInfo& event_info);
+    void OnFocusStoreChanged(const ListFocusStoreChangedInfo& event_info);
 
 private:
     std::shared_ptr<ListItemContainer> item_container_;
@@ -123,7 +128,7 @@ private:
     SubscriptionSet item_container_subs_;
 
     Subscription vertical_scroll_bar_sub_;
-    Subscription exit_handle_mouse_event_sub_;
+    Subscription exit_selecting_by_mouse_sub_;
 
     float current_total_height_{};
     bool disable_on_layout_{};

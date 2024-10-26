@@ -5,6 +5,7 @@
 #include <zaf/internal/list/list_control_core.h>
 #include <zaf/internal/list/list_input_handler.h>
 #include <zaf/internal/list/list_item_height_manager.h>
+#include <zaf/internal/list/list_focus_store.h>
 #include <zaf/internal/list/list_selection_manager.h>
 #include <zaf/internal/list/list_selection_store.h>
 #include <zaf/internal/list/list_visible_item_manager.h>
@@ -43,6 +44,10 @@ public:
         return *visible_item_manager_;
     }
 
+    ListFocusStore& FocusStore() const {
+        return *focus_store_;
+    }
+
 private:
     ScrollBox* owner_{};
     std::unique_ptr<ListControlCore> core_;
@@ -51,6 +56,7 @@ private:
     std::unique_ptr<ListSelectionManager> selection_manager_;
     std::unique_ptr<ListSelectionStore> selection_store_;
     std::unique_ptr<ListVisibleItemManager> visible_item_manager_;
+    std::unique_ptr<ListFocusStore> focus_store_;
 };
 
 }

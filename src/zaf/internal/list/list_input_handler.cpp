@@ -7,11 +7,6 @@
 
 namespace zaf::internal {
 
-ListInputHandler::~ListInputHandler() {
-
-}
-
-
 void ListInputHandler::HandleMouseDownEvent(const MouseDownInfo& event_info) {
 
     if (event_info.IsHandled()) {
@@ -23,27 +18,55 @@ void ListInputHandler::HandleMouseDownEvent(const MouseDownInfo& event_info) {
         return;
     }
 
-    list_control->SetIsFocused(true);
-
     auto position_in_container = 
         list_control->ItemContainer()->TranslateFromParent(event_info.PositionAtSender());
 
     auto item_index = Parts().ItemHeightManager().GetItemIndex(position_in_container.y);
-    if (item_index) {
 
-        if (event_info.Message().MouseButton() == MouseButton::Left) {
-
-            is_handling_mouse_event_ = true;
-            list_control->CaptureMouse();
-
-            auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
-            selection_strategy.ChangeSelectionOnMouseDown(*item_index);
-        }
-
-        list_control->ScrollToItemAtIndex(*item_index);
+    bool is_handled{};
+    if (event_info.Message().MouseButton() == MouseButton::Left) {
+        is_handled = HandleLeftButtonDown(*list_control, item_index);
+    }
+    else if (event_info.Message().MouseButton() == MouseButton::Right) {
+        is_handled = HandleRightButtonDown(*list_control, item_index);
     }
 
-    event_info.MarkAsHandled();
+    if (is_handled) {
+        event_info.MarkAsHandled();
+    }
+}
+
+
+bool ListInputHandler::HandleLeftButtonDown(
+    ListControl& list_control, 
+    std::optional<std::size_t> item_index) {
+
+    Parts().FocusStore().SetFocusedIndex(item_index);
+
+    if (item_index) {
+
+        is_selecting_by_mouse_ = true;
+        list_control.CaptureMouse();
+
+        auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
+        selection_strategy.ChangeSelectionOnMouseDown(*item_index);
+
+        list_control.ScrollToItemAtIndex(*item_index);
+    }
+
+    return true;
+}
+
+
+bool ListInputHandler::HandleRightButtonDown(
+    ListControl& list_control, 
+    std::optional<std::size_t> item_index) {
+
+    if (!list_control.ContainsFocus()) {
+        list_control.SetIsFocused(true);
+    }
+
+    return true;
 }
 
 
@@ -68,6 +91,8 @@ void ListInputHandler::HandleMouseMoveEvent(const MouseMoveInfo& event_info) {
 
     auto item_index = Parts().ItemHeightManager().GetItemIndex(position_in_container.y);
     if (item_index) {
+
+        Parts().FocusStore().SetFocusedIndex(item_index);
 
         auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
         selection_strategy.ChangeSelectionOnMouseMove(*item_index);
@@ -106,12 +131,12 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
             selection_strategy.ChangeSelectionOnMouseUp(*item_index);
         }
 
-        is_handling_mouse_event_ = false;
-        if (exit_handle_mouse_event_subject_) {
-            auto observer = exit_handle_mouse_event_subject_->AsObserver();
+        is_selecting_by_mouse_ = false;
+        if (exit_select_by_mouse_subject_) {
+            auto observer = exit_select_by_mouse_subject_->AsObserver();
             observer.OnNext(None{});
             observer.OnCompleted();
-            exit_handle_mouse_event_subject_.reset();
+            exit_select_by_mouse_subject_.reset();
         }
 
         event_info.MarkAsHandled();
@@ -119,17 +144,17 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
 }
 
 
-Observable<None> ListInputHandler::WhenNotHandlingMouseEvent() const {
+Observable<None> ListInputHandler::WhenNotSelectingByMouse() const {
 
-    if (!is_handling_mouse_event_) {
+    if (!is_selecting_by_mouse_) {
         return zaf::rx::Just(None{});
     }
 
-    if (!exit_handle_mouse_event_subject_) {
-        exit_handle_mouse_event_subject_.emplace();
+    if (!exit_select_by_mouse_subject_) {
+        exit_select_by_mouse_subject_.emplace();
     }
 
-    return exit_handle_mouse_event_subject_->AsObservable();
+    return exit_select_by_mouse_subject_->AsObservable();
 }
 
 

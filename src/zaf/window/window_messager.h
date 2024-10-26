@@ -93,6 +93,36 @@ public:
     LRESULT SendWMLBUTTONUP(const Point& position);
 
     /**
+    Sends a WM_RBUTTONDOWN message with the specified position to the window.
+
+    @param position
+        The position set to the LPARAM parameter of the WM_RBUTTONDOWN message. It is expressed in
+        the coordinate space of the window's client area and is in DIPs.
+
+    @return
+        The result of the message processing.
+
+    @details
+        The WPARAM parameter of the message is set to MK_RBUTTON.
+    */
+    LRESULT SendWMRBUTTONDOWN(const Point& position);
+
+    /**
+    Sends a WM_RBUTTONUP message with the specified position to the window.
+
+    @param position
+        The position set to the LPARAM parameter of the WM_RBUTTONUP message. It is expressed in
+        the coordinate space of the window's client area and is in DIPs.
+
+    @return
+        The result of the message processing.
+
+    @details
+        The WPARAM parameter of the message is set to 0.
+    */
+    LRESULT SendWMRBUTTONUP(const Point& position);
+
+    /**
     Sends a WM_MOUSEMOVE message with the specified position to the window.
 
     @param position

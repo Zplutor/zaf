@@ -32,6 +32,9 @@ void ListControlCore::Initialize(const InitializeParameters& parameters) {
     Subscriptions() += Parts().SelectionStore().ChangedEvent().Subscribe(
         std::bind_front(&ListControlCore::OnSelectionStoreChanged, this));
 
+    Subscriptions() += Parts().FocusStore().ChangedEvent().Subscribe(
+        std::bind_front(&ListControlCore::OnFocusStoreChanged, this));
+
     Reload();
 }
 
@@ -199,12 +202,6 @@ void ListControlCore::InstallItemContainer(
     item_container_subs_ += item_container_->MouseUpEvent().Subscribe(
         std::bind_front(&ListControlCore::OnItemContainerMouseUp, this));
 
-    item_container_subs_ += item_container_->FocusGainedEvent().Subscribe(
-        std::bind_front(&ListControlCore::OnItemContainerGainedFocus, this));
-
-    item_container_subs_ += item_container_->FocusLostEvent().Subscribe(
-        std::bind_front(&ListControlCore::OnItemContainerLostFocus, this));
-
     Parts().Owner().SetScrollContent(item_container_);
 }
 
@@ -254,43 +251,6 @@ void ListControlCore::OnItemContainerMouseUp(const MouseUpInfo& event_info) {
 }
 
 
-void ListControlCore::OnItemContainerGainedFocus(const FocusGainedInfo& event_info) {
-
-    auto focused_control = As<Control>(event_info.Source());
-    if (!focused_control) {
-        return;
-    }
-
-    if (focused_control == item_container_) {
-        return;
-    }
-
-    for (auto control = focused_control; control; control = control->Parent()) {
-
-        auto list_item = As<ListItem>(control);
-        if (list_item) {
-            //last_focused_item_data_ = list_item->ItemData();
-        }
-    }
-}
-
-
-void ListControlCore::OnItemContainerLostFocus(const FocusLostInfo& event_info) {
-
-    //Focus was taken from other control outside list control, clear last_focused_item_data_.
-    /*
-    auto last_focused_item_data = last_focused_item_data_.lock();
-    if (last_focused_item_data == event_info.Source()) {
-
-        if (event_info.GainedFocusControl()) {
-            last_focused_item_data_.reset();
-            return;
-        }
-    }
-    */
-}
-
-
 void ListControlCore::OnLayout() {
 
     if (!disable_on_layout_) {
@@ -304,6 +264,39 @@ void ListControlCore::OnVerticalScrollBarChange() {
     UnregisterScrollBarEvents();
     RegisterScrollBarEvents();
     AdjustScrollBarSmallChange();
+}
+
+
+void ListControlCore::HandleFocusGainedEvent(const FocusGainedInfo& event_info) {
+
+    auto scroll_box = As<ScrollBox>(event_info.Source());
+    if (scroll_box && scroll_box.get() == &Parts().Owner()) {
+        RepaintSelectedItems();
+    }
+}
+
+
+void ListControlCore::HandleFocusLostEvent(const FocusLostInfo& event_info) {
+
+    auto scroll_box = As<ScrollBox>(event_info.Source());
+    if (scroll_box && scroll_box.get() == &Parts().Owner()) {
+        RepaintSelectedItems();
+    }
+}
+
+
+void ListControlCore::RepaintSelectedItems() {
+
+    auto selected_indexes = Parts().SelectionStore().GetAllSelectedIndexes();
+
+    auto& visible_item_manager = Parts().VisibleItemManager();
+    for (auto each_index : selected_indexes) {
+
+        auto visible_item = visible_item_manager.GetVisibleItemAtIndex(each_index);
+        if (visible_item && visible_item->IsSelected()) {
+            visible_item->NeedRepaint();
+        }
+    }
 }
 
 
@@ -499,13 +492,31 @@ void ListControlCore::OnSelectionStoreChanged(const ListSelectionStoreChangedInf
         event_info.reason,
         event_info.changed_range);
 
-    exit_handle_mouse_event_sub_ = 
-        Parts().InputHandler().WhenNotHandlingMouseEvent().Subscribe([this](None) {
+    exit_selecting_by_mouse_sub_ = 
+        Parts().InputHandler().WhenNotSelectingByMouse().Subscribe([this](None) {
     
         if (selection_changed_event_) {
             selection_changed_event_();
         }
     });
+}
+
+
+void ListControlCore::OnFocusStoreChanged(const ListFocusStoreChangedInfo& event_info) {
+
+    if (!event_info.focused_index) {
+        Parts().Owner().SetIsFocused(true);
+        return;
+    }
+
+    auto& visible_item_manager = Parts().VisibleItemManager();
+    auto visible_item = visible_item_manager.GetVisibleItemAtIndex(*event_info.focused_index);
+    if (visible_item) {
+        visible_item->SetIsFocused(true);
+    }
+    else {
+        Parts().Owner().SetIsFocused(true);
+    }
 }
 
 

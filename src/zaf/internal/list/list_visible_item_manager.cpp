@@ -178,9 +178,8 @@ std::size_t ListVisibleItemManager::RemoveMiddleVisibleItems(const Range& remove
     auto begin_erase_iterator = std::next(visible_items_.begin(), remove_index);
     auto end_erase_iterator = std::next(begin_erase_iterator, remove_count);
 
-    const auto& item_container = Parts().Core().ItemContainer();
     for (auto iterator = begin_erase_iterator; iterator != end_erase_iterator; ++iterator) {
-        item_container->RemoveChild(*iterator);
+        RemoveItem(*iterator);
     }
 
     visible_items_.erase(begin_erase_iterator, end_erase_iterator);
@@ -247,16 +246,14 @@ void ListVisibleItemManager::UpdateVisibleItemsByUpdatingItems(const Range& upda
         std::size_t visible_item_index = current_index - first_visible_item_index_;
 
         auto current_item = visible_items_[visible_item_index];
-        item_container->RemoveChild(current_item);
+        RemoveItem(current_item);
 
         auto new_item = CreateItem(current_index);
-        item_container->AddChild(new_item);
+        AddItem(new_item, current_index);
         visible_items_[visible_item_index] = new_item;
 
         new_items.push_back(new_item);
     }
-
-    //RecoverLastFocusedItem(new_items);
 }
 
 
@@ -389,7 +386,6 @@ void ListVisibleItemManager::AdjustVisibleItems(
         if (head_change_count > 0) {
             auto new_head_items = CreateItems(new_index, head_change_count);
             visible_items_.insert(visible_items_.begin(), new_head_items.begin(), new_head_items.end());
-            //RecoverLastFocusedItem(new_head_items);
         }
     }
 
@@ -400,7 +396,6 @@ void ListVisibleItemManager::AdjustVisibleItems(
         if (tail_change_count > 0) {
             auto new_tail_items = CreateItems(new_index + new_count - tail_change_count, tail_change_count);
             visible_items_.insert(visible_items_.end(), new_tail_items.begin(), new_tail_items.end());
-            //RecoverLastFocusedItem(new_tail_items);
         }
     }
 }
@@ -408,25 +403,32 @@ void ListVisibleItemManager::AdjustVisibleItems(
 
 void ListVisibleItemManager::RemoveHeadVisibleItems(std::size_t count) {
 
-    const auto& item_container = Parts().Core().ItemContainer();
-
     for (auto index : Range(0, count)) {
         auto item = visible_items_.front();
         visible_items_.pop_front();
-        item_container->RemoveChild(item);
+        RemoveItem(item);
     }
 }
 
 
 void ListVisibleItemManager::RemoveTailVisibleItems(std::size_t count) {
 
-    const auto& item_container = Parts().Core().ItemContainer();
-
     for (auto index : Range(0, count)) {
         auto item = visible_items_.back();
         visible_items_.pop_back();
-        item_container->RemoveChild(item);
+        RemoveItem(item);
     }
+}
+
+
+void ListVisibleItemManager::RemoveItem(const std::shared_ptr<ListItem>& item) {
+
+    if (item->IsFocused()) {
+        Parts().Owner().SetIsFocused(true);
+    }
+
+    const auto& item_container = Parts().Core().ItemContainer();
+    item_container->RemoveChild(item);
 }
 
 
@@ -437,7 +439,6 @@ std::vector<std::shared_ptr<ListItem>> ListVisibleItemManager::CreateItems(
     std::vector<std::shared_ptr<ListItem>> items;
     items.reserve(count);
 
-    const auto& item_container = Parts().Core().ItemContainer();
     for (auto current_index : Range(index, count)) {
 
         auto new_item = CreateItem(current_index);
@@ -445,7 +446,7 @@ std::vector<std::shared_ptr<ListItem>> ListVisibleItemManager::CreateItems(
             continue;
         }
 
-        item_container->AddChild(new_item);
+        AddItem(new_item, current_index);
         items.push_back(new_item);
     }
 
@@ -484,6 +485,17 @@ std::shared_ptr<ListItem> ListVisibleItemManager::CreateItem(std::size_t index) 
 
     list_item->SetIsSelected(Parts().SelectionStore().IsIndexSelected(index));
     return list_item;
+}
+
+
+void ListVisibleItemManager::AddItem(const std::shared_ptr<ListItem>& item, std::size_t index) {
+
+    const auto& item_container = Parts().Core().ItemContainer();
+    item_container->AddChild(item);
+
+    if (Parts().FocusStore().FocusedIndex() == index) {
+        item->SetIsFocused(true);
+    }
 }
 
 

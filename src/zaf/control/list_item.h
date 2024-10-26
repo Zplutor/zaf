@@ -17,6 +17,9 @@ public:
 protected:
     void Initialize() override;
 
+    void OnFocusGained(const FocusGainedInfo& event_info) override;
+    void OnFocusLost(const FocusLostInfo& event_info) override;
+
     virtual void RecoverFocus();
 
 private:

@@ -44,6 +44,16 @@ LRESULT WindowMessager::SendWMLBUTTONUP(const Point& position) {
 }
 
 
+LRESULT WindowMessager::SendWMRBUTTONDOWN(const Point& position) {
+    return SendMessage(window_handle_, WM_RBUTTONDOWN, MK_RBUTTON, ToLPARAM(position));
+}
+
+
+LRESULT WindowMessager::SendWMRBUTTONUP(const Point& position) {
+    return SendMessage(window_handle_, WM_RBUTTONUP, 0, ToLPARAM(position));
+}
+
+
 LRESULT WindowMessager::SendWMMOUSEMOVE(const Point& position) {
     return SendMessage(window_handle_, WM_MOUSEMOVE, 0, ToLPARAM(position));
 }

@@ -51,8 +51,10 @@ private:
         std::size_t tail_change_count);
     void RemoveHeadVisibleItems(std::size_t count);
     void RemoveTailVisibleItems(std::size_t count);
+    void RemoveItem(const std::shared_ptr<ListItem>& item);
     std::vector<std::shared_ptr<ListItem>> CreateItems(std::size_t index, std::size_t count);
     std::shared_ptr<ListItem> CreateItem(std::size_t index);
+    void AddItem(const std::shared_ptr<ListItem>& item, std::size_t index);
 
     void ChangeVisibleItemSelectionByAddingOrRemoving(
         const Range& changed_range, 

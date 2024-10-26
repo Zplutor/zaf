@@ -66,7 +66,7 @@ class DataSource : public zaf::ListDataSource {
 public:
     DataSource() {
 
-        for (auto index : zaf::Range(0, 100)) {
+        for (auto index : zaf::Range(0, 50)) {
             data_.push_back(zaf::Box(std::to_wstring(index)));
         }
     }
@@ -116,14 +116,14 @@ public:
         auto result = __super::CreateItem(item_index, item_data);
 
         auto old_picker = result->BackgroundColorPicker();
-
-        result->SetBackgroundColorPicker(zaf::ColorPicker{ [old_picker](const zaf::Control& control) {
+        result->SetBackgroundColorPicker(zaf::ColorPicker([old_picker](const zaf::Control& control) {
         
             if (control.IsFocused()) {
                 return zaf::Color::Green();
             }
+
             return old_picker(control);
-        } });
+        }));
 
         return result;
     }
@@ -146,10 +146,6 @@ protected:
         list_->SetDelegate(delegate_);
         list_->SetSelectionMode(zaf::SelectionMode::Single);
 
-        Subscriptions() += list_->SelectionChangedEvent().Subscribe(std::bind([]() {
-            OutputDebugString(L"List selection changed.\r\n");
-        }));
-        
         Subscriptions() += list_->ContextMenuEvent().Subscribe(
             [](const zaf::ListControlContextMenuInfo& event_info) {
         
@@ -172,7 +168,7 @@ protected:
         button->SetFixedHeight(30);
         button->SetText(L"Move");
         Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
-            list_->SelectItemAtIndex(2);
+            //list_->SelectItemAtIndex(2);
         }));
         this->RootControl()->AddChild(button);
     }

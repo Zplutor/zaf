@@ -200,6 +200,9 @@ protected:
     void OnMouseUp(const MouseUpInfo& event_info) override;
     void OnKeyDown(const KeyDownInfo& event_info) override;
 
+    void OnFocusGained(const FocusGainedInfo& event_info) override;
+    void OnFocusLost(const FocusLostInfo& event_info) override;
+
     void OnVerticalScrollBarChanged(
         const std::shared_ptr<ScrollBar>& previous_scroll_bar) override;
 

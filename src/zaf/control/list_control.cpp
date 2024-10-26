@@ -83,6 +83,18 @@ void ListControl::OnKeyDown(const KeyDownInfo& event_info) {
 }
 
 
+void ListControl::OnFocusGained(const FocusGainedInfo& event_info) {
+    __super::OnFocusGained(event_info);
+    parts_->Core().HandleFocusGainedEvent(event_info);
+}
+
+
+void ListControl::OnFocusLost(const FocusLostInfo& event_info) {
+    __super::OnFocusLost(event_info);
+    parts_->Core().HandleFocusLostEvent(event_info);
+}
+
+
 void ListControl::OnVerticalScrollBarChanged(
     const std::shared_ptr<ScrollBar>& previous_scroll_bar) {
 
