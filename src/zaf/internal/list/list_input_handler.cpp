@@ -32,7 +32,7 @@ void ListInputHandler::HandleMouseDownEvent(const MouseDownInfo& event_info) {
         is_handled = HandleLeftButtonDown(*list_control, item_index);
     }
     else if (event_info.Message().MouseButton() == MouseButton::Right) {
-        is_handled = HandleRightButtonDown(*list_control, item_index);
+        is_handled = HandleRightButtonDown(*list_control, item_index, position_in_container);
     }
 
     if (is_handled) {
@@ -67,9 +67,14 @@ bool ListInputHandler::HandleLeftButtonDown(
 
 bool ListInputHandler::HandleRightButtonDown(
     ListControl& list_control, 
-    std::optional<std::size_t> item_index) {
+    std::optional<std::size_t> item_index,
+    const Point& position_in_container) {
 
     RestoreFocusToListControl(list_control);
+
+    if (item_index) {
+        PopupContextMenuOnItem(list_control, *item_index, position_in_container);
+    }
 
     return true;
 }
@@ -81,6 +86,40 @@ void ListInputHandler::RestoreFocusToListControl(ListControl& list_control) {
         auto& focus_store = Parts().FocusStore();
         focus_store.SetFocusedIndex(focus_store.FocusedIndex());
     }
+}
+
+
+void ListInputHandler::PopupContextMenuOnItem(
+    ListControl& list_control, 
+    std::size_t item_index,
+    const Point& position_in_container) {
+
+    auto visible_item = Parts().VisibleItemManager().GetVisibleItemAtIndex(item_index);
+    if (!visible_item) {
+        return;
+    }
+
+    auto data_source = Parts().Core().DataSource();
+    if (!data_source) {
+        return;
+    }
+
+    auto item_data = data_source->GetDataAtIndex(item_index);
+
+    ListControlContextMenuInfo event_info{ 
+        As<ListControl>(list_control.shared_from_this()),
+        item_index,
+        item_data,
+    };
+
+    context_menu_event_.AsObserver().OnNext(event_info);
+    if (!event_info.Menu()) {
+        return;
+    }
+
+    event_info.Menu()->PopupOnControl(
+        visible_item,
+        visible_item->TranslateFromParent(position_in_container));
 }
 
 

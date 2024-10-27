@@ -33,10 +33,10 @@ class ListControlContextMenuInfo : public EventInfo {
 public:
     ListControlContextMenuInfo(
         std::shared_ptr<ListControl> source,
-        std::optional<std::size_t> item_index,
+        std::size_t item_index,
         std::shared_ptr<Object> item_data);
 
-    std::optional<std::size_t> ItemIndex() const noexcept {
+    std::size_t ItemIndex() const noexcept {
         return item_index_;
     }
 
@@ -53,7 +53,7 @@ public:
     }
 
 private:
-    std::optional<std::size_t> item_index_;
+    std::size_t item_index_{};
     std::shared_ptr<Object> item_data_;
     std::shared_ptr<std::shared_ptr<PopupMenu>> menu_;
 };

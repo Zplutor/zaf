@@ -20,7 +20,6 @@ void ListControlCore::Initialize(const InitializeParameters& parameters) {
     item_container_change_event_ = parameters.item_container_change_event;
     selection_changed_event_ = parameters.selection_changed_event;
     item_double_click_event_ = parameters.item_double_click_event;
-    context_menu_event_ = parameters.context_menu_event;
 
     //Item container must be the first.
     InstallItemContainer(parameters.item_container);
@@ -199,9 +198,6 @@ void ListControlCore::InstallItemContainer(
     item_container_subs_ += item_container_->DoubleClickEvent().Subscribe(
         std::bind_front(&ListControlCore::OnItemContainerDoubleClick, this));
 
-    item_container_subs_ += item_container_->MouseUpEvent().Subscribe(
-        std::bind_front(&ListControlCore::OnItemContainerMouseUp, this));
-
     Parts().Owner().SetScrollContent(item_container_);
 }
 
@@ -216,38 +212,6 @@ void ListControlCore::OnItemContainerDoubleClick(const DoubleClickInfo& event_in
     if (index) {
         item_double_click_event_(*index);
     }
-}
-
-
-void ListControlCore::OnItemContainerMouseUp(const MouseUpInfo& event_info) {
-
-    //Only handle right button event for now.
-    if (event_info.Message().MouseButton() != MouseButton::Right) {
-        return;
-    }
-
-    if (!context_menu_event_) {
-        return;
-    }
-
-    auto item_index = Parts().ItemHeightManager().GetItemIndex(event_info.PositionAtSender().y);
-
-    std::shared_ptr<Object> item_data;
-    if (item_index) {
-        auto data_source = data_source_.lock();
-        if (!data_source) {
-            return;
-        }
-        item_data = data_source->GetDataAtIndex(*item_index);
-    }
-
-    auto menu = context_menu_event_(item_index, item_data);
-    if (!menu) {
-        return;
-    }
-
-    menu->PopupOnControl(item_container_, event_info.PositionAtSender());
-    event_info.MarkAsHandled();
 }
 
 

@@ -232,9 +232,7 @@ protected:
 private:
     void OnCoreSelectionChanged();
     void OnCoreItemDoubleClick(std::size_t item_index);
-    std::shared_ptr<PopupMenu> OnCoreContextMenu(
-        std::optional<std::size_t> item_index,
-        const std::shared_ptr<Object>& item_data);
+    void OnCoreContextMenu(const ListControlContextMenuInfo& event_info);
 
 private:
     std::unique_ptr<internal::ListControlPartsContext> parts_;

@@ -25,11 +25,6 @@ public:
         std::function<void(const std::shared_ptr<ListItemContainer>&)>;
     using SelectionChangedEvent = std::function<void()>;
     using ItemDoubleClickEvent = std::function<void(std::size_t)>;
-    using ContextMenuEvent = std::function<
-        std::shared_ptr<PopupMenu>(
-            std::optional<std::size_t> item_index, 
-            const std::shared_ptr<Object>& item_data)
-    >;
 
     class InitializeParameters {
     public:
@@ -41,7 +36,6 @@ public:
         ItemContainerChangeEvent item_container_change_event;
         SelectionChangedEvent selection_changed_event;
         ItemDoubleClickEvent item_double_click_event;
-        ContextMenuEvent context_menu_event;
     };
 
 public:
@@ -86,7 +80,6 @@ private:
     void InstallDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
     void InstallItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
     void OnItemContainerDoubleClick(const DoubleClickInfo& event_info);
-    void OnItemContainerMouseUp(const MouseUpInfo& event_info);
 
     void RegisterScrollBarEvents();
     void UnregisterScrollBarEvents();
@@ -142,7 +135,6 @@ private:
     ItemContainerChangeEvent item_container_change_event_;
     SelectionChangedEvent selection_changed_event_;
     ItemDoubleClickEvent item_double_click_event_;
-    ContextMenuEvent context_menu_event_;
 };
 
 }

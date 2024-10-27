@@ -44,10 +44,11 @@ void ListControl::Initialize() {
         std::bind(&ListControl::OnCoreSelectionChanged, this);
     init_params.item_double_click_event = 
         std::bind_front(&ListControl::OnCoreItemDoubleClick, this);
-    init_params.context_menu_event =
-        std::bind_front(&ListControl::OnCoreContextMenu, this);
 
     parts_->Core().Initialize(init_params);
+
+    Subscriptions() += parts_->InputHandler().ContextMenuEvent().Subscribe(
+        std::bind_front(&ListControl::OnCoreContextMenu, this));
 }
 
 
@@ -273,17 +274,8 @@ Observable<ListControlItemDoubleClickInfo> ListControl::ItemDoubleClickEvent() c
 }
 
 
-std::shared_ptr<PopupMenu> ListControl::OnCoreContextMenu(
-    std::optional<std::size_t> item_index,
-    const std::shared_ptr<Object>& item_data) {
-
-    ListControlContextMenuInfo event_info{ 
-        As<ListControl>(shared_from_this()),
-        item_index,
-        item_data,
-    };
+void ListControl::OnCoreContextMenu(const ListControlContextMenuInfo& event_info) {
     OnContextMenu(event_info);
-    return event_info.Menu();
 }
 
 

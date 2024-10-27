@@ -23,7 +23,7 @@ ListControlItemDoubleClickInfo::ListControlItemDoubleClickInfo(
 
 ListControlContextMenuInfo::ListControlContextMenuInfo(
     std::shared_ptr<ListControl> source, 
-    std::optional<std::size_t> item_index, 
+    std::size_t item_index, 
     std::shared_ptr<Object> item_data)
     :
     EventInfo(std::move(source)),
