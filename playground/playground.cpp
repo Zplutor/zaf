@@ -66,7 +66,7 @@ class DataSource : public zaf::ListDataSource {
 public:
     DataSource() {
 
-        for (auto index : zaf::Range(0, 50)) {
+        for (auto index : zaf::Range(0, 10)) {
             data_.push_back(zaf::Box(std::to_wstring(index)));
         }
     }

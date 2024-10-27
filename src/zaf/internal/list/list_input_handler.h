@@ -13,8 +13,6 @@ class ListControl;
 
 namespace zaf::internal {
 
-class ListSelectionStrategy;
-
 class ListInputHandler : public ListControlPartsBased {
 public:
     using ListControlPartsBased::ListControlPartsBased;

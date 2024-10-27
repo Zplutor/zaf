@@ -49,9 +49,9 @@ void ScrollBox::Initialize() {
 
     //The container control should be added before the scroll bars to position the container below 
     //the scroll bars. This ensures that overlay scroll bars are not overlapped by the container.
-    scroll_container_control_ = Create<Control>();
-    scroll_container_control_->SetBackgroundColor(Color::Transparent());
-    AddChild(scroll_container_control_);
+    viewport_control_ = Create<Control>();
+    viewport_control_->SetBackgroundColor(Color::Transparent());
+    AddChild(viewport_control_);
 
     InitializeVerticalScrollBar(Create<ScrollBar>());
     InitializeHorizontalScrollBar(Create<ScrollBar>());
@@ -74,7 +74,7 @@ void ScrollBox::InitializeScrollContentControl(const std::shared_ptr<Control>& c
     }());
     */
 
-    scroll_container_control_->AddChild(scroll_content_control_);
+    viewport_control_->AddChild(scroll_content_control_);
 
     self_scrolling_control_ = dynamic_cast<SelfScrollControl*>(control.get());
     if (self_scrolling_control_ != nullptr) {
@@ -280,7 +280,7 @@ void ScrollBox::SetScrollContent(const std::shared_ptr<Control>& control) {
     auto update_guard = this->BeginUpdate();
 
     scroll_content_rect_change_subscription_.Unsubscribe();
-    scroll_container_control_->RemoveChild(previous_control);
+    viewport_control_->RemoveChild(previous_control);
 
     //Destroy layouter first for unregistering events before changing scroll content control.
     layouter_.reset();
@@ -375,24 +375,36 @@ void ScrollBox::OnMouseWheel(const MouseWheelInfo& event_info) {
 }
 
 
+zaf::Rect ScrollBox::ViewportRectInSelf() const noexcept {
+    auto rect_in_content = ViewportRectInContent();
+    rect_in_content.AddOffset(ContentRect().position);
+    return rect_in_content;
+}
+
+
+zaf::Rect ScrollBox::ViewportRectInContent() const noexcept {
+    return viewport_control_->Rect();
+}
+
+
 zaf::Rect ScrollBox::GetVisibleScrollContentRect() const {
 
     if (self_scrolling_control_ != nullptr) {
-        return scroll_container_control_->Rect();
+        return viewport_control_->Rect();
     }
 
     zaf::Rect rect;
     rect.position = scroll_content_control_->Position();
     rect.position.x *= -1;
     rect.position.y *= -1;
-    rect.size = scroll_container_control_->Size();
+    rect.size = viewport_control_->Size();
     return rect;
 }
 
 
 zaf::Point ScrollBox::TranslateToScrollContent(const zaf::Point& position) const {
 
-    auto position_in_container = scroll_container_control_->TranslateFromParent(position);
+    auto position_in_container = viewport_control_->TranslateFromParent(position);
     return scroll_content_control_->TranslateFromParent(position_in_container);
 }
 

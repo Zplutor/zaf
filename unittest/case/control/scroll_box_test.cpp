@@ -256,3 +256,17 @@ TEST(ScrollBoxTest, ScrollTo) {
     ASSERT_EQ(vertical_scroll_bar->Value(), 0);
     ASSERT_EQ(horizontal_scroll_bar->Value(), 0);
 }
+
+
+TEST(ScrollBoxTest, ViewportRect) {
+
+    auto scroll_box = Create<ScrollBox>();
+    scroll_box->SetSize(Size{ 100, 100 });
+    scroll_box->SetBorder(Frame{ 1 });
+    scroll_box->SetPadding(Frame{ 2 });
+    scroll_box->SetVerticalScrollBarThickness(20);
+    scroll_box->SetHorizontalScrollBarThickness(10);
+
+    ASSERT_EQ(scroll_box->ViewportRectInContent(), Rect(0, 0, 74, 84));
+    ASSERT_EQ(scroll_box->ViewportRectInSelf(), Rect(3, 3, 74, 84 ));
+}

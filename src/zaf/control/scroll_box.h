@@ -181,6 +181,16 @@ public:
     void SetScrollBarThickness(float thickness);
 
     /**
+    Gets the viewport's rect in the coordinate space of current scroll box.
+    */
+    zaf::Rect ViewportRectInSelf() const noexcept;
+
+    /**
+    Gets the viewport's rect in the coordinate space of current scroll box's content.
+    */
+    zaf::Rect ViewportRectInContent() const noexcept;
+
+    /**
      Get the visible scroll content rect, in scroll content control's coordinate.
      */
     zaf::Rect GetVisibleScrollContentRect() const;
@@ -278,7 +288,7 @@ private:
     friend class internal::SelfScrollLayouter;
 
     const std::shared_ptr<Control>& GetScrollContainerControl() const {
-        return scroll_container_control_;
+        return viewport_control_;
     }
 
     SelfScrollControl* GetSelfScrollingControl() const {
@@ -297,7 +307,7 @@ private:
     std::shared_ptr<ScrollBar> vertical_scroll_bar_;
     std::shared_ptr<ScrollBar> horizontal_scroll_bar_;
     std::shared_ptr<Control> scroll_bar_corner_;
-    std::shared_ptr<Control> scroll_container_control_;
+    std::shared_ptr<Control> viewport_control_;
     std::shared_ptr<Control> scroll_content_control_;
     SelfScrollControl* self_scrolling_control_;
 
@@ -331,6 +341,8 @@ ZAF_OBJECT_PROPERTY(HorizontalScrollBarThickness)
 ZAF_OBJECT_PROPERTY(ScrollBarCorner)
 ZAF_OBJECT_PROPERTY(VerticalScrollBar)
 ZAF_OBJECT_PROPERTY(VerticalScrollBarThickness)
+ZAF_OBJECT_PROPERTY(ViewportRectInContent)
+ZAF_OBJECT_PROPERTY(ViewportRectInSelf)
 ZAF_OBJECT_PROPERTY(ScrollContent)
 ZAF_OBJECT_END;
 
