@@ -183,12 +183,7 @@ public:
     /**
     Gets the viewport's rect in the coordinate space of current scroll box.
     */
-    zaf::Rect ViewportRectInSelf() const noexcept;
-
-    /**
-    Gets the viewport's rect in the coordinate space of current scroll box's content.
-    */
-    zaf::Rect ViewportRectInContent() const noexcept;
+    zaf::Rect ViewportRect() const noexcept;
 
     /**
      Get the visible scroll content rect, in scroll content control's coordinate.
@@ -341,8 +336,7 @@ ZAF_OBJECT_PROPERTY(HorizontalScrollBarThickness)
 ZAF_OBJECT_PROPERTY(ScrollBarCorner)
 ZAF_OBJECT_PROPERTY(VerticalScrollBar)
 ZAF_OBJECT_PROPERTY(VerticalScrollBarThickness)
-ZAF_OBJECT_PROPERTY(ViewportRectInContent)
-ZAF_OBJECT_PROPERTY(ViewportRectInSelf)
+ZAF_OBJECT_PROPERTY(ViewportRect)
 ZAF_OBJECT_PROPERTY(ScrollContent)
 ZAF_OBJECT_END;
 

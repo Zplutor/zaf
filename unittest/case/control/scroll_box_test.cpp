@@ -267,6 +267,5 @@ TEST(ScrollBoxTest, ViewportRect) {
     scroll_box->SetVerticalScrollBarThickness(20);
     scroll_box->SetHorizontalScrollBarThickness(10);
 
-    ASSERT_EQ(scroll_box->ViewportRectInContent(), Rect(0, 0, 74, 84));
-    ASSERT_EQ(scroll_box->ViewportRectInSelf(), Rect(3, 3, 74, 84 ));
+    ASSERT_EQ(scroll_box->ViewportRect(), Rect(3, 3, 74, 84 ));
 }

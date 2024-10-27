@@ -375,15 +375,10 @@ void ScrollBox::OnMouseWheel(const MouseWheelInfo& event_info) {
 }
 
 
-zaf::Rect ScrollBox::ViewportRectInSelf() const noexcept {
-    auto rect_in_content = ViewportRectInContent();
+zaf::Rect ScrollBox::ViewportRect() const noexcept {
+    auto rect_in_content = viewport_control_->Rect();
     rect_in_content.AddOffset(ContentRect().position);
     return rect_in_content;
-}
-
-
-zaf::Rect ScrollBox::ViewportRectInContent() const noexcept {
-    return viewport_control_->Rect();
 }
 
 

@@ -27,6 +27,7 @@ public:
 private:
     bool HandleLeftButtonDown(ListControl& list_control, std::optional<std::size_t> item_index);
     bool HandleRightButtonDown(ListControl& list_control, std::optional<std::size_t> item_index);
+    void RestoreFocusToListControl(ListControl& list_control);
 
 private:
     bool is_selecting_by_mouse_{};
