@@ -38,18 +38,6 @@ void ListItem::Initialize() {
 }
 
 
-void ListItem::OnFocusGained(const FocusGainedInfo& event_info) {
-    __super::OnFocusGained(event_info);
-    NeedRepaint();
-}
-
-
-void ListItem::OnFocusLost(const FocusLostInfo& event_info) {
-    __super::OnFocusLost(event_info);
-    NeedRepaint();
-}
-
-
 bool ListItem::IsInFocusContext() const {
 
     auto item_container = Parent();

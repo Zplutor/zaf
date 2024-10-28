@@ -1592,16 +1592,15 @@ void Control::SetIsFocused(bool is_focused) {
 
     window->focused_control_manager_->ChangeFocusedControl(
         is_focused ? shared_from_this() : nullptr);
-
-    if (old_is_focused != IsFocused()) {
-        NeedUpdateStyle();
-        NeedRepaint();
-    }
 }
 
 
 void Control::SetIsFocusedByWindow(bool is_focused) {
+
     is_focused_ = is_focused;
+
+    NeedUpdateStyle();
+    NeedRepaint();
 }
 
 
