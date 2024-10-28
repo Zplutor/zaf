@@ -5,6 +5,7 @@
 #include <zaf/control/event/list_control_event_infos.h>
 #include <zaf/control/event/mouse_event_info.h>
 #include <zaf/control/selection_mode.h>
+#include <zaf/input/key.h>
 #include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/rx/subject.h>
 #include <zaf/window/popup_menu.h>
@@ -41,6 +42,10 @@ private:
         ListControl& list_control, 
         std::size_t item_index,
         const Point& position_in_container);
+
+    std::optional<std::size_t> ChangeIndexByKey(
+        Key key, 
+        std::optional<std::size_t> previous_index) const;
 
 private:
     bool is_selecting_by_mouse_{};

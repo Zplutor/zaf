@@ -1255,9 +1255,6 @@
     <ClCompile Include="src\zaf\internal\list\list_extended_multiple_selection_strategy.cpp">
       <Filter>zaf\internal\list</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\list\list_selection_strategy.cpp">
-      <Filter>zaf\internal\list</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\internal\list\list_simple_multiple_selection_strategy.cpp">
       <Filter>zaf\internal\list</Filter>
     </ClCompile>

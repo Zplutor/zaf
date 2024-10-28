@@ -226,12 +226,67 @@ void ListInputHandler::HandleKeyDownEvent(const KeyDownInfo& event_info) {
         return;
     }
 
-    auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
-    auto new_selected_index = selection_strategy.ChangeSelectionOnKeyDown(event_info.Message());
-    if (new_selected_index) {
+    auto previous_index = Parts().FocusStore().FocusedIndex();
+    if (!previous_index) {
+        previous_index = Parts().SelectionStore().GetFirstSelectedIndex();
+    }
 
-        list_control->ScrollToItemAtIndex(*new_selected_index);
-        event_info.MarkAsHandled();
+    auto new_index = ChangeIndexByKey(event_info.Message().Key(), previous_index);
+    if (!new_index) {
+        return;
+    }
+
+    Parts().FocusStore().SetFocusedIndex(new_index);
+
+    auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
+    selection_strategy.ChangeSelectionOnKeyDown(*new_index);
+
+    list_control->ScrollToItemAtIndex(*new_index);
+    event_info.MarkAsHandled();
+}
+
+
+std::optional<std::size_t> ListInputHandler::ChangeIndexByKey(
+    Key key,
+    std::optional<std::size_t> previous_index) const {
+
+    auto data_source = Parts().Core().DataSource();
+    if (!data_source) {
+        return std::nullopt;
+    }
+
+    auto data_count = data_source->GetDataCount();
+    if (data_count == 0) {
+        return std::nullopt;
+    }
+
+    switch (key) {
+    case Key::Down:
+        if (!previous_index) {
+            return 0;
+        }
+        if (*previous_index < data_count - 1) {
+            return *previous_index + 1;
+        }
+        return std::nullopt;
+
+    case Key::Up:
+        if (!previous_index) {
+            return data_count - 1;
+        }
+        if (*previous_index > 0) {
+            return *previous_index - 1;
+        }
+        return std::nullopt;
+
+    case Key::Home:
+        return 0;
+
+    case Key::End:
+        return data_count - 1;
+
+    default:
+        return std::nullopt;
     }
 }
 

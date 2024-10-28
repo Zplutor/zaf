@@ -144,7 +144,7 @@ protected:
         list_ = zaf::Create<zaf::ListControl>();
         list_->SetDataSource(data_source_);
         list_->SetDelegate(delegate_);
-        list_->SetSelectionMode(zaf::SelectionMode::Single);
+        list_->SetSelectionMode(zaf::SelectionMode::ExtendedMultiple);
 
         Subscriptions() += list_->ContextMenuEvent().Subscribe(
             [](const zaf::ListControlContextMenuInfo& event_info) {
