@@ -75,6 +75,11 @@ void TreeControlImplementation::Initialize(const InitializeParameters& parameter
 void TreeControlImplementation::InitializeListImplementation(
     const InitializeParameters& parameters) {
 
+    //This event must be subscribed before initializing the list core.
+    Subscriptions() +=
+        list_parts_.SelectionStore().ChangedEvent().Subscribe(
+            std::bind_front(&TreeControlImplementation::OnListSelectionStoreChanged, this));
+
     ListControlCore::InitializeParameters list_initialize_parameters;
     list_initialize_parameters.item_container = parameters.item_container;
     list_initialize_parameters.data_source = As<ListDataSource>(shared_from_this());
@@ -90,10 +95,6 @@ void TreeControlImplementation::InitializeListImplementation(
         std::placeholders::_1);
 
     list_parts_.Core().Initialize(list_initialize_parameters);
-
-    Subscriptions() +=
-        list_parts_.SelectionStore().ChangedEvent().Subscribe(
-            std::bind(&TreeControlImplementation::OnListSelectionChange, this));
 }
 
 
@@ -804,19 +805,17 @@ void TreeControlImplementation::CheckIfItemHasChildren(
 
 
 void TreeControlImplementation::OnListSelectionStoreChanged(
-    ListSelectionChangeReason reason, 
-    std::size_t index, 
-    std::size_t count) {
+    const ListSelectionStoreChangedInfo& event_info) {
 
-    switch (reason) {
+    switch (event_info.reason) {
     case ListSelectionChangeReason::AddSelection:
-        ModifySelection(index, count, false);
+        ModifySelection(event_info.changed_range.index, event_info.changed_range.length, false);
         break;
     case ListSelectionChangeReason::ReplaceSelection:
-        ModifySelection(index, count, true);
+        ModifySelection(event_info.changed_range.index, event_info.changed_range.length, true);
         break;
     case ListSelectionChangeReason::RemoveSelection:
-        RemoveSelection(index, count);
+        RemoveSelection(event_info.changed_range.index, event_info.changed_range.length);
         break;
     case ListSelectionChangeReason::ItemChange:
     default:

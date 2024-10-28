@@ -57,6 +57,42 @@ void PropertyGrid::Layout(const zaf::Rect& previous_rect) {
 }
 
 
+void PropertyGrid::OnMouseDown(const MouseDownInfo& event_info) {
+    __super::OnMouseDown(event_info);
+    tree_implementation_->ListParts().InputHandler().HandleMouseDownEvent(event_info);
+}
+
+
+void PropertyGrid::OnMouseMove(const MouseMoveInfo& event_info) {
+    __super::OnMouseMove(event_info);
+    tree_implementation_->ListParts().InputHandler().HandleMouseMoveEvent(event_info);
+}
+
+
+void PropertyGrid::OnMouseUp(const MouseUpInfo& event_info) {
+    __super::OnMouseUp(event_info);
+    tree_implementation_->ListParts().InputHandler().HandleMouseUpEvent(event_info);
+}
+
+
+void PropertyGrid::OnKeyDown(const KeyDownInfo& event_info) {
+    __super::OnKeyDown(event_info);
+    tree_implementation_->ListParts().InputHandler().HandleKeyDownEvent(event_info);
+}
+
+
+void PropertyGrid::OnFocusGained(const FocusGainedInfo& event_info) {
+    __super::OnFocusGained(event_info);
+    tree_implementation_->ListParts().Core().HandleFocusGainedEvent(event_info);
+}
+
+
+void PropertyGrid::OnFocusLost(const FocusLostInfo& event_info) {
+    __super::OnFocusLost(event_info);
+    tree_implementation_->ListParts().Core().HandleFocusLostEvent(event_info);
+}
+
+
 void PropertyGrid::SetTargetObject(const std::shared_ptr<Object>& object) {
     target_object_ = object;
     ReCreateDataSource();

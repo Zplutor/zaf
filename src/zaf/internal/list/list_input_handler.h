@@ -4,19 +4,22 @@
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/event/list_control_event_infos.h>
 #include <zaf/control/event/mouse_event_info.h>
+#include <zaf/control/scroll_box.h>
 #include <zaf/control/selection_mode.h>
 #include <zaf/input/key.h>
 #include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/rx/subject.h>
 #include <zaf/window/popup_menu.h>
 
-namespace zaf {
-class ListControl;
-}
-
 namespace zaf::internal {
 
 class ListInputHandler : public ListControlPartsBased {
+public:
+    using ContextMenuCallback = std::function<
+        std::shared_ptr<PopupMenu>(
+            std::size_t item_index,
+            const std::shared_ptr<Object>& item_data)>;
+
 public:
     using ListControlPartsBased::ListControlPartsBased;
 
@@ -27,21 +30,17 @@ public:
 
     Observable<None> WhenNotSelectingByMouse() const;
 
-    Observable<ListControlContextMenuInfo> ContextMenuEvent() const {
-        return context_menu_event_.AsObservable();
+    void SetContextMenuCallback(ContextMenuCallback callback) {
+        context_menu_callback_ = std::move(callback);
     }
 
 private:
-    bool HandleLeftButtonDown(ListControl& list_control, std::optional<std::size_t> item_index);
+    bool HandleLeftButtonDown(std::optional<std::size_t> item_index);
     bool HandleRightButtonDown(
-        ListControl& list_control, 
         std::optional<std::size_t> item_index,
         const Point& position_in_container);
-    void RestoreFocusToListControl(ListControl& list_control);
-    void PopupContextMenuOnItem(
-        ListControl& list_control, 
-        std::size_t item_index,
-        const Point& position_in_container);
+    void RestoreFocusToOwner();
+    void PopupContextMenuOnItem(std::size_t item_index, const Point& position_in_container);
 
     std::optional<std::size_t> ChangeIndexByKey(
         Key key, 
@@ -51,7 +50,7 @@ private:
     bool is_selecting_by_mouse_{};
     mutable std::optional<Subject<None>> exit_select_by_mouse_subject_;
 
-    Subject<ListControlContextMenuInfo> context_menu_event_;
+    ContextMenuCallback context_menu_callback_;
 };
 
 }

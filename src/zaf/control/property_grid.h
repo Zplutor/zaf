@@ -42,6 +42,14 @@ protected:
     void Initialize() override;
     void Layout(const zaf::Rect&) override;
 
+    void OnMouseDown(const MouseDownInfo& event_info) override;
+    void OnMouseMove(const MouseMoveInfo& event_info) override;
+    void OnMouseUp(const MouseUpInfo& event_info) override;
+    void OnKeyDown(const KeyDownInfo& event_info) override;
+
+    void OnFocusGained(const FocusGainedInfo& event_info) override;
+    void OnFocusLost(const FocusLostInfo& event_info) override;
+
 private:
     void ReCreateDataSource();
     void ReCreateDelegate();

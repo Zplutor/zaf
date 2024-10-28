@@ -47,7 +47,7 @@ void ListControl::Initialize() {
 
     parts_->Core().Initialize(init_params);
 
-    Subscriptions() += parts_->InputHandler().ContextMenuEvent().Subscribe(
+    parts_->InputHandler().SetContextMenuCallback(
         std::bind_front(&ListControl::OnCoreContextMenu, this));
 }
 
@@ -274,8 +274,18 @@ Observable<ListControlItemDoubleClickInfo> ListControl::ItemDoubleClickEvent() c
 }
 
 
-void ListControl::OnCoreContextMenu(const ListControlContextMenuInfo& event_info) {
+std::shared_ptr<PopupMenu> ListControl::OnCoreContextMenu(
+    std::size_t item_index,
+    const std::shared_ptr<Object>& item_data) {
+
+    ListControlContextMenuInfo event_info{
+        As<ListControl>(shared_from_this()),
+        item_index,
+        item_data
+    };
+
     OnContextMenu(event_info);
+    return event_info.Menu();
 }
 
 

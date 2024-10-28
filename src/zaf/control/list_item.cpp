@@ -52,15 +52,22 @@ void ListItem::OnFocusLost(const FocusLostInfo& event_info) {
 
 bool ListItem::IsInFocusContext() const {
 
-    for (auto parent = Parent(); parent; parent = parent->Parent()) {
-
-        auto list_control = As<ListControl>(parent);
-        if (list_control) {
-            return list_control->ContainsFocus();
-        }
+    auto item_container = Parent();
+    if (!item_container) {
+        return false;
     }
 
-    return false;
+    auto viewport_container = item_container->Parent();
+    if (!viewport_container) {
+        return false;
+    }
+
+    auto scroll_box = viewport_container->Parent();
+    if (!scroll_box) {
+        return false;
+    }
+
+    return scroll_box->ContainsFocus();
 }
 
 

@@ -53,6 +53,42 @@ void TreeControl::Layout(const zaf::Rect& previous_rect) {
 }
 
 
+void TreeControl::OnMouseDown(const MouseDownInfo& event_info) {
+    __super::OnMouseDown(event_info);
+    implementation_->ListParts().InputHandler().HandleMouseDownEvent(event_info);
+}
+
+
+void TreeControl::OnMouseMove(const MouseMoveInfo& event_info) {
+    __super::OnMouseMove(event_info);
+    implementation_->ListParts().InputHandler().HandleMouseMoveEvent(event_info);
+}
+
+
+void TreeControl::OnMouseUp(const MouseUpInfo& event_info) {
+    __super::OnMouseUp(event_info);
+    implementation_->ListParts().InputHandler().HandleMouseUpEvent(event_info);
+}
+
+
+void TreeControl::OnKeyDown(const KeyDownInfo& event_info) {
+    __super::OnKeyDown(event_info);
+    implementation_->ListParts().InputHandler().HandleKeyDownEvent(event_info);
+}
+
+
+void TreeControl::OnFocusGained(const FocusGainedInfo& event_info) {
+    __super::OnFocusGained(event_info);
+    implementation_->ListParts().Core().HandleFocusGainedEvent(event_info);
+}
+
+
+void TreeControl::OnFocusLost(const FocusLostInfo& event_info) {
+    __super::OnFocusLost(event_info);
+    implementation_->ListParts().Core().HandleFocusLostEvent(event_info);
+}
+
+
 void TreeControl::SetDataSource(const std::weak_ptr<TreeDataSource>& data_source) {
 
     data_source_ = data_source;

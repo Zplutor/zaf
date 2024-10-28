@@ -13,26 +13,26 @@ void ListInputHandler::HandleMouseDownEvent(const MouseDownInfo& event_info) {
         return;
     }
 
-    auto list_control = As<ListControl>(event_info.Sender());
-    if (!list_control) {
+    auto scroll_box = As<ScrollBox>(event_info.Sender());
+    if (!scroll_box) {
         return;
     }
 
-    if (!list_control->ViewportRect().Contain(event_info.PositionAtSender())) {
+    if (!scroll_box->ViewportRect().Contain(event_info.PositionAtSender())) {
         return;
     }
 
     auto position_in_container = 
-        list_control->TranslateToScrollContent(event_info.PositionAtSender());
+        scroll_box->TranslateToScrollContent(event_info.PositionAtSender());
 
     auto item_index = Parts().ItemHeightManager().GetItemIndex(position_in_container.y);
 
     bool is_handled{};
     if (event_info.Message().MouseButton() == MouseButton::Left) {
-        is_handled = HandleLeftButtonDown(*list_control, item_index);
+        is_handled = HandleLeftButtonDown(item_index);
     }
     else if (event_info.Message().MouseButton() == MouseButton::Right) {
-        is_handled = HandleRightButtonDown(*list_control, item_index, position_in_container);
+        is_handled = HandleRightButtonDown(item_index, position_in_container);
     }
 
     if (is_handled) {
@@ -41,24 +41,22 @@ void ListInputHandler::HandleMouseDownEvent(const MouseDownInfo& event_info) {
 }
 
 
-bool ListInputHandler::HandleLeftButtonDown(
-    ListControl& list_control, 
-    std::optional<std::size_t> item_index) {
+bool ListInputHandler::HandleLeftButtonDown(std::optional<std::size_t> item_index) {
 
     if (item_index) {
 
         Parts().FocusStore().SetFocusedIndex(item_index);
 
         is_selecting_by_mouse_ = true;
-        list_control.CaptureMouse();
+        Parts().Owner().CaptureMouse();
 
         auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
         selection_strategy.ChangeSelectionOnMouseDown(*item_index);
 
-        list_control.ScrollToItemAtIndex(*item_index);
+        Parts().Core().ScrollToItemAtIndex(*item_index);
     }
     else {
-        RestoreFocusToListControl(list_control);
+        RestoreFocusToOwner();
     }
 
     return true;
@@ -66,23 +64,22 @@ bool ListInputHandler::HandleLeftButtonDown(
 
 
 bool ListInputHandler::HandleRightButtonDown(
-    ListControl& list_control, 
     std::optional<std::size_t> item_index,
     const Point& position_in_container) {
 
-    RestoreFocusToListControl(list_control);
+    RestoreFocusToOwner();
 
     if (item_index) {
-        PopupContextMenuOnItem(list_control, *item_index, position_in_container);
+        PopupContextMenuOnItem(*item_index, position_in_container);
     }
 
     return true;
 }
 
 
-void ListInputHandler::RestoreFocusToListControl(ListControl& list_control) {
+void ListInputHandler::RestoreFocusToOwner() {
 
-    if (!list_control.ContainsFocus()) {
+    if (!Parts().Owner().ContainsFocus()) {
         auto& focus_store = Parts().FocusStore();
         focus_store.SetFocusedIndex(focus_store.FocusedIndex());
     }
@@ -90,9 +87,12 @@ void ListInputHandler::RestoreFocusToListControl(ListControl& list_control) {
 
 
 void ListInputHandler::PopupContextMenuOnItem(
-    ListControl& list_control, 
     std::size_t item_index,
     const Point& position_in_container) {
+
+    if (!context_menu_callback_) {
+        return;
+    }
 
     auto visible_item = Parts().VisibleItemManager().GetVisibleItemAtIndex(item_index);
     if (!visible_item) {
@@ -106,18 +106,12 @@ void ListInputHandler::PopupContextMenuOnItem(
 
     auto item_data = data_source->GetDataAtIndex(item_index);
 
-    ListControlContextMenuInfo event_info{ 
-        As<ListControl>(list_control.shared_from_this()),
-        item_index,
-        item_data,
-    };
-
-    context_menu_event_.AsObserver().OnNext(event_info);
-    if (!event_info.Menu()) {
+    auto menu = context_menu_callback_(item_index, item_data);
+    if (!menu) {
         return;
     }
 
-    event_info.Menu()->PopupOnControl(
+    menu->PopupOnControl(
         visible_item,
         visible_item->TranslateFromParent(position_in_container));
 }
@@ -129,18 +123,18 @@ void ListInputHandler::HandleMouseMoveEvent(const MouseMoveInfo& event_info) {
         return;
     }
 
-    auto list_control = As<ListControl>(event_info.Sender());
-    if (!list_control) {
+    auto scroll_box = As<ScrollBox>(event_info.Sender());
+    if (!scroll_box) {
         return;
     }
 
     //Handle mouse move only when the list control is capturing the mouse.
-    if (!list_control->IsCapturingMouse()) {
+    if (!scroll_box->IsCapturingMouse()) {
         return;
     }
 
     auto position_in_container =
-        list_control->TranslateToScrollContent(event_info.PositionAtSender());
+        scroll_box->TranslateToScrollContent(event_info.PositionAtSender());
 
     auto item_index = Parts().ItemHeightManager().GetItemIndex(position_in_container.y);
     if (item_index) {
@@ -150,7 +144,7 @@ void ListInputHandler::HandleMouseMoveEvent(const MouseMoveInfo& event_info) {
         auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
         selection_strategy.ChangeSelectionOnMouseMove(*item_index);
 
-        list_control->ScrollToItemAtIndex(*item_index);
+        Parts().Core().ScrollToItemAtIndex(*item_index);
     }
 
     event_info.MarkAsHandled();
@@ -163,23 +157,23 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
         return;
     }
 
-    auto list_control = As<ListControl>(event_info.Sender());
-    if (!list_control) {
+    auto scroll_box = As<ScrollBox>(event_info.Sender());
+    if (!scroll_box) {
         return;
     }
 
-    if (!list_control->ViewportRect().Contain(event_info.PositionAtSender())) {
+    if (!scroll_box->ViewportRect().Contain(event_info.PositionAtSender())) {
         return;
     }
 
     if (event_info.Message().MouseButton() == MouseButton::Left) {
 
-        if (list_control->IsCapturingMouse()) {
-            list_control->ReleaseMouse();
+        if (scroll_box->IsCapturingMouse()) {
+            scroll_box->ReleaseMouse();
         }
 
         auto position_in_container = 
-            list_control->TranslateToScrollContent(event_info.PositionAtSender());
+            scroll_box->TranslateToScrollContent(event_info.PositionAtSender());
 
         auto item_index = Parts().ItemHeightManager().GetItemIndex(position_in_container.y);
         if (item_index) {
@@ -221,11 +215,6 @@ void ListInputHandler::HandleKeyDownEvent(const KeyDownInfo& event_info) {
         return;
     }
 
-    auto list_control = As<ListControl>(event_info.Sender());
-    if (!list_control) {
-        return;
-    }
-
     auto previous_index = Parts().FocusStore().FocusedIndex();
     if (!previous_index) {
         previous_index = Parts().SelectionStore().GetFirstSelectedIndex();
@@ -241,7 +230,7 @@ void ListInputHandler::HandleKeyDownEvent(const KeyDownInfo& event_info) {
     auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
     selection_strategy.ChangeSelectionOnKeyDown(*new_index);
 
-    list_control->ScrollToItemAtIndex(*new_index);
+    Parts().Core().ScrollToItemAtIndex(*new_index);
     event_info.MarkAsHandled();
 }
 

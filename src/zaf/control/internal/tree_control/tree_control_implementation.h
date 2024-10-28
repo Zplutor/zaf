@@ -137,11 +137,7 @@ private:
     void UpdateItem(const IndexPath& index_path);
     void CheckIfItemHasChildren(const IndexPath& index_path, std::size_t list_index);
 
-    void OnListSelectionStoreChanged(
-        ListSelectionChangeReason reason,
-        std::size_t index,
-        std::size_t count);
-
+    void OnListSelectionStoreChanged(const ListSelectionStoreChangedInfo& event_info);
     void OnListSelectionChange();
 
     void NotifySelectionChange();
