@@ -322,6 +322,9 @@ void ListControlCore::HandleDataAdded(const ListDataAddedInfo& event_info) {
         Range{ event_info.Index(), event_info.Count() },
         position_difference);
 
+    Parts().FocusStore().AdjustFocusedIndexByAddingIndex(
+        Range{ event_info.Index(), event_info.Count() });
+
     Parts().SelectionStore().AdjustSelectionByAddingIndexes(
         event_info.Index(),
         event_info.Count());
@@ -356,6 +359,9 @@ void ListControlCore::HandleDataRemoved(const ListDataRemovedInfo& event_info) {
     Parts().VisibleItemManager().HandleDataRemoved(
         Range{ event_info.Index(), event_info.Count() },
         position_difference);
+
+    Parts().FocusStore().AdjustFocusedIndexByRemovingIndex(
+        Range{ event_info.Index(), event_info.Count() });
 
     Parts().SelectionStore().AdjustSelectionByRemovingIndexes(
         event_info.Index(),
@@ -412,6 +418,10 @@ void ListControlCore::HandleDataMoved(const ListDataMovedInfo& event_info) {
     AdjustContentHeight();
 
     Parts().VisibleItemManager().HandleDataMoved(
+        event_info.PreviousIndex(), 
+        event_info.NewIndex());
+
+    Parts().FocusStore().AdjustFocusedIndexByMovingIndex(
         event_info.PreviousIndex(), 
         event_info.NewIndex());
 

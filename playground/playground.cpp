@@ -79,6 +79,13 @@ public:
         return data_[index];
     }
 
+    void Add() {
+
+        auto new_data = zaf::Box(std::to_wstring(100));
+        data_.insert(data_.begin(), new_data);
+        NotifyDataAdded(0, 1);
+    }
+
     void Move() {
 
         auto data = data_[0];
@@ -120,6 +127,10 @@ public:
         
             if (control.IsFocused()) {
                 return zaf::Color::Green();
+            }
+
+            if (control.IsMouseOver()) {
+                return zaf::Color::Yellow();
             }
 
             return old_picker(control);
@@ -166,9 +177,9 @@ protected:
 
         auto button = zaf::Create<zaf::Button>();
         button->SetFixedHeight(30);
-        button->SetText(L"Move");
+        button->SetText(L"Add");
         Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
-            //list_->SelectItemAtIndex(2);
+            data_source_->Add();
         }));
         this->RootControl()->AddChild(button);
     }

@@ -124,6 +124,9 @@
     <Filter Include="case\internal\list">
       <UniqueIdentifier>{3c6f3d95-1877-4986-8782-80f302286d23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\control\list">
+      <UniqueIdentifier>{428d74ee-b65c-462a-8aac-7bef0ca50580}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -379,9 +382,6 @@
     <ClCompile Include="unittest\case\base\string\encoding_conversion_test.cpp">
       <Filter>case\base\string</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\control\list_control_reenter_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\window\window_message_routing_test.cpp">
       <Filter>case\window</Filter>
     </ClCompile>
@@ -596,9 +596,6 @@
     <ClCompile Include="unittest\case\graphic\dwrite\inline_object_metrics_test.cpp">
       <Filter>case\graphic\dwrite</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\control\list_control_move_test.cpp">
-      <Filter>case\control</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\rx\concat_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>
@@ -608,14 +605,23 @@
     <ClCompile Include="unittest\case\internal\list\list_selection_store_test.cpp">
       <Filter>case\internal\list</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\control\list_control_selection_test.cpp">
-      <Filter>case\control</Filter>
+    <ClCompile Include="unittest\case\control\list\list_control_focus_test.cpp">
+      <Filter>case\control\list</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\control\list_control_focus_test.cpp">
-      <Filter>case\control</Filter>
+    <ClCompile Include="unittest\case\control\list\list_control_mouse_input_test.cpp">
+      <Filter>case\control\list</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\control\list_control_mouse_input_test.cpp">
-      <Filter>case\control</Filter>
+    <ClCompile Include="unittest\case\control\list\list_control_move_test.cpp">
+      <Filter>case\control\list</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\list\list_control_reenter_test.cpp">
+      <Filter>case\control\list</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\list\list_control_selection_test.cpp">
+      <Filter>case\control\list</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\list\list_control_test_fixture.cpp">
+      <Filter>case\control\list</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -632,6 +638,9 @@
       <Filter>utility</Filter>
     </ClInclude>
     <ClInclude Include="unittest\precompiled.h" />
+    <ClInclude Include="unittest\case\control\list\list_control_test_fixture.h">
+      <Filter>case\control\list</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="unittest\res.rc" />

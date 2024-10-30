@@ -20,6 +20,7 @@ public:
 
     void AdjustFocusedIndexByAddingIndex(const Range& added_range);
     void AdjustFocusedIndexByRemovingIndex(const Range& removed_range);
+    void AdjustFocusedIndexByMovingIndex(std::size_t from, std::size_t to);
 
     zaf::Observable<ListFocusStoreChangedInfo> ChangedEvent() const {
         return changed_event_.AsObservable();

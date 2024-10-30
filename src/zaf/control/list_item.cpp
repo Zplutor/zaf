@@ -38,6 +38,22 @@ void ListItem::Initialize() {
 }
 
 
+void ListItem::SetItemData(std::shared_ptr<Object> data) {
+
+    ZAF_EXPECT(data);
+
+    auto previous_data = std::move(item_data_);
+    item_data_ = std::move(data);
+
+    OnItemDataChanged(previous_data);
+}
+
+
+void ListItem::OnItemDataChanged(const std::shared_ptr<Object>& previous_data) {
+
+}
+
+
 bool ListItem::IsInFocusContext() const {
 
     auto item_container = Parent();

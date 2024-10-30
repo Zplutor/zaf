@@ -17,15 +17,14 @@ public:
 protected:
     void Initialize() override;
 
+    virtual void OnItemDataChanged(const std::shared_ptr<Object>& previous_data);
+
     virtual void RecoverFocus();
 
 private:
     friend class internal::ListVisibleItemManager;
 
-    void SetItemData(const std::shared_ptr<Object>& data) {
-        ZAF_EXPECT(data);
-        item_data_ = data;
-    }
+    void SetItemData(std::shared_ptr<Object> data);
 
 private:
     bool IsInFocusContext() const;
