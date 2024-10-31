@@ -177,3 +177,19 @@ TEST(ListControlTest, Focus_FocusOnListWhenDataChanged) {
         ASSERT_TRUE(fixture.ListControl().IsFocused());
     }
 }
+
+
+/*
+Focus will be moved to the list control after reloading.
+*/
+TEST(ListControlTest, Focus_Reload) {
+
+    ListControlTestFixture fixture;
+
+    //Set focus to one of the items.
+    fixture.Window().Messager().SendWMLBUTTONDOWN(Point{ 10, 15 });
+    ASSERT_TRUE(fixture.ListControl().GetVisibleItemAtIndex(1)->IsFocused());
+
+    fixture.ListControl().Reload();
+    ASSERT_TRUE(fixture.ListControl().IsFocused());
+}

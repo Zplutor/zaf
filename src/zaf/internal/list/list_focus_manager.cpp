@@ -95,6 +95,13 @@ void ListFocusManager::ChangeFocusAfterAddingVisibleItem(ListItem& item, std::si
 }
 
 
+void ListFocusManager::ChangeFocusByReloading() {
+
+    store_.SetIndex(std::nullopt);
+    SetFocusToProperControlIfCan();
+}
+
+
 void ListFocusManager::SetFocusToProperControlIfCan() const {
 
     if (Parts().Owner().ContainsFocus()) {

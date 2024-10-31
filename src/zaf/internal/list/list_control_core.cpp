@@ -273,6 +273,10 @@ void ListControlCore::Reload() {
 void ListControlCore::InnerReload(bool retain_state) {
 
     if (!retain_state) {
+
+        //Remove the focused index.
+        Parts().FocusManager().ChangeFocusByReloading();
+
         //Remove selected indexes.
         Parts().SelectionManager().UnselectAllItems();
     }

@@ -25,6 +25,8 @@ public:
     void ChangeFocusBeforeRemovingVisibleItem(const ListItem& item);
     void ChangeFocusAfterAddingVisibleItem(ListItem& item, std::size_t index);
 
+    void ChangeFocusByReloading();
+
 private:
     void SetFocusToProperControlIfCan() const;
     void SetFocusToProperControl(std::optional<std::size_t> focused_index) const;
