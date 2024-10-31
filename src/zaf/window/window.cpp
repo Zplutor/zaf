@@ -1074,8 +1074,8 @@ void Window::TrackMouseByMouseMove(const MouseMessage& message) {
 
 void Window::TrackMouse(bool is_non_client) {
 
-    //Don't track mouse if the mouse is being captured and the caputring window is not current 
-    //window. This would happend if WM_MOUSEMOVE message is redirected from a capturing window to 
+    //Don't track mouse if the mouse is being captured and the capturing window is not the current 
+    //window. This would happen if WM_MOUSEMOVE message is redirected from a capturing window to 
     //another window (this is the way how PopupMenu works).
     auto capturing_window = GetCapture();
     if (capturing_window && capturing_window != Handle()) {

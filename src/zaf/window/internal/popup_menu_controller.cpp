@@ -137,6 +137,12 @@ bool PopupMenuController::HandleOwnerMessage(const Message& message) {
         return true;
     }
 
+    //As we intercept all mouse move messages of the owner window, mouse leave messages need to be
+    //intercepted as well.
+    if (message.ID() == WM_MOUSELEAVE) {
+        return true;
+    }
+
     if (WM_MOUSEFIRST <= message.ID() && message.ID() <= WM_MOUSELAST) {
         return HandleOwnerMouseMessage(message);
     }
@@ -168,7 +174,7 @@ bool PopupMenuController::HandleOwnerMouseMessage(const Message& message) {
             message.ID() == WM_RBUTTONDOWN || 
             message.ID() == WM_MBUTTONDOWN) {
             CloseAllMenus();
-            //Indicate that the messge is not handled, so that the owner can continue to handle 
+            //Indicate that the message is not handled, so that the owner can continue to handle 
             //the mouse down message.
             return false;
         }
@@ -179,7 +185,7 @@ bool PopupMenuController::HandleOwnerMouseMessage(const Message& message) {
     
     if (new_mouse_over_menu) {
 
-        //If mouse over menu is changed, mouse move messge is needed to be redirect to the old one
+        //If mouse over menu is changed, mouse move message is needed to be redirect to the old one
         //to update its state.
         if (message.ID() == WM_MOUSEMOVE) {
             if (last_mouse_over_menu && last_mouse_over_menu != new_mouse_over_menu) {
