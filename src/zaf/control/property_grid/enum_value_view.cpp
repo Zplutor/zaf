@@ -67,9 +67,4 @@ void EnumValueView::OnSelectionChanged() {
     NotifyValueChanged(combo_box_->DropDownListBox()->FirstSelectedItemData());
 }
 
-
-void EnumValueView::RecoverFocus() {
-    combo_box_->SetIsFocused(true);
-}
-
 }

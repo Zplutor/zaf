@@ -37,9 +37,4 @@ void BoolValueView::SetValue(const std::shared_ptr<Object>& object) {
     }));
 }
 
-
-void BoolValueView::RecoverFocus() {
-    check_box_->SetIsFocused(true);
-}
-
 }

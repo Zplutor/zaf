@@ -15,8 +15,6 @@ public:
     virtual void SetAccessMethod(AccessMethod) = 0;
     virtual void SetValue(const std::shared_ptr<Object>& object) = 0;
 
-    virtual void RecoverFocus();
-
     Observable<std::shared_ptr<Object>> ValueChangedEvent() {
         return value_changed_event_.AsObservable();
     }

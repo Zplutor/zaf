@@ -19,8 +19,6 @@ protected:
 
     virtual void OnItemDataChanged(const std::shared_ptr<Object>& previous_data);
 
-    virtual void RecoverFocus();
-
 private:
     friend class internal::ListVisibleItemManager;
 

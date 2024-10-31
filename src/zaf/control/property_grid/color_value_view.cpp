@@ -135,11 +135,6 @@ void ColorValueView::SetColorToEdit(const Color& color) {
 }
 
 
-void ColorValueView::RecoverFocus() {
-    color_edit_->SetIsFocused(true);
-}
-
-
 void ColorValueView::ColorSquare::SetColor(const zaf::Color& color) {
     color_ = color;
     NeedRepaint();

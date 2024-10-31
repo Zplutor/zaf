@@ -9,7 +9,6 @@ class ColorValueView : public ValueView {
 public:
     void SetAccessMethod(AccessMethod) override;
     void SetValue(const std::shared_ptr<Object>& object) override;
-    void RecoverFocus() override;
 
 protected:
     void Initialize() override;

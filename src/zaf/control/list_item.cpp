@@ -74,9 +74,4 @@ bool ListItem::IsInFocusContext() const {
     return scroll_box->ContainsFocus();
 }
 
-
-void ListItem::RecoverFocus() {
-
-}
-
 }

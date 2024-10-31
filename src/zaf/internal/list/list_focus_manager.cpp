@@ -76,7 +76,7 @@ void ListFocusManager::ChangeFocusByMovingData(std::size_t from, std::size_t to)
 
 void ListFocusManager::ChangeFocusBeforeRemovingVisibleItem(const ListItem& item) {
 
-    if (item.IsFocused()) {
+    if (item.ContainsFocus()) {
         auto auto_reset = MakeAutoReset(is_removing_visible_item_, true);
         Parts().Owner().SetIsFocused(true);
     }

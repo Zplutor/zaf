@@ -33,9 +33,4 @@ void ValueView::Initialize() {
     }));
 }
 
-
-void ValueView::RecoverFocus() {
-
-}
-
 }

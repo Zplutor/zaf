@@ -84,9 +84,4 @@ void EditableValueView::OnRichEditFocusLost(const FocusLostInfo& event_info) {
     }
 }
 
-
-void EditableValueView::RecoverFocus() {
-    rich_edit_->SetIsFocused(true);
-}
-
 }
