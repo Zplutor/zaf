@@ -31,9 +31,6 @@ void ListControlCore::Initialize(const InitializeParameters& parameters) {
     Subscriptions() += Parts().SelectionStore().ChangedEvent().Subscribe(
         std::bind_front(&ListControlCore::OnSelectionStoreChanged, this));
 
-    Subscriptions() += Parts().FocusStore().ChangedEvent().Subscribe(
-        std::bind_front(&ListControlCore::OnFocusStoreChanged, this));
-
     Reload();
 }
 
@@ -233,6 +230,8 @@ void ListControlCore::OnVerticalScrollBarChange() {
 
 void ListControlCore::HandleFocusGainedEvent(const FocusGainedInfo& event_info) {
 
+    Parts().FocusManager().ChangeFocusByOwnerFocusGainedEvent(event_info);
+
     auto scroll_box = As<ScrollBox>(event_info.Source());
     if (scroll_box && scroll_box.get() == &Parts().Owner()) {
         RepaintSelectedItems();
@@ -241,6 +240,8 @@ void ListControlCore::HandleFocusGainedEvent(const FocusGainedInfo& event_info) 
 
 
 void ListControlCore::HandleFocusLostEvent(const FocusLostInfo& event_info) {
+
+    Parts().FocusManager().ChangeFocusByOwnerFocusLostEvent(event_info);
 
     auto scroll_box = As<ScrollBox>(event_info.Source());
     if (scroll_box && scroll_box.get() == &Parts().Owner()) {
@@ -322,7 +323,7 @@ void ListControlCore::HandleDataAdded(const ListDataAddedInfo& event_info) {
         Range{ event_info.Index(), event_info.Count() },
         position_difference);
 
-    Parts().FocusStore().AdjustFocusedIndexByAddingIndex(
+    Parts().FocusManager().ChangeFocusByAddingData(
         Range{ event_info.Index(), event_info.Count() });
 
     Parts().SelectionStore().AdjustSelectionByAddingIndexes(
@@ -360,7 +361,7 @@ void ListControlCore::HandleDataRemoved(const ListDataRemovedInfo& event_info) {
         Range{ event_info.Index(), event_info.Count() },
         position_difference);
 
-    Parts().FocusStore().AdjustFocusedIndexByRemovingIndex(
+    Parts().FocusManager().ChangeFocusByRemovingData(
         Range{ event_info.Index(), event_info.Count() });
 
     Parts().SelectionStore().AdjustSelectionByRemovingIndexes(
@@ -421,7 +422,7 @@ void ListControlCore::HandleDataMoved(const ListDataMovedInfo& event_info) {
         event_info.PreviousIndex(), 
         event_info.NewIndex());
 
-    Parts().FocusStore().AdjustFocusedIndexByMovingIndex(
+    Parts().FocusManager().ChangeFocusByMovingData(
         event_info.PreviousIndex(), 
         event_info.NewIndex());
 
@@ -473,24 +474,6 @@ void ListControlCore::OnSelectionStoreChanged(const ListSelectionStoreChangedInf
             selection_changed_event_();
         }
     });
-}
-
-
-void ListControlCore::OnFocusStoreChanged(const ListFocusStoreChangedInfo& event_info) {
-
-    if (!event_info.focused_index) {
-        Parts().Owner().SetIsFocused(true);
-        return;
-    }
-
-    auto& visible_item_manager = Parts().VisibleItemManager();
-    auto visible_item = visible_item_manager.GetVisibleItemAtIndex(*event_info.focused_index);
-    if (visible_item) {
-        visible_item->SetIsFocused(true);
-    }
-    else {
-        Parts().Owner().SetIsFocused(true);
-    }
 }
 
 

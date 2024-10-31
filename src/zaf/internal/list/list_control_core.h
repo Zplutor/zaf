@@ -10,7 +10,6 @@
 #include <zaf/control/scroll_box.h>
 #include <zaf/control/selection_mode.h>
 #include <zaf/internal/list/list_control_parts_based.h>
-#include <zaf/internal/list/list_focus_store.h>
 #include <zaf/internal/list/list_selection_store.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/window/popup_menu.h>
@@ -110,7 +109,6 @@ private:
     void SetScrollContentHeight(float height);
 
     void OnSelectionStoreChanged(const ListSelectionStoreChangedInfo& event_info);
-    void OnFocusStoreChanged(const ListFocusStoreChangedInfo& event_info);
 
 private:
     std::shared_ptr<ListItemContainer> item_container_;

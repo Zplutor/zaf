@@ -2,7 +2,7 @@
 
 namespace zaf::internal {
 
-std::optional<std::size_t> ListFocusStore::FocusedIndex() const {
+std::optional<std::size_t> ListFocusStore::Index() const noexcept {
 
     if (focused_index_.IsEmpty()) {
         return std::nullopt;
@@ -12,39 +12,26 @@ std::optional<std::size_t> ListFocusStore::FocusedIndex() const {
 }
 
 
-void ListFocusStore::SetFocusedIndex(std::optional<std::size_t> index) {
+void ListFocusStore::SetIndex(std::optional<std::size_t> index) {
 
     focused_index_.Clear();
     if (index) {
         focused_index_.AddRange(Range{ *index, 1 });
     }
-    NotifyChanged();
 }
 
 
-void ListFocusStore::AdjustFocusedIndexByAddingIndex(const Range& added_range) {
-
-    if (focused_index_.IsEmpty()) {
-        return;
-    }
-
+void ListFocusStore::AddRange(const Range& added_range) {
     focused_index_.InsertSpan(added_range);
-    NotifyChanged();
 }
 
 
-void ListFocusStore::AdjustFocusedIndexByRemovingIndex(const Range& removed_range) {
-
-    if (focused_index_.IsEmpty()) {
-        return;
-    }
-
+void ListFocusStore::RemoveRange(const Range& removed_range) {
     focused_index_.EraseSpan(removed_range);
-    NotifyChanged();
 }
 
 
-void ListFocusStore::AdjustFocusedIndexByMovingIndex(std::size_t from, std::size_t to) {
+void ListFocusStore::MoveIndex(std::size_t from, std::size_t to) {
 
     if (focused_index_.IsEmpty()) {
         return;
@@ -54,7 +41,7 @@ void ListFocusStore::AdjustFocusedIndexByMovingIndex(std::size_t from, std::size
         return;
     }
 
-    auto focused_index = FocusedIndex();
+    auto focused_index = Index();
     if (!focused_index) {
         return;
     }
@@ -67,15 +54,6 @@ void ListFocusStore::AdjustFocusedIndexByMovingIndex(std::size_t from, std::size
         focused_index_.EraseSpan(Range{ from, 1 });
         focused_index_.InsertSpan(Range{ to, 1 });
     }
-    NotifyChanged();
-}
-
-
-void ListFocusStore::NotifyChanged() {
-
-    changed_event_.AsObserver().OnNext(ListFocusStoreChangedInfo{
-        .focused_index = FocusedIndex(),
-    });
 }
 
 }

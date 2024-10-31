@@ -237,7 +237,6 @@ void ListVisibleItemManager::UpdateVisibleItemsByUpdatingItems(const Range& upda
         (std::max)(updated_range.index, first_visible_item_index_);
     std::size_t intersect_end_update_index = (std::min)(end_update_index, end_visible_item_index);
 
-    std::vector<std::shared_ptr<ListItem>> new_items;
     const auto& item_container = Parts().Core().ItemContainer();
     for (std::size_t current_index = intersect_begin_update_index;
         current_index < intersect_end_update_index;
@@ -251,8 +250,6 @@ void ListVisibleItemManager::UpdateVisibleItemsByUpdatingItems(const Range& upda
         auto new_item = CreateItem(current_index);
         AddItem(new_item, current_index);
         visible_items_[visible_item_index] = new_item;
-
-        new_items.push_back(new_item);
     }
 }
 
@@ -423,9 +420,7 @@ void ListVisibleItemManager::RemoveTailVisibleItems(std::size_t count) {
 
 void ListVisibleItemManager::RemoveItem(const std::shared_ptr<ListItem>& item) {
 
-    if (item->IsFocused()) {
-        Parts().Owner().SetIsFocused(true);
-    }
+    Parts().FocusManager().ChangeFocusBeforeRemovingVisibleItem(*item);
 
     const auto& item_container = Parts().Core().ItemContainer();
     item_container->RemoveChild(item);
@@ -493,9 +488,7 @@ void ListVisibleItemManager::AddItem(const std::shared_ptr<ListItem>& item, std:
     const auto& item_container = Parts().Core().ItemContainer();
     item_container->AddChild(item);
 
-    if (Parts().FocusStore().FocusedIndex() == index) {
-        item->SetIsFocused(true);
-    }
+    Parts().FocusManager().ChangeFocusAfterAddingVisibleItem(*item, index);
 }
 
 

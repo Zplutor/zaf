@@ -292,6 +292,7 @@
     <ClCompile Include="src\zaf\internal\list\list_control_parts_context.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_extended_multiple_selection_strategy.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_fixed_item_height_strategy.cpp" />
+    <ClCompile Include="src\zaf\internal\list\list_focus_manager.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_focus_store.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_input_handler.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_item_height_manager.cpp" />
@@ -792,6 +793,7 @@
     <ClInclude Include="src\zaf\internal\list\list_control_parts_context.h" />
     <ClInclude Include="src\zaf\internal\list\list_extended_multiple_selection_strategy.h" />
     <ClInclude Include="src\zaf\internal\list\list_fixed_item_height_strategy.h" />
+    <ClInclude Include="src\zaf\internal\list\list_focus_manager.h" />
     <ClInclude Include="src\zaf\internal\list\list_focus_store.h" />
     <ClInclude Include="src\zaf\internal\list\list_input_handler.h" />
     <ClInclude Include="src\zaf\internal\list\list_item_height_manager.h" />

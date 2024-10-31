@@ -45,7 +45,7 @@ bool ListInputHandler::HandleLeftButtonDown(std::optional<std::size_t> item_inde
 
     if (item_index) {
 
-        Parts().FocusStore().SetFocusedIndex(item_index);
+        Parts().FocusManager().ChangeFocusByUserInput(item_index);
 
         is_selecting_by_mouse_ = true;
         Parts().Owner().CaptureMouse();
@@ -80,8 +80,7 @@ bool ListInputHandler::HandleRightButtonDown(
 void ListInputHandler::RestoreFocusToOwner() {
 
     if (!Parts().Owner().ContainsFocus()) {
-        auto& focus_store = Parts().FocusStore();
-        focus_store.SetFocusedIndex(focus_store.FocusedIndex());
+        Parts().FocusManager().ChangeFocusByUserInput(std::nullopt);
     }
 }
 
@@ -139,7 +138,7 @@ void ListInputHandler::HandleMouseMoveEvent(const MouseMoveInfo& event_info) {
     auto item_index = Parts().ItemHeightManager().GetItemIndex(position_in_container.y);
     if (item_index) {
 
-        Parts().FocusStore().SetFocusedIndex(item_index);
+        Parts().FocusManager().ChangeFocusByUserInput(item_index);
 
         auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
         selection_strategy.ChangeSelectionOnMouseMove(*item_index);
@@ -215,7 +214,7 @@ void ListInputHandler::HandleKeyDownEvent(const KeyDownInfo& event_info) {
         return;
     }
 
-    auto previous_index = Parts().FocusStore().FocusedIndex();
+    auto previous_index = Parts().FocusManager().FocusedIndex();
     if (!previous_index) {
         previous_index = Parts().SelectionStore().GetFirstSelectedIndex();
     }
@@ -225,7 +224,7 @@ void ListInputHandler::HandleKeyDownEvent(const KeyDownInfo& event_info) {
         return;
     }
 
-    Parts().FocusStore().SetFocusedIndex(new_index);
+    Parts().FocusManager().ChangeFocusByUserInput(new_index);
 
     auto& selection_strategy = Parts().SelectionManager().SelectionStrategy();
     selection_strategy.ChangeSelectionOnKeyDown(*new_index);

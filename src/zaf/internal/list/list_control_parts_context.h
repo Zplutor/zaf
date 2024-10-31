@@ -5,7 +5,7 @@
 #include <zaf/internal/list/list_control_core.h>
 #include <zaf/internal/list/list_input_handler.h>
 #include <zaf/internal/list/list_item_height_manager.h>
-#include <zaf/internal/list/list_focus_store.h>
+#include <zaf/internal/list/list_focus_manager.h>
 #include <zaf/internal/list/list_selection_manager.h>
 #include <zaf/internal/list/list_selection_store.h>
 #include <zaf/internal/list/list_visible_item_manager.h>
@@ -44,8 +44,8 @@ public:
         return *visible_item_manager_;
     }
 
-    ListFocusStore& FocusStore() const {
-        return *focus_store_;
+    ListFocusManager& FocusManager() const {
+        return *focus_manager_;
     }
 
 private:
@@ -56,7 +56,7 @@ private:
     std::unique_ptr<ListSelectionManager> selection_manager_;
     std::unique_ptr<ListSelectionStore> selection_store_;
     std::unique_ptr<ListVisibleItemManager> visible_item_manager_;
-    std::unique_ptr<ListFocusStore> focus_store_;
+    std::unique_ptr<ListFocusManager> focus_manager_;
 };
 
 }
