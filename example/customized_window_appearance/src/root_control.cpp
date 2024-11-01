@@ -60,20 +60,20 @@ std::optional<zaf::HitTestResult> RootControl::HitTest(const zaf::HitTestMessage
 
     auto mouse_position = GetMousePosition();
 
-    if (close_button_->Rect().Contain(mouse_position)) {
+    if (close_button_->Rect().Contains(mouse_position)) {
         return zaf::HitTestResult::CloseButton;
     }
 
-    if (minimize_button_->Rect().Contain(mouse_position)) {
+    if (minimize_button_->Rect().Contains(mouse_position)) {
         return zaf::HitTestResult::MinimizeButton;
     }
 
-    if (maximize_button_->Rect().Contain(mouse_position)) {
+    if (maximize_button_->Rect().Contains(mouse_position)) {
         return zaf::HitTestResult::MaximizeButton;
     }
 
     zaf::Rect top_left_corner_rect(0, 0, BorderThickness, BorderThickness);
-    if (top_left_corner_rect.Contain(mouse_position)) {
+    if (top_left_corner_rect.Contains(mouse_position)) {
         return zaf::HitTestResult::TopLeftCorner;
     }
 
@@ -82,7 +82,7 @@ std::optional<zaf::HitTestResult> RootControl::HitTest(const zaf::HitTestMessage
         0,
         BorderThickness,
         BorderThickness);
-    if (top_right_corner_rect.Contain(mouse_position)) {
+    if (top_right_corner_rect.Contains(mouse_position)) {
         return zaf::HitTestResult::TopRightCorner;
     }
 
@@ -91,7 +91,7 @@ std::optional<zaf::HitTestResult> RootControl::HitTest(const zaf::HitTestMessage
         Height() - BorderThickness,
         BorderThickness,
         BorderThickness);
-    if (bottom_left_corner_rect.Contain(mouse_position)) {
+    if (bottom_left_corner_rect.Contains(mouse_position)) {
         return zaf::HitTestResult::BottomLeftCorner;
     }
 
@@ -100,17 +100,17 @@ std::optional<zaf::HitTestResult> RootControl::HitTest(const zaf::HitTestMessage
         Height() - BorderThickness,
         BorderThickness,
         BorderThickness);
-    if (bottom_right_corner_rect.Contain(mouse_position)) {
+    if (bottom_right_corner_rect.Contains(mouse_position)) {
         return zaf::HitTestResult::BottomRightCorner;
     }
 
     zaf::Rect top_border_rect(0, 0, Width(), BorderThickness);
-    if (top_border_rect.Contain(mouse_position)) {
+    if (top_border_rect.Contains(mouse_position)) {
         return zaf::HitTestResult::TopBorder;
     }
 
     zaf::Rect left_border_rect(0, TitleBarHeight, BorderThickness, Height());
-    if (left_border_rect.Contain(mouse_position)) {
+    if (left_border_rect.Contains(mouse_position)) {
         return zaf::HitTestResult::LeftBorder;
     }
 
@@ -119,17 +119,17 @@ std::optional<zaf::HitTestResult> RootControl::HitTest(const zaf::HitTestMessage
         TitleBarHeight, 
         BorderThickness, 
         Height());
-    if (right_border_rect.Contain(mouse_position)) {
+    if (right_border_rect.Contains(mouse_position)) {
         return zaf::HitTestResult::RightBorder;
     }
 
     zaf::Rect bottom_border_rect(0, Height() - BorderThickness, Width(), BorderThickness);
-    if (bottom_border_rect.Contain(mouse_position)) {
+    if (bottom_border_rect.Contains(mouse_position)) {
         return zaf::HitTestResult::BottomBorder;
     }
 
     zaf::Rect title_bar_rect(0, 0, Width(), TitleBarHeight);
-    if (title_bar_rect.Contain(mouse_position)) {
+    if (title_bar_rect.Contains(mouse_position)) {
         return zaf::HitTestResult::TitleBar;
     }
 

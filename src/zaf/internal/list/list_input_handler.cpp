@@ -18,7 +18,7 @@ void ListInputHandler::HandleMouseDownEvent(const MouseDownInfo& event_info) {
         return;
     }
 
-    if (!scroll_box->ViewportRect().Contain(event_info.PositionAtSender())) {
+    if (!scroll_box->ViewportRect().Contains(event_info.PositionAtSender())) {
         return;
     }
 
@@ -161,7 +161,7 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
         return;
     }
 
-    if (!scroll_box->ViewportRect().Contain(event_info.PositionAtSender())) {
+    if (!scroll_box->ViewportRect().Contains(event_info.PositionAtSender())) {
         return;
     }
 

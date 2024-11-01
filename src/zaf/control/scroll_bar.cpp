@@ -483,12 +483,12 @@ void ScrollBar::ApplyTimerEvent() {
         Point mouse_position = GetMousePosition();
 
         zaf::Rect thumb_slot_rect = GetThumbSlotRect();
-        if (! thumb_slot_rect.Contain(mouse_position)) {
+        if (! thumb_slot_rect.Contains(mouse_position)) {
             return;
         }
 
         zaf::Rect thumb_rect = thumb_->Rect();
-        if (thumb_rect.Contain(mouse_position)) {
+        if (thumb_rect.Contains(mouse_position)) {
             return;
         }
 

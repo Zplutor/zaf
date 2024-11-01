@@ -1029,7 +1029,7 @@ void RichEdit::HandleMouseCursorChanging(const MouseCursorChangingInfo& event_in
 
     //Don't change mouse cursor if the mouse is not in content rect.
     auto mouse_position_in_control = this->GetMousePosition();
-    if (!this->ContentRect().Contain(mouse_position_in_control)) {
+    if (!this->ContentRect().Contains(mouse_position_in_control)) {
         return;
     }
 
@@ -1206,7 +1206,7 @@ Point RichEdit::AdjustMousePositionIntoRichEdit(const Point& position_in_control
     offset_area_rect.size.height = vertical_offset;
 
     //Position is not in offset area, no need to adjust.
-    if (!offset_area_rect.Contain(position_in_control)) {
+    if (!offset_area_rect.Contains(position_in_control)) {
         return position_in_control;
     }
 

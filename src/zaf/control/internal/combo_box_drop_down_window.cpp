@@ -96,7 +96,7 @@ void ComboBoxDropDownWindow::Container::OnMouseUp(const MouseUpInfo& event_info)
 
     __super::OnMouseUp(event_info);
 
-    if (!Rect().Contain(event_info.PositionAtSender())) {
+    if (!Rect().Contains(event_info.PositionAtSender())) {
 
         ReleaseMouse();
         event_info.MarkAsHandled();

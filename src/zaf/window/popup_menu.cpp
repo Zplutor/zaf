@@ -233,7 +233,7 @@ void PopupMenu::ResetSelectedMenuItemBySubMenu() {
 
 void PopupMenu::OnRootControlMouseDown(const MouseDownInfo& event_info) {
 
-    if (!ContentRect().Contain(event_info.PositionAtSender())) {
+    if (!ContentRect().Contains(event_info.PositionAtSender())) {
         this->Close();
     }
 }

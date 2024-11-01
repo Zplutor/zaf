@@ -1288,7 +1288,7 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
         zaf::Rect child_rect = child->Rect();
         child_rect.Intersect(content_rect);
 
-        if (!child_rect.Contain(position_in_content)) {
+        if (!child_rect.Contains(position_in_content)) {
             continue;
         }
 

@@ -184,7 +184,7 @@ public:
     /**
      Determine whether the specified point locates within the rectangle.
      */
-    bool Contain(const Point& point) const {
+    bool Contains(const Point& point) const {
 
         return 
             (point.x >= position.x) && 

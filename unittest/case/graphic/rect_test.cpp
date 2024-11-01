@@ -5,26 +5,26 @@ using namespace zaf;
 
 TEST(RectTest, Contain) {
 
-    ASSERT_FALSE(zaf::Rect(0, 0, 0, 0).Contain(zaf::Point(0, 0)));
-    ASSERT_FALSE(zaf::Rect(0, 0, 0, 0).Contain(zaf::Point(1, 1)));
-    ASSERT_FALSE(zaf::Rect(0, 0, 0, 0).Contain(zaf::Point(-1, -1)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 0, 0).Contains(zaf::Point(0, 0)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 0, 0).Contains(zaf::Point(1, 1)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 0, 0).Contains(zaf::Point(-1, -1)));
 
-    ASSERT_TRUE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(0, 0)));
-    ASSERT_TRUE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(5, 0)));
-    ASSERT_TRUE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(0, 5)));
+    ASSERT_TRUE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(0, 0)));
+    ASSERT_TRUE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(5, 0)));
+    ASSERT_TRUE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(0, 5)));
 
-    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(10, 0)));
-    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(0, 10)));
-    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(10, 5)));
-    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(5, 10)));
-    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(10, 10)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(10, 0)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(0, 10)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(10, 5)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(5, 10)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(10, 10)));
 
-    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(-1, 0)));
-    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(0, -1)));
-    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(-1, -1)));
-    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(5, -5)));
-    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(-5, 5)));
-    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contain(zaf::Point(11, 11)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(-1, 0)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(0, -1)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(-1, -1)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(5, -5)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(-5, 5)));
+    ASSERT_FALSE(zaf::Rect(0, 0, 10, 10).Contains(zaf::Point(11, 11)));
 }
 
 
