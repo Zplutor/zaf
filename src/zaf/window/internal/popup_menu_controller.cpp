@@ -1,5 +1,6 @@
 #include <zaf/window/internal/popup_menu_controller.h>
 #include <zaf/creation.h>
+#include <zaf/window/window_holder.h>
 
 namespace zaf::internal {
 
@@ -173,7 +174,23 @@ bool PopupMenuController::HandleOwnerMouseMessage(const Message& message) {
         if (message.ID() == WM_LBUTTONDOWN || 
             message.ID() == WM_RBUTTONDOWN || 
             message.ID() == WM_MBUTTONDOWN) {
+
+            auto owner_holder = owner_holder_;
+
+            //"this" will be destoryed here, we can't access members of "this" after calling this 
+            //method.
             CloseAllMenus();
+
+            //As we forward all mouse move messages to the menu, the owner won't any receive mouse 
+            //move messages before it handles mouse down messages. This may cause odd behaviour. So
+            //we explicitly send a mouse move to the owner here.
+            if (owner_holder) {
+                auto owner = owner_holder->Window();
+                if (owner) {
+                    owner->Messager().Send(WM_MOUSEMOVE, message.WParam(), message.LParam());
+                }
+            }
+
             //Indicate that the message is not handled, so that the owner can continue to handle 
             //the mouse down message.
             return false;
