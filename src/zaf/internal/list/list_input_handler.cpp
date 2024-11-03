@@ -161,10 +161,6 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
         return;
     }
 
-    if (!scroll_box->ViewportRect().Contains(event_info.PositionAtSender())) {
-        return;
-    }
-
     if (event_info.Message().MouseButton() == MouseButton::Left) {
 
         if (scroll_box->IsCapturingMouse()) {
