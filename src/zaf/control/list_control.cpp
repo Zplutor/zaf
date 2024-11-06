@@ -32,6 +32,7 @@ void ListControl::Initialize() {
     auto item_container = Create<ListItemContainer>();
 
     internal::ListControlCore::InitializeParameters init_params;
+    init_params.data_source = ListDataSource::Empty();
     init_params.item_container = item_container;
 
     init_params.data_source_change_event = 
@@ -114,8 +115,8 @@ std::shared_ptr<ListControlDelegate> ListControl::Delegate() const noexcept {
 }
 
 
-void ListControl::SetDataSource(const std::weak_ptr<ListDataSource>& data_source) {
-    parts_->Core().SetDataSource(data_source);
+void ListControl::SetDataSource(std::shared_ptr<ListDataSource> data_source) {
+    parts_->Core().SetDataSource(std::move(data_source));
 }
 
 void ListControl::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {

@@ -16,6 +16,13 @@ void RaiseRangedEvent(const Subject<T>& subject, std::size_t index, std::size_t 
 
 }
 
+
+const std::shared_ptr<ListDataSource>& ListDataSource::Empty() {
+    static auto empty = std::make_shared<ListDataSource>();
+    return empty;
+}
+
+
 void ListDataSource::NotifyDataAdded(std::size_t index, std::size_t count) const {
     RaiseRangedEvent(data_added_event_, index, count);
 }

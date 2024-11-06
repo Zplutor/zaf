@@ -66,7 +66,7 @@ void ListControlCore::AdjustScrollBarSmallChange() {
         return;
     }
 
-    auto data_source = data_source_.lock();
+    auto data_source = data_source_.ToSharedPtr();
     if (!data_source) {
         return;
     }
@@ -84,29 +84,31 @@ void ListControlCore::AdjustScrollBarSmallChange() {
 
 
 std::shared_ptr<ListDataSource> ListControlCore::DataSource() const noexcept {
-    return data_source_.lock();
+    return data_source_.ToSharedPtr();
 }
 
 
-void ListControlCore::SetDataSource(const std::weak_ptr<ListDataSource>& data_source) {
+void ListControlCore::SetDataSource(std::shared_ptr<ListDataSource> data_source) {
+
+    ZAF_EXPECT(data_source);
 
     data_source_subs_.Clear();
 
     auto previous_data_source = data_source_;
 
-    InstallDataSource(data_source);
+    InstallDataSource(std::move(data_source));
 
     if (data_source_change_event_) {
-        data_source_change_event_(previous_data_source.lock());
+        data_source_change_event_(previous_data_source.ToSharedPtr());
     }
 
     Reload();
 }
 
 
-void ListControlCore::InstallDataSource(const std::weak_ptr<ListDataSource>& data_source) {
+void ListControlCore::InstallDataSource(std::shared_ptr<ListDataSource> data_source) {
 
-    data_source_ = data_source;
+    data_source_.Assign(data_source, &Parts().Owner());
 
     Parts().ItemHeightManager().ResetDataSource(data_source);
 
@@ -116,7 +118,7 @@ void ListControlCore::InstallDataSource(const std::weak_ptr<ListDataSource>& dat
 
 void ListControlCore::RegisterDataSourceEvents() {
 
-    auto data_source = data_source_.lock();
+    auto data_source = data_source_.ToSharedPtr();
     if (!data_source) {
         return;
     }

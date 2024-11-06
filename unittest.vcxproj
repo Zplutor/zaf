@@ -447,6 +447,7 @@
     <ClCompile Include="unittest\case\control\list\list_control_move_test.cpp" />
     <ClCompile Include="unittest\case\control\list\list_control_reenter_test.cpp" />
     <ClCompile Include="unittest\case\control\list\list_control_selection_test.cpp" />
+    <ClCompile Include="unittest\case\control\list\list_control_test.cpp" />
     <ClCompile Include="unittest\case\control\list\list_control_test_fixture.cpp" />
     <ClCompile Include="unittest\case\control\rich_edit\internal\ole_helper_test.cpp" />
     <ClCompile Include="unittest\case\control\rich_edit_test.cpp" />
@@ -484,6 +485,7 @@
     <ClCompile Include="unittest\case\graphic\text\text_layout_test.cpp" />
     <ClCompile Include="unittest\case\internal\list\list_item_height_manager_test.cpp" />
     <ClCompile Include="unittest\case\internal\list\list_selection_store_test.cpp" />
+    <ClCompile Include="unittest\case\internal\no_self_ref_ptr_test.cpp" />
     <ClCompile Include="unittest\case\internal\textual\line_utility_test.cpp" />
     <ClCompile Include="unittest\case\io\stream\byte_array_stream_test.cpp" />
     <ClCompile Include="unittest\case\io\stream\plain_memory_stream_test.cpp" />

@@ -14,6 +14,12 @@ An interface that provides data for a ListControl.
 */
 class ListDataSource : NonCopyableNonMovable {
 public:
+    /**
+    Gets the empty ListDataSource instance.
+    */
+    static const std::shared_ptr<ListDataSource>& Empty();
+
+public:
     ListDataSource() = default;
     virtual ~ListDataSource() = default;
 

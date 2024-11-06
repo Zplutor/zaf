@@ -3007,5 +3007,8 @@
     <ClInclude Include="src\zaf\internal\list\list_focus_manager.h">
       <Filter>zaf\internal\list</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\internal\no_self_ref_ptr.h">
+      <Filter>zaf\internal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

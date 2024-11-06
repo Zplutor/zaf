@@ -623,6 +623,12 @@
     <ClCompile Include="unittest\case\control\list\list_control_test_fixture.cpp">
       <Filter>case\control\list</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\internal\no_self_ref_ptr_test.cpp">
+      <Filter>case\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\list\list_control_test.cpp">
+      <Filter>case\control\list</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

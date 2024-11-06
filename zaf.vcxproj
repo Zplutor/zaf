@@ -807,6 +807,7 @@
     <ClInclude Include="src\zaf\internal\list\list_variable_item_height_strategy.h" />
     <ClInclude Include="src\zaf\internal\list\list_visible_item_manager.h" />
     <ClInclude Include="src\zaf\internal\message_loop.h" />
+    <ClInclude Include="src\zaf\internal\no_self_ref_ptr.h" />
     <ClInclude Include="src\zaf\internal\object\enum_constant_registrar.h" />
     <ClInclude Include="src\zaf\internal\object\enum_parser.h" />
     <ClInclude Include="src\zaf\internal\object\enum_value_combiner.h" />

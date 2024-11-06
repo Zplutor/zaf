@@ -11,6 +11,7 @@
 #include <zaf/control/selection_mode.h>
 #include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/internal/list/list_selection_store.h>
+#include <zaf/internal/no_self_ref_ptr.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/window/popup_menu.h>
 
@@ -27,7 +28,7 @@ public:
 
     class InitializeParameters {
     public:
-        std::weak_ptr<ListDataSource> data_source;
+        std::shared_ptr<ListDataSource> data_source;
         std::weak_ptr<ListControlDelegate> delegate;
         std::shared_ptr<ListItemContainer> item_container;
         DataSourceChangeEvent data_source_change_event;
@@ -43,7 +44,7 @@ public:
     void Initialize(const InitializeParameters& parameters);
 
     std::shared_ptr<ListDataSource> DataSource() const noexcept;
-    void SetDataSource(const std::weak_ptr<ListDataSource>& data_source);
+    void SetDataSource(std::shared_ptr<ListDataSource> data_source);
 
     std::shared_ptr<ListControlDelegate> Delegate() const noexcept;
     void SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
@@ -75,7 +76,7 @@ public:
     }
 
 private:
-    void InstallDataSource(const std::weak_ptr<ListDataSource>& data_source);
+    void InstallDataSource(std::shared_ptr<ListDataSource> data_source);
     void InstallDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
     void InstallItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
     void OnItemContainerDoubleClick(const DoubleClickInfo& event_info);
@@ -112,7 +113,7 @@ private:
 
 private:
     std::shared_ptr<ListItemContainer> item_container_;
-    std::weak_ptr<ListDataSource> data_source_;
+    internal::NoSelfRefPtr<ListDataSource> data_source_;
     std::weak_ptr<ListControlDelegate> delegate_;
 
     SubscriptionSet data_source_subs_;

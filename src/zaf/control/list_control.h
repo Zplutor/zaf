@@ -39,7 +39,7 @@ public:
     ~ListControl();
 
     std::shared_ptr<ListDataSource> DataSource() const noexcept;
-    void SetDataSource(const std::weak_ptr<ListDataSource>& data_source);
+    void SetDataSource(std::shared_ptr<ListDataSource> data_source);
 
     std::shared_ptr<ListControlDelegate> Delegate() const noexcept;
     void SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
