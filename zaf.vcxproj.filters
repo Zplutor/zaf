@@ -1294,6 +1294,9 @@
     <ClCompile Include="src\zaf\internal\list\list_focus_manager.cpp">
       <Filter>zaf\internal\list</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\list_control_delegate.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

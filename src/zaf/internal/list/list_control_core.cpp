@@ -22,8 +22,13 @@ void ListControlCore::Initialize(const InitializeParameters& parameters) {
     item_double_click_event_ = parameters.item_double_click_event;
 
     //Item container must be the first.
+    ZAF_EXPECT(parameters.item_container);
     InstallItemContainer(parameters.item_container);
+
+    ZAF_EXPECT(parameters.data_source);
     InstallDataSource(parameters.data_source);
+
+    ZAF_EXPECT(parameters.delegate);
     InstallDelegate(parameters.delegate);
 
     RegisterScrollBarEvents();
@@ -56,7 +61,7 @@ void ListControlCore::AdjustScrollBarSmallChange() {
         return;
     }
 
-    auto delegate = delegate_.lock();
+    auto delegate = delegate_.ToSharedPtr();
     if (!delegate) {
         return;
     }
@@ -138,28 +143,30 @@ void ListControlCore::RegisterDataSourceEvents() {
 
 
 std::shared_ptr<ListControlDelegate> ListControlCore::Delegate() const noexcept {
-    return delegate_.lock();
+    return delegate_.ToSharedPtr();
 }
 
 
-void ListControlCore::SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
+void ListControlCore::SetDelegate(std::shared_ptr<ListControlDelegate> delegate) {
+
+    ZAF_EXPECT(delegate);
 
     auto previous_delegate = delegate_;
     
-    InstallDelegate(delegate);
+    InstallDelegate(std::move(delegate));
 
     if (delegate_change_event_) {
-        delegate_change_event_(previous_delegate.lock());
+        delegate_change_event_(previous_delegate.ToSharedPtr());
     }
 
     Reload();
 }
 
 
-void ListControlCore::InstallDelegate(const std::weak_ptr<ListControlDelegate>& delegate) {
+void ListControlCore::InstallDelegate(std::shared_ptr<ListControlDelegate> delegate) {
 
-    delegate_ = delegate;
-    Parts().ItemHeightManager().ResetDelegate(delegate_);
+    delegate_.Assign(delegate, &Parts().Owner());
+    Parts().ItemHeightManager().ResetDelegate(delegate);
 }
 
 

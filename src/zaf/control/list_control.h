@@ -42,7 +42,7 @@ public:
     void SetDataSource(std::shared_ptr<ListDataSource> data_source);
 
     std::shared_ptr<ListControlDelegate> Delegate() const noexcept;
-    void SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
+    void SetDelegate(std::shared_ptr<ListControlDelegate> delegate);
 
     /**
      Get item container.

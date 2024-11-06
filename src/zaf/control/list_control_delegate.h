@@ -9,6 +9,12 @@ namespace zaf {
 
 class ListControlDelegate : NonCopyableNonMovable {
 public:
+    /**
+    Gets the default ListControlDelegate instance.
+    */
+    static const std::shared_ptr<ListControlDelegate>& Default();
+
+public:
     ListControlDelegate() = default;
     virtual ~ListControlDelegate() = default;
 
@@ -29,7 +35,7 @@ public:
         std::size_t item_index, 
         const std::shared_ptr<Object>& item_data) {
 
-        return 0;
+        return 20;
     }
 
     virtual float GetItemSpacing() {
@@ -38,17 +44,11 @@ public:
 
     virtual std::wstring GetItemText(
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) {
-
-        return {};
-    }
+        const std::shared_ptr<Object>& item_data);
 
     virtual std::shared_ptr<ListItem> CreateItem(
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) {
-
-        return Create<ListItem>();
-    }
+        const std::shared_ptr<Object>& item_data);
 
     virtual void LoadItem(const std::shared_ptr<ListItem>& item, std::size_t item_index) { }
 };

@@ -29,7 +29,7 @@ public:
     class InitializeParameters {
     public:
         std::shared_ptr<ListDataSource> data_source;
-        std::weak_ptr<ListControlDelegate> delegate;
+        std::shared_ptr<ListControlDelegate> delegate;
         std::shared_ptr<ListItemContainer> item_container;
         DataSourceChangeEvent data_source_change_event;
         DelegateChangeEvent delegate_change_event;
@@ -47,7 +47,7 @@ public:
     void SetDataSource(std::shared_ptr<ListDataSource> data_source);
 
     std::shared_ptr<ListControlDelegate> Delegate() const noexcept;
-    void SetDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
+    void SetDelegate(std::shared_ptr<ListControlDelegate> delegate);
 
     const std::shared_ptr<ListItemContainer>& ItemContainer() const noexcept;
     void SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
@@ -77,7 +77,7 @@ public:
 
 private:
     void InstallDataSource(std::shared_ptr<ListDataSource> data_source);
-    void InstallDelegate(const std::weak_ptr<ListControlDelegate>& delegate);
+    void InstallDelegate(std::shared_ptr<ListControlDelegate> delegate);
     void InstallItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
     void OnItemContainerDoubleClick(const DoubleClickInfo& event_info);
 
@@ -114,7 +114,7 @@ private:
 private:
     std::shared_ptr<ListItemContainer> item_container_;
     internal::NoSelfRefPtr<ListDataSource> data_source_;
-    std::weak_ptr<ListControlDelegate> delegate_;
+    internal::NoSelfRefPtr<ListControlDelegate> delegate_;
 
     SubscriptionSet data_source_subs_;
     SubscriptionSet item_container_subs_;

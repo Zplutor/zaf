@@ -149,12 +149,8 @@ protected:
 
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        data_source_ = zaf::Create<DataSource>();
-        delegate_ = zaf::Create<Delegate>();
-
         list_ = zaf::Create<zaf::ListControl>();
-        list_->SetDataSource(data_source_);
-        list_->SetDelegate(delegate_);
+        list_->SetDataSource(zaf::Create<DataSource>());
         list_->SetSelectionMode(zaf::SelectionMode::ExtendedMultiple);
 
         Subscriptions() += list_->ContextMenuEvent().Subscribe(
@@ -179,15 +175,13 @@ protected:
         button->SetFixedHeight(30);
         button->SetText(L"Add");
         Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
-            data_source_->Add();
+            //data_source_->Add();
         }));
         this->RootControl()->AddChild(button);
     }
 
 private:
     std::shared_ptr<zaf::ListControl> list_;
-    std::shared_ptr<DataSource> data_source_;
-    std::shared_ptr<Delegate> delegate_;
 };
 
 

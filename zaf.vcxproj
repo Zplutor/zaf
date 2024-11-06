@@ -146,6 +146,7 @@
     <ClCompile Include="src\zaf\control\list_box_data_source.cpp" />
     <ClCompile Include="src\zaf\control\list_box_delegate.cpp" />
     <ClCompile Include="src\zaf\control\list_control.cpp" />
+    <ClCompile Include="src\zaf\control\list_control_delegate.cpp" />
     <ClCompile Include="src\zaf\control\list_data_source.cpp" />
     <ClCompile Include="src\zaf\control\list_item.cpp" />
     <ClCompile Include="src\zaf\control\list_item_container.cpp" />
