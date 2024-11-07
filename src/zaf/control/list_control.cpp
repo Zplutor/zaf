@@ -1,7 +1,7 @@
 #include <zaf/control/list_control.h>
 #include <algorithm>
 #include <zaf/base/error/contract_error.h>
-#include <zaf/internal/list/list_control_core.h>
+#include <zaf/internal/list/list_core.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/list_item_container.h>
@@ -33,7 +33,7 @@ void ListControl::Initialize() {
     delegate_.Assign(ListControlDelegate::Default(), this);
     auto item_container = Create<ListItemContainer>();
 
-    internal::ListControlCore::InitializeParameters init_params;
+    internal::ListCore::InitializeParameters init_params;
     init_params.data_source = data_source_.ToSharedPtr();
     init_params.delegate = delegate_.ToSharedPtr();
     init_params.item_container = item_container;

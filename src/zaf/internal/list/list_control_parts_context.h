@@ -2,7 +2,7 @@
 
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/scroll_box.h>
-#include <zaf/internal/list/list_control_core.h>
+#include <zaf/internal/list/list_core.h>
 #include <zaf/internal/list/list_input_handler.h>
 #include <zaf/internal/list/list_item_height_manager.h>
 #include <zaf/internal/list/list_focus_manager.h>
@@ -20,7 +20,7 @@ public:
         return *owner_;
     }
 
-    ListControlCore& Core() const {
+    ListCore& Core() const {
         return *core_;
     }
 
@@ -50,7 +50,7 @@ public:
 
 private:
     ScrollBox* owner_{};
-    std::unique_ptr<ListControlCore> core_;
+    std::unique_ptr<ListCore> core_;
     std::unique_ptr<ListInputHandler> input_handler_;
     std::unique_ptr<ListItemHeightManager> item_height_manager_;
     std::unique_ptr<ListSelectionManager> selection_manager_;

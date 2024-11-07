@@ -1249,7 +1249,7 @@
     <ClCompile Include="src\zaf\rx\internal\observable\concat_observable.cpp">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\list\list_control_core.cpp">
+    <ClCompile Include="src\zaf\internal\list\list_core.cpp">
       <Filter>zaf\internal\list</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\list\list_extended_multiple_selection_strategy.cpp">
@@ -2956,7 +2956,7 @@
     <ClInclude Include="src\zaf\rx\internal\observable\concat_observable.h">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\list\list_control_core.h">
+    <ClInclude Include="src\zaf\internal\list\list_core.h">
       <Filter>zaf\internal\list</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\list\list_extended_multiple_selection_strategy.h">

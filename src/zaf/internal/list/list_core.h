@@ -16,7 +16,7 @@
 
 namespace zaf::internal {
 
-class ListControlCore : public ListControlPartsBased, SubscriptionHost {
+class ListCore : public ListControlPartsBased, SubscriptionHost {
 public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<ListDataSource>&)>;
     using DelegateChangeEvent = std::function<void(const std::shared_ptr<ListControlDelegate>&)>;

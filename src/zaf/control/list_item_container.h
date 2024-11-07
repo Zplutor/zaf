@@ -3,7 +3,7 @@
 #include <zaf/control/control.h>
 
 namespace zaf::internal {
-class ListControlCore;
+class ListCore;
 }
 
 namespace zaf {

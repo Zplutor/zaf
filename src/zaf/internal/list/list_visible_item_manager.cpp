@@ -1,5 +1,5 @@
 #include <zaf/internal/list/list_visible_item_manager.h>
-#include <zaf/internal/list/list_control_core.h>
+#include <zaf/internal/list/list_core.h>
 #include <zaf/internal/list/list_control_parts_context.h>
 
 namespace zaf::internal {

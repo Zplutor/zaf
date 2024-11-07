@@ -1,7 +1,7 @@
 #include <zaf/internal/list/list_input_handler.h>
 #include <zaf/base/as.h>
 #include <zaf/control/list_control.h>
-#include <zaf/internal/list/list_control_core.h>
+#include <zaf/internal/list/list_core.h>
 #include <zaf/internal/list/list_control_parts_context.h>
 #include <zaf/rx/creation.h>
 
