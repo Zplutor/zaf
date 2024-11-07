@@ -1,4 +1,4 @@
-#include <zaf/control/property_grid/internal/split_distance_manager.h>
+#include <zaf/internal/property_grid/split_distance_manager.h>
 #include <zaf/base/as.h>
 
 namespace zaf::property_grid::internal {

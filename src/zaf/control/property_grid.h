@@ -10,7 +10,7 @@ class TreeControlImplementation;
 
 namespace property_grid {
 namespace internal {
-class DataSource;
+class PropertyGridDataSource;
 class Delegate;
 class SplitDistanceManager;
 }
@@ -59,7 +59,7 @@ private:
     std::shared_ptr<property_grid::internal::SplitDistanceManager> split_distance_manager_;
     std::shared_ptr<Object> target_object_;
     std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
-    std::shared_ptr<property_grid::internal::DataSource> data_source_;
+    std::shared_ptr<property_grid::internal::PropertyGridDataSource> data_source_;
     std::shared_ptr<property_grid::internal::Delegate> delegate_;
     std::shared_ptr<internal::TreeControlImplementation> tree_implementation_;
 };

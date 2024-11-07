@@ -1,13 +1,13 @@
-#include <zaf/control/property_grid/internal/data.h>
+#include <zaf/internal/property_grid/property_grid_data.h>
 
 namespace zaf::property_grid::internal {
 
-Data::Data(
+PropertyGridData::PropertyGridData(
     zaf::ObjectProperty* property,
     const std::shared_ptr<zaf::Object>& value,
     bool is_parent_read_only,
     const std::shared_ptr<TypeConfigFactory>& type_config_factory,
-    const std::weak_ptr<DataObserver>& observer)
+    const std::weak_ptr<PropertyGridDataObserver>& observer)
     :
     property_(property),
     value_(value),
@@ -19,7 +19,7 @@ Data::Data(
 }
 
 
-const std::vector<std::shared_ptr<Data>>& Data::Children() {
+const std::vector<std::shared_ptr<PropertyGridData>>& PropertyGridData::Children() {
 
     if (!children_) {
         children_ = LoadChildren();
@@ -29,7 +29,7 @@ const std::vector<std::shared_ptr<Data>>& Data::Children() {
 }
 
 
-std::vector<std::shared_ptr<Data>> Data::LoadChildren() {
+std::vector<std::shared_ptr<PropertyGridData>> PropertyGridData::LoadChildren() {
 
     if (!value_) {
         return {};
@@ -41,11 +41,11 @@ std::vector<std::shared_ptr<Data>> Data::LoadChildren() {
     auto type_config = type_config_factory_->GetConfig(value_->DynamicType());
     type_config->FilterProperties(property_table);
 
-    std::vector<std::shared_ptr<Data>> result;
+    std::vector<std::shared_ptr<PropertyGridData>> result;
     for (auto& each_pair : property_table.Inner()) {
         for (auto each_property : each_pair.second.Inner()) {
 
-            auto child_data = std::make_shared<Data>(
+            auto child_data = std::make_shared<PropertyGridData>(
                 each_property,
                 each_property->GetValue(*value_), 
                 is_read_only_,
@@ -53,7 +53,7 @@ std::vector<std::shared_ptr<Data>> Data::LoadChildren() {
                 observer_);
 
             Subscriptions() += child_data->ValueChangedEvent().Subscribe(
-                std::bind(&Data::OnChildValueChanged, this, std::placeholders::_1));
+                std::bind(&PropertyGridData::OnChildValueChanged, this, std::placeholders::_1));
 
             result.push_back(child_data);
         }
@@ -62,7 +62,7 @@ std::vector<std::shared_ptr<Data>> Data::LoadChildren() {
 }
 
 
-std::vector<ObjectType*> Data::GetObjectTypeChain(const Object& object) {
+std::vector<ObjectType*> PropertyGridData::GetObjectTypeChain(const Object& object) {
 
     std::vector<ObjectType*> type_chain;
 
@@ -78,7 +78,7 @@ std::vector<ObjectType*> Data::GetObjectTypeChain(const Object& object) {
 }
 
 
-PropertyTable Data::CreatePropertyTable(
+PropertyTable PropertyGridData::CreatePropertyTable(
     const std::vector<ObjectType*>& types) {
 
     std::vector<std::pair<ObjectType*, PropertyList>> property_table_inner;
@@ -99,7 +99,7 @@ PropertyTable Data::CreatePropertyTable(
 }
 
 
-void Data::ChangeValueFromUpToDown(const std::shared_ptr<Object>& value) {
+void PropertyGridData::ChangeValueFromUpToDown(const std::shared_ptr<Object>& value) {
 
     value_ = value;
 
@@ -121,7 +121,7 @@ void Data::ChangeValueFromUpToDown(const std::shared_ptr<Object>& value) {
 }
 
 
-void Data::ChangeValueFromDownToUp(const std::shared_ptr<Object>& value) {
+void PropertyGridData::ChangeValueFromDownToUp(const std::shared_ptr<Object>& value) {
 
     value_ = value;
 
@@ -129,7 +129,7 @@ void Data::ChangeValueFromDownToUp(const std::shared_ptr<Object>& value) {
 }
 
 
-void Data::OnChildValueChanged(const std::shared_ptr<Data>& child) {
+void PropertyGridData::OnChildValueChanged(const std::shared_ptr<PropertyGridData>& child) {
 
     child->Property()->SetValue(*value_, child->Value());
 

@@ -3,7 +3,7 @@
 #include <optional>
 #include <vector>
 #include <zaf/base/non_copyable.h>
-#include <zaf/control/property_grid/internal/data_observer.h>
+#include <zaf/internal/property_grid/property_grid_data_observer.h>
 #include <zaf/control/property_grid/property_table.h>
 #include <zaf/control/property_grid/type_config_factory.h>
 #include <zaf/object/object.h>
@@ -13,19 +13,19 @@
 
 namespace zaf::property_grid::internal {
 
-class Data : 
+class PropertyGridData : 
     public Object, 
-    public std::enable_shared_from_this<Data>, 
+    public std::enable_shared_from_this<PropertyGridData>, 
     SubscriptionHost,
     NonCopyableNonMovable {
 
 public:
-    Data(
+    PropertyGridData(
         zaf::ObjectProperty* property,
         const std::shared_ptr<Object>& value,
         bool is_parent_read_only,
         const std::shared_ptr<TypeConfigFactory>& type_config_factory,
-        const std::weak_ptr<DataObserver>& observer);
+        const std::weak_ptr<PropertyGridDataObserver>& observer);
 
     zaf::ObjectProperty* Property() const {
         return property_;
@@ -39,9 +39,9 @@ public:
         return is_read_only_;
     }
 
-    const std::vector<std::shared_ptr<Data>>& Children();
+    const std::vector<std::shared_ptr<PropertyGridData>>& Children();
 
-    Observable<std::shared_ptr<Data>> ValueChangedEvent() {
+    Observable<std::shared_ptr<PropertyGridData>> ValueChangedEvent() {
         return value_changed_subject_.AsObservable();
     }
 
@@ -54,18 +54,18 @@ private:
     static PropertyTable CreatePropertyTable(const std::vector<ObjectType*>& types);
 
 private:
-    std::vector<std::shared_ptr<Data>> LoadChildren();
-    void OnChildValueChanged(const std::shared_ptr<Data>& child);
+    std::vector<std::shared_ptr<PropertyGridData>> LoadChildren();
+    void OnChildValueChanged(const std::shared_ptr<PropertyGridData>& child);
 
 private:
     zaf::ObjectProperty* property_{};
     std::shared_ptr<Object> value_{};
     bool is_read_only_{};
     std::shared_ptr<TypeConfigFactory> type_config_factory_;
-    std::weak_ptr<DataObserver> observer_;
-    Subject<std::shared_ptr<Data>> value_changed_subject_;
+    std::weak_ptr<PropertyGridDataObserver> observer_;
+    Subject<std::shared_ptr<PropertyGridData>> value_changed_subject_;
 
-    std::optional<std::vector<std::shared_ptr<Data>>> children_;
+    std::optional<std::vector<std::shared_ptr<PropertyGridData>>> children_;
 };
 
 }

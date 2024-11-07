@@ -1,4 +1,4 @@
-#include <zaf/control/property_grid/internal/item.h>
+#include <zaf/internal/property_grid/item.h>
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/control/list_item.h>
@@ -13,7 +13,7 @@ constexpr std::uint32_t DelimiterLineColor = 0xeeeeee;
 }
 
 Item::Item(
-    const std::shared_ptr<Data>& data,
+    const std::shared_ptr<PropertyGridData>& data,
     const std::shared_ptr<ValueView>& value_view,
     const std::shared_ptr<SplitDistanceManager>& split_distance_manager)
     :

@@ -1,6 +1,6 @@
-#include <zaf/control/property_grid/internal/expanded_node_visitor.h>
+#include <zaf/internal/property_grid/expanded_node_visitor.h>
 #include <zaf/base/as.h>
-#include <zaf/control/property_grid/internal/data.h>
+#include <zaf/internal/property_grid/property_grid_data.h>
 
 namespace zaf::property_grid::internal {
 
@@ -11,7 +11,7 @@ ExpandedNodeVisitor::ExpandedNodeVisitor() : root_node_(nullptr) {
 
 void ExpandedNodeVisitor::VisitNode(const std::shared_ptr<Object>& node_data) {
 
-    auto data = As<Data>(node_data);
+    auto data = As<PropertyGridData>(node_data);
     if (data) {
 
         auto visiting_node = visiting_node_stack_.top();

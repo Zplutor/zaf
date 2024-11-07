@@ -115,9 +115,6 @@
     <Filter Include="zaf\control\property_grid">
       <UniqueIdentifier>{911b72c6-c587-4dca-a2fe-3c49df6ad566}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\control\property_grid\internal">
-      <UniqueIdentifier>{3d547d53-7cdf-4255-88dd-e5cd590dc731}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\base\event">
       <UniqueIdentifier>{2ad894ba-24eb-46df-87df-a53de41e3a1c}</UniqueIdentifier>
     </Filter>
@@ -195,6 +192,9 @@
     </Filter>
     <Filter Include="zaf\internal\list">
       <UniqueIdentifier>{c25279fe-4f78-4836-bdb4-4cf348cc4383}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\internal\property_grid">
+      <UniqueIdentifier>{3b4a5456-b5de-49eb-81e4-05fb9458b9ed}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -595,18 +595,6 @@
     <ClCompile Include="src\zaf\control\property_grid\text_value_view.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\internal\item.cpp">
-      <Filter>zaf\control\property_grid\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\internal\split_distance_manager.cpp">
-      <Filter>zaf\control\property_grid\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\internal\data_source.cpp">
-      <Filter>zaf\control\property_grid\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\internal\delegate.cpp">
-      <Filter>zaf\control\property_grid\internal</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid\size_config.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
@@ -633,12 +621,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid\property_list.cpp">
       <Filter>zaf\control\property_grid</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\internal\data.cpp">
-      <Filter>zaf\control\property_grid\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\internal\expanded_node_visitor.cpp">
-      <Filter>zaf\control\property_grid\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid\color_value_view.cpp">
       <Filter>zaf\control\property_grid</Filter>
@@ -1296,6 +1278,24 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\list_control_delegate.cpp">
       <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\property_grid\property_grid_data_source.cpp">
+      <Filter>zaf\internal\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\property_grid\property_grid_data.cpp">
+      <Filter>zaf\internal\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\property_grid\delegate.cpp">
+      <Filter>zaf\internal\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\property_grid\expanded_node_visitor.cpp">
+      <Filter>zaf\internal\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\property_grid\item.cpp">
+      <Filter>zaf\internal\property_grid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\property_grid\split_distance_manager.cpp">
+      <Filter>zaf\internal\property_grid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1963,21 +1963,6 @@
     <ClInclude Include="src\zaf\control\property_grid\text_value_view.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\internal\data.h">
-      <Filter>zaf\control\property_grid\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\internal\item.h">
-      <Filter>zaf\control\property_grid\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\internal\split_distance_manager.h">
-      <Filter>zaf\control\property_grid\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\internal\data_source.h">
-      <Filter>zaf\control\property_grid\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\internal\delegate.h">
-      <Filter>zaf\control\property_grid\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\size_config.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
@@ -2011,17 +1996,11 @@
     <ClInclude Include="src\zaf\control\property_grid\property_list.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\internal\data_observer.h">
-      <Filter>zaf\control\property_grid\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid_node.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_visitor.h">
       <Filter>zaf\control\internal\tree_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\internal\expanded_node_visitor.h">
-      <Filter>zaf\control\property_grid\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\color_value_view.h">
       <Filter>zaf\control\property_grid</Filter>
@@ -3012,6 +2991,27 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\no_self_ref_ptr.h">
       <Filter>zaf\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\property_grid\property_grid_data_source.h">
+      <Filter>zaf\internal\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\property_grid\property_grid_data.h">
+      <Filter>zaf\internal\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\property_grid\property_grid_data_observer.h">
+      <Filter>zaf\internal\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\property_grid\delegate.h">
+      <Filter>zaf\internal\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\property_grid\expanded_node_visitor.h">
+      <Filter>zaf\internal\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\property_grid\item.h">
+      <Filter>zaf\internal\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\property_grid\split_distance_manager.h">
+      <Filter>zaf\internal\property_grid</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
