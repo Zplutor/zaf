@@ -84,7 +84,6 @@ void TreeControlImplementation::InitializeListImplementation(
     list_initialize_parameters.item_container = parameters.item_container;
     list_initialize_parameters.data_source = As<ListDataSource>(shared_from_this());
     list_initialize_parameters.delegate = As<ListControlDelegate>(shared_from_this());
-    list_initialize_parameters.item_container_change_event = parameters.item_container_change_event;
 
     Subscriptions() += list_parts_.Core().SelectionChangedEvent().Subscribe(
         std::bind_front(&TreeControlImplementation::OnListSelectionChange, this));

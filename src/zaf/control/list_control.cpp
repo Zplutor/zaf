@@ -31,12 +31,7 @@ void ListControl::Initialize() {
 
     data_source_.Assign(ListDataSource::Empty(), this);
     delegate_.Assign(ListControlDelegate::Default(), this);
-    auto item_container = Create<ListItemContainer>();
-
-    internal::ListCore::InitializeParameters init_params;
-    init_params.data_source = data_source_.ToSharedPtr();
-    init_params.delegate = delegate_.ToSharedPtr();
-    init_params.item_container = item_container;
+    item_container_ = Create<ListItemContainer>();
 
     Subscriptions() += parts_->Core().DataSourceChangedEvent().Subscribe(
         std::bind_front(&ListControl::OnCoreDataSourceChanged, this));
@@ -50,9 +45,13 @@ void ListControl::Initialize() {
     Subscriptions() += parts_->Core().ItemDoubleClickEvent().Subscribe(
         std::bind_front(&ListControl::OnCoreItemDoubleClick, this));
 
-    init_params.item_container_change_event = 
-        std::bind_front(&ListControl::OnItemContainerChanged, this);
+    Subscriptions() += parts_->Core().ItemContainerChangedEvent().Subscribe(
+        std::bind_front(&ListControl::OnCoreItemContainerChanged, this));
 
+    internal::ListCore::InitializeParameters init_params;
+    init_params.data_source = data_source_.ToSharedPtr();
+    init_params.delegate = delegate_.ToSharedPtr();
+    init_params.item_container = item_container_;
     parts_->Core().Initialize(init_params);
 
     parts_->InputHandler().SetContextMenuCallback(
@@ -140,12 +139,13 @@ void ListControl::SetDelegate(std::shared_ptr<ListControlDelegate> delegate) {
 
 
 const std::shared_ptr<ListItemContainer>& ListControl::ItemContainer() const noexcept {
-    return parts_->Core().ItemContainer();
+    return item_container_;
 }
 
 void ListControl::SetItemContainer(std::shared_ptr<ListItemContainer> item_container) {
 
     ZAF_EXPECT(item_container);
+    item_container_ = item_container;
     parts_->Core().SetItemContainer(std::move(item_container));
 }
 
@@ -268,6 +268,13 @@ void ListControl::OnCoreDataSourceChanged(
 
 void ListControl::OnCoreDelegateChanged(const internal::ListCoreDelegateChangedInfo& event_info) {
     OnDelegateChanged(event_info.old_delegate);
+}
+
+
+void ListControl::OnCoreItemContainerChanged(
+    const internal::ListCoreItemContainerChangedInfo& event_info) {
+
+    OnItemContainerChanged(event_info.old_item_container);
 }
 
 

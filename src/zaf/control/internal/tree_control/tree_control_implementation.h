@@ -33,7 +33,6 @@ public:
         std::weak_ptr<TreeControlDelegate> delegate;
         DataSourceChangeEvent data_source_change_event;
         DelegateChangeEvent delegate_change_event;
-        ListCore::ItemContainerChangeEvent item_container_change_event;
         SelectionChangeEvent selection_change_event;
         ItemExpandEvent item_expand_event;
         ItemCollapseEvent item_collapse_event;

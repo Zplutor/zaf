@@ -16,6 +16,7 @@ namespace zaf::internal {
 class ListControlPartsContext;
 struct ListCoreDataSourceChangedInfo;
 struct ListCoreDelegateChangedInfo;
+struct ListCoreItemContainerChangedInfo;
 struct ListCoreItemDoubleClickInfo;
 }
 
@@ -237,6 +238,7 @@ protected:
 private:
     void OnCoreDataSourceChanged(const internal::ListCoreDataSourceChangedInfo& event_info);
     void OnCoreDelegateChanged(const internal::ListCoreDelegateChangedInfo& event_info);
+    void OnCoreItemContainerChanged(const internal::ListCoreItemContainerChangedInfo& event_info);
     void OnCoreSelectionChanged(None);
     void OnCoreItemDoubleClick(const internal::ListCoreItemDoubleClickInfo& event_info);
     std::shared_ptr<PopupMenu> OnCoreContextMenu(
@@ -247,6 +249,7 @@ private:
     std::unique_ptr<internal::ListControlPartsContext> parts_;
     internal::NoSelfRefPtr<ListDataSource> data_source_;
     internal::NoSelfRefPtr<ListControlDelegate> delegate_;
+    std::shared_ptr<ListItemContainer> item_container_;
 
     Event<ListControlSelectionChangedInfo> selection_changed_event_;
     Event<ListControlItemDoubleClickInfo> item_double_click_event_;

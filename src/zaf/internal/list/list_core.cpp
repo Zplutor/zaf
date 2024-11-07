@@ -15,10 +15,7 @@ void ListCore::Initialize(const InitializeParameters& parameters) {
     owner.SetBorder(Frame(1));
     owner.SetBorderColor(Color::Black());
 
-    item_container_change_event_ = parameters.item_container_change_event;
-
     //Item container must be the first.
-    ZAF_EXPECT(parameters.item_container);
     InstallItemContainer(parameters.item_container);
     InstallDataSource(parameters.data_source);
     InstallDelegate(parameters.delegate);
@@ -168,41 +165,42 @@ Observable<ListCoreDelegateChangedInfo> ListCore::DelegateChangedEvent() const {
 }
 
 
-const std::shared_ptr<ListItemContainer>& ListCore::ItemContainer() const noexcept {
-    return item_container_;
+std::shared_ptr<ListItemContainer> ListCore::ItemContainer() const noexcept {
+    return item_container_.lock();
 }
 
 
-void ListCore::SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container) {
-
-    if (item_container_ == item_container) {
-        return;
-    }
+void ListCore::SetItemContainer(std::weak_ptr<ListItemContainer> item_container) {
 
     auto previous_item_container = item_container_;
 
     item_container_subs_.Clear();
-    InstallItemContainer(item_container);
+    InstallItemContainer(std::move(item_container));
 
-    if (item_container_change_event_) {
-        item_container_change_event_(previous_item_container);
-    }
-    
+    item_container_changed_event_.AsObserver().OnNext({
+        previous_item_container.lock()
+    });
+
     Reload();
 }
 
 
-void ListCore::InstallItemContainer(
-    const std::shared_ptr<ListItemContainer>& item_container) {
+void ListCore::InstallItemContainer(std::weak_ptr<ListItemContainer> item_container) {
 
-    ZAF_EXPECT(item_container);
+    auto container = item_container.lock();
+    ZAF_EXPECT(container);
 
-    item_container_ = item_container;
+    item_container_ = container;
 
-    item_container_subs_ += item_container_->DoubleClickEvent().Subscribe(
+    item_container_subs_ += container->DoubleClickEvent().Subscribe(
         std::bind_front(&ListCore::OnItemContainerDoubleClick, this));
 
-    Parts().Owner().SetScrollContent(item_container_);
+    Parts().Owner().SetScrollContent(container);
+}
+
+
+Observable<ListCoreItemContainerChangedInfo> ListCore::ItemContainerChangedEvent() const {
+    return item_container_changed_event_.AsObservable();
 }
 
 
@@ -318,11 +316,16 @@ void ListCore::OnDataAdded(const ListDataAddedInfo& event_info) {
 
 void ListCore::HandleDataAdded(const ListDataAddedInfo& event_info) {
 
+    auto item_container = item_container_.lock();
+    if (!item_container) {
+        return;
+    }
+
     //Adjust scroll bar small change if there is no items before adding.
     bool need_adjust_scroll_bar_small_change = 
         !Parts().VisibleItemManager().HasVisibleItem();
 
-    auto update_guard = item_container_->BeginUpdate();
+    auto update_guard = item_container->BeginUpdate();
 
     float position_difference = AdjustContentHeight();
 
@@ -360,7 +363,12 @@ void ListCore::OnDataRemoved(const ListDataRemovedInfo& event_info) {
 
 void ListCore::HandleDataRemoved(const ListDataRemovedInfo& event_info) {
 
-    auto update_guard = item_container_->BeginUpdate();
+    auto item_container = item_container_.lock();
+    if (!item_container) {
+        return;
+    }
+
+    auto update_guard = item_container->BeginUpdate();
 
     float position_difference = AdjustContentHeight();
 
@@ -394,7 +402,12 @@ void ListCore::OnDataUpdated(const ListDataUpdatedInfo& event_info) {
 
 void ListCore::HandleDataUpdated(const ListDataUpdatedInfo& event_info) {
 
-    auto update_guard = item_container_->BeginUpdate();
+    auto item_container = item_container_.lock();
+    if (!item_container) {
+        return;
+    }
+
+    auto update_guard = item_container->BeginUpdate();
 
     float position_difference = AdjustContentHeight();
 
@@ -421,7 +434,12 @@ void ListCore::OnDataMoved(const ListDataMovedInfo& event_info) {
 
 void ListCore::HandleDataMoved(const ListDataMovedInfo& event_info) {
 
-    auto update_guard = item_container_->BeginUpdate();
+    auto item_container = item_container_.lock();
+    if (!item_container) {
+        return;
+    }
+
+    auto update_guard = item_container->BeginUpdate();
 
     AdjustContentHeight();
 
@@ -485,7 +503,11 @@ void ListCore::OnSelectionStoreChanged(const ListSelectionStoreChangedInfo& even
 void ListCore::SetScrollContentHeight(float height) {
 
     current_total_height_ = height;
-    item_container_->SetFixedHeight(height);
+
+    auto item_container = item_container_.lock();
+    if (item_container) {
+        item_container->SetFixedHeight(height);
+    }
 }
 
 

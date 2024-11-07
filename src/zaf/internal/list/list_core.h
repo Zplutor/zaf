@@ -25,6 +25,10 @@ struct ListCoreDelegateChangedInfo {
     std::shared_ptr<ListControlDelegate> old_delegate;
 };
 
+struct ListCoreItemContainerChangedInfo {
+    std::shared_ptr<ListItemContainer> old_item_container;
+};
+
 struct ListCoreItemDoubleClickInfo {
     std::size_t item_index{};
 };
@@ -32,15 +36,11 @@ struct ListCoreItemDoubleClickInfo {
 
 class ListCore : public ListControlPartsBased, SubscriptionHost {
 public:
-    using ItemContainerChangeEvent = 
-        std::function<void(const std::shared_ptr<ListItemContainer>&)>;
-
     class InitializeParameters {
     public:
         std::weak_ptr<ListDataSource> data_source;
         std::weak_ptr<ListControlDelegate> delegate;
-        std::shared_ptr<ListItemContainer> item_container;
-        ItemContainerChangeEvent item_container_change_event;
+        std::weak_ptr<ListItemContainer> item_container;
     };
 
 public:
@@ -56,8 +56,9 @@ public:
     void SetDelegate(std::weak_ptr<ListControlDelegate> delegate);
     Observable<ListCoreDelegateChangedInfo> DelegateChangedEvent() const;
 
-    const std::shared_ptr<ListItemContainer>& ItemContainer() const noexcept;
-    void SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
+    std::shared_ptr<ListItemContainer> ItemContainer() const noexcept;
+    void SetItemContainer(std::weak_ptr<ListItemContainer> item_container);
+    Observable<ListCoreItemContainerChangedInfo> ItemContainerChangedEvent() const;
 
     void OnLayout();
     void OnVerticalScrollBarChange();
@@ -88,7 +89,7 @@ public:
 private:
     void InstallDataSource(std::weak_ptr<ListDataSource> data_source);
     void InstallDelegate(std::weak_ptr<ListControlDelegate> delegate);
-    void InstallItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
+    void InstallItemContainer(std::weak_ptr<ListItemContainer> item_container);
     void OnItemContainerDoubleClick(const DoubleClickInfo& event_info);
 
     void RegisterScrollBarEvents();
@@ -122,7 +123,8 @@ private:
     void OnSelectionStoreChanged(const ListSelectionStoreChangedInfo& event_info);
 
 private:
-    std::shared_ptr<ListItemContainer> item_container_;
+    std::weak_ptr<ListItemContainer> item_container_;
+    Subject<ListCoreItemContainerChangedInfo> item_container_changed_event_;
 
     std::weak_ptr<ListDataSource> data_source_;
     Subject<ListCoreDataSourceChangedInfo> data_source_changed_event_;
@@ -145,8 +147,6 @@ private:
 
     Subject<None> selection_changed_event_;
     Subject<ListCoreItemDoubleClickInfo> item_double_click_event_;
-
-    ItemContainerChangeEvent item_container_change_event_;
 };
 
 }
