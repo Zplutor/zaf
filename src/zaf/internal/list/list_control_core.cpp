@@ -24,11 +24,7 @@ void ListControlCore::Initialize(const InitializeParameters& parameters) {
     //Item container must be the first.
     ZAF_EXPECT(parameters.item_container);
     InstallItemContainer(parameters.item_container);
-
-    ZAF_EXPECT(parameters.data_source);
     InstallDataSource(parameters.data_source);
-
-    ZAF_EXPECT(parameters.delegate);
     InstallDelegate(parameters.delegate);
 
     RegisterScrollBarEvents();
@@ -61,7 +57,7 @@ void ListControlCore::AdjustScrollBarSmallChange() {
         return;
     }
 
-    auto delegate = delegate_.ToSharedPtr();
+    auto delegate = delegate_.lock();
     if (!delegate) {
         return;
     }
@@ -71,7 +67,7 @@ void ListControlCore::AdjustScrollBarSmallChange() {
         return;
     }
 
-    auto data_source = data_source_.ToSharedPtr();
+    auto data_source = data_source_.lock();
     if (!data_source) {
         return;
     }
@@ -89,13 +85,11 @@ void ListControlCore::AdjustScrollBarSmallChange() {
 
 
 std::shared_ptr<ListDataSource> ListControlCore::DataSource() const noexcept {
-    return data_source_.ToSharedPtr();
+    return data_source_.lock();
 }
 
 
-void ListControlCore::SetDataSource(std::shared_ptr<ListDataSource> data_source) {
-
-    ZAF_EXPECT(data_source);
+void ListControlCore::SetDataSource(std::weak_ptr<ListDataSource> data_source) {
 
     data_source_subs_.Clear();
 
@@ -104,16 +98,16 @@ void ListControlCore::SetDataSource(std::shared_ptr<ListDataSource> data_source)
     InstallDataSource(std::move(data_source));
 
     if (data_source_change_event_) {
-        data_source_change_event_(previous_data_source.ToSharedPtr());
+        data_source_change_event_(previous_data_source.lock());
     }
 
     Reload();
 }
 
 
-void ListControlCore::InstallDataSource(std::shared_ptr<ListDataSource> data_source) {
+void ListControlCore::InstallDataSource(std::weak_ptr<ListDataSource> data_source) {
 
-    data_source_.Assign(data_source, &Parts().Owner());
+    data_source_ = data_source;
 
     Parts().ItemHeightManager().ResetDataSource(data_source);
 
@@ -123,7 +117,7 @@ void ListControlCore::InstallDataSource(std::shared_ptr<ListDataSource> data_sou
 
 void ListControlCore::RegisterDataSourceEvents() {
 
-    auto data_source = data_source_.ToSharedPtr();
+    auto data_source = data_source_.lock();
     if (!data_source) {
         return;
     }
@@ -143,29 +137,27 @@ void ListControlCore::RegisterDataSourceEvents() {
 
 
 std::shared_ptr<ListControlDelegate> ListControlCore::Delegate() const noexcept {
-    return delegate_.ToSharedPtr();
+    return delegate_.lock();
 }
 
 
-void ListControlCore::SetDelegate(std::shared_ptr<ListControlDelegate> delegate) {
-
-    ZAF_EXPECT(delegate);
+void ListControlCore::SetDelegate(std::weak_ptr<ListControlDelegate> delegate) {
 
     auto previous_delegate = delegate_;
     
     InstallDelegate(std::move(delegate));
 
     if (delegate_change_event_) {
-        delegate_change_event_(previous_delegate.ToSharedPtr());
+        delegate_change_event_(previous_delegate.lock());
     }
 
     Reload();
 }
 
 
-void ListControlCore::InstallDelegate(std::shared_ptr<ListControlDelegate> delegate) {
+void ListControlCore::InstallDelegate(std::weak_ptr<ListControlDelegate> delegate) {
 
-    delegate_.Assign(delegate, &Parts().Owner());
+    delegate_ = delegate;
     Parts().ItemHeightManager().ResetDelegate(delegate);
 }
 

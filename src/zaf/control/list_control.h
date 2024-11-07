@@ -8,6 +8,7 @@
 #include <zaf/control/selection_mode.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/creation.h>
+#include <zaf/internal/no_self_ref_ptr.h>
 #include <zaf/rx/observable.h>
 
 namespace zaf::internal {
@@ -238,6 +239,8 @@ private:
 
 private:
     std::unique_ptr<internal::ListControlPartsContext> parts_;
+    internal::NoSelfRefPtr<ListDataSource> data_source_;
+    internal::NoSelfRefPtr<ListControlDelegate> delegate_;
 
     Event<ListControlSelectionChangedInfo> selection_changed_event_;
     Event<ListControlItemDoubleClickInfo> item_double_click_event_;

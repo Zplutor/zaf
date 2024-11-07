@@ -127,6 +127,9 @@
     <Filter Include="case\control\list">
       <UniqueIdentifier>{428d74ee-b65c-462a-8aac-7bef0ca50580}</UniqueIdentifier>
     </Filter>
+    <Filter Include="case\control\tree">
+      <UniqueIdentifier>{9f191076-fb43-4679-b6a1-70c2f78a00bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="unittest\main.cpp" />
@@ -628,6 +631,9 @@
     </ClCompile>
     <ClCompile Include="unittest\case\control\list\list_control_test.cpp">
       <Filter>case\control\list</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\control\tree\tree_control_test.cpp">
+      <Filter>case\control\tree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -29,11 +29,13 @@ void ListControl::Initialize() {
 
     __super::Initialize();
 
+    data_source_.Assign(ListDataSource::Empty(), this);
+    delegate_.Assign(ListControlDelegate::Default(), this);
     auto item_container = Create<ListItemContainer>();
 
     internal::ListControlCore::InitializeParameters init_params;
-    init_params.data_source = ListDataSource::Empty();
-    init_params.delegate = ListControlDelegate::Default();
+    init_params.data_source = data_source_.ToSharedPtr();
+    init_params.delegate = delegate_.ToSharedPtr();
     init_params.item_container = item_container;
 
     init_params.data_source_change_event = 
@@ -108,19 +110,27 @@ void ListControl::OnVerticalScrollBarChanged(
 
 
 std::shared_ptr<ListDataSource> ListControl::DataSource() const noexcept {
-    return parts_->Core().DataSource();
+    return data_source_.ToSharedPtr();
 }
-
-std::shared_ptr<ListControlDelegate> ListControl::Delegate() const noexcept {
-    return parts_->Core().Delegate();
-}
-
 
 void ListControl::SetDataSource(std::shared_ptr<ListDataSource> data_source) {
+
+    ZAF_EXPECT(data_source);
+
+    data_source_.Assign(data_source, this);
     parts_->Core().SetDataSource(std::move(data_source));
 }
 
+
+std::shared_ptr<ListControlDelegate> ListControl::Delegate() const noexcept {
+    return delegate_.ToSharedPtr();
+}
+
 void ListControl::SetDelegate(std::shared_ptr<ListControlDelegate> delegate) {
+
+    ZAF_EXPECT(delegate);
+
+    delegate_.Assign(delegate, this);
     parts_->Core().SetDelegate(std::move(delegate));
 }
 
