@@ -2,6 +2,7 @@
 
 #include <deque>
 #include <zaf/base/define.h>
+#include <zaf/base/none.h>
 #include <zaf/control/event/list_control_event_infos.h>
 #include <zaf/control/list_item.h>
 #include <zaf/control/scroll_box.h>
@@ -13,6 +14,9 @@
 
 namespace zaf::internal {
 class ListControlPartsContext;
+struct ListCoreDataSourceChangedInfo;
+struct ListCoreDelegateChangedInfo;
+struct ListCoreItemDoubleClickInfo;
 }
 
 namespace zaf {
@@ -231,8 +235,10 @@ protected:
     virtual void OnContextMenu(const ListControlContextMenuInfo& event_info);
 
 private:
-    void OnCoreSelectionChanged();
-    void OnCoreItemDoubleClick(std::size_t item_index);
+    void OnCoreDataSourceChanged(const internal::ListCoreDataSourceChangedInfo& event_info);
+    void OnCoreDelegateChanged(const internal::ListCoreDelegateChangedInfo& event_info);
+    void OnCoreSelectionChanged(None);
+    void OnCoreItemDoubleClick(const internal::ListCoreItemDoubleClickInfo& event_info);
     std::shared_ptr<PopupMenu> OnCoreContextMenu(
         std::size_t item_index,
         const std::shared_ptr<Object>& item_data);

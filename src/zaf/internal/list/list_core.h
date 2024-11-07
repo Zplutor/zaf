@@ -11,30 +11,36 @@
 #include <zaf/control/selection_mode.h>
 #include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/internal/list/list_selection_store.h>
+#include <zaf/rx/subject.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/window/popup_menu.h>
 
 namespace zaf::internal {
 
+struct ListCoreDataSourceChangedInfo {
+    std::shared_ptr<ListDataSource> old_data_source;
+};
+
+struct ListCoreDelegateChangedInfo {
+    std::shared_ptr<ListControlDelegate> old_delegate;
+};
+
+struct ListCoreItemDoubleClickInfo {
+    std::size_t item_index{};
+};
+
+
 class ListCore : public ListControlPartsBased, SubscriptionHost {
 public:
-    using DataSourceChangeEvent = std::function<void(const std::shared_ptr<ListDataSource>&)>;
-    using DelegateChangeEvent = std::function<void(const std::shared_ptr<ListControlDelegate>&)>;
     using ItemContainerChangeEvent = 
         std::function<void(const std::shared_ptr<ListItemContainer>&)>;
-    using SelectionChangedEvent = std::function<void()>;
-    using ItemDoubleClickEvent = std::function<void(std::size_t)>;
 
     class InitializeParameters {
     public:
         std::weak_ptr<ListDataSource> data_source;
         std::weak_ptr<ListControlDelegate> delegate;
         std::shared_ptr<ListItemContainer> item_container;
-        DataSourceChangeEvent data_source_change_event;
-        DelegateChangeEvent delegate_change_event;
         ItemContainerChangeEvent item_container_change_event;
-        SelectionChangedEvent selection_changed_event;
-        ItemDoubleClickEvent item_double_click_event;
     };
 
 public:
@@ -44,9 +50,11 @@ public:
 
     std::shared_ptr<ListDataSource> DataSource() const noexcept;
     void SetDataSource(std::weak_ptr<ListDataSource> data_source);
+    Observable<ListCoreDataSourceChangedInfo> DataSourceChangedEvent() const;
 
     std::shared_ptr<ListControlDelegate> Delegate() const noexcept;
     void SetDelegate(std::weak_ptr<ListControlDelegate> delegate);
+    Observable<ListCoreDelegateChangedInfo> DelegateChangedEvent() const;
 
     const std::shared_ptr<ListItemContainer>& ItemContainer() const noexcept;
     void SetItemContainer(const std::shared_ptr<ListItemContainer>& item_container);
@@ -73,6 +81,9 @@ public:
             AdjustScrollBarSmallChange();
         }
     }
+
+    Observable<None> SelectionChangedEvent() const;
+    Observable<ListCoreItemDoubleClickInfo> ItemDoubleClickEvent() const;
 
 private:
     void InstallDataSource(std::weak_ptr<ListDataSource> data_source);
@@ -112,8 +123,12 @@ private:
 
 private:
     std::shared_ptr<ListItemContainer> item_container_;
+
     std::weak_ptr<ListDataSource> data_source_;
+    Subject<ListCoreDataSourceChangedInfo> data_source_changed_event_;
+
     std::weak_ptr<ListControlDelegate> delegate_;
+    Subject<ListCoreDelegateChangedInfo> delegate_changed_event_;
 
     SubscriptionSet data_source_subs_;
     SubscriptionSet item_container_subs_;
@@ -128,11 +143,10 @@ private:
 
     bool auto_adjust_scroll_bar_small_change_{ true };
 
-    DataSourceChangeEvent data_source_change_event_;
-    DelegateChangeEvent delegate_change_event_;
+    Subject<None> selection_changed_event_;
+    Subject<ListCoreItemDoubleClickInfo> item_double_click_event_;
+
     ItemContainerChangeEvent item_container_change_event_;
-    SelectionChangedEvent selection_changed_event_;
-    ItemDoubleClickEvent item_double_click_event_;
 };
 
 }

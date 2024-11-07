@@ -15,11 +15,7 @@ void ListCore::Initialize(const InitializeParameters& parameters) {
     owner.SetBorder(Frame(1));
     owner.SetBorderColor(Color::Black());
 
-    data_source_change_event_ = parameters.data_source_change_event;
-    delegate_change_event_ = parameters.delegate_change_event;
     item_container_change_event_ = parameters.item_container_change_event;
-    selection_changed_event_ = parameters.selection_changed_event;
-    item_double_click_event_ = parameters.item_double_click_event;
 
     //Item container must be the first.
     ZAF_EXPECT(parameters.item_container);
@@ -97,9 +93,9 @@ void ListCore::SetDataSource(std::weak_ptr<ListDataSource> data_source) {
 
     InstallDataSource(std::move(data_source));
 
-    if (data_source_change_event_) {
-        data_source_change_event_(previous_data_source.lock());
-    }
+    data_source_changed_event_.AsObserver().OnNext({
+        previous_data_source.lock()
+    });
 
     Reload();
 }
@@ -136,6 +132,11 @@ void ListCore::RegisterDataSourceEvents() {
 }
 
 
+Observable<ListCoreDataSourceChangedInfo> ListCore::DataSourceChangedEvent() const {
+    return data_source_changed_event_.AsObservable();
+}
+
+
 std::shared_ptr<ListControlDelegate> ListCore::Delegate() const noexcept {
     return delegate_.lock();
 }
@@ -147,9 +148,9 @@ void ListCore::SetDelegate(std::weak_ptr<ListControlDelegate> delegate) {
     
     InstallDelegate(std::move(delegate));
 
-    if (delegate_change_event_) {
-        delegate_change_event_(previous_delegate.lock());
-    }
+    delegate_changed_event_.AsObserver().OnNext({
+        previous_delegate.lock()
+    });
 
     Reload();
 }
@@ -159,6 +160,11 @@ void ListCore::InstallDelegate(std::weak_ptr<ListControlDelegate> delegate) {
 
     delegate_ = delegate;
     Parts().ItemHeightManager().ResetDelegate(delegate);
+}
+
+
+Observable<ListCoreDelegateChangedInfo> ListCore::DelegateChangedEvent() const {
+    return delegate_changed_event_.AsObservable();
 }
 
 
@@ -202,13 +208,9 @@ void ListCore::InstallItemContainer(
 
 void ListCore::OnItemContainerDoubleClick(const DoubleClickInfo& event_info) {
 
-    if (!item_double_click_event_) {
-        return;
-    }
-
     auto index = Parts().ItemHeightManager().GetItemIndex(event_info.Position().y);
     if (index) {
-        item_double_click_event_(*index);
+        item_double_click_event_.AsObserver().OnNext({ *index });
     }
 }
 
@@ -475,9 +477,7 @@ void ListCore::OnSelectionStoreChanged(const ListSelectionStoreChangedInfo& even
     exit_selecting_by_mouse_sub_ = 
         Parts().InputHandler().WhenNotSelectingByMouse().Subscribe([this](None) {
     
-        if (selection_changed_event_) {
-            selection_changed_event_();
-        }
+        selection_changed_event_.AsObserver().OnNext({});
     });
 }
 
@@ -522,6 +522,16 @@ std::optional<std::size_t> ListCore::FindItemIndexAtPosition(
 
     float adjusted_position = position.y + visible_scroll_content_rect.position.y;
     return Parts().ItemHeightManager().GetItemIndex(adjusted_position);
+}
+
+
+Observable<None> ListCore::SelectionChangedEvent() const {
+    return selection_changed_event_.AsObservable();
+}
+
+
+Observable<ListCoreItemDoubleClickInfo> ListCore::ItemDoubleClickEvent() const {
+    return item_double_click_event_.AsObservable();
 }
 
 }

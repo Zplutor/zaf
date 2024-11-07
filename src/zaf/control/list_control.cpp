@@ -38,16 +38,20 @@ void ListControl::Initialize() {
     init_params.delegate = delegate_.ToSharedPtr();
     init_params.item_container = item_container;
 
-    init_params.data_source_change_event = 
-        std::bind_front(&ListControl::OnDataSourceChanged, this);
-    init_params.delegate_change_event = 
-        std::bind_front(&ListControl::OnDelegateChanged, this);
+    Subscriptions() += parts_->Core().DataSourceChangedEvent().Subscribe(
+        std::bind_front(&ListControl::OnCoreDataSourceChanged, this));
+
+    Subscriptions() += parts_->Core().DelegateChangedEvent().Subscribe(
+        std::bind_front(&ListControl::OnCoreDelegateChanged, this));
+
+    Subscriptions() += parts_->Core().SelectionChangedEvent().Subscribe(
+        std::bind_front(&ListControl::OnCoreSelectionChanged, this));
+
+    Subscriptions() += parts_->Core().ItemDoubleClickEvent().Subscribe(
+        std::bind_front(&ListControl::OnCoreItemDoubleClick, this));
+
     init_params.item_container_change_event = 
         std::bind_front(&ListControl::OnItemContainerChanged, this);
-    init_params.selection_changed_event = 
-        std::bind(&ListControl::OnCoreSelectionChanged, this);
-    init_params.item_double_click_event = 
-        std::bind_front(&ListControl::OnCoreItemDoubleClick, this);
 
     parts_->Core().Initialize(init_params);
 
@@ -255,8 +259,19 @@ std::optional<std::size_t> ListControl::FindItemIndexAtPosition(const Point& pos
 }
 
 
-void ListControl::OnCoreSelectionChanged() {
+void ListControl::OnCoreDataSourceChanged(
+    const internal::ListCoreDataSourceChangedInfo& event_info) {
 
+    OnDataSourceChanged(event_info.old_data_source);
+}
+
+
+void ListControl::OnCoreDelegateChanged(const internal::ListCoreDelegateChangedInfo& event_info) {
+    OnDelegateChanged(event_info.old_delegate);
+}
+
+
+void ListControl::OnCoreSelectionChanged(None) {
     ListControlSelectionChangedInfo event_info{ zaf::As<ListControl>(shared_from_this()) };
     OnSelectionChanged(event_info);
 }
@@ -272,11 +287,11 @@ Observable<ListControlSelectionChangedInfo> ListControl::SelectionChangedEvent()
 }
 
 
-void ListControl::OnCoreItemDoubleClick(std::size_t item_index) {
+void ListControl::OnCoreItemDoubleClick(const internal::ListCoreItemDoubleClickInfo& event_info) {
 
     item_double_click_event_.Raise(ListControlItemDoubleClickInfo{
         As<ListControl>(shared_from_this()),
-        item_index
+        event_info.item_index
     });
 }
 

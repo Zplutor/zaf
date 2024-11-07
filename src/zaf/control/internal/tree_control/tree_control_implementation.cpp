@@ -86,13 +86,11 @@ void TreeControlImplementation::InitializeListImplementation(
     list_initialize_parameters.delegate = As<ListControlDelegate>(shared_from_this());
     list_initialize_parameters.item_container_change_event = parameters.item_container_change_event;
 
-    list_initialize_parameters.selection_changed_event = std::bind(
-        &TreeControlImplementation::OnListSelectionChange, this);
+    Subscriptions() += list_parts_.Core().SelectionChangedEvent().Subscribe(
+        std::bind_front(&TreeControlImplementation::OnListSelectionChange, this));
 
-    list_initialize_parameters.item_double_click_event = std::bind(
-        &TreeControlImplementation::OnListItemDoubleClick, 
-        this, 
-        std::placeholders::_1);
+    Subscriptions() += list_parts_.Core().ItemDoubleClickEvent().Subscribe(
+        std::bind_front(&TreeControlImplementation::OnListItemDoubleClick, this));
 
     list_parts_.Core().Initialize(list_initialize_parameters);
 }
@@ -688,18 +686,19 @@ bool TreeControlImplementation::ChangeItemExpandState(
 }
 
 
-void TreeControlImplementation::OnListItemDoubleClick(std::size_t list_index) {
+void TreeControlImplementation::OnListItemDoubleClick(
+    const ListCoreItemDoubleClickInfo& event_info) {
 
-    auto index_path = tree_index_mapping_.GetIndexPathAtIndex(list_index);
+    auto index_path = tree_index_mapping_.GetIndexPathAtIndex(event_info.item_index);
     if (index_path.empty()) {
         return;
     }
 
     if (IsIndexPathExpanded(index_path)) {
-        CollapseItemUI(index_path, list_index, true);
+        CollapseItemUI(index_path, event_info.item_index, true);
     }
     else {
-        ExpandItemUI(index_path, list_index, true);
+        ExpandItemUI(index_path, event_info.item_index, true);
     }
 }
 
@@ -824,7 +823,7 @@ void TreeControlImplementation::OnListSelectionStoreChanged(
 }
 
 
-void TreeControlImplementation::OnListSelectionChange() {
+void TreeControlImplementation::OnListSelectionChange(None) {
     NotifySelectionChange();
 }
 

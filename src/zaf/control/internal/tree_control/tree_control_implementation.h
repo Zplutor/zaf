@@ -131,14 +131,14 @@ private:
         const IndexPath& index_path,
         const std::optional<std::size_t>& list_index,
         bool update_item);
-    void OnListItemDoubleClick(std::size_t list_index);
+    void OnListItemDoubleClick(const ListCoreItemDoubleClickInfo& event_info);
     void OnChangeExpandStateByArrowKeys(bool is_to_expand);
 
     void UpdateItem(const IndexPath& index_path);
     void CheckIfItemHasChildren(const IndexPath& index_path, std::size_t list_index);
 
     void OnListSelectionStoreChanged(const ListSelectionStoreChangedInfo& event_info);
-    void OnListSelectionChange();
+    void OnListSelectionChange(None);
 
     void NotifySelectionChange();
 
