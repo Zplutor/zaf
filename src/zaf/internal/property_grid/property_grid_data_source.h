@@ -5,7 +5,7 @@
 #include <zaf/control/property_grid/type_config_factory.h>
 #include <zaf/control/tree_data_source.h>
 
-namespace zaf::property_grid::internal {
+namespace zaf::internal {
 
 class PropertyGridDataSource : 
     public TreeDataSource, 
@@ -13,7 +13,7 @@ class PropertyGridDataSource :
     public std::enable_shared_from_this<PropertyGridDataSource> {
 
 public:
-    explicit PropertyGridDataSource(const std::shared_ptr<TypeConfigFactory>& type_config_factory);
+    explicit PropertyGridDataSource(const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory);
 
     void SetTargetObject(const std::shared_ptr<Object>& target_object);
 
@@ -33,7 +33,7 @@ public:
 
 private:
     std::shared_ptr<PropertyGridData> root_data_;
-    std::shared_ptr<TypeConfigFactory> type_config_factory_;
+    std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
 };
 
 }

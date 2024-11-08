@@ -11,7 +11,7 @@
 #include <zaf/rx/subject.h>
 #include <zaf/rx/subscription_host.h>
 
-namespace zaf::property_grid::internal {
+namespace zaf::internal {
 
 class PropertyGridData : 
     public Object, 
@@ -24,7 +24,7 @@ public:
         zaf::ObjectProperty* property,
         const std::shared_ptr<Object>& value,
         bool is_parent_read_only,
-        const std::shared_ptr<TypeConfigFactory>& type_config_factory,
+        const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory,
         const std::weak_ptr<PropertyGridDataObserver>& observer);
 
     zaf::ObjectProperty* Property() const {
@@ -51,7 +51,7 @@ public:
 
 private:
     static std::vector<ObjectType*> GetObjectTypeChain(const Object& object);
-    static PropertyTable CreatePropertyTable(const std::vector<ObjectType*>& types);
+    static property_grid::PropertyTable CreatePropertyTable(const std::vector<ObjectType*>& types);
 
 private:
     std::vector<std::shared_ptr<PropertyGridData>> LoadChildren();
@@ -61,7 +61,7 @@ private:
     zaf::ObjectProperty* property_{};
     std::shared_ptr<Object> value_{};
     bool is_read_only_{};
-    std::shared_ptr<TypeConfigFactory> type_config_factory_;
+    std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
     std::weak_ptr<PropertyGridDataObserver> observer_;
     Subject<std::shared_ptr<PropertyGridData>> value_changed_subject_;
 

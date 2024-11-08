@@ -1,12 +1,12 @@
 #include <zaf/internal/property_grid/property_grid_data.h>
 
-namespace zaf::property_grid::internal {
+namespace zaf::internal {
 
 PropertyGridData::PropertyGridData(
     zaf::ObjectProperty* property,
     const std::shared_ptr<zaf::Object>& value,
     bool is_parent_read_only,
-    const std::shared_ptr<TypeConfigFactory>& type_config_factory,
+    const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory,
     const std::weak_ptr<PropertyGridDataObserver>& observer)
     :
     property_(property),
@@ -78,10 +78,10 @@ std::vector<ObjectType*> PropertyGridData::GetObjectTypeChain(const Object& obje
 }
 
 
-PropertyTable PropertyGridData::CreatePropertyTable(
+property_grid::PropertyTable PropertyGridData::CreatePropertyTable(
     const std::vector<ObjectType*>& types) {
 
-    std::vector<std::pair<ObjectType*, PropertyList>> property_table_inner;
+    std::vector<std::pair<ObjectType*, property_grid::PropertyList>> property_table_inner;
     for (auto each_type : types) {
 
         std::vector<ObjectProperty*> property_list_inner;
@@ -95,7 +95,7 @@ PropertyTable PropertyGridData::CreatePropertyTable(
         property_table_inner.emplace_back(each_type, std::move(property_list_inner));
     }
 
-    return PropertyTable(std::move(property_table_inner));
+    return property_grid::PropertyTable(std::move(property_table_inner));
 }
 
 

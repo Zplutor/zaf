@@ -8,13 +8,13 @@
 #include <zaf/control/tree_item.h>
 #include <zaf/rx/subject.h>
 
-namespace zaf::property_grid::internal {
+namespace zaf::internal {
 
-class Item : public TreeItem {
+class PropertyGridItem : public TreeItem {
 public:
-    Item(
+    PropertyGridItem(
         const std::shared_ptr<PropertyGridData>& data,
-        const std::shared_ptr<ValueView>& value_view,
+        const std::shared_ptr<property_grid::ValueView>& value_view,
         const std::shared_ptr<SplitDistanceManager>& split_distance_manager);
 
 protected:

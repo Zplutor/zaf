@@ -1,13 +1,13 @@
-#include <zaf/internal/property_grid/delegate.h>
+#include <zaf/internal/property_grid/property_grid_delegate.h>
 #include <zaf/base/as.h>
 #include <zaf/internal/property_grid/property_grid_data.h>
-#include <zaf/internal/property_grid/item.h>
+#include <zaf/internal/property_grid/property_grid_item.h>
 #include <zaf/creation.h>
 
-namespace zaf::property_grid::internal {
+namespace zaf::internal {
 
-Delegate::Delegate(
-    const std::shared_ptr<TypeConfigFactory>& type_config_factory,
+PropertyGridDelegate::PropertyGridDelegate(
+    const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory,
     const std::shared_ptr<SplitDistanceManager>& split_distance_manager,
     const std::weak_ptr<zaf::internal::TreeControlImplementation>& tree_implementation)
     :
@@ -20,7 +20,7 @@ Delegate::Delegate(
 }
 
 
-std::shared_ptr<TreeItem> Delegate::CreateItem(
+std::shared_ptr<TreeItem> PropertyGridDelegate::CreateItem(
     const std::shared_ptr<Object>& parent_item_data,
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
@@ -33,13 +33,13 @@ std::shared_ptr<TreeItem> Delegate::CreateItem(
 
     std::weak_ptr<Object> weak_data = data;
     Subscriptions() += value_view->ShouldSelectEvent().Subscribe(
-        std::bind(&Delegate::OnValueViewShouldSelect, this, weak_data));
+        std::bind(&PropertyGridDelegate::OnValueViewShouldSelect, this, weak_data));
 
-    return Create<Item>(data, value_view, split_distance_manager_);
+    return Create<PropertyGridItem>(data, value_view, split_distance_manager_);
 }
 
 
-void Delegate::OnValueViewShouldSelect(const std::weak_ptr<Object>& weak_data) {
+void PropertyGridDelegate::OnValueViewShouldSelect(const std::weak_ptr<Object>& weak_data) {
 
     auto data = weak_data.lock();
     if (!data) {

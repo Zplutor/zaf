@@ -2,7 +2,7 @@
 #include <zaf/base/container/utility/find.h>
 #include <zaf/base/range.h>
 #include <zaf/internal/property_grid/property_grid_data_source.h>
-#include <zaf/internal/property_grid/delegate.h>
+#include <zaf/internal/property_grid/property_grid_delegate.h>
 #include <zaf/internal/property_grid/expanded_node_visitor.h>
 #include <zaf/internal/property_grid/split_distance_manager.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
@@ -14,7 +14,7 @@ ZAF_OBJECT_IMPL(PropertyGrid)
 
 
 PropertyGrid::PropertyGrid() : 
-    split_distance_manager_(std::make_shared<property_grid::internal::SplitDistanceManager>()),
+    split_distance_manager_(std::make_shared<internal::SplitDistanceManager>()),
     tree_implementation_(std::make_shared<internal::TreeControlImplementation>(*this)) {
 
 }
@@ -27,10 +27,10 @@ void PropertyGrid::Initialize() {
     target_object_ = Create<Object>();
     type_config_factory_ = std::make_shared<property_grid::TypeConfigFactory>();
 
-    data_source_ = std::make_shared<property_grid::internal::PropertyGridDataSource>(type_config_factory_);
+    data_source_ = std::make_shared<internal::PropertyGridDataSource>(type_config_factory_);
     data_source_->SetTargetObject(target_object_);
 
-    delegate_ = std::make_shared<property_grid::internal::Delegate>(
+    delegate_ = std::make_shared<internal::PropertyGridDelegate>(
         type_config_factory_,
         split_distance_manager_,
         tree_implementation_);
@@ -110,7 +110,7 @@ void PropertyGrid::SetTypeConfigFactory(
 
 void PropertyGrid::ReCreateDataSource() {
 
-    data_source_ = std::make_shared<property_grid::internal::PropertyGridDataSource>(type_config_factory_);
+    data_source_ = std::make_shared<internal::PropertyGridDataSource>(type_config_factory_);
     data_source_->SetTargetObject(target_object_);
 
     tree_implementation_->SetDataSource(data_source_);
@@ -119,7 +119,7 @@ void PropertyGrid::ReCreateDataSource() {
 
 void PropertyGrid::ReCreateDelegate() {
 
-    delegate_ = std::make_shared<property_grid::internal::Delegate>(
+    delegate_ = std::make_shared<internal::PropertyGridDelegate>(
         type_config_factory_, 
         split_distance_manager_,
         tree_implementation_);
@@ -141,7 +141,7 @@ void PropertyGrid::Reload() {
 
 PropertyGridNode PropertyGrid::GetExpandedNodeTree() const {
 
-    property_grid::internal::ExpandedNodeVisitor visitor;
+    internal::ExpandedNodeVisitor visitor;
     tree_implementation_->VisitExpandedTree(visitor);
     return visitor.TakeResult();
 }
@@ -166,7 +166,7 @@ void PropertyGrid::ExpandChildNodes(
     auto child_count = data_source_->GetChildDataCount(parent_data);
     for (auto index : Range(0, child_count)) {
 
-        auto child_data = As<property_grid::internal::PropertyGridData>(
+        auto child_data = As<internal::PropertyGridData>(
             data_source_->GetChildDataAtIndex(parent_data, index));
 
         auto child_node = Find(child_node_map, child_data->Property());

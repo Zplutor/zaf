@@ -1,20 +1,20 @@
-#include <zaf/internal/property_grid/item.h>
+#include <zaf/internal/property_grid/property_grid_item.h>
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/control/list_item.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
 
-namespace zaf::property_grid::internal {
+namespace zaf::internal {
 namespace {
 
 constexpr std::uint32_t DelimiterLineColor = 0xeeeeee;
 
 }
 
-Item::Item(
+PropertyGridItem::PropertyGridItem(
     const std::shared_ptr<PropertyGridData>& data,
-    const std::shared_ptr<ValueView>& value_view,
+    const std::shared_ptr<property_grid::ValueView>& value_view,
     const std::shared_ptr<SplitDistanceManager>& split_distance_manager)
     :
     data_(data),
@@ -24,7 +24,7 @@ Item::Item(
 }
 
 
-void Item::Initialize() {
+void PropertyGridItem::Initialize() {
 
     __super::Initialize();
 
@@ -56,7 +56,7 @@ void Item::Initialize() {
 }
 
 
-void Item::InitializeSubControls() {
+void PropertyGridItem::InitializeSubControls() {
 
     InitializeNameLabel();
     InitializeValueView();
@@ -64,7 +64,7 @@ void Item::InitializeSubControls() {
 }
 
 
-void Item::InitializeNameLabel() {
+void PropertyGridItem::InitializeNameLabel() {
 
     name_label_ = CreateLabel();
     name_label_->SetPadding(Frame{ 0, 0, 4, 0 });
@@ -73,7 +73,7 @@ void Item::InitializeNameLabel() {
 }
 
 
-void Item::InitializeValueView() {
+void PropertyGridItem::InitializeValueView() {
 
     value_view_->SetAccessMethod([this]() {
 
@@ -96,7 +96,7 @@ void Item::InitializeValueView() {
 }
 
 
-std::shared_ptr<Label> Item::CreateLabel() {
+std::shared_ptr<Label> PropertyGridItem::CreateLabel() {
 
     auto result = Create<Label>();
     result->SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
@@ -118,7 +118,7 @@ std::shared_ptr<Label> Item::CreateLabel() {
 }
 
 
-void Item::InitializeSplitControl() {
+void PropertyGridItem::InitializeSplitControl() {
 
     split_control_ = Create<SplitControl>();
     split_control_->SetIsHorizontalSplit(false);
@@ -156,7 +156,7 @@ void Item::InitializeSplitControl() {
         if (manager) {
 
             ItemSplitDistanceChangedInfo new_event_info;
-            new_event_info.changing_item = As<Item>(shared_from_this());
+            new_event_info.changing_item = As<PropertyGridItem>(shared_from_this());
             new_event_info.new_distance =
                 this->DetermineTextRect().Left() + split_control_->SplitDistance();
             new_event_info.is_changed_by_dragging = event_info.IsChangedByDragging();
@@ -169,14 +169,14 @@ void Item::InitializeSplitControl() {
 }
 
 
-void Item::SetAbsoluteSplitDistance(float new_distance) {
+void PropertyGridItem::SetAbsoluteSplitDistance(float new_distance) {
 
     auto revised_distance = new_distance - this->DetermineTextRect().Left();
     split_control_->SetSplitDistance(revised_distance);
 }
 
 
-void Item::SetFirstPaneMinLength(float max_x) {
+void PropertyGridItem::SetFirstPaneMinLength(float max_x) {
 
     auto difference = max_x - split_control_->X();
     if (difference < 0) {
@@ -187,7 +187,7 @@ void Item::SetFirstPaneMinLength(float max_x) {
 }
 
 
-void Item::Layout(const zaf::Rect& previous_rect) {
+void PropertyGridItem::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
@@ -204,7 +204,7 @@ void Item::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void Item::OnParentChanged(const ParentChangedInfo& event_info) {
+void PropertyGridItem::OnParentChanged(const ParentChangedInfo& event_info) {
 
     __super::OnParentChanged(event_info);
 

@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/internal/property_grid/property_grid_data.h>
 
-namespace zaf::property_grid::internal {
+namespace zaf::internal {
 
 ExpandedNodeVisitor::ExpandedNodeVisitor() : root_node_(nullptr) {
 

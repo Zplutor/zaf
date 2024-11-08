@@ -1,7 +1,7 @@
 #include <zaf/internal/property_grid/split_distance_manager.h>
 #include <zaf/base/as.h>
 
-namespace zaf::property_grid::internal {
+namespace zaf::internal {
 
 SplitDistanceManager::SplitDistanceManager() {
 

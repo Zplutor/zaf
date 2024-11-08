@@ -1,9 +1,9 @@
 #include <zaf/internal/property_grid/property_grid_data_source.h>
 #include <zaf/base/as.h>
 
-namespace zaf::property_grid::internal {
+namespace zaf::internal {
 
-PropertyGridDataSource::PropertyGridDataSource(const std::shared_ptr<TypeConfigFactory>& type_config_factory) :
+PropertyGridDataSource::PropertyGridDataSource(const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory) :
     type_config_factory_(type_config_factory) {
 
     ZAF_EXPECT(type_config_factory_);

@@ -2,7 +2,7 @@
 
 #include <zaf/base/non_copyable.h>
 
-namespace zaf::property_grid::internal {
+namespace zaf::internal {
 
 class PropertyGridData;
 

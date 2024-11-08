@@ -7,13 +7,13 @@
 #include <zaf/rx/subject.h>
 #include <zaf/rx/subscription_host.h>
 
-namespace zaf::property_grid::internal {
+namespace zaf::internal {
 
-class Item;
+class PropertyGridItem;
 
 class ItemSplitDistanceChangedInfo {
 public:
-    std::shared_ptr<Item> changing_item;
+    std::shared_ptr<PropertyGridItem> changing_item;
     float new_distance{};
     bool is_changed_by_dragging{};
 };
