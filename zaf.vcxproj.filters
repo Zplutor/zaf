@@ -589,10 +589,10 @@
     <ClCompile Include="src\zaf\control\property_grid\type_config.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\value_view.cpp">
+    <ClCompile Include="src\zaf\control\property_grid\value_editor.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\text_value_view.cpp">
+    <ClCompile Include="src\zaf\control\property_grid\text_editor.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid\size_config.cpp">
@@ -610,10 +610,10 @@
     <ClCompile Include="src\zaf\control\property_grid\color_config.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\enum_value_view.cpp">
+    <ClCompile Include="src\zaf\control\property_grid\enum_editor.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\bool_value_view.cpp">
+    <ClCompile Include="src\zaf\control\property_grid\bool_editor.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid\property_table.cpp">
@@ -622,10 +622,10 @@
     <ClCompile Include="src\zaf\control\property_grid\property_list.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\color_value_view.cpp">
+    <ClCompile Include="src\zaf\control\property_grid\color_editor.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\editable_value_view.cpp">
+    <ClCompile Include="src\zaf\control\property_grid\editable_editor.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\caret.cpp">
@@ -1282,7 +1282,7 @@
     <ClCompile Include="src\zaf\internal\property_grid\property_grid_data_source.cpp">
       <Filter>zaf\internal\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\property_grid\property_grid_data.cpp">
+    <ClCompile Include="src\zaf\internal\property_grid\property_data.cpp">
       <Filter>zaf\internal\property_grid</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\property_grid\property_grid_delegate.cpp">
@@ -1957,10 +1957,10 @@
     <ClInclude Include="src\zaf\control\property_grid\type_config.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\value_view.h">
+    <ClInclude Include="src\zaf\control\property_grid\value_editor.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\text_value_view.h">
+    <ClInclude Include="src\zaf\control\property_grid\text_editor.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\size_config.h">
@@ -1978,13 +1978,13 @@
     <ClInclude Include="src\zaf\control\property_grid\color_config.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\enum_value_view.h">
+    <ClInclude Include="src\zaf\control\property_grid\enum_editor.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\enum_config.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\bool_value_view.h">
+    <ClInclude Include="src\zaf\control\property_grid\bool_editor.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\bool_config.h">
@@ -2002,10 +2002,10 @@
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_visitor.h">
       <Filter>zaf\control\internal\tree_control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\color_value_view.h">
+    <ClInclude Include="src\zaf\control\property_grid\color_editor.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\editable_value_view.h">
+    <ClInclude Include="src\zaf\control\property_grid\editable_editor.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\editable_type_config.h">
@@ -2995,7 +2995,7 @@
     <ClInclude Include="src\zaf\internal\property_grid\property_grid_data_source.h">
       <Filter>zaf\internal\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\property_grid\property_grid_data.h">
+    <ClInclude Include="src\zaf\internal\property_grid\property_data.h">
       <Filter>zaf\internal\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\property_grid\property_grid_data_observer.h">

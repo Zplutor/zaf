@@ -13,14 +13,14 @@
 
 namespace zaf::internal {
 
-class PropertyGridData : 
+class PropertyData : 
     public Object, 
-    public std::enable_shared_from_this<PropertyGridData>, 
+    public std::enable_shared_from_this<PropertyData>, 
     SubscriptionHost,
     NonCopyableNonMovable {
 
 public:
-    PropertyGridData(
+    PropertyData(
         zaf::ObjectProperty* property,
         const std::shared_ptr<Object>& value,
         bool is_parent_read_only,
@@ -39,9 +39,9 @@ public:
         return is_read_only_;
     }
 
-    const std::vector<std::shared_ptr<PropertyGridData>>& Children();
+    const std::vector<std::shared_ptr<PropertyData>>& Children();
 
-    Observable<std::shared_ptr<PropertyGridData>> ValueChangedEvent() {
+    Observable<std::shared_ptr<PropertyData>> ValueChangedEvent() {
         return value_changed_subject_.AsObservable();
     }
 
@@ -54,8 +54,8 @@ private:
     static property_grid::PropertyTable CreatePropertyTable(const std::vector<ObjectType*>& types);
 
 private:
-    std::vector<std::shared_ptr<PropertyGridData>> LoadChildren();
-    void OnChildValueChanged(const std::shared_ptr<PropertyGridData>& child);
+    std::vector<std::shared_ptr<PropertyData>> LoadChildren();
+    void OnChildValueChanged(const std::shared_ptr<PropertyData>& child);
 
 private:
     zaf::ObjectProperty* property_{};
@@ -63,9 +63,9 @@ private:
     bool is_read_only_{};
     std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
     std::weak_ptr<PropertyGridDataObserver> observer_;
-    Subject<std::shared_ptr<PropertyGridData>> value_changed_subject_;
+    Subject<std::shared_ptr<PropertyData>> value_changed_subject_;
 
-    std::optional<std::vector<std::shared_ptr<PropertyGridData>>> children_;
+    std::optional<std::vector<std::shared_ptr<PropertyData>>> children_;
 };
 
 }

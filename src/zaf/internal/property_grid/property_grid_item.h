@@ -1,9 +1,9 @@
 #pragma once
 
-#include <zaf/internal/property_grid/property_grid_data.h>
+#include <zaf/internal/property_grid/property_data.h>
 #include <zaf/internal/property_grid/split_distance_manager.h>
 #include <zaf/control/label.h>
-#include <zaf/control/property_grid/value_view.h>
+#include <zaf/control/property_grid/value_editor.h>
 #include <zaf/control/split_control.h>
 #include <zaf/control/tree_item.h>
 #include <zaf/rx/subject.h>
@@ -13,9 +13,9 @@ namespace zaf::internal {
 class PropertyGridItem : public TreeItem {
 public:
     PropertyGridItem(
-        const std::shared_ptr<PropertyGridData>& data,
-        const std::shared_ptr<property_grid::ValueView>& value_view,
-        const std::shared_ptr<SplitDistanceManager>& split_distance_manager);
+        std::shared_ptr<PropertyData> property_data,
+        std::shared_ptr<property_grid::ValueEditor> value_editor,
+        std::shared_ptr<SplitDistanceManager> split_distance_manager);
 
 protected:
     void Initialize() override;
@@ -32,11 +32,11 @@ private:
     void SetFirstPaneMinLength(float max_x);
 
 private:
-    std::shared_ptr<PropertyGridData> data_;
+    std::shared_ptr<PropertyData> property_data_;
 
     std::shared_ptr<SplitControl> split_control_;
     std::shared_ptr<Label> name_label_;
-    std::shared_ptr<property_grid::ValueView> value_view_;
+    std::shared_ptr<property_grid::ValueEditor> value_editor_;
 
     std::weak_ptr<SplitDistanceManager> split_distance_manager_;
     bool is_handling_split_distance_event_{};

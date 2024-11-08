@@ -10,7 +10,7 @@ enum class AccessMethod {
     ReadOnly,
 };
 
-class ValueView : public Control {
+class ValueEditor : public Control {
 public:
     virtual void SetAccessMethod(AccessMethod) = 0;
     virtual void SetValue(const std::shared_ptr<Object>& object) = 0;
@@ -19,7 +19,7 @@ public:
         return value_changed_event_.AsObservable();
     }
 
-    Observable<ValueView*> ShouldSelectEvent() {
+    Observable<ValueEditor*> ShouldSelectEvent() {
         return should_select_event_.AsObservable();
     }
 
@@ -36,7 +36,7 @@ protected:
 
 private:
     Subject<std::shared_ptr<Object>> value_changed_event_;
-    Subject<ValueView*> should_select_event_;
+    Subject<ValueEditor*> should_select_event_;
 };
 
 }

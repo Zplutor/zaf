@@ -1,6 +1,6 @@
 #include <zaf/internal/property_grid/property_grid_delegate.h>
 #include <zaf/base/as.h>
-#include <zaf/internal/property_grid/property_grid_data.h>
+#include <zaf/internal/property_grid/property_data.h>
 #include <zaf/internal/property_grid/property_grid_item.h>
 #include <zaf/creation.h>
 
@@ -25,7 +25,7 @@ std::shared_ptr<TreeItem> PropertyGridDelegate::CreateItem(
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
 
-    auto data = As<PropertyGridData>(item_data);
+    auto data = As<PropertyData>(item_data);
     ZAF_EXPECT(data);
 
     auto type_config = type_config_factory_->GetConfig(data->Property()->ValueType());

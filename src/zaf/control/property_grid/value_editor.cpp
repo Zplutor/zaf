@@ -1,4 +1,4 @@
-#include <zaf/control/property_grid/value_view.h>
+#include <zaf/control/property_grid/value_editor.h>
 #include <zaf/base/as.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/list_item.h>
@@ -7,7 +7,7 @@
 
 namespace zaf::property_grid {
 
-void ValueView::Initialize() {
+void ValueEditor::Initialize() {
 
     __super::Initialize();
 

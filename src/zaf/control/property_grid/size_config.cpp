@@ -1,5 +1,5 @@
 #include <zaf/control/property_grid/size_config.h>
-#include <zaf/control/property_grid/editable_value_view.h>
+#include <zaf/control/property_grid/editable_editor.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/size.h>
 
@@ -19,8 +19,8 @@ void SizeConfig::FilterProperties(PropertyTable& property_table) {
 }
 
 
-std::shared_ptr<ValueView> SizeConfig::CreateValueView() {
-    return Create<EditableValueView>();
+std::shared_ptr<ValueEditor> SizeConfig::CreateValueView() {
+    return Create<EditableEditor>();
 }
 
 }

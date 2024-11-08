@@ -3,7 +3,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/control.h>
 #include <zaf/control/property_grid/property_table.h>
-#include <zaf/control/property_grid/value_view.h>
+#include <zaf/control/property_grid/value_editor.h>
 #include <zaf/object/object_property.h>
 
 namespace zaf::property_grid {
@@ -15,7 +15,7 @@ public:
 
     virtual void FilterProperties(PropertyTable& property_table) { }
 
-    virtual std::shared_ptr<ValueView> CreateValueView();
+    virtual std::shared_ptr<ValueEditor> CreateValueView();
 };
 
 }

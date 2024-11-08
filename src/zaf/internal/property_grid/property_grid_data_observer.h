@@ -4,7 +4,7 @@
 
 namespace zaf::internal {
 
-class PropertyGridData;
+class PropertyData;
 
 class PropertyGridDataObserver : NonCopyableNonMovable {
 public:
@@ -12,7 +12,7 @@ public:
     virtual ~PropertyGridDataObserver() = default;
 
     virtual void OnDataChildrenUpdate(
-        const std::shared_ptr<PropertyGridData>& data, 
+        const std::shared_ptr<PropertyData>& data, 
         std::size_t children_count) = 0;
 };
 

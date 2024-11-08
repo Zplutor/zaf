@@ -1,4 +1,4 @@
-#include <zaf/control/property_grid/enum_value_view.h>
+#include <zaf/control/property_grid/enum_editor.h>
 #include <zaf/base/container/utility/sort.h>
 #include <zaf/base/container/utility/unique.h>
 #include <zaf/base/range.h>
@@ -7,7 +7,7 @@
 
 namespace zaf::property_grid {
 
-void EnumValueView::Initialize() {
+void EnumEditor::Initialize() {
 
     __super::Initialize();
 
@@ -23,7 +23,7 @@ void EnumValueView::Initialize() {
 }
 
 
-void EnumValueView::SetAccessMethod(AccessMethod access_method) {
+void EnumEditor::SetAccessMethod(AccessMethod access_method) {
 
     if (access_method == AccessMethod::ReadOnly) {
         combo_box_->SetIsEnabled(false);
@@ -31,7 +31,7 @@ void EnumValueView::SetAccessMethod(AccessMethod access_method) {
 }
 
 
-void EnumValueView::SetValue(const std::shared_ptr<Object>& value) {
+void EnumEditor::SetValue(const std::shared_ptr<Object>& value) {
 
     auto enum_type = dynamic_cast<EnumType*>(value->DynamicType());
     ZAF_EXPECT(enum_type);
@@ -40,11 +40,11 @@ void EnumValueView::SetValue(const std::shared_ptr<Object>& value) {
     InitializeComboBoxValues(all_enum_values, value);
 
     Subscriptions() += combo_box_->SelectionChangedEvent().Subscribe(
-        std::bind(&EnumValueView::OnSelectionChanged, this));
+        std::bind(&EnumEditor::OnSelectionChanged, this));
 }
 
 
-void EnumValueView::InitializeComboBoxValues(
+void EnumEditor::InitializeComboBoxValues(
     const std::vector<std::shared_ptr<Object>>& values,
     const std::shared_ptr<Object>& selected_object) {
 
@@ -62,7 +62,7 @@ void EnumValueView::InitializeComboBoxValues(
 }
 
 
-void EnumValueView::OnSelectionChanged() {
+void EnumEditor::OnSelectionChanged() {
 
     NotifyValueChanged(combo_box_->DropDownListBox()->FirstSelectedItemData());
 }

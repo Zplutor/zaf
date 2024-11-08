@@ -1,11 +1,11 @@
 #pragma once
 
 #include <zaf/control/label.h>
-#include <zaf/control/property_grid/value_view.h>
+#include <zaf/control/property_grid/value_editor.h>
 
 namespace zaf::property_grid {
 
-class TextValueView : public ValueView {
+class TextEditor : public ValueEditor {
 public:
     void SetAccessMethod(AccessMethod) override;
     void SetValue(const std::shared_ptr<Object>& value) override;

@@ -1,4 +1,4 @@
-#include <zaf/control/property_grid/color_value_view.h>
+#include <zaf/control/property_grid/color_editor.h>
 #include <sstream>
 #include <zaf/base/as.h>
 #include <zaf/base/range.h>
@@ -11,7 +11,7 @@
 
 namespace zaf::property_grid {
 
-void ColorValueView::Initialize() {
+void ColorEditor::Initialize() {
 
     __super::Initialize();
 
@@ -20,7 +20,7 @@ void ColorValueView::Initialize() {
 }
 
 
-void ColorValueView::InitializeColorSquare() {
+void ColorEditor::InitializeColorSquare() {
 
     color_square_ = Create<ColorSquare>();
     color_square_->SetFixedWidth(28);
@@ -31,7 +31,7 @@ void ColorValueView::InitializeColorSquare() {
 }
 
 
-void ColorValueView::InitializeRichEdit() {
+void ColorEditor::InitializeRichEdit() {
 
     color_edit_ = Create<RichEdit>();
     color_edit_->SetBorder(Frame{});
@@ -60,7 +60,7 @@ void ColorValueView::InitializeRichEdit() {
 }
 
 
-void ColorValueView::ChangeColorByEdit() {
+void ColorEditor::ChangeColorByEdit() {
 
     auto text = color_edit_->Text();
 
@@ -81,7 +81,7 @@ void ColorValueView::ChangeColorByEdit() {
 }
 
 
-void ColorValueView::SetAccessMethod(AccessMethod access_method) {
+void ColorEditor::SetAccessMethod(AccessMethod access_method) {
 
     bool is_readonly = access_method == AccessMethod::ReadOnly;
     color_edit_->SetIsEnabled(!is_readonly);
@@ -92,7 +92,7 @@ void ColorValueView::SetAccessMethod(AccessMethod access_method) {
 }
 
 
-void ColorValueView::SetValue(const std::shared_ptr<Object>& object) {
+void ColorEditor::SetValue(const std::shared_ptr<Object>& object) {
 
     if (!object) {
         color_square_->SetIsVisible(false);
@@ -110,7 +110,7 @@ void ColorValueView::SetValue(const std::shared_ptr<Object>& object) {
 }
 
 
-void ColorValueView::SetColorToEdit(const Color& color) {
+void ColorEditor::SetColorToEdit(const Color& color) {
 
     auto float_to_hex = [](float value) {
 
@@ -135,13 +135,13 @@ void ColorValueView::SetColorToEdit(const Color& color) {
 }
 
 
-void ColorValueView::ColorSquare::SetColor(const zaf::Color& color) {
+void ColorEditor::ColorSquare::SetColor(const zaf::Color& color) {
     color_ = color;
     NeedRepaint();
 }
 
 
-void ColorValueView::ColorSquare::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
+void ColorEditor::ColorSquare::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
@@ -152,7 +152,7 @@ void ColorValueView::ColorSquare::Paint(Canvas& canvas, const zaf::Rect& dirty_r
 }
 
 
-void ColorValueView::ColorSquare::PaintTransparentColorSmallSquares(Canvas& canvas) const {
+void ColorEditor::ColorSquare::PaintTransparentColorSmallSquares(Canvas& canvas) const {
 
     auto content_rect = ContentRect();
     auto clipping_guard = canvas.PushClipping(content_rect);

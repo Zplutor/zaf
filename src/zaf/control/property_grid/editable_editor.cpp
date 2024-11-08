@@ -1,11 +1,11 @@
-#include <zaf/control/property_grid/editable_value_view.h>
+#include <zaf/control/property_grid/editable_editor.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
 #include <zaf/window/message/keyboard_message.h>
 
 namespace zaf::property_grid {
 
-void EditableValueView::Initialize() {
+void EditableEditor::Initialize() {
 
     __super::Initialize(); 
 
@@ -20,7 +20,7 @@ void EditableValueView::Initialize() {
     }));
 
     Subscriptions() += rich_edit_->FocusLostEvent().Subscribe(
-        std::bind(&EditableValueView::OnRichEditFocusLost, this, std::placeholders::_1));
+        std::bind(&EditableEditor::OnRichEditFocusLost, this, std::placeholders::_1));
 
     Subscriptions() += rich_edit_->KeyDownEvent().Subscribe(
         [this](const KeyDownInfo& event_info) {
@@ -35,7 +35,7 @@ void EditableValueView::Initialize() {
 }
 
 
-void EditableValueView::SetAccessMethod(AccessMethod access_method) {
+void EditableEditor::SetAccessMethod(AccessMethod access_method) {
 
     bool is_read_only = access_method == AccessMethod::ReadOnly;
     rich_edit_->SetIsEnabled(!is_read_only);
@@ -47,14 +47,14 @@ void EditableValueView::SetAccessMethod(AccessMethod access_method) {
 }
 
 
-void EditableValueView::SetValue(const std::shared_ptr<Object>& value) {
+void EditableEditor::SetValue(const std::shared_ptr<Object>& value) {
 
     value_ = value;
     rich_edit_->SetText(value_->ToString());
 }
 
 
-void EditableValueView::ChangeValue() {
+void EditableEditor::ChangeValue() {
 
     auto new_text = rich_edit_->Text();
     if (new_text.empty() || new_text == value_->ToString()) {
@@ -75,7 +75,7 @@ void EditableValueView::ChangeValue() {
 }
 
 
-void EditableValueView::OnRichEditFocusLost(const FocusLostInfo& event_info) {
+void EditableEditor::OnRichEditFocusLost(const FocusLostInfo& event_info) {
 
     //Commit new value only when focus is transferred to other control.
     //Value should not be committed in some situations, such as when window loses focus.

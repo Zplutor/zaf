@@ -1,5 +1,5 @@
 #include <zaf/control/property_grid/frame_config.h>
-#include <zaf/control/property_grid/editable_value_view.h>
+#include <zaf/control/property_grid/editable_editor.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/frame.h>
 
@@ -23,8 +23,8 @@ void FrameConfig::FilterProperties(PropertyTable& property_table) {
 }
 
 
-std::shared_ptr<ValueView> FrameConfig::CreateValueView() {
-    return Create<EditableValueView>();
+std::shared_ptr<ValueEditor> FrameConfig::CreateValueView() {
+    return Create<EditableEditor>();
 }
 
 }

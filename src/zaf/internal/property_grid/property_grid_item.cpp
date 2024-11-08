@@ -13,13 +13,13 @@ constexpr std::uint32_t DelimiterLineColor = 0xeeeeee;
 }
 
 PropertyGridItem::PropertyGridItem(
-    const std::shared_ptr<PropertyGridData>& data,
-    const std::shared_ptr<property_grid::ValueView>& value_view,
-    const std::shared_ptr<SplitDistanceManager>& split_distance_manager)
+    std::shared_ptr<PropertyData> property_data,
+    std::shared_ptr<property_grid::ValueEditor> value_editor,
+    std::shared_ptr<SplitDistanceManager> split_distance_manager)
     :
-    data_(data),
-    value_view_(value_view),
-    split_distance_manager_(split_distance_manager) {
+    property_data_(std::move(property_data)),
+    value_editor_(std::move(value_editor)),
+    split_distance_manager_(std::move(split_distance_manager)) {
 
 }
 
@@ -69,28 +69,28 @@ void PropertyGridItem::InitializeNameLabel() {
     name_label_ = CreateLabel();
     name_label_->SetPadding(Frame{ 0, 0, 4, 0 });
 
-    name_label_->SetText(std::wstring{ data_->Property()->Name() });
+    name_label_->SetText(std::wstring{ property_data_->Property()->Name() });
 }
 
 
 void PropertyGridItem::InitializeValueView() {
 
-    value_view_->SetAccessMethod([this]() {
+    value_editor_->SetAccessMethod([this]() {
 
-        if (data_->IsReadOnly()) {
+        if (property_data_->IsReadOnly()) {
             return property_grid::AccessMethod::ReadOnly;
         }
         return property_grid::AccessMethod::ReadWrite;
     }());
 
-    value_view_->SetValue(data_->Value());
-    value_view_->SetPadding(Frame{ 4, 0, 4, 0 });
+    value_editor_->SetValue(property_data_->Value());
+    value_editor_->SetPadding(Frame{ 4, 0, 4, 0 });
 
-    Subscriptions() += value_view_->ValueChangedEvent().Subscribe(
+    Subscriptions() += value_editor_->ValueChangedEvent().Subscribe(
         [this](const std::shared_ptr<Object>& new_value) {
     
-        if (!new_value->IsEqual(*data_->Value())) {
-            data_->ChangeValueFromDownToUp(new_value);
+        if (!new_value->IsEqual(*property_data_->Value())) {
+            property_data_->ChangeValueFromDownToUp(new_value);
         }
     });
 }
@@ -107,7 +107,7 @@ std::shared_ptr<Label> PropertyGridItem::CreateLabel() {
             return Color::White();
         }
 
-        if (data_->IsReadOnly()) {
+        if (property_data_->IsReadOnly()) {
             return Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB);
         }
 
@@ -123,7 +123,7 @@ void PropertyGridItem::InitializeSplitControl() {
     split_control_ = Create<SplitControl>();
     split_control_->SetIsHorizontalSplit(false);
     split_control_->SetFirstPane(name_label_);
-    split_control_->SetSecondPane(value_view_);
+    split_control_->SetSecondPane(value_editor_);
 
     split_control_->SplitBar()->SetSplitterColorPicker(ColorPicker([](const Control& control) {
 

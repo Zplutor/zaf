@@ -14,7 +14,7 @@ void PropertyGridDataSource::SetTargetObject(const std::shared_ptr<Object>& targ
 
     ZAF_EXPECT(target_object);
 
-    root_data_ = std::make_shared<PropertyGridData>(
+    root_data_ = std::make_shared<PropertyData>(
         nullptr,
         target_object,
         false,
@@ -25,7 +25,7 @@ void PropertyGridDataSource::SetTargetObject(const std::shared_ptr<Object>& targ
 
 bool PropertyGridDataSource::DoesDataHasChildren(const std::shared_ptr<Object>& data) {
 
-    auto target_data = data ? As<PropertyGridData>(data) : root_data_;
+    auto target_data = data ? As<PropertyData>(data) : root_data_;
     return !target_data->Children().empty();
 }
 
@@ -33,7 +33,7 @@ bool PropertyGridDataSource::DoesDataHasChildren(const std::shared_ptr<Object>& 
 std::size_t PropertyGridDataSource::GetChildDataCount(
     const std::shared_ptr<Object>& parent_data) {
 
-    auto target_data = parent_data ? As<PropertyGridData>(parent_data) : root_data_;
+    auto target_data = parent_data ? As<PropertyData>(parent_data) : root_data_;
     return target_data->Children().size();
 }
 
@@ -42,7 +42,7 @@ std::shared_ptr<Object> PropertyGridDataSource::GetChildDataAtIndex(
     const std::shared_ptr<Object>& parent_data,
     std::size_t index) {
 
-    auto target_data = parent_data ? As<PropertyGridData>(parent_data) : root_data_;
+    auto target_data = parent_data ? As<PropertyData>(parent_data) : root_data_;
 
     const auto& children = target_data->Children();
     ZAF_EXPECT(index < children.size());
@@ -58,7 +58,7 @@ void PropertyGridDataSource::RefreshValues() {
 
 
 void PropertyGridDataSource::OnDataChildrenUpdate(
-    const std::shared_ptr<PropertyGridData>& data,
+    const std::shared_ptr<PropertyData>& data,
     std::size_t children_count) {
 
     NotifyDataUpdate(data == root_data_ ? nullptr : data, 0, children_count);

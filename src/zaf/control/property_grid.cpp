@@ -166,7 +166,7 @@ void PropertyGrid::ExpandChildNodes(
     auto child_count = data_source_->GetChildDataCount(parent_data);
     for (auto index : Range(0, child_count)) {
 
-        auto child_data = As<internal::PropertyGridData>(
+        auto child_data = As<internal::PropertyData>(
             data_source_->GetChildDataAtIndex(parent_data, index));
 
         auto child_node = Find(child_node_map, child_data->Property());
