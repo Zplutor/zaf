@@ -10,12 +10,6 @@ void BoolEditor::Initialize() {
 
     check_box_ = Create<CheckBox>();
     check_box_->SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
-
-    Subscriptions() += check_box_->FocusGainedEvent().Subscribe(std::bind([this]() {
-    
-        NotifyShouldSelectItem();
-    }));
-
     this->AddChild(check_box_);
 }
 

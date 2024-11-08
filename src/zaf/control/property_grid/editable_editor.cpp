@@ -15,10 +15,6 @@ void EditableEditor::Initialize() {
     rich_edit_->SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
     rich_edit_->SetAllowBeep(false);
 
-    Subscriptions() += rich_edit_->FocusGainedEvent().Subscribe(std::bind([this]() {
-        NotifyShouldSelectItem();
-    }));
-
     Subscriptions() += rich_edit_->FocusLostEvent().Subscribe(
         std::bind(&EditableEditor::OnRichEditFocusLost, this, std::placeholders::_1));
 

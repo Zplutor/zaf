@@ -29,17 +29,19 @@ std::shared_ptr<TreeItem> PropertyGridDelegate::CreateItem(
     ZAF_EXPECT(data);
 
     auto type_config = type_config_factory_->GetConfig(data->Property()->ValueType());
-    auto value_view = type_config->CreateValueView();
+    auto value_editor = type_config->CreateValueView();
 
     std::weak_ptr<Object> weak_data = data;
-    Subscriptions() += value_view->ShouldSelectEvent().Subscribe(
-        std::bind(&PropertyGridDelegate::OnValueViewShouldSelect, this, weak_data));
+    Subscriptions() += value_editor->FocusGainedEvent().Subscribe(
+        std::bind_front(&PropertyGridDelegate::OnValueEditorGainedFocus, this, weak_data));
 
-    return Create<PropertyGridItem>(data, value_view, split_distance_manager_);
+    return Create<PropertyGridItem>(data, value_editor, split_distance_manager_);
 }
 
 
-void PropertyGridDelegate::OnValueViewShouldSelect(const std::weak_ptr<Object>& weak_data) {
+void PropertyGridDelegate::OnValueEditorGainedFocus(
+    const std::weak_ptr<Object>& weak_data,
+    const FocusGainedInfo& event_info) {
 
     auto data = weak_data.lock();
     if (!data) {

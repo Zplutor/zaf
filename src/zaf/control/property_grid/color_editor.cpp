@@ -48,10 +48,6 @@ void ColorEditor::InitializeRichEdit() {
         }
     });
 
-    Subscriptions() += color_edit_->FocusGainedEvent().Subscribe(std::bind([this]() {
-        NotifyShouldSelectItem();
-    }));
-
     Subscriptions() += color_edit_->FocusLostEvent().Subscribe(std::bind([this]() {
         ChangeColorByEdit();
     }));

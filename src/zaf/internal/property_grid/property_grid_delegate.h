@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/control/event/focus_event_info.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
 #include <zaf/internal/property_grid/split_distance_manager.h>
 #include <zaf/control/property_grid/type_config_factory.h>
@@ -28,7 +29,9 @@ public:
         const std::shared_ptr<Object>& item_data) override;
 
 private:
-    void OnValueViewShouldSelect(const std::weak_ptr<Object>& weak_data);
+    void OnValueEditorGainedFocus(
+        const std::weak_ptr<Object>& data,
+        const FocusGainedInfo& event_info);
 
 private:
     std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;

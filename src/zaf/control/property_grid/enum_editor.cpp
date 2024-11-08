@@ -15,10 +15,6 @@ void EnumEditor::Initialize() {
     combo_box_->SetBorder(Frame{});
     combo_box_->SetTextInset(Frame{ 0, 1, 1, 1 });
 
-    Subscriptions() += combo_box_->FocusGainedEvent().Subscribe(std::bind([this]() {
-        NotifyShouldSelectItem();
-    }));
-
     this->AddChild(combo_box_);
 }
 

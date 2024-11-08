@@ -19,10 +19,6 @@ public:
         return value_changed_event_.AsObservable();
     }
 
-    Observable<ValueEditor*> ShouldSelectEvent() {
-        return should_select_event_.AsObservable();
-    }
-
 protected:
     void Initialize() override;
 
@@ -30,13 +26,8 @@ protected:
         value_changed_event_.AsObserver().OnNext(new_value);
     }
 
-    void NotifyShouldSelectItem() {
-        should_select_event_.AsObserver().OnNext(this);
-    }
-
 private:
     Subject<std::shared_ptr<Object>> value_changed_event_;
-    Subject<ValueEditor*> should_select_event_;
 };
 
 }
