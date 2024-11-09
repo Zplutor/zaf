@@ -16,10 +16,9 @@ void PropertyGridDataSource::SetTargetObject(const std::shared_ptr<Object>& targ
 
     root_data_ = std::make_shared<PropertyData>(
         nullptr,
+        nullptr,
         target_object,
-        false,
-        type_config_factory_,
-        shared_from_this());
+        type_config_factory_);
 }
 
 
@@ -53,15 +52,7 @@ std::shared_ptr<Object> PropertyGridDataSource::GetChildDataAtIndex(
 
 void PropertyGridDataSource::RefreshValues() {
 
-    root_data_->ChangeValueFromUpToDown(root_data_->Value());
-}
-
-
-void PropertyGridDataSource::OnDataChildrenUpdate(
-    const std::shared_ptr<PropertyData>& data,
-    std::size_t children_count) {
-
-    NotifyDataUpdate(data == root_data_ ? nullptr : data, 0, children_count);
+    root_data_->ChangeValue(root_data_->Value());
 }
 
 }

@@ -1,17 +1,12 @@
 #pragma once
 
 #include <zaf/internal/property_grid/property_data.h>
-#include <zaf/internal/property_grid/property_grid_data_observer.h>
 #include <zaf/control/property_grid/type_config_factory.h>
 #include <zaf/control/tree_data_source.h>
 
 namespace zaf::internal {
 
-class PropertyGridDataSource : 
-    public TreeDataSource, 
-    public PropertyGridDataObserver, 
-    public std::enable_shared_from_this<PropertyGridDataSource> {
-
+class PropertyGridDataSource : public TreeDataSource {
 public:
     explicit PropertyGridDataSource(const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory);
 
@@ -26,10 +21,6 @@ public:
         std::size_t index);
 
     void RefreshValues();
-
-    void OnDataChildrenUpdate(
-        const std::shared_ptr<PropertyData>& data,
-        std::size_t children_count) override;
 
 private:
     std::shared_ptr<PropertyData> root_data_;

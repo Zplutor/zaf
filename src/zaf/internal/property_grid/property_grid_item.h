@@ -31,6 +31,9 @@ private:
     void SetAbsoluteSplitDistance(float new_distance);
     void SetFirstPaneMinLength(float max_x);
 
+    void OnEditorValueChanged(const std::shared_ptr<Object>& new_value);
+    void OnPropertyValueChanged(const std::shared_ptr<PropertyData>& property_data);
+
 private:
     std::shared_ptr<PropertyData> property_data_;
 
@@ -40,6 +43,8 @@ private:
 
     std::weak_ptr<SplitDistanceManager> split_distance_manager_;
     bool is_handling_split_distance_event_{};
+    bool is_setting_property_value_{};
+    bool is_setting_editor_value_{};
 };
 
 }

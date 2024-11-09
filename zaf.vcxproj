@@ -813,7 +813,6 @@
     <ClInclude Include="src\zaf\internal\property_grid\expanded_node_visitor.h" />
     <ClInclude Include="src\zaf\internal\property_grid\property_grid_item.h" />
     <ClInclude Include="src\zaf\internal\property_grid\property_data.h" />
-    <ClInclude Include="src\zaf\internal\property_grid\property_grid_data_observer.h" />
     <ClInclude Include="src\zaf\internal\property_grid\property_grid_data_source.h" />
     <ClInclude Include="src\zaf\internal\property_grid\split_distance_manager.h" />
     <ClInclude Include="src\zaf\internal\stream\byte_array_stream_core.h" />

@@ -76,7 +76,6 @@ void PropertyGridItem::InitializeNameLabel() {
 void PropertyGridItem::InitializeValueView() {
 
     value_editor_->SetAccessMethod([this]() {
-
         if (property_data_->IsReadOnly()) {
             return property_grid::AccessMethod::ReadOnly;
         }
@@ -87,12 +86,10 @@ void PropertyGridItem::InitializeValueView() {
     value_editor_->SetPadding(Frame{ 4, 0, 4, 0 });
 
     Subscriptions() += value_editor_->ValueChangedEvent().Subscribe(
-        [this](const std::shared_ptr<Object>& new_value) {
-    
-        if (!new_value->IsEqual(*property_data_->Value())) {
-            property_data_->ChangeValueFromDownToUp(new_value);
-        }
-    });
+        std::bind_front(&PropertyGridItem::OnEditorValueChanged, this));
+
+    Subscriptions() += property_data_->ValueChangedEvent().Subscribe(
+        std::bind_front(&PropertyGridItem::OnPropertyValueChanged, this));
 }
 
 
@@ -220,6 +217,32 @@ void PropertyGridItem::OnParentChanged(const ParentChangedInfo& event_info) {
     else {
         split_distance_manager->OnSplitControlRemove(split_control_);
     }
+}
+
+
+void PropertyGridItem::OnEditorValueChanged(const std::shared_ptr<Object>& new_value) {
+
+    if (is_setting_editor_value_) {
+        return;
+    }
+
+    if (new_value->IsEqual(*property_data_->Value())) {
+        return;
+    }
+
+    auto auto_reset = MakeAutoReset(is_setting_property_value_, true);
+    property_data_->ChangeValue(new_value);
+}
+
+
+void PropertyGridItem::OnPropertyValueChanged(const std::shared_ptr<PropertyData>& property_data) {
+
+    if (is_setting_property_value_) {
+        return;
+    }
+
+    auto auto_reset = MakeAutoReset(is_setting_editor_value_);
+    value_editor_->SetValue(property_data->Value());
 }
 
 }

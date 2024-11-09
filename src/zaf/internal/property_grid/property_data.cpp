@@ -1,21 +1,34 @@
 #include <zaf/internal/property_grid/property_data.h>
+#include <zaf/base/auto_reset.h>
 
 namespace zaf::internal {
 
 PropertyData::PropertyData(
+    std::shared_ptr<PropertyData> parent,
     zaf::ObjectProperty* property,
     const std::shared_ptr<zaf::Object>& value,
-    bool is_parent_read_only,
-    const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory,
-    const std::weak_ptr<PropertyGridDataObserver>& observer)
+    const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory)
     :
+    parent_(std::move(parent)),
     property_(property),
     value_(value),
-    type_config_factory_(type_config_factory),
-    observer_(observer) {
+    type_config_factory_(type_config_factory) {
 
-    bool is_self_read_only = property ? !property->CanSet() : false;
-    is_read_only_ = is_parent_read_only || is_self_read_only;
+}
+
+
+bool PropertyData::IsReadOnly() const {
+
+    if (property_ && !property_->CanSet()) {
+        return true;
+    }
+
+    auto parent = parent_.lock();
+    if (!parent) {
+        return false;
+    }
+
+    return parent->IsReadOnly();
 }
 
 
@@ -46,14 +59,10 @@ std::vector<std::shared_ptr<PropertyData>> PropertyData::LoadChildren() {
         for (auto each_property : each_pair.second.Inner()) {
 
             auto child_data = std::make_shared<PropertyData>(
+                shared_from_this(),
                 each_property,
                 each_property->GetValue(*value_), 
-                is_read_only_,
-                type_config_factory_,
-                observer_);
-
-            Subscriptions() += child_data->ValueChangedEvent().Subscribe(
-                std::bind(&PropertyData::OnChildValueChanged, this, std::placeholders::_1));
+                type_config_factory_);
 
             result.push_back(child_data);
         }
@@ -99,46 +108,69 @@ property_grid::PropertyTable PropertyData::CreatePropertyTable(
 }
 
 
-void PropertyData::ChangeValueFromUpToDown(const std::shared_ptr<Object>& value) {
+void PropertyData::ChangeValue(std::shared_ptr<Object> new_value) {
 
-    value_ = value;
+    auto auto_reset = MakeAutoReset(is_changing_value_, true);
 
-    if (!value_ || !children_) {
+    SetValue(std::move(new_value));
+    PropagateValueChangedToChildren();
+    PropagateValueChangedToParent();
+}
+
+
+void PropertyData::SetValue(std::shared_ptr<Object> new_value) {
+    value_ = std::move(new_value);
+    value_changed_event_.AsObserver().OnNext(shared_from_this());
+}
+
+
+void PropertyData::PropagateValueChangedToParent() {
+
+    auto parent = parent_.lock();
+    if (parent) {
+        parent->ChangeValueFromChild(*this);
+    }
+    else {
+        PropagateValueChangedToChildren();
+    }
+}
+
+
+void PropertyData::ChangeValueFromChild(const PropertyData& child) {
+
+    child.Property()->SetValue(*value_, child.Value());
+    value_changed_event_.AsObserver().OnNext(shared_from_this());
+
+    PropagateValueChangedToParent();
+}
+
+
+void PropertyData::PropagateValueChangedToChildren() {
+
+    if (!children_) {
         return;
     }
 
     for (const auto& each_child : *children_) {
 
-        auto new_value = each_child->Property()->GetValue(*value_);
-        each_child->ChangeValueFromUpToDown(new_value);
-    }
-
-    if (!children_->empty()) {
-        if (auto observer = observer_.lock()) {
-            observer->OnDataChildrenUpdate(shared_from_this(), children_->size());
+        std::shared_ptr<Object> new_child_value;
+        if (value_) {
+            new_child_value = each_child->Property()->GetValue(*value_);
         }
+
+        each_child->ChangeValueFromParent(std::move(new_child_value));
     }
 }
 
 
-void PropertyData::ChangeValueFromDownToUp(const std::shared_ptr<Object>& value) {
+void PropertyData::ChangeValueFromParent(std::shared_ptr<Object> new_value) {
 
-    value_ = value;
-
-    value_changed_subject_.AsObserver().OnNext(shared_from_this());
-}
-
-
-void PropertyData::OnChildValueChanged(const std::shared_ptr<PropertyData>& child) {
-
-    child->Property()->SetValue(*value_, child->Value());
-
-    if (property_) {
-        value_changed_subject_.AsObserver().OnNext(shared_from_this());
+    if (is_changing_value_) {
+        return;
     }
-    else {
-        ChangeValueFromUpToDown(value_);
-    }
+
+    SetValue(std::move(new_value));
+    PropagateValueChangedToChildren();
 }
 
 }

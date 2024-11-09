@@ -2998,9 +2998,6 @@
     <ClInclude Include="src\zaf\internal\property_grid\property_data.h">
       <Filter>zaf\internal\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\property_grid\property_grid_data_observer.h">
-      <Filter>zaf\internal\property_grid</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\internal\property_grid\property_grid_delegate.h">
       <Filter>zaf\internal\property_grid</Filter>
     </ClInclude>

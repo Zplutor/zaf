@@ -3,7 +3,6 @@
 #include <optional>
 #include <vector>
 #include <zaf/base/non_copyable.h>
-#include <zaf/internal/property_grid/property_grid_data_observer.h>
 #include <zaf/control/property_grid/property_table.h>
 #include <zaf/control/property_grid/type_config_factory.h>
 #include <zaf/object/object.h>
@@ -21,11 +20,10 @@ class PropertyData :
 
 public:
     PropertyData(
+        std::shared_ptr<PropertyData> parent,
         zaf::ObjectProperty* property,
         const std::shared_ptr<Object>& value,
-        bool is_parent_read_only,
-        const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory,
-        const std::weak_ptr<PropertyGridDataObserver>& observer);
+        const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory);
 
     zaf::ObjectProperty* Property() const {
         return property_;
@@ -35,19 +33,15 @@ public:
         return value_;
     }
 
-    bool IsReadOnly() const {
-        return is_read_only_;
-    }
+    bool IsReadOnly() const;
 
     const std::vector<std::shared_ptr<PropertyData>>& Children();
 
+    void ChangeValue(std::shared_ptr<Object> value);
+
     Observable<std::shared_ptr<PropertyData>> ValueChangedEvent() {
-        return value_changed_subject_.AsObservable();
+        return value_changed_event_.AsObservable();
     }
-
-    void ChangeValueFromUpToDown(const std::shared_ptr<Object>& value);
-
-    void ChangeValueFromDownToUp(const std::shared_ptr<Object>& value);
 
 private:
     static std::vector<ObjectType*> GetObjectTypeChain(const Object& object);
@@ -55,15 +49,24 @@ private:
 
 private:
     std::vector<std::shared_ptr<PropertyData>> LoadChildren();
-    void OnChildValueChanged(const std::shared_ptr<PropertyData>& child);
+
+    void SetValue(std::shared_ptr<Object> new_value);
+    void PropagateValueChangedToParent();
+    void ChangeValueFromChild(const PropertyData& child);
+
+    void PropagateValueChangedToChildren();
+    void ChangeValueFromParent(std::shared_ptr<Object> new_value);
 
 private:
+    std::weak_ptr<PropertyData> parent_;
+
     zaf::ObjectProperty* property_{};
     std::shared_ptr<Object> value_{};
-    bool is_read_only_{};
+
     std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
-    std::weak_ptr<PropertyGridDataObserver> observer_;
-    Subject<std::shared_ptr<PropertyData>> value_changed_subject_;
+
+    bool is_changing_value_{};
+    Subject<std::shared_ptr<PropertyData>> value_changed_event_;
 
     std::optional<std::vector<std::shared_ptr<PropertyData>>> children_;
 };
