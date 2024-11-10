@@ -1,14 +1,14 @@
 #pragma once
 
 #include <zaf/internal/property_grid/property_data.h>
-#include <zaf/control/property_grid/type_config_factory.h>
+#include <zaf/control/property_grid_delegate.h>
 #include <zaf/control/tree_data_source.h>
 
 namespace zaf::internal {
 
 class PropertyGridDataSource : public TreeDataSource {
 public:
-    explicit PropertyGridDataSource(const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory);
+    explicit PropertyGridDataSource(std::shared_ptr<PropertyGridDelegate> delegate);
 
     void SetTargetObject(const std::shared_ptr<Object>& target_object);
 
@@ -24,7 +24,7 @@ public:
 
 private:
     std::shared_ptr<PropertyData> root_data_;
-    std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
+    std::shared_ptr<PropertyGridDelegate> delegate_;
 };
 
 }

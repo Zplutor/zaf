@@ -4,7 +4,7 @@
 #include <vector>
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/property_grid/property_table.h>
-#include <zaf/control/property_grid/type_config_factory.h>
+#include <zaf/control/property_grid_delegate.h>
 #include <zaf/object/object.h>
 #include <zaf/object/object_property.h>
 #include <zaf/rx/subject.h>
@@ -23,7 +23,7 @@ public:
         std::shared_ptr<PropertyData> parent,
         zaf::ObjectProperty* property,
         const std::shared_ptr<Object>& value,
-        const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory);
+        const std::shared_ptr<PropertyGridDelegate>& delegate);
 
     zaf::ObjectProperty* Property() const {
         return property_;
@@ -63,7 +63,7 @@ private:
     zaf::ObjectProperty* property_{};
     std::shared_ptr<Object> value_{};
 
-    std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
+    std::shared_ptr<PropertyGridDelegate> delegate_;
 
     bool is_changing_value_{};
     Subject<std::shared_ptr<PropertyData>> value_changed_event_;

@@ -1,21 +1,21 @@
 #include <zaf/internal/property_grid/property_grid_tree_delegate.h>
 #include <zaf/base/as.h>
+#include <zaf/creation.h>
 #include <zaf/internal/property_grid/property_data.h>
 #include <zaf/internal/property_grid/property_grid_item.h>
-#include <zaf/creation.h>
 
 namespace zaf::internal {
 
 PropertyGridTreeDelegate::PropertyGridTreeDelegate(
-    const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory,
+    const std::shared_ptr<PropertyGridDelegate>& delegate,
     const std::shared_ptr<SplitDistanceManager>& split_distance_manager,
     const std::weak_ptr<zaf::internal::TreeControlImplementation>& tree_implementation)
     :
-    type_config_factory_(type_config_factory),
+    delegate_(delegate),
     split_distance_manager_(split_distance_manager),
     tree_implementation_(tree_implementation) {
 
-    ZAF_EXPECT(type_config_factory_);
+    ZAF_EXPECT(delegate_);
     ZAF_EXPECT(split_distance_manager_);
 }
 
@@ -28,7 +28,7 @@ std::shared_ptr<TreeItem> PropertyGridTreeDelegate::CreateItem(
     auto data = As<PropertyData>(item_data);
     ZAF_EXPECT(data);
 
-    auto type_config = type_config_factory_->GetConfig(data->Property()->ValueType());
+    auto type_config = delegate_->GetTypeConfig(data->Property()->ValueType());
     auto value_editor = type_config->CreateValueEditor();
 
     std::weak_ptr<Object> weak_data = data;

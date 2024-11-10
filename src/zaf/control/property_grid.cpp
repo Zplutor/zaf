@@ -25,13 +25,13 @@ void PropertyGrid::Initialize() {
     __super::Initialize();
 
     target_object_ = Create<Object>();
-    type_config_factory_ = std::make_shared<property_grid::TypeConfigFactory>();
+    delegate_.Assign(std::make_shared<PropertyGridDelegate>(), this);
 
-    data_source_ = std::make_shared<internal::PropertyGridDataSource>(type_config_factory_);
+    data_source_ = std::make_shared<internal::PropertyGridDataSource>(delegate_.ToSharedPtr());
     data_source_->SetTargetObject(target_object_);
 
     tree_delegate_ = std::make_shared<internal::PropertyGridTreeDelegate>(
-        type_config_factory_,
+        delegate_.ToSharedPtr(),
         split_distance_manager_,
         tree_implementation_);
 
@@ -100,10 +100,11 @@ void PropertyGrid::SetTargetObject(std::shared_ptr<Object> object) {
 }
 
 
-void PropertyGrid::SetTypeConfigFactory(
-    const std::shared_ptr<property_grid::TypeConfigFactory>& factory) {
+void PropertyGrid::SetDelegate(std::shared_ptr<PropertyGridDelegate> delegate) {
 
-    type_config_factory_ = factory;
+    ZAF_EXPECT(delegate);
+
+    delegate_.Assign(std::move(delegate), this);
     ReCreateDataSource();
     ReCreateDelegate();
 }
@@ -111,7 +112,7 @@ void PropertyGrid::SetTypeConfigFactory(
 
 void PropertyGrid::ReCreateDataSource() {
 
-    data_source_ = std::make_shared<internal::PropertyGridDataSource>(type_config_factory_);
+    data_source_ = std::make_shared<internal::PropertyGridDataSource>(delegate_.ToSharedPtr());
     data_source_->SetTargetObject(target_object_);
 
     tree_implementation_->SetDataSource(data_source_);
@@ -121,7 +122,7 @@ void PropertyGrid::ReCreateDataSource() {
 void PropertyGrid::ReCreateDelegate() {
 
     tree_delegate_ = std::make_shared<internal::PropertyGridTreeDelegate>(
-        type_config_factory_, 
+        delegate_.ToSharedPtr(),
         split_distance_manager_,
         tree_implementation_);
 

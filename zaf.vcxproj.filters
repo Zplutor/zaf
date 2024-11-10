@@ -583,9 +583,6 @@
     <ClCompile Include="src\zaf\control\property_grid.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\type_config_factory.cpp">
-      <Filter>zaf\control\property_grid</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid\type_config.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
@@ -1297,6 +1294,9 @@
     <ClCompile Include="src\zaf\internal\property_grid\split_distance_manager.cpp">
       <Filter>zaf\internal\property_grid</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\property_grid_delegate.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1950,9 +1950,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid.h">
       <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\type_config_factory.h">
-      <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\type_config.h">
       <Filter>zaf\control\property_grid</Filter>
@@ -3009,6 +3006,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\property_grid\split_distance_manager.h">
       <Filter>zaf\internal\property_grid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\property_grid_delegate.h">
+      <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

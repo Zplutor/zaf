@@ -7,12 +7,12 @@ PropertyData::PropertyData(
     std::shared_ptr<PropertyData> parent,
     zaf::ObjectProperty* property,
     const std::shared_ptr<zaf::Object>& value,
-    const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory)
+    const std::shared_ptr<PropertyGridDelegate>& delegate)
     :
     parent_(std::move(parent)),
     property_(property),
     value_(value),
-    type_config_factory_(type_config_factory) {
+    delegate_(delegate) {
 
 }
 
@@ -51,7 +51,7 @@ std::vector<std::shared_ptr<PropertyData>> PropertyData::LoadChildren() {
     std::vector<ObjectType*> value_type_chain = GetObjectTypeChain(*value_);
     property_grid::PropertyTable property_table = CreatePropertyTable(value_type_chain);
 
-    auto type_config = type_config_factory_->GetConfig(value_->DynamicType());
+    auto type_config = delegate_->GetTypeConfig(value_->DynamicType());
     type_config->FilterProperties(property_table);
 
     std::vector<std::shared_ptr<PropertyData>> result;
@@ -62,7 +62,7 @@ std::vector<std::shared_ptr<PropertyData>> PropertyData::LoadChildren() {
                 shared_from_this(),
                 each_property,
                 each_property->GetValue(*value_), 
-                type_config_factory_);
+                delegate_);
 
             result.push_back(child_data);
         }

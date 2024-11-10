@@ -2,18 +2,18 @@
 
 #include <zaf/control/property_grid_node.h>
 #include <zaf/control/scroll_box.h>
+#include <zaf/internal/no_self_ref_ptr.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 class TreeControlImplementation;
 class PropertyGridDataSource;
 class PropertyGridTreeDelegate;
 class SplitDistanceManager;
 }
 
-namespace property_grid {
-class TypeConfigFactory;
-}
+namespace zaf {
+
+class PropertyGridDelegate;
 
 class PropertyGrid : public ScrollBox {
 public:
@@ -28,7 +28,7 @@ public:
 
     void SetTargetObject(std::shared_ptr<Object> object);
 
-    void SetTypeConfigFactory(const std::shared_ptr<property_grid::TypeConfigFactory>& factory);
+    void SetDelegate(std::shared_ptr<PropertyGridDelegate> delegate);
 
     void RefreshValues();
     void Reload();
@@ -56,7 +56,7 @@ private:
 private:
     std::shared_ptr<internal::SplitDistanceManager> split_distance_manager_;
     std::shared_ptr<Object> target_object_;
-    std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
+    internal::NoSelfRefPtr<PropertyGridDelegate> delegate_;
     std::shared_ptr<internal::PropertyGridDataSource> data_source_;
     std::shared_ptr<internal::PropertyGridTreeDelegate> tree_delegate_;
     std::shared_ptr<internal::TreeControlImplementation> tree_implementation_;

@@ -2,16 +2,16 @@
 
 #include <zaf/control/event/focus_event_info.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
-#include <zaf/internal/property_grid/split_distance_manager.h>
-#include <zaf/control/property_grid/type_config_factory.h>
+#include <zaf/control/property_grid_delegate.h>
 #include <zaf/control/tree_control_delegate.h>
+#include <zaf/internal/property_grid/split_distance_manager.h>
 
 namespace zaf::internal {
 
 class PropertyGridTreeDelegate : public TreeControlDelegate, SubscriptionHost {
 public:
     PropertyGridTreeDelegate(
-        const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory,
+        const std::shared_ptr<PropertyGridDelegate>& delegate,
         const std::shared_ptr<SplitDistanceManager>& split_distance_manager,
         const std::weak_ptr<zaf::internal::TreeControlImplementation>& tree_implementation);
 
@@ -34,7 +34,7 @@ private:
         const FocusGainedInfo& event_info);
 
 private:
-    std::shared_ptr<property_grid::TypeConfigFactory> type_config_factory_;
+    std::shared_ptr<PropertyGridDelegate> delegate_;
     std::shared_ptr<SplitDistanceManager> split_distance_manager_;
     std::weak_ptr<zaf::internal::TreeControlImplementation> tree_implementation_;
 };

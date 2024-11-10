@@ -3,10 +3,10 @@
 
 namespace zaf::internal {
 
-PropertyGridDataSource::PropertyGridDataSource(const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory) :
-    type_config_factory_(type_config_factory) {
+PropertyGridDataSource::PropertyGridDataSource(std::shared_ptr<PropertyGridDelegate> delegate) :
+    delegate_(delegate) {
 
-    ZAF_EXPECT(type_config_factory_);
+    ZAF_EXPECT(delegate_);
 }
 
 
@@ -18,7 +18,7 @@ void PropertyGridDataSource::SetTargetObject(const std::shared_ptr<Object>& targ
         nullptr,
         nullptr,
         target_object,
-        type_config_factory_);
+        delegate_);
 }
 
 
