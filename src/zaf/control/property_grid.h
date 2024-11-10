@@ -6,8 +6,8 @@
 
 namespace zaf::internal {
 class TreeControlImplementation;
-class PropertyGridDataSource;
-class PropertyGridTreeDelegate;
+class PropertyGridDataManager;
+class PropertyGridItemManager;
 class SplitDistanceManager;
 }
 
@@ -57,8 +57,8 @@ private:
     std::shared_ptr<internal::SplitDistanceManager> split_distance_manager_;
     std::shared_ptr<Object> target_object_;
     internal::NoSelfRefPtr<PropertyGridDelegate> delegate_;
-    std::shared_ptr<internal::PropertyGridDataSource> data_source_;
-    std::shared_ptr<internal::PropertyGridTreeDelegate> tree_delegate_;
+    std::shared_ptr<internal::PropertyGridDataManager> data_manager_;
+    std::shared_ptr<internal::PropertyGridItemManager> item_manager_;
     std::shared_ptr<internal::TreeControlImplementation> tree_implementation_;
 };
 

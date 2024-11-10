@@ -8,9 +8,9 @@
 
 namespace zaf::internal {
 
-class PropertyGridTreeDelegate : public TreeControlDelegate, SubscriptionHost {
+class PropertyGridItemManager : public TreeControlDelegate, SubscriptionHost {
 public:
-    PropertyGridTreeDelegate(
+    PropertyGridItemManager(
         const std::shared_ptr<PropertyGridDelegate>& delegate,
         const std::shared_ptr<SplitDistanceManager>& split_distance_manager,
         const std::weak_ptr<zaf::internal::TreeControlImplementation>& tree_implementation);

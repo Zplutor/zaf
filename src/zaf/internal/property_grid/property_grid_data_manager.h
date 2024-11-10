@@ -6,9 +6,9 @@
 
 namespace zaf::internal {
 
-class PropertyGridDataSource : public TreeDataSource {
+class PropertyGridDataManager : public TreeDataSource {
 public:
-    explicit PropertyGridDataSource(std::shared_ptr<PropertyGridDelegate> delegate);
+    explicit PropertyGridDataManager(std::shared_ptr<PropertyGridDelegate> delegate);
 
     void SetTargetObject(const std::shared_ptr<Object>& target_object);
 

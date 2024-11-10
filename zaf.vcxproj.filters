@@ -1276,13 +1276,13 @@
     <ClCompile Include="src\zaf\control\list_control_delegate.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\property_grid\property_grid_data_source.cpp">
+    <ClCompile Include="src\zaf\internal\property_grid\property_grid_data_manager.cpp">
       <Filter>zaf\internal\property_grid</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\property_grid\property_data.cpp">
       <Filter>zaf\internal\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\property_grid\property_grid_tree_delegate.cpp">
+    <ClCompile Include="src\zaf\internal\property_grid\property_grid_item_manager.cpp">
       <Filter>zaf\internal\property_grid</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\property_grid\expanded_node_visitor.cpp">
@@ -2989,13 +2989,13 @@
     <ClInclude Include="src\zaf\internal\no_self_ref_ptr.h">
       <Filter>zaf\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\property_grid\property_grid_data_source.h">
+    <ClInclude Include="src\zaf\internal\property_grid\property_grid_data_manager.h">
       <Filter>zaf\internal\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\property_grid\property_data.h">
       <Filter>zaf\internal\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\property_grid\property_grid_tree_delegate.h">
+    <ClInclude Include="src\zaf\internal\property_grid\property_grid_item_manager.h">
       <Filter>zaf\internal\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\property_grid\expanded_node_visitor.h">
