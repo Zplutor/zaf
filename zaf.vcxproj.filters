@@ -592,7 +592,7 @@
     <ClCompile Include="src\zaf\control\property_grid\value_editor.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\text_editor.cpp">
+    <ClCompile Include="src\zaf\control\property_grid\view_only_editor.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid\size_config.cpp">
@@ -1960,7 +1960,7 @@
     <ClInclude Include="src\zaf\control\property_grid\value_editor.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\text_editor.h">
+    <ClInclude Include="src\zaf\control\property_grid\view_only_editor.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\size_config.h">

@@ -1,10 +1,10 @@
-#include <zaf/control/property_grid/text_editor.h>
+#include <zaf/control/property_grid/view_only_editor.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
 
 namespace zaf::property_grid {
 
-void TextEditor::Initialize() {
+void ViewOnlyEditor::Initialize() {
 
     __super::Initialize();
 
@@ -16,7 +16,7 @@ void TextEditor::Initialize() {
 }
 
 
-void TextEditor::SetAccessMethod(AccessMethod access_method) {
+void ViewOnlyEditor::SetAccessMethod(AccessMethod access_method) {
 
     if (access_method == AccessMethod::ReadOnly) {
         label_->SetTextColor(Color::FromRGB(zaf::internal::ControlDisabledTextColorRGB));
@@ -27,7 +27,7 @@ void TextEditor::SetAccessMethod(AccessMethod access_method) {
 }
 
 
-void TextEditor::SetValue(const std::shared_ptr<Object>& value) {
+void ViewOnlyEditor::SetValue(const std::shared_ptr<Object>& value) {
 
     if (value) {
         label_->SetText(value->ToString());

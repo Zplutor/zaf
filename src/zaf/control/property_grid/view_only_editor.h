@@ -5,7 +5,7 @@
 
 namespace zaf::property_grid {
 
-class TextEditor : public ValueEditor {
+class ViewOnlyEditor : public ValueEditor {
 public:
     void SetAccessMethod(AccessMethod) override;
     void SetValue(const std::shared_ptr<Object>& value) override;
