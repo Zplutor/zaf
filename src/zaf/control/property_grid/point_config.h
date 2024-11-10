@@ -8,7 +8,7 @@ namespace zaf::property_grid {
 
 class PointConfig : public TypeConfig {
 public:
-    std::shared_ptr<ValueEditor> CreateValueView() override {
+    std::shared_ptr<ValueEditor> CreateValueEditor() override {
         return Create<EditableEditor>();
     }
 };

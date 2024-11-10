@@ -93,8 +93,9 @@ void PropertyGrid::OnFocusLost(const FocusLostInfo& event_info) {
 }
 
 
-void PropertyGrid::SetTargetObject(const std::shared_ptr<Object>& object) {
-    target_object_ = object;
+void PropertyGrid::SetTargetObject(std::shared_ptr<Object> object) {
+    ZAF_EXPECT(object);
+    target_object_ = std::move(object);
     ReCreateDataSource();
 }
 

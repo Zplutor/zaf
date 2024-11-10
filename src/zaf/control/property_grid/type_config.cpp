@@ -4,7 +4,7 @@
 
 namespace zaf::property_grid {
 
-std::shared_ptr<ValueEditor> TypeConfig::CreateValueView() {
+std::shared_ptr<ValueEditor> TypeConfig::CreateValueEditor() {
     return Create<TextEditor>();
 }
 

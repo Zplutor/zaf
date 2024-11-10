@@ -7,7 +7,7 @@ namespace zaf::property_grid {
 class ColorConfig : public TypeConfig {
 public:
     void FilterProperties(PropertyTable& property_table) override;
-    std::shared_ptr<ValueEditor> CreateValueView() override;
+    std::shared_ptr<ValueEditor> CreateValueEditor() override;
 };
 
 }

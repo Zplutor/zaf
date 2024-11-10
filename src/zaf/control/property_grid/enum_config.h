@@ -8,7 +8,7 @@ namespace zaf::property_grid {
 
 class EnumConfig : public TypeConfig {
 public:
-    std::shared_ptr<ValueEditor> CreateValueView() override {
+    std::shared_ptr<ValueEditor> CreateValueEditor() override {
         return Create<EnumEditor>();
     }
 };

@@ -9,7 +9,7 @@ void ColorConfig::FilterProperties(PropertyTable& property_table) {
 }
 
 
-std::shared_ptr<ValueEditor> ColorConfig::CreateValueView() {
+std::shared_ptr<ValueEditor> ColorConfig::CreateValueEditor() {
     return Create<ColorEditor>();
 }
 

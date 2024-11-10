@@ -19,7 +19,7 @@ void SizeConfig::FilterProperties(PropertyTable& property_table) {
 }
 
 
-std::shared_ptr<ValueEditor> SizeConfig::CreateValueView() {
+std::shared_ptr<ValueEditor> SizeConfig::CreateValueEditor() {
     return Create<EditableEditor>();
 }
 

@@ -23,7 +23,7 @@ void FrameConfig::FilterProperties(PropertyTable& property_table) {
 }
 
 
-std::shared_ptr<ValueEditor> FrameConfig::CreateValueView() {
+std::shared_ptr<ValueEditor> FrameConfig::CreateValueEditor() {
     return Create<EditableEditor>();
 }
 

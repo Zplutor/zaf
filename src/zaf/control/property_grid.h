@@ -22,11 +22,11 @@ public:
 public:
     PropertyGrid();
 
-    std::shared_ptr<Object> TargetObject() const {
+    const std::shared_ptr<Object>& TargetObject() const {
         return target_object_;
     }
 
-    void SetTargetObject(const std::shared_ptr<Object>& object);
+    void SetTargetObject(std::shared_ptr<Object> object);
 
     void SetTypeConfigFactory(const std::shared_ptr<property_grid::TypeConfigFactory>& factory);
 

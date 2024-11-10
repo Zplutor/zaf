@@ -29,7 +29,7 @@ std::shared_ptr<TreeItem> PropertyGridDelegate::CreateItem(
     ZAF_EXPECT(data);
 
     auto type_config = type_config_factory_->GetConfig(data->Property()->ValueType());
-    auto value_editor = type_config->CreateValueView();
+    auto value_editor = type_config->CreateValueEditor();
 
     std::weak_ptr<Object> weak_data = data;
     Subscriptions() += value_editor->FocusGainedEvent().Subscribe(

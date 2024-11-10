@@ -15,7 +15,7 @@ public:
 
     virtual void FilterProperties(PropertyTable& property_table) { }
 
-    virtual std::shared_ptr<ValueEditor> CreateValueView();
+    virtual std::shared_ptr<ValueEditor> CreateValueEditor();
 };
 
 }
