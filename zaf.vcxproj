@@ -157,7 +157,7 @@
     <ClCompile Include="src\zaf\control\property_grid\color_config.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\color_editor.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\control_config.cpp" />
-    <ClCompile Include="src\zaf\control\property_grid\editable_editor.cpp" />
+    <ClCompile Include="src\zaf\control\property_grid\parsable_value_editor.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\enum_editor.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\frame_config.cpp" />
     <ClCompile Include="src\zaf\control\property_grid\property_list.cpp" />
@@ -600,8 +600,8 @@
     <ClInclude Include="src\zaf\control\property_grid\color_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\color_editor.h" />
     <ClInclude Include="src\zaf\control\property_grid\control_config.h" />
-    <ClInclude Include="src\zaf\control\property_grid\editable_type_config.h" />
-    <ClInclude Include="src\zaf\control\property_grid\editable_editor.h" />
+    <ClInclude Include="src\zaf\control\property_grid\parsable_type_config.h" />
+    <ClInclude Include="src\zaf\control\property_grid\parsable_value_editor.h" />
     <ClInclude Include="src\zaf\control\property_grid\enum_config.h" />
     <ClInclude Include="src\zaf\control\property_grid\enum_editor.h" />
     <ClInclude Include="src\zaf\control\property_grid\frame_config.h" />

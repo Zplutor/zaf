@@ -4,7 +4,7 @@
 #include <zaf/control/property_grid/bool_config.h>
 #include <zaf/control/property_grid/color_config.h>
 #include <zaf/control/property_grid/control_config.h>
-#include <zaf/control/property_grid/editable_type_config.h>
+#include <zaf/control/property_grid/parsable_type_config.h>
 #include <zaf/control/property_grid/enum_config.h>
 #include <zaf/control/property_grid/frame_config.h>
 #include <zaf/control/property_grid/point_config.h>
@@ -44,18 +44,18 @@ std::shared_ptr<TypeConfig> GetObjectTypeConfig(ObjectType* type) {
         { Rect::StaticType(), ConfigGetter<RectConfig> },
         { Point::StaticType(), ConfigGetter<PointConfig> },
         { Size::StaticType(), ConfigGetter<SizeConfig> },
-        { Int8::StaticType(), ConfigGetter<EditableTypeConfig> },
-        { UInt8::StaticType(), ConfigGetter<EditableTypeConfig> },
-        { Int16::StaticType(), ConfigGetter<EditableTypeConfig> },
-        { UInt16::StaticType(), ConfigGetter<EditableTypeConfig> },
-        { Int32::StaticType(), ConfigGetter<EditableTypeConfig> },
-        { UInt32::StaticType(), ConfigGetter<EditableTypeConfig> },
-        { Int64::StaticType(), ConfigGetter<EditableTypeConfig> },
-        { UInt64::StaticType(), ConfigGetter<EditableTypeConfig> },
-        { Float::StaticType(), ConfigGetter<EditableTypeConfig> },
-        { Double::StaticType(), ConfigGetter<EditableTypeConfig> },
-        { WideString::StaticType(), ConfigGetter<EditableTypeConfig> },
-        { FontWeight::StaticType(), ConfigGetter<EditableTypeConfig> },
+        { Int8::StaticType(), ConfigGetter<ParsableTypeConfig> },
+        { UInt8::StaticType(), ConfigGetter<ParsableTypeConfig> },
+        { Int16::StaticType(), ConfigGetter<ParsableTypeConfig> },
+        { UInt16::StaticType(), ConfigGetter<ParsableTypeConfig> },
+        { Int32::StaticType(), ConfigGetter<ParsableTypeConfig> },
+        { UInt32::StaticType(), ConfigGetter<ParsableTypeConfig> },
+        { Int64::StaticType(), ConfigGetter<ParsableTypeConfig> },
+        { UInt64::StaticType(), ConfigGetter<ParsableTypeConfig> },
+        { Float::StaticType(), ConfigGetter<ParsableTypeConfig> },
+        { Double::StaticType(), ConfigGetter<ParsableTypeConfig> },
+        { WideString::StaticType(), ConfigGetter<ParsableTypeConfig> },
+        { FontWeight::StaticType(), ConfigGetter<ParsableTypeConfig> },
     };
 
     auto current_type = type;

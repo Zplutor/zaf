@@ -5,7 +5,7 @@
 
 namespace zaf::property_grid {
 
-class EditableEditor : public ValueEditor {
+class ParsableValueEditor : public ValueEditor {
 public:
     void SetAccessMethod(AccessMethod) override;
     void SetValue(const std::shared_ptr<Object>& value) override;

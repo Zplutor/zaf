@@ -625,7 +625,7 @@
     <ClCompile Include="src\zaf\control\property_grid\color_editor.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\property_grid\editable_editor.cpp">
+    <ClCompile Include="src\zaf\control\property_grid\parsable_value_editor.cpp">
       <Filter>zaf\control\property_grid</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\caret.cpp">
@@ -2005,10 +2005,10 @@
     <ClInclude Include="src\zaf\control\property_grid\color_editor.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\editable_editor.h">
+    <ClInclude Include="src\zaf\control\property_grid\parsable_value_editor.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\property_grid\editable_type_config.h">
+    <ClInclude Include="src\zaf\control\property_grid\parsable_type_config.h">
       <Filter>zaf\control\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\caret.h">

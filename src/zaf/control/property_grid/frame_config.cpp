@@ -1,5 +1,5 @@
 #include <zaf/control/property_grid/frame_config.h>
-#include <zaf/control/property_grid/editable_editor.h>
+#include <zaf/control/property_grid/parsable_value_editor.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/frame.h>
 
@@ -24,7 +24,7 @@ void FrameConfig::FilterProperties(PropertyTable& property_table) {
 
 
 std::shared_ptr<ValueEditor> FrameConfig::CreateValueEditor() {
-    return Create<EditableEditor>();
+    return Create<ParsableValueEditor>();
 }
 
 }
