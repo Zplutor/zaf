@@ -1285,7 +1285,7 @@
     <ClCompile Include="src\zaf\internal\property_grid\property_data.cpp">
       <Filter>zaf\internal\property_grid</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\property_grid\property_grid_delegate.cpp">
+    <ClCompile Include="src\zaf\internal\property_grid\property_grid_tree_delegate.cpp">
       <Filter>zaf\internal\property_grid</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\property_grid\expanded_node_visitor.cpp">
@@ -2998,7 +2998,7 @@
     <ClInclude Include="src\zaf\internal\property_grid\property_data.h">
       <Filter>zaf\internal\property_grid</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\property_grid\property_grid_delegate.h">
+    <ClInclude Include="src\zaf\internal\property_grid\property_grid_tree_delegate.h">
       <Filter>zaf\internal\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\property_grid\expanded_node_visitor.h">

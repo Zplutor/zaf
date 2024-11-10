@@ -301,7 +301,7 @@
     <ClCompile Include="src\zaf\internal\message_loop.cpp" />
     <ClCompile Include="src\zaf\internal\object\enum_parser.cpp" />
     <ClCompile Include="src\zaf\internal\paint_utility.cpp" />
-    <ClCompile Include="src\zaf\internal\property_grid\property_grid_delegate.cpp" />
+    <ClCompile Include="src\zaf\internal\property_grid\property_grid_tree_delegate.cpp" />
     <ClCompile Include="src\zaf\internal\property_grid\expanded_node_visitor.cpp" />
     <ClCompile Include="src\zaf\internal\property_grid\property_grid_item.cpp" />
     <ClCompile Include="src\zaf\internal\property_grid\property_data.cpp" />
@@ -809,7 +809,7 @@
     <ClInclude Include="src\zaf\internal\object\property_helper.h" />
     <ClInclude Include="src\zaf\internal\object\shared_ptr_utility.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />
-    <ClInclude Include="src\zaf\internal\property_grid\property_grid_delegate.h" />
+    <ClInclude Include="src\zaf\internal\property_grid\property_grid_tree_delegate.h" />
     <ClInclude Include="src\zaf\internal\property_grid\expanded_node_visitor.h" />
     <ClInclude Include="src\zaf\internal\property_grid\property_grid_item.h" />
     <ClInclude Include="src\zaf\internal\property_grid\property_data.h" />

@@ -2,7 +2,7 @@
 #include <zaf/base/container/utility/find.h>
 #include <zaf/base/range.h>
 #include <zaf/internal/property_grid/property_grid_data_source.h>
-#include <zaf/internal/property_grid/property_grid_delegate.h>
+#include <zaf/internal/property_grid/property_grid_tree_delegate.h>
 #include <zaf/internal/property_grid/expanded_node_visitor.h>
 #include <zaf/internal/property_grid/split_distance_manager.h>
 #include <zaf/control/internal/tree_control/tree_control_implementation.h>
@@ -30,7 +30,7 @@ void PropertyGrid::Initialize() {
     data_source_ = std::make_shared<internal::PropertyGridDataSource>(type_config_factory_);
     data_source_->SetTargetObject(target_object_);
 
-    delegate_ = std::make_shared<internal::PropertyGridDelegate>(
+    tree_delegate_ = std::make_shared<internal::PropertyGridTreeDelegate>(
         type_config_factory_,
         split_distance_manager_,
         tree_implementation_);
@@ -38,7 +38,7 @@ void PropertyGrid::Initialize() {
     internal::TreeControlImplementation::InitializeParameters initialize_parameters;
     initialize_parameters.item_container = Create<TreeItemContainer>();
     initialize_parameters.data_source = data_source_;
-    initialize_parameters.delegate = delegate_;
+    initialize_parameters.delegate = tree_delegate_;
 
     tree_implementation_->Initialize(initialize_parameters);
 
@@ -120,12 +120,12 @@ void PropertyGrid::ReCreateDataSource() {
 
 void PropertyGrid::ReCreateDelegate() {
 
-    delegate_ = std::make_shared<internal::PropertyGridDelegate>(
+    tree_delegate_ = std::make_shared<internal::PropertyGridTreeDelegate>(
         type_config_factory_, 
         split_distance_manager_,
         tree_implementation_);
 
-    tree_implementation_->SetDelegate(delegate_);
+    tree_implementation_->SetDelegate(tree_delegate_);
 }
 
 

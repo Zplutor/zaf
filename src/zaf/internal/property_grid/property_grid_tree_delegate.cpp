@@ -1,4 +1,4 @@
-#include <zaf/internal/property_grid/property_grid_delegate.h>
+#include <zaf/internal/property_grid/property_grid_tree_delegate.h>
 #include <zaf/base/as.h>
 #include <zaf/internal/property_grid/property_data.h>
 #include <zaf/internal/property_grid/property_grid_item.h>
@@ -6,7 +6,7 @@
 
 namespace zaf::internal {
 
-PropertyGridDelegate::PropertyGridDelegate(
+PropertyGridTreeDelegate::PropertyGridTreeDelegate(
     const std::shared_ptr<property_grid::TypeConfigFactory>& type_config_factory,
     const std::shared_ptr<SplitDistanceManager>& split_distance_manager,
     const std::weak_ptr<zaf::internal::TreeControlImplementation>& tree_implementation)
@@ -20,7 +20,7 @@ PropertyGridDelegate::PropertyGridDelegate(
 }
 
 
-std::shared_ptr<TreeItem> PropertyGridDelegate::CreateItem(
+std::shared_ptr<TreeItem> PropertyGridTreeDelegate::CreateItem(
     const std::shared_ptr<Object>& parent_item_data,
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
@@ -33,13 +33,13 @@ std::shared_ptr<TreeItem> PropertyGridDelegate::CreateItem(
 
     std::weak_ptr<Object> weak_data = data;
     Subscriptions() += value_editor->FocusGainedEvent().Subscribe(
-        std::bind_front(&PropertyGridDelegate::OnValueEditorGainedFocus, this, weak_data));
+        std::bind_front(&PropertyGridTreeDelegate::OnValueEditorGainedFocus, this, weak_data));
 
     return Create<PropertyGridItem>(data, value_editor, split_distance_manager_);
 }
 
 
-void PropertyGridDelegate::OnValueEditorGainedFocus(
+void PropertyGridTreeDelegate::OnValueEditorGainedFocus(
     const std::weak_ptr<Object>& weak_data,
     const FocusGainedInfo& event_info) {
 
