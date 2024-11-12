@@ -15,6 +15,7 @@
 #include "manager/spin_box_explore_manager.h"
 #include "manager/split_control_explore_manager.h"
 #include "manager/text_box_explore_manager.h"
+#include "manager/track_bar_explore_manager.h"
 
 static const struct {
     const wchar_t* name;
@@ -32,6 +33,7 @@ static const struct {
     L"RichEdit", []() { return std::make_shared<RichEditExploreManager>(); },
     L"SpinBox", []() { return std::make_shared<SpinBoxExploreManager>(); },
     L"TextBox", []() { return std::make_shared<TextBoxExploreManager>(); },
+    L"TrackBar", []() { return std::make_shared<TrackBarExploreManager>(); },
 };
 
 static std::shared_ptr<ExploreManager> CreateExploreManager(const std::wstring& control_name);

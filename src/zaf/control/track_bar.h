@@ -1,0 +1,80 @@
+#pragma once
+
+#include <zaf/control/control.h>
+#include <zaf/control/track_bar_thumb.h>
+
+namespace zaf {
+
+class TrackBarValueChangedInfo;
+
+class TrackBar : public Control {
+public:
+    ZAF_OBJECT;
+
+    const std::shared_ptr<TrackBarThumb>& Thumb() const noexcept;
+    void SetThumb(std::shared_ptr<TrackBarThumb> thumb);
+
+    int Value() const noexcept;
+    void SetValue(int value);
+    Observable<TrackBarValueChangedInfo> ValueChangedEvent() const;
+
+    int MinValue() const noexcept;
+    void SetMinValue(int value);
+
+    int MaxValue() const noexcept;
+    void SetMaxValue(int value);
+
+    bool IsHorizontal() const noexcept;
+    void SetIsHorizontal(bool is_horizontal);
+
+    float TrackThickness() const noexcept;
+    void SetTrackThickness(float thickness);
+
+    float ThumbThickness() const noexcept;
+    void SetThumbThickness(float thickness);
+
+protected:
+    void Initialize() override;
+    void Layout(const zaf::Rect&) override;
+    void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
+
+    void OnThumbDragStarted(const TrackBarThumbDragStartedInfo& event_info);
+    void OnThumbDragging(const TrackBarThumbDraggingInfo& event_info);
+    void OnThumbDragEnded(const TrackBarThumbDragEndedInfo& event_info);
+
+private:
+    std::shared_ptr<TrackBarThumb> thumb_;
+
+    int value_{};
+    int min_value_{};
+    int max_value_{};
+
+    bool is_horizontal_{ true };
+    float track_thickness_{ 2.f };
+    float thumb_thickness_{ 10.f };
+
+    SubscriptionSet thumb_subs_;
+
+    float drag_start_position_{};
+    int drag_start_value_{};
+
+    Event<TrackBarValueChangedInfo> value_changed_event_;
+};
+
+ZAF_OBJECT_BEGIN(TrackBar);
+ZAF_OBJECT_PROPERTY(IsHorizontal);
+ZAF_OBJECT_PROPERTY(MaxValue);
+ZAF_OBJECT_PROPERTY(MinValue);
+ZAF_OBJECT_PROPERTY(Thumb);
+ZAF_OBJECT_PROPERTY(ThumbThickness);
+ZAF_OBJECT_PROPERTY(TrackThickness);
+ZAF_OBJECT_PROPERTY(Value);
+ZAF_OBJECT_END;
+
+
+class TrackBarValueChangedInfo : public EventInfo {
+public:
+    explicit TrackBarValueChangedInfo(std::shared_ptr<TrackBar> track_bar);
+};
+
+}

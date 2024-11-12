@@ -213,6 +213,8 @@
     <ClCompile Include="src\zaf\control\text_box.cpp" />
     <ClCompile Include="src\zaf\control\text_validator.cpp" />
     <ClCompile Include="src\zaf\control\linear_box.cpp" />
+    <ClCompile Include="src\zaf\control\track_bar.cpp" />
+    <ClCompile Include="src\zaf\control\track_bar_thumb.cpp" />
     <ClCompile Include="src\zaf\control\tree_control.cpp" />
     <ClCompile Include="src\zaf\control\tree_data_source.cpp" />
     <ClCompile Include="src\zaf\control\tree_item.cpp" />
@@ -667,6 +669,8 @@
     <ClInclude Include="src\zaf\control\text_box.h" />
     <ClInclude Include="src\zaf\control\text_validator.h" />
     <ClInclude Include="src\zaf\control\linear_box.h" />
+    <ClInclude Include="src\zaf\control\track_bar.h" />
+    <ClInclude Include="src\zaf\control\track_bar_thumb.h" />
     <ClInclude Include="src\zaf\control\tree_control.h" />
     <ClInclude Include="src\zaf\control\tree_control_delegate.h" />
     <ClInclude Include="src\zaf\control\tree_data_source.h" />

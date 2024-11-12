@@ -54,6 +54,9 @@
     <ClCompile Include="src\manager\text_box_explore_manager.cpp">
       <Filter>src\manager</Filter>
     </ClCompile>
+    <ClCompile Include="src\manager\track_bar_explore_manager.cpp">
+      <Filter>src\manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main_window.h">
@@ -105,6 +108,9 @@
       <Filter>src\manager</Filter>
     </ClInclude>
     <ClInclude Include="src\manager\text_box_explore_manager.h">
+      <Filter>src\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\manager\track_bar_explore_manager.h">
       <Filter>src\manager</Filter>
     </ClInclude>
   </ItemGroup>

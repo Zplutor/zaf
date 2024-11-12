@@ -1297,6 +1297,12 @@
     <ClCompile Include="src\zaf\control\property_grid_delegate.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\track_bar.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\track_bar_thumb.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3008,6 +3014,12 @@
       <Filter>zaf\internal\property_grid</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid_delegate.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\track_bar.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\track_bar_thumb.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
   </ItemGroup>
