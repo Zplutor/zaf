@@ -36,7 +36,6 @@ float GetDPIFromWindow(const std::shared_ptr<Window>& window) {
     return Application::Instance().GetSystemDPI();
 }
 
-constexpr bool DefaultCanFocused = false;
 constexpr bool DefaultIsEnabled = true;
 constexpr bool DefaultIsVisible = true;
 
@@ -47,7 +46,6 @@ Control::Control() :
     is_mouse_over_(false), 
     is_capturing_mouse_(false),
     is_focused_(false),
-    can_focused_(DefaultCanFocused),
     is_enabled_(DefaultIsEnabled),
     is_visible_(DefaultIsVisible) {
 
@@ -1576,7 +1574,7 @@ void Control::SetTabIndex(std::size_t tab_index) {
 
 void Control::SetIsFocused(bool is_focused) {
 
-    if (!CanFocused()) {
+    if (!CanFocus()) {
         return;
     }
 

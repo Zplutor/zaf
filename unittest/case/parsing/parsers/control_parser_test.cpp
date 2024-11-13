@@ -245,18 +245,18 @@ TEST(ControlParserTest, ParseIsEnabled) {
 }
 
 
-TEST(ControlParserTest, ParseCanFocused) {
+TEST(ControlParserTest, ParseCanFocus) {
 
-    ASSERT_TRUE(TestBooleanProperty<zaf::Control>("CanFocused", [](zaf::Control& control) {
-        return control.CanFocused();
+    ASSERT_TRUE(TestBooleanProperty<zaf::Control>("CanFocus", [](zaf::Control& control) {
+        return control.CanFocus();
     }));
 }
 
 
 TEST(ControlParserTest, ParseCanTabStop) {
 
-    ASSERT_TRUE(TestBooleanProperty<zaf::Control>("CanFocused", [](zaf::Control& control) {
-        return control.CanFocused();
+    ASSERT_TRUE(TestBooleanProperty<zaf::Control>("CanFocus", [](zaf::Control& control) {
+        return control.CanFocus();
     }));
 }
 

@@ -15,7 +15,7 @@ void ScrollBarArrow::Initialize() {
 
     __super::Initialize();
 
-    SetCanFocused(false);
+    SetCanFocus(false);
 
     SetArrowColorPicker(ColorPicker([](const Control& control) {
 

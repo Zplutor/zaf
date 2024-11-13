@@ -15,7 +15,7 @@ void ScrollBarThumb::Initialize() {
 
     __super::Initialize();
 
-    SetCanFocused(false);
+    SetCanFocus(false);
     SetIsHorizontal(false);
 
     SetThumbColorPicker(ColorPicker([](const Control& control) {

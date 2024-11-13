@@ -598,17 +598,17 @@ public:
 
      The default value is false.
      */
-    bool CanFocused() const {
-        return can_focused_;
+    bool CanFocus() const {
+        return can_focus_;
     }
 
     /**
      Set a value indicating that whether the control can be focused.
 
-     See also CanFocused.
+     See also CanFocus.
      */
-    void SetCanFocused(bool can_focused) {
-        can_focused_ = can_focused;
+    void SetCanFocus(bool can_focused) {
+        can_focus_ = can_focused;
     }
 
     /**
@@ -1106,7 +1106,7 @@ private:
     bool is_mouse_over_;
     bool is_capturing_mouse_;
     bool is_focused_;
-    bool can_focused_;
+    bool can_focus_{ false };
     bool can_double_click_{ false };
     bool is_enabled_;
     bool is_visible_;

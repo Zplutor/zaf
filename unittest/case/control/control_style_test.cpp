@@ -26,15 +26,15 @@ protected:
     void SetUp() override {
 
         leaf1_ = Create<Button>();
-        leaf1_->SetCanFocused(true);
+        leaf1_->SetCanFocus(true);
         leaf1_->SetRect(Rect{ 0, 0, 100, 100 });
 
         leaf2_ = Create<Control>();
-        leaf2_->SetCanFocused(true);
+        leaf2_->SetCanFocus(true);
         leaf2_->SetRect(Rect{ 0, 0, 100, 100 });
 
         stem_ = Create<Control>();
-        stem_->SetCanFocused(true);
+        stem_->SetCanFocus(true);
         stem_->AddChildren({ leaf1_, leaf2_ });
         stem_->SetRect(Rect{ 0, 0, 100, 100 });
 

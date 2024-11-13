@@ -144,7 +144,7 @@ TEST(WindowTest, RemoveFocusedControl) {
 
     window->Show();
 
-    control->SetCanFocused(true);
+    control->SetCanFocus(true);
     control->SetIsFocused(true);
     ASSERT_EQ(window->FocusedControl(), control);
 
@@ -167,7 +167,7 @@ TEST(WindowTest, RemoveFocusedControl) {
 TEST(WindowTest, RemoveFocusedControlIndirectly) {
 
     auto focused_control = zaf::Create<zaf::Control>();
-    focused_control->SetCanFocused(true);
+    focused_control->SetCanFocus(true);
 
     auto parent = zaf::Create<zaf::Control>();
     parent->AddChild(focused_control);

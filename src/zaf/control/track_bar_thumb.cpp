@@ -7,7 +7,7 @@ void TrackBarThumb::Initialize() {
 
     __super::Initialize();
 
-    SetCanFocused(false);
+    SetCanFocus(false);
 
     SetThumbColorPicker(ColorPicker([](const Control& control) {
 

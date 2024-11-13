@@ -12,7 +12,7 @@ void ListItem::Initialize() {
 
     __super::Initialize();
 
-    SetCanFocused(true);
+    SetCanFocus(true);
     SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
     SetPadding(Frame(2, 0, 2, 0));
 

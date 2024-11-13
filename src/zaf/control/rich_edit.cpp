@@ -110,7 +110,7 @@ void RichEdit::Initialize() {
 
     __super::Initialize();
 
-    SetCanFocused(true);
+    SetCanFocus(true);
     SetCanDoubleClick(true);
     SetBorder(Frame(1));
 

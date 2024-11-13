@@ -87,7 +87,7 @@ static const std::shared_ptr<Control> FindNextTabStopControlInChildren(
             continue;
         }
 
-        if (child->CanFocused()) {
+        if (child->CanFocus()) {
             return child;
         }
 

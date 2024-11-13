@@ -66,15 +66,15 @@ private:
 
         control1_ = Create<Control>();
         control1_->SetName(L"Control1");
-        control1_->SetCanFocused(true);
+        control1_->SetCanFocus(true);
 
         control2_ = Create<Control>();
         control2_->SetName(L"Control2");
-        control2_->SetCanFocused(true);
+        control2_->SetCanFocus(true);
 
         control3_ = Create<Control>();
         control3_->SetName(L"Control3");
-        control3_->SetCanFocused(true);
+        control3_->SetCanFocus(true);
 
         control1_->AddChild(control3_);
         test_window_->RootControl()->AddChildren({ control1_, control2_ });
@@ -150,7 +150,7 @@ TEST(ControlTest, IsFocused) {
     ASSERT_FALSE(control->IsFocused());
 
     //Can't set focus to a control which is not in a window.
-    control->SetCanFocused(true);
+    control->SetCanFocus(true);
     control->SetIsFocused(true);
     ASSERT_FALSE(control->IsFocused());
 
@@ -178,11 +178,11 @@ TEST(ControlTest, IsFocused) {
 TEST(ControlTest, IsInFocusedContext) {
 
     auto control = zaf::Create<zaf::Control>();
-    control->SetCanFocused(true);
+    control->SetCanFocus(true);
     ASSERT_FALSE(control->IsInFocusedContext());
 
     auto parent = zaf::Create<zaf::Control>();
-    parent->SetCanFocused(true);
+    parent->SetCanFocus(true);
     parent->AddChild(control);
     ASSERT_FALSE(control->IsInFocusedContext());
     ASSERT_FALSE(parent->IsInFocusedContext());

@@ -26,7 +26,7 @@ ClickableControl::~ClickableControl() {
 
 void ClickableControl::Initialize() {
     __super::Initialize();
-    SetCanFocused(true);
+    SetCanFocus(true);
 }
 
 

@@ -61,7 +61,7 @@ void TextBox::Initialize() {
     Subscriptions() += module_context_->Editor().PastingEvent().Subscribe(
         std::bind(&TextBox::OnInnerPasting, this, std::placeholders::_1));
 
-    SetCanFocused(true);
+    SetCanFocus(true);
     SetCanTabStop(true);
     SetCanDoubleClick(true);
     SetBackgroundColor(Color::White());

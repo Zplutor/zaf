@@ -10,7 +10,7 @@ namespace zaf::internal {
 void ListCore::Initialize(const InitializeParameters& parameters) {
 
     auto& owner = Parts().Owner();
-    owner.SetCanFocused(true);
+    owner.SetCanFocus(true);
     owner.SetBackgroundColor(Color::White());
     owner.SetBorder(Frame(1));
     owner.SetBorderColor(Color::Black());

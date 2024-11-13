@@ -10,8 +10,8 @@ using namespace zaf::test;
 TEST(ListControlTest, DefaultFocus) {
 
     auto list = Create<ListControl>();
-    ASSERT_TRUE(list->CanFocused());
-    ASSERT_FALSE(list->ItemContainer()->CanFocused());
+    ASSERT_TRUE(list->CanFocus());
+    ASSERT_FALSE(list->ItemContainer()->CanFocus());
 }
 
 

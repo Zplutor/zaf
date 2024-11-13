@@ -21,15 +21,15 @@ TEST(ControlKeyboardEventRoutingTest, RoutingPath) {
     auto window = CreateTestWindow();
 
     auto parent = zaf::Create<zaf::Control>();
-    parent->SetCanFocused(true);
+    parent->SetCanFocus(true);
     window->RootControl()->AddChild(parent);
 
     auto focused = zaf::Create<zaf::Control>();
-    focused->SetCanFocused(true);
+    focused->SetCanFocus(true);
     parent->AddChild(focused);
 
     auto not_focused = zaf::Create<zaf::Control>();
-    not_focused->SetCanFocused(true);
+    not_focused->SetCanFocus(true);
     focused->AddChild(not_focused);
 
     zaf::SubscriptionSet subs;
@@ -105,7 +105,7 @@ TEST(ControlKeyboardEventRoutingTest, RoutingPath) {
 TEST(ControlKeyboardEventRoutingTest, IsHandled) {
 
     auto window = CreateTestWindow();
-    window->RootControl()->SetCanFocused(true);
+    window->RootControl()->SetCanFocus(true);
 
     zaf::SubscriptionSet subs;
     subs += window->RootControl()->PreKeyDownEvent().Subscribe(
@@ -135,7 +135,7 @@ TEST(ControlKeyboardEventRoutingTest, IsHandled) {
 TEST(ControlKeyboardEventRoutingTest, EventType) {
 
     auto window = CreateTestWindow();
-    window->RootControl()->SetCanFocused(true);
+    window->RootControl()->SetCanFocus(true);
 
     UINT pre_event_message_id{};
     UINT event_message_id{};

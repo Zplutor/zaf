@@ -7,7 +7,7 @@ void ListItemContainer::Initialize() {
     __super::Initialize();
 
     SetBackgroundColor(Color::Transparent());
-    SetCanFocused(false);
+    SetCanFocus(false);
     SetCanDoubleClick(true);
 }
 
