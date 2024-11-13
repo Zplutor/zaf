@@ -1,5 +1,6 @@
 #include <zaf/control/track_bar.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/rx/timer.h>
 
 namespace zaf {
 
@@ -9,6 +10,7 @@ void TrackBar::Initialize() {
 
     __super::Initialize();
 
+    SetCanFocus(true);
     SetThumb(Create<TrackBarThumb>());
 }
 
@@ -71,6 +73,119 @@ void TrackBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 }
 
 
+void TrackBar::OnMouseDown(const MouseDownInfo& event_info) {
+
+    __super::OnMouseDown(event_info);
+    if (event_info.IsHandled()) {
+        return;
+    }
+
+    if (event_info.Message().MouseButton() != MouseButton::Left) {
+        return;
+    }
+
+    SetIsFocused(true);
+    CaptureMouse();
+
+    StartPressing();
+
+    event_info.MarkAsHandled();
+}
+
+
+void TrackBar::OnMouseUp(const MouseUpInfo& event_info) {
+
+    __super::OnMouseUp(event_info);
+    if (event_info.IsHandled()) {
+        return;
+    }
+
+    if (event_info.Message().MouseButton() != MouseButton::Left) {
+        return;
+    }
+
+    if (!pressing_zone_) {
+        return;
+    }
+
+    pressing_zone_.reset();
+    timer_sub_.Unsubscribe();
+
+    if (IsCapturingMouse()) {
+        ReleaseMouse();
+    }
+
+    event_info.MarkAsHandled();
+}
+
+
+void TrackBar::StartPressing() {
+
+    pressing_zone_ = DetermineMouseZone();
+    ChangeValueByPressingZone();
+    StartPressingTimer(true);
+}
+
+
+void TrackBar::ContinuePressing() {
+
+    if (!pressing_zone_) {
+        return;
+    }
+
+    auto current_zone = DetermineMouseZone();
+    if (current_zone == pressing_zone_) {
+        ChangeValueByPressingZone();
+    }
+
+    StartPressingTimer(false);
+}
+
+
+TrackBar::Zone TrackBar::DetermineMouseZone() const {
+
+    auto thumb_rect = thumb_->Rect();
+    thumb_rect.AddOffset(this->ContentRect().position);
+
+    float thumb_leading_position = is_horizontal_ ? thumb_rect.Left() : thumb_rect.Top();
+    float thumb_tailing_position = is_horizontal_ ? thumb_rect.Right() : thumb_rect.Bottom();
+
+    auto mouse_point = GetMousePosition();
+    float mouse_position = is_horizontal_ ? mouse_point.x : mouse_point.y;
+
+    if (mouse_position < thumb_leading_position) {
+        return Zone::Leading;
+    }
+    else if (mouse_position >= thumb_tailing_position) {
+        return Zone::Tailing;
+    }
+    else {
+        return Zone::Thumb;
+    }
+}
+
+
+void TrackBar::ChangeValueByPressingZone() {
+
+    if (pressing_zone_ == Zone::Leading) {
+        SetValue(value_ - large_change_);
+    }
+    else if (pressing_zone_ == Zone::Tailing) {
+        SetValue(value_ + large_change_);
+    }
+}
+
+
+void TrackBar::StartPressingTimer(bool is_initial) {
+
+    auto timeout = is_initial ? std::chrono::milliseconds(300) : std::chrono::milliseconds(50);
+
+    timer_sub_ = rx::Timer(timeout).Subscribe([this](int) {
+        ContinuePressing();
+    });
+}
+
+
 const std::shared_ptr<TrackBarThumb>& TrackBar::Thumb() const noexcept {
     return thumb_;
 }
@@ -100,6 +215,8 @@ void TrackBar::SetThumb(std::shared_ptr<TrackBarThumb> thumb) {
 
 
 void TrackBar::OnThumbDragStarted(const TrackBarThumbDragStartedInfo& event_info) {
+
+    SetIsFocused(true);
 
     drag_start_value_ = value_;
 
@@ -205,6 +322,15 @@ void TrackBar::SetMaxValue(int value) {
     }
 
     NeedRelayout();
+}
+
+
+int TrackBar::LargeChange() const noexcept {
+    return large_change_;
+}
+
+void TrackBar::SetLargeChange(int change) noexcept {
+    large_change_ = change;
 }
 
 

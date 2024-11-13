@@ -24,6 +24,9 @@ public:
     int MaxValue() const noexcept;
     void SetMaxValue(int value);
 
+    int LargeChange() const noexcept;
+    void SetLargeChange(int change) noexcept;
+
     bool IsHorizontal() const noexcept;
     void SetIsHorizontal(bool is_horizontal);
 
@@ -38,22 +41,42 @@ protected:
     void Layout(const zaf::Rect&) override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
 
+    void OnMouseDown(const MouseDownInfo& event_info) override;
+    void OnMouseUp(const MouseUpInfo& event_info) override;
+
+private:
+    enum class Zone {
+        Leading,
+        Thumb,
+        Tailing,
+    };
+
+private:
+    void StartPressing();
+    void ContinuePressing();
+    Zone DetermineMouseZone() const;
+    void ChangeValueByPressingZone();
+    void StartPressingTimer(bool is_initial);
+
     void OnThumbDragStarted(const TrackBarThumbDragStartedInfo& event_info);
     void OnThumbDragging(const TrackBarThumbDraggingInfo& event_info);
     void OnThumbDragEnded(const TrackBarThumbDragEndedInfo& event_info);
 
 private:
     std::shared_ptr<TrackBarThumb> thumb_;
+    SubscriptionSet thumb_subs_;
 
     int value_{};
     int min_value_{};
-    int max_value_{};
+    int max_value_{ 10 };
+    int large_change_{ 5 };
 
     bool is_horizontal_{ true };
     float track_thickness_{ 2.f };
     float thumb_thickness_{ 10.f };
 
-    SubscriptionSet thumb_subs_;
+    std::optional<Zone> pressing_zone_;
+    Subscription timer_sub_;
 
     float drag_start_position_{};
     int drag_start_value_{};
@@ -63,6 +86,7 @@ private:
 
 ZAF_OBJECT_BEGIN(TrackBar);
 ZAF_OBJECT_PROPERTY(IsHorizontal);
+ZAF_OBJECT_PROPERTY(LargeChange);
 ZAF_OBJECT_PROPERTY(MaxValue);
 ZAF_OBJECT_PROPERTY(MinValue);
 ZAF_OBJECT_PROPERTY(Thumb);

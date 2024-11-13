@@ -94,6 +94,10 @@ void TrackBarThumb::OnMouseUp(const MouseUpInfo& event_info) {
         return;
     }
 
+    if (!is_dragging_) {
+        return;
+    }
+
     if (IsCapturingMouse()) {
         ReleaseMouse();
     }
