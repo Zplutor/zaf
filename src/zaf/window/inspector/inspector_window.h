@@ -50,8 +50,6 @@ private:
     void InitializePropertyGrid();
     void ChangeHighlightObject(const std::shared_ptr<Object>& object);
 
-    std::wstring GetItemText(const std::shared_ptr<Object>& item_data) const;
-
 private:
     std::shared_ptr<SplitControl> split_control_;
     std::shared_ptr<TreeControl> tree_control_;

@@ -12,7 +12,7 @@ void InspectControlItem::Initialize() {
 
     __super::Initialize();
 
-    SetTextColorPicker(ColorPicker([this](const Control& control) {
+    Label()->SetTextColorPicker(ColorPicker([this](const Control& control) {
 
         if (IsSelectedInContext()) {
             return Color::White();

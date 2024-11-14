@@ -134,6 +134,8 @@
     <ClCompile Include="src\zaf\control\internal\tree_control\tree_node_expander.cpp" />
     <ClCompile Include="src\zaf\control\internal\tree_control\utility.cpp" />
     <ClCompile Include="src\zaf\control\internal\triangle_geometry.cpp" />
+    <ClCompile Include="src\zaf\control\label_list_item.cpp" />
+    <ClCompile Include="src\zaf\control\label_tree_item.cpp" />
     <ClCompile Include="src\zaf\control\layout\anchor_layouter.cpp" />
     <ClCompile Include="src\zaf\control\layout\axis_alignment.cpp" />
     <ClCompile Include="src\zaf\control\layout\internal\linear_layout_length_calculating.cpp" />
@@ -294,6 +296,7 @@
     <ClCompile Include="src\zaf\internal\list\list_input_handler.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_item_height_manager.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_item_height_strategy.cpp" />
+    <ClCompile Include="src\zaf\internal\list\list_label.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_selection_manager.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_selection_store.cpp" />
     <ClCompile Include="src\zaf\internal\list\list_simple_multiple_selection_strategy.cpp" />
@@ -578,6 +581,8 @@
     <ClInclude Include="src\zaf\control\internal\tree_control\tree_visitor.h" />
     <ClInclude Include="src\zaf\control\internal\tree_control\utility.h" />
     <ClInclude Include="src\zaf\control\internal\triangle_geometry.h" />
+    <ClInclude Include="src\zaf\control\label_list_item.h" />
+    <ClInclude Include="src\zaf\control\label_tree_item.h" />
     <ClInclude Include="src\zaf\control\layout\anchor_layouter.h" />
     <ClInclude Include="src\zaf\control\layout\axis_alignment.h" />
     <ClInclude Include="src\zaf\control\layout\internal\linear_layout_length_calculating.h" />
@@ -796,6 +801,7 @@
     <ClInclude Include="src\zaf\internal\list\list_input_handler.h" />
     <ClInclude Include="src\zaf\internal\list\list_item_height_manager.h" />
     <ClInclude Include="src\zaf\internal\list\list_item_height_strategy.h" />
+    <ClInclude Include="src\zaf\internal\list\list_label.h" />
     <ClInclude Include="src\zaf\internal\list\list_selection_change_reason.h" />
     <ClInclude Include="src\zaf\internal\list\list_selection_manager.h" />
     <ClInclude Include="src\zaf\internal\list\list_selection_store.h" />

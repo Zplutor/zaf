@@ -18,15 +18,12 @@ public:
 
     ExpandState ExpandState() const;
 
+    zaf::Rect ExpanderRect() const noexcept;
+    zaf::Rect BodyRect() const noexcept;
+
 protected:
     void Initialize() override;
     void Layout(const zaf::Rect& previous_rect) override;
-    zaf::Rect DetermineTextRect() override;
-
-    /**
-     Get the rect of expand button, related to its content rect's coordinate system.
-     */
-    virtual zaf::Rect GetExpandButtonRect();
     
 private:
     friend class internal::TreeControlImplementation;

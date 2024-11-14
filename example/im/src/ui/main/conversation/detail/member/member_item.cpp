@@ -8,8 +8,11 @@ void MemberItem::Initialize() {
     __super::Initialize();
 
     SetPadding(zaf::Frame(10, 0, 0, 0));
-    SetTextColor(zaf::Color::Black());
-    SetParagraphAlignment(zaf::dwrite::ParagraphAlignment::Center);
+
+    label_ = zaf::Create<zaf::Label>();
+    label_->SetTextColor(zaf::Color::Black());
+    label_->SetParagraphAlignment(zaf::dwrite::ParagraphAlignment::Center);
+    this->AddChild(label_);
 
     SetBackgroundColorPicker(zaf::ColorPicker([](const zaf::Control& control) {
     
@@ -23,6 +26,16 @@ void MemberItem::Initialize() {
             return zaf::Color::FromRGB(0xECF0F3);
         }
     }));
+}
+
+
+void MemberItem::Layout(const zaf::Rect& old_rect) {
+
+    __super::Layout(old_rect);
+
+    zaf::Rect label_rect{ {}, ContentSize() };
+    label_rect.Deflate(zaf::Frame(IconSize + 5, 0, 0, 0));
+    label_->SetRect(label_rect);
 }
 
 
@@ -44,10 +57,3 @@ void MemberItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const {
     canvas.DrawEllipse(ellipse);
 }
 
-
-zaf::Rect MemberItem::DetermineTextRect() {
-
-    auto text_rect = __super::DetermineTextRect();
-    text_rect.Deflate(zaf::Frame(IconSize + 5, 0, 0, 0));
-    return text_rect;
-}

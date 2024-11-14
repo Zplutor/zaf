@@ -29,22 +29,11 @@ void TreeItem::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    expand_button_->SetRect(GetExpandButtonRect());
+    expand_button_->SetRect(ExpanderRect());
 }
 
 
-zaf::Rect TreeItem::DetermineTextRect() {
-
-    float left = (indent_level_ + 1) * ExpandButtonSize + ExpandButtonMargin;
-
-    zaf::Rect rect;
-    rect.size = this->ContentSize();
-    rect.Deflate(Frame{ left, 0, 0, 0 });
-    return rect;
-}
-
-
-zaf::Rect TreeItem::GetExpandButtonRect() {
+zaf::Rect TreeItem::ExpanderRect() const noexcept {
 
     zaf::Rect result;
     result.size.width = ExpandButtonSize;
@@ -52,6 +41,17 @@ zaf::Rect TreeItem::GetExpandButtonRect() {
     result.position.x = indent_level_ * ExpandButtonSize;
     result.position.y = (ContentSize().height - ExpandButtonSize) / 2;
     return result;
+}
+
+
+zaf::Rect TreeItem::BodyRect() const noexcept {
+
+    float left = (indent_level_ + 1) * ExpandButtonSize + ExpandButtonMargin;
+
+    zaf::Rect rect;
+    rect.size = this->ContentSize();
+    rect.Deflate(Frame{ left, 0, 0, 0 });
+    return rect;
 }
 
 

@@ -1,26 +1,17 @@
 #include <zaf/control/list_item.h>
 #include <zaf/base/as.h>
-#include <zaf/control/layout/linear_layouter.h>
-#include <zaf/control/list_control.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
-#include <zaf/window/window.h>
 
 namespace zaf {
+
+ZAF_OBJECT_IMPL(ListItem);
 
 void ListItem::Initialize() {
 
     __super::Initialize();
 
     SetCanFocus(true);
-    SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
-    SetPadding(Frame(2, 0, 2, 0));
-
-    SetTextColorPicker(ColorPicker([](const Control& control) {
-        return control.IsSelectedInContext() ?
-            Color::White() :
-            Color::FromRGB(internal::ControlNormalTextColorRGB);
-    }));
 
     SetBackgroundColorPicker(ColorPicker([](const Control& control) {
 
@@ -42,15 +33,13 @@ void ListItem::SetItemData(std::shared_ptr<Object> data) {
 
     ZAF_EXPECT(data);
 
-    auto previous_data = std::move(item_data_);
     item_data_ = std::move(data);
-
-    OnItemDataChanged(previous_data);
+    OnItemDataChanged();
 }
 
 
-void ListItem::OnItemDataChanged(const std::shared_ptr<Object>& previous_data) {
-    this->SetText(item_data_->ToString());
+void ListItem::OnItemDataChanged() {
+
 }
 
 

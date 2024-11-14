@@ -1303,6 +1303,15 @@
     <ClCompile Include="src\zaf\control\track_bar_thumb.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\label_list_item.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\label_tree_item.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\list\list_label.cpp">
+      <Filter>zaf\internal\list</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3021,6 +3030,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\track_bar_thumb.h">
       <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\label_list_item.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\label_tree_item.h">
+      <Filter>zaf\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\list\list_label.h">
+      <Filter>zaf\internal\list</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

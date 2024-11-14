@@ -155,41 +155,6 @@ float InspectorWindow::EstimateItemHeight(
 }
 
 
-std::wstring InspectorWindow::GetItemText(const std::shared_ptr<Object>& item_data) const {
-
-    auto text = item_data->ToString();
-
-    //Erase " class " text.
-    [&text]() {
-    
-        auto first_space_index = text.find_first_of(L' ');
-        if (first_space_index == std::wstring::npos) {
-            return;
-        }
-
-        auto last_space_index = text.find_last_of(L' ');
-        if (last_space_index == std::wstring::npos) {
-            return;
-        }
-
-        text.erase(first_space_index, last_space_index - first_space_index);
-    }();
-
-    //Append control name.
-    auto control = dynamic_cast<Control*>(item_data.get());
-    if (control) {
-
-        auto control_name = control->Name();
-        if (!control_name.empty()) {
-            text += L" - ";
-            text += control_name;
-        }
-    }
-    
-    return text;
-}
-
-
 std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
     const std::shared_ptr<Object>& parent_item_data,
     std::size_t item_index,
@@ -204,7 +169,6 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
         item = Create<internal::InspectItem>();
     }
 
-    item->SetText(GetItemText(item_data));
     item->SetIsHighlight(item_data == highlight_object_);
 
     Subscriptions() += item->MouseEnterEvent().Subscribe(

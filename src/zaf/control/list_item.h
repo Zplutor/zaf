@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/control/textual_control.h>
+#include <zaf/control/control.h>
 
 namespace zaf::internal {
 class ListVisibleItemManager;
@@ -8,8 +8,10 @@ class ListVisibleItemManager;
 
 namespace zaf {
 
-class ListItem : public TextualControl {
+class ListItem : public Control {
 public:
+    ZAF_OBJECT;
+
     const std::shared_ptr<Object>& ItemData() const {
         return item_data_;
     }
@@ -17,7 +19,7 @@ public:
 protected:
     void Initialize() override;
 
-    virtual void OnItemDataChanged(const std::shared_ptr<Object>& previous_data);
+    virtual void OnItemDataChanged();
 
 private:
     friend class internal::ListVisibleItemManager;
@@ -30,5 +32,8 @@ private:
 private:
     std::shared_ptr<Object> item_data_;
 };
+
+ZAF_OBJECT_BEGIN(ListItem);
+ZAF_OBJECT_END;
 
 }

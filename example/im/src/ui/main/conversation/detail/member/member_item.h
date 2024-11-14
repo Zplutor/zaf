@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/control/label.h>
 #include <zaf/control/list_control.h>
 #include "entity/user.h"
 
@@ -9,13 +10,12 @@ public:
 
     void SetMember(const std::shared_ptr<User>& member) {
         gender_ = member->gender;
-        SetText(member->name);
+        label_->SetText(member->name);
     }
 
 protected:
+    void Layout(const zaf::Rect&) override;
     void Paint(zaf::Canvas& canvas, const zaf::Rect&) const override;
-
-    zaf::Rect DetermineTextRect() override;
 
     void OnMouseEnter(const zaf::MouseEnterInfo& event_info) override {
         NeedRepaint();
@@ -26,5 +26,6 @@ protected:
     }
 
 private:
+    std::shared_ptr<zaf::Label> label_;
     User::Gender gender_ = User::Gender::Unknown;
 };
