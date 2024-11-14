@@ -383,25 +383,6 @@ std::optional<float> TreeControlImplementation::InnerEstimateItemHeight(
 }
 
 
-std::wstring TreeControlImplementation::GetItemText(
-    std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
-
-    std::shared_ptr<Object> parent_data;
-    std::size_t child_index{};
-    if (!GetParentDataAndChildIndex(item_index, parent_data, child_index)) {
-        return {};
-    }
-
-    auto delegate = delegate_.lock();
-    if (!delegate) {
-        return {};
-    }
-
-    return delegate->GetItemText(parent_data, child_index, item_data);
-}
-
-
 std::shared_ptr<ListItem> TreeControlImplementation::CreateItem(
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
@@ -424,6 +405,11 @@ std::shared_ptr<ListItem> TreeControlImplementation::InnerCreateListItem(
         return nullptr;
     }
 
+    auto index_path = tree_index_mapping_.GetIndexPathAtIndex(item_index);
+    if (index_path.empty()) {
+        return nullptr;
+    }
+
     auto delegate = delegate_.lock();
     if (!delegate) {
         return nullptr;
@@ -431,47 +417,17 @@ std::shared_ptr<ListItem> TreeControlImplementation::InnerCreateListItem(
 
     auto tree_item = delegate->CreateItem(parent_data, child_index, item_data);
     tree_item->SetTreeControlImplementation(shared_from_this());
-    return tree_item;
-}
-
-
-void TreeControlImplementation::LoadItem(
-    const std::shared_ptr<ListItem>& item, 
-    std::size_t item_index) {
-
-    auto index_path = tree_index_mapping_.GetIndexPathAtIndex(item_index);
-    if (index_path.empty()) {
-        return;
-    }
-
-    std::shared_ptr<Object> parent_data;
-    std::size_t child_index{};
-    if (!GetParentDataAndChildIndex(index_path, parent_data, child_index)) {
-        return;
-    }
-
-    auto tree_item = std::dynamic_pointer_cast<TreeItem>(item);
-    if (!tree_item) {
-        return;
-    }
-
-    auto delegate = delegate_.lock();
-    if (!delegate) {
-        return;
-    }
-
-    delegate->LoadItem(tree_item, parent_data, child_index);
 
     tree_item->SetIndentLevel(index_path.size() - 1);
-    SetItemExpandState(tree_item, index_path);
+    SetItemExpandState(tree_item, item_data, index_path);
 
-    //Note that we don't need to set item selection state here, because it will be set in list 
-    //control implementation.
+    return tree_item;
 }
 
 
 void TreeControlImplementation::SetItemExpandState(
     const std::shared_ptr<TreeItem>& item,
+    const std::shared_ptr<Object>& item_data,
     const IndexPath& index_path) {
 
     auto data_source = data_source_.lock();
@@ -479,7 +435,7 @@ void TreeControlImplementation::SetItemExpandState(
         return;
     }
 
-    if (!data_source->DoesDataHasChildren(item->ItemData())) {
+    if (!data_source->DoesDataHasChildren(item_data)) {
         item->SetExpandState(ExpandState::None);
     }
     else if (IsIndexPathExpanded(index_path)) {

@@ -22,8 +22,6 @@ public:
         std::size_t index, 
         const std::shared_ptr<zaf::Object>& data) override;
 
-    void LoadItem(const std::shared_ptr<zaf::ListItem>& item, std::size_t index) override;
-
     void SetConversationAvatarManager(const std::shared_ptr<ConversationAvatarManager>& avatar_manager) {
         conversation_avatar_manager_ = avatar_manager;
     }

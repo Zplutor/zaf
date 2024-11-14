@@ -155,10 +155,7 @@ float InspectorWindow::EstimateItemHeight(
 }
 
 
-std::wstring InspectorWindow::GetItemText(
-    const std::shared_ptr<Object>& parent_item_data,
-    std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
+std::wstring InspectorWindow::GetItemText(const std::shared_ptr<Object>& item_data) const {
 
     auto text = item_data->ToString();
 
@@ -207,6 +204,7 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
         item = Create<internal::InspectItem>();
     }
 
+    item->SetText(GetItemText(item_data));
     item->SetIsHighlight(item_data == highlight_object_);
 
     Subscriptions() += item->MouseEnterEvent().Subscribe(

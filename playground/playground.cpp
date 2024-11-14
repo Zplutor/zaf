@@ -109,13 +109,6 @@ public:
         return 40;
     }
 
-    std::wstring GetItemText(
-        std::size_t item_index,
-        const std::shared_ptr<zaf::Object>& item_data) override {
-
-        return item_data->ToString();
-    }
-
     std::shared_ptr<zaf::ListItem> CreateItem(
         std::size_t item_index,
         const std::shared_ptr<zaf::Object>& item_data) {

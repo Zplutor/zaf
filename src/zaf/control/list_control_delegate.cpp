@@ -8,17 +8,6 @@ const std::shared_ptr<ListControlDelegate>& ListControlDelegate::Default() {
 }
 
 
-std::wstring ListControlDelegate::GetItemText(
-    std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
-
-    if (item_data) {
-        return item_data->ToString();
-    }
-    return {};
-}
-
-
 std::shared_ptr<ListItem> ListControlDelegate::CreateItem(
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {

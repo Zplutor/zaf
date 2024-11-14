@@ -35,24 +35,14 @@ std::shared_ptr<zaf::ListItem> ConversationMemberView::CreateItem(
     std::size_t index,
     const std::shared_ptr<zaf::Object>& data) {
 
-    return zaf::Create<MemberItem>();
-}
-
-
-void ConversationMemberView::LoadItem(
-    const std::shared_ptr<zaf::ListItem>& item,
-    std::size_t item_index) {
-
-    auto member_item = std::dynamic_pointer_cast<MemberItem>(item);
-    if (member_item == nullptr) {
-        return;
+    if (index >= members_.size()) {
+        return nullptr;
     }
 
-    if (item_index >= members_.size()) {
-        return;
-    }
+    auto member_item = zaf::Create<MemberItem>();;
+    member_item->SetMember(members_[index]);
 
-    member_item->SetMember(members_[item_index]);
+    return member_item;
 }
 
 

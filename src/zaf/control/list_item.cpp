@@ -50,7 +50,7 @@ void ListItem::SetItemData(std::shared_ptr<Object> data) {
 
 
 void ListItem::OnItemDataChanged(const std::shared_ptr<Object>& previous_data) {
-
+    this->SetText(item_data_->ToString());
 }
 
 

@@ -42,15 +42,9 @@ public:
         return 0;
     }
 
-    virtual std::wstring GetItemText(
-        std::size_t item_index,
-        const std::shared_ptr<Object>& item_data);
-
     virtual std::shared_ptr<ListItem> CreateItem(
         std::size_t item_index,
         const std::shared_ptr<Object>& item_data);
-
-    virtual void LoadItem(const std::shared_ptr<ListItem>& item, std::size_t item_index) { }
 };
 
 }

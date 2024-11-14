@@ -23,14 +23,6 @@ public:
         return 0;
     }
 
-    virtual std::wstring GetItemText(
-        const std::shared_ptr<Object>& parent_item_data,
-        std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) {
-
-        return {};
-    }
-
     virtual std::shared_ptr<TreeItem> CreateItem(
         const std::shared_ptr<Object>& parent_item_data,
         std::size_t item_index,
@@ -38,11 +30,6 @@ public:
 
         return Create<TreeItem>();
     }
-
-    virtual void LoadItem(
-        const std::shared_ptr<TreeItem>& item,
-        const std::shared_ptr<Object>& parent_item_data,
-        std::size_t item_index) { }
 
     virtual bool CanExpandItem(
         const std::shared_ptr<Object>& parent_item_data,

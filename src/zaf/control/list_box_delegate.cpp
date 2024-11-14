@@ -9,12 +9,4 @@ float ListBoxDelegate::EstimateItemHeight(
     return item_height_;
 }
 
-
-std::wstring ListBoxDelegate::GetItemText(
-    std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
-
-    return item_data->ToString();
-}
-
 }

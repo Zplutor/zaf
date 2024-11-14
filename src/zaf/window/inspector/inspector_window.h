@@ -22,11 +22,6 @@ public:
         std::size_t item_index,
         const std::shared_ptr<Object>& item_data) override;
 
-    std::wstring GetItemText(
-        const std::shared_ptr<Object>& parent_item_data,
-        std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override;
-
     std::shared_ptr<TreeItem> CreateItem(
         const std::shared_ptr<Object>& parent_item_data,
         std::size_t item_index,
@@ -54,6 +49,8 @@ private:
     void InitializeSecondPaneToolbar();
     void InitializePropertyGrid();
     void ChangeHighlightObject(const std::shared_ptr<Object>& object);
+
+    std::wstring GetItemText(const std::shared_ptr<Object>& item_data) const;
 
 private:
     std::shared_ptr<SplitControl> split_control_;

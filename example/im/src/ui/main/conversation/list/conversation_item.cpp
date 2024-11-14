@@ -48,7 +48,7 @@ void ConversationItem::Initialize() {
             return zaf::Color::FromRGB(0x6495CC);
         }
 
-        if (conversation_->is_sticked) {
+        if (conversation_ && conversation_->is_sticked) {
             return zaf::Color::FromRGB(0xE8F3FB);
         }
 

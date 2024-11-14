@@ -502,20 +502,9 @@ void ComboBox::DropDownListBoxSelectionChange() {
     //Selection is changed, do not recover previous selected index.
     need_recover_selected_index_ = false;
 
-    auto selected_index = drop_down_list_box_->FirstSelectedItemIndex();
-    if (selected_index) {
-
-        std::wstring text;
-
-        auto delegate = drop_down_list_box_->Delegate();
-        if (delegate) {
-
-            text = delegate->GetItemText(
-                *selected_index,
-                drop_down_list_box_->GetItemDataAtIndex(*selected_index));
-        }
-
-        ChangeSelectionText(text, TextChangeSource::DropDownListBox);
+    auto selected_data = drop_down_list_box_->FirstSelectedItemData();
+    if (selected_data) {
+        ChangeSelectionText(selected_data->ToString(), TextChangeSource::DropDownListBox);
         NotifySelectionChange();
     }
 

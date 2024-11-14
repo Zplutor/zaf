@@ -54,13 +54,6 @@ public:
 
         return float(As<Int32>(item_data)->Value() * 10);
     }
-
-    std::wstring GetItemText(
-        std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override {
-
-        return item_data->ToString();
-    }
 };
 
 

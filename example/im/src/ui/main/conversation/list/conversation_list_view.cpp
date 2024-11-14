@@ -51,26 +51,16 @@ std::shared_ptr<zaf::ListItem> ConversationListView::CreateItem(
     std::size_t index,
     const std::shared_ptr<zaf::Object>& data) {
 
-    return zaf::Create<ConversationItem>();
-}
-
-
-void ConversationListView::LoadItem(
-    const std::shared_ptr<zaf::ListItem>& item,
-    std::size_t index) {
-
     if (index >= conversations_.size()) {
-        return;
+        return nullptr;
     }
 
-    auto conversation_item = std::dynamic_pointer_cast<ConversationItem>(item);
-    if (conversation_item == nullptr) {
-        return;
-    }
+    auto conversation_item = zaf::Create<ConversationItem>();
 
     auto conversation = conversations_[index];
     auto avatar_image = conversation_avatar_manager_->GetConversationAvatarImage(conversation);
     conversation_item->LoadConversation(conversation, avatar_image);
+    return conversation_item;
 }
 
 

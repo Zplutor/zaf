@@ -465,13 +465,6 @@ std::shared_ptr<ListItem> ListVisibleItemManager::CreateItem(std::size_t index) 
     auto list_item = delegate->CreateItem(index, item_data);
     list_item->SetItemData(item_data);
 
-    auto item_text = delegate->GetItemText(index, item_data);
-    if (!item_text.empty()) {
-        list_item->SetText(item_text);
-    }
-
-    delegate->LoadItem(list_item, index);
-
     auto position_and_height = Parts().ItemHeightManager().GetItemPositionAndHeight(index);
     Rect item_rect;
     item_rect.position.y = position_and_height.first;
