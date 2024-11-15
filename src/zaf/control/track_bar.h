@@ -33,6 +33,12 @@ public:
     float TrackThickness() const noexcept;
     void SetTrackThickness(float thickness);
 
+    const Color& TrackColor() const noexcept;
+    void SetTrackColor(const Color& color);
+
+    const ColorPicker& TrackColorPicker() const noexcept;
+    void SetTrackColorPicker(ColorPicker picker);
+
     float ThumbThickness() const noexcept;
     void SetThumbThickness(float thickness);
 
@@ -75,6 +81,8 @@ private:
     float track_thickness_{ 2.f };
     float thumb_thickness_{ 10.f };
 
+    internal::ColorField track_color_field_;
+
     std::optional<Zone> pressing_zone_;
     Subscription timer_sub_;
 
@@ -91,6 +99,8 @@ ZAF_OBJECT_PROPERTY(MaxValue);
 ZAF_OBJECT_PROPERTY(MinValue);
 ZAF_OBJECT_PROPERTY(Thumb);
 ZAF_OBJECT_PROPERTY(ThumbThickness);
+ZAF_OBJECT_PROPERTY(TrackColor);
+ZAF_OBJECT_PROPERTY(TrackColorPicker);
 ZAF_OBJECT_PROPERTY(TrackThickness);
 ZAF_OBJECT_PROPERTY(Value);
 ZAF_OBJECT_END;

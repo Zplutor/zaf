@@ -11,6 +11,7 @@ void TrackBar::Initialize() {
     __super::Initialize();
 
     SetCanFocus(true);
+    SetTrackColor(Color::Gray());
     SetThumb(Create<TrackBarThumb>());
 }
 
@@ -68,7 +69,7 @@ void TrackBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
     }
 
     auto state_guard = canvas.PushState();
-    canvas.SetBrushWithColor(Color::Black());
+    canvas.SetBrushWithColor(TrackColor());
     canvas.DrawLine(from_position, end_position, track_thickness_);
 }
 
@@ -361,6 +362,24 @@ void TrackBar::SetTrackThickness(float thickness) {
 
     track_thickness_ = thickness;
     NeedRepaint();
+}
+
+
+const Color& TrackBar::TrackColor() const noexcept {
+    return track_color_field_.Color();
+}
+
+void TrackBar::SetTrackColor(const Color& color) {
+    track_color_field_.SetColor(color, *this);
+}
+
+
+const ColorPicker& TrackBar::TrackColorPicker() const noexcept {
+    return track_color_field_.ColorPicker();
+}
+
+void TrackBar::SetTrackColorPicker(ColorPicker picker) {
+    track_color_field_.SetColorPicker(std::move(picker), *this);
 }
 
 
