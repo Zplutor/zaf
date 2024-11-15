@@ -9,8 +9,8 @@ void LabelListItem::Initialize() {
 
     __super::Initialize();
 
-    label_ = internal::CreateListLabel();
-    this->AddChild(label_);
+    this->SetPadding(Frame(2, 0, 2, 0));
+    InstallLabel(internal::CreateListLabel());
 }
 
 
@@ -28,6 +28,24 @@ void LabelListItem::OnItemDataChanged() {
 
 const std::shared_ptr<Label>& LabelListItem::Label() const noexcept {
     return label_;
+}
+
+
+void LabelListItem::SetLabel(std::shared_ptr<zaf::Label> label) {
+
+    ZAF_EXPECT(label);
+
+    auto update_guard = BeginUpdate();
+
+    this->RemoveChild(label_);
+    InstallLabel(std::move(label));
+}
+
+
+void LabelListItem::InstallLabel(std::shared_ptr<zaf::Label> label) {
+
+    label_ = std::move(label);
+    this->AddChild(label_);
 }
 
 }
