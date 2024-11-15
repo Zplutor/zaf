@@ -260,6 +260,7 @@ void ListCore::RepaintSelectedItems() {
 
         auto visible_item = visible_item_manager.GetVisibleItemAtIndex(each_index);
         if (visible_item && visible_item->IsSelected()) {
+            visible_item->NeedUpdateStyle();
             visible_item->NeedRepaint();
         }
     }

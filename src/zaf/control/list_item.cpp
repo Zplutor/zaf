@@ -29,6 +29,27 @@ void ListItem::Initialize() {
 }
 
 
+void ListItem::OnFocusGained(const FocusGainedInfo& event_info) {
+    __super::OnFocusGained(event_info);
+    RepaintOnFocusChanged();
+}
+
+
+void ListItem::OnFocusLost(const FocusLostInfo& event_info) {
+    __super::OnFocusLost(event_info);
+    RepaintOnFocusChanged();
+}
+
+
+void ListItem::RepaintOnFocusChanged() {
+
+    if (this->IsSelected()) {
+        NeedUpdateStyle();
+        NeedRepaint();
+    }
+}
+
+
 void ListItem::SetItemData(std::shared_ptr<Object> data) {
 
     ZAF_EXPECT(data);

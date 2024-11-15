@@ -19,6 +19,9 @@ public:
 protected:
     void Initialize() override;
 
+    void OnFocusGained(const FocusGainedInfo& event_info) override;
+    void OnFocusLost(const FocusLostInfo & event_info) override;
+
     virtual void OnItemDataChanged();
 
 private:
@@ -28,6 +31,7 @@ private:
 
 private:
     bool IsInFocusContext() const;
+    void RepaintOnFocusChanged();
 
 private:
     std::shared_ptr<Object> item_data_;
