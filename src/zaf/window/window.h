@@ -587,6 +587,22 @@ public:
      */
     void Hide();
 
+    /**
+    Attempts to bring the window to the foreground and activates it.
+
+    @pre
+        The window handle has been created.
+
+    @return
+        Returns true if the window is activated; otherwise false.
+
+    @throw zaf::PreconditionError
+
+    @details
+        This method calls `SetForegroundWindow` to activate the window.
+    */
+    bool Activate();
+
     void Maximize();
     void Minimize();
     void Restore();

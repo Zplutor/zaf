@@ -1995,6 +1995,12 @@ void Window::Hide() {
 }
 
 
+bool Window::Activate() {
+    ZAF_EXPECT(Handle());
+    return !!SetForegroundWindow(Handle());
+}
+
+
 void Window::Maximize() {
     ShowWindow(handle_, SW_MAXIMIZE);
 }
