@@ -112,7 +112,7 @@ void TreeControl::SetAutoAdjustScrollBarSmallChange(bool value) {
 }
 
 
-void TreeControl::SetSelectionMode(SelectionMode selection_mode) {
+void TreeControl::SetSelectionMode(ListSelectionMode selection_mode) {
     auto& list_parts = implementation_->ListParts();
     list_parts.SelectionManager().SetSelectionMode(selection_mode);
 }

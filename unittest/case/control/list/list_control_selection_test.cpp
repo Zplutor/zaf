@@ -76,7 +76,7 @@ private:
 TEST(ListControlTest, DefaultSelectionMode) {
 
     auto list = Create<TestListControl>();
-    ASSERT_EQ(list->SelectionMode(), SelectionMode::Single);
+    ASSERT_EQ(list->SelectionMode(), ListSelectionMode::Single);
 }
 
 
@@ -90,76 +90,76 @@ TEST(ListControlTest, SetSelectionMode) {
 
     //Change selection mode to none while there is no selection.
     {
-        list->SetSelectionMode(SelectionMode::Single);
+        list->SetSelectionMode(ListSelectionMode::Single);
         list->UnselectAllItems();
         selection_changed_count = 0;
-        list->SetSelectionMode(SelectionMode::None);
+        list->SetSelectionMode(ListSelectionMode::None);
         ASSERT_EQ(selection_changed_count, 0);
     }
 
     //Change selection mode to none while there is selection.
     {
-        list->SetSelectionMode(SelectionMode::Single);
+        list->SetSelectionMode(ListSelectionMode::Single);
         list->SelectItemAtIndex(6);
         selection_changed_count = 0;
-        list->SetSelectionMode(SelectionMode::None);
+        list->SetSelectionMode(ListSelectionMode::None);
         ASSERT_EQ(selection_changed_count, 1);
         ASSERT_EQ(list->SelectedItemCount(), 0);
     }
 
     //Change selection mode to single while there is no selection.
     {
-        list->SetSelectionMode(SelectionMode::Single);
+        list->SetSelectionMode(ListSelectionMode::Single);
         list->UnselectAllItems();
         selection_changed_count = 0;
-        list->SetSelectionMode(SelectionMode::Single);
+        list->SetSelectionMode(ListSelectionMode::Single);
         ASSERT_EQ(selection_changed_count, 0);
     }
 
     //Change selection mode to single while there is one selection.
     {
-        list->SetSelectionMode(SelectionMode::Single);
+        list->SetSelectionMode(ListSelectionMode::Single);
         list->SelectItemAtIndex(7);
         selection_changed_count = 0;
-        list->SetSelectionMode(SelectionMode::Single);
+        list->SetSelectionMode(ListSelectionMode::Single);
         ASSERT_EQ(selection_changed_count, 0);
         ASSERT_EQ(list->FirstSelectedItemIndex(), 7);
     }
 
     //Change selection mode to single while there is multiple selection.
     {
-        list->SetSelectionMode(SelectionMode::SimpleMultiple);
+        list->SetSelectionMode(ListSelectionMode::SimpleMultiple);
         list->SelectItemAtIndex(7);
         list->SelectItemAtIndex(8);
         list->SelectItemAtIndex(4);
         selection_changed_count = 0;
-        list->SetSelectionMode(SelectionMode::Single);
+        list->SetSelectionMode(ListSelectionMode::Single);
         ASSERT_EQ(selection_changed_count, 1);
         ASSERT_EQ(list->FirstSelectedItemIndex(), 4);
     }
 
     //Change selection mode to multiple while there is one selection.
     {
-        list->SetSelectionMode(SelectionMode::Single);
+        list->SetSelectionMode(ListSelectionMode::Single);
         list->SelectItemAtIndex(3);
         selection_changed_count = 0;
-        list->SetSelectionMode(SelectionMode::SimpleMultiple);
+        list->SetSelectionMode(ListSelectionMode::SimpleMultiple);
         ASSERT_EQ(selection_changed_count, 0);
         ASSERT_EQ(list->SelectedItemCount(), 1);
 
-        list->SetSelectionMode(SelectionMode::ExtendedMultiple);
+        list->SetSelectionMode(ListSelectionMode::ExtendedMultiple);
         ASSERT_EQ(selection_changed_count, 0);
         ASSERT_EQ(list->SelectedItemCount(), 1);
     }
 
     //Change selection mode to multiple while there multiple selection.
     {
-        list->SetSelectionMode(SelectionMode::SimpleMultiple);
+        list->SetSelectionMode(ListSelectionMode::SimpleMultiple);
         list->SelectItemAtIndex(3);
         list->SelectItemAtIndex(2);
         list->SelectItemAtIndex(0);
         selection_changed_count = 0;
-        list->SetSelectionMode(SelectionMode::ExtendedMultiple);
+        list->SetSelectionMode(ListSelectionMode::ExtendedMultiple);
         ASSERT_EQ(selection_changed_count, 0);
         ASSERT_EQ(list->SelectedItemCount(), 3);
     }
@@ -235,7 +235,7 @@ TEST(ListControlTest, SelectItemAtIndex) {
 
     //Select item in none selection mode.
     {
-        list->SetSelectionMode(SelectionMode::None);
+        list->SetSelectionMode(ListSelectionMode::None);
         list->SelectItemAtIndex(1);
         list->SelectItemAtIndex(3);
         ASSERT_EQ(list->SelectedItemCount(), 0);
@@ -245,7 +245,7 @@ TEST(ListControlTest, SelectItemAtIndex) {
     //Select item in single selection mode.
     {
         selection_changed_count = 0;
-        list->SetSelectionMode(SelectionMode::Single);
+        list->SetSelectionMode(ListSelectionMode::Single);
         list->SelectItemAtIndex(0);
         list->SelectItemAtIndex(5);
         list->SelectItemAtIndex(4);
@@ -259,7 +259,7 @@ TEST(ListControlTest, SelectItemAtIndex) {
     //Select item in simple multiple selection mode.
     {
         list->UnselectAllItems();
-        list->SetSelectionMode(SelectionMode::SimpleMultiple);
+        list->SetSelectionMode(ListSelectionMode::SimpleMultiple);
         selection_changed_count = 0;
         list->SelectItemAtIndex(1);
         list->SelectItemAtIndex(2);
@@ -276,7 +276,7 @@ TEST(ListControlTest, SelectItemAtIndex) {
     //Select item in extended multiple selection mode.
     {
         list->UnselectAllItems();
-        list->SetSelectionMode(SelectionMode::ExtendedMultiple);
+        list->SetSelectionMode(ListSelectionMode::ExtendedMultiple);
         selection_changed_count = 0;
         list->SelectItemAtIndex(3);
         list->SelectItemAtIndex(8);
@@ -306,7 +306,7 @@ TEST(ListControlTest, UnselectItemAtIndex) {
 
     //Unselect item in single selection mode.
     {
-        list->SetSelectionMode(SelectionMode::Single);
+        list->SetSelectionMode(ListSelectionMode::Single);
         list->SelectItemAtIndex(1);
         selection_changed_count = 0;
 
@@ -322,7 +322,7 @@ TEST(ListControlTest, UnselectItemAtIndex) {
 
     //Unselect item in multiple selection mode.
     {
-        list->SetSelectionMode(SelectionMode::ExtendedMultiple);
+        list->SetSelectionMode(ListSelectionMode::ExtendedMultiple);
         list->SelectItemAtIndex(1);
         list->SelectItemAtIndex(2);
         list->SelectItemAtIndex(3);

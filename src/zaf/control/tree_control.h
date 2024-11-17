@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/control/scroll_box.h>
-#include <zaf/control/selection_mode.h>
+#include <zaf/control/list_selection_mode.h>
 #include <zaf/rx/observable.h>
 
 namespace zaf {
@@ -30,7 +30,7 @@ public:
     bool AutoAdjustScrollBarSmallChange() const;
     void SetAutoAdjustScrollBarSmallChange(bool value);
 
-    void SetSelectionMode(SelectionMode selection_mode);
+    void SetSelectionMode(ListSelectionMode selection_mode);
 
     std::vector<std::shared_ptr<Object>> GetAllSelectedItems() const;
     std::shared_ptr<Object> GetFirstSelectedItem() const;

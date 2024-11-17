@@ -662,7 +662,7 @@ void TreeControlImplementation::OnChangeExpandStateByArrowKeys(bool is_to_expand
 
     //Support changing expand state with arrow keys in only single selection mode.
     auto selection_mode = list_parts_.SelectionManager().SelectionMode();
-    if (selection_mode != SelectionMode::Single) {
+    if (selection_mode != ListSelectionMode::Single) {
         return;
     }
 

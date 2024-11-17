@@ -8,7 +8,7 @@
 #include <zaf/control/list_item_container.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_box.h>
-#include <zaf/control/selection_mode.h>
+#include <zaf/control/list_selection_mode.h>
 #include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/internal/list/list_selection_store.h>
 #include <zaf/rx/subject.h>

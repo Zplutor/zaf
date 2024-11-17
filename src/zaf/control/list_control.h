@@ -6,7 +6,7 @@
 #include <zaf/control/event/list_control_event_infos.h>
 #include <zaf/control/list_item.h>
 #include <zaf/control/scroll_box.h>
-#include <zaf/control/selection_mode.h>
+#include <zaf/control/list_selection_mode.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/creation.h>
 #include <zaf/internal/no_self_ref_ptr.h>
@@ -92,7 +92,7 @@ public:
 
      The default selection mode is Single.
      */
-    SelectionMode SelectionMode() const;
+    ListSelectionMode SelectionMode() const;
 
     /**
      Set selection mode.
@@ -101,7 +101,7 @@ public:
      to None; and only the first selected item would remain selected
      if selection mode is set to Single.
      */
-    void SetSelectionMode(zaf::SelectionMode selection_mode);
+    void SetSelectionMode(zaf::ListSelectionMode selection_mode);
 
     /**
      Get selection changed event.

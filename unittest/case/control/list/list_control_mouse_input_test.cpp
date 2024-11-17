@@ -73,7 +73,7 @@ TEST(ListControlTest, MouseDown_NoneSelectionMode) {
 
     TestWithListControl([](Window& window, ListControl& list_control) {
 
-        list_control.SetSelectionMode(SelectionMode::None);
+        list_control.SetSelectionMode(ListSelectionMode::None);
         window.Messager().SendWMLBUTTONDOWN(Point{10, 10});
         ASSERT_EQ(list_control.SelectedItemCount(), 0);
     });
@@ -84,7 +84,7 @@ TEST(ListControlTest, MouseDown_SingleSelectionMode) {
 
     TestWithListControl([](Window& window, ListControl& list_control) {
 
-        list_control.SetSelectionMode(SelectionMode::Single);
+        list_control.SetSelectionMode(ListSelectionMode::Single);
 
         std::size_t selection_changed_count{};
         auto sub = list_control.SelectionChangedEvent().Subscribe(

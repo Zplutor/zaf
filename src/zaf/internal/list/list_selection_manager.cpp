@@ -14,12 +14,12 @@ ListSelectionManager::ListSelectionManager(ListControlPartsContext* context) :
 }
 
 
-zaf::SelectionMode ListSelectionManager::SelectionMode() const noexcept {
+zaf::ListSelectionMode ListSelectionManager::SelectionMode() const noexcept {
     return selection_mode_;
 }
 
 
-void ListSelectionManager::SetSelectionMode(zaf::SelectionMode mode) {
+void ListSelectionManager::SetSelectionMode(zaf::ListSelectionMode mode) {
 
     selection_mode_ = mode;
     ReviseSelectionBySelectionMode();
@@ -29,10 +29,10 @@ void ListSelectionManager::SetSelectionMode(zaf::SelectionMode mode) {
 
 void ListSelectionManager::ReviseSelectionBySelectionMode() {
 
-    if (selection_mode_ == SelectionMode::None) {
+    if (selection_mode_ == ListSelectionMode::None) {
         UnselectAllItems();
     }
-    else if (selection_mode_ == SelectionMode::Single) {
+    else if (selection_mode_ == ListSelectionMode::Single) {
 
         auto& selection_store = Parts().SelectionStore();
         if (selection_store.GetAllSelectedCount() <= 1) {
@@ -56,13 +56,13 @@ void ListSelectionManager::ResetSelectionStrategy() {
         auto context = &Parts();
 
         switch (selection_mode_) {
-        case SelectionMode::Single:
+        case ListSelectionMode::Single:
             return std::make_unique<ListSingleSelectionStrategy>(context);
 
-        case SelectionMode::SimpleMultiple:
+        case ListSelectionMode::SimpleMultiple:
             return std::make_unique<ListSimpleMultipleSelectionStrategy>(context);
 
-        case SelectionMode::ExtendedMultiple:
+        case ListSelectionMode::ExtendedMultiple:
             return std::make_unique<ListExtendedMultipleSelectionStrategy>(context);
 
         default:
@@ -124,12 +124,12 @@ void ListSelectionManager::SelectItemAtIndex(std::size_t index) {
 
     switch (selection_mode_) {
 
-    case SelectionMode::Single:
+    case ListSelectionMode::Single:
         selection_store.ReplaceSelection(index, 1);
         break;
 
-    case SelectionMode::SimpleMultiple:
-    case SelectionMode::ExtendedMultiple:
+    case ListSelectionMode::SimpleMultiple:
+    case ListSelectionMode::ExtendedMultiple:
         selection_store.AddSelection(index, 1);
         break;
 

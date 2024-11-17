@@ -5,7 +5,7 @@
 #include <zaf/control/event/list_control_event_infos.h>
 #include <zaf/control/event/mouse_event_info.h>
 #include <zaf/control/scroll_box.h>
-#include <zaf/control/selection_mode.h>
+#include <zaf/control/list_selection_mode.h>
 #include <zaf/input/key.h>
 #include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/rx/subject.h>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/control/selection_mode.h>
+#include <zaf/control/list_selection_mode.h>
 #include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/internal/list/list_selection_change_reason.h>
 #include <zaf/internal/list/list_selection_strategy.h>
@@ -15,8 +15,8 @@ class ListSelectionManager : public ListControlPartsBased {
 public:
     explicit ListSelectionManager(ListControlPartsContext* context);
 
-    zaf::SelectionMode SelectionMode() const noexcept;
-    void SetSelectionMode(zaf::SelectionMode mode);
+    zaf::ListSelectionMode SelectionMode() const noexcept;
+    void SetSelectionMode(zaf::ListSelectionMode mode);
 
     ListSelectionStrategy& SelectionStrategy() const noexcept;
 
@@ -31,7 +31,7 @@ private:
     void ResetSelectionStrategy();
 
 private:
-    zaf::SelectionMode selection_mode_{ zaf::SelectionMode::Single };
+    zaf::ListSelectionMode selection_mode_{ zaf::ListSelectionMode::Single };
     std::unique_ptr<ListSelectionStrategy> selection_strategy_;
 };
 

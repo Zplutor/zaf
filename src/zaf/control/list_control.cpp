@@ -189,11 +189,11 @@ void ListControl::SetAutoAdjustScrollBarSmallChange(bool value) {
 }
 
 
-SelectionMode ListControl::SelectionMode() const {
+ListSelectionMode ListControl::SelectionMode() const {
     return parts_->SelectionManager().SelectionMode();
 }
 
-void ListControl::SetSelectionMode(zaf::SelectionMode selection_mode) {
+void ListControl::SetSelectionMode(zaf::ListSelectionMode selection_mode) {
     parts_->SelectionManager().SetSelectionMode(selection_mode);
 }
 
