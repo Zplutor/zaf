@@ -45,12 +45,12 @@ std::vector<std::pair<std::size_t, std::size_t>> MergeAdjacentListIndexes(
 
 }
 
-TreeControlImplementation::TreeControlImplementation(ScrollBox& owner) : list_parts_(&owner) {
+TreeCore::TreeCore(ScrollBox& owner) : list_parts_(&owner) {
 
 }
 
 
-void TreeControlImplementation::Initialize(const InitializeParameters& parameters) {
+void TreeCore::Initialize(const InitializeParameters& parameters) {
 
     InstallDataSource(parameters.data_source);
     InstallDelegate(parameters.delegate);
@@ -58,7 +58,7 @@ void TreeControlImplementation::Initialize(const InitializeParameters& parameter
 
     item_container_subscriptions_ += parameters.item_container->ChangeExpandStateEvent().Subscribe(
         std::bind(
-            &TreeControlImplementation::OnChangeExpandStateByArrowKeys, 
+            &TreeCore::OnChangeExpandStateByArrowKeys, 
             this, 
             std::placeholders::_1));
 
@@ -72,13 +72,13 @@ void TreeControlImplementation::Initialize(const InitializeParameters& parameter
 }
 
 
-void TreeControlImplementation::InitializeListImplementation(
+void TreeCore::InitializeListImplementation(
     const InitializeParameters& parameters) {
 
     //This event must be subscribed before initializing the list core.
     Subscriptions() +=
         list_parts_.SelectionStore().ChangedEvent().Subscribe(
-            std::bind_front(&TreeControlImplementation::OnListSelectionStoreChanged, this));
+            std::bind_front(&TreeCore::OnListSelectionStoreChanged, this));
 
     ListCore::InitializeParameters list_initialize_parameters;
     list_initialize_parameters.item_container = parameters.item_container;
@@ -86,16 +86,16 @@ void TreeControlImplementation::InitializeListImplementation(
     list_initialize_parameters.delegate = As<ListControlDelegate>(shared_from_this());
 
     Subscriptions() += list_parts_.Core().SelectionChangedEvent().Subscribe(
-        std::bind_front(&TreeControlImplementation::OnListSelectionChange, this));
+        std::bind_front(&TreeCore::OnListSelectionChange, this));
 
     Subscriptions() += list_parts_.Core().ItemDoubleClickEvent().Subscribe(
-        std::bind_front(&TreeControlImplementation::OnListItemDoubleClick, this));
+        std::bind_front(&TreeCore::OnListItemDoubleClick, this));
 
     list_parts_.Core().Initialize(list_initialize_parameters);
 }
 
 
-void TreeControlImplementation::InstallDataSource(
+void TreeCore::InstallDataSource(
     const std::weak_ptr<TreeDataSource>& data_source) {
 
     UnregisterDataSourceEvents();
@@ -105,7 +105,7 @@ void TreeControlImplementation::InstallDataSource(
 }
 
 
-void TreeControlImplementation::RegisterDataSourceEvents() {
+void TreeCore::RegisterDataSourceEvents() {
 
     auto data_source = data_source_.lock();
     if (!data_source) {
@@ -113,30 +113,30 @@ void TreeControlImplementation::RegisterDataSourceEvents() {
     }
 
     data_source_subscriptions_ += data_source->DataAddEvent().Subscribe(
-        std::bind(&TreeControlImplementation::OnDataAdd, this, std::placeholders::_1));
+        std::bind(&TreeCore::OnDataAdd, this, std::placeholders::_1));
 
     data_source_subscriptions_ += data_source->DataRemoveEvent().Subscribe(
-        std::bind(&TreeControlImplementation::OnDataRemove, this, std::placeholders::_1));
+        std::bind(&TreeCore::OnDataRemove, this, std::placeholders::_1));
 
     data_source_subscriptions_ += data_source->DataUpdateEvent().Subscribe(
-        std::bind(&TreeControlImplementation::OnDataUpdate, this, std::placeholders::_1));
+        std::bind(&TreeCore::OnDataUpdate, this, std::placeholders::_1));
 }
 
 
-void TreeControlImplementation::UnregisterDataSourceEvents() {
+void TreeCore::UnregisterDataSourceEvents() {
 
     data_source_subscriptions_.Clear();
 }
 
 
-void TreeControlImplementation::InstallDelegate(
+void TreeCore::InstallDelegate(
     const std::weak_ptr<TreeControlDelegate>& delegate) {
 
     delegate_ = delegate;
 }
 
 
-void TreeControlImplementation::SetDataSource(const std::weak_ptr<TreeDataSource>& data_source) {
+void TreeCore::SetDataSource(const std::weak_ptr<TreeDataSource>& data_source) {
 
     auto previous_data_source = data_source_;
     InstallDataSource(data_source);
@@ -149,7 +149,7 @@ void TreeControlImplementation::SetDataSource(const std::weak_ptr<TreeDataSource
 }
 
 
-void TreeControlImplementation::SetDelegate(const std::weak_ptr<TreeControlDelegate>& delegate) {
+void TreeCore::SetDelegate(const std::weak_ptr<TreeControlDelegate>& delegate) {
 
     auto previous_delegate = delegate_;
     InstallDelegate(delegate);
@@ -162,7 +162,7 @@ void TreeControlImplementation::SetDelegate(const std::weak_ptr<TreeControlDeleg
 }
 
 
-void TreeControlImplementation::Reload() {
+void TreeCore::Reload() {
 
     ReloadRootNode();
 
@@ -170,7 +170,7 @@ void TreeControlImplementation::Reload() {
 }
 
 
-void TreeControlImplementation::ReloadRootNode() {
+void TreeCore::ReloadRootNode() {
 
     tree_index_mapping_.Clear();
     tree_data_manager_.Clear();
@@ -179,7 +179,7 @@ void TreeControlImplementation::ReloadRootNode() {
 }
 
 
-std::vector<std::shared_ptr<Object>> TreeControlImplementation::GetAllSelectedItems() const {
+std::vector<std::shared_ptr<Object>> TreeCore::GetAllSelectedItems() const {
 
     std::vector<std::pair<std::shared_ptr<Object>, IndexPath>> selected_data_index_path;
 
@@ -205,7 +205,7 @@ std::vector<std::shared_ptr<Object>> TreeControlImplementation::GetAllSelectedIt
 }
 
 
-std::shared_ptr<Object> TreeControlImplementation::GetFirstSelectedItem() const {
+std::shared_ptr<Object> TreeCore::GetFirstSelectedItem() const {
 
     auto all_selected_data = GetAllSelectedItems();
     if (!all_selected_data.empty()) {
@@ -215,7 +215,7 @@ std::shared_ptr<Object> TreeControlImplementation::GetFirstSelectedItem() const 
 }
 
 
-void TreeControlImplementation::VisitExpandedTree(TreeVisitor& visitor) const {
+void TreeCore::VisitExpandedTree(TreeVisitor& visitor) const {
 
     auto root_node = tree_data_manager_.GetNodeAtIndexPath({});
     if (root_node) {
@@ -224,7 +224,7 @@ void TreeControlImplementation::VisitExpandedTree(TreeVisitor& visitor) const {
 }
 
 
-void TreeControlImplementation::VisitExpandedTreeNode(
+void TreeCore::VisitExpandedTreeNode(
     const TreeNode& node,
     TreeVisitor& visitor) const {
 
@@ -240,7 +240,7 @@ void TreeControlImplementation::VisitExpandedTreeNode(
 }
 
 
-void TreeControlImplementation::SelectItem(const std::shared_ptr<Object>& data) {
+void TreeCore::SelectItem(const std::shared_ptr<Object>& data) {
 
     auto list_index = GetDataListIndex(data);
     if (!list_index) {
@@ -251,7 +251,7 @@ void TreeControlImplementation::SelectItem(const std::shared_ptr<Object>& data) 
 }
 
 
-void TreeControlImplementation::UnselectItem(const std::shared_ptr<Object>& data) {
+void TreeCore::UnselectItem(const std::shared_ptr<Object>& data) {
 
     auto list_index = GetDataListIndex(data);
     if (!list_index) {
@@ -262,7 +262,7 @@ void TreeControlImplementation::UnselectItem(const std::shared_ptr<Object>& data
 }
 
 
-void TreeControlImplementation::ExpandItem(const std::shared_ptr<Object>& data) {
+void TreeCore::ExpandItem(const std::shared_ptr<Object>& data) {
 
     //Don't expand if it is already expanded.
     if (tree_data_manager_.IsNodeExpanded(data)) {
@@ -279,7 +279,7 @@ void TreeControlImplementation::ExpandItem(const std::shared_ptr<Object>& data) 
 }
 
 
-void TreeControlImplementation::CollapseItem(const std::shared_ptr<Object>& data) {
+void TreeCore::CollapseItem(const std::shared_ptr<Object>& data) {
 
     //Don't collapse if it is already collapsed.
     if (!tree_data_manager_.IsNodeExpanded(data)) {
@@ -296,7 +296,7 @@ void TreeControlImplementation::CollapseItem(const std::shared_ptr<Object>& data
 }
 
 
-void TreeControlImplementation::ScrollToItem(const std::shared_ptr<Object>& data) {
+void TreeCore::ScrollToItem(const std::shared_ptr<Object>& data) {
 
     auto list_index = GetDataListIndex(data);
     if (!list_index) {
@@ -307,7 +307,7 @@ void TreeControlImplementation::ScrollToItem(const std::shared_ptr<Object>& data
 }
 
 
-void TreeControlImplementation::ReloadItem(const std::shared_ptr<Object>& data) {
+void TreeCore::ReloadItem(const std::shared_ptr<Object>& data) {
 
     auto index_path = tree_data_manager_.GetIndexPathOfData(data);
     if (!index_path) {
@@ -318,12 +318,12 @@ void TreeControlImplementation::ReloadItem(const std::shared_ptr<Object>& data) 
 }
 
 
-std::size_t TreeControlImplementation::GetDataCount() const {
+std::size_t TreeCore::GetDataCount() const {
     return tree_index_mapping_.GetNodeCount();
 }
 
 
-std::shared_ptr<Object> TreeControlImplementation::GetDataAtIndex(std::size_t index) const {
+std::shared_ptr<Object> TreeCore::GetDataAtIndex(std::size_t index) const {
 
     auto index_path = tree_index_mapping_.GetIndexPathAtIndex(index);
     auto tree_node = tree_data_manager_.GetNodeAtIndexPath(index_path);
@@ -332,7 +332,7 @@ std::shared_ptr<Object> TreeControlImplementation::GetDataAtIndex(std::size_t in
 }
 
 
-bool TreeControlImplementation::HasVariableItemHeight() {
+bool TreeCore::HasVariableItemHeight() {
 
     auto delegate = delegate_.lock();
     if (delegate) {
@@ -342,7 +342,7 @@ bool TreeControlImplementation::HasVariableItemHeight() {
 }
 
 
-float TreeControlImplementation::EstimateItemHeight(
+float TreeCore::EstimateItemHeight(
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
 
@@ -354,7 +354,7 @@ float TreeControlImplementation::EstimateItemHeight(
 }
 
 
-float TreeControlImplementation::GetItemSpacing() {
+float TreeCore::GetItemSpacing() {
 
     auto delegate = delegate_.lock();
     if (delegate) {
@@ -364,7 +364,7 @@ float TreeControlImplementation::GetItemSpacing() {
 }
 
 
-std::optional<float> TreeControlImplementation::InnerEstimateItemHeight(
+std::optional<float> TreeCore::InnerEstimateItemHeight(
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
 
@@ -383,7 +383,7 @@ std::optional<float> TreeControlImplementation::InnerEstimateItemHeight(
 }
 
 
-std::shared_ptr<ListItem> TreeControlImplementation::CreateItem(
+std::shared_ptr<ListItem> TreeCore::CreateItem(
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
 
@@ -395,7 +395,7 @@ std::shared_ptr<ListItem> TreeControlImplementation::CreateItem(
 }
 
 
-std::shared_ptr<ListItem> TreeControlImplementation::InnerCreateListItem(
+std::shared_ptr<ListItem> TreeCore::InnerCreateListItem(
     std::size_t item_index,
     const std::shared_ptr<Object>& item_data) {
 
@@ -416,7 +416,7 @@ std::shared_ptr<ListItem> TreeControlImplementation::InnerCreateListItem(
     }
 
     auto tree_item = delegate->CreateItem(parent_data, child_index, item_data);
-    tree_item->SetTreeControlImplementation(shared_from_this());
+    tree_item->SetTreeCore(shared_from_this());
 
     tree_item->SetIndentLevel(index_path.size() - 1);
     SetItemExpandState(tree_item, item_data, index_path);
@@ -425,7 +425,7 @@ std::shared_ptr<ListItem> TreeControlImplementation::InnerCreateListItem(
 }
 
 
-void TreeControlImplementation::SetItemExpandState(
+void TreeCore::SetItemExpandState(
     const std::shared_ptr<TreeItem>& item,
     const std::shared_ptr<Object>& item_data,
     const IndexPath& index_path) {
@@ -447,7 +447,7 @@ void TreeControlImplementation::SetItemExpandState(
 }
 
 
-bool TreeControlImplementation::IsIndexPathExpanded(const IndexPath& index_path) const {
+bool TreeCore::IsIndexPathExpanded(const IndexPath& index_path) const {
 
     auto tree_node = tree_data_manager_.GetNodeAtIndexPath(index_path);
     if (!tree_node) {
@@ -458,7 +458,7 @@ bool TreeControlImplementation::IsIndexPathExpanded(const IndexPath& index_path)
 }
 
 
-bool TreeControlImplementation::ExpandItemUI(
+bool TreeCore::ExpandItemUI(
     const IndexPath& index_path,
     const std::optional<std::size_t>& list_index,
     bool update_item) {
@@ -485,7 +485,7 @@ bool TreeControlImplementation::ExpandItemUI(
 }
 
 
-bool TreeControlImplementation::ExpandItemData(
+bool TreeCore::ExpandItemData(
     const IndexPath& index_path,
     std::shared_ptr<Object>& expanded_data,
     std::size_t& expanded_count) {
@@ -525,7 +525,7 @@ bool TreeControlImplementation::ExpandItemData(
 }
 
 
-std::size_t TreeControlImplementation::ExpandItemRecursively(
+std::size_t TreeCore::ExpandItemRecursively(
     TreeDataSource& data_source,
     TreeNodeExpander& node_expander, 
     const IndexPath& node_index_path) {
@@ -569,7 +569,7 @@ std::size_t TreeControlImplementation::ExpandItemRecursively(
 }
 
 
-bool TreeControlImplementation::CollapseItemUI(
+bool TreeCore::CollapseItemUI(
     const IndexPath& index_path,
     const std::optional<std::size_t>& list_index,
     bool update_item) {
@@ -617,7 +617,7 @@ bool TreeControlImplementation::CollapseItemUI(
 }
 
 
-bool TreeControlImplementation::ChangeItemExpandState(
+bool TreeCore::ChangeItemExpandState(
     const std::shared_ptr<TreeItem>& item, 
     bool new_is_expanded) {
 
@@ -641,7 +641,7 @@ bool TreeControlImplementation::ChangeItemExpandState(
 }
 
 
-void TreeControlImplementation::OnListItemDoubleClick(
+void TreeCore::OnListItemDoubleClick(
     const ListCoreItemDoubleClickInfo& event_info) {
 
     auto index_path = tree_index_mapping_.GetIndexPathAtIndex(event_info.item_index);
@@ -658,7 +658,7 @@ void TreeControlImplementation::OnListItemDoubleClick(
 }
 
 
-void TreeControlImplementation::OnChangeExpandStateByArrowKeys(bool is_to_expand) {
+void TreeCore::OnChangeExpandStateByArrowKeys(bool is_to_expand) {
 
     //Support changing expand state with arrow keys in only single selection mode.
     auto selection_mode = list_parts_.SelectionManager().SelectionMode();
@@ -713,7 +713,7 @@ void TreeControlImplementation::OnChangeExpandStateByArrowKeys(bool is_to_expand
 }
 
 
-void TreeControlImplementation::UpdateItem(const IndexPath& index_path) {
+void TreeCore::UpdateItem(const IndexPath& index_path) {
 
     auto list_index = tree_index_mapping_.GetIndexAtIndexPath(index_path);
     if (!list_index) {
@@ -725,7 +725,7 @@ void TreeControlImplementation::UpdateItem(const IndexPath& index_path) {
 }
 
 
-void TreeControlImplementation::CheckIfItemHasChildren(
+void TreeCore::CheckIfItemHasChildren(
     const IndexPath& index_path, 
     std::size_t list_index) {
 
@@ -758,7 +758,7 @@ void TreeControlImplementation::CheckIfItemHasChildren(
 }
 
 
-void TreeControlImplementation::OnListSelectionStoreChanged(
+void TreeCore::OnListSelectionStoreChanged(
     const ListSelectionStoreChangedInfo& event_info) {
 
     switch (event_info.reason) {
@@ -778,12 +778,12 @@ void TreeControlImplementation::OnListSelectionStoreChanged(
 }
 
 
-void TreeControlImplementation::OnListSelectionChange(None) {
+void TreeCore::OnListSelectionChange(None) {
     NotifySelectionChange();
 }
 
 
-void TreeControlImplementation::NotifySelectionChange() {
+void TreeCore::NotifySelectionChange() {
 
     if (selection_change_event_) {
         selection_change_event_();
@@ -791,7 +791,7 @@ void TreeControlImplementation::NotifySelectionChange() {
 }
 
 
-void TreeControlImplementation::ModifySelection(
+void TreeCore::ModifySelection(
     std::size_t index, 
     std::size_t count, 
     bool is_replace) {
@@ -817,7 +817,7 @@ void TreeControlImplementation::ModifySelection(
 }
 
 
-void TreeControlImplementation::RemoveSelection(std::size_t index, std::size_t count) {
+void TreeCore::RemoveSelection(std::size_t index, std::size_t count) {
 
     for (auto list_index : Range(index, count)) {
 
@@ -836,7 +836,7 @@ void TreeControlImplementation::RemoveSelection(std::size_t index, std::size_t c
 }
 
 
-void TreeControlImplementation::OnDataAdd(const TreeDataSourceDataAddInfo& event_info) {
+void TreeCore::OnDataAdd(const TreeDataSourceDataAddInfo& event_info) {
 
     auto data_source = data_source_.lock();
     if (!data_source) {
@@ -881,7 +881,7 @@ void TreeControlImplementation::OnDataAdd(const TreeDataSourceDataAddInfo& event
 }
 
 
-std::optional<std::size_t> TreeControlImplementation::GetChildListIndex(
+std::optional<std::size_t> TreeCore::GetChildListIndex(
     const IndexPath& parent_index_path,
     std::size_t child_index) const {
 
@@ -930,7 +930,7 @@ std::optional<std::size_t> TreeControlImplementation::GetChildListIndex(
 }
 
 
-void TreeControlImplementation::OnDataRemove(const TreeDataSourceDataRemoveInfo& event_info) {
+void TreeCore::OnDataRemove(const TreeDataSourceDataRemoveInfo& event_info) {
 
     //Get parent index path.
     auto parent_index_path = tree_data_manager_.GetIndexPathOfData(event_info.parent_data);
@@ -970,7 +970,7 @@ void TreeControlImplementation::OnDataRemove(const TreeDataSourceDataRemoveInfo&
 }
 
 
-void TreeControlImplementation::OnDataUpdate(const TreeDataSourceDataUpdateInfo& event_info) {
+void TreeCore::OnDataUpdate(const TreeDataSourceDataUpdateInfo& event_info) {
 
     auto updated_list_indexes = UpdateChildItem(
         event_info.parent_data, 
@@ -990,7 +990,7 @@ void TreeControlImplementation::OnDataUpdate(const TreeDataSourceDataUpdateInfo&
 }
 
 
-std::vector<std::size_t> TreeControlImplementation::UpdateChildItem(
+std::vector<std::size_t> TreeCore::UpdateChildItem(
     const std::shared_ptr<Object>& parent_data,
     std::size_t index,
     std::size_t count) {
@@ -1022,7 +1022,7 @@ std::vector<std::size_t> TreeControlImplementation::UpdateChildItem(
 }
 
 
-std::optional<std::size_t> TreeControlImplementation::GetDataListIndex(
+std::optional<std::size_t> TreeCore::GetDataListIndex(
     const std::shared_ptr<Object>& data) const {
 
     auto index_path = tree_data_manager_.GetIndexPathOfData(data);
@@ -1034,7 +1034,7 @@ std::optional<std::size_t> TreeControlImplementation::GetDataListIndex(
 }
 
 
-bool TreeControlImplementation::GetParentDataAndChildIndex(
+bool TreeCore::GetParentDataAndChildIndex(
     std::size_t list_index,
     std::shared_ptr<Object>& parent_data,
     std::size_t& child_index) {
@@ -1048,7 +1048,7 @@ bool TreeControlImplementation::GetParentDataAndChildIndex(
 }
 
 
-bool TreeControlImplementation::GetParentDataAndChildIndex(
+bool TreeCore::GetParentDataAndChildIndex(
     const IndexPath& index_path,
     std::shared_ptr<Object>& parent_data,
     std::size_t& child_index) {

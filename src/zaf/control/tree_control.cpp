@@ -12,8 +12,7 @@ namespace zaf {
 ZAF_OBJECT_IMPL(TreeControl)
 
 
-TreeControl::TreeControl() :
-    implementation_(std::make_shared<internal::TreeControlImplementation>(*this)) {
+TreeControl::TreeControl() : core_(std::make_shared<internal::TreeCore>(*this)) {
 
 }
 
@@ -29,7 +28,7 @@ void TreeControl::Initialize() {
 
     item_container_ = Create<TreeItemContainer>();
 
-    internal::TreeControlImplementation::InitializeParameters initialize_parameters;
+    internal::TreeCore::InitializeParameters initialize_parameters;
     initialize_parameters.item_container = item_container_;
     initialize_parameters.data_source_change_event =
         std::bind(&TreeControl::OnDataSourceChanged, this, std::placeholders::_1);
@@ -41,7 +40,7 @@ void TreeControl::Initialize() {
     initialize_parameters.item_collapse_event = 
         std::bind(&TreeControl::ItemCollapse, this, std::placeholders::_1);
 
-    implementation_->Initialize(initialize_parameters);
+    core_->Initialize(initialize_parameters);
 }
 
 
@@ -49,112 +48,112 @@ void TreeControl::Layout(const zaf::Rect& previous_rect) {
 
     __super::Layout(previous_rect);
 
-    implementation_->ListParts().Core().OnLayout();
+    core_->ListParts().Core().OnLayout();
 }
 
 
 void TreeControl::OnMouseDown(const MouseDownInfo& event_info) {
     __super::OnMouseDown(event_info);
-    implementation_->ListParts().InputHandler().HandleMouseDownEvent(event_info);
+    core_->ListParts().InputHandler().HandleMouseDownEvent(event_info);
 }
 
 
 void TreeControl::OnMouseMove(const MouseMoveInfo& event_info) {
     __super::OnMouseMove(event_info);
-    implementation_->ListParts().InputHandler().HandleMouseMoveEvent(event_info);
+    core_->ListParts().InputHandler().HandleMouseMoveEvent(event_info);
 }
 
 
 void TreeControl::OnMouseUp(const MouseUpInfo& event_info) {
     __super::OnMouseUp(event_info);
-    implementation_->ListParts().InputHandler().HandleMouseUpEvent(event_info);
+    core_->ListParts().InputHandler().HandleMouseUpEvent(event_info);
 }
 
 
 void TreeControl::OnKeyDown(const KeyDownInfo& event_info) {
     __super::OnKeyDown(event_info);
-    implementation_->ListParts().InputHandler().HandleKeyDownEvent(event_info);
+    core_->ListParts().InputHandler().HandleKeyDownEvent(event_info);
 }
 
 
 void TreeControl::OnFocusGained(const FocusGainedInfo& event_info) {
     __super::OnFocusGained(event_info);
-    implementation_->ListParts().Core().HandleFocusGainedEvent(event_info);
+    core_->ListParts().Core().HandleFocusGainedEvent(event_info);
 }
 
 
 void TreeControl::OnFocusLost(const FocusLostInfo& event_info) {
     __super::OnFocusLost(event_info);
-    implementation_->ListParts().Core().HandleFocusLostEvent(event_info);
+    core_->ListParts().Core().HandleFocusLostEvent(event_info);
 }
 
 
 void TreeControl::SetDataSource(const std::weak_ptr<TreeDataSource>& data_source) {
 
     data_source_ = data_source;
-    implementation_->SetDataSource(data_source_);
+    core_->SetDataSource(data_source_);
 }
 
 
 void TreeControl::SetDelegate(const std::weak_ptr<TreeControlDelegate>& delegate) {
 
     delegate_ = delegate;
-    implementation_->SetDelegate(delegate_);
+    core_->SetDelegate(delegate_);
 }
 
 
 bool TreeControl::AutoAdjustScrollBarSmallChange() const {
-    return implementation_->ListParts().Core().AutoAdjustScrollBarSmallChange();
+    return core_->ListParts().Core().AutoAdjustScrollBarSmallChange();
 }
 
 void TreeControl::SetAutoAdjustScrollBarSmallChange(bool value) {
-    implementation_->ListParts().Core().SetAutoAdjustScrollBarSmallChange(value);
+    core_->ListParts().Core().SetAutoAdjustScrollBarSmallChange(value);
 }
 
 
 void TreeControl::SetSelectionMode(ListSelectionMode selection_mode) {
-    auto& list_parts = implementation_->ListParts();
+    auto& list_parts = core_->ListParts();
     list_parts.SelectionManager().SetSelectionMode(selection_mode);
 }
 
 
 std::vector<std::shared_ptr<Object>> TreeControl::GetAllSelectedItems() const {
-    return implementation_->GetAllSelectedItems();
+    return core_->GetAllSelectedItems();
 }
 
 
 std::shared_ptr<Object> TreeControl::GetFirstSelectedItem() const {
-    return implementation_->GetFirstSelectedItem();
+    return core_->GetFirstSelectedItem();
 }
 
 
 void TreeControl::SelectItem(const std::shared_ptr<Object>& data) {
-    implementation_->SelectItem(data);
+    core_->SelectItem(data);
 }
 
 
 void TreeControl::UnselectItem(const std::shared_ptr<Object>& data) {
-    implementation_->UnselectItem(data);
+    core_->UnselectItem(data);
 }
 
 
 void TreeControl::ExpandItem(const std::shared_ptr<Object>& data) {
-    implementation_->ExpandItem(data);
+    core_->ExpandItem(data);
 }
 
 
 void TreeControl::CollapseItem(const std::shared_ptr<Object>& data) {
-    implementation_->CollapseItem(data);
+    core_->CollapseItem(data);
 }
 
 
 void TreeControl::ScrollToItem(const std::shared_ptr<Object>& data) {
-    implementation_->ScrollToItem(data);
+    core_->ScrollToItem(data);
 }
 
 
 void TreeControl::ReloadItem(const std::shared_ptr<Object>& data) {
-    implementation_->ReloadItem(data);
+    core_->ReloadItem(data);
 }
 
 

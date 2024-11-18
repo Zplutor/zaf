@@ -6,7 +6,7 @@
 
 namespace zaf {
 namespace internal {
-class TreeControlImplementation;
+class TreeCore;
 }
 
 class TreeControlDelegate;
@@ -78,7 +78,7 @@ private:
     std::shared_ptr<TreeItemContainer> item_container_;
     std::weak_ptr<TreeDataSource> data_source_;
     std::weak_ptr<TreeControlDelegate> delegate_;
-    std::shared_ptr<internal::TreeControlImplementation> implementation_;
+    std::shared_ptr<internal::TreeCore> core_;
 
     Event<TreeControlSelectionChangeInfo> selection_changed_event_;
     Event<TreeControlItemExpandInfo> item_expand_event_;

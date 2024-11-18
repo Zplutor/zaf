@@ -5,7 +5,7 @@
 #include <zaf/internal/no_self_ref_ptr.h>
 
 namespace zaf::internal {
-class TreeControlImplementation;
+class TreeCore;
 class PropertyGridDataManager;
 class PropertyGridItemManager;
 class SplitDistanceManager;
@@ -59,7 +59,7 @@ private:
     internal::NoSelfRefPtr<PropertyGridDelegate> delegate_;
     std::shared_ptr<internal::PropertyGridDataManager> data_manager_;
     std::shared_ptr<internal::PropertyGridItemManager> item_manager_;
-    std::shared_ptr<internal::TreeControlImplementation> tree_implementation_;
+    std::shared_ptr<internal::TreeCore> tree_core_;
 };
 
 ZAF_OBJECT_BEGIN(PropertyGrid);

@@ -15,7 +15,7 @@ ZAF_OBJECT_IMPL(PropertyGrid)
 
 PropertyGrid::PropertyGrid() : 
     split_distance_manager_(std::make_shared<internal::SplitDistanceManager>()),
-    tree_implementation_(std::make_shared<internal::TreeControlImplementation>(*this)) {
+    tree_core_(std::make_shared<internal::TreeCore>(*this)) {
 
 }
 
@@ -33,14 +33,14 @@ void PropertyGrid::Initialize() {
     item_manager_ = std::make_shared<internal::PropertyGridItemManager>(
         delegate_.ToSharedPtr(),
         split_distance_manager_,
-        tree_implementation_);
+        tree_core_);
 
-    internal::TreeControlImplementation::InitializeParameters initialize_parameters;
+    internal::TreeCore::InitializeParameters initialize_parameters;
     initialize_parameters.item_container = Create<TreeItemContainer>();
     initialize_parameters.data_source = data_manager_;
     initialize_parameters.delegate = item_manager_;
 
-    tree_implementation_->Initialize(initialize_parameters);
+    tree_core_->Initialize(initialize_parameters);
 
     //RichEdit cannot use cached painting.
     this->ScrollContent()->SetIsCachedPaintingEnabled(false);
@@ -53,43 +53,43 @@ void PropertyGrid::Layout(const zaf::Rect& previous_rect) {
 
     split_distance_manager_->UpdateDefaultDistance(this->ScrollContent()->Width() / 2);
 
-    tree_implementation_->ListParts().Core().OnLayout();
+    tree_core_->ListParts().Core().OnLayout();
 }
 
 
 void PropertyGrid::OnMouseDown(const MouseDownInfo& event_info) {
     __super::OnMouseDown(event_info);
-    tree_implementation_->ListParts().InputHandler().HandleMouseDownEvent(event_info);
+    tree_core_->ListParts().InputHandler().HandleMouseDownEvent(event_info);
 }
 
 
 void PropertyGrid::OnMouseMove(const MouseMoveInfo& event_info) {
     __super::OnMouseMove(event_info);
-    tree_implementation_->ListParts().InputHandler().HandleMouseMoveEvent(event_info);
+    tree_core_->ListParts().InputHandler().HandleMouseMoveEvent(event_info);
 }
 
 
 void PropertyGrid::OnMouseUp(const MouseUpInfo& event_info) {
     __super::OnMouseUp(event_info);
-    tree_implementation_->ListParts().InputHandler().HandleMouseUpEvent(event_info);
+    tree_core_->ListParts().InputHandler().HandleMouseUpEvent(event_info);
 }
 
 
 void PropertyGrid::OnKeyDown(const KeyDownInfo& event_info) {
     __super::OnKeyDown(event_info);
-    tree_implementation_->ListParts().InputHandler().HandleKeyDownEvent(event_info);
+    tree_core_->ListParts().InputHandler().HandleKeyDownEvent(event_info);
 }
 
 
 void PropertyGrid::OnFocusGained(const FocusGainedInfo& event_info) {
     __super::OnFocusGained(event_info);
-    tree_implementation_->ListParts().Core().HandleFocusGainedEvent(event_info);
+    tree_core_->ListParts().Core().HandleFocusGainedEvent(event_info);
 }
 
 
 void PropertyGrid::OnFocusLost(const FocusLostInfo& event_info) {
     __super::OnFocusLost(event_info);
-    tree_implementation_->ListParts().Core().HandleFocusLostEvent(event_info);
+    tree_core_->ListParts().Core().HandleFocusLostEvent(event_info);
 }
 
 
@@ -115,7 +115,7 @@ void PropertyGrid::ReCreateDataSource() {
     data_manager_ = std::make_shared<internal::PropertyGridDataManager>(delegate_.ToSharedPtr());
     data_manager_->SetTargetObject(target_object_);
 
-    tree_implementation_->SetDataSource(data_manager_);
+    tree_core_->SetDataSource(data_manager_);
 }
 
 
@@ -124,9 +124,9 @@ void PropertyGrid::ReCreateDelegate() {
     item_manager_ = std::make_shared<internal::PropertyGridItemManager>(
         delegate_.ToSharedPtr(),
         split_distance_manager_,
-        tree_implementation_);
+        tree_core_);
 
-    tree_implementation_->SetDelegate(item_manager_);
+    tree_core_->SetDelegate(item_manager_);
 }
 
 
@@ -136,7 +136,7 @@ void PropertyGrid::RefreshValues() {
 
 
 void PropertyGrid::Reload() {
-    tree_implementation_->Reload();
+    tree_core_->Reload();
     RefreshValues();
 }
 
@@ -144,7 +144,7 @@ void PropertyGrid::Reload() {
 PropertyGridNode PropertyGrid::GetExpandedNodeTree() const {
 
     internal::ExpandedNodeVisitor visitor;
-    tree_implementation_->VisitExpandedTree(visitor);
+    tree_core_->VisitExpandedTree(visitor);
     return visitor.TakeResult();
 }
 
@@ -174,7 +174,7 @@ void PropertyGrid::ExpandChildNodes(
         auto child_node = Find(child_node_map, child_data->Property());
         if (child_node) {
 
-            tree_implementation_->ExpandItem(child_data);
+            tree_core_->ExpandItem(child_data);
 
             ExpandChildNodes(**child_node, child_data);
         }

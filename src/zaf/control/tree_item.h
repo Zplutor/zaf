@@ -5,7 +5,7 @@
 
 namespace zaf {
 namespace internal {
-class TreeControlImplementation;
+class TreeCore;
 }
 
 class TreeItemExpandButton;
@@ -26,12 +26,10 @@ protected:
     void Layout(const zaf::Rect& previous_rect) override;
     
 private:
-    friend class internal::TreeControlImplementation;
+    friend class internal::TreeCore;
 
-    void SetTreeControlImplementation(
-        const std::shared_ptr<internal::TreeControlImplementation>& implementation) {
-
-        tree_control_implementation_ = implementation;
+    void SetTreeCore(const std::shared_ptr<internal::TreeCore>& core) {
+        tree_core_ = core;
     }
 
     void SetIndentLevel(std::size_t deep);
@@ -42,7 +40,7 @@ private:
 
 private:
     std::shared_ptr<TreeItemExpandButton> expand_button_;
-    std::weak_ptr<internal::TreeControlImplementation> tree_control_implementation_;
+    std::weak_ptr<internal::TreeCore> tree_core_;
     std::size_t indent_level_{};
 };
 

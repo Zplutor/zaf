@@ -74,14 +74,14 @@ void TreeItem::SetIndentLevel(std::size_t deep) {
 
 void TreeItem::ExpandButtonClick() {
 
-    auto tree_control_implementation = tree_control_implementation_.lock();
-    if (!tree_control_implementation) {
+    auto tree_core = tree_core_.lock();
+    if (!tree_core) {
         return;
     }
 
     bool previous_is_expand = expand_button_->GetExpandState() == ExpandState::Expanded;
 
-    bool change_succeeded = tree_control_implementation->ChangeItemExpandState(
+    bool change_succeeded = tree_core->ChangeItemExpandState(
         std::dynamic_pointer_cast<TreeItem>(shared_from_this()),
         !previous_is_expand);
 

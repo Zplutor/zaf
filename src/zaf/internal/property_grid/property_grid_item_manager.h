@@ -13,7 +13,7 @@ public:
     PropertyGridItemManager(
         const std::shared_ptr<PropertyGridDelegate>& delegate,
         const std::shared_ptr<SplitDistanceManager>& split_distance_manager,
-        const std::weak_ptr<zaf::internal::TreeControlImplementation>& tree_implementation);
+        const std::weak_ptr<zaf::internal::TreeCore>& tree_core);
 
     float EstimateItemHeight(
         const std::shared_ptr<Object>& parent_item_data,
@@ -36,7 +36,7 @@ private:
 private:
     std::shared_ptr<PropertyGridDelegate> delegate_;
     std::shared_ptr<SplitDistanceManager> split_distance_manager_;
-    std::weak_ptr<zaf::internal::TreeControlImplementation> tree_implementation_;
+    std::weak_ptr<zaf::internal::TreeCore> tree_core_;
 };
 
 }

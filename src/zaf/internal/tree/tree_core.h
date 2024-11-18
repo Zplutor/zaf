@@ -13,10 +13,10 @@
 
 namespace zaf::internal {
 
-class TreeControlImplementation : 
+class TreeCore : 
     public ListDataSource, 
     public ListControlDelegate,
-    public std::enable_shared_from_this<TreeControlImplementation>,
+    public std::enable_shared_from_this<TreeCore>,
     SubscriptionHost {
 
 public:
@@ -39,8 +39,8 @@ public:
     };
 
 public:
-    TreeControlImplementation(ScrollBox& owner);
-    ~TreeControlImplementation() = default;
+    TreeCore(ScrollBox& owner);
+    ~TreeCore() = default;
 
     ListControlPartsContext& ListParts() {
         return list_parts_;

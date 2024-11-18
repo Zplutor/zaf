@@ -5,7 +5,7 @@
 
 namespace zaf {
 namespace internal {
-class TreeControlImplementation;
+class TreeCore;
 }
 
 class TreeItemContainer : public ListItemContainer {
@@ -13,7 +13,7 @@ protected:
     void OnKeyDown(const KeyDownInfo& event_info) override;
 
 private:
-    friend class internal::TreeControlImplementation;
+    friend class internal::TreeCore;
 
     Observable<bool> ChangeExpandStateEvent() {
         return change_expand_state_event_.AsObservable();

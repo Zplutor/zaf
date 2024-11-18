@@ -9,11 +9,11 @@ namespace zaf::internal {
 PropertyGridItemManager::PropertyGridItemManager(
     const std::shared_ptr<PropertyGridDelegate>& delegate,
     const std::shared_ptr<SplitDistanceManager>& split_distance_manager,
-    const std::weak_ptr<zaf::internal::TreeControlImplementation>& tree_implementation)
+    const std::weak_ptr<zaf::internal::TreeCore>& tree_core)
     :
     delegate_(delegate),
     split_distance_manager_(split_distance_manager),
-    tree_implementation_(tree_implementation) {
+    tree_core_(tree_core) {
 
     ZAF_EXPECT(delegate_);
     ZAF_EXPECT(split_distance_manager_);
@@ -48,7 +48,7 @@ void PropertyGridItemManager::OnValueEditorGainedFocus(
         return;
     }
 
-    auto tree_implementation = tree_implementation_.lock();
+    auto tree_implementation = tree_core_.lock();
     if (!tree_implementation) {
         return;
     }
