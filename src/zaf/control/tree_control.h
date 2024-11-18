@@ -2,6 +2,7 @@
 
 #include <zaf/control/scroll_box.h>
 #include <zaf/control/list_selection_mode.h>
+#include <zaf/internal/no_self_ref_ptr.h>
 #include <zaf/rx/observable.h>
 
 namespace zaf {
@@ -24,8 +25,11 @@ public:
     TreeControl();
     ~TreeControl();
 
-    void SetDataSource(const std::weak_ptr<TreeDataSource>& data_source);
-    void SetDelegate(const std::weak_ptr<TreeControlDelegate>& delegate);
+    std::shared_ptr<TreeDataSource> DataSource() const noexcept;
+    void SetDataSource(std::shared_ptr<TreeDataSource> data_source);
+
+    std::shared_ptr<TreeControlDelegate> Delegate() const noexcept;
+    void SetDelegate(std::shared_ptr<TreeControlDelegate> delegate);
 
     bool AutoAdjustScrollBarSmallChange() const;
     void SetAutoAdjustScrollBarSmallChange(bool value);
@@ -76,8 +80,8 @@ private:
 
 private:
     std::shared_ptr<TreeItemContainer> item_container_;
-    std::weak_ptr<TreeDataSource> data_source_;
-    std::weak_ptr<TreeControlDelegate> delegate_;
+    internal::NoSelfRefPtr<TreeDataSource> data_source_;
+    internal::NoSelfRefPtr<TreeControlDelegate> delegate_;
     std::shared_ptr<internal::TreeCore> core_;
 
     Event<TreeControlSelectionChangeInfo> selection_changed_event_;

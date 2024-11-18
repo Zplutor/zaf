@@ -1,12 +1,19 @@
 #pragma once
 
+#include <zaf/base/non_copyable.h>
 #include <zaf/control/tree_item.h>
 #include <zaf/creation.h>
 
 namespace zaf {
 
-class TreeControlDelegate {
+class TreeControlDelegate : NonCopyableNonMovable {
 public:
+    static const std::shared_ptr<TreeControlDelegate>& Default();
+
+public:
+    TreeControlDelegate() = default;
+    virtual ~TreeControlDelegate() = default;
+
     virtual bool HasVariableItemHeight() {
         return false;
     }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/base/define.h>
+#include <zaf/base/non_copyable.h>
 #include <zaf/creation.h>
 #include <zaf/object/object.h>
 #include <zaf/rx/subject.h>
@@ -11,8 +12,17 @@ class TreeDataSourceDataAddInfo;
 class TreeDataSourceDataRemoveInfo;
 class TreeDataSourceDataUpdateInfo;
 
-class TreeDataSource {
+class TreeDataSource : NonCopyableNonMovable {
 public:
+    /**
+    Gets the empty TreeDataSource instance.
+    */
+    static const std::shared_ptr<TreeDataSource>& Empty();
+
+public:
+    TreeDataSource() = default;
+    virtual ~TreeDataSource() = default;
+
     virtual bool DoesDataHasChildren(const std::shared_ptr<Object>& data) {
         return false;
     }

@@ -27,9 +27,14 @@ void TreeControl::Initialize() {
     __super::Initialize();
 
     item_container_ = Create<TreeItemContainer>();
+    data_source_.Assign(TreeDataSource::Empty(), this);
+    delegate_.Assign(TreeControlDelegate::Default(), this);
 
     internal::TreeCore::InitializeParameters initialize_parameters;
     initialize_parameters.item_container = item_container_;
+    initialize_parameters.data_source = data_source_.ToSharedPtr();
+    initialize_parameters.delegate = delegate_.ToSharedPtr();
+
     initialize_parameters.data_source_change_event =
         std::bind(&TreeControl::OnDataSourceChanged, this, std::placeholders::_1);
     initialize_parameters.delegate_change_event =
@@ -88,17 +93,30 @@ void TreeControl::OnFocusLost(const FocusLostInfo& event_info) {
 }
 
 
-void TreeControl::SetDataSource(const std::weak_ptr<TreeDataSource>& data_source) {
 
-    data_source_ = data_source;
-    core_->SetDataSource(data_source_);
+std::shared_ptr<TreeDataSource> TreeControl::DataSource() const noexcept {
+    return data_source_.ToSharedPtr();
+}
+
+void TreeControl::SetDataSource(std::shared_ptr<TreeDataSource> data_source) {
+
+    ZAF_EXPECT(data_source);
+
+    data_source_.Assign(data_source, this);
+    core_->SetDataSource(std::move(data_source));
 }
 
 
-void TreeControl::SetDelegate(const std::weak_ptr<TreeControlDelegate>& delegate) {
+std::shared_ptr<TreeControlDelegate> TreeControl::Delegate() const noexcept {
+    return delegate_.ToSharedPtr();
+}
 
-    delegate_ = delegate;
-    core_->SetDelegate(delegate_);
+void TreeControl::SetDelegate(std::shared_ptr<TreeControlDelegate> delegate) {
+
+    ZAF_EXPECT(delegate);
+
+    delegate_.Assign(delegate, this);
+    core_->SetDelegate(std::move(delegate));
 }
 
 

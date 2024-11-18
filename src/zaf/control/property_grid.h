@@ -14,6 +14,7 @@ class SplitDistanceManager;
 namespace zaf {
 
 class PropertyGridDelegate;
+class TreeItemContainer;
 
 class PropertyGrid : public ScrollBox {
 public:
@@ -54,6 +55,7 @@ private:
     void ExpandChildNodes(const PropertyGridNode& node, const std::shared_ptr<Object>& node_data);
 
 private:
+    std::shared_ptr<TreeItemContainer> item_container_;
     std::shared_ptr<internal::SplitDistanceManager> split_distance_manager_;
     std::shared_ptr<Object> target_object_;
     internal::NoSelfRefPtr<PropertyGridDelegate> delegate_;

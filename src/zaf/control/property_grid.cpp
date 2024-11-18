@@ -25,6 +25,9 @@ void PropertyGrid::Initialize() {
     __super::Initialize();
 
     target_object_ = Create<Object>();
+
+    item_container_ = Create<TreeItemContainer>();
+
     delegate_.Assign(std::make_shared<PropertyGridDelegate>(), this);
 
     data_manager_ = std::make_shared<internal::PropertyGridDataManager>(delegate_.ToSharedPtr());
@@ -36,7 +39,7 @@ void PropertyGrid::Initialize() {
         tree_core_);
 
     internal::TreeCore::InitializeParameters initialize_parameters;
-    initialize_parameters.item_container = Create<TreeItemContainer>();
+    initialize_parameters.item_container = item_container_;
     initialize_parameters.data_source = data_manager_;
     initialize_parameters.delegate = item_manager_;
 

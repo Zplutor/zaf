@@ -212,6 +212,7 @@
     <ClCompile Include="src\zaf\control\track_bar.cpp" />
     <ClCompile Include="src\zaf\control\track_bar_thumb.cpp" />
     <ClCompile Include="src\zaf\control\tree_control.cpp" />
+    <ClCompile Include="src\zaf\control\tree_control_delegate.cpp" />
     <ClCompile Include="src\zaf\control\tree_data_source.cpp" />
     <ClCompile Include="src\zaf\control\tree_item.cpp" />
     <ClCompile Include="src\zaf\control\tree_item_container.cpp" />

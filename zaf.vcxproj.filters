@@ -1312,6 +1312,9 @@
     <ClCompile Include="src\zaf\internal\tree\utility.cpp">
       <Filter>zaf\internal\tree</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\tree_control_delegate.cpp">
+      <Filter>zaf\control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

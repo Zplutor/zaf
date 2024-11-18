@@ -28,7 +28,7 @@ public:
 
     class InitializeParameters {
     public:
-        std::shared_ptr<TreeItemContainer> item_container;
+        std::weak_ptr<TreeItemContainer> item_container;
         std::weak_ptr<TreeDataSource> data_source;
         std::weak_ptr<TreeControlDelegate> delegate;
         DataSourceChangeEvent data_source_change_event;
@@ -175,7 +175,7 @@ private:
     ItemExpandEvent item_expand_event_;
     ItemCollapseEvent item_collapse_event_;
 
-    SubscriptionSet item_container_subscriptions_;
+    SubscriptionSet item_container_subs_;
     SubscriptionSet data_source_subscriptions_;
     
     TreeIndexMapping tree_index_mapping_;

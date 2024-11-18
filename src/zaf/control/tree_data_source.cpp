@@ -23,6 +23,12 @@ void RaiseEvent(
 
 }
 
+const std::shared_ptr<TreeDataSource>& TreeDataSource::Empty() {
+    static auto empty = std::make_shared<TreeDataSource>();
+    return empty;
+}
+
+
 void TreeDataSource::NotifyDataAdd(
     const std::shared_ptr<Object>& parent_data,
     std::size_t index,

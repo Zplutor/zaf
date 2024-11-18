@@ -56,11 +56,14 @@ void TreeCore::Initialize(const InitializeParameters& parameters) {
     InstallDelegate(parameters.delegate);
     InitializeListImplementation(parameters);
 
-    item_container_subscriptions_ += parameters.item_container->ChangeExpandStateEvent().Subscribe(
-        std::bind(
-            &TreeCore::OnChangeExpandStateByArrowKeys, 
-            this, 
-            std::placeholders::_1));
+    if (auto item_container = parameters.item_container.lock()) {
+
+        item_container_subs_ += item_container->ChangeExpandStateEvent().Subscribe(
+            std::bind(
+                &TreeCore::OnChangeExpandStateByArrowKeys,
+                this,
+                std::placeholders::_1));
+    }
 
     data_source_change_event_ = parameters.data_source_change_event;
     delegate_change_event_ = parameters.delegate_change_event;
