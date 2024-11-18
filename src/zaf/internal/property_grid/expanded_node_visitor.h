@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stack>
-#include <zaf/control/internal/tree_control/tree_visitor.h>
+#include <zaf/internal/tree/tree_visitor.h>
 #include <zaf/control/property_grid_node.h>
 
 namespace zaf::internal {

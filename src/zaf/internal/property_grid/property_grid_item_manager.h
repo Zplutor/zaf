@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/control/event/focus_event_info.h>
-#include <zaf/control/internal/tree_control/tree_control_implementation.h>
+#include <zaf/internal/tree/tree_core.h>
 #include <zaf/control/property_grid_delegate.h>
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/internal/property_grid/split_distance_manager.h>

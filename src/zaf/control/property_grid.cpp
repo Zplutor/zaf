@@ -5,7 +5,7 @@
 #include <zaf/internal/property_grid/property_grid_item_manager.h>
 #include <zaf/internal/property_grid/expanded_node_visitor.h>
 #include <zaf/internal/property_grid/split_distance_manager.h>
-#include <zaf/control/internal/tree_control/tree_control_implementation.h>
+#include <zaf/internal/tree/tree_core.h>
 #include <zaf/control/tree_item_container.h>
 
 namespace zaf {

@@ -58,9 +58,6 @@
     <Filter Include="zaf\base\error">
       <UniqueIdentifier>{62ec9b22-b712-4e9f-a54b-d635e891774a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\control\internal\tree_control">
-      <UniqueIdentifier>{f09a58c2-d965-4161-89a0-d3c47a68607f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\object">
       <UniqueIdentifier>{02ef127b-fbe7-4c74-a9e3-545477c89135}</UniqueIdentifier>
     </Filter>
@@ -195,6 +192,9 @@
     </Filter>
     <Filter Include="zaf\internal\property_grid">
       <UniqueIdentifier>{3b4a5456-b5de-49eb-81e4-05fb9458b9ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\internal\tree">
+      <UniqueIdentifier>{4ce96496-7338-41f1-8047-1623ffc528eb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -376,9 +376,6 @@
     <ClCompile Include="src\zaf\control\tree_data_source.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\tree_control\tree_control_implementation.cpp">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\tree_item_expand_button.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
@@ -388,9 +385,6 @@
     <ClCompile Include="src\zaf\control\internal\cached_painting.cpp">
       <Filter>zaf\control\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\tree_control\utility.cpp">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\rx\subscription.cpp">
       <Filter>zaf\rx</Filter>
     </ClCompile>
@@ -399,12 +393,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\rx\subscription_set.cpp">
       <Filter>zaf\rx</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\tree_control\tree_data_manager.cpp">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\tree_control\tree_index_mapping.cpp">
-      <Filter>zaf\control\internal\tree_control</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\window\inspector\inspector_window.cpp">
       <Filter>zaf\window\inspector</Filter>
@@ -417,12 +405,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_control_item.cpp">
       <Filter>zaf\window\inspector\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\tree_control\tree_node_expander.cpp">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\tree_control\tree_node_children_adder.cpp">
-      <Filter>zaf\control\internal\tree_control</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\scroll_bar.cpp">
       <Filter>zaf\control</Filter>
@@ -1312,6 +1294,24 @@
     <ClCompile Include="src\zaf\internal\list\list_label.cpp">
       <Filter>zaf\internal\list</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\internal\tree\tree_core.cpp">
+      <Filter>zaf\internal\tree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\tree\tree_data_manager.cpp">
+      <Filter>zaf\internal\tree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\tree\tree_index_mapping.cpp">
+      <Filter>zaf\internal\tree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\tree\tree_node_children_adder.cpp">
+      <Filter>zaf\internal\tree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\tree\tree_node_expander.cpp">
+      <Filter>zaf\internal\tree</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\internal\tree\utility.cpp">
+      <Filter>zaf\internal\tree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1642,9 +1642,6 @@
     <ClInclude Include="src\zaf\control\tree_control_delegate.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\tree_control\tree_control_implementation.h">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\tree_item_expand_button.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
@@ -1659,9 +1656,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\container\utility\copy.h">
       <Filter>zaf\base\container\utility</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\tree_control\utility.h">
-      <Filter>zaf\control\internal\tree_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\observable.h">
       <Filter>zaf\rx</Filter>
@@ -1696,15 +1690,6 @@
     <ClInclude Include="src\zaf\object\equality.h">
       <Filter>zaf\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\tree_control\tree_data_helpers.h">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\tree_control\tree_data_manager.h">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\tree_control\tree_index_mapping.h">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\window\inspector\inspector_window.h">
       <Filter>zaf\window\inspector</Filter>
     </ClInclude>
@@ -1719,15 +1704,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\inspector\internal\inspector_port.h">
       <Filter>zaf\window\inspector\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\tree_control\tree_node.h">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\tree_control\tree_node_expander.h">
-      <Filter>zaf\control\internal\tree_control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\tree_control\tree_node_children_adder.h">
-      <Filter>zaf\control\internal\tree_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\scroll_bar_arrow.h">
       <Filter>zaf\control</Filter>
@@ -2010,9 +1986,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid_node.h">
       <Filter>zaf\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\tree_control\tree_visitor.h">
-      <Filter>zaf\control\internal\tree_control</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid\color_editor.h">
       <Filter>zaf\control\property_grid</Filter>
@@ -3039,6 +3012,33 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\list\list_label.h">
       <Filter>zaf\internal\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\tree\tree_core.h">
+      <Filter>zaf\internal\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\tree\tree_data_helpers.h">
+      <Filter>zaf\internal\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\tree\tree_data_manager.h">
+      <Filter>zaf\internal\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\tree\tree_index_mapping.h">
+      <Filter>zaf\internal\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\tree\tree_node.h">
+      <Filter>zaf\internal\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\tree\tree_node_children_adder.h">
+      <Filter>zaf\internal\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\tree\tree_node_expander.h">
+      <Filter>zaf\internal\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\tree\tree_visitor.h">
+      <Filter>zaf\internal\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\internal\tree\utility.h">
+      <Filter>zaf\internal\tree</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/range.h>
-#include <zaf/control/internal/tree_control/tree_index_mapping.h>
+#include <zaf/internal/tree/tree_index_mapping.h>
 
 using namespace zaf::internal;
 

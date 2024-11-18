@@ -1,6 +1,6 @@
 #include <zaf/control/tree_item.h>
 #include <zaf/control/button.h>
-#include <zaf/control/internal/tree_control/tree_control_implementation.h>
+#include <zaf/internal/tree/tree_core.h>
 #include <zaf/control/tree_item_expand_button.h>
 #include <zaf/creation.h>
 
