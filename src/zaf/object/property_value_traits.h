@@ -5,7 +5,7 @@
     Defines type utilities related to the property value boxing and unboxing mechanism.
 */
 
-#include <zaf/internal/object/optional_utility.h>
+#include <zaf/base/type_traits/optional.h>
 #include <zaf/object/boxing/boxing.h>
 #include <zaf/object/custom_property_value_traits.h>
 
@@ -101,11 +101,11 @@ struct PropertyValueTraits<T, std::enable_if_t<IsBoxedInstanceTypeV<T>>> {
 
 template<typename T>
 struct PropertyValueTraits<T, std::enable_if_t<
-    internal::IsOptionalV<std::decay_t<T>> && 
-    HasBoxingTraitsV<internal::GetOptionalValueTypeT<std::decay_t<T>>>>> {
+    IsOptionalV<std::decay_t<T>> && 
+    HasBoxingTraitsV<GetOptionalValueTypeT<std::decay_t<T>>>>> {
 
 private:
-    using OptionalValueType = internal::GetOptionalValueTypeT<std::decay_t<T>>;
+    using OptionalValueType = GetOptionalValueTypeT<std::decay_t<T>>;
 
 public:
     using ValueType = std::decay_t<T>;

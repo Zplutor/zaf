@@ -496,6 +496,7 @@
     <ClInclude Include="src\zaf\base\string\to_string.h" />
     <ClInclude Include="src\zaf\base\string\trim.h" />
     <ClInclude Include="src\zaf\base\timer.h" />
+    <ClInclude Include="src\zaf\base\type_traits\optional.h" />
     <ClInclude Include="src\zaf\clipboard\clipboard.h" />
     <ClInclude Include="src\zaf\clipboard\clipboard_data.h" />
     <ClInclude Include="src\zaf\clipboard\data_aspect.h" />
@@ -807,7 +808,6 @@
     <ClInclude Include="src\zaf\internal\object\enum_constant_registrar.h" />
     <ClInclude Include="src\zaf\internal\object\enum_parser.h" />
     <ClInclude Include="src\zaf\internal\object\enum_value_combiner.h" />
-    <ClInclude Include="src\zaf\internal\object\optional_utility.h" />
     <ClInclude Include="src\zaf\internal\object\property_helper.h" />
     <ClInclude Include="src\zaf\internal\object\shared_ptr_utility.h" />
     <ClInclude Include="src\zaf\internal\paint_utility.h" />

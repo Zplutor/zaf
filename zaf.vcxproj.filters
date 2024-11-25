@@ -196,6 +196,9 @@
     <Filter Include="zaf\internal\tree">
       <UniqueIdentifier>{4ce96496-7338-41f1-8047-1623ffc528eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\base\type_traits">
+      <UniqueIdentifier>{82e11c77-516c-45be-a15b-ee58859916d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -2659,9 +2662,6 @@
     <ClInclude Include="src\zaf\internal\object\enum_value_combiner.h">
       <Filter>zaf\internal\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\object\optional_utility.h">
-      <Filter>zaf\internal\object</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\style\if.h">
       <Filter>zaf\control\style</Filter>
     </ClInclude>
@@ -3042,6 +3042,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\internal\tree\utility.h">
       <Filter>zaf\internal\tree</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\type_traits\optional.h">
+      <Filter>zaf\base\type_traits</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

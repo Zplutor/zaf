@@ -3,20 +3,20 @@
 #include <optional>
 #include <type_traits>
 
-namespace zaf::internal {
+namespace zaf {
 
 template<typename T>
-struct IsOptional : std::false_type { };
+struct IsOptional : std::false_type {};
 
 template<typename E>
-struct IsOptional<std::optional<E>> : std::true_type { };
+struct IsOptional<std::optional<E>> : std::true_type {};
 
 template<typename T>
 constexpr bool IsOptionalV = IsOptional<T>::value;
 
 
 template<typename T>
-struct GetOptionalValueType{
+struct GetOptionalValueType {
     using type = void;
 };
 
