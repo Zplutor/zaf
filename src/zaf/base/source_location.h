@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string_view>
+
 namespace zaf {
 
 /**
@@ -43,13 +45,26 @@ public:
     Gets the file path of the source code.
 
     @return
-        A null-terminated string of the file path.
-
-    @post
-        The return value is not null.
+        The file path.
     */
-    const char* File() const noexcept {
+    std::string_view File() const noexcept {
         return file_;
+    }
+
+    /**
+    Gets the file name of the source code.
+
+    @return
+        The file name.
+    */
+    std::string_view FileName() const noexcept {
+
+        auto file_path = this->File();
+        auto last_delimiter_index = file_path.find_last_of("\\");
+        if (last_delimiter_index == std::string_view::npos) {
+            return file_path;
+        }
+        return file_path.substr(last_delimiter_index + 1);
     }
 
     /**
@@ -66,12 +81,9 @@ public:
     Gets the function name of the source code.
 
     @return
-        A null-terminated string of the function name.
-
-    @post
-        The return value is not null.
+        The function name.
     */
-    const char* Function() const noexcept {
+    std::string_view Function() const noexcept {
         return function_;
     }
 
