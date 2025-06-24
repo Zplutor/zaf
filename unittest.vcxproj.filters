@@ -638,6 +638,9 @@
     <ClCompile Include="unittest\case\control\track_bar_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\rx\single_test.cpp">
+      <Filter>case\rx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

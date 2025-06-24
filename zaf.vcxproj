@@ -941,6 +941,9 @@
     <ClInclude Include="src\zaf\rx\observer.h" />
     <ClInclude Include="src\zaf\rx\observer_functions.h" />
     <ClInclude Include="src\zaf\rx\scheduler.h" />
+    <ClInclude Include="src\zaf\rx\single.h" />
+    <ClInclude Include="src\zaf\rx\single_observer.h" />
+    <ClInclude Include="src\zaf\rx\single_subject.h" />
     <ClInclude Include="src\zaf\rx\subject.h" />
     <ClInclude Include="src\zaf\rx\subscription.h" />
     <ClInclude Include="src\zaf\rx\subscription_set.h" />

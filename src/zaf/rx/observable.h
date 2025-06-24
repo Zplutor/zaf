@@ -4,6 +4,7 @@
 #include <zaf/rx/internal/observable/inner_observable.h>
 #include <zaf/rx/observer.h>
 #include <zaf/rx/observer_functions.h>
+#include <zaf/rx/single.h>
 #include <zaf/rx/subscription.h>
 
 namespace zaf {
@@ -13,8 +14,13 @@ class Scheduler;
 template<typename T>
 class Observable {
 public:
-    explicit Observable(std::shared_ptr<internal::InnerObservable> inner) : 
+    explicit Observable(std::shared_ptr<internal::InnerObservable> inner) noexcept : 
         inner_(std::move(inner)) { }
+
+    //A single can be converted to an observable implicitly.
+    Observable(const rx::Single<T>& single) noexcept : inner_(single.Core()) {
+
+    }
 
     [[nodiscard]]
     Subscription Subscribe() {
@@ -49,8 +55,8 @@ public:
         return Subscription{ inner_->Subscribe(observer.Inner()) };
     }
 
-    Observable SubscribeOn(std::shared_ptr<Scheduler> scheculer) {
-        return Observable{ inner_->SubscribeOn(std::move(scheculer)) };
+    Observable SubscribeOn(std::shared_ptr<Scheduler> scheduler) {
+        return Observable{ inner_->SubscribeOn(std::move(scheduler)) };
     }
 
     Observable ObserveOn(std::shared_ptr<Scheduler> scheduler) {

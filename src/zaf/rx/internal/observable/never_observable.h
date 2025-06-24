@@ -1,3 +1,5 @@
+#pragma once
+
 #include <zaf/rx/internal/observable/inner_observable.h>
 
 namespace zaf::internal {
