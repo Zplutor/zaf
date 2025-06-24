@@ -1,6 +1,6 @@
 ﻿#include <zaf/rx/internal/subject/inner_subject_indirect.h>
-#include <zaf/rx/internal/subject/inner_replay_subject.h>
 #include <zaf/rx/internal/subject/inner_subject.h>
+#include <zaf/rx/internal/subject/replay_subject_core.h>
 
 namespace zaf::internal {
 
@@ -9,8 +9,8 @@ std::shared_ptr<InnerSubject> CreateInnerSubject() {
 }
 
 
-std::shared_ptr<InnerSubject> CreateInnerReplaySubject() {
-    return std::make_shared<InnerReplaySubject>();
+std::shared_ptr<InnerSubject> CreateReplaySubjectCore(std::optional<std::size_t> replay_size) {
+    return std::make_shared<zaf::rx::internal::ReplaySubjectCore>(replay_size);
 }
 
 

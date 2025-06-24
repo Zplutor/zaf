@@ -10,11 +10,4 @@ public:
     Subject() : internal::BaseSubject<T>(internal::CreateInnerSubject()) { }
 };
 
-
-template<typename T>
-class ReplaySubject : public internal::BaseSubject<T> {
-public:
-    ReplaySubject() : internal::BaseSubject<T>(internal::CreateInnerReplaySubject()) { }
-};
-
 }

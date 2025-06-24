@@ -1,19 +1,19 @@
 #include <mutex>
 #include <gtest/gtest.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/rx/creation.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/replay_subject.h>
 
-using namespace zaf;
-
-static_assert(!std::is_copy_assignable_v<zaf::ReplaySubject<int>>);
-static_assert(!std::is_copy_constructible_v<zaf::ReplaySubject<int>>);
-static_assert(std::is_move_assignable_v<zaf::ReplaySubject<int>>);
-static_assert(std::is_move_constructible_v<zaf::ReplaySubject<int>>);
+static_assert(!std::is_default_constructible_v<zaf::rx::ReplaySubject<int>>);
+static_assert(!std::is_copy_assignable_v<zaf::rx::ReplaySubject<int>>);
+static_assert(!std::is_copy_constructible_v<zaf::rx::ReplaySubject<int>>);
+static_assert(std::is_move_assignable_v<zaf::rx::ReplaySubject<int>>);
+static_assert(std::is_move_constructible_v<zaf::rx::ReplaySubject<int>>);
 
 
 TEST(RxReplaySubjectTest, Replay) {
 
-    zaf::ReplaySubject<int> subject;
+    auto subject = zaf::rx::ReplaySubject<int>::Create();
 
     auto observer = subject.AsObserver();
     observer.OnNext(8);
@@ -51,9 +51,47 @@ TEST(RxReplaySubjectTest, Replay) {
 }
 
 
+TEST(RxReplaySubjectTest, ReplayWithSize) {
+
+    //Zero size.
+    {
+        auto subject = zaf::rx::ReplaySubject<int>::Create(0);
+        auto observer = subject.AsObserver();
+        observer.OnNext(1);
+        observer.OnNext(2);
+        observer.OnNext(3);
+        std::vector<int> sequence;
+        auto subscription = subject.AsObservable().Subscribe([&sequence](int value) {
+            sequence.push_back(value);
+        });
+        std::vector<int> expected{};
+        ASSERT_EQ(sequence, expected);
+    }
+
+    //None zero size.
+    {
+        auto subject = zaf::rx::ReplaySubject<int>::Create(3);
+        auto observer = subject.AsObserver();
+        observer.OnNext(1);
+        observer.OnNext(2);
+        observer.OnNext(3);
+        observer.OnNext(4);
+        observer.OnNext(5);
+
+        std::vector<int> sequence;
+        auto subscription = subject.AsObservable().Subscribe([&sequence](int value) {
+            sequence.push_back(value);
+        });
+
+        std::vector<int> expected{ 3, 4, 5 };
+        ASSERT_EQ(sequence, expected);
+    }
+}
+
+
 TEST(RxReplaySubjectTest, ReplayError) {
 
-    zaf::ReplaySubject<int> subject;
+    auto subject = zaf::rx::ReplaySubject<int>::Create();
 
     auto observer = subject.AsObserver();
     observer.OnNext(8);
@@ -80,11 +118,75 @@ TEST(RxReplaySubjectTest, ReplayError) {
 }
 
 
+TEST(RxReplaySubjectTest, EmitAfterTermination) {
+
+    //Emit after normal termination.
+    {
+        auto subject = zaf::rx::ReplaySubject<int>::Create();
+        auto observer = subject.AsObserver();
+        observer.OnNext(1);
+        observer.OnNext(2);
+        observer.OnCompleted();
+        //The following emissions will be ignored.
+        observer.OnNext(3);
+        observer.OnError(zaf::InvalidOperationError{});
+        observer.OnCompleted();
+
+        std::vector<int> sequence;
+        int on_error_count{};
+        int on_completed_count{};
+        auto subscription = subject.AsObservable().Subscribe([&sequence](int value) {
+            sequence.push_back(value);
+        },
+        [&on_error_count](const std::exception_ptr& error) {
+            on_error_count++;
+        },
+        [&on_completed_count]() {
+            on_completed_count++;
+        });
+        std::vector<int> expected{ 1, 2 };
+        ASSERT_EQ(sequence, expected);
+        ASSERT_EQ(on_error_count, 0);
+        ASSERT_EQ(on_completed_count, 1);
+    }
+
+    //Emit after error termination.
+    {
+        auto subject = zaf::rx::ReplaySubject<int>::Create();
+        auto observer = subject.AsObserver();
+        observer.OnNext(1);
+        observer.OnNext(2);
+        observer.OnError(zaf::InvalidOperationError{});
+        //The following emissions will be ignored.
+        observer.OnNext(3);
+        observer.OnError(zaf::InvalidOperationError{});
+        observer.OnCompleted();
+
+        std::vector<int> sequence;
+        int on_error_count{};
+        int on_completed_count{};
+        auto subscription = subject.AsObservable().Subscribe([&sequence](int value) {
+            sequence.push_back(value);
+        },
+        [&on_error_count](const std::exception_ptr& error) {
+            on_error_count++;
+        },
+        [&on_completed_count]() {
+            on_completed_count++;
+        });
+        std::vector<int> expected{ 1, 2 };
+        ASSERT_EQ(sequence, expected);
+        ASSERT_EQ(on_error_count, 1);
+        ASSERT_EQ(on_completed_count, 0);
+    }
+}
+
+
 //The subject is destroyed during the emission. Make sure it is handled properly.
 TEST(RxReplaySubjectTest, DestroySubjectDuringEmission) {
 
-    std::optional<ReplaySubject<int>> subject;
-    subject.emplace();
+    std::optional<zaf::rx::ReplaySubject<int>> subject;
+    subject.emplace(zaf::rx::ReplaySubject<int>::Create());
 
     subject->AsObserver().OnNext(0);
     subject->AsObserver().OnNext(1);
@@ -95,7 +197,7 @@ TEST(RxReplaySubjectTest, DestroySubjectDuringEmission) {
     auto sub = observable.Subscribe([&](int value) {
         if (value == 1) {
             subject.reset();
-            observable = rx::Empty<int>();
+            observable = zaf::rx::Empty<int>();
         }
     });
 }

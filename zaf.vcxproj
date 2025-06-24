@@ -375,7 +375,7 @@
     <ClCompile Include="src\zaf\rx\internal\operator\subscribe_on_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\producer.cpp" />
     <ClCompile Include="src\zaf\rx\internal\rx_runtime.cpp" />
-    <ClCompile Include="src\zaf\rx\internal\subject\inner_replay_subject.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\subject\replay_subject_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subject\inner_subject.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subject\inner_subject_indirect.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription_set.cpp" />
@@ -927,7 +927,7 @@
     <ClInclude Include="src\zaf\rx\internal\rx_runtime.h" />
     <ClInclude Include="src\zaf\rx\internal\scheduler\single_thread_scheduler.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\base_subject.h" />
-    <ClInclude Include="src\zaf\rx\internal\subject\inner_replay_subject.h" />
+    <ClInclude Include="src\zaf\rx\internal\subject\replay_subject_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\inner_subject.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\inner_subject_indirect.h" />
     <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_set.h" />
@@ -940,6 +940,7 @@
     <ClInclude Include="src\zaf\rx\observable.h" />
     <ClInclude Include="src\zaf\rx\observer.h" />
     <ClInclude Include="src\zaf\rx\observer_functions.h" />
+    <ClInclude Include="src\zaf\rx\replay_subject.h" />
     <ClInclude Include="src\zaf\rx\scheduler.h" />
     <ClInclude Include="src\zaf\rx\single.h" />
     <ClInclude Include="src\zaf\rx\single_observer.h" />

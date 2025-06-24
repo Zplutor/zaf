@@ -1,6 +1,7 @@
 #include <optional>
 #include <gtest/gtest.h>
 #include <zaf/rx/creation.h>
+#include <zaf/rx/replay_subject.h>
 #include <zaf/rx/subject.h>
 
 namespace {
@@ -30,7 +31,7 @@ TEST(RxCatchTest, Catch) {
         zaf::Subject<int> subject;
         test_data.sub = subject.AsObservable().Catch([](const std::exception_ptr& error) {
 
-            zaf::ReplaySubject<int> new_subject;
+            auto new_subject = zaf::rx::ReplaySubject<int>::Create();
 
             try {
                 std::rethrow_exception(error);

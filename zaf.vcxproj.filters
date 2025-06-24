@@ -844,7 +844,7 @@
     <ClCompile Include="src\zaf\crypto\sha.cpp">
       <Filter>zaf\crypto</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\subject\inner_replay_subject.cpp">
+    <ClCompile Include="src\zaf\rx\internal\subject\replay_subject_core.cpp">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\operator\do_operator.cpp">
@@ -2296,7 +2296,7 @@
     <ClInclude Include="src\zaf\rx\internal\subject\base_subject.h">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\subject\inner_replay_subject.h">
+    <ClInclude Include="src\zaf\rx\internal\subject\replay_subject_core.h">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\operator\do_operator.h">
@@ -3053,6 +3053,9 @@
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\single_observer.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\replay_subject.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
   </ItemGroup>
