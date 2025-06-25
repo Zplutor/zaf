@@ -46,7 +46,7 @@ public:
 
     [[nodiscard]]
     Subscription Subscribe(const Observer<T>& observer) {
-        return Subscription{ core_->Subscribe(observer.Inner()) };
+        return Subscription{ core_->Subscribe(observer.Core()) };
     }
 
     Observable SubscribeOn(std::shared_ptr<Scheduler> scheduler) {
@@ -77,7 +77,7 @@ public:
     }
 
     Observable Do(const Observer<T>& observer) {
-        return Observable{ core_->Do(observer.Inner()) };
+        return Observable{ core_->Do(observer.Core()) };
     }
 
     Observable DoOnError(OnError on_error) {

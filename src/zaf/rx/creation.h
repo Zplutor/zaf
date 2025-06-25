@@ -73,7 +73,7 @@ template<typename T>
 Observable<T> Create(std::function<Subscription(Observer<T>)> procedure) {
 
     auto bridged_procedure = [procedure{ std::move(procedure) }](
-        const std::shared_ptr<zaf::internal::InnerObserver>& observer) {
+        const std::shared_ptr<zaf::internal::ObserverCore>& observer) {
     
         auto subscription = procedure(Observer<T>{ observer });
         return subscription.Inner();
@@ -92,7 +92,7 @@ Observable<T> Create(
     std::function<void(Observer<T>)> procedure) {
 
     auto bridged_procedure = [procedure = std::move(procedure)](
-        const std::shared_ptr<zaf::internal::InnerObserver>& observer,
+        const std::shared_ptr<zaf::internal::ObserverCore>& observer,
         CancelToken cancel_token) {
 
         procedure(Observer<T>{ observer });
@@ -112,7 +112,7 @@ Observable<T> Create(
     std::function<void(Observer<T>, CancelToken)> procedure) {
 
     auto bridged_procedure = [procedure = std::move(procedure)](
-        const std::shared_ptr<zaf::internal::InnerObserver>& observer,
+        const std::shared_ptr<zaf::internal::ObserverCore>& observer,
         CancelToken cancel_token) {
 
         procedure(Observer<T>{ observer }, cancel_token);

@@ -3,7 +3,7 @@
 
 namespace zaf::internal {
 
-Producer::Producer(std::shared_ptr<InnerObserver> observer) :
+Producer::Producer(std::shared_ptr<ObserverCore> observer) :
     observer_(std::move(observer)) {
 
 }

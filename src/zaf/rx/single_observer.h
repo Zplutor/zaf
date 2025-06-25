@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/rx/internal/inner_observer.h>
+#include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/observer_functions.h>
 
 namespace zaf::rx {
@@ -24,7 +24,7 @@ public:
         };
 
         return SingleObserver{ 
-            internal::InnerObserver::Create(
+            internal::ObserverCore::Create(
                 std::move(on_success_bridge), 
                 std::move(on_error), 
                 nullptr)
@@ -32,7 +32,7 @@ public:
     }
 
 public:
-    explicit SingleObserver(std::shared_ptr<internal::InnerObserver> core) :
+    explicit SingleObserver(std::shared_ptr<internal::ObserverCore> core) :
         core_(std::move(core)) {
     }
 
@@ -50,12 +50,12 @@ public:
         core_->OnError(std::make_exception_ptr(std::forward<E>(error)));
     }
 
-    const std::shared_ptr<internal::InnerObserver>& Core() const noexcept {
+    const std::shared_ptr<internal::ObserverCore>& Core() const noexcept {
         return core_;
     }
 
 private:
-    std::shared_ptr<internal::InnerObserver> core_;
+    std::shared_ptr<internal::ObserverCore> core_;
 };
 
 }

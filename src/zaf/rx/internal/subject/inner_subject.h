@@ -2,17 +2,17 @@
 
 #include <mutex>
 #include <zaf/rx/internal/observable/observable_core.h>
-#include <zaf/rx/internal/inner_observer.h>
+#include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::internal {
 
-class InnerSubject : public ObservableCore, public InnerObserver {
+class InnerSubject : public ObservableCore, public ObserverCore {
 public:
     ~InnerSubject();
 
     std::shared_ptr<InnerSubscription> Subscribe(
-        const std::shared_ptr<InnerObserver>& observer) override;
+        const std::shared_ptr<ObserverCore>& observer) override;
 
     void OnNext(const std::any& value) override;
     void OnError(const std::exception_ptr& error) override;

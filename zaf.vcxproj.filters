@@ -430,7 +430,7 @@
     <ClCompile Include="src\zaf\rx\scheduler.cpp">
       <Filter>zaf\rx</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\inner_observer.cpp">
+    <ClCompile Include="src\zaf\rx\internal\observer_core.cpp">
       <Filter>zaf\rx\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription_set.cpp">
@@ -1741,7 +1741,7 @@
     <ClInclude Include="src\zaf\rx\work.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\inner_observer.h">
+    <ClInclude Include="src\zaf\rx\internal\observer_core.h">
       <Filter>zaf\rx\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_set.h">

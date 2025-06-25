@@ -12,7 +12,7 @@ public:
     explicit ReplaySubjectCore(std::optional<std::size_t> replay_size) noexcept;
 
     std::shared_ptr<zaf::internal::InnerSubscription> Subscribe(
-        const std::shared_ptr<InnerObserver>& observer) override;
+        const std::shared_ptr<ObserverCore>& observer) override;
 
     void OnNext(const std::any& value) override;
     void OnError(const std::exception_ptr& error) override;

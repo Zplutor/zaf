@@ -1,17 +1,17 @@
 #include <zaf/rx/internal/observable/concat_observable.h>
 #include <zaf/base/as.h>
-#include <zaf/rx/internal/inner_observer.h>
+#include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
 
 namespace zaf::internal {
 namespace {
 
-class ConcatProducer : public Producer, public InnerObserver {
+class ConcatProducer : public Producer, public ObserverCore {
 public:
     ConcatProducer(
         std::shared_ptr<ConcatObservable> concat_observable,
-        std::shared_ptr<InnerObserver> observer)
+        std::shared_ptr<ObserverCore> observer)
         :
         Producer(std::move(observer)),
         concat_observable_(std::move(concat_observable)) {
@@ -68,7 +68,7 @@ private:
         std::size_t current_call_index = *current_index_;
 
         const auto& observable = observables[*current_index_];
-        auto sub = observable->Subscribe(As<InnerObserver>(shared_from_this()));
+        auto sub = observable->Subscribe(As<ObserverCore>(shared_from_this()));
 
         //Don't override the subscription of re-entrant calls.
         if (current_call_index == *current_index_) {
@@ -92,7 +92,7 @@ ConcatObservable::ConcatObservable(ObservableList observables) :
 
 
 std::shared_ptr<InnerSubscription> ConcatObservable::Subscribe(
-    const std::shared_ptr<InnerObserver>& observer) {
+    const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<ConcatProducer>(
         As<ConcatObservable>(shared_from_this()),

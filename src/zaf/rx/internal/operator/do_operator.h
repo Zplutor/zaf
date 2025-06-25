@@ -8,14 +8,14 @@ class DoOperator : public ObservableCore {
 public:
     DoOperator(
         std::shared_ptr<ObservableCore> source,
-        std::shared_ptr<InnerObserver> do_observer);
+        std::shared_ptr<ObserverCore> do_observer);
 
     std::shared_ptr<InnerSubscription> Subscribe(
-        const std::shared_ptr<InnerObserver>& observer) override;
+        const std::shared_ptr<ObserverCore>& observer) override;
 
 private:
     std::shared_ptr<ObservableCore> source_;
-    std::shared_ptr<InnerObserver> do_observer_;
+    std::shared_ptr<ObserverCore> do_observer_;
 };
 
 }

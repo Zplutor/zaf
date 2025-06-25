@@ -6,16 +6,16 @@
 namespace zaf::internal {
 namespace {
 
-class MapProducer : public Producer, public InnerObserver {
+class MapProducer : public Producer, public ObserverCore {
 public:
-    MapProducer(std::shared_ptr<InnerObserver> next_observer, Mapper mapper) : 
+    MapProducer(std::shared_ptr<ObserverCore> next_observer, Mapper mapper) : 
         Producer(std::move(next_observer)),
         mapper_(std::move(mapper)) {
 
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
-        source_subscription_ = source->Subscribe(As<InnerObserver>(shared_from_this()));
+        source_subscription_ = source->Subscribe(As<ObserverCore>(shared_from_this()));
     }
 
     void OnNext(const std::any& value) override {
@@ -74,7 +74,7 @@ MapOperator::MapOperator(std::shared_ptr<ObservableCore> source, Mapper mapper) 
 
 
 std::shared_ptr<InnerSubscription> MapOperator::Subscribe(
-    const std::shared_ptr<InnerObserver>& observer) {
+    const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<MapProducer>(observer, mapper_);
     producer->Run(source_);

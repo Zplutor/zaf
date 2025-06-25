@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/observable/customized_observable.h>
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/error/error.h>
-#include <zaf/rx/internal/inner_observer.h>
+#include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
 
 namespace zaf::internal {
@@ -13,7 +13,7 @@ CustomizedObservable::CustomizedObservable(Procedure procedure) : procedure_(std
 
 
 std::shared_ptr<InnerSubscription> CustomizedObservable::Subscribe(
-    const std::shared_ptr<InnerObserver>& observer) {
+    const std::shared_ptr<ObserverCore>& observer) {
 
     try {
         return procedure_(observer);

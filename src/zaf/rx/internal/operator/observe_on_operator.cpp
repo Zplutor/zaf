@@ -1,16 +1,16 @@
 #include <zaf/rx/internal/operator/observe_on_operator.h>
 #include <zaf/base/as.h>
-#include <zaf/rx/internal/inner_observer.h>
+#include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::internal {
 namespace {
 
-class ObserveOnProducer : public Producer, public InnerObserver {
+class ObserveOnProducer : public Producer, public ObserverCore {
 public:
     ObserveOnProducer(
-        std::shared_ptr<InnerObserver> next_observer,
+        std::shared_ptr<ObserverCore> next_observer,
         std::shared_ptr<Scheduler> scheduler) 
         :
         Producer(std::move(next_observer)),
@@ -91,7 +91,7 @@ ObserveOnOperator::ObserveOnOperator(
 
 
 std::shared_ptr<InnerSubscription> ObserveOnOperator::Subscribe(
-    const std::shared_ptr<InnerObserver>& observer) {
+    const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<ObserveOnProducer>(observer, scheduler_);
     producer->Run(source_);

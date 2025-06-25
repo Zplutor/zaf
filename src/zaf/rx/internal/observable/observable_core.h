@@ -13,7 +13,7 @@ class Scheduler;
 
 namespace internal {
 
-class InnerObserver;
+class ObserverCore;
 class InnerSubscription;
 
 class ObservableCore : public std::enable_shared_from_this<ObservableCore> {
@@ -25,12 +25,12 @@ public:
     ObservableCore& operator=(const ObservableCore&) = delete;
 
     virtual std::shared_ptr<InnerSubscription> Subscribe(
-        const std::shared_ptr<InnerObserver>& observer) = 0;
+        const std::shared_ptr<ObserverCore>& observer) = 0;
 
     std::shared_ptr<ObservableCore> SubscribeOn(std::shared_ptr<Scheduler> scheduler);
     std::shared_ptr<ObservableCore> ObserveOn(std::shared_ptr<Scheduler> scheduler);
 
-    std::shared_ptr<ObservableCore> Do(std::shared_ptr<InnerObserver> do_observer);
+    std::shared_ptr<ObservableCore> Do(std::shared_ptr<ObserverCore> do_observer);
     std::shared_ptr<ObservableCore> DoOnTerminated(Work work);
     std::shared_ptr<ObservableCore> Catch(CatchHandler handler);
     std::shared_ptr<ObservableCore> Finally(Work work);

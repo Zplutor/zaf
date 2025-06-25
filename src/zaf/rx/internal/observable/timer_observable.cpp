@@ -14,7 +14,7 @@ public:
         std::chrono::steady_clock::duration delay,
         std::optional<std::chrono::steady_clock::duration> interval,
         std::shared_ptr<Scheduler> scheduler,
-        std::shared_ptr<InnerObserver> observer)
+        std::shared_ptr<ObserverCore> observer)
         :
         Producer(std::move(observer)),
         delay_(std::move(delay)),
@@ -114,7 +114,7 @@ TimerObservable::TimerObservable(
 
 
 std::shared_ptr<InnerSubscription> TimerObservable::Subscribe(
-    const std::shared_ptr<InnerObserver>& observer) {
+    const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<TimerProducer>(
         delay_,

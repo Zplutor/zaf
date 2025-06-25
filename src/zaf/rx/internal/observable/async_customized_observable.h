@@ -8,7 +8,7 @@ namespace zaf::internal {
 class AsyncCustomizedObservable : public ObservableCore {
 public:
     using AsyncProcedure = std::function<
-        void(const std::shared_ptr<InnerObserver>&, CancelToken cancel_token)
+        void(const std::shared_ptr<ObserverCore>&, CancelToken cancel_token)
     >;
 
 public:
@@ -17,7 +17,7 @@ public:
         AsyncProcedure procedure);
 
     std::shared_ptr<InnerSubscription> Subscribe(
-        const std::shared_ptr<InnerObserver>& observer) override;
+        const std::shared_ptr<ObserverCore>& observer) override;
 
 private:
     std::shared_ptr<Scheduler> scheduler_;

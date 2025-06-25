@@ -6,10 +6,10 @@
 namespace zaf::internal {
 namespace {
 
-class CatchProducer : public Producer, public InnerObserver {
+class CatchProducer : public Producer, public ObserverCore {
 public:
     CatchProducer(
-        std::shared_ptr<InnerObserver> next_observer,
+        std::shared_ptr<ObserverCore> next_observer,
         CatchHandler handler)
         :
         Producer(std::move(next_observer)),
@@ -18,7 +18,7 @@ public:
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
-        source_subscription_ = source->Subscribe(As<InnerObserver>(shared_from_this()));
+        source_subscription_ = source->Subscribe(As<ObserverCore>(shared_from_this()));
     }
 
     void OnNext(const std::any& value) override {
@@ -65,7 +65,7 @@ private:
         //We use a weak pointer to check if the current producer has been freed to avoid this 
         //issue.
         auto weak_this = weak_from_this();
-        auto new_subscription = observable->Subscribe(InnerObserver::Create(
+        auto new_subscription = observable->Subscribe(ObserverCore::Create(
             [this](const std::any& value) {
                 EmitOnNext(value);
             },
@@ -107,7 +107,7 @@ CatchOperator::CatchOperator(std::shared_ptr<ObservableCore> source, CatchHandle
 
 
 std::shared_ptr<InnerSubscription> CatchOperator::Subscribe(
-    const std::shared_ptr<InnerObserver>& observer) {
+    const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<CatchProducer>(observer, handler_);
     producer->Run(source_);

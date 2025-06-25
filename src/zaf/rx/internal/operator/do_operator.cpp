@@ -1,17 +1,17 @@
 #include <zaf/rx/internal/operator/do_operator.h>
 #include <zaf/base/as.h>
-#include <zaf/rx/internal/inner_observer.h>
+#include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::internal {
 namespace {
 
-class DoProducer : public Producer, public InnerObserver {
+class DoProducer : public Producer, public ObserverCore {
 public:
     DoProducer(
-        std::shared_ptr<InnerObserver> next_observer,
-        std::shared_ptr<InnerObserver> do_observer)
+        std::shared_ptr<ObserverCore> next_observer,
+        std::shared_ptr<ObserverCore> do_observer)
         :
         Producer(std::move(next_observer)),
         do_observer_(std::move(do_observer)) {
@@ -19,7 +19,7 @@ public:
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
-        source_subscription_ = source->Subscribe(As<InnerObserver>(shared_from_this()));
+        source_subscription_ = source->Subscribe(As<ObserverCore>(shared_from_this()));
     }
 
     void OnNext(const std::any& value) override {
@@ -45,14 +45,14 @@ public:
 
 private:
     std::shared_ptr<InnerSubscription> source_subscription_;
-    std::shared_ptr<InnerObserver> do_observer_;
+    std::shared_ptr<ObserverCore> do_observer_;
 };
 
 }
 
 DoOperator::DoOperator(
     std::shared_ptr<ObservableCore> source,
-    std::shared_ptr<InnerObserver> do_observer)
+    std::shared_ptr<ObserverCore> do_observer)
     :
     source_(std::move(source)),
     do_observer_(std::move(do_observer)) {
@@ -61,7 +61,7 @@ DoOperator::DoOperator(
 
 
 std::shared_ptr<InnerSubscription> DoOperator::Subscribe(
-    const std::shared_ptr<InnerObserver>& observer) {
+    const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<DoProducer>(observer, do_observer_);
     producer->Run(source_);

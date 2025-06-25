@@ -24,7 +24,7 @@ std::shared_ptr<ObservableCore> ObservableCore::ObserveOn(std::shared_ptr<Schedu
 
 
 std::shared_ptr<ObservableCore> ObservableCore::Do(
-    std::shared_ptr<InnerObserver> do_observer) {
+    std::shared_ptr<ObserverCore> do_observer) {
 
     return std::make_shared<DoOperator>(shared_from_this(), std::move(do_observer));
 }

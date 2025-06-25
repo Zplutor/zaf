@@ -10,7 +10,7 @@ headers.
 namespace zaf::internal {
 
 class ObservableCore;
-class InnerObserver;
+class ObserverCore;
 class InnerSubject;
 
 std::shared_ptr<InnerSubject> CreateInnerSubject();
@@ -19,7 +19,7 @@ std::shared_ptr<InnerSubject> CreateReplaySubjectCore(std::optional<std::size_t>
 std::shared_ptr<ObservableCore> GetObservableFromInnerSubject(
     const std::shared_ptr<InnerSubject>& inner);
 
-std::shared_ptr<InnerObserver> GetObserverFromInnerSubject(
+std::shared_ptr<ObserverCore> GetObserverFromInnerSubject(
     const std::shared_ptr<InnerSubject>& inner);
 
 }

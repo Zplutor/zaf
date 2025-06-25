@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <zaf/rx/internal/inner_observer.h>
+#include <zaf/rx/internal/observer_core.h>
 
 namespace zaf {
 
@@ -32,22 +32,22 @@ public:
             }
         };
 
-        return Observer(internal::InnerObserver::Create(
+        return Observer(internal::ObserverCore::Create(
             std::move(bridged_on_next), 
             std::move(on_error), 
             std::move(on_completed)));
     }
 
 public:
-    explicit Observer(std::shared_ptr<internal::InnerObserver> inner) : 
-        inner_(std::move(inner)) { }
+    explicit Observer(std::shared_ptr<internal::ObserverCore> core) noexcept :
+        core_(std::move(core)) { }
 
     void OnNext(const T& value) const {
-        inner_->OnNext(value);
+        core_->OnNext(value);
     }
 
     void OnError(const std::exception_ptr& error) const {
-        inner_->OnError(error);
+        core_->OnError(error);
     }
 
     template<typename E>
@@ -56,15 +56,15 @@ public:
     }
 
     void OnCompleted() const {
-        inner_->OnCompleted();
+        core_->OnCompleted();
     }
 
-    const std::shared_ptr<internal::InnerObserver>& Inner() const {
-        return inner_;
+    const std::shared_ptr<internal::ObserverCore>& Core() const noexcept {
+        return core_;
     }
 
 private:
-    std::shared_ptr<internal::InnerObserver> inner_;
+    std::shared_ptr<internal::ObserverCore> core_;
 };
 
 }

@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/base/container/utility/contain.h>
 #include <zaf/base/container/utility/map.h>
-#include <zaf/rx/internal/inner_observer.h>
+#include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/operator/flat_map_operator.h>
 #include <zaf/rx/internal/producer.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
@@ -10,10 +10,10 @@
 namespace zaf::internal {
 namespace {
 
-class FlatMapProducer : public Producer, public InnerObserver {
+class FlatMapProducer : public Producer, public ObserverCore {
 public:
     FlatMapProducer(
-        std::shared_ptr<InnerObserver> next_observer,
+        std::shared_ptr<ObserverCore> next_observer,
         FlatMapper mapper)
         :
         Producer(std::move(next_observer)),
@@ -22,7 +22,7 @@ public:
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
-        source_subscription_ = source->Subscribe(As<InnerObserver>(shared_from_this()));
+        source_subscription_ = source->Subscribe(As<ObserverCore>(shared_from_this()));
     }
 
     void OnNext(const std::any& value) override {
@@ -38,7 +38,7 @@ public:
         }
 
         auto sub_id = ++mapper_subs_count_;
-        auto mapper_sub = mapped_observable->Subscribe(InnerObserver::Create(
+        auto mapper_sub = mapped_observable->Subscribe(ObserverCore::Create(
             [this](const std::any& value) {
                 if (!IsTerminated()) {
                     EmitOnNext(value);
@@ -132,7 +132,7 @@ FlatMapOperator::FlatMapOperator(std::shared_ptr<ObservableCore> source, FlatMap
 
 
 std::shared_ptr<InnerSubscription> FlatMapOperator::Subscribe(
-    const std::shared_ptr<InnerObserver>& observer) {
+    const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<FlatMapProducer>(observer, mapper_);
     producer->Run(source_);

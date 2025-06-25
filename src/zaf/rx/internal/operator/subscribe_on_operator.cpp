@@ -7,12 +7,12 @@
 namespace zaf::internal {
 namespace {
 
-class SubscribeOnProducer : public Producer, public InnerObserver {
+class SubscribeOnProducer : public Producer, public ObserverCore {
 public:
     SubscribeOnProducer(
         std::shared_ptr<ObservableCore> source,
         std::shared_ptr<Scheduler> scheduler,
-        std::shared_ptr<InnerObserver> observer) 
+        std::shared_ptr<ObserverCore> observer) 
         :
         Producer(std::move(observer)),
         source_(std::move(source)),
@@ -94,7 +94,7 @@ SubscribeOnOperator::SubscribeOnOperator(
 
 
 std::shared_ptr<InnerSubscription> SubscribeOnOperator::Subscribe(
-    const std::shared_ptr<InnerObserver>& observer) {
+    const std::shared_ptr<ObserverCore>& observer) {
 
     ZAF_EXPECT(observer);
 

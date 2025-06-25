@@ -7,16 +7,16 @@
 
 namespace zaf::internal {
 
-class InnerObserver : NonCopyableNonMovable {
+class ObserverCore : NonCopyableNonMovable {
 public:
-    static std::shared_ptr<InnerObserver> Create(
+    static std::shared_ptr<ObserverCore> Create(
         zaf::OnNext<std::any> on_next,
         zaf::OnError on_error,
         zaf::OnCompleted on_completed);
 
 public:
-    InnerObserver() = default;
-    virtual ~InnerObserver() = default;
+    ObserverCore() = default;
+    virtual ~ObserverCore() = default;
 
     virtual void OnNext(const std::any& value) = 0;
     virtual void OnError(const std::exception_ptr& error) = 0;

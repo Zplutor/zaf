@@ -9,7 +9,7 @@ namespace {
 class SubjectProducer : public Producer {
 public:
     SubjectProducer(
-        std::shared_ptr<InnerObserver> observer,
+        std::shared_ptr<ObserverCore> observer,
         std::weak_ptr<InnerSubject> subject) 
         : 
         Producer(std::move(observer)),
@@ -38,7 +38,7 @@ InnerSubject::~InnerSubject() {
 
 
 std::shared_ptr<InnerSubscription> InnerSubject::Subscribe(
-    const std::shared_ptr<InnerObserver>& observer) {
+    const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<SubjectProducer>(
         observer,

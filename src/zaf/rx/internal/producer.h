@@ -5,7 +5,7 @@
 #include <map>
 #include <mutex>
 #include <zaf/base/non_copyable.h>
-#include <zaf/rx/internal/inner_observer.h>
+#include <zaf/rx/internal/observer_core.h>
 
 namespace zaf::internal {
 
@@ -23,7 +23,7 @@ A producer is responsible for emitting data sequence.
 */
 class Producer : public std::enable_shared_from_this<Producer>, NonCopyableNonMovable {
 public:
-    explicit Producer(std::shared_ptr<InnerObserver> observer);
+    explicit Producer(std::shared_ptr<ObserverCore> observer);
     virtual ~Producer() = default;
 
     /**
@@ -87,7 +87,7 @@ private:
     void NotifyDispose();
 
 private:
-    std::shared_ptr<InnerObserver> observer_;
+    std::shared_ptr<ObserverCore> observer_;
 
     std::atomic<bool> is_terminated_{};
     TerminateNotification terminate_notification_;

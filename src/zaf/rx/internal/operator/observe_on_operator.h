@@ -12,7 +12,7 @@ public:
         std::shared_ptr<Scheduler> scheduler);
 
     std::shared_ptr<InnerSubscription> Subscribe(
-        const std::shared_ptr<InnerObserver>& observer) override;
+        const std::shared_ptr<ObserverCore>& observer) override;
 
 private:
     std::shared_ptr<ObservableCore> source_;

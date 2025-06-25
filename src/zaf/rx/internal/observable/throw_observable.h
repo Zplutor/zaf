@@ -10,7 +10,7 @@ public:
     explicit ThrowObservable(std::exception_ptr error);
 
     std::shared_ptr<InnerSubscription> Subscribe(
-        const std::shared_ptr<InnerObserver>& observer) override;
+        const std::shared_ptr<ObserverCore>& observer) override;
 
 private:
     std::exception_ptr error_;

@@ -11,7 +11,7 @@ const std::shared_ptr<NeverObservable>& NeverObservable::Instance() {
 
 
 std::shared_ptr<InnerSubscription> NeverObservable::Subscribe(
-    const std::shared_ptr<InnerObserver>& observer) {
+    const std::shared_ptr<ObserverCore>& observer) {
 
     return InnerSubscription::Empty();
 }

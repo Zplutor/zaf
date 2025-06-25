@@ -7,14 +7,14 @@ namespace zaf::internal {
 class CustomizedObservable : public ObservableCore {
 public:
     using Procedure = std::function<
-        std::shared_ptr<InnerSubscription>(const std::shared_ptr<InnerObserver>&)
+        std::shared_ptr<InnerSubscription>(const std::shared_ptr<ObserverCore>&)
     >;
 
 public:
     CustomizedObservable(Procedure procedure);
 
     std::shared_ptr<InnerSubscription> Subscribe(
-        const std::shared_ptr<InnerObserver>& observer) override;
+        const std::shared_ptr<ObserverCore>& observer) override;
 
 private:
     Procedure procedure_;

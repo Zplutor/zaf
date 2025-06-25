@@ -21,7 +21,7 @@ std::shared_ptr<ObservableCore> GetObservableFromInnerSubject(
 }
 
 
-std::shared_ptr<InnerObserver> GetObserverFromInnerSubject(
+std::shared_ptr<ObserverCore> GetObserverFromInnerSubject(
     const std::shared_ptr<InnerSubject>& inner) {
 
     return inner;
