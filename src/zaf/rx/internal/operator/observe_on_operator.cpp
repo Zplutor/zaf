@@ -18,7 +18,7 @@ public:
     
     }
 
-    void Run(const std::shared_ptr<InnerObservable>& source) {
+    void Run(const std::shared_ptr<ObservableCore>& source) {
         source_subscription_ = source->Subscribe(As<ObserveOnProducer>(shared_from_this()));
     }
 
@@ -81,7 +81,7 @@ private:
 }
 
 ObserveOnOperator::ObserveOnOperator(
-    std::shared_ptr<InnerObservable> source,
+    std::shared_ptr<ObservableCore> source,
     std::shared_ptr<Scheduler> scheduler)
     :
     source_(std::move(source)),

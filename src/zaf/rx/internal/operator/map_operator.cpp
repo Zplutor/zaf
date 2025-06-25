@@ -14,7 +14,7 @@ public:
 
     }
 
-    void Run(const std::shared_ptr<InnerObservable>& source) {
+    void Run(const std::shared_ptr<ObservableCore>& source) {
         source_subscription_ = source->Subscribe(As<InnerObserver>(shared_from_this()));
     }
 
@@ -66,7 +66,7 @@ private:
 
 }
 
-MapOperator::MapOperator(std::shared_ptr<InnerObservable> source, Mapper mapper) :
+MapOperator::MapOperator(std::shared_ptr<ObservableCore> source, Mapper mapper) :
     source_(std::move(source)),
     mapper_(std::move(mapper)) {
 

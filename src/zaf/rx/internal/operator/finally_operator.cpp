@@ -19,7 +19,7 @@ public:
 
     }
 
-    void Run(const std::shared_ptr<InnerObservable>& source) {
+    void Run(const std::shared_ptr<ObservableCore>& source) {
         source_subscription_ = source->Subscribe(As<InnerObserver>(shared_from_this()));
     }
 
@@ -52,7 +52,7 @@ private:
 }
 
 
-FinallyOperator::FinallyOperator(std::shared_ptr<InnerObservable> source, Work finally_work) :
+FinallyOperator::FinallyOperator(std::shared_ptr<ObservableCore> source, Work finally_work) :
     source_(std::move(source)),
     finally_work_(std::move(finally_work)) {
 

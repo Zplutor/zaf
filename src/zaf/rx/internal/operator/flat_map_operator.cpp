@@ -21,13 +21,13 @@ public:
 
     }
 
-    void Run(const std::shared_ptr<InnerObservable>& source) {
+    void Run(const std::shared_ptr<ObservableCore>& source) {
         source_subscription_ = source->Subscribe(As<InnerObserver>(shared_from_this()));
     }
 
     void OnNext(const std::any& value) override {
 
-        std::shared_ptr<InnerObservable> mapped_observable;
+        std::shared_ptr<ObservableCore> mapped_observable;
         try {
             mapped_observable = mapper_(value);
         }
@@ -124,7 +124,7 @@ private:
 
 }
 
-FlatMapOperator::FlatMapOperator(std::shared_ptr<InnerObservable> source, FlatMapper mapper) :
+FlatMapOperator::FlatMapOperator(std::shared_ptr<ObservableCore> source, FlatMapper mapper) :
     source_(std::move(source)),
     mapper_(std::move(mapper)) {
 

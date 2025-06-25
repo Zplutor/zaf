@@ -360,7 +360,7 @@
     <ClCompile Include="src\zaf\rx\internal\observable\concat_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\customized_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\empty_observable.cpp" />
-    <ClCompile Include="src\zaf\rx\internal\observable\inner_observable.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\observable\observable_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\just_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\never_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\throw_observable.cpp" />
@@ -907,7 +907,7 @@
     <ClInclude Include="src\zaf\rx\internal\observable\concat_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\customized_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\empty_observable.h" />
-    <ClInclude Include="src\zaf\rx\internal\observable\inner_observable.h" />
+    <ClInclude Include="src\zaf\rx\internal\observable\observable_core.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\just_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\never_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\throw_observable.h" />

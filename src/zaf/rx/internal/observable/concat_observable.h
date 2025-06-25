@@ -1,10 +1,10 @@
-#include <zaf/rx/internal/observable/inner_observable.h>
+#include <zaf/rx/internal/observable/observable_core.h>
 
 namespace zaf::internal {
 
-using ObservableList = std::vector<std::shared_ptr<InnerObservable>>;
+using ObservableList = std::vector<std::shared_ptr<ObservableCore>>;
 
-class ConcatObservable : public InnerObservable {
+class ConcatObservable : public ObservableCore {
 public:
     explicit ConcatObservable(ObservableList observables);
 

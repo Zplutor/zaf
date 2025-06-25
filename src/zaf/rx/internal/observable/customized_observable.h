@@ -1,10 +1,10 @@
 #pragma once
 
-#include <zaf/rx/internal/observable/inner_observable.h>
+#include <zaf/rx/internal/observable/observable_core.h>
 
 namespace zaf::internal {
 
-class CustomizedObservable : public InnerObservable {
+class CustomizedObservable : public ObservableCore {
 public:
     using Procedure = std::function<
         std::shared_ptr<InnerSubscription>(const std::shared_ptr<InnerObserver>&)

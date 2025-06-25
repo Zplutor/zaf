@@ -57,7 +57,7 @@ template<typename T, typename C>
 Observable<T> Concat(const C& container) {
     zaf::internal::ObservableList observables;
     for (const auto& each_observable : container) {
-        observables.push_back(each_observable.Inner());
+        observables.push_back(each_observable.Core());
     }
     return Observable<T>(std::make_shared<zaf::internal::ConcatObservable>(std::move(observables)));
 }

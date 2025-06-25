@@ -17,7 +17,7 @@ public:
 
     }
 
-    void Run(const std::shared_ptr<InnerObservable>& source) {
+    void Run(const std::shared_ptr<ObservableCore>& source) {
         source_subscription_ = source->Subscribe(As<InnerObserver>(shared_from_this()));
     }
 
@@ -27,7 +27,7 @@ public:
 
     void OnError(const std::exception_ptr& error) override {
 
-        std::shared_ptr<InnerObservable> new_observable;
+        std::shared_ptr<ObservableCore> new_observable;
         try {
             new_observable = handler_(error);
         }
@@ -58,7 +58,7 @@ protected:
     }
 
 private:
-    void SubscribeToNewObservable(const std::shared_ptr<InnerObservable>& observable) {
+    void SubscribeToNewObservable(const std::shared_ptr<ObservableCore>& observable) {
 
         //New observable might emit and complete immediately on subscribe, and the current producer 
         //would be freed immediately as well. Thus, subsequent access to member fields would fail. 
@@ -99,7 +99,7 @@ private:
 
 }
 
-CatchOperator::CatchOperator(std::shared_ptr<InnerObservable> source, CatchHandler handler) :
+CatchOperator::CatchOperator(std::shared_ptr<ObservableCore> source, CatchHandler handler) :
     source_(std::move(source)),
     handler_(std::move(handler)) {
 

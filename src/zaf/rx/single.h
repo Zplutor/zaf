@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/rx/internal/observable/inner_observable.h>
+#include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/internal/observable/just_observable.h>
 #include <zaf/rx/internal/observable/never_observable.h>
 #include <zaf/rx/internal/observable/throw_observable.h>
@@ -47,7 +47,7 @@ public:
         return Subscription{ core_->Subscribe(observer.Core()) };
     }
 
-    const std::shared_ptr<zaf::internal::InnerObservable>& Core() const noexcept {
+    const std::shared_ptr<zaf::internal::ObservableCore>& Core() const noexcept {
         return core_;
     }
 
@@ -66,13 +66,13 @@ public:
 private:
     friend class zaf::rx::internal::SingleFactory<T>;
 
-    explicit Single(std::shared_ptr<zaf::internal::InnerObservable> core) noexcept :
+    explicit Single(std::shared_ptr<zaf::internal::ObservableCore> core) noexcept :
         core_(std::move(core)) {
 
     }
 
 private:
-    std::shared_ptr<zaf::internal::InnerObservable> core_;
+    std::shared_ptr<zaf::internal::ObservableCore> core_;
 };
 
 }

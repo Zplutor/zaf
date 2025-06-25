@@ -1,8 +1,8 @@
-#include <zaf/rx/internal/observable/inner_observable.h>
+#include <zaf/rx/internal/observable/observable_core.h>
 
 namespace zaf::internal {
 
-class EmptyObservable : public InnerObservable {
+class EmptyObservable : public ObservableCore {
 public:
     static const std::shared_ptr<EmptyObservable>& Instance();
 

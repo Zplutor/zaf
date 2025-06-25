@@ -14,7 +14,7 @@ std::shared_ptr<InnerSubject> CreateReplaySubjectCore(std::optional<std::size_t>
 }
 
 
-std::shared_ptr<InnerObservable> GetObservableFromInnerSubject(
+std::shared_ptr<ObservableCore> GetObservableFromInnerSubject(
     const std::shared_ptr<InnerSubject>& inner) {
 
     return inner;

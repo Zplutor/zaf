@@ -10,7 +10,7 @@ namespace {
 class SubscribeOnProducer : public Producer, public InnerObserver {
 public:
     SubscribeOnProducer(
-        std::shared_ptr<InnerObservable> source,
+        std::shared_ptr<ObservableCore> source,
         std::shared_ptr<Scheduler> scheduler,
         std::shared_ptr<InnerObserver> observer) 
         :
@@ -73,7 +73,7 @@ private:
     }
 
 private:
-    std::shared_ptr<InnerObservable> source_;
+    std::shared_ptr<ObservableCore> source_;
     std::shared_ptr<Scheduler> scheduler_;
     std::shared_ptr<InnerSubscription> source_subscription_;
     std::atomic<bool> is_disposed_{};
@@ -82,7 +82,7 @@ private:
 }
 
 SubscribeOnOperator::SubscribeOnOperator(
-    std::shared_ptr<InnerObservable> source,
+    std::shared_ptr<ObservableCore> source,
     std::shared_ptr<Scheduler> scheduler) 
     :
     source_(std::move(source)),

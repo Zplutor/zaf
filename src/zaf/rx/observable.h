@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <zaf/rx/internal/observable/inner_observable.h>
+#include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/observer.h>
 #include <zaf/rx/observer_functions.h>
 #include <zaf/rx/subscription.h>
@@ -13,8 +13,8 @@ class Scheduler;
 template<typename T>
 class Observable {
 public:
-    explicit Observable(std::shared_ptr<internal::InnerObservable> inner) noexcept : 
-        inner_(std::move(inner)) { }
+    explicit Observable(std::shared_ptr<internal::ObservableCore> core) noexcept : 
+        core_(std::move(core)) { }
 
     [[nodiscard]]
     Subscription Subscribe() {
@@ -46,15 +46,15 @@ public:
 
     [[nodiscard]]
     Subscription Subscribe(const Observer<T>& observer) {
-        return Subscription{ inner_->Subscribe(observer.Inner()) };
+        return Subscription{ core_->Subscribe(observer.Inner()) };
     }
 
     Observable SubscribeOn(std::shared_ptr<Scheduler> scheduler) {
-        return Observable{ inner_->SubscribeOn(std::move(scheduler)) };
+        return Observable{ core_->SubscribeOn(std::move(scheduler)) };
     }
 
     Observable ObserveOn(std::shared_ptr<Scheduler> scheduler) {
-        return Observable{ inner_->ObserveOn(std::move(scheduler)) };
+        return Observable{ core_->ObserveOn(std::move(scheduler)) };
     }
 
     Observable Do(OnNext<T> on_next) {
@@ -77,7 +77,7 @@ public:
     }
 
     Observable Do(const Observer<T>& observer) {
-        return Observable{ inner_->Do(observer.Inner()) };
+        return Observable{ core_->Do(observer.Inner()) };
     }
 
     Observable DoOnError(OnError on_error) {
@@ -117,25 +117,25 @@ public:
         A new observable.
     */
     Observable DoOnTerminated(Work action) {
-        return Observable{ inner_->DoOnTerminated(std::move(action)) };
+        return Observable{ core_->DoOnTerminated(std::move(action)) };
     }
 
     Observable Catch(std::function<Observable<T>(const std::exception_ptr&)> handler) {
         return Observable{ 
-            inner_->Catch([handle = std::move(handler)](const std::exception_ptr& error) {
-                return handle(error).Inner();
+            core_->Catch([handle = std::move(handler)](const std::exception_ptr& error) {
+                return handle(error).Core();
             })
         };
     }
 
     Observable Finally(Work work) {
-        return Observable{ inner_->Finally(std::move(work)) };
+        return Observable{ core_->Finally(std::move(work)) };
     }
 
     template<typename K>
     Observable<K> Map(std::function<K(const T&)> mapper) {
         return Observable<K>{
-            inner_->Map([map = std::move(mapper)](const std::any& value) {
+            core_->Map([map = std::move(mapper)](const std::any& value) {
                 return map(std::any_cast<T>(value));
             })
         };
@@ -144,18 +144,18 @@ public:
     template<typename K>
     Observable<K> FlatMap(std::function<Observable<K>(const T&)> mapper) {
         return Observable<K>{
-            inner_->FlatMap([map = std::move(mapper)](const std::any& value) {
-                return map(std::any_cast<T>(value)).Inner();
+            core_->FlatMap([map = std::move(mapper)](const std::any& value) {
+                return map(std::any_cast<T>(value)).Core();
             })
         };
     }
 
-    const std::shared_ptr<internal::InnerObservable>& Inner() const {
-        return inner_;
+    const std::shared_ptr<internal::ObservableCore>& Core() const {
+        return core_;
     }
 
 private:
-    std::shared_ptr<internal::InnerObservable> inner_;
+    std::shared_ptr<internal::ObservableCore> core_;
 };
 
 }

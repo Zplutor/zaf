@@ -5,8 +5,8 @@
 
 namespace zaf::internal {
 
-class InnerObservable;
+class ObservableCore;
 
-using CatchHandler = std::function<std::shared_ptr<InnerObservable>(const std::exception_ptr&)>;
+using CatchHandler = std::function<std::shared_ptr<ObservableCore>(const std::exception_ptr&)>;
 
 }

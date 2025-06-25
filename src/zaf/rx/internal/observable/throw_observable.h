@@ -1,11 +1,11 @@
 #pragma once
 
-#include <zaf/rx/internal/observable/inner_observable.h>
+#include <zaf/rx/internal/observable/observable_core.h>
 #include <exception>
 
 namespace zaf::internal {
 
-class ThrowObservable : public InnerObservable {
+class ThrowObservable : public ObservableCore {
 public:
     explicit ThrowObservable(std::exception_ptr error);
 

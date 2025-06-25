@@ -1,11 +1,11 @@
 #pragma once
 
 #include <zaf/rx/cancel.h>
-#include <zaf/rx/internal/observable/inner_observable.h>
+#include <zaf/rx/internal/observable/observable_core.h>
 
 namespace zaf::internal {
 
-class AsyncCustomizedObservable : public InnerObservable {
+class AsyncCustomizedObservable : public ObservableCore {
 public:
     using AsyncProcedure = std::function<
         void(const std::shared_ptr<InnerObserver>&, CancelToken cancel_token)

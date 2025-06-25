@@ -457,7 +457,7 @@
     <ClCompile Include="src\zaf\rx\internal\operator\observe_on_operator.cpp">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\observable\inner_observable.cpp">
+    <ClCompile Include="src\zaf\rx\internal\observable\observable_core.cpp">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\timer_manager.cpp">
@@ -1768,7 +1768,7 @@
     <ClInclude Include="src\zaf\rx\internal\operator\observe_on_operator.h">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\observable\inner_observable.h">
+    <ClInclude Include="src\zaf\rx\internal\observable\observable_core.h">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\timer.h">

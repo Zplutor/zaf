@@ -2,11 +2,11 @@
 
 #include <chrono>
 #include <optional>
-#include <zaf/rx/internal/observable/inner_observable.h>
+#include <zaf/rx/internal/observable/observable_core.h>
 
 namespace zaf::internal {
 
-class TimerObservable : public InnerObservable {
+class TimerObservable : public ObservableCore {
 public:
     TimerObservable(
         std::chrono::steady_clock::duration delay,
