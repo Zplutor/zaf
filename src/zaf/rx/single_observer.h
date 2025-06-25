@@ -45,6 +45,11 @@ public:
         core_->OnError(error);
     }
 
+    template<typename E>
+    void OnError(E&& error) const {
+        core_->OnError(std::make_exception_ptr(std::forward<E>(error)));
+    }
+
     const std::shared_ptr<internal::InnerObserver>& Core() const noexcept {
         return core_;
     }

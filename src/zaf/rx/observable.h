@@ -4,7 +4,6 @@
 #include <zaf/rx/internal/observable/inner_observable.h>
 #include <zaf/rx/observer.h>
 #include <zaf/rx/observer_functions.h>
-#include <zaf/rx/single.h>
 #include <zaf/rx/subscription.h>
 
 namespace zaf {
@@ -16,11 +15,6 @@ class Observable {
 public:
     explicit Observable(std::shared_ptr<internal::InnerObservable> inner) noexcept : 
         inner_(std::move(inner)) { }
-
-    //A single can be converted to an observable implicitly.
-    Observable(const rx::Single<T>& single) noexcept : inner_(single.Core()) {
-
-    }
 
     [[nodiscard]]
     Subscription Subscribe() {

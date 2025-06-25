@@ -926,6 +926,7 @@
     <ClInclude Include="src\zaf\rx\internal\producer.h" />
     <ClInclude Include="src\zaf\rx\internal\rx_runtime.h" />
     <ClInclude Include="src\zaf\rx\internal\scheduler\single_thread_scheduler.h" />
+    <ClInclude Include="src\zaf\rx\internal\single_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\base_subject.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\replay_subject_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\inner_subject.h" />

@@ -17,7 +17,7 @@ Creates an observable that emits no items but terminates normally.
 */
 template<typename T = zaf::None>
 Observable<T> Empty() {
-    return Observable<T>{ internal::EmptyObservable::Instance() };
+    return Observable<T>{ zaf::internal::EmptyObservable::Instance() };
 }
 
 
@@ -26,7 +26,7 @@ Creates an observable that emits no items and does not terminate.
 */
 template<typename T>
 Observable<T> Never() {
-    return Observable<T>{ internal::NeverObservable::Instance() };
+    return Observable<T>{ zaf::internal::NeverObservable::Instance() };
 }
 
 
@@ -35,7 +35,7 @@ Creates an observable that emits no items and terminates with an error.
 */
 template<typename T>
 Observable<T> Throw(std::exception_ptr error) {
-    return Observable<T>{ std::make_shared<internal::ThrowObservable>(std::move(error)) };
+    return Observable<T>{ std::make_shared<zaf::internal::ThrowObservable>(std::move(error)) };
 }
 
 /**
@@ -49,17 +49,17 @@ Observable<T> Throw(E error) {
 
 template<typename T>
 Observable<T> Just(const T& value) {
-    return Observable<T>(std::make_shared<internal::JustObservable>(std::any{ value }));
+    return Observable<T>(std::make_shared<zaf::internal::JustObservable>(std::any{ value }));
 }
 
 
 template<typename T, typename C>
 Observable<T> Concat(const C& container) {
-    internal::ObservableList observables;
+    zaf::internal::ObservableList observables;
     for (const auto& each_observable : container) {
         observables.push_back(each_observable.Inner());
     }
-    return Observable<T>(std::make_shared<internal::ConcatObservable>(std::move(observables)));
+    return Observable<T>(std::make_shared<zaf::internal::ConcatObservable>(std::move(observables)));
 }
 
 
@@ -73,14 +73,14 @@ template<typename T>
 Observable<T> Create(std::function<Subscription(Observer<T>)> procedure) {
 
     auto bridged_procedure = [procedure{ std::move(procedure) }](
-        const std::shared_ptr<internal::InnerObserver>& observer) {
+        const std::shared_ptr<zaf::internal::InnerObserver>& observer) {
     
         auto subscription = procedure(Observer<T>{ observer });
         return subscription.Inner();
     };
 
     auto customized_observable = 
-        std::make_shared<internal::CustomizedObservable>(std::move(bridged_procedure));
+        std::make_shared<zaf::internal::CustomizedObservable>(std::move(bridged_procedure));
 
     return Observable<T>(std::move(customized_observable));
 }
@@ -92,13 +92,13 @@ Observable<T> Create(
     std::function<void(Observer<T>)> procedure) {
 
     auto bridged_procedure = [procedure = std::move(procedure)](
-        const std::shared_ptr<internal::InnerObserver>& observer,
+        const std::shared_ptr<zaf::internal::InnerObserver>& observer,
         CancelToken cancel_token) {
 
         procedure(Observer<T>{ observer });
     };
 
-    auto observable = std::make_shared<internal::AsyncCustomizedObservable>(
+    auto observable = std::make_shared<zaf::internal::AsyncCustomizedObservable>(
         std::move(schduler),
         std::move(bridged_procedure));
 
@@ -112,13 +112,13 @@ Observable<T> Create(
     std::function<void(Observer<T>, CancelToken)> procedure) {
 
     auto bridged_procedure = [procedure = std::move(procedure)](
-        const std::shared_ptr<internal::InnerObserver>& observer, 
+        const std::shared_ptr<zaf::internal::InnerObserver>& observer,
         CancelToken cancel_token) {
 
         procedure(Observer<T>{ observer }, cancel_token);
     };
 
-    auto observable = std::make_shared<internal::AsyncCustomizedObservable>(
+    auto observable = std::make_shared<zaf::internal::AsyncCustomizedObservable>(
         std::move(schduler),
         std::move(bridged_procedure));
 

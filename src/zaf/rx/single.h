@@ -4,8 +4,14 @@
 #include <zaf/rx/internal/observable/just_observable.h>
 #include <zaf/rx/internal/observable/never_observable.h>
 #include <zaf/rx/internal/observable/throw_observable.h>
+#include <zaf/rx/observable.h>
 #include <zaf/rx/single_observer.h>
 #include <zaf/rx/subscription.h>
+
+namespace zaf::rx::internal {
+template<typename T>
+class SingleFactory;
+}
 
 namespace zaf::rx {
 
@@ -13,11 +19,11 @@ template<typename T>
 class Single {
 public:
     static Single Just(T value) {
-        return Single{ std::make_shared<internal::JustObservable>(std::any{ std::move(value) }) };
+        return Single{ std::make_shared<zaf::internal::JustObservable>(std::any{ std::move(value) }) };
     }
 
     static Single Throw(std::exception_ptr error) {
-        return Single{ std::make_shared<internal::ThrowObservable>(std::move(error)) };
+        return Single{ std::make_shared<zaf::internal::ThrowObservable>(std::move(error)) };
     }
 
     template<typename E>
@@ -26,7 +32,7 @@ public:
     }
 
     static Single Never() {
-        return Single{ internal::NeverObservable::Instance() };
+        return Single{ zaf::internal::NeverObservable::Instance() };
     }
 
 public:
@@ -41,18 +47,32 @@ public:
         return Subscription{ core_->Subscribe(observer.Core()) };
     }
 
-    const std::shared_ptr<internal::InnerObservable>& Core() const noexcept {
+    const std::shared_ptr<zaf::internal::InnerObservable>& Core() const noexcept {
         return core_;
     }
 
+    /**
+    Converts a single to an observable implicitly.
+
+    @details
+        We define a conversion operator in `Single<>` rather than defining a constructor in
+        `Observable<>` to avoid `Observable<>` depending on `Single<>`, as `Single<>` is a
+        specialized type of `Observable<>`.
+    */
+    operator Observable<T>() const noexcept {
+        return Observable<T>{ core_ };
+    }
+
 private:
-    explicit Single(std::shared_ptr<internal::InnerObservable> core) noexcept :
+    friend class zaf::rx::internal::SingleFactory<T>;
+
+    explicit Single(std::shared_ptr<zaf::internal::InnerObservable> core) noexcept :
         core_(std::move(core)) {
 
     }
 
 private:
-    std::shared_ptr<internal::InnerObservable> core_;
+    std::shared_ptr<zaf::internal::InnerObservable> core_;
 };
 
 }

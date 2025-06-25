@@ -3058,5 +3058,8 @@
     <ClInclude Include="src\zaf\rx\replay_subject.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\single_factory.h">
+      <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

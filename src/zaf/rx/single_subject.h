@@ -1,11 +1,9 @@
 #pragma once
 
+#include <zaf/rx/internal/subject/inner_subject_indirect.h>
 #include <zaf/rx/single.h>
 #include <zaf/rx/single_observer.h>
-
-namespace zaf::rx::internal {
-class SingleSubjectCore;
-}
+#include <zaf/rx/internal/single_factory.h>
 
 namespace zaf::rx {
 
@@ -13,26 +11,27 @@ template<typename T>
 class SingleSubject {
 public:
     static SingleSubject Create() {
-        return SingleSubject{ std::make_shared<internal::SingleSubjectCore>() };
+        return SingleSubject{ zaf::internal::CreateReplaySubjectCore(1) };
     }
 
 public:
     Single<T> AsSingle() const noexcept {
-        return Single<T>{ core_ };
+        auto observable_core = zaf::internal::GetObservableFromInnerSubject(core_);
+        return internal::SingleFactory<T>::Create(std::move(observable_core));
     }
 
     SingleObserver<T> AsObserver() noexcept {
-        return SingleObserver<T>{ core_ };
+        return SingleObserver<T>{ zaf::internal::GetObserverFromInnerSubject(core_) };
     }
 
 private:
-    explicit SingleSubject(std::shared_ptr<internal::SingleSubjectCore> core) noexcept : 
+    explicit SingleSubject(std::shared_ptr<zaf::internal::InnerSubject> core) noexcept :
         core_(std::move(core)) {
 
     }
 
 private:
-    std::shared_ptr<internal::SingleSubjectCore> core_;
+    std::shared_ptr<zaf::internal::InnerSubject> core_;
 };
 
 }
