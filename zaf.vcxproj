@@ -376,8 +376,8 @@
     <ClCompile Include="src\zaf\rx\internal\producer.cpp" />
     <ClCompile Include="src\zaf\rx\internal\rx_runtime.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subject\replay_subject_core.cpp" />
-    <ClCompile Include="src\zaf\rx\internal\subject\inner_subject.cpp" />
-    <ClCompile Include="src\zaf\rx\internal\subject\inner_subject_indirect.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\subject\subject_core.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\subject\subject_core_indirect.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription_set.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription.cpp" />
     <ClCompile Include="src\zaf\rx\internal\thread\run_loop_thread.cpp" />
@@ -929,8 +929,8 @@
     <ClInclude Include="src\zaf\rx\internal\single_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\base_subject.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\replay_subject_core.h" />
-    <ClInclude Include="src\zaf\rx\internal\subject\inner_subject.h" />
-    <ClInclude Include="src\zaf\rx\internal\subject\inner_subject_indirect.h" />
+    <ClInclude Include="src\zaf\rx\internal\subject\subject_core.h" />
+    <ClInclude Include="src\zaf\rx\internal\subject\subject_core_indirect.h" />
     <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_set.h" />
     <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription.h" />
     <ClInclude Include="src\zaf\rx\internal\thread\run_loop_thread.h" />

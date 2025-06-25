@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/rx/internal/subject/inner_subject_indirect.h>
+#include <zaf/rx/internal/subject/subject_core_indirect.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/observer.h>
 
@@ -19,23 +19,23 @@ public:
     BaseSubject& operator=(BaseSubject&&) = default;
 
     Observable<T> AsObservable() const {
-        return Observable<T>{ internal::GetObservableFromInnerSubject(inner_) };
+        return Observable<T>{ internal::AsObservableCore(core_) };
     }
 
     Observer<T> AsObserver() const {
-        return Observer<T>{ internal::GetObserverFromInnerSubject(inner_) };
+        return Observer<T>{ internal::AsObserverCore(core_) };
     }
 
-    const std::shared_ptr<internal::InnerSubject>& Inner() const {
-        return inner_;
+    const std::shared_ptr<internal::SubjectCore>& Core() const {
+        return core_;
     }
 
 protected:
-    explicit BaseSubject(std::shared_ptr<internal::InnerSubject> inner) : 
-        inner_(std::move(inner)) { }
+    explicit BaseSubject(std::shared_ptr<internal::SubjectCore> core) : 
+        core_(std::move(core)) { }
 
 private:
-    std::shared_ptr<internal::InnerSubject> inner_;
+    std::shared_ptr<internal::SubjectCore> core_;
 };
 
 }

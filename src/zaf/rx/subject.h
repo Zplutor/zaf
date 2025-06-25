@@ -7,7 +7,7 @@ namespace zaf {
 template<typename T>
 class Subject : public internal::BaseSubject<T> {
 public:
-    Subject() : internal::BaseSubject<T>(internal::CreateInnerSubject()) { }
+    Subject() : internal::BaseSubject<T>(internal::CreateSubjectCore()) { }
 };
 
 }

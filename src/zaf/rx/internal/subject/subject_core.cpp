@@ -1,4 +1,4 @@
-﻿#include <zaf/rx/internal/subject/inner_subject.h>
+﻿#include <zaf/rx/internal/subject/subject_core.h>
 #include <algorithm>
 #include <zaf/base/container/utility/erase.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
@@ -10,7 +10,7 @@ class SubjectProducer : public Producer {
 public:
     SubjectProducer(
         std::shared_ptr<ObserverCore> observer,
-        std::weak_ptr<InnerSubject> subject) 
+        std::weak_ptr<SubjectCore> subject) 
         : 
         Producer(std::move(observer)),
         subject_(std::move(subject)) {
@@ -27,22 +27,22 @@ protected:
     }
 
 private:
-    std::weak_ptr<InnerSubject> subject_;
+    std::weak_ptr<SubjectCore> subject_;
 };
 
 }
 
-InnerSubject::~InnerSubject() {
+SubjectCore::~SubjectCore() {
 
 }
 
 
-std::shared_ptr<InnerSubscription> InnerSubject::Subscribe(
+std::shared_ptr<InnerSubscription> SubjectCore::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<SubjectProducer>(
         observer,
-        std::dynamic_pointer_cast<InnerSubject>(shared_from_this()));
+        std::dynamic_pointer_cast<SubjectCore>(shared_from_this()));
    
     producers_.push_back(producer);
 
@@ -50,7 +50,7 @@ std::shared_ptr<InnerSubscription> InnerSubject::Subscribe(
 }
 
 
-void InnerSubject::OnNext(const std::any& value) {
+void SubjectCore::OnNext(const std::any& value) {
 
     auto copied_producers = producers_;
     for (const auto& producer : copied_producers) {
@@ -59,7 +59,7 @@ void InnerSubject::OnNext(const std::any& value) {
 }
 
 
-void InnerSubject::OnError(const std::exception_ptr& error) {
+void SubjectCore::OnError(const std::exception_ptr& error) {
 
     auto copied_producers = producers_;
     for (const auto& each_producer : copied_producers) {
@@ -68,7 +68,7 @@ void InnerSubject::OnError(const std::exception_ptr& error) {
 }
 
 
-void InnerSubject::OnCompleted() {
+void SubjectCore::OnCompleted() {
 
     auto copied_producers = producers_;
     for (const auto& each_producer : copied_producers) {
@@ -77,7 +77,7 @@ void InnerSubject::OnCompleted() {
 }
 
 
-void InnerSubject::Unsubscribe(Producer* unsubscribed_producer) {
+void SubjectCore::Unsubscribe(Producer* unsubscribed_producer) {
 
     EraseIf(producers_, [unsubscribed_producer](const auto& producer) {
         return producer.get() == unsubscribed_producer;

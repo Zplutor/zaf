@@ -7,9 +7,9 @@
 
 namespace zaf::internal {
 
-class InnerSubject : public ObservableCore, public ObserverCore {
+class SubjectCore : public ObservableCore, public ObserverCore {
 public:
-    ~InnerSubject();
+    ~SubjectCore();
 
     std::shared_ptr<InnerSubscription> Subscribe(
         const std::shared_ptr<ObserverCore>& observer) override;
@@ -21,7 +21,7 @@ public:
     //Called by SubjectProducer.
     void Unsubscribe(Producer* unsubscribed_producer);
 
-    //For unittest.
+    //For unit test.
     std::size_t SubscriptionCount() const {
         return producers_.size();
     }

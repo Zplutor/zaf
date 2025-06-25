@@ -3,11 +3,11 @@
 #include <deque>
 #include <variant>
 #include <zaf/base/none.h>
-#include <zaf/rx/internal/subject/inner_subject.h>
+#include <zaf/rx/internal/subject/subject_core.h>
 
 namespace zaf::rx::internal {
 
-class ReplaySubjectCore : public zaf::internal::InnerSubject {
+class ReplaySubjectCore : public zaf::internal::SubjectCore {
 public:
     explicit ReplaySubjectCore(std::optional<std::size_t> replay_size) noexcept;
 
