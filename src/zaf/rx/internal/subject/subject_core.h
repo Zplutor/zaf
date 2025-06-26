@@ -5,7 +5,7 @@
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class SubjectCore : public ObservableCore, public ObserverCore {
 public:

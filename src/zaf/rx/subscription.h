@@ -4,7 +4,7 @@
 #include <memory>
 
 namespace zaf {
-namespace internal {
+namespace rx::internal {
 class InnerSubscription;
 }
 
@@ -12,7 +12,7 @@ class Subscription {
 public:
     Subscription();
 
-    explicit Subscription(std::shared_ptr<internal::InnerSubscription> inner) :
+    explicit Subscription(std::shared_ptr<rx::internal::InnerSubscription> inner) :
         inner_(std::move(inner)) { }
 
     Subscription(const Subscription&) = default;
@@ -23,12 +23,12 @@ public:
 
     void Unsubscribe();
 
-    const std::shared_ptr<internal::InnerSubscription>& Inner() const {
+    const std::shared_ptr<rx::internal::InnerSubscription>& Inner() const {
         return inner_;
     }
 
 private:
-    std::shared_ptr<internal::InnerSubscription> inner_;
+    std::shared_ptr<rx::internal::InnerSubscription> inner_;
 };
 
 

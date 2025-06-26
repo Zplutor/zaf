@@ -3,21 +3,21 @@
 
 namespace zaf {
 
-Subscription::Subscription() : inner_(internal::InnerSubscription::Empty()) {
+Subscription::Subscription() : inner_(rx::internal::InnerSubscription::Empty()) {
 
 }
 
 
 Subscription::Subscription(Subscription&& other) : inner_(std::move(other.inner_)) {
 
-    other.inner_ = internal::InnerSubscription::Empty();
+    other.inner_ = rx::internal::InnerSubscription::Empty();
 }
 
 
 Subscription& Subscription::operator=(Subscription&& other) {
 
     inner_ = std::move(other.inner_);
-    other.inner_ = internal::InnerSubscription::Empty();
+    other.inner_ = rx::internal::InnerSubscription::Empty();
     return *this;
 }
 

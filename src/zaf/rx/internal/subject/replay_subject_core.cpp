@@ -8,7 +8,7 @@ ReplaySubjectCore::ReplaySubjectCore(std::optional<std::size_t> replay_size) noe
 }
 
 
-std::shared_ptr<zaf::internal::InnerSubscription> ReplaySubjectCore::Subscribe(
+std::shared_ptr<InnerSubscription> ReplaySubjectCore::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     //This instance may be destroyed during the emissions.

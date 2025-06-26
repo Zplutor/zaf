@@ -7,11 +7,11 @@
 
 namespace zaf::rx::internal {
 
-class ReplaySubjectCore : public zaf::internal::SubjectCore {
+class ReplaySubjectCore : public SubjectCore {
 public:
     explicit ReplaySubjectCore(std::optional<std::size_t> replay_size) noexcept;
 
-    std::shared_ptr<zaf::internal::InnerSubscription> Subscribe(
+    std::shared_ptr<InnerSubscription> Subscribe(
         const std::shared_ptr<ObserverCore>& observer) override;
 
     void OnNext(const std::any& value) override;

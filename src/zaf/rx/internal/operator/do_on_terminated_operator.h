@@ -3,7 +3,7 @@
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/work.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class DoOnTerminatedOperator : public ObservableCore {
 public:

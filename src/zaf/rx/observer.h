@@ -32,14 +32,14 @@ public:
             }
         };
 
-        return Observer(internal::ObserverCore::Create(
+        return Observer(rx::internal::ObserverCore::Create(
             std::move(bridged_on_next), 
             std::move(on_error), 
             std::move(on_completed)));
     }
 
 public:
-    explicit Observer(std::shared_ptr<internal::ObserverCore> core) noexcept :
+    explicit Observer(std::shared_ptr<rx::internal::ObserverCore> core) noexcept :
         core_(std::move(core)) { }
 
     void OnNext(const T& value) const {
@@ -59,12 +59,12 @@ public:
         core_->OnCompleted();
     }
 
-    const std::shared_ptr<internal::ObserverCore>& Core() const noexcept {
+    const std::shared_ptr<rx::internal::ObserverCore>& Core() const noexcept {
         return core_;
     }
 
 private:
-    std::shared_ptr<internal::ObserverCore> core_;
+    std::shared_ptr<rx::internal::ObserverCore> core_;
 };
 
 }

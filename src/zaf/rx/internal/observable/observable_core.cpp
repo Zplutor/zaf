@@ -8,7 +8,7 @@
 #include <zaf/rx/internal/operator/observe_on_operator.h>
 #include <zaf/rx/internal/operator/subscribe_on_operator.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 std::shared_ptr<ObservableCore> ObservableCore::SubscribeOn(
     std::shared_ptr<Scheduler> scheduler) {

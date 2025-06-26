@@ -2,7 +2,7 @@
 #include <zaf/rx/internal/subject/subject_core.h>
 #include <zaf/rx/internal/subject/replay_subject_core.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 std::shared_ptr<SubjectCore> CreateSubjectCore() {
     return std::make_shared<SubjectCore>();

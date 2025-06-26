@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/thread/thread_manager.h>
 #include <zaf/base/container/utility/erase.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 ThreadManager::ThreadManager() : main_thread_(std::make_shared<WindowThread>()) {
 

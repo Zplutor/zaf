@@ -3,7 +3,7 @@
 #include <memory>
 #include <zaf/base/non_copyable.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class Producer;
 

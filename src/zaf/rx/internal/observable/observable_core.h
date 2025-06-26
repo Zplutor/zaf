@@ -11,7 +11,7 @@ namespace zaf {
 
 class Scheduler;
 
-namespace internal {
+namespace rx::internal {
 
 class ObserverCore;
 class InnerSubscription;

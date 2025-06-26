@@ -1,6 +1,6 @@
 #include <zaf/rx/internal/observer_core.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 namespace {
 
 class GeneralObserver : public ObserverCore {

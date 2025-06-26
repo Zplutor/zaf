@@ -2,7 +2,7 @@
 #include <zaf/base/container/utility/erase.h>
 #include <zaf/rx/internal/producer.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 InnerSubscriptionSet::~InnerSubscriptionSet() {
     Clear();

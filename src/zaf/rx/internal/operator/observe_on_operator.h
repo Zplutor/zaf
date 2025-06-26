@@ -3,7 +3,7 @@
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/scheduler.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class ObserveOnOperator : public ObservableCore {
 public:

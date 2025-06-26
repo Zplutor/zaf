@@ -215,7 +215,7 @@ TEST(RxDoTest, CircularReference) {
     auto observable = subject.AsObservable().Do([](int) {});
     auto subscription = observable.Subscribe();
 
-    std::weak_ptr<zaf::internal::Producer> weak_ptr = subscription.Inner()->Producer();
+    std::weak_ptr<zaf::rx::internal::Producer> weak_ptr = subscription.Inner()->Producer();
     subscription = {};
 
     auto shared_ptr = weak_ptr.lock();

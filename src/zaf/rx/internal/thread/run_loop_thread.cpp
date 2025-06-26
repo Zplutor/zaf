@@ -1,6 +1,6 @@
 #include <zaf/rx/internal/thread/run_loop_thread.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 RunLoopThread::RunLoopThread() : 
     state_(std::make_shared<State>()),

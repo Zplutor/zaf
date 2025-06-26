@@ -5,18 +5,18 @@
 namespace zaf::rx {
 
 template<typename T>
-class ReplaySubject : public zaf::internal::BaseSubject<T> {
+class ReplaySubject : public internal::BaseSubject<T> {
 public:
     static ReplaySubject Create() {
-        return ReplaySubject{ zaf::internal::CreateReplaySubjectCore(std::nullopt) };
+        return ReplaySubject{ internal::CreateReplaySubjectCore(std::nullopt) };
     }
 
     static ReplaySubject Create(std::size_t replay_size) {
-        return ReplaySubject{ zaf::internal::CreateReplaySubjectCore(replay_size) };
+        return ReplaySubject{ internal::CreateReplaySubjectCore(replay_size) };
     }
 
 private:
-    using zaf::internal::BaseSubject<T>::BaseSubject;
+    using internal::BaseSubject<T>::BaseSubject;
 };
 
 }

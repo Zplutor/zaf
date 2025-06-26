@@ -5,7 +5,7 @@
 #include <zaf/rx/observable.h>
 #include <zaf/rx/observer.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 template<typename T> 
 class BaseSubject : NonCopyable {

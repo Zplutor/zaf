@@ -5,7 +5,7 @@
 #include <zaf/rx/subscription.h>
 
 namespace zaf {
-namespace internal {
+namespace rx::internal {
 class InnerSubscriptionSet;
 }
 
@@ -30,7 +30,7 @@ public:
     std::size_t Count() const;
 
 private:
-    std::unique_ptr<internal::InnerSubscriptionSet> inner_;
+    std::unique_ptr<rx::internal::InnerSubscriptionSet> inner_;
 };
 
 

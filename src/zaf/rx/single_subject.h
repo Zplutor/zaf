@@ -11,27 +11,27 @@ template<typename T>
 class SingleSubject {
 public:
     static SingleSubject Create() {
-        return SingleSubject{ zaf::internal::CreateReplaySubjectCore(1) };
+        return SingleSubject{ internal::CreateReplaySubjectCore(1) };
     }
 
 public:
     Single<T> AsSingle() const noexcept {
-        auto observable_core = zaf::internal::AsObservableCore(core_);
+        auto observable_core = internal::AsObservableCore(core_);
         return internal::SingleFactory<T>::Create(std::move(observable_core));
     }
 
     SingleObserver<T> AsObserver() noexcept {
-        return SingleObserver<T>{ zaf::internal::AsObserverCore(core_) };
+        return SingleObserver<T>{ internal::AsObserverCore(core_) };
     }
 
 private:
-    explicit SingleSubject(std::shared_ptr<zaf::internal::SubjectCore> core) noexcept :
+    explicit SingleSubject(std::shared_ptr<internal::SubjectCore> core) noexcept :
         core_(std::move(core)) {
 
     }
 
 private:
-    std::shared_ptr<zaf::internal::SubjectCore> core_;
+    std::shared_ptr<internal::SubjectCore> core_;
 };
 
 }

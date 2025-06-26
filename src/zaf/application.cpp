@@ -40,7 +40,7 @@ void Application::Initialize(const InitializationOptions& parameters) {
 
     ZAF_EXPECT(!is_initialized_);
 
-    rx_runtime_ = std::make_unique<internal::RxRuntime>();
+    rx_runtime_ = std::make_unique<rx::internal::RxRuntime>();
 
     resource_factory_.reset(new ResourceFactory(parameters.custom_uri_loader));
 

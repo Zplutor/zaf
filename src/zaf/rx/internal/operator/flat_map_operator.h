@@ -3,7 +3,7 @@
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/internal/operator/flat_mapper.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class FlatMapOperator : public ObservableCore {
 public:

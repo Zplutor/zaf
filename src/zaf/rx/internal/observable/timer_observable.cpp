@@ -5,7 +5,7 @@
 #include <zaf/rx/internal/rx_runtime.h>
 #include <zaf/rx/internal/timer_manager.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 namespace {
 
 class TimerProducer : public Producer {

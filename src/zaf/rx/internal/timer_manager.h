@@ -6,7 +6,7 @@
 #include <mutex>
 #include <zaf/rx/scheduler.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class TimerManager {
 public:

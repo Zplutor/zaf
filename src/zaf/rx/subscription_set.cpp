@@ -4,7 +4,7 @@
 namespace zaf {
 
 SubscriptionSet::SubscriptionSet() : 
-    inner_(std::make_unique<internal::InnerSubscriptionSet>()) {
+    inner_(std::make_unique<rx::internal::InnerSubscriptionSet>()) {
 
 }
 

@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/producer.h>
 #include <vector>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 Producer::Producer(std::shared_ptr<ObserverCore> observer) :
     observer_(std::move(observer)) {

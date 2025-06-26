@@ -2,7 +2,7 @@
 
 #include <zaf/rx/work.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class Thread {
 public:

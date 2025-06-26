@@ -7,8 +7,8 @@ namespace zaf {
 
 std::shared_ptr<Scheduler> Scheduler::Main() {
 
-    static auto main_scheduler = std::make_shared<internal::SingleThreadScheduler>(
-        internal::RxRuntime::GetInstance().GetThreadManager().GetMainThread());
+    static auto main_scheduler = std::make_shared<rx::internal::SingleThreadScheduler>(
+        rx::internal::RxRuntime::GetInstance().GetThreadManager().GetMainThread());
 
     return main_scheduler;
 }
@@ -16,8 +16,8 @@ std::shared_ptr<Scheduler> Scheduler::Main() {
 
 std::shared_ptr<Scheduler> Scheduler::Timer() {
 
-    static auto timer_scheduler = std::make_shared<internal::SingleThreadScheduler>(
-        internal::RxRuntime::GetInstance().GetThreadManager().CreateNewThread());
+    static auto timer_scheduler = std::make_shared<rx::internal::SingleThreadScheduler>(
+        rx::internal::RxRuntime::GetInstance().GetThreadManager().CreateNewThread());
 
     return timer_scheduler;
 }
@@ -25,8 +25,8 @@ std::shared_ptr<Scheduler> Scheduler::Timer() {
 
 std::shared_ptr<Scheduler> Scheduler::CreateOnSingleThread() {
 
-    auto thread = internal::RxRuntime::GetInstance().GetThreadManager().CreateNewThread();
-    return std::make_shared<internal::SingleThreadScheduler>(thread);
+    auto thread = rx::internal::RxRuntime::GetInstance().GetThreadManager().CreateNewThread();
+    return std::make_shared<rx::internal::SingleThreadScheduler>(thread);
 }
 
 }

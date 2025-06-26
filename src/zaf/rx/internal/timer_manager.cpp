@@ -2,7 +2,7 @@
 #include <zaf/base/container/utility/erase.h>
 #include <zaf/base/container/utility/sort.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 TimerManager::TimerManager() : 
     thread_state_(std::make_shared<ThreadState>()),

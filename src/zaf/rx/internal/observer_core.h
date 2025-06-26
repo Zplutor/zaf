@@ -5,7 +5,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/observer_functions.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class ObserverCore : NonCopyableNonMovable {
 public:

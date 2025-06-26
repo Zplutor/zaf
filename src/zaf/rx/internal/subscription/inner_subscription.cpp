@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/subscription/inner_subscription.h>
 #include <zaf/rx/internal/producer.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 const std::shared_ptr<InnerSubscription>& InnerSubscription::Empty() {
     

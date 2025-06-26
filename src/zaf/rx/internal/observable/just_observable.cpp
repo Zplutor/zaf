@@ -2,7 +2,7 @@
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 JustObservable::JustObservable(std::any value) : value_(std::move(value)) {
 

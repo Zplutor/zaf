@@ -4,7 +4,7 @@
 #include <optional>
 #include <zaf/rx/internal/observable/observable_core.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class TimerObservable : public ObservableCore {
 public:

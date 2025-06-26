@@ -5,9 +5,9 @@
 namespace zaf {
 
 template<typename T>
-class Subject : public internal::BaseSubject<T> {
+class Subject : public rx::internal::BaseSubject<T> {
 public:
-    Subject() : internal::BaseSubject<T>(internal::CreateSubjectCore()) { }
+    Subject() : rx::internal::BaseSubject<T>(rx::internal::CreateSubjectCore()) { }
 };
 
 }

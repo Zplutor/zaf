@@ -3,7 +3,7 @@
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/internal/thread/thread.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class SingleThreadScheduler : public Scheduler {
 public:

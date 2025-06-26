@@ -7,7 +7,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/observer_core.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 /**
 A producer is responsible for emitting data sequence.

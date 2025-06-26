@@ -7,7 +7,7 @@ Here are indirect access functions to SubjectCore, to avoid implicit dependencie
 headers.
 */
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class ObservableCore;
 class ObserverCore;

@@ -13,7 +13,7 @@ class Scheduler;
 template<typename T>
 class Observable {
 public:
-    explicit Observable(std::shared_ptr<internal::ObservableCore> core) noexcept : 
+    explicit Observable(std::shared_ptr<rx::internal::ObservableCore> core) noexcept :
         core_(std::move(core)) { }
 
     [[nodiscard]]
@@ -150,12 +150,12 @@ public:
         };
     }
 
-    const std::shared_ptr<internal::ObservableCore>& Core() const {
+    const std::shared_ptr<rx::internal::ObservableCore>& Core() const {
         return core_;
     }
 
 private:
-    std::shared_ptr<internal::ObservableCore> core_;
+    std::shared_ptr<rx::internal::ObservableCore> core_;
 };
 
 }

@@ -19,11 +19,11 @@ template<typename T>
 class Single {
 public:
     static Single Just(T value) {
-        return Single{ std::make_shared<zaf::internal::JustObservable>(std::any{ std::move(value) }) };
+        return Single{ std::make_shared<internal::JustObservable>(std::any{ std::move(value) }) };
     }
 
     static Single Throw(std::exception_ptr error) {
-        return Single{ std::make_shared<zaf::internal::ThrowObservable>(std::move(error)) };
+        return Single{ std::make_shared<internal::ThrowObservable>(std::move(error)) };
     }
 
     template<typename E>
@@ -32,7 +32,7 @@ public:
     }
 
     static Single Never() {
-        return Single{ zaf::internal::NeverObservable::Instance() };
+        return Single{ internal::NeverObservable::Instance() };
     }
 
 public:
@@ -47,7 +47,7 @@ public:
         return Subscription{ core_->Subscribe(observer.Core()) };
     }
 
-    const std::shared_ptr<zaf::internal::ObservableCore>& Core() const noexcept {
+    const std::shared_ptr<internal::ObservableCore>& Core() const noexcept {
         return core_;
     }
 
@@ -66,13 +66,13 @@ public:
 private:
     friend class zaf::rx::internal::SingleFactory<T>;
 
-    explicit Single(std::shared_ptr<zaf::internal::ObservableCore> core) noexcept :
+    explicit Single(std::shared_ptr<internal::ObservableCore> core) noexcept :
         core_(std::move(core)) {
 
     }
 
 private:
-    std::shared_ptr<zaf::internal::ObservableCore> core_;
+    std::shared_ptr<internal::ObservableCore> core_;
 };
 
 }

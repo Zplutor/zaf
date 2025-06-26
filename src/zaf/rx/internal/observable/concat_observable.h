@@ -1,6 +1,6 @@
 #include <zaf/rx/internal/observable/observable_core.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 using ObservableList = std::vector<std::shared_ptr<ObservableCore>>;
 

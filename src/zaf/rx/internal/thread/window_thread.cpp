@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/thread/window_thread.h>
 #include <zaf/base/error/win32_error.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 namespace {
 
 constexpr const wchar_t* const WindowClassName = L"ZafWindowedThreadWindowClass";

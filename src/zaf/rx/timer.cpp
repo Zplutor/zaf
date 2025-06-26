@@ -10,7 +10,7 @@ Observable<int> CreateTimerObservable(
     std::optional<std::chrono::steady_clock::duration> interval,
     std::shared_ptr<Scheduler> scheduler) {
 
-    auto timer_observable = std::make_shared<zaf::internal::TimerObservable>(
+    auto timer_observable = std::make_shared<internal::TimerObservable>(
         std::move(delay),
         std::move(interval),
         std::move(scheduler));

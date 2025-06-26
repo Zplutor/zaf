@@ -3,7 +3,7 @@
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/internal/operator/catch_handler.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class CatchOperator : public ObservableCore {
 public:

@@ -3,7 +3,7 @@
 #include <zaf/rx/internal/thread/thread_manager.h>
 #include <zaf/rx/internal/timer_manager.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class RxRuntime {
 public:

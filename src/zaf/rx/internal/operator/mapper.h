@@ -3,7 +3,7 @@
 #include <any>
 #include <functional>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 using Mapper = std::function<std::any(const std::any&)>;
 

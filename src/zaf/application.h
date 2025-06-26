@@ -11,13 +11,16 @@
 #include <zaf/rx/subject.h>
 #include <zaf/rx/subscription_host.h>
 
+namespace zaf::rx::internal {
+class RxRuntime;
+}
+
 namespace zaf {
 namespace crypto::internal {
 class CryptoManager;
 }
 
 namespace internal {
-class RxRuntime;
 class SystemMessageWindow;
 }
 
@@ -217,8 +220,8 @@ private:
     void UnregisterShownWindow(const std::shared_ptr<WindowHolder>& window_holder);
 
 private:
-    friend class internal::RxRuntime;
-    internal::RxRuntime& GetRxRuntime() const {
+    friend class rx::internal::RxRuntime;
+    rx::internal::RxRuntime& GetRxRuntime() const {
         return *rx_runtime_;
     }
 
@@ -239,7 +242,7 @@ private:
 private:
     bool is_initialized_;
 
-    std::unique_ptr<internal::RxRuntime> rx_runtime_;
+    std::unique_ptr<rx::internal::RxRuntime> rx_runtime_;
     std::unique_ptr<ResourceFactory> resource_factory_;
     std::unique_ptr<GraphicFactory> graphic_factory_;
     std::unique_ptr<wic::ImagingFactory> imaging_factory_;

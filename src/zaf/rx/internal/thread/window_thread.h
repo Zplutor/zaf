@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <zaf/rx/internal/thread/thread.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class WindowThread : public Thread {
 public:

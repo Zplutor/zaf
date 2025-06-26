@@ -4,7 +4,7 @@
 #include <zaf/rx/internal/thread/run_loop_thread.h>
 #include <zaf/rx/internal/thread/window_thread.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class ThreadManager {
 public:

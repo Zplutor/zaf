@@ -4,7 +4,7 @@
 #include <zaf/rx/internal/producer.h>
 #include <zaf/rx/internal/subscription/inner_subscription.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 namespace {
 
 class ConcatProducer : public Producer, public ObserverCore {

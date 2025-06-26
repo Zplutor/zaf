@@ -5,7 +5,7 @@
 #include <thread>
 #include <zaf/rx/internal/thread/thread.h>
 
-namespace zaf::internal {
+namespace zaf::rx::internal {
 
 class RunLoopThread : public Thread {
 public:
