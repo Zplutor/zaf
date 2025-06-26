@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/rx/subject.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 TEST(RxDoTest, OnNext) {
 
@@ -215,7 +215,7 @@ TEST(RxDoTest, CircularReference) {
     auto observable = subject.AsObservable().Do([](int) {});
     auto subscription = observable.Subscribe();
 
-    std::weak_ptr<zaf::rx::internal::Producer> weak_ptr = subscription.Inner()->Producer();
+    std::weak_ptr<zaf::rx::internal::Producer> weak_ptr = subscription.Core()->Producer();
     subscription = {};
 
     auto shared_ptr = weak_ptr.lock();

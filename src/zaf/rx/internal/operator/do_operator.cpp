@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/operator/do_operator.h>
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/observer_core.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::rx::internal {
@@ -44,7 +44,7 @@ public:
     }
 
 private:
-    std::shared_ptr<InnerSubscription> source_subscription_;
+    std::shared_ptr<SubscriptionCore> source_subscription_;
     std::shared_ptr<ObserverCore> do_observer_;
 };
 
@@ -60,12 +60,12 @@ DoOperator::DoOperator(
 }
 
 
-std::shared_ptr<InnerSubscription> DoOperator::Subscribe(
+std::shared_ptr<SubscriptionCore> DoOperator::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<DoProducer>(observer, do_observer_);
     producer->Run(source_);
-    return std::make_shared<InnerSubscription>(std::move(producer));
+    return std::make_shared<SubscriptionCore>(std::move(producer));
 }
 
 }

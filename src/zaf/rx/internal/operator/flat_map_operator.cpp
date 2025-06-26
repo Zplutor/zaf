@@ -5,7 +5,7 @@
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/operator/flat_map_operator.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -81,9 +81,9 @@ public:
     }
 
 private:
-    std::shared_ptr<InnerSubscription> OnMapperSubFinished(std::size_t sub_id) {
+    std::shared_ptr<SubscriptionCore> OnMapperSubFinished(std::size_t sub_id) {
 
-        std::shared_ptr<InnerSubscription> sub;
+        std::shared_ptr<SubscriptionCore> sub;
         auto iterator = emitting_mapper_subs_.find(sub_id);
         if (iterator != emitting_mapper_subs_.end()) {
 
@@ -113,12 +113,12 @@ private:
     }
 
 private:
-    std::shared_ptr<InnerSubscription> source_subscription_;
+    std::shared_ptr<SubscriptionCore> source_subscription_;
     FlatMapper mapper_;
     std::size_t mapper_subs_count_{};
 
     bool is_source_finished_{};
-    std::map<std::size_t, std::shared_ptr<InnerSubscription>> emitting_mapper_subs_;
+    std::map<std::size_t, std::shared_ptr<SubscriptionCore>> emitting_mapper_subs_;
     std::set<std::size_t> finished_mapper_subs_;
 };
 
@@ -131,12 +131,12 @@ FlatMapOperator::FlatMapOperator(std::shared_ptr<ObservableCore> source, FlatMap
 }
 
 
-std::shared_ptr<InnerSubscription> FlatMapOperator::Subscribe(
+std::shared_ptr<SubscriptionCore> FlatMapOperator::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<FlatMapProducer>(observer, mapper_);
     producer->Run(source_);
-    return std::make_shared<InnerSubscription>(std::move(producer));
+    return std::make_shared<SubscriptionCore>(std::move(producer));
 }
 
 }

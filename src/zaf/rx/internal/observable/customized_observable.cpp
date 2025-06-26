@@ -2,7 +2,7 @@
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/error/error.h>
 #include <zaf/rx/internal/observer_core.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 
@@ -12,7 +12,7 @@ CustomizedObservable::CustomizedObservable(Procedure procedure) : procedure_(std
 }
 
 
-std::shared_ptr<InnerSubscription> CustomizedObservable::Subscribe(
+std::shared_ptr<SubscriptionCore> CustomizedObservable::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     try {
@@ -20,7 +20,7 @@ std::shared_ptr<InnerSubscription> CustomizedObservable::Subscribe(
     }
     catch (...) {
         observer->OnError(std::current_exception());
-        return InnerSubscription::Empty();
+        return SubscriptionCore::Empty();
     }
 }
 

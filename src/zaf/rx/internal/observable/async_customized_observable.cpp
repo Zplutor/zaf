@@ -3,7 +3,7 @@
 #include <zaf/base/error/error.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/observable/customized_observable.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::rx::internal {
@@ -12,7 +12,7 @@ namespace {
 class AsyncProducer : public Producer {
 public:
     AsyncProducer(
-        std::shared_ptr<InnerSubscription> subscription,
+        std::shared_ptr<SubscriptionCore> subscription,
         CancelTokenSource cancel_token_source)
         :
         Producer(nullptr),
@@ -30,7 +30,7 @@ protected:
     }
 
 private:
-    std::shared_ptr<InnerSubscription> subscription_;
+    std::shared_ptr<SubscriptionCore> subscription_;
     CancelTokenSource cancel_token_source_;
 };
 
@@ -49,7 +49,7 @@ AsyncCustomizedObservable::AsyncCustomizedObservable(
 }
 
 
-std::shared_ptr<InnerSubscription> AsyncCustomizedObservable::Subscribe(
+std::shared_ptr<SubscriptionCore> AsyncCustomizedObservable::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     CancelTokenSource cancel_token_source;
@@ -64,7 +64,7 @@ std::shared_ptr<InnerSubscription> AsyncCustomizedObservable::Subscribe(
             observer->OnError(std::current_exception());
         }
 
-        return InnerSubscription::Empty();
+        return SubscriptionCore::Empty();
     };
 
     auto nested_observable = std::make_shared<CustomizedObservable>(nested_procedure);
@@ -74,7 +74,7 @@ std::shared_ptr<InnerSubscription> AsyncCustomizedObservable::Subscribe(
         nested_subscription, 
         cancel_token_source);
 
-    return std::make_shared<InnerSubscription>(producer);
+    return std::make_shared<SubscriptionCore>(producer);
 }
 
 

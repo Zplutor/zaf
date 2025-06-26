@@ -1,6 +1,6 @@
 #include <zaf/rx/internal/observable/empty_observable.h>
 #include <zaf/rx/internal/observer_core.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 
@@ -10,11 +10,11 @@ const std::shared_ptr<EmptyObservable>& EmptyObservable::Instance() {
 }
 
 
-std::shared_ptr<InnerSubscription> EmptyObservable::Subscribe(
+std::shared_ptr<SubscriptionCore> EmptyObservable::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     observer->OnCompleted();
-    return InnerSubscription::Empty();
+    return SubscriptionCore::Empty();
 }
 
 }

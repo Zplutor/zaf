@@ -3,7 +3,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -45,7 +45,7 @@ public:
     }
 
 private:
-    std::shared_ptr<InnerSubscription> source_subscription_;
+    std::shared_ptr<SubscriptionCore> source_subscription_;
     Work finally_work_;
 };
 
@@ -59,12 +59,12 @@ FinallyOperator::FinallyOperator(std::shared_ptr<ObservableCore> source, Work fi
 }
 
 
-std::shared_ptr<InnerSubscription> FinallyOperator::Subscribe(
+std::shared_ptr<SubscriptionCore> FinallyOperator::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<FinallyProducer>(observer, finally_work_);
     producer->Run(source_);
-    return std::make_shared<InnerSubscription>(std::move(producer));
+    return std::make_shared<SubscriptionCore>(std::move(producer));
 }
 
 }

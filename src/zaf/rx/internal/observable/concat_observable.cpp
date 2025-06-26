@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -80,7 +80,7 @@ private:
     //Refer to ConcatObservable directly to avoid additional memory allocation.
     std::shared_ptr<ConcatObservable> concat_observable_;
     std::optional<std::size_t> current_index_{};
-    std::shared_ptr<InnerSubscription> current_sub_;
+    std::shared_ptr<SubscriptionCore> current_sub_;
 };
 
 }
@@ -91,7 +91,7 @@ ConcatObservable::ConcatObservable(ObservableList observables) :
 }
 
 
-std::shared_ptr<InnerSubscription> ConcatObservable::Subscribe(
+std::shared_ptr<SubscriptionCore> ConcatObservable::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<ConcatProducer>(
@@ -99,7 +99,7 @@ std::shared_ptr<InnerSubscription> ConcatObservable::Subscribe(
         observer);
 
     producer->Run();
-    return std::make_shared<InnerSubscription>(std::move(producer));
+    return std::make_shared<SubscriptionCore>(std::move(producer));
 }
 
 }

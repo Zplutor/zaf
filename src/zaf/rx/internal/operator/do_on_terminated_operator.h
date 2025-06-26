@@ -11,7 +11,7 @@ public:
         std::shared_ptr<ObservableCore> source,
         Work on_terminated);
 
-    std::shared_ptr<InnerSubscription> Subscribe(
+    std::shared_ptr<SubscriptionCore> Subscribe(
         const std::shared_ptr<ObserverCore>& observer) override;
 
 private:

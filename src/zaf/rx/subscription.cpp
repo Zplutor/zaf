@@ -1,29 +1,29 @@
 #include <zaf/rx/subscription.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf {
 
-Subscription::Subscription() : inner_(rx::internal::InnerSubscription::Empty()) {
+Subscription::Subscription() : core_(rx::internal::SubscriptionCore::Empty()) {
 
 }
 
 
-Subscription::Subscription(Subscription&& other) : inner_(std::move(other.inner_)) {
+Subscription::Subscription(Subscription&& other) : core_(std::move(other.core_)) {
 
-    other.inner_ = rx::internal::InnerSubscription::Empty();
+    other.core_ = rx::internal::SubscriptionCore::Empty();
 }
 
 
 Subscription& Subscription::operator=(Subscription&& other) {
 
-    inner_ = std::move(other.inner_);
-    other.inner_ = rx::internal::InnerSubscription::Empty();
+    core_ = std::move(other.core_);
+    other.core_ = rx::internal::SubscriptionCore::Empty();
     return *this;
 }
 
 
 void Subscription::Unsubscribe() {
-    inner_->Unsubscribe();
+    core_->Unsubscribe();
 }
 
 }

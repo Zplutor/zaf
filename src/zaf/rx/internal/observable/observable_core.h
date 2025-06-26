@@ -14,7 +14,7 @@ class Scheduler;
 namespace rx::internal {
 
 class ObserverCore;
-class InnerSubscription;
+class SubscriptionCore;
 
 class ObservableCore : public std::enable_shared_from_this<ObservableCore> {
 public:
@@ -24,7 +24,7 @@ public:
     ObservableCore(const ObservableCore&) = delete;
     ObservableCore& operator=(const ObservableCore&) = delete;
 
-    virtual std::shared_ptr<InnerSubscription> Subscribe(
+    virtual std::shared_ptr<SubscriptionCore> Subscribe(
         const std::shared_ptr<ObserverCore>& observer) = 0;
 
     std::shared_ptr<ObservableCore> SubscribeOn(std::shared_ptr<Scheduler> scheduler);

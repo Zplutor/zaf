@@ -1,6 +1,6 @@
 #include <zaf/rx/internal/observable/throw_observable.h>
 #include <zaf/rx/internal/observer_core.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 
@@ -9,11 +9,11 @@ ThrowObservable::ThrowObservable(std::exception_ptr error) : error_(std::move(er
 }
 
 
-std::shared_ptr<InnerSubscription> ThrowObservable::Subscribe(
+std::shared_ptr<SubscriptionCore> ThrowObservable::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     observer->OnError(error_);
-    return InnerSubscription::Empty();
+    return SubscriptionCore::Empty();
 }
 
 }

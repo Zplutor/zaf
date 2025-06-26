@@ -10,7 +10,7 @@ public:
         std::shared_ptr<ObservableCore> source,
         std::shared_ptr<ObserverCore> do_observer);
 
-    std::shared_ptr<InnerSubscription> Subscribe(
+    std::shared_ptr<SubscriptionCore> Subscribe(
         const std::shared_ptr<ObserverCore>& observer) override;
 
 private:

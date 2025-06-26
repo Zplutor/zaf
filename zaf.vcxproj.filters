@@ -436,7 +436,7 @@
     <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription_set.cpp">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription.cpp">
+    <ClCompile Include="src\zaf\rx\internal\subscription\subscription_core.cpp">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core_indirect.cpp">
@@ -1747,7 +1747,7 @@
     <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_set.h">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription.h">
+    <ClInclude Include="src\zaf\rx\internal\subscription\subscription_core.h">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core_indirect.h">

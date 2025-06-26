@@ -48,7 +48,7 @@ public:
     /**
     Disposes the producer.
 
-    This method is called by InnerSubscription to cancel subscription and to do clean up work.
+    This method is called by SubscriptionCore to cancel subscription and to do clean up work.
     It's legal to call this method multiple times, only the first call would take effect.
     */
     void Dispose();
@@ -63,11 +63,11 @@ protected:
     virtual void OnDispose() = 0;
 
 private:
-    friend class InnerSubscription;
+    friend class SubscriptionCore;
 
     using TerminateNotification = std::function<void()>;
 
-    //Call by InnerSubscription to get notified when producer terminates and then diposes the 
+    //Call by SubscriptionCore to get notified when producer terminates and then diposes the 
     //producer.
     void RegisterTerminateNotification(TerminateNotification callback);
 

@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/operator/observe_on_operator.h>
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/observer_core.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::rx::internal {
@@ -74,7 +74,7 @@ private:
 
 private:
     std::shared_ptr<Scheduler> scheduler_;
-    std::shared_ptr<InnerSubscription> source_subscription_;
+    std::shared_ptr<SubscriptionCore> source_subscription_;
     std::atomic<bool> is_unsubscribed_{ false };
 };
 
@@ -90,12 +90,12 @@ ObserveOnOperator::ObserveOnOperator(
 }
 
 
-std::shared_ptr<InnerSubscription> ObserveOnOperator::Subscribe(
+std::shared_ptr<SubscriptionCore> ObserveOnOperator::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<ObserveOnProducer>(observer, scheduler_);
     producer->Run(source_);
-    return std::make_shared<InnerSubscription>(producer);
+    return std::make_shared<SubscriptionCore>(producer);
 }
 
 }

@@ -3,7 +3,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -45,7 +45,7 @@ public:
     }
 
 private:
-    std::shared_ptr<InnerSubscription> source_subscription_;
+    std::shared_ptr<SubscriptionCore> source_subscription_;
     Work on_terminated_;
 };
 
@@ -62,12 +62,12 @@ DoOnTerminatedOperator::DoOnTerminatedOperator(
 }
 
 
-std::shared_ptr<InnerSubscription> DoOnTerminatedOperator::Subscribe(
+std::shared_ptr<SubscriptionCore> DoOnTerminatedOperator::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<DoOnTerminatedProducer>(observer, on_terminated_);
     producer->Run(source_);
-    return std::make_shared<InnerSubscription>(std::move(producer));
+    return std::make_shared<SubscriptionCore>(std::move(producer));
 }
 
 }

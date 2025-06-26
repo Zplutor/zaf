@@ -9,7 +9,7 @@ class ThrowObservable : public ObservableCore {
 public:
     explicit ThrowObservable(std::exception_ptr error);
 
-    std::shared_ptr<InnerSubscription> Subscribe(
+    std::shared_ptr<SubscriptionCore> Subscribe(
         const std::shared_ptr<ObserverCore>& observer) override;
 
 private:

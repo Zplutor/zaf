@@ -7,13 +7,13 @@ namespace zaf::rx::internal {
 
 class Producer;
 
-class InnerSubscription : NonCopyableNonMovable {
+class SubscriptionCore : NonCopyableNonMovable {
 public:
-    static const std::shared_ptr<InnerSubscription>& Empty();
+    static const std::shared_ptr<SubscriptionCore>& Empty();
 
 public:
-    InnerSubscription(std::shared_ptr<internal::Producer> producer);
-    ~InnerSubscription();
+    SubscriptionCore(std::shared_ptr<internal::Producer> producer);
+    ~SubscriptionCore();
 
     void Unsubscribe();
 

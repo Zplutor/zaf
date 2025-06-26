@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/operator/map_operator.h>
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -60,7 +60,7 @@ private:
     }
 
 private:
-    std::shared_ptr<InnerSubscription> source_subscription_;
+    std::shared_ptr<SubscriptionCore> source_subscription_;
     Mapper mapper_;
 };
 
@@ -73,12 +73,12 @@ MapOperator::MapOperator(std::shared_ptr<ObservableCore> source, Mapper mapper) 
 }
 
 
-std::shared_ptr<InnerSubscription> MapOperator::Subscribe(
+std::shared_ptr<SubscriptionCore> MapOperator::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<MapProducer>(observer, mapper_);
     producer->Run(source_);
-    return std::make_shared<InnerSubscription>(std::move(producer));
+    return std::make_shared<SubscriptionCore>(std::move(producer));
 }
 
 }

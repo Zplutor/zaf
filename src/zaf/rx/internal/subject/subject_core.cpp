@@ -1,7 +1,7 @@
 ﻿#include <zaf/rx/internal/subject/subject_core.h>
 #include <algorithm>
 #include <zaf/base/container/utility/erase.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -37,7 +37,7 @@ SubjectCore::~SubjectCore() {
 }
 
 
-std::shared_ptr<InnerSubscription> SubjectCore::Subscribe(
+std::shared_ptr<SubscriptionCore> SubjectCore::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     auto producer = std::make_shared<SubjectProducer>(
@@ -46,7 +46,7 @@ std::shared_ptr<InnerSubscription> SubjectCore::Subscribe(
    
     producers_.push_back(producer);
 
-    return std::make_shared<InnerSubscription>(producer);
+    return std::make_shared<SubscriptionCore>(producer);
 }
 
 

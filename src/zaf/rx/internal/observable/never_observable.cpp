@@ -1,5 +1,5 @@
 #include <zaf/rx/internal/observable/never_observable.h>
-#include <zaf/rx/internal/subscription/inner_subscription.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 
@@ -10,10 +10,10 @@ const std::shared_ptr<NeverObservable>& NeverObservable::Instance() {
 }
 
 
-std::shared_ptr<InnerSubscription> NeverObservable::Subscribe(
+std::shared_ptr<SubscriptionCore> NeverObservable::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
-    return InnerSubscription::Empty();
+    return SubscriptionCore::Empty();
 }
 
 }

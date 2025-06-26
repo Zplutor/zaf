@@ -15,13 +15,13 @@ SubscriptionSet::~SubscriptionSet() {
 
 
 SubscriptionSet& SubscriptionSet::operator+=(const Subscription& subscription) {
-    inner_->Add(subscription.Inner());
+    inner_->Add(subscription.Core());
     return *this;
 }
 
 
 SubscriptionSet& SubscriptionSet::operator+=(const TagItem& item) {
-    inner_->Add(item.tag, item.subscription.Inner());
+    inner_->Add(item.tag, item.subscription.Core());
     return *this;
 }
 

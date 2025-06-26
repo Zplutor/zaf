@@ -8,7 +8,7 @@ class JustObservable : public ObservableCore {
 public:
     JustObservable(std::any value);
 
-    std::shared_ptr<InnerSubscription> Subscribe(
+    std::shared_ptr<SubscriptionCore> Subscribe(
         const std::shared_ptr<ObserverCore>& observer) override;
 
 private:

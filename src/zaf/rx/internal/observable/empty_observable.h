@@ -7,7 +7,7 @@ public:
     static const std::shared_ptr<EmptyObservable>& Instance();
 
 public:
-    std::shared_ptr<InnerSubscription> Subscribe(
+    std::shared_ptr<SubscriptionCore> Subscribe(
         const std::shared_ptr<ObserverCore>& observer) override;
 
 private:
