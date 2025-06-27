@@ -31,7 +31,7 @@ TEST(RxCatchTest, Catch) {
         zaf::Subject<int> subject;
         test_data.sub = subject.AsObservable().Catch([](const std::exception_ptr& error) {
 
-            auto new_subject = zaf::rx::ReplaySubject<int>::Create();
+            zaf::rx::ReplaySubject<int> new_subject;
 
             try {
                 std::rethrow_exception(error);

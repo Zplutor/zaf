@@ -4,7 +4,6 @@
 #include <zaf/rx/creation.h>
 #include <zaf/rx/replay_subject.h>
 
-static_assert(!std::is_default_constructible_v<zaf::rx::ReplaySubject<int>>);
 static_assert(!std::is_copy_assignable_v<zaf::rx::ReplaySubject<int>>);
 static_assert(!std::is_copy_constructible_v<zaf::rx::ReplaySubject<int>>);
 static_assert(std::is_move_assignable_v<zaf::rx::ReplaySubject<int>>);
@@ -13,7 +12,7 @@ static_assert(std::is_move_constructible_v<zaf::rx::ReplaySubject<int>>);
 
 TEST(RxReplaySubjectTest, Replay) {
 
-    auto subject = zaf::rx::ReplaySubject<int>::Create();
+    zaf::rx::ReplaySubject<int> subject;
 
     auto observer = subject.AsObserver();
     observer.OnNext(8);
@@ -55,7 +54,7 @@ TEST(RxReplaySubjectTest, ReplayWithSize) {
 
     //Zero size.
     {
-        auto subject = zaf::rx::ReplaySubject<int>::Create(0);
+        zaf::rx::ReplaySubject<int> subject{ 0 };
         auto observer = subject.AsObserver();
         observer.OnNext(1);
         observer.OnNext(2);
@@ -70,7 +69,7 @@ TEST(RxReplaySubjectTest, ReplayWithSize) {
 
     //None zero size.
     {
-        auto subject = zaf::rx::ReplaySubject<int>::Create(3);
+        zaf::rx::ReplaySubject<int> subject{ 3 };
         auto observer = subject.AsObserver();
         observer.OnNext(1);
         observer.OnNext(2);
@@ -91,7 +90,7 @@ TEST(RxReplaySubjectTest, ReplayWithSize) {
 
 TEST(RxReplaySubjectTest, ReplayError) {
 
-    auto subject = zaf::rx::ReplaySubject<int>::Create();
+    zaf::rx::ReplaySubject<int> subject;
 
     auto observer = subject.AsObserver();
     observer.OnNext(8);
@@ -122,7 +121,7 @@ TEST(RxReplaySubjectTest, EmitAfterTermination) {
 
     //Emit after normal termination.
     {
-        auto subject = zaf::rx::ReplaySubject<int>::Create();
+        zaf::rx::ReplaySubject<int> subject;
         auto observer = subject.AsObserver();
         observer.OnNext(1);
         observer.OnNext(2);
@@ -152,7 +151,7 @@ TEST(RxReplaySubjectTest, EmitAfterTermination) {
 
     //Emit after error termination.
     {
-        auto subject = zaf::rx::ReplaySubject<int>::Create();
+        zaf::rx::ReplaySubject<int> subject;
         auto observer = subject.AsObserver();
         observer.OnNext(1);
         observer.OnNext(2);
@@ -186,7 +185,7 @@ TEST(RxReplaySubjectTest, EmitAfterTermination) {
 TEST(RxReplaySubjectTest, DestroySubjectDuringEmission) {
 
     std::optional<zaf::rx::ReplaySubject<int>> subject;
-    subject.emplace(zaf::rx::ReplaySubject<int>::Create());
+    subject.emplace();
 
     subject->AsObserver().OnNext(0);
     subject->AsObserver().OnNext(1);

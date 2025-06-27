@@ -28,7 +28,7 @@ TEST(RxConcatTest, EmptyObservable) {
 
 TEST(RxConcatTest, OneObservable) {
 
-    auto subject = rx::ReplaySubject<int>::Create();
+    zaf::rx::ReplaySubject<int> subject;
     subject.AsObserver().OnNext(0);
     subject.AsObserver().OnNext(1);
     subject.AsObserver().OnNext(2);
@@ -54,17 +54,17 @@ TEST(RxConcatTest, OneObservable) {
 
 TEST(RxConcatTest, MultipleObservables) {
 
-    auto subject1 = rx::ReplaySubject<int>::Create();
+    zaf::rx::ReplaySubject<int> subject1;
     subject1.AsObserver().OnNext(0);
     subject1.AsObserver().OnNext(1);
     subject1.AsObserver().OnNext(2);
     subject1.AsObserver().OnCompleted();
 
-    auto subject2 = rx::ReplaySubject<int>::Create();
+    zaf::rx::ReplaySubject<int> subject2;
     subject2.AsObserver().OnNext(4);
     subject2.AsObserver().OnCompleted();
 
-    auto subject3 = rx::ReplaySubject<int>::Create();
+    zaf::rx::ReplaySubject<int> subject3;
     subject3.AsObserver().OnNext(10);
     subject3.AsObserver().OnNext(11);
     subject3.AsObserver().OnCompleted();
@@ -93,11 +93,11 @@ TEST(RxConcatTest, MultipleObservables) {
 
 TEST(RxConcatTest, NoOnCompleted) {
 
-    auto subject1 = rx::ReplaySubject<int>::Create();
+    zaf::rx::ReplaySubject<int> subject1;
     subject1.AsObserver().OnNext(0);
     subject1.AsObserver().OnNext(1);
 
-    auto subject2 = rx::ReplaySubject<int>::Create();
+    zaf::rx::ReplaySubject<int> subject2;
     subject2.AsObserver().OnNext(4);
     subject2.AsObserver().OnCompleted();
 
@@ -121,11 +121,11 @@ TEST(RxConcatTest, NoOnCompleted) {
 
 TEST(RxConcatTest, OnError) {
 
-    auto subject1 = rx::ReplaySubject<int>::Create();
+    zaf::rx::ReplaySubject<int> subject1;
     subject1.AsObserver().OnNext(0);
     subject1.AsObserver().OnError(std::string{});
 
-    auto subject2 = rx::ReplaySubject<int>::Create();
+    zaf::rx::ReplaySubject<int> subject2;
     subject2.AsObserver().OnNext(4);
     subject2.AsObserver().OnCompleted();
 
@@ -150,11 +150,11 @@ TEST(RxConcatTest, OnError) {
 //Make sure the initializer list can be used.
 TEST(RxConcatTest, InitializerList) {
 
-    auto subject1 = rx::ReplaySubject<int>::Create();
+    zaf::rx::ReplaySubject<int> subject1;
     subject1.AsObserver().OnNext(0);
     subject1.AsObserver().OnCompleted();
 
-    auto subject2 = rx::ReplaySubject<int>::Create();
+    zaf::rx::ReplaySubject<int> subject2;
     subject2.AsObserver().OnNext(0);
     subject2.AsObserver().OnCompleted();
 
