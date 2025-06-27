@@ -4,7 +4,7 @@
 
 TEST(RxSingleSubjectTest, OnSuccess) {
 
-    auto subject = zaf::rx::SingleSubject<int>::Create();
+    zaf::rx::SingleSubject<int> subject;
 
     std::vector<int> values;
     bool on_error_called{};
@@ -25,7 +25,7 @@ TEST(RxSingleSubjectTest, OnSuccess) {
 
 TEST(RxSingleSubjectTest, OnError) {
 
-    auto subject = zaf::rx::SingleSubject<int>::Create();
+    zaf::rx::SingleSubject<int> subject;
 
     bool on_success_called{};
     bool on_error_called{};

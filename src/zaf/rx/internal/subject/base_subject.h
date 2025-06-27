@@ -18,20 +18,20 @@ public:
     BaseSubject(BaseSubject&&) = default;
     BaseSubject& operator=(BaseSubject&&) = default;
 
-    Observable<T> AsObservable() const {
+    Observable<T> AsObservable() const noexcept {
         return Observable<T>{ internal::AsObservableCore(core_) };
     }
 
-    Observer<T> AsObserver() const {
+    Observer<T> AsObserver() const noexcept {
         return Observer<T>{ internal::AsObserverCore(core_) };
     }
 
-    const std::shared_ptr<internal::SubjectCore>& Core() const {
+    const std::shared_ptr<internal::SubjectCore>& Core() const noexcept {
         return core_;
     }
 
 protected:
-    explicit BaseSubject(std::shared_ptr<internal::SubjectCore> core) : 
+    explicit BaseSubject(std::shared_ptr<internal::SubjectCore> core) noexcept : 
         core_(std::move(core)) { }
 
 private:
