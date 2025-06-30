@@ -3064,5 +3064,17 @@
     <ClInclude Include="src\zaf\rx\base_observable.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\rx\continuous.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\continuous_observer.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\continuous_subject.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\continuous_factory.h">
+      <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

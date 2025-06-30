@@ -903,6 +903,10 @@
     <ClInclude Include="src\zaf\rx\base_observable.h" />
     <ClInclude Include="src\zaf\rx\cancel.h" />
     <ClInclude Include="src\zaf\rx\creation.h" />
+    <ClInclude Include="src\zaf\rx\continuous.h" />
+    <ClInclude Include="src\zaf\rx\continuous_observer.h" />
+    <ClInclude Include="src\zaf\rx\continuous_subject.h" />
+    <ClInclude Include="src\zaf\rx\internal\continuous_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\observer_core.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\async_customized_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\concat_observable.h" />
