@@ -900,6 +900,7 @@
     <ClInclude Include="src\zaf\resource\invalid_uri_error.h" />
     <ClInclude Include="src\zaf\resource\resource_factory.h" />
     <ClInclude Include="src\zaf\resource\uri_loader.h" />
+    <ClInclude Include="src\zaf\rx\base_observable.h" />
     <ClInclude Include="src\zaf\rx\cancel.h" />
     <ClInclude Include="src\zaf\rx\creation.h" />
     <ClInclude Include="src\zaf\rx\internal\observer_core.h" />

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/rx/internal/observable/observable_core.h>
+#include <zaf/rx/base_observable.h>
 #include <zaf/rx/internal/observable/just_observable.h>
 #include <zaf/rx/internal/observable/never_observable.h>
 #include <zaf/rx/internal/observable/throw_observable.h>
@@ -16,7 +16,7 @@ class SingleFactory;
 namespace zaf::rx {
 
 template<typename T>
-class Single {
+class Single : public BaseObservable<Single, T> {
 public:
     static Single Just(T value) {
         return Single{ std::make_shared<internal::JustObservable>(std::any{ std::move(value) }) };
@@ -49,7 +49,7 @@ public:
     [[nodiscard]]
     Subscription Subscribe(OnSuccess<T> on_success, OnError on_error) {
         auto observer = SingleObserver<T>::Create(std::move(on_success), std::move(on_error));
-        return Subscription{ core_->Subscribe(observer.Core()) };
+        return Subscription{ this->Core()->Subscribe(observer.Core())};
     }
 
     Single Do(OnSuccess<T> on_success) {
@@ -61,7 +61,7 @@ public:
     }
 
     Single Do(const SingleObserver<T>& observer) {
-        return Single{ core_->Do(observer.Core()) };
+        return Single{ this->Core()->Do(observer.Core()) };
     }
 
     Single DoOnError(OnError on_error) {
@@ -85,34 +85,6 @@ public:
             });
     }
 
-    Single DoOnTerminated(Work work) {
-        return Single{ core_->DoOnTerminated(std::move(work)) };
-    }
-
-    Single Finally(Work work) {
-        return Single{ core_->Finally(std::move(work)) };
-    }
-
-    template<typename K>
-    Single<K> Map(std::function<K(const T&)> mapper) {
-        auto new_core = core_->Map([mapper = std::move(mapper)](const std::any& value) {
-            return mapper(std::any_cast<T>(value));
-        });
-        return Single<K>{ std::move(new_core) };
-    }
-
-    template<typename K>
-    Single<K> FlatMap(std::function<Single<K>(const T&)> mapper) {
-        auto new_core = core_->FlatMap([mapper = std::move(mapper)](const std::any& value) {
-            return mapper(std::any_cast<T>(value)).Core();
-        });
-        return Single<K>{ std::move(new_core) };
-    }
-
-    const std::shared_ptr<internal::ObservableCore>& Core() const noexcept {
-        return core_;
-    }
-
     /**
     Converts a single to an observable implicitly.
 
@@ -122,22 +94,24 @@ public:
         specialized type of `Observable<>`.
     */
     operator Observable<T>() const noexcept {
-        return Observable<T>{ core_ };
+        return Observable<T>{ this->Core() };
     }
 
 private:
-    template<typename U>
+    template<typename K>
     friend class Single;
+
+    friend class BaseObservable<Single, T>;
+
+    template<template<typename> typename OBSERVABLE, typename K>
+    friend class BaseObservable;
 
     friend class zaf::rx::internal::SingleFactory<T>;
 
-    explicit Single(std::shared_ptr<internal::ObservableCore> core) noexcept :
-        core_(std::move(core)) {
+    explicit Single(std::shared_ptr<internal::ObservableCore> core) noexcept : 
+        BaseObservable<Single, T>(std::move(core)) {
 
     }
-
-private:
-    std::shared_ptr<internal::ObservableCore> core_;
 };
 
 }

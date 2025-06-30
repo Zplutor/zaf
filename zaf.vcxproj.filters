@@ -3061,5 +3061,8 @@
     <ClInclude Include="src\zaf\rx\internal\single_factory.h">
       <Filter>zaf\rx\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\rx\base_observable.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
