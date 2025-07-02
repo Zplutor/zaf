@@ -8,6 +8,15 @@ namespace zaf::rx {
 template<typename T>
 class ContinuousObserver {
 public:
+    static ContinuousObserver Create() {
+        return ContinuousObserver{
+            internal::ObserverCore::Create(
+                nullptr,
+                nullptr,
+                nullptr)
+        };
+    }
+
     static ContinuousObserver Create(OnNext<T> on_next) {
 
         auto on_next_bridge = [on_next = std::move(on_next)](const std::any& value) {

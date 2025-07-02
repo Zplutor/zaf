@@ -11,6 +11,10 @@ using OnSuccess = OnNext<T>;
 template<typename T>
 class SingleObserver {
 public:
+    static SingleObserver Create() {
+        return SingleObserver{ internal::ObserverCore::Create(nullptr, nullptr, nullptr) };
+    }
+
     static SingleObserver Create(OnSuccess<T> on_success) {
         return Create(std::move(on_success), nullptr);
     }
@@ -30,6 +34,12 @@ public:
                 nullptr)
         };
     }
+
+    static SingleObserver Create(OnError on_error) {
+        return SingleObserver{ 
+            internal::ObserverCore::Create(nullptr, std::move(on_error), nullptr) 
+        };
+    }   
 
 public:
     explicit SingleObserver(std::shared_ptr<internal::ObserverCore> core) :

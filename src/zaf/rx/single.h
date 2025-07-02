@@ -1,12 +1,15 @@
 #pragma once
 
 #include <zaf/rx/base_observable.h>
+#include <zaf/rx/error_capability.h>
+#include <zaf/rx/flat_map_capability.h>
 #include <zaf/rx/internal/observable/just_observable.h>
 #include <zaf/rx/internal/observable/never_observable.h>
 #include <zaf/rx/internal/observable/throw_observable.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/single_observer.h>
 #include <zaf/rx/subscription.h>
+#include <zaf/rx/termination_capability.h>
 
 namespace zaf::rx::internal {
 template<typename T>
@@ -16,7 +19,14 @@ class SingleFactory;
 namespace zaf::rx {
 
 template<typename T>
-class Single : public BaseObservable<Single, T> {
+class Single : 
+    public BaseObservable<Single, SingleObserver, T>,
+    public ErrorCapability<Single<T>, SingleObserver<T>>,
+    public TerminationCapability<Single<T>>,
+    public FlatMapCapability<Single, T> {
+
+    using Base = BaseObservable<Single, SingleObserver, T>;
+
 public:
     static Single Just(T value) {
         return Single{ std::make_shared<internal::JustObservable>(std::any{ std::move(value) }) };
@@ -36,10 +46,8 @@ public:
     }
 
 public:
-    [[nodiscard]]
-    Subscription Subscribe() {
-        return Subscribe(nullptr, nullptr);
-    }
+    using Base::Do;
+    using Base::Subscribe;
 
     [[nodiscard]]
     Subscription Subscribe(OnSuccess<T> on_success) {
@@ -60,31 +68,6 @@ public:
         return Do(SingleObserver<T>::Create(std::move(on_success), std::move(on_error)));
     }
 
-    Single Do(const SingleObserver<T>& observer) {
-        return Single{ this->Core()->Do(observer.Core()) };
-    }
-
-    Single DoOnError(OnError on_error) {
-        return Do(nullptr, std::move(on_error));
-    }
-
-    template<typename E>
-    Single DoOnError(std::function<void(const E&)> handler) {
-        return Do(
-            nullptr, 
-            [handler = std::move(handler)](const std::exception_ptr& exception) {
-                try {
-                    std::rethrow_exception(exception);
-                }
-                catch (const E& error) {
-                    handler(error);
-                }
-                catch (...) {
-
-                }
-            });
-    }
-
     /**
     Converts a single to an observable implicitly.
 
@@ -98,18 +81,25 @@ public:
     }
 
 private:
-    template<typename K>
-    friend class Single;
+    friend class BaseObservable<Single, SingleObserver, T>;
+    friend class TerminationCapability<Single<T>>;
+    friend class internal::SingleFactory<T>;
 
-    friend class BaseObservable<Single, T>;
-
-    template<template<typename> typename OBSERVABLE, typename K>
+    template<
+        template<typename> typename OBSERVABLE, 
+        template<typename> typename OBSERVER,
+        typename K
+    >
     friend class BaseObservable;
 
-    friend class zaf::rx::internal::SingleFactory<T>;
+    template<
+        template<typename> typename OBSERVABLE,
+        typename K
+    >
+    friend class FlatMapCapability;
 
     explicit Single(std::shared_ptr<internal::ObservableCore> core) noexcept : 
-        BaseObservable<Single, T>(std::move(core)) {
+        Base(std::move(core)) {
 
     }
 };

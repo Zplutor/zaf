@@ -38,6 +38,10 @@ public:
             std::move(on_completed)));
     }
 
+    static Observer Create(OnError on_error) {
+        return Observer(rx::internal::ObserverCore::Create(nullptr, std::move(on_error), nullptr));
+    }
+
 public:
     explicit Observer(std::shared_ptr<rx::internal::ObserverCore> core) noexcept :
         core_(std::move(core)) { }

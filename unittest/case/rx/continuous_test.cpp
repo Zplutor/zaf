@@ -51,6 +51,19 @@ TEST(RxContinuousTest, ConvertToObservable) {
 }
 
 
+TEST(RxContinuousTest, Do) {
+
+    zaf::rx::ContinuousSubject<int> subject;
+    std::vector<int> values;
+    auto sub = subject.AsContinuous().Do([&](const int& value) {
+        values.push_back(value);
+    }).Subscribe();
+    subject.AsObserver().OnNext(30);
+    subject.AsObserver().OnNext(31);
+    ASSERT_EQ(values, (std::vector<int>{ 30, 31 }));
+}
+
+
 TEST(RxContinuousTest, Map) {
 
     zaf::rx::ContinuousSubject<int> subject;
@@ -64,21 +77,4 @@ TEST(RxContinuousTest, Map) {
     subject.AsObserver().OnNext(57);
     subject.AsObserver().OnNext(58);
     ASSERT_EQ(values, (std::vector<std::string>{ "57", "58" }));
-}
-
-
-TEST(RxContinuousTest, FlatMap) {
-
-    zaf::rx::ContinuousSubject<int> subject;
-    std::vector<std::string> values;
-    auto sub = subject.AsContinuous().FlatMap<std::string>([](const int& value) {
-        zaf::rx::ContinuousSubject<std::string> mapped;
-        mapped.AsObserver().OnNext(std::to_string(value));
-        return mapped.AsContinuous();
-    }).Subscribe(
-        [&](const std::string& value) { values.push_back(value); }
-    );
-    subject.AsObserver().OnNext(0);
-    subject.AsObserver().OnNext(1);
-    ASSERT_EQ(values, (std::vector<std::string>{ "0", "1" }));
 }

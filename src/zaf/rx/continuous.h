@@ -14,27 +14,28 @@ class ContinuousFactory;
 namespace zaf::rx {
 
 template<typename T>
-class Continuous : public BaseObservable<Continuous, T> {
+class Continuous : public BaseObservable<Continuous, ContinuousObserver, T> {
+
+    using Base = BaseObservable<Continuous, ContinuousObserver, T>;
+
 public:
     static Continuous Never() {
         return Continuous{ internal::NeverObservable::Instance() };
     }
 
 public:
-    [[nodiscard]]
-    Subscription Subscribe() {
-        return this->Subscribe(nullptr);
-    }
+    using Base::Do;
+    using Base::Subscribe;
 
     [[nodiscard]] 
     Subscription Subscribe(OnNext<T> on_next) {
         auto observer = ContinuousObserver<T>::Create(std::move(on_next));
-        return Subscription{ this->Core()->Subscribe(observer.Core()) };
+        return this->Subscribe(observer);
     }
 
     Continuous Do(OnNext<T> on_next) {
         auto observer = ContinuousObserver<T>::Create(std::move(on_next));
-        return this->Core()->Do(observer.Core());
+        return this->Do(observer);
     }
 
     operator Observable<T>() const noexcept {
@@ -42,15 +43,18 @@ public:
     }
 
 private:
-    friend class BaseObservable<Continuous, T>;
-
-    template<template<typename> typename OBSERVABLE, typename K>
-    friend class BaseObservable;
-
+    friend class BaseObservable<Continuous, ContinuousObserver, T>;
     friend class internal::ContinuousFactory<T>;
 
+    template<
+        template<typename> typename OBSERVABLE, 
+        template<typename> typename OBSERVER,
+        typename K
+    >
+    friend class BaseObservable;
+
     explicit Continuous(std::shared_ptr<internal::ObservableCore> core) noexcept :
-        BaseObservable<Continuous, T>(std::move(core)) {
+        Base(std::move(core)) {
 
     }
 };

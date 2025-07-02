@@ -1,24 +1,37 @@
 #pragma once
 
 #include <zaf/rx/internal/observable/observable_core.h>
+#include <zaf/rx/subscription.h>
 
 namespace zaf::rx {
 
-template<template<typename> typename OBSERVABLE, typename T>
+template<
+    template<typename> typename OBSERVABLE, 
+    template<typename> typename OBSERVER,
+    typename T
+>
 class BaseObservable {
 public:
-    /**
-    Returns an observable that invokes an action when the current observable is terminated, either
-    by completion or error.
+    [[nodiscard]]
+    Subscription Subscribe(const OBSERVER<T>& observer) {
+        return Subscription{ core_->Subscribe(observer.Core()) };
+    }
 
-    @param action
-        The action to be invoked upon termination of the current observable.
+    [[nodiscard]]
+    Subscription Subscribe() {
+        return Subscribe(OBSERVER<T>::Create());
+    }
 
-    @return
-        A new observable.
-    */
-    OBSERVABLE<T> DoOnTerminated(Work work) {
-        return OBSERVABLE<T>{ core_->DoOnTerminated(std::move(work)) };
+    OBSERVABLE<T> SubscribeOn(std::shared_ptr<Scheduler> scheduler) {
+        return OBSERVABLE<T>{ core_->SubscribeOn(std::move(scheduler)) };
+    }
+
+    OBSERVABLE<T> ObserveOn(std::shared_ptr<Scheduler> scheduler) {
+        return OBSERVABLE<T>{ core_->ObserveOn(std::move(scheduler)) };
+    }
+
+    OBSERVABLE<T> Do(const OBSERVER<T>& observer) {
+        return OBSERVABLE<T>{ core_->Do(observer.Core()) };
     }
 
     OBSERVABLE<T> Finally(Work work) {
@@ -29,14 +42,6 @@ public:
     OBSERVABLE<K> Map(std::function<K(const T&)> mapper) {
         auto new_core = core_->Map([mapper = std::move(mapper)](const std::any& value) {
             return mapper(std::any_cast<T>(value));
-        });
-        return OBSERVABLE<K>{ std::move(new_core) };
-    }
-
-    template<typename K>
-    OBSERVABLE<K> FlatMap(std::function<OBSERVABLE<K>(const T&)> mapper) {
-        auto new_core = core_->FlatMap([mapper = std::move(mapper)](const std::any& value) {
-            return mapper(std::any_cast<T>(value)).Core();
         });
         return OBSERVABLE<K>{ std::move(new_core) };
     }
