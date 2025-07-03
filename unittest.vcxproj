@@ -541,6 +541,8 @@
     <ClCompile Include="unittest\case\rx\observable_test.cpp" />
     <ClCompile Include="unittest\case\rx\observer_test.cpp" />
     <ClCompile Include="unittest\case\rx\observe_on_test.cpp" />
+    <ClCompile Include="unittest\case\rx\once_subject_test.cpp" />
+    <ClCompile Include="unittest\case\rx\once_test.cpp" />
     <ClCompile Include="unittest\case\rx\replay_subject_test.cpp" />
     <ClCompile Include="unittest\case\rx\single_subject_test.cpp" />
     <ClCompile Include="unittest\case\rx\single_test.cpp" />

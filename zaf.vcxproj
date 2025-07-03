@@ -919,6 +919,7 @@
     <ClInclude Include="src\zaf\rx\internal\observable\never_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\throw_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\timer_observable.h" />
+    <ClInclude Include="src\zaf\rx\internal\once_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\catch_handler.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\catch_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\do_on_terminated_operator.h" />
@@ -948,6 +949,9 @@
     <ClInclude Include="src\zaf\rx\observable.h" />
     <ClInclude Include="src\zaf\rx\observer.h" />
     <ClInclude Include="src\zaf\rx\observer_functions.h" />
+    <ClInclude Include="src\zaf\rx\once.h" />
+    <ClInclude Include="src\zaf\rx\once_observer.h" />
+    <ClInclude Include="src\zaf\rx\once_subject.h" />
     <ClInclude Include="src\zaf\rx\replay_subject.h" />
     <ClInclude Include="src\zaf\rx\scheduler.h" />
     <ClInclude Include="src\zaf\rx\single.h" />

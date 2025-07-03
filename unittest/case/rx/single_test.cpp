@@ -280,7 +280,7 @@ TEST(RxSingleTest, Finally) {
         auto sub = single.Finally([&]() {
             finally_called = true;
         }).Subscribe();
-        //ASSERT_TRUE(finally_called);
+        ASSERT_TRUE(finally_called);
     }
 
     // Finally with OnError

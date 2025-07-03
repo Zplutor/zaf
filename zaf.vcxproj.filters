@@ -3086,5 +3086,17 @@
     <ClInclude Include="src\zaf\rx\flat_map_capability.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\rx\once.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\once_observer.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\once_subject.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\once_factory.h">
+      <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
