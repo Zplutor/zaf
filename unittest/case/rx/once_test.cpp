@@ -79,11 +79,11 @@ TEST(RxOnceTest, Do) {
 }
 
 
-TEST(RxOnceTest, DoOnTerminated) {
+TEST(RxOnceTest, DoOnTerminate) {
 
     auto once = zaf::rx::Once<int>::Just(39);
     bool on_terminated_called = false;
-    auto sub = once.DoOnTerminated([&]() {
+    auto sub = once.DoOnTerminate([&]() {
         on_terminated_called = true;
     }).Subscribe();
     ASSERT_TRUE(on_terminated_called);

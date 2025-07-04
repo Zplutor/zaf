@@ -55,7 +55,7 @@ public:
 
 protected:
     /**
-    Overriden by derived classes to do specific disposal work.
+    Override this method in derived classes to do specific disposal work.
 
     Any shared pointer should be reset in this method, in order to break potential circular 
     references.
@@ -67,7 +67,7 @@ private:
 
     using TerminateNotification = std::function<void()>;
 
-    //Call by SubscriptionCore to get notified when producer terminates and then diposes the 
+    //Call by SubscriptionCore to get notified when producer terminates and then disposes the 
     //producer.
     void RegisterTerminateNotification(TerminateNotification callback);
 

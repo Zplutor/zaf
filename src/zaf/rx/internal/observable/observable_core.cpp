@@ -1,6 +1,7 @@
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/internal/operator/catch_operator.h>
-#include <zaf/rx/internal/operator/do_on_terminated_operator.h>
+#include <zaf/rx/internal/operator/do_after_terminate_operator.h>
+#include <zaf/rx/internal/operator/do_on_terminate_operator.h>
 #include <zaf/rx/internal/operator/do_operator.h>
 #include <zaf/rx/internal/operator/finally_operator.h>
 #include <zaf/rx/internal/operator/flat_map_operator.h>
@@ -17,9 +18,9 @@ std::shared_ptr<ObservableCore> ObservableCore::SubscribeOn(
 }
 
 
-std::shared_ptr<ObservableCore> ObservableCore::ObserveOn(std::shared_ptr<Scheduler> scheculer) {
+std::shared_ptr<ObservableCore> ObservableCore::ObserveOn(std::shared_ptr<Scheduler> scheduler) {
 
-    return std::make_shared<ObserveOnOperator>(shared_from_this(), std::move(scheculer));
+    return std::make_shared<ObserveOnOperator>(shared_from_this(), std::move(scheduler));
 }
 
 
@@ -30,11 +31,13 @@ std::shared_ptr<ObservableCore> ObservableCore::Do(
 }
 
 
-std::shared_ptr<ObservableCore> ObservableCore::DoOnTerminated(Work work) {
-
-    return std::make_shared<DoOnTerminatedOperator>(shared_from_this(), std::move(work));
+std::shared_ptr<ObservableCore> ObservableCore::DoOnTerminate(Work work) {
+    return std::make_shared<DoOnTerminateOperator>(shared_from_this(), std::move(work));
 }
 
+std::shared_ptr<ObservableCore> ObservableCore::DoAfterTerminate(Work work) {
+    return std::make_shared<DoAfterTerminateOperator>(shared_from_this(), std::move(work));
+}
 
 std::shared_ptr<ObservableCore> ObservableCore::Catch(CatchHandler handler) {
 

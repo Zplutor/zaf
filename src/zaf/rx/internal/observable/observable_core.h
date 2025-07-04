@@ -31,7 +31,8 @@ public:
     std::shared_ptr<ObservableCore> ObserveOn(std::shared_ptr<Scheduler> scheduler);
 
     std::shared_ptr<ObservableCore> Do(std::shared_ptr<ObserverCore> do_observer);
-    std::shared_ptr<ObservableCore> DoOnTerminated(Work work);
+    std::shared_ptr<ObservableCore> DoOnTerminate(Work work);
+    std::shared_ptr<ObservableCore> DoAfterTerminate(Work work);
     std::shared_ptr<ObservableCore> Catch(CatchHandler handler);
     std::shared_ptr<ObservableCore> Finally(Work work);
 

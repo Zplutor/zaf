@@ -17,9 +17,14 @@ public:
     @return
         A new observable.
     */
-    OBSERVABLE DoOnTerminated(Work work) {
+    OBSERVABLE DoOnTerminate(Work work) {
         const auto& core = static_cast<OBSERVABLE*>(this)->Core();
-        return OBSERVABLE{ core->DoOnTerminated(std::move(work)) };
+        return OBSERVABLE{ core->DoOnTerminate(std::move(work)) };
+    }
+
+    OBSERVABLE DoAfterTerminate(Work work) {
+        const auto& core = static_cast<OBSERVABLE*>(this)->Core();
+        return OBSERVABLE{ core->DoAfterTerminate(std::move(work)) };
     }
 };
 

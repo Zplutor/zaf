@@ -889,7 +889,7 @@
     <ClCompile Include="src\zaf\rx\internal\observable\throw_observable.cpp">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\operator\do_on_terminated_operator.cpp">
+    <ClCompile Include="src\zaf\rx\internal\operator\do_on_terminate_operator.cpp">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\object\parsing\object_parser.cpp">
@@ -1317,6 +1317,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\tree_control_delegate.cpp">
       <Filter>zaf\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\operator\do_after_terminate_operator.cpp">
+      <Filter>zaf\rx\internal\operator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2350,7 +2353,7 @@
     <ClInclude Include="src\zaf\rx\internal\observable\throw_observable.h">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\operator\do_on_terminated_operator.h">
+    <ClInclude Include="src\zaf\rx\internal\operator\do_on_terminate_operator.h">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\control_parser.h">
@@ -3097,6 +3100,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\once_factory.h">
       <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\operator\do_after_terminate_operator.h">
+      <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

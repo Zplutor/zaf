@@ -5,18 +5,18 @@
 
 namespace zaf::rx::internal {
 
-class DoOnTerminatedOperator : public ObservableCore {
+class DoAfterTerminateOperator : public ObservableCore {
 public:
-    DoOnTerminatedOperator(
+    DoAfterTerminateOperator(
         std::shared_ptr<ObservableCore> source,
-        Work on_terminated);
+        Work after_terminate);
 
     std::shared_ptr<SubscriptionCore> Subscribe(
         const std::shared_ptr<ObserverCore>& observer) override;
 
 private:
     std::shared_ptr<ObservableCore> source_;
-    Work on_terminated_;
+    Work after_terminate_;
 };
 
 }

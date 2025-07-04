@@ -247,23 +247,23 @@ TEST(RxSingleTest, DoOnErrorTemplate) {
 }
 
 
-TEST(RxSingleTest, DoOnTerminated) {
+TEST(RxSingleTest, DoOnTerminate) {
 
-    // DoOnTerminated with OnSuccess
+    // DoOnTerminate with OnSuccess
     {
         auto single = zaf::rx::Single<int>::Just(24);
         bool on_terminated_called = false;
-        auto sub = single.DoOnTerminated([&]() {
+        auto sub = single.DoOnTerminate([&]() {
             on_terminated_called = true;
         }).Subscribe();
         ASSERT_TRUE(on_terminated_called);
     }
 
-    // DoOnTerminated with OnError
+    // DoOnTerminate with OnError
     {
         auto single = zaf::rx::Single<int>::Throw(zaf::InvalidOperationError{ "error" });
         bool on_terminated_called = false;
-        auto sub = single.DoOnTerminated([&]() {
+        auto sub = single.DoOnTerminate([&]() {
             on_terminated_called = true;
         }).Subscribe();
         ASSERT_TRUE(on_terminated_called);

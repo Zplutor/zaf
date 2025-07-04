@@ -1,6 +1,6 @@
-#include <zaf/rx/internal/operator/do_on_terminated_operator.h>
+#include <zaf/rx/internal/operator/do_after_terminate_operator.h>
 #include <zaf/base/as.h>
-#include <zaf/base/non_copyable.h>
+#include <zaf/base/auto_reset.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
 #include <zaf/rx/internal/subscription/subscription_core.h>
@@ -8,14 +8,14 @@
 namespace zaf::rx::internal {
 namespace {
 
-class DoOnTerminatedProducer : public Producer, public ObserverCore {
+class DoAfterTerminateProducer : public Producer, public ObserverCore {
 public:
-    DoOnTerminatedProducer(
+    DoAfterTerminateProducer(
         std::shared_ptr<ObserverCore> next_observer,
-        Work on_terminated)
+        Work after_terminate)
         :
         Producer(std::move(next_observer)),
-        on_terminated_(std::move(on_terminated)) {
+        after_terminate_(std::move(after_terminate)) {
 
     }
 
@@ -28,44 +28,49 @@ public:
     }
 
     void OnError(const std::exception_ptr& error) override {
-        on_terminated_();
+        auto auto_reset = MakeAutoReset(is_emitting_termination_, true);
         EmitOnError(error);
     }
 
     void OnCompleted() override {
-        on_terminated_();
+        auto auto_reset = MakeAutoReset(is_emitting_termination_, true);
         EmitOnCompleted();
     }
 
     void OnDispose() override {
 
+        if (is_emitting_termination_) {
+            after_terminate_();
+        }
+
         source_subscription_->Unsubscribe();
         source_subscription_.reset();
-        on_terminated_ = nullptr;
+        after_terminate_ = nullptr;
     }
 
 private:
     std::shared_ptr<SubscriptionCore> source_subscription_;
-    Work on_terminated_;
+    Work after_terminate_;
+    bool is_emitting_termination_{};
 };
 
-}
+} // namespace
 
 
-DoOnTerminatedOperator::DoOnTerminatedOperator(
-    std::shared_ptr<ObservableCore> source, 
-    Work on_terminated)
-    :
+DoAfterTerminateOperator::DoAfterTerminateOperator(
+    std::shared_ptr<ObservableCore> source,
+    Work after_terminate)
+    : 
     source_(std::move(source)),
-    on_terminated_(std::move(on_terminated)) {
+    after_terminate_(std::move(after_terminate)) {
 
 }
 
 
-std::shared_ptr<SubscriptionCore> DoOnTerminatedOperator::Subscribe(
+std::shared_ptr<SubscriptionCore> DoAfterTerminateOperator::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
-    auto producer = std::make_shared<DoOnTerminatedProducer>(observer, on_terminated_);
+    auto producer = std::make_shared<DoAfterTerminateProducer>(observer, after_terminate_);
     producer->Run(source_);
     return std::make_shared<SubscriptionCore>(std::move(producer));
 }

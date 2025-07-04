@@ -16,7 +16,7 @@ TEST(RxDoOnTerminatedTest, OnError) {
     int sub_error_sequence{};
 
     zaf::Subject<int> subject;
-    auto sub = subject.AsObservable().DoOnTerminated([&]() {
+    auto sub = subject.AsObservable().DoOnTerminate([&]() {
         do_sequence = ++call_sequence;
     })
     .Subscribe([&](int value) {
@@ -44,7 +44,7 @@ TEST(RxDoOnTerminatedTest, OnCompleted) {
     int sub_completed_sequence{};
 
     zaf::Subject<int> subject;
-    auto sub = subject.AsObservable().DoOnTerminated([&]() {
+    auto sub = subject.AsObservable().DoOnTerminate([&]() {
         do_sequence = ++call_sequence;
     })
     .Subscribe([&](int value) {
@@ -68,7 +68,7 @@ TEST(RxDoOnTerminatedTest, SubscribeMultipleTimes) {
     int call_times{};
 
     zaf::Subject<int> subject;
-    auto observable = subject.AsObservable().DoOnTerminated([&]() {
+    auto observable = subject.AsObservable().DoOnTerminate([&]() {
         ++call_times;
     });
 
@@ -81,8 +81,8 @@ TEST(RxDoOnTerminatedTest, SubscribeMultipleTimes) {
 
 
 /**
-In this test case, we destroy the notification source and the subscription in DoOnTerminated(), in
-such case, the producer of the DoOnTerminated() itself is destroyed as well, causing an access 
+In this test case, we destroy the notification source and the subscription in DoOnTerminate(), in
+such case, the producer of the DoOnTerminate() itself is destroyed as well, causing an access 
 violation exception when it tries to deliver the OnCompleted notification. We use this case to make 
 sure it has been fixed.
 */
@@ -100,7 +100,7 @@ TEST(RxDoOnTerminatedTest, DestroySource) {
 
     sub_host->Subscriptions() += subject->AsObservable()
         .ObserveOn(Scheduler::CreateOnSingleThread())
-        .DoOnTerminated([&]() {
+        .DoOnTerminate([&]() {
 
             subject.reset();
             sub_host.reset();

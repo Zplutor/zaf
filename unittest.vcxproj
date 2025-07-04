@@ -522,8 +522,9 @@
     <ClCompile Include="unittest\case\rx\catch_test.cpp" />
     <ClCompile Include="unittest\case\rx\concat_test.cpp" />
     <ClCompile Include="unittest\case\rx\creation_test.cpp" />
+    <ClCompile Include="unittest\case\rx\do_after_terminate_test.cpp" />
     <ClCompile Include="unittest\case\rx\do_on_error_test.cpp" />
-    <ClCompile Include="unittest\case\rx\do_on_terminated_test.cpp" />
+    <ClCompile Include="unittest\case\rx\do_on_terminate_test.cpp" />
     <ClCompile Include="unittest\case\rx\do_test.cpp" />
     <ClCompile Include="unittest\case\rx\continuous_test.cpp" />
     <ClCompile Include="unittest\case\rx\finally_test.cpp" />
