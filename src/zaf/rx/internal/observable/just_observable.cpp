@@ -14,7 +14,7 @@ std::shared_ptr<SubscriptionCore> JustObservable::Subscribe(
 
     observer->OnNext(value_);
     observer->OnCompleted();
-    return SubscriptionCore::Empty();
+    return nullptr;
 }
 
 }

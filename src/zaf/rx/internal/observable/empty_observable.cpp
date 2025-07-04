@@ -14,7 +14,7 @@ std::shared_ptr<SubscriptionCore> EmptyObservable::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     observer->OnCompleted();
-    return SubscriptionCore::Empty();
+    return nullptr;
 }
 
 }

@@ -3,27 +3,16 @@
 
 namespace zaf {
 
-Subscription::Subscription() : core_(rx::internal::SubscriptionCore::Empty()) {
+Subscription::Subscription(std::shared_ptr<rx::internal::SubscriptionCore> core) : 
+    core_(std::move(core)) {
 
-}
-
-
-Subscription::Subscription(Subscription&& other) : core_(std::move(other.core_)) {
-
-    other.core_ = rx::internal::SubscriptionCore::Empty();
-}
-
-
-Subscription& Subscription::operator=(Subscription&& other) {
-
-    core_ = std::move(other.core_);
-    other.core_ = rx::internal::SubscriptionCore::Empty();
-    return *this;
 }
 
 
 void Subscription::Unsubscribe() {
-    core_->Unsubscribe();
+    if (core_) {
+        core_->Unsubscribe();
+    }
 }
 
 }

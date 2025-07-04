@@ -25,7 +25,9 @@ public:
             mapped_value = mapper_(value);
         }
         catch (...) {
-            source_subscription_->Unsubscribe();
+            if (source_subscription_) {
+                source_subscription_->Unsubscribe();
+            }
             TryToDeliverOnError(std::current_exception());
             return;
         }
@@ -46,8 +48,10 @@ public:
 protected:
     void OnDispose() override {
 
-        source_subscription_->Unsubscribe();
-        source_subscription_.reset();
+        if (source_subscription_) {
+            source_subscription_->Unsubscribe();
+            source_subscription_.reset();
+        }
 
         mapper_ = nullptr;
     }

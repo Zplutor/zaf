@@ -20,7 +20,7 @@ std::shared_ptr<SubscriptionCore> CustomizedObservable::Subscribe(
     }
     catch (...) {
         observer->OnError(std::current_exception());
-        return SubscriptionCore::Empty();
+        return nullptr;
     }
 }
 

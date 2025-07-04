@@ -12,6 +12,10 @@ InnerSubscriptionSet::~InnerSubscriptionSet() {
 void InnerSubscriptionSet::Add(
     const std::shared_ptr<SubscriptionCore>& subscription) {
 
+    if (!subscription) {
+        return;
+    }
+
     auto producer = subscription->Producer();
     if (!producer) {
         return;
@@ -50,6 +54,10 @@ void InnerSubscriptionSet::OnNoTagSubscriptionDispose(
 void InnerSubscriptionSet::Add(
     const std::string& tag,
     const std::shared_ptr<SubscriptionCore>& subscription) {
+
+    if (!subscription) {
+        return;
+    }
 
     auto producer = subscription->Producer();
     if (!producer) {

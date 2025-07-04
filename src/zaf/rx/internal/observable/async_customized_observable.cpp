@@ -64,7 +64,7 @@ std::shared_ptr<SubscriptionCore> AsyncCustomizedObservable::Subscribe(
             observer->OnError(std::current_exception());
         }
 
-        return SubscriptionCore::Empty();
+        return nullptr;
     };
 
     auto nested_observable = std::make_shared<CustomizedObservable>(nested_procedure);

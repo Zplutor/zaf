@@ -964,7 +964,6 @@
     <ClInclude Include="src\zaf\rx\subscription_set.h" />
     <ClInclude Include="src\zaf\rx\subscription_host.h" />
     <ClInclude Include="src\zaf\rx\termination_capability.h" />
-    <ClInclude Include="src\zaf\rx\termination_capacity.h" />
     <ClInclude Include="src\zaf\rx\timer.h" />
     <ClInclude Include="src\zaf\rx\work.h" />
     <ClInclude Include="src\zaf\application_event_infos.h" />

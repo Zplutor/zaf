@@ -3,23 +3,22 @@
 #include <functional>
 #include <memory>
 
-namespace zaf {
-namespace rx::internal {
+namespace zaf::rx::internal {
 class SubscriptionCore;
 }
 
+namespace zaf {
+
 class Subscription {
 public:
-    Subscription();
-
-    explicit Subscription(std::shared_ptr<rx::internal::SubscriptionCore> core) :
-        core_(std::move(core)) { }
+    Subscription() = default;
+    explicit Subscription(std::shared_ptr<rx::internal::SubscriptionCore> core);
 
     Subscription(const Subscription&) = default;
     Subscription& operator=(const Subscription&) = default;
 
-    Subscription(Subscription&& other);
-    Subscription& operator=(Subscription&& other);
+    Subscription(Subscription&& other) = default;
+    Subscription& operator=(Subscription&& other) = default;
 
     void Unsubscribe();
 

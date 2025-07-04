@@ -32,7 +32,9 @@ public:
             mapped_observable = mapper_(value);
         }
         catch (...) {
-            source_subscription_->Unsubscribe();
+            if (source_subscription_) {
+                source_subscription_->Unsubscribe();
+            }
             TryToDeliverOnError(std::current_exception());
             return;
         }
@@ -73,8 +75,10 @@ public:
 
     void OnDispose() override {
 
-        source_subscription_->Unsubscribe();
-        source_subscription_.reset();
+        if (source_subscription_) {
+            source_subscription_->Unsubscribe();
+            source_subscription_.reset();
+        }
 
         emitting_mapper_subs_.clear();
         mapper_ = nullptr;

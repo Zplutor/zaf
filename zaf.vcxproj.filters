@@ -3079,7 +3079,6 @@
     <ClInclude Include="src\zaf\rx\internal\continuous_factory.h">
       <Filter>zaf\rx\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\termination_capacity.h" />
     <ClInclude Include="src\zaf\rx\termination_capability.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>

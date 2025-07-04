@@ -13,7 +13,7 @@ std::shared_ptr<SubscriptionCore> ThrowObservable::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
     observer->OnError(error_);
-    return SubscriptionCore::Empty();
+    return nullptr;
 }
 
 }

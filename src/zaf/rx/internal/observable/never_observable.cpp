@@ -13,7 +13,7 @@ const std::shared_ptr<NeverObservable>& NeverObservable::Instance() {
 std::shared_ptr<SubscriptionCore> NeverObservable::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
-    return SubscriptionCore::Empty();
+    return nullptr;
 }
 
 }

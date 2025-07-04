@@ -3,13 +3,6 @@
 
 namespace zaf::rx::internal {
 
-const std::shared_ptr<SubscriptionCore>& SubscriptionCore::Empty() {
-    
-    static auto empty_subscription = std::make_shared<SubscriptionCore>(nullptr);
-    return empty_subscription;
-}
-
-
 SubscriptionCore::SubscriptionCore(std::shared_ptr<internal::Producer> producer) :
     producer_(std::move(producer)) {
 

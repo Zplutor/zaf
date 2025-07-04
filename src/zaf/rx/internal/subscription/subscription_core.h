@@ -9,9 +9,6 @@ class Producer;
 
 class SubscriptionCore : NonCopyableNonMovable {
 public:
-    static const std::shared_ptr<SubscriptionCore>& Empty();
-
-public:
     SubscriptionCore(std::shared_ptr<internal::Producer> producer);
     ~SubscriptionCore();
 

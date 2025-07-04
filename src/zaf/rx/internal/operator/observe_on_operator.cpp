@@ -49,8 +49,10 @@ protected:
     void OnDispose() override {
 
         is_unsubscribed_.store(true);
-        source_subscription_->Unsubscribe();
-        source_subscription_.reset();
+        if (source_subscription_) {
+            source_subscription_->Unsubscribe();
+            source_subscription_.reset();
+        }
     }
 
 private:
