@@ -6,11 +6,6 @@ namespace zaf::rx::internal {
 SubscriptionCore::SubscriptionCore(std::shared_ptr<internal::Producer> producer) :
     producer_(std::move(producer)) {
 
-    if (producer_) {
-        producer_->RegisterTerminateNotification([this]() {
-            producer_->Dispose();
-        });
-    }
 }
 
 
@@ -22,6 +17,7 @@ SubscriptionCore::~SubscriptionCore() {
 void SubscriptionCore::Unsubscribe() {
     if (producer_) {
         producer_->Dispose();
+        producer_.reset();
     }
 }
 

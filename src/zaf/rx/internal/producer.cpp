@@ -3,8 +3,7 @@
 
 namespace zaf::rx::internal {
 
-Producer::Producer(std::shared_ptr<ObserverCore> observer) :
-    observer_(std::move(observer)) {
+Producer::Producer(std::shared_ptr<ObserverCore> observer) : observer_(std::move(observer)) {
 
 }
 
@@ -25,7 +24,7 @@ void Producer::EmitOnError(const std::exception_ptr& error) {
             observer->OnError(error);
         }
     }
-    TerminateProduce();
+    Terminate();
 }
 
 
@@ -46,7 +45,7 @@ void Producer::EmitOnCompleted() {
         }
     }
     
-    TerminateProduce();
+    Terminate();
 }
 
 
@@ -54,9 +53,6 @@ void Producer::Dispose() {
 
     if (MarkDisposed()) {
 
-        //Terminate the produce before disposal.
-        TerminateProduce();
-    
         OnDispose();
 
         NotifyDispose();
@@ -67,10 +63,10 @@ void Producer::Dispose() {
 }
 
 
-void Producer::TerminateProduce() {
-
+void Producer::Terminate() {
     if (MarkTerminated()) {
-        NotifyTerminate();
+        // The producer should be disposed after it is terminated.
+        Dispose();
     }
 }
 
@@ -78,31 +74,6 @@ void Producer::TerminateProduce() {
 bool Producer::MarkTerminated() {
     bool expected{ false };
     return is_terminated_.compare_exchange_strong(expected, true);
-}
-
-
-void Producer::NotifyTerminate() {
-
-    TerminateNotification notification;
-    {
-        std::scoped_lock<std::mutex> lock(lock_);
-        notification = std::move(terminate_notification_);
-    }
-
-    if (notification) {
-        notification();
-    }
-}
-
-
-void Producer::RegisterTerminateNotification(TerminateNotification callback) {
-
-    std::scoped_lock<std::mutex> lock(lock_);
-    if (is_terminated_) {
-        return;
-    }
-
-    terminate_notification_ = std::move(callback);
 }
 
 

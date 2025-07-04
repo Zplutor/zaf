@@ -15,11 +15,12 @@ A producer is responsible for emitting data sequence.
 @details
     There are two states of a producer: terminated and disposed.
 
-    Terminated state indicates that the data sequence has ended. It's often set after OnError and 
-    OnCompleted, or after calling Dispose() explicitly.
+    Terminated state indicates that the data sequence has ended. It's set after OnError and 
+    OnCompleted.
 
     Disposed state indicates that any resource held by the producer has been destroyed. A disposed
-    state always follows after a terminated state. It can only be set after calling Dispose().
+    state always follows after a terminated state. Or it can be set explicitly by calling 
+    Dispose().
 */
 class Producer : public std::enable_shared_from_this<Producer>, NonCopyableNonMovable {
 public:
@@ -41,7 +42,7 @@ public:
     */
     void EmitOnCompleted();
 
-    bool IsTerminated() const {
+    bool IsTerminated() const noexcept {
         return is_terminated_;
     }
 
@@ -63,15 +64,6 @@ protected:
     virtual void OnDispose() = 0;
 
 private:
-    friend class SubscriptionCore;
-
-    using TerminateNotification = std::function<void()>;
-
-    //Call by SubscriptionCore to get notified when producer terminates and then disposes the 
-    //producer.
-    void RegisterTerminateNotification(TerminateNotification callback);
-
-private:
     friend class InnerSubscriptionSet;
 
     using DisposeNotification = std::function<void(Producer*, int)>;
@@ -79,9 +71,8 @@ private:
     void UnregisterDisposeNotification(int id);
 
 private:
-    void TerminateProduce();
+    void Terminate();
     bool MarkTerminated();
-    void NotifyTerminate();
 
     bool MarkDisposed();
     void NotifyDispose();
@@ -90,8 +81,6 @@ private:
     std::shared_ptr<ObserverCore> observer_;
 
     std::atomic<bool> is_terminated_{};
-    TerminateNotification terminate_notification_;
-
     std::atomic<bool> is_disposed_{};
     int dispose_notification_id_seed_{};
     std::map<int, DisposeNotification> dispose_notifications_;
