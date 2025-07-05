@@ -271,42 +271,6 @@ TEST(RxSingleTest, DoOnTerminate) {
 }
 
 
-TEST(RxSingleTest, Finally) {
-
-    // Finally with OnSuccess
-    {
-        auto single = zaf::rx::Single<int>::Just(34);
-        bool finally_called = false;
-        auto sub = single.Finally([&]() {
-            finally_called = true;
-        }).Subscribe();
-        ASSERT_TRUE(finally_called);
-    }
-
-    // Finally with OnError
-    {
-        auto single = zaf::rx::Single<int>::Throw(zaf::InvalidOperationError{ "error" });
-        bool finally_called = false;
-        auto sub = single.Finally([&]() {
-            finally_called = true;
-        }).Subscribe();
-        //ASSERT_TRUE(finally_called);
-    }
-
-    // Finally on unsubscribe
-    {
-        auto single = zaf::rx::Single<int>::Never();
-        bool finally_called = false;
-        {
-            auto sub = single.Finally([&]() {
-                finally_called = true;
-            }).Subscribe();
-        }
-        ASSERT_TRUE(finally_called);
-    }
-}
-
-
 TEST(RxSingleTest, Map) {
 
     auto single = zaf::rx::Single<int>::Just(37);

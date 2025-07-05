@@ -1,4 +1,9 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/invalid_operation_error.h>
+#include <zaf/rx/continuous.h>
+#include <zaf/rx/continuous_subject.h>
+#include <zaf/rx/once.h>
+#include <zaf/rx/single.h>
 #include <zaf/rx/subject.h>
 
 TEST(RxFinallyTest, Finally) {
@@ -128,4 +133,80 @@ TEST(RxFinallyTest, SubscribeMultipleTimes) {
 
     subject.AsObserver().OnCompleted();
     ASSERT_EQ(call_times, 2);
+}
+
+
+TEST(RxFinallyTest, Continuous) {
+
+    // Finally on unsubscribe
+    auto continuous = zaf::rx::Continuous<int>::Never();
+    bool finally_called = false;
+    {
+        auto sub = continuous.Finally([&]() {
+            finally_called = true;
+        }).Subscribe();
+    }
+    ASSERT_TRUE(finally_called);
+}
+
+
+TEST(RxFinallyTest, Single) {
+
+    // Finally with OnSuccess
+    {
+        auto single = zaf::rx::Single<int>::Just(34);
+        bool finally_called = false;
+        auto sub = single.Finally([&]() {
+            finally_called = true;
+        }).Subscribe();
+        ASSERT_TRUE(finally_called);
+    }
+
+    // Finally with OnError
+    {
+        auto single = zaf::rx::Single<int>::Throw(zaf::InvalidOperationError{ "error" });
+        bool finally_called = false;
+        auto sub = single.Finally([&]() {
+            finally_called = true;
+        }).Subscribe();
+        ASSERT_TRUE(finally_called);
+    }
+
+    // Finally on unsubscribe
+    {
+        auto single = zaf::rx::Single<int>::Never();
+        bool finally_called = false;
+        {
+            auto sub = single.Finally([&]() {
+                finally_called = true;
+            }).Subscribe();
+        }
+        ASSERT_TRUE(finally_called);
+    }
+}
+
+
+TEST(RxFinallyTest, Once) {
+
+    // Finally with OnDone
+    {
+        auto once = zaf::rx::Once<int>::Just(36);
+        bool finally_called = false;
+        auto sub = once.Finally([&]() {
+            finally_called = true;
+        }).Subscribe();
+        ASSERT_TRUE(finally_called);
+    }
+
+    // Finally on unsubscribe
+    {
+        auto once = zaf::rx::Once<int>::Never();
+        bool finally_called = false;
+        {
+            auto sub = once.Finally([&]() {
+                finally_called = true;
+            }).Subscribe();
+        }
+        ASSERT_TRUE(finally_called);
+    }
 }

@@ -114,29 +114,3 @@ TEST(RxOnceTest, FlatMap) {
     });
     ASSERT_EQ(mapped_value, "38");
 }
-
-
-TEST(RxOnceTest, Finally) {
-
-    // Finally with OnDone
-    {
-        auto once = zaf::rx::Once<int>::Just(36);
-        bool finally_called = false;
-        auto sub = once.Finally([&]() {
-            finally_called = true;
-        }).Subscribe();
-        ASSERT_TRUE(finally_called);
-    }
-
-    // Finally on unsubscribe
-    {
-        auto once = zaf::rx::Once<int>::Never();
-        bool finally_called = false;
-        {
-            auto sub = once.Finally([&]() {
-                finally_called = true;
-            }).Subscribe();
-        }
-        ASSERT_TRUE(finally_called);
-    }
-}
