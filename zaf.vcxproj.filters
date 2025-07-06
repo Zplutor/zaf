@@ -394,7 +394,7 @@
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core.cpp">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\subscription_set.cpp">
+    <ClCompile Include="src\zaf\rx\subscription_bag.cpp">
       <Filter>zaf\rx</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\window\inspector\inspector_window.cpp">
@@ -433,17 +433,11 @@
     <ClCompile Include="src\zaf\rx\internal\observer_core.cpp">
       <Filter>zaf\rx\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription_set.cpp">
-      <Filter>zaf\rx\internal\subscription</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\subscription\subscription_core.cpp">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core_indirect.cpp">
       <Filter>zaf\rx\internal\subject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\rx\subscription_host.cpp">
-      <Filter>zaf\rx</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\operator\subscribe_on_operator.cpp">
       <Filter>zaf\rx\internal\operator</Filter>
@@ -1684,7 +1678,7 @@
     <ClInclude Include="src\zaf\rx\subject.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\subscription_set.h">
+    <ClInclude Include="src\zaf\rx\subscription_bag.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\subscription_host.h">
@@ -1746,9 +1740,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observer_core.h">
       <Filter>zaf\rx\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_set.h">
-      <Filter>zaf\rx\internal\subscription</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subscription\subscription_core.h">
       <Filter>zaf\rx\internal\subscription</Filter>

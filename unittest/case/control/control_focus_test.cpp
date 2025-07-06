@@ -214,7 +214,7 @@ TEST_F(ControlFocusTest, CheckFocusInEvents) {
 
     Control1()->SetIsFocused(true);
 
-    SubscriptionSet subs;
+    SubscriptionBag subs;
     subs += Control1()->PreFocusLostEvent().Subscribe([this](const PreFocusLostInfo& event_info) {
 
         ASSERT_FALSE(As<Control>(event_info.Source())->IsFocused());

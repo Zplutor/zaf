@@ -70,7 +70,7 @@ private:
 
 private:
     std::shared_ptr<TrackBarThumb> thumb_;
-    SubscriptionSet thumb_subs_;
+    SubscriptionBag thumb_subs_;
 
     int value_{};
     int min_value_{};

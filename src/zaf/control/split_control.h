@@ -5,7 +5,7 @@
 #include <zaf/control/event/split_bar_event_info.h>
 #include <zaf/control/event/split_distance_changed_info.h>
 #include <zaf/rx/subject.h>
-#include <zaf/rx/subscription_set.h>
+#include <zaf/rx/subscription_bag.h>
 
 namespace zaf {
 
@@ -116,7 +116,7 @@ private:
     std::shared_ptr<Control> first_pane_;
     std::shared_ptr<Control> second_pane_;
 
-    zaf::SubscriptionSet split_bar_subscriptions_;
+    zaf::SubscriptionBag split_bar_subscriptions_;
 
     bool is_horizontal_split_{};
     float split_bar_thickness_{ 3.f };

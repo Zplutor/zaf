@@ -64,7 +64,7 @@ protected:
     virtual void OnDispose() = 0;
 
 private:
-    friend class InnerSubscriptionSet;
+    friend class SubscriptionBag;
 
     using DisposeNotification = std::function<void(Producer*, int)>;
     std::optional<int> RegisterDisposeNotification(DisposeNotification callback);

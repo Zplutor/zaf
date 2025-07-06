@@ -391,7 +391,7 @@
     <ClCompile Include="unittest\case\rx\subject_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\rx\subscription_set_test.cpp">
+    <ClCompile Include="unittest\case\rx\subscription_bag_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\window\window_holder_test.cpp">

@@ -379,7 +379,6 @@
     <ClCompile Include="src\zaf\rx\internal\subject\replay_subject_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core_indirect.cpp" />
-    <ClCompile Include="src\zaf\rx\internal\subscription\inner_subscription_set.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subscription\subscription_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\thread\run_loop_thread.cpp" />
     <ClCompile Include="src\zaf\rx\internal\thread\thread_manager.cpp" />
@@ -387,8 +386,7 @@
     <ClCompile Include="src\zaf\rx\internal\timer_manager.cpp" />
     <ClCompile Include="src\zaf\rx\scheduler.cpp" />
     <ClCompile Include="src\zaf\rx\subscription.cpp" />
-    <ClCompile Include="src\zaf\rx\subscription_set.cpp" />
-    <ClCompile Include="src\zaf\rx\subscription_host.cpp" />
+    <ClCompile Include="src\zaf\rx\subscription_bag.cpp" />
     <ClCompile Include="src\zaf\rx\timer.cpp" />
     <ClCompile Include="src\zaf\window\activate_option.cpp" />
     <ClCompile Include="src\zaf\window\event\activate_event_info.cpp" />
@@ -941,7 +939,6 @@
     <ClInclude Include="src\zaf\rx\internal\subject\replay_subject_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core_indirect.h" />
-    <ClInclude Include="src\zaf\rx\internal\subscription\inner_subscription_set.h" />
     <ClInclude Include="src\zaf\rx\internal\subscription\subscription_core.h" />
     <ClInclude Include="src\zaf\rx\internal\thread\run_loop_thread.h" />
     <ClInclude Include="src\zaf\rx\internal\thread\thread.h" />
@@ -961,7 +958,7 @@
     <ClInclude Include="src\zaf\rx\single_subject.h" />
     <ClInclude Include="src\zaf\rx\subject.h" />
     <ClInclude Include="src\zaf\rx\subscription.h" />
-    <ClInclude Include="src\zaf\rx\subscription_set.h" />
+    <ClInclude Include="src\zaf\rx\subscription_bag.h" />
     <ClInclude Include="src\zaf\rx\subscription_host.h" />
     <ClInclude Include="src\zaf\rx\termination_capability.h" />
     <ClInclude Include="src\zaf\rx\timer.h" />

@@ -132,8 +132,8 @@ private:
     std::weak_ptr<ListControlDelegate> delegate_;
     Subject<ListCoreDelegateChangedInfo> delegate_changed_event_;
 
-    SubscriptionSet data_source_subs_;
-    SubscriptionSet item_container_subs_;
+    SubscriptionBag data_source_subs_;
+    SubscriptionBag item_container_subs_;
 
     Subscription vertical_scroll_bar_sub_;
     Subscription exit_selecting_by_mouse_sub_;

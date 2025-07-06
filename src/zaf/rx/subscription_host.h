@@ -1,7 +1,6 @@
 #pragma once
 
-#include <mutex>
-#include <zaf/rx/subscription_set.h>
+#include <zaf/rx/subscription_bag.h>
 
 namespace zaf {
 
@@ -13,11 +12,12 @@ public:
     SubscriptionHost(const SubscriptionHost&) = delete;
     SubscriptionHost& operator=(const SubscriptionHost&) = delete;
 
-    SubscriptionSet& Subscriptions();
+    SubscriptionBag& Subscriptions() {
+        return subscriptions_;
+    }
 
 private:
-    std::unique_ptr<zaf::SubscriptionSet> subscriptions_;
-    std::once_flag subscriptions_once_flag_;
+    SubscriptionBag subscriptions_;
 };
 
 }

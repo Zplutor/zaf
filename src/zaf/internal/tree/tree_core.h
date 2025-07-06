@@ -175,8 +175,8 @@ private:
     ItemExpandEvent item_expand_event_;
     ItemCollapseEvent item_collapse_event_;
 
-    SubscriptionSet item_container_subs_;
-    SubscriptionSet data_source_subscriptions_;
+    SubscriptionBag item_container_subs_;
+    SubscriptionBag data_source_subscriptions_;
     
     TreeIndexMapping tree_index_mapping_;
     TreeDataManager tree_data_manager_;

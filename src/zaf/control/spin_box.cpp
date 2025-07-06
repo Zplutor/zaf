@@ -108,7 +108,7 @@ void SpinBox::InitializeDownButton() {
 void SpinBox::InitializeButtonEvents(
     bool increase,
     const std::shared_ptr<SpinButton>& button,
-    SubscriptionSet& subscriptions,
+    SubscriptionBag& subscriptions,
     Subscription& timer_subscription) {
 
     subscriptions += button->MouseDownEvent().Subscribe(

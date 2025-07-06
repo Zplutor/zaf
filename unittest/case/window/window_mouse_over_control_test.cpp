@@ -156,7 +156,7 @@ TEST_F(WindowMouseOverControlTest, HideParentOfMouseOverControl) {
 TEST_F(WindowMouseOverControlTest, HandleMouseMoveMessage) {
 
     //Mouse over control wouldn't change if pre mouse move event is handled.
-    zaf::SubscriptionSet subs;
+    zaf::SubscriptionBag subs;
     subs += ParentControl()->PreMouseMoveEvent().Subscribe(
         [](const zaf::PreMouseMoveInfo& event_info) {
     
