@@ -3100,5 +3100,8 @@
     <ClInclude Include="src\zaf\rx\internal\subscription\producer_subscription_core.h">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable_factory.h">
+      <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

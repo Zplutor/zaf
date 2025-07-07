@@ -908,6 +908,7 @@
     <ClInclude Include="src\zaf\rx\error_capability.h" />
     <ClInclude Include="src\zaf\rx\flat_map_capability.h" />
     <ClInclude Include="src\zaf\rx\internal\continuous_factory.h" />
+    <ClInclude Include="src\zaf\rx\internal\observable_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\observer_core.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\async_customized_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\concat_observable.h" />
