@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/operator/observe_on_operator.h>
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/observer_core.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::rx::internal {
@@ -46,7 +46,7 @@ public:
     }
 
 protected:
-    void OnDispose() override {
+    void OnUnsubscribe() override {
 
         is_unsubscribed_.store(true);
         if (source_subscription_) {
@@ -97,7 +97,7 @@ std::shared_ptr<SubscriptionCore> ObserveOnOperator::Subscribe(
 
     auto producer = std::make_shared<ObserveOnProducer>(observer, scheduler_);
     producer->Run(source_);
-    return std::make_shared<SubscriptionCore>(producer);
+    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }
 
 }

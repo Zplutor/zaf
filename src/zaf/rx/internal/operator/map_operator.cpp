@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/operator/map_operator.h>
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -40,13 +40,13 @@ public:
     }
 
     void OnCompleted() override {
-        if (!IsTerminated()) {
+        if (!IsUnsubscribed()) {
             EmitOnCompleted();
         }
     }
 
 protected:
-    void OnDispose() override {
+    void OnUnsubscribe() override {
 
         if (source_subscription_) {
             source_subscription_->Unsubscribe();
@@ -58,7 +58,7 @@ protected:
 
 private:
     void TryToDeliverOnError(const std::exception_ptr& error) {
-        if (!IsTerminated()) {
+        if (!IsUnsubscribed()) {
             EmitOnError(error);
         }
     }
@@ -82,7 +82,7 @@ std::shared_ptr<SubscriptionCore> MapOperator::Subscribe(
 
     auto producer = std::make_shared<MapProducer>(observer, mapper_);
     producer->Run(source_);
-    return std::make_shared<SubscriptionCore>(std::move(producer));
+    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }
 
 }

@@ -3,11 +3,8 @@
 #include <mutex>
 #include <vector>
 #include <zaf/base/non_copyable.h>
+#include <zaf/rx/internal/subscription/unsubscribe_notification.h>
 #include <zaf/rx/subscription.h>
-
-namespace zaf::rx::internal {
-class Producer;
-}
 
 namespace zaf {
 
@@ -60,11 +57,11 @@ private:
     class Item {
     public:
         std::shared_ptr<rx::internal::SubscriptionCore> subscription_core;
-        int dispose_notification_id{};
+        rx::internal::UnsubscribeNotificationID unsubscribe_notification_id{};
     };
 
 private:
-    void OnProducerDispose(rx::internal::Producer* producer, int notification_id);
+    void OnSubscriptionCoreUnsubscribe(rx::internal::UnsubscribeNotificationID notification_id);
 
 private:
     mutable std::mutex lock_;

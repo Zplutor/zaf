@@ -3,7 +3,7 @@
 #include <zaf/base/auto_reset.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -37,7 +37,7 @@ public:
         EmitOnCompleted();
     }
 
-    void OnDispose() override {
+    void OnUnsubscribe() override {
 
         if (is_emitting_termination_) {
             after_terminate_();
@@ -74,7 +74,7 @@ std::shared_ptr<SubscriptionCore> DoAfterTerminateOperator::Subscribe(
 
     auto producer = std::make_shared<DoAfterTerminateProducer>(observer, after_terminate_);
     producer->Run(source_);
-    return std::make_shared<SubscriptionCore>(std::move(producer));
+    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }
 
 }

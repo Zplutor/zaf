@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/operator/do_operator.h>
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/observer_core.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::rx::internal {
@@ -37,7 +37,7 @@ public:
         EmitOnCompleted();
     }
 
-    void OnDispose() override {
+    void OnUnsubscribe() override {
         if (source_subscription_) {
             source_subscription_->Unsubscribe();
             source_subscription_.reset();
@@ -67,7 +67,7 @@ std::shared_ptr<SubscriptionCore> DoOperator::Subscribe(
 
     auto producer = std::make_shared<DoProducer>(observer, do_observer_);
     producer->Run(source_);
-    return std::make_shared<SubscriptionCore>(std::move(producer));
+    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }
 
 }

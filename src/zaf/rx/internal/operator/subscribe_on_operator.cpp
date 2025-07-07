@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/operator/subscribe_on_operator.h>
 #include <zaf/base/as.h>
 #include <zaf/base/error/contract_error.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::rx::internal {
@@ -31,7 +31,7 @@ public:
             As<SubscribeOnProducer>(shared_from_this())));
     }
 
-    void OnDispose() override {
+    void OnUnsubscribe() override {
 
         is_disposed_.store(true);
 
@@ -100,7 +100,7 @@ std::shared_ptr<SubscriptionCore> SubscribeOnOperator::Subscribe(
 
     auto producer = std::make_shared<SubscribeOnProducer>(source_, scheduler_, observer);
     producer->Run();
-    return std::make_shared<SubscriptionCore>(producer);
+    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }
 
 }

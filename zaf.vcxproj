@@ -379,7 +379,7 @@
     <ClCompile Include="src\zaf\rx\internal\subject\replay_subject_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core_indirect.cpp" />
-    <ClCompile Include="src\zaf\rx\internal\subscription\subscription_core.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\subscription\producer_subscription_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\thread\run_loop_thread.cpp" />
     <ClCompile Include="src\zaf\rx\internal\thread\thread_manager.cpp" />
     <ClCompile Include="src\zaf\rx\internal\thread\window_thread.cpp" />
@@ -939,7 +939,9 @@
     <ClInclude Include="src\zaf\rx\internal\subject\replay_subject_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core_indirect.h" />
+    <ClInclude Include="src\zaf\rx\internal\subscription\producer_subscription_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subscription\subscription_core.h" />
+    <ClInclude Include="src\zaf\rx\internal\subscription\unsubscribe_notification.h" />
     <ClInclude Include="src\zaf\rx\internal\thread\run_loop_thread.h" />
     <ClInclude Include="src\zaf\rx\internal\thread\thread.h" />
     <ClInclude Include="src\zaf\rx\internal\thread\thread_manager.h" />

@@ -1,6 +1,6 @@
 #include <zaf/rx/internal/observable/timer_observable.h>
 #include <zaf/base/as.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 #include <zaf/rx/internal/producer.h>
 #include <zaf/rx/internal/rx_runtime.h>
 #include <zaf/rx/internal/timer_manager.h>
@@ -29,7 +29,7 @@ public:
         SetTimer();
     }
 
-    void OnDispose() override {
+    void OnUnsubscribe() override {
 
         is_unsubscribed_.store(true);
         RxRuntime::GetInstance().GetTimerManager().CancelTimer(timer_id_);
@@ -123,7 +123,7 @@ std::shared_ptr<SubscriptionCore> TimerObservable::Subscribe(
         observer);
 
     producer->Run();
-    return std::make_shared<SubscriptionCore>(producer);
+    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }
 
 }

@@ -24,7 +24,7 @@ void Producer::EmitOnError(const std::exception_ptr& error) {
             observer->OnError(error);
         }
     }
-    Terminate();
+    Unsubscribe();
 }
 
 
@@ -45,17 +45,17 @@ void Producer::EmitOnCompleted() {
         }
     }
     
-    Terminate();
+    Unsubscribe();
 }
 
 
-void Producer::Dispose() {
+void Producer::Unsubscribe() {
 
-    if (MarkDisposed()) {
+    if (MarkUnsubscribed()) {
 
-        OnDispose();
+        OnUnsubscribe();
 
-        NotifyDispose();
+        NotifyUnsubscribe();
 
         //Release observer to break potential circular reference.
         observer_.reset();
@@ -63,56 +63,51 @@ void Producer::Dispose() {
 }
 
 
-void Producer::Terminate() {
-    if (MarkTerminated()) {
-        // The producer should be disposed after it is terminated.
-        Dispose();
-    }
-}
-
-
-bool Producer::MarkTerminated() {
+bool Producer::MarkUnsubscribed() {
     bool expected{ false };
-    return is_terminated_.compare_exchange_strong(expected, true);
+    return is_unsubscribed_.compare_exchange_strong(expected, true);
 }
 
 
-std::optional<int> Producer::RegisterDisposeNotification(DisposeNotification callback) {
+bool Producer::IsUnsubscribed() const noexcept {
+    return is_unsubscribed_;
+}
 
-    std::scoped_lock<std::mutex> lock(lock_);
-    if (is_terminated_) {
+
+std::optional<UnsubscribeNotificationID> Producer::RegisterUnsubscribeNotification(
+    UnsubscribeNotification callback) {
+
+    std::scoped_lock<std::mutex> lock(unsubscribe_notification_lock_);
+    if (is_unsubscribed_) {
         return std::nullopt;
     }
 
-    auto id = ++dispose_notification_id_seed_;
-    dispose_notifications_[id] = std::move(callback);
+    auto id = std::make_pair(
+        reinterpret_cast<std::uintptr_t>(this), 
+        ++unsubscribe_notification_id_seed_);
+
+    unsubscribe_notifications_[id] = std::move(callback);
     return id;
 }
 
 
-void Producer::UnregisterDisposeNotification(int id) {
+void Producer::UnregisterUnsubscribeNotification(UnsubscribeNotificationID id) {
 
-    std::scoped_lock<std::mutex> lock(lock_);
-    dispose_notifications_.erase(id);
+    std::scoped_lock<std::mutex> lock(unsubscribe_notification_lock_);
+    unsubscribe_notifications_.erase(id);
 }
 
 
-bool Producer::MarkDisposed() {
-    bool expected{ false };
-    return is_disposed_.compare_exchange_strong(expected, true);
-}
+void Producer::NotifyUnsubscribe() {
 
-
-void Producer::NotifyDispose() {
-
-    std::map<int, DisposeNotification> notifications;
+    std::map<UnsubscribeNotificationID, UnsubscribeNotification> notifications;
     {
-        std::scoped_lock<std::mutex> lock(lock_);
-        notifications = std::move(dispose_notifications_);
+        std::scoped_lock<std::mutex> lock(unsubscribe_notification_lock_);
+        notifications = std::move(unsubscribe_notifications_);
     }
 
     for (const auto& each_pair : notifications) {
-        each_pair.second(this, each_pair.first);
+        each_pair.second(each_pair.first);
     }
 }
 

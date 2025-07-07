@@ -6,6 +6,7 @@
 #include <mutex>
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/observer_core.h>
+#include <zaf/rx/internal/subscription/unsubscribe_notification.h>
 
 namespace zaf::rx::internal {
 
@@ -13,19 +14,16 @@ namespace zaf::rx::internal {
 A producer is responsible for emitting data sequence.
 
 @details
-    There are two states of a producer: terminated and disposed.
+    There are two states of a producer: subscribed and unsubscribed. Subscribed state indicates 
+    that the producer is actively emitting values. While unsubscribed state indicates that the 
+    producer is no longer emitting values.
 
-    Terminated state indicates that the data sequence has ended. It's set after OnError and 
-    OnCompleted.
-
-    Disposed state indicates that any resource held by the producer has been destroyed. A disposed
-    state always follows after a terminated state. Or it can be set explicitly by calling 
-    Dispose().
+    A producer transitions from subscribed state to unsubscribed state either when Unsubscribe() is
+    called, or when EmitOnError() or EmitOnCompleted() is called.
 */
 class Producer : public std::enable_shared_from_this<Producer>, NonCopyableNonMovable {
 public:
     explicit Producer(std::shared_ptr<ObserverCore> observer);
-    virtual ~Producer() = default;
 
     /**
     Emits a data item to the observer.
@@ -42,50 +40,42 @@ public:
     */
     void EmitOnCompleted();
 
-    bool IsTerminated() const noexcept {
-        return is_terminated_;
-    }
-
     /**
-    Disposes the producer.
+    Unsubscribes the producer.
 
-    This method is called by SubscriptionCore to cancel subscription and to do clean up work.
-    It's legal to call this method multiple times, only the first call would take effect.
+    @details
+        It's legal to call this method multiple times, only the first call would take effect.
     */
-    void Dispose();
+    void Unsubscribe();
+    bool IsUnsubscribed() const noexcept;
+
+    std::optional<UnsubscribeNotificationID> RegisterUnsubscribeNotification(
+        UnsubscribeNotification callback);
+
+    void UnregisterUnsubscribeNotification(UnsubscribeNotificationID id);
 
 protected:
     /**
-    Override this method in derived classes to do specific disposal work.
+    Override this method in derived classes to do specific unsubscription work.
 
-    Any shared pointer should be reset in this method, in order to break potential circular 
-    references.
+    @details
+        Any shared pointer should be reset in this method, in order to break potential circular 
+        references.
     */
-    virtual void OnDispose() = 0;
+    virtual void OnUnsubscribe() = 0;
 
 private:
-    friend class SubscriptionBag;
-
-    using DisposeNotification = std::function<void(Producer*, int)>;
-    std::optional<int> RegisterDisposeNotification(DisposeNotification callback);
-    void UnregisterDisposeNotification(int id);
-
-private:
-    void Terminate();
-    bool MarkTerminated();
-
-    bool MarkDisposed();
-    void NotifyDispose();
+    bool MarkUnsubscribed();
+    void NotifyUnsubscribe();
 
 private:
     std::shared_ptr<ObserverCore> observer_;
 
-    std::atomic<bool> is_terminated_{};
-    std::atomic<bool> is_disposed_{};
-    int dispose_notification_id_seed_{};
-    std::map<int, DisposeNotification> dispose_notifications_;
+    std::atomic<bool> is_unsubscribed_{};
+    int unsubscribe_notification_id_seed_{};
+    std::map<UnsubscribeNotificationID, UnsubscribeNotification> unsubscribe_notifications_;
 
-    std::mutex lock_;
+    std::mutex unsubscribe_notification_lock_;
 };
 
 }

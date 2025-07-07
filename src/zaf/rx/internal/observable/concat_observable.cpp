@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -38,7 +38,7 @@ public:
     }
 
 protected:
-    void OnDispose() override {
+    void OnUnsubscribe() override {
 
         if (current_sub_) {
             current_sub_->Unsubscribe();
@@ -99,7 +99,7 @@ std::shared_ptr<SubscriptionCore> ConcatObservable::Subscribe(
         observer);
 
     producer->Run();
-    return std::make_shared<SubscriptionCore>(std::move(producer));
+    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }
 
 }

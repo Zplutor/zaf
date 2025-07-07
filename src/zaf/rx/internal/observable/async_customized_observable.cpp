@@ -3,7 +3,7 @@
 #include <zaf/base/error/error.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/observable/customized_observable.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::rx::internal {
@@ -22,7 +22,7 @@ public:
     }
 
 protected:
-    void OnDispose() override {
+    void OnUnsubscribe() override {
 
         subscription_->Unsubscribe();
         subscription_.reset();
@@ -74,7 +74,7 @@ std::shared_ptr<SubscriptionCore> AsyncCustomizedObservable::Subscribe(
         nested_subscription, 
         cancel_token_source);
 
-    return std::make_shared<SubscriptionCore>(producer);
+    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }
 
 

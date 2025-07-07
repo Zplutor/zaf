@@ -1,7 +1,7 @@
 ﻿#include <zaf/rx/internal/subject/subject_core.h>
 #include <algorithm>
 #include <zaf/base/container/utility/erase.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -18,7 +18,7 @@ public:
     }
 
 protected:
-    void OnDispose() override {
+    void OnUnsubscribe() override {
 
         auto subject_core = subject_.lock();
         if (subject_core) {
@@ -46,7 +46,7 @@ std::shared_ptr<SubscriptionCore> SubjectCore::Subscribe(
    
     producers_.push_back(producer);
 
-    return std::make_shared<SubscriptionCore>(producer);
+    return std::make_shared<ProducerSubscriptionCore>(producer);
 }
 
 

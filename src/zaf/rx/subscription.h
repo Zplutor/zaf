@@ -12,7 +12,8 @@ namespace zaf {
 class Subscription {
 public:
     Subscription() = default;
-    explicit Subscription(std::shared_ptr<rx::internal::SubscriptionCore> core);
+    explicit Subscription(std::shared_ptr<rx::internal::SubscriptionCore> core) noexcept;
+    ~Subscription();
 
     Subscription(const Subscription&) = default;
     Subscription& operator=(const Subscription&) = default;
@@ -22,7 +23,9 @@ public:
 
     void Unsubscribe();
 
-    const std::shared_ptr<rx::internal::SubscriptionCore>& Core() const {
+    bool IsUnsubscribed() const noexcept;
+
+    const std::shared_ptr<rx::internal::SubscriptionCore>& Core() const noexcept {
         return core_;
     }
 

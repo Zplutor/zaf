@@ -5,7 +5,7 @@
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/operator/flat_map_operator.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -42,7 +42,7 @@ public:
         auto sub_id = ++mapper_subs_count_;
         auto mapper_sub = mapped_observable->Subscribe(ObserverCore::Create(
             [this](const std::any& value) {
-                if (!IsTerminated()) {
+                if (!IsUnsubscribed()) {
                     EmitOnNext(value);
                 }
             },
@@ -73,7 +73,7 @@ public:
         TryToDeliverOnCompleted();
     }
 
-    void OnDispose() override {
+    void OnUnsubscribe() override {
 
         if (source_subscription_) {
             source_subscription_->Unsubscribe();
@@ -100,14 +100,14 @@ private:
     }
 
     void TryToDeliverOnError(const std::exception_ptr& error) {
-        if (!IsTerminated()) {
+        if (!IsUnsubscribed()) {
             EmitOnError(error);
         }
     }
 
     void TryToDeliverOnCompleted() {
 
-        if (IsTerminated()) {
+        if (IsUnsubscribed()) {
             return;
         }
 
@@ -140,7 +140,7 @@ std::shared_ptr<SubscriptionCore> FlatMapOperator::Subscribe(
 
     auto producer = std::make_shared<FlatMapProducer>(observer, mapper_);
     producer->Run(source_);
-    return std::make_shared<SubscriptionCore>(std::move(producer));
+    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }
 
 }

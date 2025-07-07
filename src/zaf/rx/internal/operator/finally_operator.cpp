@@ -3,7 +3,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -35,7 +35,7 @@ public:
         EmitOnCompleted();
     }
 
-    void OnDispose() override {
+    void OnUnsubscribe() override {
 
         if (source_subscription_) {
             source_subscription_->Unsubscribe();
@@ -66,7 +66,7 @@ std::shared_ptr<SubscriptionCore> FinallyOperator::Subscribe(
 
     auto producer = std::make_shared<FinallyProducer>(observer, finally_work_);
     producer->Run(source_);
-    return std::make_shared<SubscriptionCore>(std::move(producer));
+    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }
 
 }

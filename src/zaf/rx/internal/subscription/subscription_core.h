@@ -1,25 +1,23 @@
 #pragma once
 
-#include <memory>
+#include <functional>
 #include <zaf/base/non_copyable.h>
+#include <zaf/rx/internal/subscription/unsubscribe_notification.h>
 
 namespace zaf::rx::internal {
 
-class Producer;
-
 class SubscriptionCore : NonCopyableNonMovable {
 public:
-    SubscriptionCore(std::shared_ptr<internal::Producer> producer);
-    ~SubscriptionCore();
+    SubscriptionCore() = default;
+    virtual ~SubscriptionCore() = default;
 
-    void Unsubscribe();
+    virtual void Unsubscribe() = 0;
+    virtual bool IsUnsubscribed() const noexcept = 0;
 
-    const std::shared_ptr<Producer>& Producer() {
-        return producer_;
-    }
+    virtual std::optional<UnsubscribeNotificationID> RegisterUnsubscribeNotification(
+        UnsubscribeNotification callback) = 0;
 
-private:
-    std::shared_ptr<internal::Producer> producer_;
+    virtual void UnregisterUnsubscribeNotification(UnsubscribeNotificationID id) = 0;
 };
 
 }

@@ -1,6 +1,5 @@
 #include <zaf/rx/subscription_bag.h>
 #include <zaf/base/container/utility/erase.h>
-#include <zaf/rx/internal/producer.h>
 #include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf {
@@ -22,16 +21,10 @@ void SubscriptionBag::Add(const Subscription& subscription) {
         return;
     }
 
-    const auto& producer = core->Producer();
-    if (!producer) {
-        return;
-    }
-
-    auto notification_id = producer->RegisterDisposeNotification(std::bind(
-        &SubscriptionBag::OnProducerDispose,
+    auto notification_id = core->RegisterUnsubscribeNotification(std::bind(
+        &SubscriptionBag::OnSubscriptionCoreUnsubscribe,
         this,
-        std::placeholders::_1,
-        std::placeholders::_2));
+        std::placeholders::_1));
 
     if (!notification_id) {
         return;
@@ -42,14 +35,13 @@ void SubscriptionBag::Add(const Subscription& subscription) {
 }
 
 
-void SubscriptionBag::OnProducerDispose(rx::internal::Producer* producer, int notification_id) {
+void SubscriptionBag::OnSubscriptionCoreUnsubscribe(
+    rx::internal::UnsubscribeNotificationID notification_id) {
 
     std::scoped_lock<std::mutex> lock(lock_);
 
-    EraseIf(items_, [producer, notification_id](const auto& item) {
-        return
-            (item.subscription_core->Producer().get() == producer) &&
-            (item.dispose_notification_id == notification_id);
+    EraseIf(items_, [notification_id](const auto& item) {
+        return (item.unsubscribe_notification_id == notification_id);
     });
 }
 
@@ -65,10 +57,9 @@ void SubscriptionBag::Clear() {
 
     for (const auto& each_item : items_) {
 
-        const auto& producer = each_item.subscription_core->Producer();
-        producer->UnregisterDisposeNotification(each_item.dispose_notification_id);
-
-        each_item.subscription_core->Unsubscribe();
+        const auto& core = each_item.subscription_core;
+        core->UnregisterUnsubscribeNotification(each_item.unsubscribe_notification_id);
+        core->Unsubscribe();
     }
 
     items_.clear();

@@ -433,9 +433,6 @@
     <ClCompile Include="src\zaf\rx\internal\observer_core.cpp">
       <Filter>zaf\rx\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\subscription\subscription_core.cpp">
-      <Filter>zaf\rx\internal\subscription</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core_indirect.cpp">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClCompile>
@@ -1314,6 +1311,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\operator\do_after_terminate_operator.cpp">
       <Filter>zaf\rx\internal\operator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\subscription\producer_subscription_core.cpp">
+      <Filter>zaf\rx\internal\subscription</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3093,6 +3093,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\operator\do_after_terminate_operator.h">
       <Filter>zaf\rx\internal\operator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\subscription\unsubscribe_notification.h">
+      <Filter>zaf\rx\internal\subscription</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\subscription\producer_subscription_core.h">
+      <Filter>zaf\rx\internal\subscription</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
