@@ -16,11 +16,12 @@ public:
 
     Continuous<T> AsContinuous() const noexcept {
         auto observable_core = internal::AsObservableCore(this->Core());
-        return internal::ContinuousFactory<T>::Create(std::move(observable_core));
+        return internal::ContinuousFactory<T>::CreateContinuous(std::move(observable_core));
     }
 
     ContinuousObserver<T> AsObserver() const noexcept {
-        return ContinuousObserver<T>{ internal::AsObserverCore(this->Core()) };
+        auto observer_core = internal::AsObserverCore(this->Core());
+        return internal::ContinuousFactory<T>::CreateContinuousObserver(std::move(observer_core));
     }
 };
 

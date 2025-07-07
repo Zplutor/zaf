@@ -3,6 +3,11 @@
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/observer_functions.h>
 
+namespace zaf::rx::internal {
+template<typename T>
+class ContinuousFactory;
+}
+
 namespace zaf::rx {
 
 template<typename T>
@@ -34,17 +39,20 @@ public:
     }
 
 public:
-    explicit ContinuousObserver(std::shared_ptr<internal::ObserverCore> core) noexcept :
-        core_(std::move(core)) {
-
-    }
-
     void OnNext(const T& value) {
         core_->OnNext(value);
     }
 
     const std::shared_ptr<internal::ObserverCore>& Core() const noexcept {
         return core_;
+    }
+
+private:
+    friend class internal::ContinuousFactory<T>;
+
+    explicit ContinuousObserver(std::shared_ptr<internal::ObserverCore> core) noexcept :
+        core_(std::move(core)) {
+
     }
 
 private:
