@@ -18,7 +18,8 @@ Creates an observable that emits no items but terminates normally.
 */
 template<typename T = zaf::None>
 Observable<T> Empty() {
-    return Observable<T>{ internal::EmptyObservable::Instance() };
+    auto core = internal::EmptyObservable::Instance();
+    return internal::ObservableFactory<T>::CreateObservable(std::move(core));
 }
 
 
@@ -27,7 +28,8 @@ Creates an observable that emits no items and does not terminate.
 */
 template<typename T>
 Observable<T> Never() {
-    return Observable<T>{ internal::NeverObservable::Instance() };
+    auto core = internal::NeverObservable::Instance();
+    return internal::ObservableFactory<T>::CreateObservable(std::move(core));
 }
 
 
@@ -36,7 +38,8 @@ Creates an observable that emits no items and terminates with an error.
 */
 template<typename T>
 Observable<T> Throw(std::exception_ptr error) {
-    return Observable<T>{ std::make_shared<internal::ThrowObservable>(std::move(error)) };
+    auto core = std::make_shared<internal::ThrowObservable>(std::move(error));
+    return internal::ObservableFactory<T>::CreateObservable(std::move(core));
 }
 
 /**
@@ -50,7 +53,8 @@ Observable<T> Throw(E error) {
 
 template<typename T>
 Observable<T> Just(const T& value) {
-    return Observable<T>(std::make_shared<internal::JustObservable>(std::any{ value }));
+    auto core = std::make_shared<internal::JustObservable>(std::any{ value });
+    return internal::ObservableFactory<T>::CreateObservable(std::move(core));
 }
 
 
@@ -60,9 +64,8 @@ Observable<T> Concat(const C& container) {
     for (const auto& each_observable : container) {
         observables.push_back(each_observable.Core());
     }
-    return Observable<T>{
-        std::make_shared<internal::ConcatObservable>(std::move(observables))
-    };
+    auto core = std::make_shared<internal::ConcatObservable>(std::move(observables));
+    return internal::ObservableFactory<T>::CreateObservable(std::move(core));
 }
 
 
@@ -83,10 +86,8 @@ Observable<T> Create(std::function<Subscription(Observer<T>)> procedure) {
         return subscription.Core();
     };
 
-    auto customized_observable = 
-        std::make_shared<internal::CustomizedObservable>(std::move(bridged_procedure));
-
-    return Observable<T>(std::move(customized_observable));
+    auto core = std::make_shared<internal::CustomizedObservable>(std::move(bridged_procedure));
+    return internal::ObservableFactory<T>::CreateObservable(std::move(core));
 }
 
 
@@ -103,11 +104,11 @@ Observable<T> Create(
         procedure(observer);
     };
 
-    auto observable = std::make_shared<internal::AsyncCustomizedObservable>(
+    auto core = std::make_shared<internal::AsyncCustomizedObservable>(
         std::move(scheduler),
         std::move(bridged_procedure));
 
-    return Observable<T>(std::move(observable));
+    return internal::ObservableFactory<T>::CreateObservable(std::move(core));
 }
 
 
@@ -124,11 +125,11 @@ Observable<T> Create(
         procedure(observer, cancel_token);
     };
 
-    auto observable = std::make_shared<internal::AsyncCustomizedObservable>(
+    auto core = std::make_shared<internal::AsyncCustomizedObservable>(
         std::move(scheduler),
         std::move(bridged_procedure));
 
-    return Observable<T>(std::move(observable));
+    return internal::ObservableFactory<T>::CreateObservable(std::move(core));
 }
 
 }

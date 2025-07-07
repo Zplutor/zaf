@@ -10,6 +10,11 @@
 #include <zaf/rx/subscription.h>
 #include <zaf/rx/termination_capability.h>
 
+namespace zaf::rx::internal {
+template<typename T>
+class ObservableFactory;
+}
+
 namespace zaf {
 
 class Scheduler;
@@ -26,9 +31,6 @@ class Observable :
 public:
     using Base::Do;
     using Base::Subscribe;
-
-    explicit Observable(std::shared_ptr<rx::internal::ObservableCore> core) noexcept : 
-        Base(std::move(core)) { }
 
     [[nodiscard]]
     Subscription Subscribe(OnNext<T> on_next) {
@@ -75,6 +77,29 @@ public:
 
     Observable DoOnCompleted(OnCompleted on_completed) {
         return Do(nullptr, nullptr, std::move(on_completed));
+    }
+
+private:
+    friend Base;
+    friend class rx::ErrorCapability<Observable<T>, Observer<T>>;
+    friend class rx::TerminationCapability<Observable<T>>;
+    friend class rx::internal::ObservableFactory<T>;
+
+    template<
+        template<typename> typename OBSERVABLE,
+        template<typename> typename OBSERVER,
+        typename K
+    >
+    friend class rx::BaseObservable;
+
+    template<
+        template<typename> typename OBSERVABLE,
+        typename K
+    >
+    friend class rx::FlatMapCapability;
+
+    explicit Observable(std::shared_ptr<rx::internal::ObservableCore> core) noexcept :
+        Base(std::move(core)) {
     }
 };
 

@@ -1,4 +1,5 @@
 #include <zaf/rx/timer.h>
+#include <zaf/rx/internal/observable_factory.h>
 #include <zaf/rx/internal/observable/timer_observable.h>
 #include <zaf/rx/scheduler.h>
 
@@ -10,12 +11,12 @@ Observable<int> CreateTimerObservable(
     std::optional<std::chrono::steady_clock::duration> interval,
     std::shared_ptr<Scheduler> scheduler) {
 
-    auto timer_observable = std::make_shared<internal::TimerObservable>(
+    auto core = std::make_shared<internal::TimerObservable>(
         std::move(delay),
         std::move(interval),
         std::move(scheduler));
 
-    return Observable<int>{ timer_observable };
+    return internal::ObservableFactory<int>::CreateObservable(std::move(core));
 }
 
 }

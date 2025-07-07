@@ -2,6 +2,7 @@
 
 #include <zaf/rx/base_observable.h>
 #include <zaf/rx/continuous_observer.h>
+#include <zaf/rx/internal/observable_factory.h>
 #include <zaf/rx/internal/observable/never_observable.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subscription.h>
@@ -39,7 +40,7 @@ public:
     }
 
     operator Observable<T>() const noexcept {
-        return Observable<T>{ this->Core() };
+        return internal::ObservableFactory<T>::CreateObservable(this->Core());
     }
 
 private:

@@ -3,6 +3,7 @@
 #include <zaf/rx/base_observable.h>
 #include <zaf/rx/error_capability.h>
 #include <zaf/rx/flat_map_capability.h>
+#include <zaf/rx/internal/observable_factory.h>
 #include <zaf/rx/internal/observable/just_observable.h>
 #include <zaf/rx/internal/observable/never_observable.h>
 #include <zaf/rx/internal/observable/throw_observable.h>
@@ -77,7 +78,7 @@ public:
         specialized type of `Observable<>`.
     */
     operator Observable<T>() const noexcept {
-        return Observable<T>{ this->Core() };
+        return internal::ObservableFactory<T>::CreateObservable(this->Core());
     }
 
 private:
