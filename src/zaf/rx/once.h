@@ -50,7 +50,7 @@ public:
     }
 
     operator Single<T>() const noexcept {
-        return internal::SingleFactory<T>::Create(this->Core());
+        return internal::SingleFactory<T>::CreateSingle(this->Core());
     }
 
     operator Observable<T>() const noexcept {

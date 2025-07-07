@@ -3,6 +3,11 @@
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/observer_functions.h>
 
+namespace zaf::rx::internal {
+template<typename T>
+class SingleFactory;
+}
+
 namespace zaf::rx {
 
 template<typename T>
@@ -42,10 +47,6 @@ public:
     }   
 
 public:
-    explicit SingleObserver(std::shared_ptr<internal::ObserverCore> core) :
-        core_(std::move(core)) {
-    }
-
     void OnSuccess(const T& value) {
         core_->OnNext(value);
         core_->OnCompleted();
@@ -62,6 +63,13 @@ public:
 
     const std::shared_ptr<internal::ObserverCore>& Core() const noexcept {
         return core_;
+    }
+
+private:
+    friend class internal::SingleFactory<T>;
+
+    explicit SingleObserver(std::shared_ptr<internal::ObserverCore> core) :
+        core_(std::move(core)) {
     }
 
 private:

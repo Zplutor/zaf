@@ -16,11 +16,12 @@ public:
 
     Single<T> AsSingle() const noexcept {
         auto observable_core = internal::AsObservableCore(this->Core());
-        return internal::SingleFactory<T>::Create(std::move(observable_core));
+        return internal::SingleFactory<T>::CreateSingle(std::move(observable_core));
     }
 
     SingleObserver<T> AsObserver() const noexcept {
-        return SingleObserver<T>{ internal::AsObserverCore(this->Core()) };
+        auto observer_core = internal::AsObserverCore(this->Core());
+        return internal::SingleFactory<T>::CreateSingleObserver(std::move(observer_core));
     }
 };
 
