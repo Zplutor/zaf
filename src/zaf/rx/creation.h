@@ -13,26 +13,6 @@
 
 namespace zaf::rx {
 
-/**
-Creates an observable that emits no items but terminates normally.
-*/
-template<typename T = zaf::None>
-Observable<T> Empty() {
-    auto core = internal::EmptyObservable::Instance();
-    return internal::ObservableFactory<T>::CreateObservable(std::move(core));
-}
-
-
-/**
-Creates an observable that emits no items and does not terminate.
-*/
-template<typename T>
-Observable<T> Never() {
-    auto core = internal::NeverObservable::Instance();
-    return internal::ObservableFactory<T>::CreateObservable(std::move(core));
-}
-
-
 template<typename T, typename C>
 Observable<T> Concat(const C& container) {
     internal::ObservableList observables;

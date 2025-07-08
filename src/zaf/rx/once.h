@@ -3,8 +3,6 @@
 #include <zaf/rx/base_observable.h>
 #include <zaf/rx/flat_map_capability.h>
 #include <zaf/rx/internal/observable_factory.h>
-#include <zaf/rx/internal/observable/just_observable.h>
-#include <zaf/rx/internal/observable/never_observable.h>
 #include <zaf/rx/internal/single_factory.h>
 #include <zaf/rx/once_observer.h>
 #include <zaf/rx/single.h>
@@ -24,15 +22,6 @@ class Once :
     public FlatMapCapability<Once, T> {
 
     using Base = BaseObservable<Once, OnceObserver, T>;
-
-public:
-    static Once<T> Just(T value) {
-        return Once<T>{ std::make_shared<internal::JustObservable>(std::any{ std::move(value) }) };
-    }
-
-    static Once<T> Never() {
-        return Once<T>{ internal::NeverObservable::Instance() };
-    }
 
 public:
     using Base::Do;

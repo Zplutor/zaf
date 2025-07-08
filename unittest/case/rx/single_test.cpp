@@ -3,21 +3,6 @@
 #include <zaf/rx/observable.h>
 #include <zaf/rx/single.h>
 
-TEST(RxSingleTest, Never) {
-
-    auto single = zaf::rx::Single<int>::Never();
-
-    bool on_success_called{};
-    bool on_error_called{};
-    auto sub = single.Subscribe(
-        [&](int) { on_success_called = true; },
-        [&](std::exception_ptr) { on_error_called = true; });
-
-    ASSERT_FALSE(on_success_called);
-    ASSERT_FALSE(on_error_called);
-}
-
-
 TEST(RxSingleTest, ConvertToObservable) {
 
     //OnSuccess

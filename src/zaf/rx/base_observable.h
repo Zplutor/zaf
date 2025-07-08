@@ -1,5 +1,6 @@
 #pragma once
 
+#include <zaf/rx/internal/observable/never_observable.h>
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/subscription.h>
 
@@ -11,6 +12,14 @@ template<
     typename T
 >
 class BaseObservable {
+public:
+    /**
+    Creates an observable that emits no items and does not terminate.
+    */
+    static OBSERVABLE<T> Never() {
+        return OBSERVABLE<T>{ internal::NeverObservable::Instance() };
+    }
+
 public:
     [[nodiscard]]
     Subscription Subscribe(const OBSERVER<T>& observer) {

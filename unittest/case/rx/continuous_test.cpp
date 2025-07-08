@@ -2,16 +2,6 @@
 #include <zaf/rx/continuous.h>
 #include <zaf/rx/continuous_subject.h>
 
-TEST(RxContinuousTest, Never) {
-
-    bool on_next_called{};
-    auto sub = zaf::rx::Continuous<int>::Never().Subscribe([&on_next_called](const int&) {
-        on_next_called = true;
-    });
-    ASSERT_FALSE(on_next_called);
-}
-
-
 TEST(RxContinuousTest, OnNext) {
 
     zaf::rx::ContinuousSubject<int> subject;

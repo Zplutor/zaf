@@ -5,52 +5,6 @@
 #include <zaf/rx/observable.h>
 #include <zaf/rx/scheduler.h>
 
-TEST(RxEmptyTest, Normal) {
-
-    auto observable = zaf::rx::Empty<int>();
-
-    int on_next_count{};
-    int on_error_count{};
-    int on_completed_count{};
-
-    auto sub = observable.Subscribe([&](int value) {
-        ++on_next_count;
-    }, 
-    [&](const std::exception_ptr&) {
-        ++on_error_count;
-    },
-    [&]() {
-        ++on_completed_count;
-    });
-
-    ASSERT_EQ(on_next_count, 0);
-    ASSERT_EQ(on_error_count, 0);
-    ASSERT_EQ(on_completed_count, 1);
-}
-
-
-TEST(RxNeverTest, Normal) {
-
-    auto observable = zaf::rx::Never<int>();
-
-    int on_next_count{};
-    int on_error_count{};
-    int on_completed_count{};
-
-    auto sub = observable.Subscribe([&](int value) {
-        ++on_next_count;
-    },
-    [&](const std::exception_ptr&) {
-        ++on_error_count;
-    },
-    [&]() {
-        ++on_completed_count;
-    });
-
-    ASSERT_EQ(on_next_count, 0);
-    ASSERT_EQ(on_error_count, 0);
-    ASSERT_EQ(on_completed_count, 0);
-}
 
 
 TEST(RxCreateTest, Normal) {

@@ -3,7 +3,6 @@
 #include <zaf/rx/base_observable.h>
 #include <zaf/rx/continuous_observer.h>
 #include <zaf/rx/internal/observable_factory.h>
-#include <zaf/rx/internal/observable/never_observable.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subscription.h>
 
@@ -18,11 +17,6 @@ template<typename T>
 class Continuous : public BaseObservable<Continuous, ContinuousObserver, T> {
 
     using Base = BaseObservable<Continuous, ContinuousObserver, T>;
-
-public:
-    static Continuous Never() {
-        return Continuous{ internal::NeverObservable::Instance() };
-    }
 
 public:
     using Base::Do;

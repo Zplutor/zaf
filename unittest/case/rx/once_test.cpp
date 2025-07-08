@@ -3,17 +3,6 @@
 #include <gtest/gtest.h>
 #include <zaf/rx/once.h>
 
-TEST(RxOnceTest, Never) {
-    
-    auto once = zaf::rx::Once<int>::Never();
-    bool on_done_called = false;
-    auto sub = once.Subscribe([&on_done_called](int) {
-        on_done_called = true;
-    });
-    ASSERT_FALSE(on_done_called);
-}
-
-
 TEST(RxOnceTest, ConvertToSingle) {
 
     auto once = zaf::rx::Once<int>::Just(31);

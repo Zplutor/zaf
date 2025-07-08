@@ -4,8 +4,6 @@
 #include <zaf/rx/error_capability.h>
 #include <zaf/rx/flat_map_capability.h>
 #include <zaf/rx/internal/observable_factory.h>
-#include <zaf/rx/internal/observable/just_observable.h>
-#include <zaf/rx/internal/observable/never_observable.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/single_observer.h>
 #include <zaf/rx/subscription.h>
@@ -26,15 +24,6 @@ class Single :
     public FlatMapCapability<Single, T> {
 
     using Base = BaseObservable<Single, SingleObserver, T>;
-
-public:
-    static Single Just(T value) {
-        return Single{ std::make_shared<internal::JustObservable>(std::any{ std::move(value) }) };
-    }
-
-    static Single Never() {
-        return Single{ internal::NeverObservable::Instance() };
-    }
 
 public:
     using Base::Do;

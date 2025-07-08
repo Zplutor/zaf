@@ -4,6 +4,7 @@
 #include <zaf/rx/base_observable.h>
 #include <zaf/rx/error_capability.h>
 #include <zaf/rx/flat_map_capability.h>
+#include <zaf/rx/internal/observable/empty_observable.h>
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/observer.h>
 #include <zaf/rx/observer_functions.h>
@@ -27,6 +28,14 @@ class Observable :
     public rx::FlatMapCapability<Observable, T> {
 
     using Base = rx::BaseObservable<Observable, Observer, T>;
+
+public:
+    /**
+    Creates an observable that emits no items but terminates normally.
+    */
+    static Observable<T> Empty() {
+        return Observable<T>{ rx::internal::EmptyObservable::Instance() };
+    }
 
 public:
     using Base::Do;
