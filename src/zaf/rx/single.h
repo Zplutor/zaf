@@ -6,7 +6,6 @@
 #include <zaf/rx/internal/observable_factory.h>
 #include <zaf/rx/internal/observable/just_observable.h>
 #include <zaf/rx/internal/observable/never_observable.h>
-#include <zaf/rx/internal/observable/throw_observable.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/single_observer.h>
 #include <zaf/rx/subscription.h>
@@ -31,15 +30,6 @@ class Single :
 public:
     static Single Just(T value) {
         return Single{ std::make_shared<internal::JustObservable>(std::any{ std::move(value) }) };
-    }
-
-    static Single Throw(std::exception_ptr error) {
-        return Single{ std::make_shared<internal::ThrowObservable>(std::move(error)) };
-    }
-
-    template<typename E>
-    static Single Throw(E&& error) {
-        return Throw(std::make_exception_ptr(std::forward<E>(error)));
     }
 
     static Single Never() {
@@ -83,6 +73,7 @@ public:
 
 private:
     friend class BaseObservable<Single, SingleObserver, T>;
+    friend class ErrorCapability<Single<T>, SingleObserver<T>>;
     friend class TerminationCapability<Single<T>>;
     friend class internal::SingleFactory<T>;
 

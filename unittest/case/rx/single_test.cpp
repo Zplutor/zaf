@@ -16,52 +16,6 @@ TEST(RxSingleTest, Just) {
 }
 
 
-TEST(RxSingleTest, Throw) {
-
-    // Test with std::exception_ptr
-    {
-        auto exception_ptr = std::make_exception_ptr(zaf::InvalidOperationError{ "single.throw"});
-        auto single = zaf::rx::Single<int>::Throw(exception_ptr);
-
-        bool on_success_called{};
-        std::string error_message;
-        auto sub = single.Subscribe(
-            [&](int) { on_success_called = true; },
-            [&error_message](std::exception_ptr exception) { 
-                try {
-                    std::rethrow_exception(exception);
-                } 
-                catch (const zaf::InvalidOperationError& error) {
-                    error_message = error.what();
-                }
-            });
-
-        ASSERT_FALSE(on_success_called);
-        ASSERT_EQ(error_message, "single.throw");
-    }
-
-    // Test with exception object
-    {
-        auto single = zaf::rx::Single<int>::Throw(zaf::InvalidOperationError{ "single.throw2" });
-
-        bool on_success_called{};
-        std::string error_message;
-        auto sub = single.Subscribe(
-            [&](int) { on_success_called = true; },
-            [&error_message](std::exception_ptr exception) { 
-                try {
-                    std::rethrow_exception(exception);
-                } 
-                catch (const zaf::InvalidOperationError& error) {
-                    error_message = error.what();
-                }
-            });
-        ASSERT_FALSE(on_success_called);
-        ASSERT_EQ(error_message, "single.throw2");
-    }
-}
-
-
 TEST(RxSingleTest, Never) {
 
     auto single = zaf::rx::Single<int>::Never();

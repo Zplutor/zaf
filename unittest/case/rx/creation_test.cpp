@@ -53,57 +53,6 @@ TEST(RxNeverTest, Normal) {
 }
 
 
-TEST(RxThrowTest, Normal) {
-
-    auto observable = zaf::rx::Throw<int>(std::make_exception_ptr(std::string("err")));
-
-    int on_next_count{};
-    std::string catched_error_string;
-    int on_completed_count{};
-
-    auto sub = observable.Subscribe([&](int value) {
-        ++on_next_count;
-    },
-    [&](const std::exception_ptr& exception) {
-        try {
-            std::rethrow_exception(exception);
-        }
-        catch (const std::string& error_string) {
-            catched_error_string = error_string;
-        }
-    },
-    [&]() {
-        ++on_completed_count;
-    });
-
-    ASSERT_EQ(on_next_count, 0);
-    ASSERT_EQ(catched_error_string, "err");
-    ASSERT_EQ(on_completed_count, 0);
-}
-
-
-//Calls the template error version of Throw().
-TEST(RxThrowTest, Template) {
-
-    auto observable = zaf::rx::Throw<double>(std::logic_error("throw logic error"));
-
-    std::optional<std::logic_error> catched_error;
-
-    auto sub = observable.Subscribe(
-        [](double) {},
-        [&catched_error](const std::exception_ptr& exception) {
-            try {
-                std::rethrow_exception(exception);
-            }
-            catch (const std::logic_error& logic_error) {
-                catched_error = logic_error;
-            }
-        });
-
-    ASSERT_STREQ(catched_error->what(), "throw logic error");
-}
-
-
 TEST(RxJustTest, Normal) {
 
     auto observable = zaf::rx::Just(std::string{ "Just" });

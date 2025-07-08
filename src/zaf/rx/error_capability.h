@@ -1,11 +1,32 @@
 #pragma once
 
+#include <zaf/rx/internal/observable/throw_observable.h>
 #include <zaf/rx/observer_functions.h>
 
 namespace zaf::rx {
 
+/**
+A mixin class that provides error handling capabilities for observables.
+*/
 template<typename OBSERVABLE, typename OBSERVER>
 class ErrorCapability {
+public:
+    /**
+    Creates an observable that emits no items and terminates with an error.
+    */
+    static OBSERVABLE Throw(std::exception_ptr error) {
+        auto core = std::make_shared<internal::ThrowObservable>(std::move(error));
+        return OBSERVABLE{ std::move(core) };
+    }
+
+    /**
+    Creates an observable that emits no items and terminates with an error.
+    */
+    template<typename E>
+    static OBSERVABLE Throw(E&& error) {
+        return Throw(std::make_exception_ptr(std::forward<E>(error)));
+    }
+
 public:
     OBSERVABLE DoOnError(OnError on_error) {
         return static_cast<OBSERVABLE*>(this)->Do(OBSERVER::Create(std::move(on_error)));
