@@ -6,7 +6,7 @@
 namespace zaf::rx {
 
 template<
-    template<typename> typename OBSERVABLE, 
+    template<typename> typename OBSERVABLE,
     template<typename> typename OBSERVER,
     typename T
 >

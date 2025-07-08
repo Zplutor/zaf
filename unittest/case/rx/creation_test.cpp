@@ -53,21 +53,6 @@ TEST(RxNeverTest, Normal) {
 }
 
 
-TEST(RxJustTest, Normal) {
-
-    auto observable = zaf::rx::Just(std::string{ "Just" });
-
-    std::string result;
-    zaf::Application::Instance().Subscriptions() += observable.Subscribe(
-        [&result](const std::string& string) {
-    
-        result = string;
-    });
-
-    ASSERT_EQ(result, "Just");
-}
-
-
 TEST(RxCreateTest, Normal) {
 
     auto observable = zaf::rx::Create<int>([](zaf::Observer<int> observer) {

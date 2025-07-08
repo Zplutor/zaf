@@ -22,7 +22,7 @@ template<typename T>
 class Single : 
     public BaseObservable<Single, SingleObserver, T>,
     public ErrorCapability<Single<T>, SingleObserver<T>>,
-    public TerminationCapability<Single<T>>,
+    public TerminationCapability<Single, T>,
     public FlatMapCapability<Single, T> {
 
     using Base = BaseObservable<Single, SingleObserver, T>;
@@ -74,7 +74,7 @@ public:
 private:
     friend class BaseObservable<Single, SingleObserver, T>;
     friend class ErrorCapability<Single<T>, SingleObserver<T>>;
-    friend class TerminationCapability<Single<T>>;
+    friend class TerminationCapability<Single, T>;
     friend class internal::SingleFactory<T>;
 
     template<

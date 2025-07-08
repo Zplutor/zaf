@@ -33,31 +33,6 @@ Observable<T> Never() {
 }
 
 
-/**
-Creates an observable that emits no items and terminates with an error.
-*/
-template<typename T>
-Observable<T> Throw(std::exception_ptr error) {
-    auto core = std::make_shared<internal::ThrowObservable>(std::move(error));
-    return internal::ObservableFactory<T>::CreateObservable(std::move(core));
-}
-
-/**
-Creates an observable that emits no items and terminates with an error.
-*/
-template<typename T, typename E>
-Observable<T> Throw(E error) {
-    return Throw<T>(std::make_exception_ptr(std::move(error)));
-}
-
-
-template<typename T>
-Observable<T> Just(const T& value) {
-    auto core = std::make_shared<internal::JustObservable>(std::any{ value });
-    return internal::ObservableFactory<T>::CreateObservable(std::move(core));
-}
-
-
 template<typename T, typename C>
 Observable<T> Concat(const C& container) {
     internal::ObservableList observables;

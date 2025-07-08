@@ -20,7 +20,7 @@ namespace zaf::rx {
 template<typename T>
 class Once : 
     public BaseObservable<Once, OnceObserver, T>,
-    public TerminationCapability<Once<T>>,
+    public TerminationCapability<Once, T>,
     public FlatMapCapability<Once, T> {
 
     using Base = BaseObservable<Once, OnceObserver, T>;
@@ -59,7 +59,7 @@ public:
 
 private:
     friend Base;
-    friend class TerminationCapability<Once<T>>;
+    friend class TerminationCapability<Once, T>;
     friend class internal::OnceFactory<T>;
 
     template<

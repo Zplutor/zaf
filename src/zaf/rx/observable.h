@@ -23,7 +23,7 @@ template<typename T>
 class Observable : 
     public rx::BaseObservable<Observable, Observer, T>, 
     public rx::ErrorCapability<Observable<T>, Observer<T>>,
-    public rx::TerminationCapability<Observable<T>>,
+    public rx::TerminationCapability<Observable, T>,
     public rx::FlatMapCapability<Observable, T> {
 
     using Base = rx::BaseObservable<Observable, Observer, T>;
@@ -82,7 +82,7 @@ public:
 private:
     friend Base;
     friend class rx::ErrorCapability<Observable<T>, Observer<T>>;
-    friend class rx::TerminationCapability<Observable<T>>;
+    friend class rx::TerminationCapability<Observable, T>;
     friend class rx::internal::ObservableFactory<T>;
 
     template<

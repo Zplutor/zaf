@@ -1,11 +1,24 @@
 #pragma once
 
+#include <zaf/rx/internal/observable/just_observable.h>
 #include <zaf/rx/work.h>
 
 namespace zaf::rx {
 
-template<typename OBSERVABLE>
+/**
+A mixin base class for observables that have termination capabilities.
+*/
+template<
+    template<typename> typename OBSERVABLE,
+    typename T
+>
 class TerminationCapability {
+public:
+    static OBSERVABLE<T> Just(T value) {
+        auto core = std::make_shared<internal::JustObservable>(std::any{ std::move(value) });
+        return OBSERVABLE<T>{ std::move(core) };
+    }
+
 public:
     /**
     Returns an observable that invokes an action when the current observable is terminated, either
@@ -17,14 +30,14 @@ public:
     @return
         A new observable.
     */
-    OBSERVABLE DoOnTerminate(Work work) {
-        const auto& core = static_cast<OBSERVABLE*>(this)->Core();
-        return OBSERVABLE{ core->DoOnTerminate(std::move(work)) };
+    OBSERVABLE<T> DoOnTerminate(Work work) {
+        const auto& core = static_cast<OBSERVABLE<T>*>(this)->Core();
+        return OBSERVABLE<T>{ core->DoOnTerminate(std::move(work)) };
     }
 
-    OBSERVABLE DoAfterTerminate(Work work) {
-        const auto& core = static_cast<OBSERVABLE*>(this)->Core();
-        return OBSERVABLE{ core->DoAfterTerminate(std::move(work)) };
+    OBSERVABLE<T> DoAfterTerminate(Work work) {
+        const auto& core = static_cast<OBSERVABLE<T>*>(this)->Core();
+        return OBSERVABLE<T>{ core->DoAfterTerminate(std::move(work)) };
     }
 };
 

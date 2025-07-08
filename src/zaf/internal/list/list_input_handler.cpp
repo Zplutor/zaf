@@ -193,7 +193,7 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
 Observable<None> ListInputHandler::WhenNotSelectingByMouse() const {
 
     if (!is_selecting_by_mouse_) {
-        return zaf::rx::Just(None{});
+        return zaf::Observable<None>::Just({});
     }
 
     if (!exit_select_by_mouse_subject_) {

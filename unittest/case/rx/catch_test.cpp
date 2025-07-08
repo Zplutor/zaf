@@ -140,7 +140,7 @@ TEST(RxCatchTest, FreeSubscriptionOnCompleted) {
     zaf::Subject<int> subject;
     zaf::Subscription sub;
     sub = subject.AsObservable().Catch([](const std::exception_ptr& error) {
-        return zaf::rx::Just(99);
+        return zaf::Observable<int>::Just(99);
     })
     .Subscribe([&](int value) {
         result.push_back(value);

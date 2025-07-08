@@ -818,7 +818,7 @@ Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() const {
 Observable<None> Window::WhenNotSizingOrMoving() const {
 
     if (!handle_specific_state_.is_sizing_or_moving) {
-        return rx::Just(None{});
+        return Observable<None>::Just({});
     }
 
     if (!handle_specific_state_.exit_sizing_or_moving_subject) {

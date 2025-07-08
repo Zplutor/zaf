@@ -6,7 +6,7 @@
 namespace zaf::rx {
 
 /**
-A mixin class that provides error handling capabilities for observables.
+A mixin base class for observables that support error handling capabilities.
 */
 template<typename OBSERVABLE, typename OBSERVER>
 class ErrorCapability {

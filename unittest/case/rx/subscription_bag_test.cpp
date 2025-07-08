@@ -16,7 +16,7 @@ TEST(RxSubscriptionBagTest, EmptySubscription) {
     ASSERT_EQ(bag.Count(), 0);
 
     std::vector<float> values;
-    bag += zaf::rx::Just<float>(0.5f).Subscribe([&values](float value) {
+    bag += zaf::Observable<float>::Just(0.5f).Subscribe([&values](float value) {
         values.push_back(value);
     });
 

@@ -18,7 +18,7 @@ TEST(RxFlatMapTest, FlatMap) {
     
         zaf::Subject<int> subject;
         test_data.sub = subject.AsObservable().FlatMap<std::string>([](int value) {
-            return zaf::rx::Just(std::to_string(value));
+            return zaf::Observable<std::string>::Just(std::to_string(value));
         })
         .Subscribe([&](const std::string& value) {
             test_data.result.push_back(value);
@@ -74,7 +74,7 @@ TEST(RxFlatMapTest, AsyncObservable) {
     auto sub = subject.AsObservable().ObserveOn(scheduler)
     .FlatMap<std::string>([scheduler](int value) {
 
-        return zaf::rx::Just(std::to_string(value))
+        return zaf::Observable<std::string>::Just(std::to_string(value))
             .SubscribeOn(scheduler);
     })
     .Subscribe([&](const std::string& value) {
@@ -134,7 +134,7 @@ TEST(RxFlatMapTest, SubscribeMultipleTimes) {
     zaf::Subject<int> subject;
     auto observable = subject.AsObservable().FlatMap<std::string>([&](int value) {
         ++call_times;
-        return zaf::rx::Just(std::to_string(value));
+        return zaf::Observable<std::string>::Just(std::to_string(value));
     });
 
     auto sub1 = observable.Subscribe();

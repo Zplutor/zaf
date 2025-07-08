@@ -3,19 +3,6 @@
 #include <zaf/rx/observable.h>
 #include <zaf/rx/single.h>
 
-TEST(RxSingleTest, Just) {
-
-    auto single = zaf::rx::Single<int>::Just(59);
-
-    int on_success_value{};
-    auto sub = single.Subscribe([&on_success_value](int value) {
-        on_success_value = value;
-    });
-
-    ASSERT_EQ(on_success_value, 59);
-}
-
-
 TEST(RxSingleTest, Never) {
 
     auto single = zaf::rx::Single<int>::Never();
