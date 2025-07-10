@@ -355,6 +355,7 @@
     <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp" />
     <ClCompile Include="src\zaf\resource\resource_factory.cpp" />
     <ClCompile Include="src\zaf\resource\uri_loader.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\observable\custom_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observer_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\async_customized_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\concat_observable.cpp" />
@@ -900,7 +901,9 @@
     <ClInclude Include="src\zaf\resource\resource_factory.h" />
     <ClInclude Include="src\zaf\resource\uri_loader.h" />
     <ClInclude Include="src\zaf\rx\base_observable.h" />
+    <ClInclude Include="src\zaf\rx\base_subscriber.h" />
     <ClInclude Include="src\zaf\rx\cancel.h" />
+    <ClInclude Include="src\zaf\rx\continuous_subscriber.h" />
     <ClInclude Include="src\zaf\rx\creation.h" />
     <ClInclude Include="src\zaf\rx\continuous.h" />
     <ClInclude Include="src\zaf\rx\continuous_observer.h" />
@@ -908,6 +911,7 @@
     <ClInclude Include="src\zaf\rx\error_capability.h" />
     <ClInclude Include="src\zaf\rx\flat_map_capability.h" />
     <ClInclude Include="src\zaf\rx\internal\continuous_factory.h" />
+    <ClInclude Include="src\zaf\rx\internal\observable\custom_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\observer_core.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\async_customized_observable.h" />
@@ -949,17 +953,21 @@
     <ClInclude Include="src\zaf\rx\internal\thread\window_thread.h" />
     <ClInclude Include="src\zaf\rx\internal\timer_manager.h" />
     <ClInclude Include="src\zaf\rx\observable.h" />
+    <ClInclude Include="src\zaf\rx\observable_traits.h" />
     <ClInclude Include="src\zaf\rx\observer.h" />
     <ClInclude Include="src\zaf\rx\observer_functions.h" />
     <ClInclude Include="src\zaf\rx\once.h" />
     <ClInclude Include="src\zaf\rx\once_observer.h" />
     <ClInclude Include="src\zaf\rx\once_subject.h" />
+    <ClInclude Include="src\zaf\rx\once_subscriber.h" />
     <ClInclude Include="src\zaf\rx\replay_subject.h" />
     <ClInclude Include="src\zaf\rx\scheduler.h" />
     <ClInclude Include="src\zaf\rx\single.h" />
     <ClInclude Include="src\zaf\rx\single_observer.h" />
     <ClInclude Include="src\zaf\rx\single_subject.h" />
+    <ClInclude Include="src\zaf\rx\single_subscriber.h" />
     <ClInclude Include="src\zaf\rx\subject.h" />
+    <ClInclude Include="src\zaf\rx\subscriber.h" />
     <ClInclude Include="src\zaf\rx\subscription.h" />
     <ClInclude Include="src\zaf\rx\subscription_bag.h" />
     <ClInclude Include="src\zaf\rx\subscription_host.h" />

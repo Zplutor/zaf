@@ -2,6 +2,7 @@
 
 #include <zaf/rx/base_observable.h>
 #include <zaf/rx/continuous_observer.h>
+#include <zaf/rx/continuous_subscriber.h>
 #include <zaf/rx/internal/observable_factory.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subscription.h>
@@ -14,9 +15,10 @@ class ContinuousFactory;
 namespace zaf::rx {
 
 template<typename T>
-class Continuous : public BaseObservable<Continuous, ContinuousObserver, T> {
+class Continuous : 
+    public BaseObservable<Continuous, ContinuousObserver, ContinuousSubscriber, T> {
 
-    using Base = BaseObservable<Continuous, ContinuousObserver, T>;
+    using Base = BaseObservable<Continuous, ContinuousObserver, ContinuousSubscriber, T>;
 
 public:
     using Base::Do;
@@ -38,12 +40,13 @@ public:
     }
 
 private:
-    friend class BaseObservable<Continuous, ContinuousObserver, T>;
+    friend Base;
     friend class internal::ContinuousFactory<T>;
 
     template<
         template<typename> typename OBSERVABLE, 
         template<typename> typename OBSERVER,
+        template<typename> typename SUBSCRIBER,
         typename K
     >
     friend class BaseObservable;

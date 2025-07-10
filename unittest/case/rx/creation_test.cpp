@@ -5,29 +5,6 @@
 #include <zaf/rx/observable.h>
 #include <zaf/rx/scheduler.h>
 
-
-
-TEST(RxCreateTest, Normal) {
-
-    auto observable = zaf::rx::Create<int>([](zaf::Observer<int> observer) {
-    
-        observer.OnNext(6);
-        observer.OnNext(1);
-        observer.OnNext(5);
-        observer.OnCompleted();
-        return zaf::Subscription{};
-    });
-
-    std::vector<int> result;
-    zaf::Application::Instance().Subscriptions() += observable.Subscribe([&result](int value) {
-        result.push_back(value);
-    });
-
-    std::vector<int> expected{ 6, 1, 5 };
-    ASSERT_EQ(result, expected);
-}
-
-
 TEST(RxCreateTest, NoCancelToken) {
 
     auto observable = zaf::rx::Create<int>(

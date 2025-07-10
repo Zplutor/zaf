@@ -50,12 +50,13 @@ public:
         return core_;
     }
 
-private:
-    friend class internal::OnceFactory<T>;
-
+protected:
     explicit OnceObserver(std::shared_ptr<internal::ObserverCore> core) :
         core_(std::move(core)) {
     }
+
+private:
+    friend class internal::OnceFactory<T>;
 
 private:
     std::shared_ptr<internal::ObserverCore> core_;

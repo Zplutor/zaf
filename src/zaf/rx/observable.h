@@ -8,6 +8,7 @@
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/observer.h>
 #include <zaf/rx/observer_functions.h>
+#include <zaf/rx/subscriber.h>
 #include <zaf/rx/subscription.h>
 #include <zaf/rx/termination_capability.h>
 
@@ -22,12 +23,12 @@ class Scheduler;
 
 template<typename T>
 class Observable : 
-    public rx::BaseObservable<Observable, Observer, T>, 
+    public rx::BaseObservable<Observable, Observer, rx::Subscriber, T>, 
     public rx::ErrorCapability<Observable<T>, Observer<T>>,
     public rx::TerminationCapability<Observable, T>,
     public rx::FlatMapCapability<Observable, T> {
 
-    using Base = rx::BaseObservable<Observable, Observer, T>;
+    using Base = rx::BaseObservable<Observable, Observer, rx::Subscriber, T>;
 
 public:
     /**
@@ -97,6 +98,7 @@ private:
     template<
         template<typename> typename OBSERVABLE,
         template<typename> typename OBSERVER,
+        template<typename> typename SUBSCRIBER,
         typename K
     >
     friend class rx::BaseObservable;

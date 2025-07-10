@@ -65,12 +65,13 @@ public:
         return core_;
     }
 
-private:
-    friend class internal::SingleFactory<T>;
-
+protected:
     explicit SingleObserver(std::shared_ptr<internal::ObserverCore> core) :
         core_(std::move(core)) {
     }
+
+private:
+    friend class internal::SingleFactory<T>;
 
 private:
     std::shared_ptr<internal::ObserverCore> core_;

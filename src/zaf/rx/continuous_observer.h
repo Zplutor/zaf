@@ -47,13 +47,14 @@ public:
         return core_;
     }
 
-private:
-    friend class internal::ContinuousFactory<T>;
-
+protected:
     explicit ContinuousObserver(std::shared_ptr<internal::ObserverCore> core) noexcept :
         core_(std::move(core)) {
 
     }
+
+private:
+    friend class internal::ContinuousFactory<T>;
 
 private:
     std::shared_ptr<internal::ObserverCore> core_;

@@ -69,12 +69,13 @@ public:
         return core_;
     }
 
-private:
-    friend class rx::internal::ObservableFactory<T>;
-
+protected:
     explicit Observer(std::shared_ptr<rx::internal::ObserverCore> core) noexcept :
         core_(std::move(core)) {
     }
+
+private:
+    friend class rx::internal::ObservableFactory<T>;
 
 private:
     std::shared_ptr<rx::internal::ObserverCore> core_;

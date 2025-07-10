@@ -1315,6 +1315,9 @@
     <ClCompile Include="src\zaf\rx\internal\subscription\producer_subscription_core.cpp">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observable\custom_observable.cpp">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3102,6 +3105,27 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observable_factory.h">
       <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\subscriber.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\base_subscriber.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\single_subscriber.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\once_subscriber.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\continuous_subscriber.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable\custom_observable.h">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\observable_traits.h">
+      <Filter>zaf\rx</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

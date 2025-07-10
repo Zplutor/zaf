@@ -6,6 +6,7 @@
 #include <zaf/rx/internal/observable_factory.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/single_observer.h>
+#include <zaf/rx/single_subscriber.h>
 #include <zaf/rx/subscription.h>
 #include <zaf/rx/termination_capability.h>
 
@@ -18,12 +19,12 @@ namespace zaf::rx {
 
 template<typename T>
 class Single : 
-    public BaseObservable<Single, SingleObserver, T>,
+    public BaseObservable<Single, SingleObserver, SingleSubscriber, T>,
     public ErrorCapability<Single<T>, SingleObserver<T>>,
     public TerminationCapability<Single, T>,
     public FlatMapCapability<Single, T> {
 
-    using Base = BaseObservable<Single, SingleObserver, T>;
+    using Base = BaseObservable<Single, SingleObserver, SingleSubscriber, T>;
 
 public:
     using Base::Do;
@@ -61,7 +62,7 @@ public:
     }
 
 private:
-    friend class BaseObservable<Single, SingleObserver, T>;
+    friend Base;
     friend class ErrorCapability<Single<T>, SingleObserver<T>>;
     friend class TerminationCapability<Single, T>;
     friend class internal::SingleFactory<T>;
@@ -69,6 +70,7 @@ private:
     template<
         template<typename> typename OBSERVABLE, 
         template<typename> typename OBSERVER,
+        template<typename> typename SUBSCRIBER,
         typename K
     >
     friend class BaseObservable;
