@@ -6,7 +6,7 @@
 namespace zaf {
 
 /**
-An interface for user code to handle specific notifications during the application lifecyle.
+An interface for user code to handle specific notifications during the application lifecycle.
 
 @details
     Users implement this interface and pass an instance into the application runtime when calling 
@@ -26,7 +26,9 @@ public:
 
         This methods is called before raising Application::BeginRunEvent().
     */
-    virtual void OnBeginRun(const BeginRunInfo&) = 0;
+    virtual void OnBeginRun(const BeginRunInfo&) {
+
+    }
 
     /**
     Called when the application is about to end.
@@ -36,7 +38,9 @@ public:
 
         This methods is called before raising Application::EndRunEvent().
     */
-    virtual void OnEndRun(const EndRunInfo&) = 0;
+    virtual void OnEndRun(const EndRunInfo&) {
+
+    }
 
     /**
     Called when the system user session is about to end.
@@ -44,7 +48,13 @@ public:
     @details
         This method is called when the application receives the WM_ENDSESSION message.
     */
-    virtual void OnSessionEnd(const SessionEndInfo&) = 0;
+    virtual void OnSessionEnd(const SessionEndInfo&) {
+
+    }
+
+    virtual void OnUnhandledException(UnhandledExceptionInfo& event_info) {
+
+    }
 };
 
 }

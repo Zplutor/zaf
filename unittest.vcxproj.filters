@@ -689,6 +689,7 @@
     <ClInclude Include="unittest\case\control\list\list_control_test_fixture.h">
       <Filter>case\control\list</Filter>
     </ClInclude>
+    <ClInclude Include="unittest\unit_test_delegate.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="unittest\res.rc" />

@@ -54,7 +54,7 @@ provides access global shared objects and resources.
 
     Users can implement the ApplicationDelegate interface and pass the object into the runtime via 
     Initialize(). The interface methods will be called at certain times during the application's 
-    lifecyle. Such as when the application begins to run and is about to end.
+    lifecycle. Such as when the application begins to run and is about to end.
 
     After initialization, users can call Run() to start the application running. Users are 
     responsible for creating and showing windows. This can be done either in the
@@ -106,7 +106,7 @@ public:
 
     @throw ...
         Any exceptions that are thrown by:
-        - ApplicaitonDelegate::OnBeginRun() or subscriptions of BeginRunEvent();
+        - ApplicationDelegate::OnBeginRun() or subscriptions of BeginRunEvent();
         - User codes during the handling of the main message loop.
         - ApplicationDelegate::OnEndRun() or subscriptions of EndRunEvent();
 
@@ -206,13 +206,15 @@ public:
     @param window
         The window to set. It can be nullptr to cancel setting the main window. Despite this
         parameter being defined as std::shared_ptr, the application won't share ownership of the 
-        window; users must manage the window's lifecyle themselves.
+        window; users must manage the window's lifecycle themselves.
 
     @details
         The application will terminate automatically after the main window is destroyed.
     */
     void SetMainWindow(std::shared_ptr<Window> window) noexcept;
     
+    void ReportUnhandledException(std::exception_ptr exception);
+
 private:
     friend class Window;
 

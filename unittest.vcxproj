@@ -595,6 +595,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="unittest\unit_test_delegate.h" />
     <ClInclude Include="unittest\case\base\registry\registry_test.h" />
     <ClInclude Include="unittest\case\base\test_object.h" />
     <ClCompile Include="unittest\case\control\layout\layout_case_test.cpp" />

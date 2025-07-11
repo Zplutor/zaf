@@ -219,6 +219,21 @@ void Application::SetMainWindow(std::shared_ptr<Window> window) noexcept {
 }
 
 
+void Application::ReportUnhandledException(std::exception_ptr exception) {
+
+    if (delegate_) {
+
+        UnhandledExceptionInfo event_info(exception);
+        delegate_->OnUnhandledException(event_info);
+        if (event_info.IsHandled()) {
+            return;
+        }
+    }
+
+    std::rethrow_exception(exception);
+}
+
+
 crypto::internal::CryptoManager& Application::CryptoManager() {
 
     std::call_once(crypto_manager_once_flag_, [this]() {
