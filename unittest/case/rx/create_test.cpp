@@ -217,3 +217,33 @@ TEST(RxCreateTest, CreateOn_ThreadID) {
     ASSERT_NE(run_thread_id, std::this_thread::get_id());
     ASSERT_EQ(on_next_thread_id, run_thread_id);
 }
+
+
+TEST(RxCreateTest, CreateOn_Single) {
+
+    auto scheduler = zaf::Scheduler::CreateOnSingleThread();
+    std::thread::id run_thread_id = std::this_thread::get_id();
+    std::thread::id on_success_thread_id;
+
+    auto single = zaf::rx::Single<int>::CreateOn(
+        scheduler, 
+        [&](zaf::rx::SingleSubscriber<int> subscriber) {
+            run_thread_id = std::this_thread::get_id();
+            subscriber.OnSuccess(1);
+        });
+
+    std::condition_variable cv;
+    std::mutex lock;
+    std::unique_lock<std::mutex> unique_lock{ lock };
+
+    auto sub = single.Subscribe(
+        [&](int) {
+            on_success_thread_id = std::this_thread::get_id();
+            std::scoped_lock<std::mutex> lock_guard(lock);
+            cv.notify_all();
+        });
+
+    cv.wait(unique_lock);
+    ASSERT_NE(run_thread_id, std::this_thread::get_id());
+    ASSERT_EQ(on_success_thread_id, run_thread_id);
+}
