@@ -357,9 +357,7 @@
     <ClCompile Include="src\zaf\resource\uri_loader.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\custom_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observer_core.cpp" />
-    <ClCompile Include="src\zaf\rx\internal\observable\async_customized_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\concat_observable.cpp" />
-    <ClCompile Include="src\zaf\rx\internal\observable\customized_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\empty_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\observable_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\just_observable.cpp" />
@@ -907,9 +905,7 @@
     <ClInclude Include="src\zaf\rx\internal\observable\custom_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\observer_core.h" />
-    <ClInclude Include="src\zaf\rx\internal\observable\async_customized_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\concat_observable.h" />
-    <ClInclude Include="src\zaf\rx\internal\observable\customized_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\empty_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\observable_core.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\just_observable.h" />

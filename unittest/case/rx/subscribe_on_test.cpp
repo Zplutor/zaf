@@ -1,7 +1,7 @@
 #include <mutex>
 #include <thread>
 #include <gtest/gtest.h>
-#include <zaf/rx/creation.h>
+#include <zaf/rx/observable.h>
 #include <zaf/rx/scheduler.h>
 
 TEST(RxSubscribeOnTest, SubscribeOn) {
@@ -15,10 +15,10 @@ TEST(RxSubscribeOnTest, SubscribeOn) {
     std::mutex lock;
     std::unique_lock<std::mutex> unique_lock{ lock };
 
-    auto observable = zaf::rx::Create<int>([&](zaf::Observer<int> observer) {
+    auto observable = zaf::Observable<int>::Create([&](zaf::rx::Subscriber<int> subscriber) {
         produce_thread = std::this_thread::get_id();
-        observer.OnNext(0);
-        observer.OnCompleted();
+        subscriber.OnNext(0);
+        subscriber.OnCompleted();
         return zaf::Subscription{};
     });
 

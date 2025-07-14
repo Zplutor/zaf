@@ -46,21 +46,25 @@ public:
         return OBSERVABLE<T>{ internal::NeverObservable::Instance() };
     }
 
-    static OBSERVABLE<T> Create(std::function<void(SUBSCRIBER<T> subscriber)> producer) {
+    static OBSERVABLE<T> Create(std::function<void(SUBSCRIBER<T>)> producer) {
 
         auto bridged_producer = [producer = std::move(producer)](
             std::shared_ptr<internal::ObserverCore> observer_core,
             std::shared_ptr<internal::SubscriptionCore> subscription_core) {
 
-            auto subscriber = SUBSCRIBER<T>{ 
-                std::move(observer_core),
-                std::move(subscription_core) 
-            };
+            SUBSCRIBER<T> subscriber{ std::move(observer_core), std::move(subscription_core) };
             producer(std::move(subscriber));
         };
 
         auto core = std::make_shared<internal::CustomObservable>(std::move(bridged_producer));
         return OBSERVABLE<T>{ std::move(core) };
+    }
+
+    static OBSERVABLE<T> CreateOn(
+        std::shared_ptr<Scheduler> scheduler, 
+        std::function<void(SUBSCRIBER<T>)> producer) {
+
+        return Create(std::move(producer)).SubscribeOn(std::move(scheduler));
     }
 
 public:

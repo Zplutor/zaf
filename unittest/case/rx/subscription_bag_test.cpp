@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <zaf/rx/creation.h>
 #include <zaf/rx/subject.h>
 #include <zaf/rx/subscription_bag.h>
 

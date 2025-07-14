@@ -1,7 +1,6 @@
 #include <mutex>
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_operation_error.h>
-#include <zaf/rx/creation.h>
 #include <zaf/rx/replay_subject.h>
 
 static_assert(!std::is_copy_assignable_v<zaf::rx::ReplaySubject<int>>);

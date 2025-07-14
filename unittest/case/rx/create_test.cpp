@@ -1,10 +1,11 @@
 #include <mutex>
+#include <thread>
 #include <gtest/gtest.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/single.h>
 
-TEST(RxCreateTest, Subscriber_OnCompleted) {
+TEST(RxCreateTest, Create_OnCompleted) {
 
     auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
         subscriber.OnNext(39);
@@ -38,7 +39,7 @@ TEST(RxCreateTest, Subscriber_OnCompleted) {
 }
 
 
-TEST(RxCreateTest, Subscriber_OnError) {
+TEST(RxCreateTest, Create_OnError) {
 
     auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
         subscriber.OnNext(39);
@@ -76,7 +77,7 @@ TEST(RxCreateTest, Subscriber_OnError) {
 }
 
 
-TEST(RxCreateTest, Subscriber_ThrowError) {
+TEST(RxCreateTest, Create_ThrowError) {
 
     auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
         subscriber.OnNext(57);
@@ -110,7 +111,7 @@ TEST(RxCreateTest, Subscriber_ThrowError) {
 }
 
 
-TEST(RxCreateTest, Subscriber_Unsubscribe) {
+TEST(RxCreateTest, Create_Unsubscribe) {
 
     auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
         while (!subscriber.IsUnsubscribed()) {
@@ -139,7 +140,7 @@ TEST(RxCreateTest, Subscriber_Unsubscribe) {
 }
 
 
-TEST(RxCreateTest, Single_Subscriber) {
+TEST(RxCreateTest, Create_Single) {
 
     // OnSuccess
     {
@@ -181,4 +182,38 @@ TEST(RxCreateTest, Single_Subscriber) {
         ASSERT_FALSE(on_success_called);
         ASSERT_EQ(error_message, "Test error");
     }
+}
+
+
+TEST(RxCreateTest, CreateOn_ThreadID) {
+
+    auto scheduler = zaf::Scheduler::CreateOnSingleThread();
+    std::thread::id run_thread_id = std::this_thread::get_id();
+    std::thread::id on_next_thread_id;
+
+    auto observable = zaf::Observable<int>::CreateOn(
+        scheduler, 
+        [&run_thread_id](zaf::rx::Subscriber<int> subscriber) {
+
+        run_thread_id = std::this_thread::get_id();
+        subscriber.OnNext(48);
+        subscriber.OnCompleted();
+    });
+
+    std::condition_variable cv;
+    std::mutex lock;
+    std::unique_lock<std::mutex> unique_lock{ lock };
+
+    auto sub = observable.Subscribe(
+        [&](int) {
+            on_next_thread_id = std::this_thread::get_id();
+        }, 
+        [&]() {
+            std::scoped_lock<std::mutex> lock_guard(lock);
+            cv.notify_all();
+        });
+
+    cv.wait(unique_lock);
+    ASSERT_NE(run_thread_id, std::this_thread::get_id());
+    ASSERT_EQ(on_next_thread_id, run_thread_id);
 }

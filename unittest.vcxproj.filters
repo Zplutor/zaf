@@ -244,9 +244,6 @@
     <ClCompile Include="unittest\case\control\internal\tree_control\tree_index_mapping_test.cpp">
       <Filter>case\control\internal\tree_control</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\rx\creation_test.cpp">
-      <Filter>case\rx</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\resource\internal\resource_location_parsing_test.cpp">
       <Filter>case\resource\internal</Filter>
     </ClCompile>

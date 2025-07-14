@@ -13,7 +13,6 @@
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
 #include <zaf/internal/window/window_focused_control_manager.h>
-#include <zaf/rx/creation.h>
 #include <zaf/window/inspector/inspector_window.h>
 #include <zaf/window/tooltip_window.h>
 #include <zaf/window/message/hit_test_message.h>
