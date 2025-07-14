@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/single.h>
-#include <zaf/rx/once.h>
 
 TEST(RxJustTest, Observable) {
 
@@ -43,16 +42,4 @@ TEST(RxJustTest, Single) {
 
     ASSERT_EQ(on_success_value, 59);
     ASSERT_FALSE(on_error_called);
-}
-
-
-TEST(RxJustTest, Once) {
-
-    auto once = zaf::rx::Once<int>::Just(52);
-    int on_done_value{};
-    auto sub = once.Subscribe(
-        [&on_done_value](int value) {
-            on_done_value = value;
-        });
-    ASSERT_EQ(on_done_value, 52);
 }

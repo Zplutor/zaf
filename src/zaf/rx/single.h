@@ -1,14 +1,11 @@
 #pragma once
 
 #include <zaf/rx/base_observable.h>
-#include <zaf/rx/error_capability.h>
-#include <zaf/rx/flat_map_capability.h>
 #include <zaf/rx/internal/observable_factory.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/single_observer.h>
 #include <zaf/rx/single_subscriber.h>
 #include <zaf/rx/subscription.h>
-#include <zaf/rx/termination_capability.h>
 
 namespace zaf::rx::internal {
 template<typename T>
@@ -18,11 +15,7 @@ class SingleFactory;
 namespace zaf::rx {
 
 template<typename T>
-class Single : 
-    public BaseObservable<Single, SingleObserver, SingleSubscriber, T>,
-    public ErrorCapability<Single<T>, SingleObserver<T>>,
-    public TerminationCapability<Single, T>,
-    public FlatMapCapability<Single, T> {
+class Single : public BaseObservable<Single, SingleObserver, SingleSubscriber, T> {
 
     using Base = BaseObservable<Single, SingleObserver, SingleSubscriber, T>;
 
@@ -63,8 +56,6 @@ public:
 
 private:
     friend Base;
-    friend class ErrorCapability<Single<T>, SingleObserver<T>>;
-    friend class TerminationCapability<Single, T>;
     friend class internal::SingleFactory<T>;
 
     template<
@@ -74,12 +65,6 @@ private:
         typename K
     >
     friend class BaseObservable;
-
-    template<
-        template<typename> typename OBSERVABLE,
-        typename K
-    >
-    friend class FlatMapCapability;
 
     explicit Single(std::shared_ptr<internal::ObservableCore> core) noexcept : 
         Base(std::move(core)) {

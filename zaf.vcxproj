@@ -903,14 +903,7 @@
     <ClInclude Include="src\zaf\rx\base_observable.h" />
     <ClInclude Include="src\zaf\rx\base_subscriber.h" />
     <ClInclude Include="src\zaf\rx\cancel.h" />
-    <ClInclude Include="src\zaf\rx\continuous_subscriber.h" />
     <ClInclude Include="src\zaf\rx\creation.h" />
-    <ClInclude Include="src\zaf\rx\continuous.h" />
-    <ClInclude Include="src\zaf\rx\continuous_observer.h" />
-    <ClInclude Include="src\zaf\rx\continuous_subject.h" />
-    <ClInclude Include="src\zaf\rx\error_capability.h" />
-    <ClInclude Include="src\zaf\rx\flat_map_capability.h" />
-    <ClInclude Include="src\zaf\rx\internal\continuous_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\custom_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\observer_core.h" />
@@ -923,7 +916,6 @@
     <ClInclude Include="src\zaf\rx\internal\observable\never_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\throw_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\timer_observable.h" />
-    <ClInclude Include="src\zaf\rx\internal\once_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\catch_handler.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\catch_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\do_after_terminate_operator.h" />
@@ -956,10 +948,6 @@
     <ClInclude Include="src\zaf\rx\observable_traits.h" />
     <ClInclude Include="src\zaf\rx\observer.h" />
     <ClInclude Include="src\zaf\rx\observer_functions.h" />
-    <ClInclude Include="src\zaf\rx\once.h" />
-    <ClInclude Include="src\zaf\rx\once_observer.h" />
-    <ClInclude Include="src\zaf\rx\once_subject.h" />
-    <ClInclude Include="src\zaf\rx\once_subscriber.h" />
     <ClInclude Include="src\zaf\rx\replay_subject.h" />
     <ClInclude Include="src\zaf\rx\scheduler.h" />
     <ClInclude Include="src\zaf\rx\single.h" />
@@ -971,7 +959,6 @@
     <ClInclude Include="src\zaf\rx\subscription.h" />
     <ClInclude Include="src\zaf\rx\subscription_bag.h" />
     <ClInclude Include="src\zaf\rx\subscription_host.h" />
-    <ClInclude Include="src\zaf\rx\termination_capability.h" />
     <ClInclude Include="src\zaf\rx\timer.h" />
     <ClInclude Include="src\zaf\rx\work.h" />
     <ClInclude Include="src\zaf\application_event_infos.h" />

@@ -3061,39 +3061,6 @@
     <ClInclude Include="src\zaf\rx\base_observable.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\continuous.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\continuous_observer.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\continuous_subject.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\continuous_factory.h">
-      <Filter>zaf\rx\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\termination_capability.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\error_capability.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\flat_map_capability.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\once.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\once_observer.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\once_subject.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\once_factory.h">
-      <Filter>zaf\rx\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\operator\do_after_terminate_operator.h">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
@@ -3113,12 +3080,6 @@
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\single_subscriber.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\once_subscriber.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\continuous_subscriber.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observable\custom_observable.h">

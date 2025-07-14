@@ -1,8 +1,6 @@
 #include <mutex>
 #include <gtest/gtest.h>
-#include <zaf/rx/continuous.h>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/once.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/single.h>
 
@@ -182,65 +180,5 @@ TEST(RxCreateTest, Single_Subscriber) {
         });
         ASSERT_FALSE(on_success_called);
         ASSERT_EQ(error_message, "Test error");
-    }
-}
-
-
-TEST(RxCreateTest, Once_Subscriber) {
-
-    // OnDone
-    {
-        int value{};
-        auto sub = zaf::rx::Once<int>::Create([](zaf::rx::OnceSubscriber<int> subscriber) {
-            subscriber.OnDone(38);
-        })
-        .Subscribe([&](int v) {
-            value = v;
-        });
-        ASSERT_EQ(value, 38);
-    }
-
-    // Throw error
-    {
-        bool on_done_called{};
-        auto sub = zaf::rx::Once<int>::Create([](zaf::rx::OnceSubscriber<int> subscriber) {
-            throw std::runtime_error("");
-        })
-        .Subscribe([&](int) {
-            on_done_called = true;
-        });
-        ASSERT_FALSE(on_done_called);
-    }
-}
-
-
-TEST(RxCreateTest, Continuous_Subscriber) {
-
-    // OnNext
-    {
-        std::vector<int> values;
-        auto sub = zaf::rx::Continuous<int>::Create(
-            [](zaf::rx::ContinuousSubscriber<int> subscriber) {
-
-            subscriber.OnNext(42);
-            subscriber.OnNext(43);
-        })
-        .Subscribe([&](int v) {
-            values.push_back(v);
-        });
-        ASSERT_EQ(values, (std::vector<int>{ 42, 43 }));
-    }
-
-    // Throw error
-    {
-        bool on_next_called{};
-        auto sub = zaf::rx::Continuous<int>::Create(
-            [](zaf::rx::ContinuousSubscriber<int> subscriber) {
-            throw std::runtime_error("Test error");
-        })
-        .Subscribe([&](int) {
-            on_next_called = true;
-        });
-        ASSERT_FALSE(on_next_called);
     }
 }

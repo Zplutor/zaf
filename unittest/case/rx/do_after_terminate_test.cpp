@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_operation_error.h>
-#include <zaf/rx/once.h>
 #include <zaf/rx/single.h>
 #include <zaf/rx/subject.h>
 
@@ -150,21 +149,4 @@ TEST(RxDoAfterTerminateTest, Single) {
         ASSERT_EQ(on_error_sequence, 1);
         ASSERT_EQ(after_terminate_sequence, 2);
     }
-}
-
-
-TEST(RxDoAfterTerminateTest, Once) {
-
-    int call_sequence{};
-    int after_terminate_sequence{};
-    int on_done_sequence{};
-    auto once = zaf::rx::Once<int>::Just(1);
-    auto sub = once.DoAfterTerminate([&]() {
-        after_terminate_sequence = ++call_sequence;
-    })
-    .Subscribe([&](int value) {
-        on_done_sequence = ++call_sequence;
-    });
-    ASSERT_EQ(on_done_sequence, 1);
-    ASSERT_EQ(after_terminate_sequence, 2);
 }

@@ -644,15 +644,6 @@
     <ClCompile Include="unittest\case\rx\single_subject_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\rx\continuous_test.cpp">
-      <Filter>case\rx</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\rx\once_test.cpp">
-      <Filter>case\rx</Filter>
-    </ClCompile>
-    <ClCompile Include="unittest\case\rx\once_subject_test.cpp">
-      <Filter>case\rx</Filter>
-    </ClCompile>
     <ClCompile Include="unittest\case\rx\do_after_terminate_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>

@@ -2,15 +2,12 @@
 
 #include <memory>
 #include <zaf/rx/base_observable.h>
-#include <zaf/rx/error_capability.h>
-#include <zaf/rx/flat_map_capability.h>
 #include <zaf/rx/internal/observable/empty_observable.h>
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/observer.h>
 #include <zaf/rx/observer_functions.h>
 #include <zaf/rx/subscriber.h>
 #include <zaf/rx/subscription.h>
-#include <zaf/rx/termination_capability.h>
 
 namespace zaf::rx::internal {
 template<typename T>
@@ -22,11 +19,7 @@ namespace zaf {
 class Scheduler;
 
 template<typename T>
-class Observable : 
-    public rx::BaseObservable<Observable, Observer, rx::Subscriber, T>, 
-    public rx::ErrorCapability<Observable<T>, Observer<T>>,
-    public rx::TerminationCapability<Observable, T>,
-    public rx::FlatMapCapability<Observable, T> {
+class Observable : public rx::BaseObservable<Observable, Observer, rx::Subscriber, T> {
 
     using Base = rx::BaseObservable<Observable, Observer, rx::Subscriber, T>;
 
@@ -91,8 +84,6 @@ public:
 
 private:
     friend Base;
-    friend class rx::ErrorCapability<Observable<T>, Observer<T>>;
-    friend class rx::TerminationCapability<Observable, T>;
     friend class rx::internal::ObservableFactory<T>;
 
     template<
@@ -102,12 +93,6 @@ private:
         typename K
     >
     friend class rx::BaseObservable;
-
-    template<
-        template<typename> typename OBSERVABLE,
-        typename K
-    >
-    friend class rx::FlatMapCapability;
 
     explicit Observable(std::shared_ptr<rx::internal::ObservableCore> core) noexcept :
         Base(std::move(core)) {
