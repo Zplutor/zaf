@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <zaf/rx/creation.h>
-#include <zaf/rx/subject.h>
 #include <zaf/rx/replay_subject.h>
+#include <zaf/rx/single_subject.h>
+#include <zaf/rx/subject.h>
 
 using namespace zaf;
 using namespace zaf::rx;
@@ -9,7 +9,7 @@ using namespace zaf::rx;
 TEST(RxConcatTest, EmptyObservable) {
 
     std::vector<Observable<int>> container;
-    auto observable = Concat<int>(container);
+    auto observable = Observable<int>::Concat(container);
 
     bool on_next_called{};
     bool on_error_called{};
@@ -34,7 +34,7 @@ TEST(RxConcatTest, OneObservable) {
     subject.AsObserver().OnNext(2);
     subject.AsObserver().OnCompleted();
 
-    auto observable = Concat<int>(std::vector{ subject.AsObservable() });
+    auto observable = Observable<int>::Concat(std::vector{ subject.AsObservable() });
 
     std::vector<int> on_next_values;
     bool on_error_called{};
@@ -69,7 +69,7 @@ TEST(RxConcatTest, MultipleObservables) {
     subject3.AsObserver().OnNext(11);
     subject3.AsObserver().OnCompleted();
 
-    auto observable = Concat<int>(std::vector{ 
+    auto observable = Observable<int>::Concat(std::vector{ 
         subject1.AsObservable(),
         subject2.AsObservable(), 
         subject3.AsObservable(),
@@ -101,7 +101,10 @@ TEST(RxConcatTest, NoOnCompleted) {
     subject2.AsObserver().OnNext(4);
     subject2.AsObserver().OnCompleted();
 
-    auto observable = Concat<int>(std::vector{ subject1.AsObservable(), subject2.AsObservable() });
+    auto observable = Observable<int>::Concat(std::vector{
+        subject1.AsObservable(), 
+        subject2.AsObservable() 
+    });
 
     std::vector<int> on_next_values;
     bool on_error_called{};
@@ -129,7 +132,10 @@ TEST(RxConcatTest, OnError) {
     subject2.AsObserver().OnNext(4);
     subject2.AsObserver().OnCompleted();
 
-    auto observable = Concat<int>(std::vector{ subject1.AsObservable(), subject2.AsObservable() });
+    auto observable = Observable<int>::Concat(std::vector{ 
+        subject1.AsObservable(),
+        subject2.AsObservable() 
+    });
 
     std::vector<int> on_next_values;
     bool on_error_called{};
@@ -148,7 +154,7 @@ TEST(RxConcatTest, OnError) {
 
 
 //Make sure the initializer list can be used.
-TEST(RxConcatTest, InitializerList) {
+TEST(RxConcatTest, ObservableInitializerList) {
 
     zaf::rx::ReplaySubject<int> subject1;
     subject1.AsObserver().OnNext(0);
@@ -158,10 +164,40 @@ TEST(RxConcatTest, InitializerList) {
     subject2.AsObserver().OnNext(0);
     subject2.AsObserver().OnCompleted();
 
-    auto observable = Concat({ subject1.AsObservable(), subject2.AsObservable() });
+    auto observable = Observable<int>::Concat({ 
+        subject1.AsObservable(), 
+        subject2.AsObservable() 
+    });
     std::vector<int> on_next_values;
 
     auto sub = observable.Subscribe([&](int value) { on_next_values.push_back(value); });
     std::vector<int> expected{ 0, 0 };
     ASSERT_EQ(on_next_values, expected);
+}
+
+
+TEST(RxConcatTest, SingleRange) {
+
+    SingleSubject<int> single1;
+    SingleSubject<int> single2;
+
+    std::vector<Single<int>> singles{
+        single1.AsSingle(),
+        single2.AsSingle(),
+    };
+
+    std::vector<int> values;
+    bool on_completed_called{};
+    auto sub = Observable<int>::Concat(singles).Subscribe([&](int value) {
+        values.push_back(value);
+    }, 
+    [&]() {
+        on_completed_called = true;
+    });
+
+    single1.AsObserver().OnSuccess(28);
+    single2.AsObserver().OnSuccess(29);
+
+    ASSERT_EQ(values, (std::vector{ 28, 29 }));
+    ASSERT_TRUE(on_completed_called);
 }

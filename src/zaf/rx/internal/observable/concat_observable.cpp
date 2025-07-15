@@ -85,7 +85,7 @@ private:
 
 }
 
-ConcatObservable::ConcatObservable(ObservableList observables) :
+ConcatObservable::ConcatObservable(ObservableCoreList observables) :
     observables_(std::move(observables)) {
 
 }

@@ -1747,9 +1747,6 @@
     <ClInclude Include="src\zaf\rx\internal\operator\subscribe_on_operator.h">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\creation.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observable\just_observable.h">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>

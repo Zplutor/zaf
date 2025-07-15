@@ -1,7 +1,9 @@
 #pragma once
 
 #include <memory>
+#include <ranges>
 #include <zaf/rx/base_observable.h>
+#include <zaf/rx/internal/observable/concat_observable.h>
 #include <zaf/rx/internal/observable/empty_observable.h>
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/observer.h>
@@ -29,6 +31,21 @@ public:
     */
     static Observable<T> Empty() {
         return Observable<T>{ rx::internal::EmptyObservable::Instance() };
+    }
+
+    template<std::ranges::range RANGE>
+    static Observable<T> Concat(RANGE&& range) {
+        rx::internal::ObservableCoreList observable_cores;
+        for (const auto& each_observable : range) {
+            observable_cores.push_back(each_observable.Core());
+        }
+        auto core = std::make_shared<rx::internal::ConcatObservable>(std::move(observable_cores));
+        return rx::internal::ObservableFactory<T>::CreateObservable(std::move(core));
+    }
+
+    template<typename T>
+    static Observable<T> Concat(std::initializer_list<Observable<T>> observables) {
+        return Concat<std::initializer_list<Observable<T>>>(std::move(observables));
     }
 
 public:

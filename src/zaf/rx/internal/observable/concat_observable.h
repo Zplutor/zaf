@@ -1,14 +1,16 @@
+#pragma once
+
 #include <zaf/rx/internal/observable/observable_core.h>
 
 namespace zaf::rx::internal {
 
-using ObservableList = std::vector<std::shared_ptr<ObservableCore>>;
+using ObservableCoreList = std::vector<std::shared_ptr<ObservableCore>>;
 
 class ConcatObservable : public ObservableCore {
 public:
-    explicit ConcatObservable(ObservableList observables);
+    explicit ConcatObservable(ObservableCoreList observables);
 
-    const ObservableList& Observables() const {
+    const ObservableCoreList& Observables() const {
         return observables_;
     }
 
@@ -16,7 +18,7 @@ public:
         const std::shared_ptr<ObserverCore>& observer) override;
 
 private:
-    ObservableList observables_;
+    ObservableCoreList observables_;
 };
 
 }
