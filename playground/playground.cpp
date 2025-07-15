@@ -44,7 +44,6 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_bar_thumb.h>
 #include <zaf/control/check_box.h>
-#include <zaf/rx/cancel.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/control/property_grid.h>

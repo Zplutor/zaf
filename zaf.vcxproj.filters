@@ -1798,9 +1798,6 @@
     <ClInclude Include="src\zaf\window\internal\inner_message_only_window.h">
       <Filter>zaf\window\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\cancel.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\control_update_guard.h">
       <Filter>zaf\control</Filter>
     </ClInclude>

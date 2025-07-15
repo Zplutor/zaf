@@ -900,7 +900,6 @@
     <ClInclude Include="src\zaf\resource\uri_loader.h" />
     <ClInclude Include="src\zaf\rx\base_observable.h" />
     <ClInclude Include="src\zaf\rx\base_subscriber.h" />
-    <ClInclude Include="src\zaf\rx\cancel.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\custom_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\observer_core.h" />
