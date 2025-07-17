@@ -6,7 +6,7 @@
 #include <zaf/rx/observable.h>
 #include <zaf/rx/observer.h>
 
-namespace zaf::rx::internal {
+namespace zaf::rx {
 
 template<typename T> 
 class BaseSubject : NonCopyable {
@@ -20,11 +20,11 @@ public:
     BaseSubject& operator=(BaseSubject&&) = default;
 
     Observable<T> AsObservable() const noexcept {
-        return ObservableFactory<T>::CreateObservable(internal::AsObservableCore(core_));
+        return internal::ObservableFactory<T>::CreateObservable(internal::AsObservableCore(core_));
     }
 
     Observer<T> AsObserver() const noexcept {
-        return ObservableFactory<T>::CreateObserver(internal::AsObserverCore(core_));
+        return internal::ObservableFactory<T>::CreateObserver(internal::AsObserverCore(core_));
     }
 
     const std::shared_ptr<internal::SubjectCore>& Core() const noexcept {
