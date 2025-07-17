@@ -27,18 +27,28 @@ public:
 
     /**
     Emits a data item to the observer.
+
+    @return
+        True if the item was successfully emitted, false if the producer is already terminated.
     */
-    void EmitOnNext(const std::any& any);
+    bool EmitOnNext(const std::any& any);
 
     /**
     Emits an error to the observer.
+
+    @return
+        True if the error was successfully emitted, false if the producer is already terminated.
     */
-    void EmitOnError(const std::exception_ptr& error);
+    bool EmitOnError(const std::exception_ptr& error);
 
     /**
     Emits a completion to the observer.
+
+    @return
+        True if the completion was successfully emitted, false if the producer is already 
+        terminated.
     */
-    void EmitOnCompleted();
+    bool EmitOnCompleted();
 
     /**
     Unsubscribes the producer.

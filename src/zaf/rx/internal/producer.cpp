@@ -9,22 +9,23 @@ Producer::Producer(std::shared_ptr<ObserverCore> observer) noexcept :
 }
 
 
-void Producer::EmitOnNext(const std::any& any) {
+bool Producer::EmitOnNext(const std::any& any) {
 
     if (IsTerminated()) {
-        return;
+        return false;
     }
 
     if (auto observer = observer_) {
         observer->OnNext(any);
     }
+    return true;
 }
 
 
-void Producer::EmitOnError(const std::exception_ptr& error) {
+bool Producer::EmitOnError(const std::exception_ptr& error) {
 
     if (!MarkTerminated()) {
-        return;
+        return false;
     }
 
     auto keep_alive = shared_from_this();
@@ -34,13 +35,14 @@ void Producer::EmitOnError(const std::exception_ptr& error) {
         }
     }
     Unsubscribe();
+    return true;
 }
 
 
-void Producer::EmitOnCompleted() {
+bool Producer::EmitOnCompleted() {
 
     if (!MarkTerminated()) {
-        return;
+        return false;
     }
 
     //There is a delicate protection here. 
@@ -57,6 +59,7 @@ void Producer::EmitOnCompleted() {
     }
 
     Unsubscribe();
+    return true;
 }
 
 

@@ -1,6 +1,8 @@
 #include <mutex>
 #include <thread>
 #include <gtest/gtest.h>
+#include <zaf/base/error/invalid_data_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/scheduler.h>
 #include <zaf/rx/single.h>
@@ -15,7 +17,6 @@ TEST(RxCreateTest, Create_OnCompleted) {
         subscriber.OnNext(41); 
         subscriber.OnError(std::runtime_error(""));
         subscriber.OnCompleted();
-        throw std::runtime_error("thrown");
     });
 
     std::vector<int> values;
@@ -48,7 +49,6 @@ TEST(RxCreateTest, Create_OnError) {
         subscriber.OnNext(41);
         subscriber.OnError(std::runtime_error(""));
         subscriber.OnCompleted();
-        throw std::runtime_error("thrown");
     });
 
     std::vector<int> values;
@@ -77,7 +77,7 @@ TEST(RxCreateTest, Create_OnError) {
 }
 
 
-TEST(RxCreateTest, Create_ThrowError) {
+TEST(RxCreateTest, Create_ThrowBeforeTermination) {
 
     auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
         subscriber.OnNext(57);
@@ -108,6 +108,62 @@ TEST(RxCreateTest, Create_ThrowError) {
     ASSERT_EQ(values, (std::vector<int>{ 57, 58 }));
     ASSERT_EQ(error_message, "thrown");
     ASSERT_FALSE(on_completed_called);
+}
+
+
+/*
+The exception thrown after termination should be propagated to the caller of Subscribe().
+*/
+TEST(RxCreateTest, Create_ThrowAfterOnCompleted) {
+
+    auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
+        subscriber.OnCompleted();
+        throw zaf::InvalidOperationError();
+    });
+    
+    bool on_error_called{};
+    bool on_completed_called{};
+    bool error_thrown{};
+    try {
+        auto sub = observable.Subscribe(
+            [](int value) {},
+            [&](const std::exception_ptr& error) {
+                on_error_called = true;
+            },
+            [&]() {
+                on_completed_called = true;
+            });
+    }
+    catch (const zaf::InvalidOperationError&) {
+        error_thrown = true;
+    }
+    ASSERT_FALSE(on_error_called);
+    ASSERT_TRUE(on_completed_called);
+    ASSERT_TRUE(error_thrown);
+}
+
+
+TEST(RxCreateTest, Create_ThrowAfterOnError) {
+
+    auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
+        subscriber.OnError(zaf::InvalidOperationError());
+        throw zaf::InvalidDataError();
+    });
+
+    bool on_error_called{};
+    bool error_thrown{};
+    try {
+        auto sub = observable.Subscribe(
+            [](int value) {},
+            [&](const std::exception_ptr& error) {
+                on_error_called = true;
+            });
+    }
+    catch (const zaf::InvalidDataError&) {
+        error_thrown = true;
+    }
+    ASSERT_TRUE(on_error_called);
+    ASSERT_TRUE(error_thrown);
 }
 
 

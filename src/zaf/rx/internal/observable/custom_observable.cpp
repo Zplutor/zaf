@@ -9,9 +9,12 @@ namespace {
 
 class CustomProducer : public Producer, public ObserverCore {
 public:
-    CustomProducer(std::shared_ptr<ObserverCore> observer) :
-        Producer(std::move(observer)) {
+    CustomProducer(std::shared_ptr<ObserverCore> observer) : Producer(std::move(observer)) {
 
+    }
+
+    void EmitCaughtError(const std::exception_ptr& error) {
+        InnerEmitOnError(error, true);
     }
 
     void OnNext(const std::any& value) override {
@@ -19,7 +22,7 @@ public:
     }
 
     void OnError(const std::exception_ptr& error) override {
-        this->EmitOnError(error);
+        InnerEmitOnError(error, false);
     }
 
     void OnCompleted() override {
@@ -29,6 +32,15 @@ public:
 protected:
     void OnUnsubscribe() override {
 
+    }
+
+private:
+    void InnerEmitOnError(const std::exception_ptr& error, bool is_caught_error) {
+        if (!this->EmitOnError(error)) {
+            if (is_caught_error) {
+                std::rethrow_exception(error);
+            }
+        }
     }
 };
 
@@ -50,7 +62,7 @@ std::shared_ptr<SubscriptionCore> CustomObservable::Subscribe(
         procedure_(producer, subscription_core);
     }
     catch (...) {
-        producer->OnError(std::current_exception());
+        producer->EmitCaughtError(std::current_exception());
     }
     return subscription_core;
 }

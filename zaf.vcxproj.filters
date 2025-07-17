@@ -3070,8 +3070,5 @@
     <ClInclude Include="src\zaf\rx\observable_traits.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\illegal_emission_error.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
