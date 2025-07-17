@@ -28,11 +28,13 @@ public:
     }
 
     void OnError(const std::exception_ptr& error) override {
+        // The subscription may be unsubscribed in the on_terminate_() call.
         on_terminate_();
         EmitOnError(error);
     }
 
     void OnCompleted() override {
+        // The subscription may be unsubscribed in the on_terminate_() call.
         on_terminate_();
         EmitOnCompleted();
     }

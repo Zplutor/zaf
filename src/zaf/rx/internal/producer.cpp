@@ -3,12 +3,18 @@
 
 namespace zaf::rx::internal {
 
-Producer::Producer(std::shared_ptr<ObserverCore> observer) : observer_(std::move(observer)) {
+Producer::Producer(std::shared_ptr<ObserverCore> observer) noexcept : 
+    observer_(std::move(observer)) {
 
 }
 
 
 void Producer::EmitOnNext(const std::any& any) {
+
+    if (IsTerminated()) {
+        return;
+    }
+
     if (auto observer = observer_) {
         observer->OnNext(any);
     }
@@ -17,10 +23,13 @@ void Producer::EmitOnNext(const std::any& any) {
 
 void Producer::EmitOnError(const std::exception_ptr& error) {
 
+    if (!MarkTerminated()) {
+        return;
+    }
+
     auto keep_alive = shared_from_this();
     {
-        auto observer = observer_;
-        if (observer) {
+        if (auto observer = observer_) {
             observer->OnError(error);
         }
     }
@@ -30,21 +39,23 @@ void Producer::EmitOnError(const std::exception_ptr& error) {
 
 void Producer::EmitOnCompleted() {
 
+    if (!MarkTerminated()) {
+        return;
+    }
+
     //There is a delicate protection here. 
     //During the OnCompleted() notification chain, current producer might be released, causing a 
     //dangling pointer. Exception would occur if execution continue.
     //So we have to retain a shared pointer to keep producer alive during the notification.
     auto keep_alive = shared_from_this();
-
     {
         //Here is a similar protection as above. observer_ may be reset in Dispose() during the 
         //OnCompleted() call, so we retain a new shared pointer to keep it alive. 
-        auto observer = observer_;
-        if (observer) {
+        if (auto observer = observer_) {
             observer->OnCompleted();
         }
     }
-    
+
     Unsubscribe();
 }
 
@@ -63,14 +74,26 @@ void Producer::Unsubscribe() {
 }
 
 
+bool Producer::MarkTerminated() {
+    int old_flags = state_flags_.fetch_or(StateFlagTerminated);
+    return (old_flags & StateFlagTerminated) == 0;
+}
+
+
+bool Producer::IsTerminated() const noexcept {
+    return (state_flags_ & StateFlagTerminated) != 0;
+}
+
+
 bool Producer::MarkUnsubscribed() {
-    bool expected{ false };
-    return is_unsubscribed_.compare_exchange_strong(expected, true);
+    int new_flags = StateFlagTerminated | StateFlagUnsubscribed;
+    int old_flags = state_flags_.fetch_or(new_flags);
+    return (old_flags & StateFlagUnsubscribed) == 0;
 }
 
 
 bool Producer::IsUnsubscribed() const noexcept {
-    return is_unsubscribed_;
+    return (state_flags_ & StateFlagUnsubscribed) != 0;
 }
 
 
@@ -78,7 +101,7 @@ std::optional<UnsubscribeNotificationID> Producer::RegisterUnsubscribeNotificati
     UnsubscribeNotification callback) {
 
     std::scoped_lock<std::mutex> lock(unsubscribe_notification_lock_);
-    if (is_unsubscribed_) {
+    if (IsUnsubscribed()) {
         return std::nullopt;
     }
 

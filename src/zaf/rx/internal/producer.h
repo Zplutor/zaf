@@ -23,7 +23,7 @@ A producer is responsible for emitting data sequence.
 */
 class Producer : public std::enable_shared_from_this<Producer>, NonCopyableNonMovable {
 public:
-    explicit Producer(std::shared_ptr<ObserverCore> observer);
+    explicit Producer(std::shared_ptr<ObserverCore> observer) noexcept;
 
     /**
     Emits a data item to the observer.
@@ -65,13 +65,36 @@ protected:
     virtual void OnUnsubscribe() = 0;
 
 private:
+    bool IsTerminated() const noexcept;
+
+    /**
+    Marks the producer as terminated.
+
+    @return
+        True if the producer was successfully marked as terminated, false if it was already
+        terminated.
+    */
+    bool MarkTerminated();
+
+    /**
+    Marks the producer as unsubscribed.
+
+    @return
+        True if the producer was successfully marked as unsubscribed, false if it was already
+        unsubscribed.
+
+        This method will also mark the producer as terminated.
+    */
     bool MarkUnsubscribed();
     void NotifyUnsubscribe();
 
 private:
-    std::shared_ptr<ObserverCore> observer_;
+    static constexpr int StateFlagTerminated = 1 << 0;
+    static constexpr int StateFlagUnsubscribed = 1 << 1;
 
-    std::atomic<bool> is_unsubscribed_{};
+private:
+    std::shared_ptr<ObserverCore> observer_;
+    std::atomic<int> state_flags_{};
     int unsubscribe_notification_id_seed_{};
     std::map<UnsubscribeNotificationID, UnsubscribeNotification> unsubscribe_notifications_;
 
