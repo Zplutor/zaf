@@ -240,7 +240,7 @@ void SplitControl::InnerSetSplitDistance(float distance, bool is_by_dragging) {
 }
 
 
-Observable<SplitDistanceChangedInfo> SplitControl::SplitDistanceChangedEvent() const {
+rx::Observable<SplitDistanceChangedInfo> SplitControl::SplitDistanceChangedEvent() const {
     return split_distance_changed_event_.GetObservable();
 }
 

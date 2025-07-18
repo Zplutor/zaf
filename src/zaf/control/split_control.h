@@ -37,7 +37,7 @@ public:
 
     void SetSplitDistance(float distance);
 
-    Observable<SplitDistanceChangedInfo> SplitDistanceChangedEvent() const;
+    rx::Observable<SplitDistanceChangedInfo> SplitDistanceChangedEvent() const;
 
     const std::shared_ptr<zaf::SplitBar>& SplitBar() const {
         return split_bar_;
@@ -116,7 +116,7 @@ private:
     std::shared_ptr<Control> first_pane_;
     std::shared_ptr<Control> second_pane_;
 
-    zaf::SubscriptionBag split_bar_subscriptions_;
+    zaf::rx::SubscriptionBag split_bar_subscriptions_;
 
     bool is_horizontal_split_{};
     float split_bar_thickness_{ 3.f };
@@ -155,15 +155,15 @@ public:
     const ColorPicker& SplitterColorPicker() const;
     void SetSplitterColorPicker(ColorPicker picker);
 
-    Observable<SplitBarBeginDragInfo> BeginDragEvent() {
+    rx::Observable<SplitBarBeginDragInfo> BeginDragEvent() {
         return begin_drag_event_.AsObservable();
     }
 
-    Observable<SplitBarDragInfo> DragEvent() {
+    rx::Observable<SplitBarDragInfo> DragEvent() {
         return drag_event_.AsObservable();
     }
 
-    Observable<SplitBarEndDragInfo> EndDragEvent() {
+    rx::Observable<SplitBarEndDragInfo> EndDragEvent() {
         return end_drag_event_.AsObservable();
     }
 
@@ -183,9 +183,9 @@ private:
 
     internal::ColorField splitter_color_field_;
 
-    Subject<SplitBarBeginDragInfo> begin_drag_event_;
-    Subject<SplitBarDragInfo> drag_event_;
-    Subject<SplitBarEndDragInfo> end_drag_event_;
+    rx::Subject<SplitBarBeginDragInfo> begin_drag_event_;
+    rx::Subject<SplitBarDragInfo> drag_event_;
+    rx::Subject<SplitBarEndDragInfo> end_drag_event_;
 };
 
 

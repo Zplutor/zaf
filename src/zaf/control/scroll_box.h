@@ -317,7 +317,7 @@ private:
     float horizontal_scroll_bar_thickness_{ 17 };
 
     std::unique_ptr<internal::ScrollBoxLayouter> layouter_;
-    Subscription scroll_content_rect_change_subscription_;
+    rx::Subscription scroll_content_rect_change_subscription_;
 };
 
 ZAF_OBJECT_BEGIN(ScrollBox);

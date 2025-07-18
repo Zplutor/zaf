@@ -18,7 +18,7 @@ public:
     bool is_changed_by_dragging{};
 };
 
-class SplitDistanceManager : SubscriptionHost, NonCopyableNonMovable {
+class SplitDistanceManager : rx::SubscriptionHost, NonCopyableNonMovable {
 public:
     SplitDistanceManager();
 
@@ -29,7 +29,7 @@ public:
 
     void UpdateDefaultDistance(float distance);
 
-    const Subject<ItemSplitDistanceChangedInfo>& DistanceChangedSubject() const {
+    const rx::Subject<ItemSplitDistanceChangedInfo>& DistanceChangedSubject() const {
         return distance_changed_subject_;
     }
 
@@ -40,7 +40,7 @@ public:
     void OnSplitControlAdd(const std::shared_ptr<SplitControl>& split_control);
     void OnSplitControlRemove(const std::shared_ptr<SplitControl>& split_control);
 
-    Observable<float> MaxSplitControlXChangedEvent() {
+    rx::Observable<float> MaxSplitControlXChangedEvent() {
         return max_split_control_x_changed_event_.AsObservable();
     }
 
@@ -48,13 +48,13 @@ private:
     void UpdateMaxSplitControlXOnAdd(const SplitControl& added_split_control);
 
 private:
-    Subject<ItemSplitDistanceChangedInfo> distance_changed_subject_;
+    rx::Subject<ItemSplitDistanceChangedInfo> distance_changed_subject_;
     float current_distance_{};
     bool is_distance_default_{ true };
 
-    std::map<std::shared_ptr<SplitControl>, Subscription> split_controls_;
+    std::map<std::shared_ptr<SplitControl>, rx::Subscription> split_controls_;
     float max_split_control_x_{};
-    Subject<float> max_split_control_x_changed_event_;
+    rx::Subject<float> max_split_control_x_changed_event_;
 };
 
 }

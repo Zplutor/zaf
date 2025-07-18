@@ -15,7 +15,7 @@ namespace zaf::internal {
 class PropertyData : 
     public Object, 
     public std::enable_shared_from_this<PropertyData>, 
-    SubscriptionHost,
+    rx::SubscriptionHost,
     NonCopyableNonMovable {
 
 public:
@@ -39,7 +39,7 @@ public:
 
     void ChangeValue(std::shared_ptr<Object> value);
 
-    Observable<std::shared_ptr<PropertyData>> ValueChangedEvent() {
+    rx::Observable<std::shared_ptr<PropertyData>> ValueChangedEvent() {
         return value_changed_event_.AsObservable();
     }
 
@@ -66,7 +66,7 @@ private:
     std::shared_ptr<PropertyGridDelegate> delegate_;
 
     bool is_changing_value_{};
-    Subject<std::shared_ptr<PropertyData>> value_changed_event_;
+    rx::Subject<std::shared_ptr<PropertyData>> value_changed_event_;
 
     std::optional<std::vector<std::shared_ptr<PropertyData>>> children_;
 };

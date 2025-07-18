@@ -2,7 +2,7 @@
 
 #include <zaf/rx/subscription_bag.h>
 
-namespace zaf {
+namespace zaf::rx {
 
 class SubscriptionHost {
 public:

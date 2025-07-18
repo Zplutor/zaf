@@ -17,8 +17,8 @@ TEST(RxObserveOnTest, ObserveOn) {
 
     //OnNext and OnCompleted
     {
-        zaf::Subject<int> subject;
-        auto observable = subject.AsObservable().ObserveOn(zaf::Scheduler::CreateOnSingleThread());
+        zaf::rx::Subject<int> subject;
+        auto observable = subject.AsObservable().ObserveOn(zaf::rx::Scheduler::CreateOnSingleThread());
 
         auto subscription = observable.Subscribe([&](int) {
             on_next_thread = std::this_thread::get_id();
@@ -36,8 +36,8 @@ TEST(RxObserveOnTest, ObserveOn) {
 
     //OnError
     {
-        zaf::Subject<int> subject;
-        auto observable = subject.AsObservable().ObserveOn(zaf::Scheduler::CreateOnSingleThread());
+        zaf::rx::Subject<int> subject;
+        auto observable = subject.AsObservable().ObserveOn(zaf::rx::Scheduler::CreateOnSingleThread());
 
         auto subscription = observable.Subscribe([](int) { },
         [&](const std::exception_ptr&) {

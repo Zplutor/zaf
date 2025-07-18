@@ -406,7 +406,7 @@ void PopupMenu::DelayShowSubMenu() {
     SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &hover_time, 0);
 
     show_sub_menu_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
-        .ObserveOn(Scheduler::Main())
+        .ObserveOn(rx::Scheduler::Main())
         .Subscribe(std::bind(&PopupMenu::ShowCurrentSubMenu, this));
 }
 
@@ -431,7 +431,7 @@ void PopupMenu::DelayCloseSubMenu() {
     SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &hover_time, 0);
 
     close_sub_menu_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
-        .ObserveOn(Scheduler::Main())
+        .ObserveOn(rx::Scheduler::Main())
         .Subscribe(std::bind(&PopupMenu::CloseCurrentSubMenu, this));
 }
 
@@ -481,7 +481,7 @@ void PopupMenu::RaiseSelectedMenuItemChangedEvent(
 }
 
 
-Observable<SelectedMenuItemChangedInfo> PopupMenu::SelectedMenuItemChangedEvent() const {
+rx::Observable<SelectedMenuItemChangedInfo> PopupMenu::SelectedMenuItemChangedEvent() const {
     return selected_menu_item_changed_event_.GetObservable();
 }
 

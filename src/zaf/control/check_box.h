@@ -117,7 +117,7 @@ public:
     /**
      Get the check state change event.
      */
-    Observable<CheckStateChangedInfo> CheckStateChangedEvent() const;
+    rx::Observable<CheckStateChangedInfo> CheckStateChangedEvent() const;
 
 protected:
     void Initialize() override;

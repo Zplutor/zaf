@@ -10,7 +10,7 @@ namespace zaf::internal {
 /**
 Controls message redirection between popup menu, owner window and sub menus.
 */
-class PopupMenuController : SubscriptionHost, NonCopyableNonMovable {
+class PopupMenuController : rx::SubscriptionHost, NonCopyableNonMovable {
 public:
     void PushMenu(const std::shared_ptr<PopupMenu>& menu);
     void PopMenu(const PopupMenu& menu);

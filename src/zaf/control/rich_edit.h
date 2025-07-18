@@ -226,13 +226,13 @@ public:
 
      This event is raise when selected text is changed.
      */
-    Observable<rich_edit::SelectionChangedInfo> SelectionChangedEvent() const;
+    rx::Observable<rich_edit::SelectionChangedInfo> SelectionChangedEvent() const;
 
-    Observable<rich_edit::TextChangingInfo> TextChangingEvent() const;
-    Observable<rich_edit::TextChangedInfo> TextChangedEvent() const;
+    rx::Observable<rich_edit::TextChangingInfo> TextChangingEvent() const;
+    rx::Observable<rich_edit::TextChangedInfo> TextChangedEvent() const;
 
-    Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() override;
-    Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
+    rx::Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() override;
+    rx::Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
 
     bool AcceptKeyMessage(const KeyMessage& message) override;
 
@@ -427,7 +427,7 @@ private:
     mutable std::optional<float> cached_text_height_;
     internal::ColorField text_color_field_;
 
-    Subscription ime_message_subscription_;
+    rx::Subscription ime_message_subscription_;
 
     Event<rich_edit::TextChangingInfo> text_changing_event_;
     Event<rich_edit::TextChangedInfo> text_changed_event_;

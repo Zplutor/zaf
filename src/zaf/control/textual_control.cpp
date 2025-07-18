@@ -493,7 +493,7 @@ void TextualControl::SetIgnoreTailingWhiteSpaces(bool value) {
 }
 
 
-Observable<TextChangedInfo> TextualControl::TextChangedEvent() const {
+rx::Observable<TextChangedInfo> TextualControl::TextChangedEvent() const {
     return text_changed_event_.GetObservable();
 }
 

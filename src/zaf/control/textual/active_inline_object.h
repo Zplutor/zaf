@@ -26,23 +26,23 @@ public:
     bool IsMouseOver() const noexcept;
     bool IsInSelectionRange() const noexcept;
 
-    Observable<InlineObjectMouseEnterInfo> MouseEnterEvent() const {
+    rx::Observable<InlineObjectMouseEnterInfo> MouseEnterEvent() const {
         return mouse_enter_event_.GetObservable();
     }
 
-    Observable<InlineObjectMouseLeaveInfo> MouseLeaveEvent() const {
+    rx::Observable<InlineObjectMouseLeaveInfo> MouseLeaveEvent() const {
         return mouse_leave_event_.GetObservable();
     }
 
-    Observable<InlineObjectMouseDownInfo> MouseDownEvent() const {
+    rx::Observable<InlineObjectMouseDownInfo> MouseDownEvent() const {
         return mouse_down_event_.GetObservable();
     }
 
-    Observable<InlineObjectMouseUpInfo> MouseUpEvent() const {
+    rx::Observable<InlineObjectMouseUpInfo> MouseUpEvent() const {
         return mouse_up_event_.GetObservable();
     }
 
-    Observable<InlineObjectDoubleClickInfo> DoubleClickEvent() const {
+    rx::Observable<InlineObjectDoubleClickInfo> DoubleClickEvent() const {
         return double_click_event_.GetObservable();
     }
 

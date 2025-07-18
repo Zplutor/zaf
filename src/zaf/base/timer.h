@@ -91,7 +91,7 @@ public:
     /**
      Get the trigger event.
      */
-    Observable<TimerTriggerInfo> TriggerEvent() {
+    rx::Observable<TimerTriggerInfo> TriggerEvent() {
         return trigger_event_.AsObservable();
     }
 
@@ -123,7 +123,7 @@ private:
 private:
     Mode mode_;
     Interval interval_;
-    Subject<TimerTriggerInfo> trigger_event_;
+    rx::Subject<TimerTriggerInfo> trigger_event_;
     bool is_running_;
 };
 

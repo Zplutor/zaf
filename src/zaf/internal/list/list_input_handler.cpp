@@ -189,10 +189,10 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
 }
 
 
-Observable<None> ListInputHandler::WhenNotSelectingByMouse() const {
+rx::Observable<None> ListInputHandler::WhenNotSelectingByMouse() const {
 
     if (!is_selecting_by_mouse_) {
-        return zaf::Observable<None>::Just({});
+        return rx::Observable<None>::Just({});
     }
 
     if (!exit_select_by_mouse_subject_) {

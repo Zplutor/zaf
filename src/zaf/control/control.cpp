@@ -135,7 +135,7 @@ void Control::UpdateStyle() {
 }
 
 
-Observable<StyleUpdateInfo> Control::StyleUpdateEvent() const {
+rx::Observable<StyleUpdateInfo> Control::StyleUpdateEvent() const {
     return style_update_event_.GetObservable();
 }
 
@@ -597,7 +597,7 @@ void Control::OnRectChanged(const RectChangedInfo& event_info) {
 }
 
 
-Observable<RectChangedInfo> Control::RectChangedEvent() const {
+rx::Observable<RectChangedInfo> Control::RectChangedEvent() const {
     return rect_changed_event_.GetObservable();
 }
 
@@ -607,7 +607,7 @@ void Control::OnPositionChanged(const PositionChangedInfo& event_info) {
 }
 
 
-Observable<PositionChangedInfo> Control::PositionChangedEvent() const {
+rx::Observable<PositionChangedInfo> Control::PositionChangedEvent() const {
     return position_changed_event_.GetObservable();
 }
 
@@ -617,7 +617,7 @@ void Control::OnSizeChanged(const SizeChangedInfo& event_info) {
 }
 
 
-Observable<SizeChangedInfo> Control::SizeChangedEvent() const {
+rx::Observable<SizeChangedInfo> Control::SizeChangedEvent() const {
     return size_changed_event_.GetObservable();
 }
 
@@ -1399,7 +1399,7 @@ void Control::OnIsVisibleChanged() {
 }
 
 
-Observable<IsVisibleChangedInfo> Control::IsVisibleChangedEvent() const {
+rx::Observable<IsVisibleChangedInfo> Control::IsVisibleChangedEvent() const {
     return is_visible_changed_event_.GetObservable();
 }
 
@@ -1440,7 +1440,7 @@ void Control::OnIsEnabledChanged() {
 }
 
 
-Observable<IsEnabledChangedInfo> Control::IsEnabledChangedEvent() const {
+rx::Observable<IsEnabledChangedInfo> Control::IsEnabledChangedEvent() const {
     return is_enabled_changed_event_.GetObservable();
 }
 
@@ -1520,7 +1520,7 @@ void Control::OnIsSelectedChanged() {
 }
 
 
-Observable<IsSelectedChangedInfo> Control::IsSelectedChangedEvent() const {
+rx::Observable<IsSelectedChangedInfo> Control::IsSelectedChangedEvent() const {
     return is_selected_changed_event_.GetObservable();
 }
 
@@ -1768,7 +1768,7 @@ void Control::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 }
 
 
-Observable<MouseCursorChangingInfo> Control::MouseCursorChangingEvent() const {
+rx::Observable<MouseCursorChangingInfo> Control::MouseCursorChangingEvent() const {
     return mouse_cursor_changing_event_.GetObservable();
 }
 
@@ -1778,7 +1778,7 @@ void Control::OnPreMouseMove(const PreMouseMoveInfo& event_info) {
 }
 
 
-Observable<PreMouseMoveInfo> Control::PreMouseMoveEvent() const {
+rx::Observable<PreMouseMoveInfo> Control::PreMouseMoveEvent() const {
     return pre_mouse_move_event_.GetObservable();
 }
 
@@ -1788,7 +1788,7 @@ void Control::OnMouseMove(const MouseMoveInfo& event_info) {
 }
 
 
-Observable<MouseMoveInfo> Control::MouseMoveEvent() const {
+rx::Observable<MouseMoveInfo> Control::MouseMoveEvent() const {
     return mouse_move_event_.GetObservable();
 }
 
@@ -1798,7 +1798,7 @@ void Control::OnMouseEnter(const MouseEnterInfo& event_info) {
 }
 
 
-Observable<MouseEnterInfo> Control::MouseEnterEvent() const {
+rx::Observable<MouseEnterInfo> Control::MouseEnterEvent() const {
     return mouse_enter_event_.GetObservable();
 }
 
@@ -1808,7 +1808,7 @@ void Control::OnMouseLeave(const MouseLeaveInfo& event_info) {
 }
 
 
-Observable<MouseLeaveInfo> Control::MouseLeaveEvent() const {
+rx::Observable<MouseLeaveInfo> Control::MouseLeaveEvent() const {
     return mouse_leave_event_.GetObservable();
 }
 
@@ -1818,7 +1818,7 @@ void Control::OnMouseHover(const MouseHoverInfo& event_info) {
 }
 
 
-Observable<MouseHoverInfo> Control::MouseHoverEvent() const {
+rx::Observable<MouseHoverInfo> Control::MouseHoverEvent() const {
     return mouse_hover_event_.GetObservable();
 }
 
@@ -1828,7 +1828,7 @@ void Control::OnPreMouseDown(const PreMouseDownInfo& event_info) {
 }
 
 
-Observable<PreMouseDownInfo> Control::PreMouseDownEvent() const {
+rx::Observable<PreMouseDownInfo> Control::PreMouseDownEvent() const {
     return pre_mouse_down_event_.GetObservable();
 }
 
@@ -1872,7 +1872,7 @@ bool Control::HandleDoubleClickOnMouseDown(const Point& position) {
 }
 
 
-Observable<MouseDownInfo> Control::MouseDownEvent() const {
+rx::Observable<MouseDownInfo> Control::MouseDownEvent() const {
     return mouse_down_event_.GetObservable();
 }
 
@@ -1882,7 +1882,7 @@ void Control::OnPreMouseUp(const PreMouseUpInfo& event_info) {
 }
 
 
-Observable<PreMouseUpInfo> Control::PreMouseUpEvent() const {
+rx::Observable<PreMouseUpInfo> Control::PreMouseUpEvent() const {
     return pre_mouse_up_event_.GetObservable();
 }
 
@@ -1892,7 +1892,7 @@ void Control::OnMouseUp(const MouseUpInfo& event_info) {
 }
 
 
-Observable<MouseUpInfo> Control::MouseUpEvent() const {
+rx::Observable<MouseUpInfo> Control::MouseUpEvent() const {
     return mouse_up_event_.GetObservable();
 }
 
@@ -1913,7 +1913,7 @@ void Control::OnDoubleClick(const DoubleClickInfo& event_info) {
 }
 
 
-Observable<DoubleClickInfo> Control::DoubleClickEvent() const {
+rx::Observable<DoubleClickInfo> Control::DoubleClickEvent() const {
     return double_click_event_.GetObservable();
 }
 
@@ -1923,7 +1923,7 @@ void Control::OnPreMouseWheel(const PreMouseWheelInfo& event_info) {
 }
 
 
-Observable<PreMouseWheelInfo> Control::PreMouseWheelEvent() const {
+rx::Observable<PreMouseWheelInfo> Control::PreMouseWheelEvent() const {
     return pre_mouse_wheel_event_.GetObservable();
 }
 
@@ -1933,7 +1933,7 @@ void Control::OnMouseWheel(const MouseWheelInfo& event_info) {
 }
 
 
-Observable<MouseWheelInfo> Control::MouseWheelEvent() const {
+rx::Observable<MouseWheelInfo> Control::MouseWheelEvent() const {
     return mouse_wheel_event_.GetObservable();
 }
 
@@ -1943,7 +1943,7 @@ void Control::OnMouseCaptured(const MouseCapturedInfo& event_info) {
 }
 
 
-Observable<MouseCapturedInfo> Control::MouseCapturedEvent() const {
+rx::Observable<MouseCapturedInfo> Control::MouseCapturedEvent() const {
     return mouse_captured_event_.GetObservable();
 }
 
@@ -1953,7 +1953,7 @@ void Control::OnMouseReleased(const MouseReleasedInfo& event_info) {
 }
 
 
-Observable<MouseReleasedInfo> Control::MouseReleasedEvent() const {
+rx::Observable<MouseReleasedInfo> Control::MouseReleasedEvent() const {
     return mouse_released_event_.GetObservable();
 }
 
@@ -1963,7 +1963,7 @@ void Control::OnPreKeyDown(const PreKeyDownInfo& event_info) {
 }
 
 
-Observable<PreKeyDownInfo> Control::PreKeyDownEvent() const {
+rx::Observable<PreKeyDownInfo> Control::PreKeyDownEvent() const {
     return pre_key_down_event_.GetObservable();
 }
 
@@ -1973,7 +1973,7 @@ void Control::OnKeyDown(const KeyDownInfo& event_info) {
 }
 
 
-Observable<KeyDownInfo> Control::KeyDownEvent() const {
+rx::Observable<KeyDownInfo> Control::KeyDownEvent() const {
     return key_down_event_.GetObservable();
 }
 
@@ -1983,7 +1983,7 @@ void Control::OnPreKeyUp(const PreKeyUpInfo& event_info) {
 }
 
 
-Observable<PreKeyUpInfo> Control::PreKeyUpEvent() const {
+rx::Observable<PreKeyUpInfo> Control::PreKeyUpEvent() const {
     return pre_key_up_event_.GetObservable();
 }
 
@@ -1993,7 +1993,7 @@ void Control::OnKeyUp(const KeyUpInfo& event_info) {
 }
 
 
-Observable<KeyUpInfo> Control::KeyUpEvent() const {
+rx::Observable<KeyUpInfo> Control::KeyUpEvent() const {
     return key_up_event_.GetObservable();
 }
 
@@ -2003,7 +2003,7 @@ void Control::OnPreCharInput(const PreCharInputInfo& event_info) {
 }
 
 
-Observable<PreCharInputInfo> Control::PreCharInputEvent() const {
+rx::Observable<PreCharInputInfo> Control::PreCharInputEvent() const {
     return pre_char_input_event_.GetObservable();
 }
 
@@ -2013,7 +2013,7 @@ void Control::OnCharInput(const CharInputInfo& event_info) {
 }
 
 
-Observable<CharInputInfo> Control::CharInputEvent() const {
+rx::Observable<CharInputInfo> Control::CharInputEvent() const {
     return char_input_event_.GetObservable();
 }
 
@@ -2023,7 +2023,7 @@ void Control::OnPreSysKeyDown(const PreSysKeyDownInfo& event_info) {
 }
 
 
-Observable<PreSysKeyDownInfo> Control::PreSysKeyDownEvent() const {
+rx::Observable<PreSysKeyDownInfo> Control::PreSysKeyDownEvent() const {
     return pre_sys_key_down_event_.GetObservable();
 }
 
@@ -2033,7 +2033,7 @@ void Control::OnSysKeyDown(const SysKeyDownInfo& event_info) {
 }
 
 
-Observable<SysKeyDownInfo> Control::SysKeyDownEvent() const {
+rx::Observable<SysKeyDownInfo> Control::SysKeyDownEvent() const {
     return sys_key_down_event_.GetObservable();
 }
 
@@ -2043,7 +2043,7 @@ void Control::OnPreSysKeyUp(const PreSysKeyUpInfo& event_info) {
 }
 
 
-Observable<PreSysKeyUpInfo> Control::PreSysKeyUpEvent() const {
+rx::Observable<PreSysKeyUpInfo> Control::PreSysKeyUpEvent() const {
     return pre_sys_key_up_event_.GetObservable();
 }
 
@@ -2053,7 +2053,7 @@ void Control::OnSysKeyUp(const SysKeyUpInfo& event_info) {
 }
 
 
-Observable<SysKeyUpInfo> Control::SysKeyUpEvent() const {
+rx::Observable<SysKeyUpInfo> Control::SysKeyUpEvent() const {
     return sys_key_up_event_.GetObservable();
 }
 
@@ -2063,7 +2063,7 @@ void Control::OnPreSysCharInput(const PreSysCharInputInfo& event_info) {
 }
 
 
-Observable<PreSysCharInputInfo> Control::PreSysCharInputEvent() const {
+rx::Observable<PreSysCharInputInfo> Control::PreSysCharInputEvent() const {
     return pre_sys_char_input_event_.GetObservable();
 }
 
@@ -2073,7 +2073,7 @@ void Control::OnSysCharInput(const SysCharInputInfo& event_info) {
 }
 
 
-Observable<SysCharInputInfo> Control::SysCharInputEvent() const {
+rx::Observable<SysCharInputInfo> Control::SysCharInputEvent() const {
     return sys_char_input_event_.GetObservable();
 }
 
@@ -2083,7 +2083,7 @@ void Control::OnPreFocusGained(const PreFocusGainedInfo& event_info){
 }
 
 
-Observable<PreFocusGainedInfo> Control::PreFocusGainedEvent() const {
+rx::Observable<PreFocusGainedInfo> Control::PreFocusGainedEvent() const {
     return pre_focus_gained_event_.GetObservable();
 }
 
@@ -2093,7 +2093,7 @@ void Control::OnFocusGained(const FocusGainedInfo& event_info) {
 }
 
 
-Observable<FocusGainedInfo> Control::FocusGainedEvent() const {
+rx::Observable<FocusGainedInfo> Control::FocusGainedEvent() const {
     return focus_gained_event_.GetObservable();
 }
 
@@ -2103,7 +2103,7 @@ void Control::OnPreFocusLost(const PreFocusLostInfo& event_info) {
 }
 
 
-Observable<PreFocusLostInfo> Control::PreFocusLostEvent() const {
+rx::Observable<PreFocusLostInfo> Control::PreFocusLostEvent() const {
     return pre_focus_lost_event_.GetObservable();
 }
 
@@ -2113,7 +2113,7 @@ void Control::OnFocusLost(const FocusLostInfo& event_info) {
 }
 
 
-Observable<FocusLostInfo> Control::FocusLostEvent() const {
+rx::Observable<FocusLostInfo> Control::FocusLostEvent() const {
     return focus_lost_event_.GetObservable();
 }
 
@@ -2159,7 +2159,7 @@ void Control::OnParentChanged(const ParentChangedInfo& event_info) {
 }
 
 
-Observable<ParentChangedInfo> Control::ParentChangedEvent() const {
+rx::Observable<ParentChangedInfo> Control::ParentChangedEvent() const {
     return parent_changed_event_.GetObservable();
 }
 
@@ -2180,7 +2180,7 @@ void Control::OnWindowChanged(const WindowChangedInfo& event_info) {
 }
 
 
-Observable<WindowChangedInfo> Control::WindowChangedEvent() const {
+rx::Observable<WindowChangedInfo> Control::WindowChangedEvent() const {
     return window_changed_event_.GetObservable();
 }
 

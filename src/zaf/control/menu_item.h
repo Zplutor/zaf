@@ -24,8 +24,8 @@ public:
         return sub_menu_;
     }
 
-    Observable<SubMenuShowInfo> SubMenuShowEvent() const;
-    Observable<SubMenuCloseInfo> SubMenuCloseEvent() const;
+    rx::Observable<SubMenuShowInfo> SubMenuShowEvent() const;
+    rx::Observable<SubMenuCloseInfo> SubMenuCloseEvent() const;
 
 protected:
     void Initialize() override;

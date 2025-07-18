@@ -108,7 +108,7 @@ public:
 
      This event is raised when selection is changed.
      */
-    Observable<ListControlSelectionChangedInfo> SelectionChangedEvent() const;
+    rx::Observable<ListControlSelectionChangedInfo> SelectionChangedEvent() const;
 
     /**
     Selects the item at the specified index.
@@ -193,9 +193,9 @@ public:
      */
     std::optional<std::size_t> FindItemIndexAtPosition(const Point& position) const;
 
-    Observable<ListControlItemDoubleClickInfo> ItemDoubleClickEvent() const;
+    rx::Observable<ListControlItemDoubleClickInfo> ItemDoubleClickEvent() const;
 
-    Observable<ListControlContextMenuInfo> ContextMenuEvent() const;
+    rx::Observable<ListControlContextMenuInfo> ContextMenuEvent() const;
 
 protected:
     void Initialize() override;

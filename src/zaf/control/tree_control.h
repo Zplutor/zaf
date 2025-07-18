@@ -49,9 +49,9 @@ public:
 
     void ReloadItem(const std::shared_ptr<Object>& data);
 
-    Observable<TreeControlSelectionChangeInfo> SelectionChangeEvent() const;
-    Observable<TreeControlItemExpandInfo> ItemExpandEvent() const;
-    Observable<TreeControlItemCollapseInfo> ItemCollapseEvent() const;
+    rx::Observable<TreeControlSelectionChangeInfo> SelectionChangeEvent() const;
+    rx::Observable<TreeControlItemExpandInfo> ItemExpandEvent() const;
+    rx::Observable<TreeControlItemCollapseInfo> ItemCollapseEvent() const;
 
 protected:
     void Initialize() override;

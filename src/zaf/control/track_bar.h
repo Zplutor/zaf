@@ -16,7 +16,7 @@ public:
 
     int Value() const noexcept;
     void SetValue(int value);
-    Observable<TrackBarValueChangedInfo> ValueChangedEvent() const;
+    rx::Observable<TrackBarValueChangedInfo> ValueChangedEvent() const;
 
     int MinValue() const noexcept;
     void SetMinValue(int value);
@@ -70,7 +70,7 @@ private:
 
 private:
     std::shared_ptr<TrackBarThumb> thumb_;
-    SubscriptionBag thumb_subs_;
+    rx::SubscriptionBag thumb_subs_;
 
     int value_{};
     int min_value_{};
@@ -84,7 +84,7 @@ private:
     internal::ColorField track_color_field_;
 
     std::optional<Zone> pressing_zone_;
-    Subscription timer_sub_;
+    rx::Subscription timer_sub_;
 
     float drag_start_position_{};
     int drag_start_value_{};

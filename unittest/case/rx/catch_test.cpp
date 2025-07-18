@@ -22,12 +22,12 @@ TEST(RxCatchTest, Catch) {
         int error_count{};
         std::optional<MockError> error;
         int completed_count{};
-        zaf::Subscription sub;
+        zaf::rx::Subscription sub;
     } test_data;
 
     auto create_subject = [&]() {
 
-        zaf::Subject<int> subject;
+        zaf::rx::Subject<int> subject;
         test_data.sub = subject.AsObservable().Catch([](const std::exception_ptr& error) {
 
             zaf::rx::ReplaySubject<int> new_subject;
@@ -136,10 +136,10 @@ TEST(RxCatchTest, FreeSubscriptionOnCompleted) {
 
     std::vector<int> result;
 
-    zaf::Subject<int> subject;
-    zaf::Subscription sub;
+    zaf::rx::Subject<int> subject;
+    zaf::rx::Subscription sub;
     sub = subject.AsObservable().Catch([](const std::exception_ptr& error) {
-        return zaf::Observable<int>::Just(99);
+        return zaf::rx::Observable<int>::Just(99);
     })
     .Subscribe([&](int value) {
         result.push_back(value);

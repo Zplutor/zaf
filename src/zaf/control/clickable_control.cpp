@@ -42,7 +42,7 @@ void ClickableControl::OnClick(const ClickInfo& event_info) {
 }
 
 
-Observable<ClickInfo> ClickableControl::ClickEvent() const {
+rx::Observable<ClickInfo> ClickableControl::ClickEvent() const {
     return click_event_.GetObservable();
 }
 

@@ -101,7 +101,7 @@ private:
     class DialogButtonItem {
     public:
         DialogResult dialog_result{ DialogResult::None };
-        Subscription click_event_subscription;
+        rx::Subscription click_event_subscription;
     };
 
 private:

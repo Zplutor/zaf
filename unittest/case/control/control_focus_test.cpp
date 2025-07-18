@@ -10,7 +10,7 @@ using namespace zaf;
 
 namespace {
 
-class ControlFocusTest : public testing::Test, SubscriptionHost {
+class ControlFocusTest : public testing::Test, rx::SubscriptionHost {
 public:
     static void SetUpTestCase() {
         test_window_ = zaf::Create<zaf::Window>();
@@ -214,7 +214,7 @@ TEST_F(ControlFocusTest, CheckFocusInEvents) {
 
     Control1()->SetIsFocused(true);
 
-    SubscriptionBag subs;
+    rx::SubscriptionBag subs;
     subs += Control1()->PreFocusLostEvent().Subscribe([this](const PreFocusLostInfo& event_info) {
 
         ASSERT_FALSE(As<Control>(event_info.Source())->IsFocused());

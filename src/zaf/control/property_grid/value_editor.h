@@ -15,7 +15,7 @@ public:
     virtual void SetAccessMethod(AccessMethod) = 0;
     virtual void SetValue(const std::shared_ptr<Object>& object) = 0;
 
-    Observable<std::shared_ptr<Object>> ValueChangedEvent() {
+    rx::Observable<std::shared_ptr<Object>> ValueChangedEvent() {
         return value_changed_event_.AsObservable();
     }
 
@@ -27,7 +27,7 @@ protected:
     }
 
 private:
-    Subject<std::shared_ptr<Object>> value_changed_event_;
+    rx::Subject<std::shared_ptr<Object>> value_changed_event_;
 };
 
 }

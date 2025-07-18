@@ -7,7 +7,7 @@ namespace zaf::rx::internal {
 class SubscriptionCore;
 }
 
-namespace zaf {
+namespace zaf::rx {
 
 class Subscription {
 public:

@@ -7,11 +7,11 @@
 #include <zaf/rx/internal/operator/mapper.h>
 #include <zaf/rx/work.h>
 
-namespace zaf {
-
+namespace zaf::rx {
 class Scheduler;
+}
 
-namespace rx::internal {
+namespace zaf::rx::internal {
 
 class ObserverCore;
 class SubscriptionCore;
@@ -40,5 +40,4 @@ public:
     std::shared_ptr<ObservableCore> FlatMap(FlatMapper mapper);
 };
 
-}
 }

@@ -596,7 +596,7 @@ TEST(ControlTest, IsVisible) {
     ASSERT_FALSE(control->IsVisible());
 
     //Changing visibility will raise IsVisibleChangedEvent.
-    zaf::SubscriptionBag subs;
+    zaf::rx::SubscriptionBag subs;
     bool is_event_raised{};
     subs += control->IsVisibleChangedEvent().Subscribe(
         [&](const zaf::IsVisibleChangedInfo& event_info) {
@@ -655,7 +655,7 @@ TEST(ControlTest, IsEnabled) {
     ASSERT_FALSE(control->IsEnabled());
 
     //Changing enabled state will raise IsEnabledChangedEvent.
-    zaf::SubscriptionBag subs;
+    zaf::rx::SubscriptionBag subs;
     bool is_event_raised{};
     subs += control->IsEnabledChangedEvent().Subscribe(
         [&](const zaf::IsEnabledChangedInfo& event_info) {
@@ -714,7 +714,7 @@ TEST(ControlTest, IsSelected) {
 
     bool is_event_raised{};
 
-    zaf::SubscriptionBag subs;
+    zaf::rx::SubscriptionBag subs;
     subs += control->IsSelectedChangedEvent().Subscribe(
         [&](const zaf::IsSelectedChangedInfo& event_info) {
     

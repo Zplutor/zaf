@@ -102,7 +102,7 @@ public:
 
      This event is raised when the selection of combo box is changed.
      */
-    Observable<ComboBoxSelectionChangedInfo> SelectionChangedEvent() const;
+    rx::Observable<ComboBoxSelectionChangedInfo> SelectionChangedEvent() const;
 
     /**
      Get the drop down list box used in combo box.
@@ -267,7 +267,7 @@ private:
 private:
     bool is_editable_{ false };
     std::shared_ptr<ComboBoxEditBox> edit_box_;
-    Subscription edit_box_subscription_;
+    rx::Subscription edit_box_subscription_;
     Frame text_inset_;
 
     Color drop_down_button_color_;
@@ -276,7 +276,7 @@ private:
     std::size_t max_visible_item_count_{ (std::numeric_limits<std::size_t>::max)() };
     std::shared_ptr<internal::ComboBoxDropDownWindow> drop_down_window_;
     std::shared_ptr<ComboBoxDropDownListBox> drop_down_list_box_;
-    Subscription drop_down_list_box_subscription_;
+    rx::Subscription drop_down_list_box_subscription_;
 
     GuardedValue<DropDownListBoxAction> drop_down_list_box_action_;
     GuardedValue<EditBoxAction> edit_box_action_;

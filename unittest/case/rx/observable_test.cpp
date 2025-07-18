@@ -6,7 +6,7 @@ TEST(RxObservableTest, EmptyObserver) {
 
     //Make sure there is no excepiton with empty observer.
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
 
     {
         auto subscription = subject.AsObservable().Subscribe();

@@ -21,9 +21,9 @@ public:
     const ColorPicker& ThumbColorPicker() const;
     void SetThumbColorPicker(ColorPicker color_picker);
 
-    Observable<TrackBarThumbDragStartedInfo> DragStartedEvent() const;
-    Observable<TrackBarThumbDraggingInfo> DraggingEvent() const;
-    Observable<TrackBarThumbDragEndedInfo> DragEndedEvent() const;
+    rx::Observable<TrackBarThumbDragStartedInfo> DragStartedEvent() const;
+    rx::Observable<TrackBarThumbDraggingInfo> DraggingEvent() const;
+    rx::Observable<TrackBarThumbDragEndedInfo> DragEndedEvent() const;
 
 protected:
     void Initialize() override;

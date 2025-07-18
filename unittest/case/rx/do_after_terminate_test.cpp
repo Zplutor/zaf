@@ -10,7 +10,7 @@ TEST(RxDoAfterTerminateTest, OnError) {
     int on_next_sequence{};
     int on_error_sequence{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto sub = subject.AsObservable().DoAfterTerminate([&]() {
         after_terminate_sequence = ++call_sequence;
     })
@@ -37,7 +37,7 @@ TEST(RxDoAfterTerminateTest, OnCompleted) {
     int on_next_sequence{};
     int on_completed_sequence{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto sub = subject.AsObservable().DoAfterTerminate([&]() {
         after_terminate_sequence = ++call_sequence;
     })
@@ -66,7 +66,7 @@ TEST(RxDoAfterTerminateTest, DoOnTerminate) {
     int on_next_sequence{};
     int on_completed_sequence{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto sub = subject.AsObservable().DoOnTerminate([&]() {
         on_terminate1_sequence = ++call_sequence;
     })
@@ -100,7 +100,7 @@ TEST(RxDoAfterTerminateTest, Unsubscribe) {
 
     bool after_terminate_called{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto sub = subject.AsObservable().DoAfterTerminate([&]() {
         after_terminate_called = true;
     })

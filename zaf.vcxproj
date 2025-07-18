@@ -939,7 +939,6 @@
     <ClInclude Include="src\zaf\rx\internal\thread\window_thread.h" />
     <ClInclude Include="src\zaf\rx\internal\timer_manager.h" />
     <ClInclude Include="src\zaf\rx\observable.h" />
-    <ClInclude Include="src\zaf\rx\observable_traits.h" />
     <ClInclude Include="src\zaf\rx\observer.h" />
     <ClInclude Include="src\zaf\rx\observer_functions.h" />
     <ClInclude Include="src\zaf\rx\replay_subject.h" />

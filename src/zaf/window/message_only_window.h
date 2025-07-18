@@ -15,7 +15,7 @@ public:
         return inner_.Handle();
     }
 
-    Observable<Message> MessageReceivedEvent() {
+    rx::Observable<Message> MessageReceivedEvent() {
         return inner_.MessageReceivedEvent();
     }
 

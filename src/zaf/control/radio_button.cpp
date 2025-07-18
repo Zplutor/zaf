@@ -193,7 +193,7 @@ void RadioButton::OnCheckStateChanged(const CheckStateChangedInfo& event_info) {
 }
 
 
-Observable<CheckStateChangedInfo> RadioButton::CheckStateChangedEvent() const {
+rx::Observable<CheckStateChangedInfo> RadioButton::CheckStateChangedEvent() const {
     return check_state_changed_event_.GetObservable();
 }
 

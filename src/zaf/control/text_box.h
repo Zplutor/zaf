@@ -141,7 +141,7 @@ public:
         const Range& range,
         textual::SelectionOption selection_option = textual::SelectionOption::Default);
 
-    Observable<textual::SelectionChangedInfo> SelectionChangedEvent() const;
+    rx::Observable<textual::SelectionChangedInfo> SelectionChangedEvent() const;
 
     Color SelectionBackColor() const noexcept;
     void SetSelectionBackColor(const Color& color);
@@ -267,7 +267,7 @@ public:
         subscribe to the event to customize the behavior of the copying operation, and call 
         MarkAsHandled() of the event info to prevent the default copying operation.
     */
-    Observable<textual::CopyingInfo> CopyingEvent() const;
+    rx::Observable<textual::CopyingInfo> CopyingEvent() const;
 
     /**
     Pastes the content of the clipboard into the text box.
@@ -290,7 +290,7 @@ public:
     */
     bool Paste();
 
-    Observable<textual::PastingInfo> PastingEvent() const;
+    rx::Observable<textual::PastingInfo> PastingEvent() const;
 
     /**
     Cuts the selected text to the clipboard.
@@ -374,8 +374,8 @@ public:
         int& max_value,
         int& page_value) const override;
 
-    Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() override;
-    Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
+    rx::Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() override;
+    rx::Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() override;
     void VerticallyScroll(int new_value) override;
     void HorizontallyScroll(int new_value) override;
 
@@ -458,7 +458,7 @@ private:
     internal::ColorField selection_back_color_field_;
     textual::WordExtractor word_extractor_;
 
-    Subscription ime_message_subscription_;
+    rx::Subscription ime_message_subscription_;
 
     Event<textual::SelectionChangedInfo> selection_changed_event_;
     Event<textual::CopyingInfo> copying_event_;

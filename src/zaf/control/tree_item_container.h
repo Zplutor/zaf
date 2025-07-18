@@ -15,12 +15,12 @@ protected:
 private:
     friend class internal::TreeCore;
 
-    Observable<bool> ChangeExpandStateEvent() {
+    rx::Observable<bool> ChangeExpandStateEvent() {
         return change_expand_state_event_.AsObservable();
     }
 
 private:
-    Subject<bool> change_expand_state_event_;
+    rx::Subject<bool> change_expand_state_event_;
 };
 
 }

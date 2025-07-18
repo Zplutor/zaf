@@ -12,7 +12,7 @@
 
 namespace zaf::internal {
 
-class TextBoxEditor : public TextBoxModule, SubscriptionHost {
+class TextBoxEditor : public TextBoxModule, rx::SubscriptionHost {
 public:
     explicit TextBoxEditor(TextBoxModuleContext* context);
 
@@ -24,7 +24,7 @@ public:
 
     void SetCanEdit(bool can_edit);
 
-    Observable<bool> CanEditChangedEvent() const {
+    rx::Observable<bool> CanEditChangedEvent() const {
         return can_edit_changed_event_.GetObservable();
     }
 
@@ -57,7 +57,7 @@ public:
     */
     bool PerformPaste();
 
-    Observable<textual::PastingInfo> PastingEvent() const {
+    rx::Observable<textual::PastingInfo> PastingEvent() const {
         return pasting_event_.GetObservable();
     }
 

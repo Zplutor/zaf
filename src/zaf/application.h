@@ -64,7 +64,7 @@ provides access global shared objects and resources.
     main window is destroyed, the application ends automatically. Users also can call Terminate()
     to end the application manually.
 */
-class Application : public SubscriptionHost, NonCopyableNonMovable {
+class Application : public rx::SubscriptionHost, NonCopyableNonMovable {
 public:
     /**
     Gets the singleton instance.
@@ -174,7 +174,7 @@ public:
 
         This event is raised after ApplicationDelegate::OnBeginRun() is called.
     */
-    Observable<BeginRunInfo> BeginRunEvent() const {
+    rx::Observable<BeginRunInfo> BeginRunEvent() const {
         return begin_run_event_.AsObservable();
     }
 
@@ -186,7 +186,7 @@ public:
 
         This event is raised after ApplicationDelegate::OnEndRun() is called.
     */
-    Observable<EndRunInfo> EndRunEvent() const {
+    rx::Observable<EndRunInfo> EndRunEvent() const {
         return end_run_event_.AsObservable();
     }
 
@@ -258,8 +258,8 @@ private:
 
     std::shared_ptr<ApplicationDelegate> delegate_;
 
-    Subject<BeginRunInfo> begin_run_event_;
-    Subject<EndRunInfo> end_run_event_;
+    rx::Subject<BeginRunInfo> begin_run_event_;
+    rx::Subject<EndRunInfo> end_run_event_;
 };
 
 }

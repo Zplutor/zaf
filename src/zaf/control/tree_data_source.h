@@ -38,15 +38,15 @@ public:
         return Create<Object>();
     }
 
-    Observable<TreeDataSourceDataAddInfo> DataAddEvent() {
+    rx::Observable<TreeDataSourceDataAddInfo> DataAddEvent() {
         return data_add_event_.AsObservable();
     }
 
-    Observable<TreeDataSourceDataRemoveInfo> DataRemoveEvent() {
+    rx::Observable<TreeDataSourceDataRemoveInfo> DataRemoveEvent() {
         return data_remove_event_.AsObservable();
     }
 
-    Observable<TreeDataSourceDataUpdateInfo> DataUpdateEvent() {
+    rx::Observable<TreeDataSourceDataUpdateInfo> DataUpdateEvent() {
         return data_update_event_.AsObservable();
     }
 
@@ -67,9 +67,9 @@ protected:
         std::size_t count);
 
 private:
-    Subject<TreeDataSourceDataAddInfo> data_add_event_;
-    Subject<TreeDataSourceDataRemoveInfo> data_remove_event_;
-    Subject<TreeDataSourceDataUpdateInfo> data_update_event_;
+    rx::Subject<TreeDataSourceDataAddInfo> data_add_event_;
+    rx::Subject<TreeDataSourceDataRemoveInfo> data_remove_event_;
+    rx::Subject<TreeDataSourceDataUpdateInfo> data_update_event_;
 };
 
 

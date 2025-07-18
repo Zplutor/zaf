@@ -3,7 +3,7 @@
 #include <zaf/rx/internal/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/internal/thread/thread_manager.h>
 
-namespace zaf {
+namespace zaf::rx {
 
 std::shared_ptr<Scheduler> Scheduler::Main() {
 

@@ -7,12 +7,12 @@ TEST(RxMapTest, Map) {
         std::vector<std::string> result;
         int error_count{};
         int completed_count{};
-        zaf::Subscription sub;
+        zaf::rx::Subscription sub;
     } test_data;
 
     auto create_subject = [&]() {
 
-        zaf::Subject<int> subject;
+        zaf::rx::Subject<int> subject;
         test_data.sub = subject.AsObservable().Map<std::string>([](int value) {
             return std::to_string(value);
         })
@@ -62,12 +62,12 @@ TEST(RxMapTest, ErrorInMapper) {
         std::vector<std::string> result;
         int error_count{};
         int completed_count{};
-        zaf::Subscription sub;
+        zaf::rx::Subscription sub;
     } test_data;
 
     auto create_subject = [&]() {
 
-        zaf::Subject<int> subject;
+        zaf::rx::Subject<int> subject;
         test_data.sub = subject.AsObservable().Map<std::string>([](int value) {
             if (value % 2 == 0) {
                 return std::to_string(value);
@@ -118,7 +118,7 @@ TEST(RxMapTest, SubscribeMultipleTimes) {
 
     int call_times{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto observable = subject.AsObservable().Map<std::string>([&](int value) {
         ++call_times;
         return std::to_string(value);

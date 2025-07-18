@@ -53,7 +53,7 @@ enum class HitTestResult;
  */
 class Window : 
     public Object, 
-    public SubscriptionHost, 
+    public rx::SubscriptionHost,
     public std::enable_shared_from_this<Window>,
     NonCopyableNonMovable {
 
@@ -265,7 +265,7 @@ public:
      */
     void SetMaxHeight(float max_height);
 
-    Observable<WindowSizeChangedInfo> SizeChangedEvent() const;
+    rx::Observable<WindowSizeChangedInfo> SizeChangedEvent() const;
 
     /**
     Gets an observable that triggers when the window has exited both the sizing and moving states.
@@ -276,7 +276,7 @@ public:
     @return
         An observable that emits when the window is not currently resizing or moving.
     */
-    Observable<None> WhenNotSizingOrMoving() const;
+    rx::Observable<None> WhenNotSizingOrMoving() const;
 
     /**
      Get window's activate option.
@@ -442,7 +442,7 @@ public:
     */
     void SetRootControl(const std::shared_ptr<Control>& control);
 
-    Observable<RootControlChangedInfo> RootControlChangedEvent() const;
+    rx::Observable<RootControlChangedInfo> RootControlChangedEvent() const;
 
     /**
      Gets the control which captures mouse in the window.
@@ -455,7 +455,7 @@ public:
     Gets mouse capture control changed event. This event is raised after the mouse capture control 
     changed.
     */
-    Observable<MouseCaptureControlChangedInfo> MouseCaptureControlChangedEvent() const;
+    rx::Observable<MouseCaptureControlChangedInfo> MouseCaptureControlChangedEvent() const;
 
     /**
      Get the control which is under mouse cursor.
@@ -469,7 +469,7 @@ public:
       */
     std::shared_ptr<Control> FocusedControl() const;
 
-    Observable<FocusedControlChangedInfo> FocusedControlChangedEvent() const;
+    rx::Observable<FocusedControlChangedInfo> FocusedControlChangedEvent() const;
 
     /**
      Get the renderer of the window.
@@ -485,51 +485,51 @@ public:
         return handle_;
     }
 
-    Observable<HandleCreatedInfo> HandleCreatedEvent() const;
+    rx::Observable<HandleCreatedInfo> HandleCreatedEvent() const;
 
     /**
     Window show event. This event is raised when the window receives WM_SHOWWINDOW message, whose
     wParam is TRUE.
     */
-    Observable<ShowInfo> ShowEvent() const;
+    rx::Observable<ShowInfo> ShowEvent() const;
 
     /**
     Window hide event. This event is raised when the window receives WM_SHOWWINDOW message, whose
     wParam is FALSE.
     */
-    Observable<HideInfo> HideEvent() const;
+    rx::Observable<HideInfo> HideEvent() const;
 
     /**
     Window activated event. This event is raised when the window receives WM_ACTIVATE message, 
     whose wParam is WA_ACTIVE or WA_CLICKACTIVE.
     */
-    Observable<ActivatedInfo> ActivatedEvent() const;
+    rx::Observable<ActivatedInfo> ActivatedEvent() const;
 
     /**
     Window deactivated event. This event is raised when the window receives WM_ACTIVATE message,
     whose wParam is WA_INACTIVE.
     */
-    Observable<DeactivatedInfo> DeactivatedEvent() const;
+    rx::Observable<DeactivatedInfo> DeactivatedEvent() const;
 
     /**
     Window gained focus event. This event is raised when the window receives WM_SETFOCUS message.
     */
-    Observable<WindowFocusGainedInfo> FocusGainedEvent() const;
+    rx::Observable<WindowFocusGainedInfo> FocusGainedEvent() const;
 
     /**
     Window lost focus event. This event is raised when the window receives WM_KILLFOCUS message.
     */
-    Observable<WindowFocusLostInfo> FocusLostEvent() const;
+    rx::Observable<WindowFocusLostInfo> FocusLostEvent() const;
 
-    Observable<ClosingInfo> ClosingEvent() const;
+    rx::Observable<ClosingInfo> ClosingEvent() const;
 
     /**
      Get window destroyed event.
      */
-    Observable<DestroyedInfo> DestroyedEvent() const;
+    rx::Observable<DestroyedInfo> DestroyedEvent() const;
 
-    Observable<MessageReceivedInfo> MessageReceivedEvent() const;
-    Observable<MessageHandledInfo> MessageHandledEvent() const;
+    rx::Observable<MessageReceivedInfo> MessageReceivedEvent() const;
+    rx::Observable<MessageHandledInfo> MessageHandledEvent() const;
 
     /**
     Gets the messager to send or post messages to the window.
@@ -936,7 +936,7 @@ private:
 
     struct {
         bool is_sizing_or_moving{};
-        mutable std::optional<Subject<zaf::None>> exit_sizing_or_moving_subject;
+        mutable std::optional<rx::Subject<zaf::None>> exit_sizing_or_moving_subject;
     } handle_specific_state_;
 
     //A flag to avoid reentering.

@@ -1,7 +1,7 @@
 #include <zaf/rx/subscription.h>
 #include <zaf/rx/internal/subscription/subscription_core.h>
 
-namespace zaf {
+namespace zaf::rx {
 
 Subscription::Subscription(std::shared_ptr<rx::internal::SubscriptionCore> core) noexcept :
     core_(std::move(core)) {

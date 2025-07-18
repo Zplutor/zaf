@@ -971,12 +971,12 @@ void RichEdit::GetScrollValues(
 }
 
 
-Observable<SelfScrollControlScrollBarChangeInfo> RichEdit::ScrollBarChangeEvent() {
+rx::Observable<SelfScrollControlScrollBarChangeInfo> RichEdit::ScrollBarChangeEvent() {
     return scroll_bar_change_event_.GetObservable();
 }
 
 
-Observable<SelfScrollControlScrollValuesChangeInfo> RichEdit::ScrollValuesChangeEvent() {
+rx::Observable<SelfScrollControlScrollValuesChangeInfo> RichEdit::ScrollValuesChangeEvent() {
     return scroll_values_change_event_.GetObservable();
 }
 
@@ -1533,7 +1533,7 @@ void RichEdit::OnSelectionChanged(const rich_edit::SelectionChangedInfo& event_i
 }
 
 
-Observable<rich_edit::SelectionChangedInfo> RichEdit::SelectionChangedEvent() const {
+rx::Observable<rich_edit::SelectionChangedInfo> RichEdit::SelectionChangedEvent() const {
     return selection_changed_event_.GetObservable();
 }
 
@@ -1601,12 +1601,12 @@ void RichEdit::OnTextChanged(const rich_edit::TextChangedInfo& event_info) {
 }
 
 
-Observable<rich_edit::TextChangingInfo> RichEdit::TextChangingEvent() const {
+rx::Observable<rich_edit::TextChangingInfo> RichEdit::TextChangingEvent() const {
     return text_changing_event_.GetObservable();
 }
 
 
-Observable<rich_edit::TextChangedInfo> RichEdit::TextChangedEvent() const {
+rx::Observable<rich_edit::TextChangedInfo> RichEdit::TextChangedEvent() const {
     return text_changed_event_.GetObservable();
 }
 

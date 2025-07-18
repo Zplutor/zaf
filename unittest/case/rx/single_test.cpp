@@ -9,7 +9,7 @@ TEST(RxSingleTest, ConvertToObservable) {
     {
         auto single = zaf::rx::Single<int>::Just(34);
 
-        zaf::Observable<int> observable = single;
+        zaf::rx::Observable<int> observable = single;
 
         int on_next_value{};
         bool on_error_called{};
@@ -27,7 +27,7 @@ TEST(RxSingleTest, ConvertToObservable) {
     //OnError
     {
         auto single = zaf::rx::Single<int>::Throw(zaf::InvalidOperationError{ "convert.error" });
-        zaf::Observable<int> observable = single;
+        zaf::rx::Observable<int> observable = single;
 
         bool on_next_called{};
         std::string error_message;

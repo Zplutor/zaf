@@ -15,7 +15,7 @@ TEST(RxDoOnTerminatedTest, OnError) {
     int sub_sequence{};
     int sub_error_sequence{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto sub = subject.AsObservable().DoOnTerminate([&]() {
         do_sequence = ++call_sequence;
     })
@@ -43,7 +43,7 @@ TEST(RxDoOnTerminatedTest, OnCompleted) {
     int sub_sequence{};
     int sub_completed_sequence{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto sub = subject.AsObservable().DoOnTerminate([&]() {
         do_sequence = ++call_sequence;
     })
@@ -67,7 +67,7 @@ TEST(RxDoOnTerminatedTest, SubscribeMultipleTimes) {
 
     int call_times{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto observable = subject.AsObservable().DoOnTerminate([&]() {
         ++call_times;
     });
@@ -88,10 +88,10 @@ sure it has been fixed.
 */
 TEST(RxDoOnTerminatedTest, DestroySource) {
 
-    std::optional<Subject<int>> subject;
+    std::optional<rx::Subject<int>> subject;
     subject.emplace();
 
-    std::optional<SubscriptionHost> sub_host;
+    std::optional<rx::SubscriptionHost> sub_host;
     sub_host.emplace();
 
     std::condition_variable cv;
@@ -99,7 +99,7 @@ TEST(RxDoOnTerminatedTest, DestroySource) {
     std::unique_lock<std::mutex> unique_lock{ lock };
 
     sub_host->Subscriptions() += subject->AsObservable()
-        .ObserveOn(Scheduler::CreateOnSingleThread())
+        .ObserveOn(rx::Scheduler::CreateOnSingleThread())
         .DoOnTerminate([&]() {
 
             subject.reset();

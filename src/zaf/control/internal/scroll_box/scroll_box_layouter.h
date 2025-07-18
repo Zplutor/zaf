@@ -45,8 +45,8 @@ private:
 private:
     zaf::ScrollBox* scroll_box_{};
 
-    Subscription horizontal_scroll_bar_subscription_;
-    Subscription vertical_scroll_bar_subscription_;
+    rx::Subscription horizontal_scroll_bar_subscription_;
+    rx::Subscription vertical_scroll_bar_subscription_;
 };
 
 }

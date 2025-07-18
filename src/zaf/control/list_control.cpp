@@ -289,7 +289,7 @@ void ListControl::OnSelectionChanged(const ListControlSelectionChangedInfo& even
 }
 
 
-Observable<ListControlSelectionChangedInfo> ListControl::SelectionChangedEvent() const {
+rx::Observable<ListControlSelectionChangedInfo> ListControl::SelectionChangedEvent() const {
     return selection_changed_event_.GetObservable();
 }
 
@@ -303,7 +303,7 @@ void ListControl::OnCoreItemDoubleClick(const internal::ListCoreItemDoubleClickI
 }
 
 
-Observable<ListControlItemDoubleClickInfo> ListControl::ItemDoubleClickEvent() const {
+rx::Observable<ListControlItemDoubleClickInfo> ListControl::ItemDoubleClickEvent() const {
     return item_double_click_event_.GetObservable();
 }
 
@@ -328,7 +328,7 @@ void ListControl::OnContextMenu(const ListControlContextMenuInfo& event_info) {
 }
 
 
-Observable<ListControlContextMenuInfo> ListControl::ContextMenuEvent() const {
+rx::Observable<ListControlContextMenuInfo> ListControl::ContextMenuEvent() const {
     return context_menu_event_.GetObservable();
 }
 

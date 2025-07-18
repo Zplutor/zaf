@@ -358,7 +358,7 @@ public:
 
      This event is raised when the text is changed.
      */
-    Observable<TextChangedInfo> TextChangedEvent() const;
+    rx::Observable<TextChangedInfo> TextChangedEvent() const;
 
 protected:
     void Initialize() override;

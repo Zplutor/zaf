@@ -4,7 +4,7 @@
 
 TEST(RxJustTest, Observable) {
 
-    auto observable = zaf::Observable<std::string>::Just("Just");
+    auto observable = zaf::rx::Observable<std::string>::Just("Just");
 
     std::string result;
     bool on_error_called{};

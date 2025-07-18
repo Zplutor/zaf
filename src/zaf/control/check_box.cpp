@@ -207,7 +207,7 @@ void CheckBox::SetCheckState(zaf::CheckState check_state) {
 }
 
 
-Observable<CheckStateChangedInfo> CheckBox::CheckStateChangedEvent() const {
+rx::Observable<CheckStateChangedInfo> CheckBox::CheckStateChangedEvent() const {
     return check_state_changed_event_.GetObservable();
 }
 

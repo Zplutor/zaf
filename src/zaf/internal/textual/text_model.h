@@ -151,11 +151,11 @@ public:
         std::shared_ptr<textual::InlineObject> object,
         const Range& range);
 
-    Observable<InlineObjectAttachedInfo> InlineObjectAttachedEvent() const {
+    rx::Observable<InlineObjectAttachedInfo> InlineObjectAttachedEvent() const {
         return inline_object_attached_event_.AsObservable();
     }
 
-    Observable<TextModelChangedInfo> TextChangedEvent() const {
+    rx::Observable<TextModelChangedInfo> TextChangedEvent() const {
         return changed_event_.AsObservable();
     }
 
@@ -187,8 +187,8 @@ private:
     ColorPicker default_text_back_color_picker_;
     RangeMap<ColorPicker, internal::ColorPickerEqual> ranged_text_back_color_pickers_;
 
-    Subject<InlineObjectAttachedInfo> inline_object_attached_event_;
-    Subject<TextModelChangedInfo> changed_event_;
+    rx::Subject<InlineObjectAttachedInfo> inline_object_attached_event_;
+    rx::Subject<TextModelChangedInfo> changed_event_;
 };
 
 }

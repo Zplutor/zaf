@@ -80,7 +80,7 @@ private:
     zaf::Rect rect_{};
     bool is_visible_{};
 
-    Subscription blink_timer_subscription_;
+    rx::Subscription blink_timer_subscription_;
     bool is_blink_on_{};
 };
 

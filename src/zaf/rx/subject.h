@@ -2,12 +2,12 @@
 
 #include <zaf/rx/base_subject.h>
 
-namespace zaf {
+namespace zaf::rx {
 
 template<typename T>
-class Subject : public rx::BaseSubject<T> {
+class Subject : public BaseSubject<T> {
 public:
-    Subject() : rx::BaseSubject<T>(rx::internal::CreateSubjectCore()) { }
+    Subject() : BaseSubject<T>(internal::CreateSubjectCore()) { }
 };
 
 }

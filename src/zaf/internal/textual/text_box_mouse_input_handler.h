@@ -13,7 +13,7 @@
 
 namespace zaf::internal {
 
-class TextBoxMouseInputHandler : public TextBoxModule, SubscriptionHost {
+class TextBoxMouseInputHandler : public TextBoxModule, rx::SubscriptionHost {
 public:
     explicit TextBoxMouseInputHandler(TextBoxModuleContext* context);
 

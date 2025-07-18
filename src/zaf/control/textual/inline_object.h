@@ -32,7 +32,7 @@ constexpr wchar_t ObjectReplacementChar = L'\uFFFC';
 
 class InlineObject : 
     public Object, 
-    public SubscriptionHost,
+    public rx::SubscriptionHost,
     public XMLSerializable,
     public std::enable_shared_from_this<InlineObject>,
     NonCopyableNonMovable {
@@ -47,11 +47,11 @@ public:
         return host_.lock();
     }
 
-    Observable<AttachedInfo> AttachedEvent() const {
+    rx::Observable<AttachedInfo> AttachedEvent() const {
         return attached_event_.GetObservable();
     }
 
-    Observable<DetachedInfo> DetachedEvent() const {
+    rx::Observable<DetachedInfo> DetachedEvent() const {
         return detached_event_.GetObservable();
     }
 

@@ -28,7 +28,7 @@ public:
     */
     bool PerformCopy();
 
-    Observable<textual::CopyingInfo> CopyingEvent() const {
+    rx::Observable<textual::CopyingInfo> CopyingEvent() const {
         return copying_event_.GetObservable();
     }
 

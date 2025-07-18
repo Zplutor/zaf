@@ -8,7 +8,7 @@ using namespace zaf;
 
 namespace {
 
-class ControlStyleTest : public testing::Test, public SubscriptionHost {
+class ControlStyleTest : public testing::Test, public rx::SubscriptionHost {
 public:
     static void SetUpTestCase() {
         test_window_ = zaf::Create<zaf::Window>();

@@ -278,7 +278,7 @@ void ComboBox::SetIsEditable(bool is_editable) {
 }
 
 
-Observable<ComboBoxSelectionChangedInfo> ComboBox::SelectionChangedEvent() const {
+rx::Observable<ComboBoxSelectionChangedInfo> ComboBox::SelectionChangedEvent() const {
     return selection_changed_event_.GetObservable();
 }
 

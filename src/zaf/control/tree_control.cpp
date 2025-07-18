@@ -184,7 +184,7 @@ void TreeControl::SelectionChange() {
 }
 
 
-Observable<TreeControlSelectionChangeInfo> TreeControl::SelectionChangeEvent() const {
+rx::Observable<TreeControlSelectionChangeInfo> TreeControl::SelectionChangeEvent() const {
     return selection_changed_event_.GetObservable();
 }
 
@@ -199,7 +199,7 @@ void TreeControl::ItemExpand(const std::shared_ptr<Object>& data) {
 }
 
 
-Observable<TreeControlItemExpandInfo> TreeControl::ItemExpandEvent() const {
+rx::Observable<TreeControlItemExpandInfo> TreeControl::ItemExpandEvent() const {
     return item_expand_event_.GetObservable();
 }
 
@@ -214,7 +214,7 @@ void TreeControl::ItemCollapse(const std::shared_ptr<Object>& data) {
 }
 
 
-Observable<TreeControlItemCollapseInfo> TreeControl::ItemCollapseEvent() const {
+rx::Observable<TreeControlItemCollapseInfo> TreeControl::ItemCollapseEvent() const {
     return item_collapse_event_.GetObservable();
 }
 

@@ -13,10 +13,10 @@ TEST(RxFinallyTest, Finally) {
     };
 
     TestState test_state;
-    zaf::Subscription subscription;
+    zaf::rx::Subscription subscription;
     auto create_test_subject = [&]() {
 
-        zaf::Subject<int> subject;
+        zaf::rx::Subject<int> subject;
         subscription = subject.AsObservable().Finally([&]() {
             test_state.finally_called = true;
         })
@@ -98,7 +98,7 @@ TEST(RxFinallyTest, MultipleFinallyOrder) {
     int finally1_value{};
     int finally2_value{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto subscription = subject.AsObservable().Finally([&]() {
         finally1_value = ++seed;
     })
@@ -120,7 +120,7 @@ TEST(RxFinallyTest, SubscribeMultipleTimes) {
 
     int call_times{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto observable = subject.AsObservable().Finally([&]() {
         ++call_times;
     });

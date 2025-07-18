@@ -44,7 +44,7 @@ public:
 
      This event is raised when the mouse left button is pressed for a while.
      */
-    Observable<ScrollBarArrowBeginPressInfo> BeginPressEvent() {
+    rx::Observable<ScrollBarArrowBeginPressInfo> BeginPressEvent() {
         return begin_press_event_.AsObservable();
     }
 
@@ -53,7 +53,7 @@ public:
 
      This event is raised when the mouse left button is released after being pressed for a while.
      */
-    Observable<ScrollBarArrowEndPressInfo> EndPressEvent() {
+    rx::Observable<ScrollBarArrowEndPressInfo> EndPressEvent() {
         return end_press_event_.AsObservable();
     }
 
@@ -77,8 +77,8 @@ private:
 
     internal::ColorField arrow_color_field_;
 
-    Subject<ScrollBarArrowBeginPressInfo> begin_press_event_;
-    Subject<ScrollBarArrowEndPressInfo> end_press_event_;
+    rx::Subject<ScrollBarArrowBeginPressInfo> begin_press_event_;
+    rx::Subject<ScrollBarArrowEndPressInfo> end_press_event_;
 };
 
 ZAF_OBJECT_BEGIN(ScrollBarArrow);

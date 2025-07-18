@@ -79,14 +79,14 @@ public:
 
      This event should be raised when the visibility or usability of scroll bars changed.
      */
-    virtual Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() = 0;
+    virtual rx::Observable<SelfScrollControlScrollBarChangeInfo> ScrollBarChangeEvent() = 0;
 
     /**
      Get scroll value change event of the self scrolling control.
 
      This event should be raise when the scroll values changed.
      */
-    virtual Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() = 0;
+    virtual rx::Observable<SelfScrollControlScrollValuesChangeInfo> ScrollValuesChangeEvent() = 0;
 
     /**
      Scroll the content by changing the vertical scroll value.

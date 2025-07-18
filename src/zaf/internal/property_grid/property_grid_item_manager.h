@@ -8,7 +8,7 @@
 
 namespace zaf::internal {
 
-class PropertyGridItemManager : public TreeControlDelegate, SubscriptionHost {
+class PropertyGridItemManager : public TreeControlDelegate, rx::SubscriptionHost {
 public:
     PropertyGridItemManager(
         const std::shared_ptr<PropertyGridDelegate>& delegate,

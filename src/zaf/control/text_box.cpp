@@ -489,7 +489,7 @@ void TextBox::SetSelectionRange(const Range& range, textual::SelectionOption sel
 }
 
 
-Observable<textual::SelectionChangedInfo> TextBox::SelectionChangedEvent() const {
+rx::Observable<textual::SelectionChangedInfo> TextBox::SelectionChangedEvent() const {
     return selection_changed_event_.GetObservable();
 }
 
@@ -714,12 +714,12 @@ void TextBox::GetScrollValues(
 }
 
 
-Observable<SelfScrollControlScrollBarChangeInfo> TextBox::ScrollBarChangeEvent() {
+rx::Observable<SelfScrollControlScrollBarChangeInfo> TextBox::ScrollBarChangeEvent() {
     return scroll_bar_change_event_.GetObservable();
 }
 
 
-Observable<SelfScrollControlScrollValuesChangeInfo> TextBox::ScrollValuesChangeEvent() {
+rx::Observable<SelfScrollControlScrollValuesChangeInfo> TextBox::ScrollValuesChangeEvent() {
     return scroll_values_change_event_.GetObservable();
 }
 
@@ -780,7 +780,7 @@ void TextBox::OnCopying(const textual::CopyingInfo& event_info) {
 }
 
 
-Observable<textual::CopyingInfo> TextBox::CopyingEvent() const {
+rx::Observable<textual::CopyingInfo> TextBox::CopyingEvent() const {
     return copying_event_.GetObservable();
 }
 
@@ -800,7 +800,7 @@ void TextBox::OnPasting(const textual::PastingInfo& event_info) {
 }
 
 
-Observable<textual::PastingInfo> TextBox::PastingEvent() const {
+rx::Observable<textual::PastingInfo> TextBox::PastingEvent() const {
     return pasting_event_.GetObservable();
 }
 

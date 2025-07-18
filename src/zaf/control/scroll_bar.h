@@ -199,7 +199,7 @@ public:
 
      This event is raised when the scroll value is changed.
      */
-    Observable<ScrollBarScrollInfo> ScrollEvent() const;
+    rx::Observable<ScrollBarScrollInfo> ScrollEvent() const;
 
 protected:
     void Initialize() override;
@@ -253,9 +253,9 @@ private:
     std::shared_ptr<ScrollBarArrow> decremental_arrow_;
     std::shared_ptr<ScrollBarThumb> thumb_;
 
-    zaf::SubscriptionBag incremental_arrow_subscriptions_;
-    zaf::SubscriptionBag decremental_arrow_subscriptions_;
-    zaf::SubscriptionBag thumb_subscriptions_;
+    zaf::rx::SubscriptionBag incremental_arrow_subscriptions_;
+    zaf::rx::SubscriptionBag decremental_arrow_subscriptions_;
+    zaf::rx::SubscriptionBag thumb_subscriptions_;
 
     std::optional<float> arrow_length_;
 

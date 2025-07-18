@@ -4,7 +4,7 @@
 
 TEST(RxNeverTest, Observable) {
 
-    auto observable = zaf::Observable<int>::Never();
+    auto observable = zaf::rx::Observable<int>::Never();
 
     int on_next_count{};
     int on_error_count{};

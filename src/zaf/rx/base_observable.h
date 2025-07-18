@@ -90,7 +90,7 @@ public:
         return OBSERVABLE<T>{ core_->Do(observer.Core()) };
     }
 
-    OBSERVABLE<T> DoOnError(zaf::OnError on_error) {
+    OBSERVABLE<T> DoOnError(rx::OnError on_error) {
         return static_cast<OBSERVABLE<T>*>(this)->Do(OBSERVER<T>::Create(std::move(on_error)));
     }
 

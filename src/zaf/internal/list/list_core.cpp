@@ -129,7 +129,7 @@ void ListCore::RegisterDataSourceEvents() {
 }
 
 
-Observable<ListCoreDataSourceChangedInfo> ListCore::DataSourceChangedEvent() const {
+rx::Observable<ListCoreDataSourceChangedInfo> ListCore::DataSourceChangedEvent() const {
     return data_source_changed_event_.AsObservable();
 }
 
@@ -160,7 +160,7 @@ void ListCore::InstallDelegate(std::weak_ptr<ListControlDelegate> delegate) {
 }
 
 
-Observable<ListCoreDelegateChangedInfo> ListCore::DelegateChangedEvent() const {
+rx::Observable<ListCoreDelegateChangedInfo> ListCore::DelegateChangedEvent() const {
     return delegate_changed_event_.AsObservable();
 }
 
@@ -199,7 +199,7 @@ void ListCore::InstallItemContainer(std::weak_ptr<ListItemContainer> item_contai
 }
 
 
-Observable<ListCoreItemContainerChangedInfo> ListCore::ItemContainerChangedEvent() const {
+rx::Observable<ListCoreItemContainerChangedInfo> ListCore::ItemContainerChangedEvent() const {
     return item_container_changed_event_.AsObservable();
 }
 
@@ -548,12 +548,12 @@ std::optional<std::size_t> ListCore::FindItemIndexAtPosition(
 }
 
 
-Observable<None> ListCore::SelectionChangedEvent() const {
+rx::Observable<None> ListCore::SelectionChangedEvent() const {
     return selection_changed_event_.AsObservable();
 }
 
 
-Observable<ListCoreItemDoubleClickInfo> ListCore::ItemDoubleClickEvent() const {
+rx::Observable<ListCoreItemDoubleClickInfo> ListCore::ItemDoubleClickEvent() const {
     return item_double_click_event_.AsObservable();
 }
 

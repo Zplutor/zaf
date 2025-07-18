@@ -4,7 +4,7 @@
 
 TEST(RxThrowTest, Observable_ExceptionPtr) {
 
-    auto observable = zaf::Observable<int>::Throw(std::make_exception_ptr(std::string("err")));
+    auto observable = zaf::rx::Observable<int>::Throw(std::make_exception_ptr(std::string("err")));
 
     int on_next_count{};
     std::string caught_error_string;
@@ -33,7 +33,7 @@ TEST(RxThrowTest, Observable_ExceptionPtr) {
 
 TEST(RxThrowTest, Observable_Template) {
 
-    auto observable = zaf::Observable<double>::Throw(std::logic_error("throw logic error"));
+    auto observable = zaf::rx::Observable<double>::Throw(std::logic_error("throw logic error"));
 
     std::optional<std::logic_error> caught_error;
 

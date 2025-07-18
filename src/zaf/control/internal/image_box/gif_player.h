@@ -11,7 +11,7 @@
 namespace zaf {
 namespace internal {
 
-class GifPlayer : public ImagePlayer, public SubscriptionHost {
+class GifPlayer : public ImagePlayer, public rx::SubscriptionHost {
 public:
     GifPlayer(const wic::BitmapDecoder& image_decoder);
 

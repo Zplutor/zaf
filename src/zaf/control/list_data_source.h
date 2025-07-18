@@ -43,7 +43,7 @@ public:
     @details
         This event is raised after data being added to the data source.
     */
-    Observable<ListDataAddedInfo> DataAddedEvent() const {
+    rx::Observable<ListDataAddedInfo> DataAddedEvent() const {
         return data_added_event_.AsObservable();
     }
 
@@ -53,7 +53,7 @@ public:
     @details
         This event is raised after data being removed from the data source.
     */
-    Observable<ListDataRemovedInfo> DataRemovedEvent() const {
+    rx::Observable<ListDataRemovedInfo> DataRemovedEvent() const {
         return data_removed_event_.AsObservable();
     }
 
@@ -63,7 +63,7 @@ public:
     @details
         This event is raised after data being updated.
     */
-    Observable<ListDataUpdatedInfo> DataUpdatedEvent() const {
+    rx::Observable<ListDataUpdatedInfo> DataUpdatedEvent() const {
         return data_updated_event_.AsObservable();
     }
 
@@ -73,7 +73,7 @@ public:
     @details
         This event is raised after data being moved to a new index.
     */
-    Observable<ListDataMovedInfo> DataMovedEvent() const {
+    rx::Observable<ListDataMovedInfo> DataMovedEvent() const {
         return data_moved_event_.AsObservable();
     }
 
@@ -137,10 +137,10 @@ protected:
     void NotifyDataMoved(std::size_t previous_index, std::size_t new_index) const;
 
 private:
-    Subject<ListDataAddedInfo> data_added_event_;
-    Subject<ListDataRemovedInfo> data_removed_event_;
-    Subject<ListDataUpdatedInfo> data_updated_event_;
-    Subject<ListDataMovedInfo> data_moved_event_;
+    rx::Subject<ListDataAddedInfo> data_added_event_;
+    rx::Subject<ListDataRemovedInfo> data_removed_event_;
+    rx::Subject<ListDataUpdatedInfo> data_updated_event_;
+    rx::Subject<ListDataMovedInfo> data_moved_event_;
 };
 
 }

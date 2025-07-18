@@ -5,7 +5,7 @@ namespace {
 
 template<typename T>
 void RaiseEvent(
-    Subject<T>& subject, 
+    rx::Subject<T>& subject,
     const std::shared_ptr<Object>& parent_data,
     std::size_t index,
     std::size_t count) {

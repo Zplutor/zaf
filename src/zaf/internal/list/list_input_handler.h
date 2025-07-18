@@ -28,7 +28,7 @@ public:
     void HandleMouseUpEvent(const MouseUpInfo& event_info);
     void HandleKeyDownEvent(const KeyDownInfo& event_info);
 
-    Observable<None> WhenNotSelectingByMouse() const;
+    rx::Observable<None> WhenNotSelectingByMouse() const;
 
     void SetContextMenuCallback(ContextMenuCallback callback) {
         context_menu_callback_ = std::move(callback);
@@ -48,7 +48,7 @@ private:
 
 private:
     bool is_selecting_by_mouse_{};
-    mutable std::optional<Subject<None>> exit_select_by_mouse_subject_;
+    mutable std::optional<rx::Subject<None>> exit_select_by_mouse_subject_;
 
     ContextMenuCallback context_menu_callback_;
 };

@@ -50,7 +50,7 @@ public:
 
      This event is raised when the thumb has begain being dragged.
      */
-    Observable<ScrollBarThumbBeginDragInfo> BeginDragEvent() {
+    rx::Observable<ScrollBarThumbBeginDragInfo> BeginDragEvent() {
         return begin_drag_event_.AsObservable();
     }
 
@@ -59,7 +59,7 @@ public:
 
      This event is raised when the thumb is beging dragged.
      */
-    Observable<ScrollBarThumbDragInfo> DragEvent() {
+    rx::Observable<ScrollBarThumbDragInfo> DragEvent() {
         return drag_event_.AsObservable();
     }
 
@@ -68,7 +68,7 @@ public:
 
      This event is raised when the thumb has ended being dragged.
      */
-    Observable<ScrollBarThumbEndDragInfo> EndDragEvent() {
+    rx::Observable<ScrollBarThumbEndDragInfo> EndDragEvent() {
         return end_drag_event_.AsObservable();
     }
 
@@ -91,9 +91,9 @@ private:
 
     internal::ColorField thumb_color_field_;
 
-    Subject<ScrollBarThumbBeginDragInfo> begin_drag_event_;
-    Subject<ScrollBarThumbDragInfo> drag_event_;
-    Subject<ScrollBarThumbEndDragInfo> end_drag_event_;
+    rx::Subject<ScrollBarThumbBeginDragInfo> begin_drag_event_;
+    rx::Subject<ScrollBarThumbDragInfo> drag_event_;
+    rx::Subject<ScrollBarThumbEndDragInfo> end_drag_event_;
 };
 
 ZAF_OBJECT_BEGIN(ScrollBarThumb);

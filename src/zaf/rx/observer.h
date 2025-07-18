@@ -8,7 +8,7 @@ template<typename T>
 class ObservableFactory;
 }
 
-namespace zaf {
+namespace zaf::rx {
 
 template<typename T>
 class Observer {

@@ -36,7 +36,7 @@ TEST(ControlMouseEventRoutingTest, RoutingPath) {
     inner_control->SetFixedSize(zaf::Size{ 60, 60 });
     middle_control->AddChild(inner_control);
 
-    zaf::SubscriptionBag subs;
+    zaf::rx::SubscriptionBag subs;
 
     int event_seed{};
 
@@ -122,7 +122,7 @@ TEST(ControlMouseEventRoutingTest, IsHandled) {
 
     auto window = CreateTestWindow();
 
-    zaf::SubscriptionBag subs;
+    zaf::rx::SubscriptionBag subs;
     subs += window->RootControl()->PreMouseMoveEvent().Subscribe(
         [](const zaf::PreMouseMoveInfo& event_info) {
     
@@ -162,7 +162,7 @@ TEST(ControlMouseEventRoutingTest, EventType) {
         event_message_id = event_info.Message().ID();
     };
 
-    zaf::SubscriptionBag subs;
+    zaf::rx::SubscriptionBag subs;
     subs += window->RootControl()->PreMouseMoveEvent().Subscribe(pre_event_handler);
     subs += window->RootControl()->MouseMoveEvent().Subscribe(event_handler);
     subs += window->RootControl()->PreMouseDownEvent().Subscribe(pre_event_handler);

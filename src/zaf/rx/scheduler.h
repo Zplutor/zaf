@@ -2,7 +2,7 @@
 
 #include <zaf/rx/work.h>
 
-namespace zaf {
+namespace zaf::rx {
 
 class Scheduler {
 public:

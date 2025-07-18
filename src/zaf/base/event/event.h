@@ -9,9 +9,9 @@ namespace zaf {
 template<typename T>
 class Event : NonCopyable {
 public:
-    Observable<T> GetObservable() const {
+    rx::Observable<T> GetObservable() const {
         if (!subject_) {
-            subject_ = Subject<T>{};
+            subject_ = rx::Subject<T>{};
         }
         return subject_->AsObservable();
     }
@@ -23,7 +23,7 @@ public:
     }
 
 private:
-    mutable std::optional<Subject<T>> subject_;
+    mutable std::optional<rx::Subject<T>> subject_;
 };
 
 }

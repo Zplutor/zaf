@@ -7,7 +7,7 @@
 
 namespace zaf::internal {
 
-class TextBoxCaretManager : public TextBoxModule, SubscriptionHost {
+class TextBoxCaretManager : public TextBoxModule, rx::SubscriptionHost {
 public:
     explicit TextBoxCaretManager(TextBoxModuleContext* context);
 

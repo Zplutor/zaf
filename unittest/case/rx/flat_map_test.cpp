@@ -10,14 +10,14 @@ TEST(RxFlatMapTest, FlatMap) {
         std::vector<std::string> result;
         int error_count{};
         int completed_count{};
-        zaf::Subscription sub;
+        zaf::rx::Subscription sub;
     } test_data;
 
     auto create_subject = [&]() {
     
-        zaf::Subject<int> subject;
+        zaf::rx::Subject<int> subject;
         test_data.sub = subject.AsObservable().FlatMap<std::string>([](int value) {
-            return zaf::Observable<std::string>::Just(std::to_string(value));
+            return zaf::rx::Observable<std::string>::Just(std::to_string(value));
         })
         .Subscribe([&](const std::string& value) {
             test_data.result.push_back(value);
@@ -67,13 +67,13 @@ TEST(RxFlatMapTest, AsyncObservable) {
 
     std::vector<std::string> result;
 
-    auto scheduler = zaf::Scheduler::CreateOnSingleThread();
+    auto scheduler = zaf::rx::Scheduler::CreateOnSingleThread();
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto sub = subject.AsObservable().ObserveOn(scheduler)
     .FlatMap<std::string>([scheduler](int value) {
 
-        return zaf::Observable<std::string>::Just(std::to_string(value))
+        return zaf::rx::Observable<std::string>::Just(std::to_string(value))
             .SubscribeOn(scheduler);
     })
     .Subscribe([&](const std::string& value) {
@@ -96,9 +96,9 @@ TEST(RxFlatMapTest, ErrorInMapper) {
     std::optional<std::string> error;
     int completed_count{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto sub = subject.AsObservable().FlatMap<std::string>(
-        [](int value) -> zaf::Observable<std::string> {
+        [](int value) -> zaf::rx::Observable<std::string> {
             throw std::string("aaa");
         }
     )
@@ -130,10 +130,10 @@ TEST(RxFlatMapTest, SubscribeMultipleTimes) {
 
     int call_times{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto observable = subject.AsObservable().FlatMap<std::string>([&](int value) {
         ++call_times;
-        return zaf::Observable<std::string>::Just(std::to_string(value));
+        return zaf::rx::Observable<std::string>::Just(std::to_string(value));
     });
 
     auto sub1 = observable.Subscribe();

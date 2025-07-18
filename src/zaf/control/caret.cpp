@@ -73,7 +73,7 @@ void Caret::ShowCaret() {
     is_blink_on_ = true;
 
     blink_timer_subscription_ = rx::Interval(std::chrono::milliseconds(blink_time))
-        .ObserveOn(Scheduler::Main())
+        .ObserveOn(rx::Scheduler::Main())
         .Subscribe([this](int) {
         
         is_blink_on_ = !is_blink_on_;

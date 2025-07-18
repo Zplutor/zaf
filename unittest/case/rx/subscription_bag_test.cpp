@@ -2,20 +2,20 @@
 #include <zaf/rx/subject.h>
 #include <zaf/rx/subscription_bag.h>
 
-static_assert(!std::is_copy_assignable_v<zaf::SubscriptionBag>);
-static_assert(!std::is_copy_constructible_v<zaf::SubscriptionBag>);
-static_assert(!std::is_move_assignable_v<zaf::SubscriptionBag>);
-static_assert(!std::is_move_constructible_v<zaf::SubscriptionBag>);
+static_assert(!std::is_copy_assignable_v<zaf::rx::SubscriptionBag>);
+static_assert(!std::is_copy_constructible_v<zaf::rx::SubscriptionBag>);
+static_assert(!std::is_move_assignable_v<zaf::rx::SubscriptionBag>);
+static_assert(!std::is_move_constructible_v<zaf::rx::SubscriptionBag>);
 
 
 TEST(RxSubscriptionBagTest, EmptySubscription) {
 
-    zaf::SubscriptionBag bag;
-    bag += zaf::Subscription{};
+    zaf::rx::SubscriptionBag bag;
+    bag += zaf::rx::Subscription{};
     ASSERT_EQ(bag.Count(), 0);
 
     std::vector<float> values;
-    bag += zaf::Observable<float>::Just(0.5f).Subscribe([&values](float value) {
+    bag += zaf::rx::Observable<float>::Just(0.5f).Subscribe([&values](float value) {
         values.push_back(value);
     });
 
@@ -27,11 +27,11 @@ TEST(RxSubscriptionBagTest, EmptySubscription) {
 
 TEST(RxSubscriptionBagTest, UnsubscribedSubscription) {
 
-    zaf::Subject<std::string> subject;
+    zaf::rx::Subject<std::string> subject;
     auto sub = subject.AsObservable().Subscribe();
     sub.Unsubscribe();
 
-    zaf::SubscriptionBag bag;
+    zaf::rx::SubscriptionBag bag;
     bag += sub;
     ASSERT_EQ(bag.Count(), 0);
 }
@@ -39,8 +39,8 @@ TEST(RxSubscriptionBagTest, UnsubscribedSubscription) {
 
 TEST(RxSubscriptionBagTest, CancelSubscription) {
 
-    zaf::Subject<std::string> subject;
-    zaf::SubscriptionBag bag;
+    zaf::rx::Subject<std::string> subject;
+    zaf::rx::SubscriptionBag bag;
 
     std::vector<std::string> values;
     bag += subject.AsObservable().Subscribe([&values](const std::string& value) {
@@ -60,8 +60,8 @@ TEST(RxSubscriptionBagTest, CancelSubscription) {
 
 TEST(RxSubscriptionBagTest, CancelSubscriptionByDestruction) {
 
-    zaf::Subject<std::string> subject;
-    auto bag = std::make_unique<zaf::SubscriptionBag>();
+    zaf::rx::Subject<std::string> subject;
+    auto bag = std::make_unique<zaf::rx::SubscriptionBag>();
 
     std::vector<std::string> values;
     *bag += subject.AsObservable().Subscribe([&values](const std::string& value) {
@@ -80,8 +80,8 @@ TEST(RxSubscriptionBagTest, CancelSubscriptionByDestruction) {
 
 TEST(RxSubscriptionBagTest, RemoveAfterFinish) {
 
-    zaf::SubscriptionBag bag;
-    zaf::Subject<std::string> subject;
+    zaf::rx::SubscriptionBag bag;
+    zaf::rx::Subject<std::string> subject;
 
     //Remove after OnError
     bag += subject.AsObservable().Subscribe([](std::string) {});

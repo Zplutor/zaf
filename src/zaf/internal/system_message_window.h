@@ -8,17 +8,17 @@
 
 namespace zaf::internal {
 
-class SystemMessageWindow : public SubscriptionHost {
+class SystemMessageWindow : public rx::SubscriptionHost {
 public:
     SystemMessageWindow();
 
-    Observable<SessionEndInfo> SessionEndedEvent() {
+    rx::Observable<SessionEndInfo> SessionEndedEvent() {
         return session_ended_subject_.AsObservable();
     }
 
 private:
     InnerMessageOnlyWindow message_only_window_;
-    Subject<SessionEndInfo> session_ended_subject_;
+    rx::Subject<SessionEndInfo> session_ended_subject_;
 };
 
 }

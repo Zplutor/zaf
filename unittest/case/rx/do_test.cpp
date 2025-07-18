@@ -7,7 +7,7 @@ TEST(RxDoTest, OnNext) {
     std::vector<int> do_values;
     std::vector<int> observed_values;
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto subscription = subject.AsObservable().Do([&do_values](int value) {
         do_values.push_back(value);
     })
@@ -37,7 +37,7 @@ TEST(RxDoTest, OnNextOnCompleted) {
     int observed_value_sequence{};
     int observed_completed_sequence{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto subscription = subject.AsObservable().Do([&](int value) {
         do_value = value;
         do_value_sequence = ++call_sequence;
@@ -78,7 +78,7 @@ TEST(RxDoTest, OnNextOnError) {
     int observed_value_sequence{};
     int observed_error_sequence{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto subscription = subject.AsObservable().Do(
         [&](int value) {
             do_value = value;
@@ -122,12 +122,12 @@ TEST(RxDoTest, OnNextOnErrorOnCompleted) {
     };
 
     TestState test_state;
-    zaf::Subscription subscription;
+    zaf::rx::Subscription subscription;
     auto create_test_subject = [&]() {
     
         test_state = {};
 
-        zaf::Subject<int> subject;
+        zaf::rx::Subject<int> subject;
         subscription = subject.AsObservable().Do(
             [&](int value) {
                 test_state.do_value = value;
@@ -189,7 +189,7 @@ TEST(RxDoTest, Unsubscribe) {
     std::vector<int> do_values;
     std::vector<int> observed_values;
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto subscription = subject.AsObservable().Do([&do_values](int value) {
         do_values.push_back(value);
     })
@@ -210,7 +210,7 @@ TEST(RxDoTest, Unsubscribe) {
 
 TEST(RxDoTest, CircularReference) {
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto observable = subject.AsObservable().Do([](int) {});
     auto subscription = observable.Subscribe();
 
@@ -230,7 +230,7 @@ TEST(RxDoTest, SubscribeMultipleTimes) {
 
     int call_times{};
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     auto observable = subject.AsObservable().Do([&](int) {
         ++call_times;
     });

@@ -16,7 +16,7 @@ public:
         return handle_;
     }
 
-    Observable<Message> MessageReceivedEvent() {
+    rx::Observable<Message> MessageReceivedEvent() {
         return subject_.AsObservable();
     }
 
@@ -29,7 +29,7 @@ private:
 
 private:
     HWND handle_{};
-    Subject<Message> subject_;
+    rx::Subject<Message> subject_;
 };
 
 }

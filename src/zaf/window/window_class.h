@@ -27,14 +27,14 @@ private:
 
     explicit WindowClass(const WindowClassProperties& properties);
 
-    Observable<std::wstring> DestroyEvent() {
+    rx::Observable<std::wstring> DestroyEvent() {
         return destroyed_event_.AsObservable();
     }
 
 private:
     WindowClassProperties properties_;
     ATOM atom_{};
-    Subject<std::wstring> destroyed_event_;
+    rx::Subject<std::wstring> destroyed_event_;
 };
 
 }

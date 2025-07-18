@@ -2,6 +2,7 @@
 #include <zaf/rx/subject.h>
 
 using namespace zaf;
+using namespace zaf::rx;
 
 //Make sure the five overloads work correctly.
 TEST(RxObserverTest, Create) {
@@ -130,10 +131,10 @@ TEST(RxObserverTest, OnError) {
 
     std::string string_error;
     double double_error{};
-    Subscription sub;
+    rx::Subscription sub;
 
     auto create_observer = [&]() {
-        Subject<int> subject;
+        rx::Subject<int> subject;
         sub = subject.AsObservable().Subscribe(
             [](int) {},
             [&string_error, &double_error](const std::exception_ptr& exception) {

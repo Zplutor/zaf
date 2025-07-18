@@ -56,7 +56,7 @@ public:
 };
 
 
-class ListControlItemHeightManagerTest : public testing::Test, zaf::SubscriptionHost {
+class ListControlItemHeightManagerTest : public testing::Test, zaf::rx::SubscriptionHost {
 public:
     void SetUp() override {
         

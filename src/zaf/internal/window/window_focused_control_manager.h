@@ -22,7 +22,7 @@ public:
 
     void ChangeFocusedControl(const std::shared_ptr<Control>& new_focused_control);
 
-    Observable<std::shared_ptr<Control>> FocusedControlChangedEvent() const {
+    rx::Observable<std::shared_ptr<Control>> FocusedControlChangedEvent() const {
         return focused_control_changed_event_.GetObservable();
     }
 

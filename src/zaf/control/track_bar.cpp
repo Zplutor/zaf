@@ -273,7 +273,7 @@ void TrackBar::SetValue(int value) {
 }
 
 
-Observable<TrackBarValueChangedInfo> TrackBar::ValueChangedEvent() const {
+rx::Observable<TrackBarValueChangedInfo> TrackBar::ValueChangedEvent() const {
     return value_changed_event_.GetObservable();
 }
 

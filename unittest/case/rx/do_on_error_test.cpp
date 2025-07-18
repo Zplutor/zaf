@@ -11,7 +11,7 @@ TEST(RxDoOnErrorTest, NonTemplate) {
     int on_error_sequence{};
     int do_error_sequence{};
 
-    Subject<int> subject;
+    rx::Subject<int> subject;
     auto sub = subject.AsObservable().DoOnError(
         [&](const std::exception_ptr& exception) {
             do_error_sequence = ++sequence;
@@ -39,7 +39,7 @@ TEST(RxDoOnErrorTest, Template) {
     {
         std::optional<std::logic_error> error;
 
-        Subject<int> subject;
+        rx::Subject<int> subject;
         auto sub = subject.AsObservable().DoOnError<std::logic_error>(
             [&](const std::logic_error& logic_error) {
                 error = logic_error;
@@ -53,7 +53,7 @@ TEST(RxDoOnErrorTest, Template) {
     //Emit an error that doesn't match the type of DoOnError.
     {
         bool do_on_error_called{};
-        Subject<int> subject;
+        rx::Subject<int> subject;
         auto sub = subject.AsObservable().DoOnError<std::logic_error>(
             [&](const std::logic_error& logic_error) {
                 do_on_error_called = true;

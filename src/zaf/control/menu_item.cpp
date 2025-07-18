@@ -179,7 +179,7 @@ void MenuItem::PopupSubMenu() {
 }
 
 
-Observable<SubMenuShowInfo> MenuItem::SubMenuShowEvent() const {
+rx::Observable<SubMenuShowInfo> MenuItem::SubMenuShowEvent() const {
     return sub_menu_show_event_.GetObservable();
 }
 
@@ -192,7 +192,7 @@ void MenuItem::CloseSubMenu() {
 }
 
 
-Observable<SubMenuCloseInfo> MenuItem::SubMenuCloseEvent() const {
+rx::Observable<SubMenuCloseInfo> MenuItem::SubMenuCloseEvent() const {
     return sub_menu_close_event_.GetObservable();
 }
 

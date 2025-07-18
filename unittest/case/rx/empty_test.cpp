@@ -3,7 +3,7 @@
 
 TEST(RxEmptyTest, Observable) {
 
-    auto observable = zaf::Observable<int>::Empty();
+    auto observable = zaf::rx::Observable<int>::Empty();
 
     int on_next_count{};
     int on_error_count{};

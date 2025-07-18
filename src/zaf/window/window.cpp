@@ -148,7 +148,7 @@ void Window::OnHandleCreated(const HandleCreatedInfo& event_info) {
 }
 
 
-Observable<HandleCreatedInfo> Window::HandleCreatedEvent() const {
+rx::Observable<HandleCreatedInfo> Window::HandleCreatedEvent() const {
     return handle_created_event_.GetObservable();
 }
 
@@ -365,7 +365,7 @@ void Window::RaiseMessageReceivedEvent(const MessageReceivedInfo& event_info) {
 }
 
 
-Observable<MessageReceivedInfo> Window::MessageReceivedEvent() const {
+rx::Observable<MessageReceivedInfo> Window::MessageReceivedEvent() const {
     return message_received_event_.GetObservable();
 }
 
@@ -556,7 +556,7 @@ void Window::OnMessageHandled(const MessageHandledInfo& event_info) {
 }
 
 
-Observable<MessageHandledInfo> Window::MessageHandledEvent() const {
+rx::Observable<MessageHandledInfo> Window::MessageHandledEvent() const {
     return message_handled_event_.GetObservable();
 }
 
@@ -697,7 +697,7 @@ void Window::OnShow(const ShowInfo& event_info) {
 }
 
 
-Observable<ShowInfo> Window::ShowEvent() const {
+rx::Observable<ShowInfo> Window::ShowEvent() const {
     return show_event_.GetObservable();
 }
 
@@ -707,7 +707,7 @@ void Window::OnHide(const HideInfo& event_info) {
 }
 
 
-Observable<HideInfo> Window::HideEvent() const {
+rx::Observable<HideInfo> Window::HideEvent() const {
     return hide_event_.GetObservable();
 }
 
@@ -730,7 +730,7 @@ void Window::OnActivated(const ActivatedInfo& event_info) {
 }
 
 
-Observable<ActivatedInfo> Window::ActivatedEvent() const {
+rx::Observable<ActivatedInfo> Window::ActivatedEvent() const {
     return activated_event_.GetObservable();
 }
 
@@ -740,7 +740,7 @@ void Window::OnDeactivated(const DeactivatedInfo& event_info) {
 }
 
 
-Observable<DeactivatedInfo> Window::DeactivatedEvent() const {
+rx::Observable<DeactivatedInfo> Window::DeactivatedEvent() const {
     return deactivated_event_.GetObservable();
 }
 
@@ -757,7 +757,7 @@ void Window::OnFocusGained(const WindowFocusGainedInfo& event_info) {
 }
 
 
-Observable<WindowFocusGainedInfo> Window::FocusGainedEvent() const {
+rx::Observable<WindowFocusGainedInfo> Window::FocusGainedEvent() const {
     return focus_gained_event_.GetObservable();
 }
 
@@ -774,7 +774,7 @@ void Window::OnFocusLost(const WindowFocusLostInfo& event_info) {
 }
 
 
-Observable<WindowFocusLostInfo> Window::FocusLostEvent() const {
+rx::Observable<WindowFocusLostInfo> Window::FocusLostEvent() const {
     return focus_lost_event_.GetObservable();
 }
 
@@ -809,15 +809,15 @@ void Window::OnSizeChanged(const WindowSizeChangedInfo& event_info) {
 }
 
 
-Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() const {
+rx::Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() const {
     return size_changed_event_.GetObservable();
 }
 
 
-Observable<None> Window::WhenNotSizingOrMoving() const {
+rx::Observable<None> Window::WhenNotSizingOrMoving() const {
 
     if (!handle_specific_state_.is_sizing_or_moving) {
-        return Observable<None>::Just({});
+        return rx::Observable<None>::Just({});
     }
 
     if (!handle_specific_state_.exit_sizing_or_moving_subject) {
@@ -1233,7 +1233,7 @@ void Window::OnClosing(const ClosingInfo& event_info) {
 }
 
 
-Observable<ClosingInfo> Window::ClosingEvent() const {
+rx::Observable<ClosingInfo> Window::ClosingEvent() const {
     return closing_event_.GetObservable();
 }
 
@@ -1269,7 +1269,7 @@ void Window::OnDestroyed(const DestroyedInfo& event_info) {
 }
 
 
-Observable<DestroyedInfo> Window::DestroyedEvent() const {
+rx::Observable<DestroyedInfo> Window::DestroyedEvent() const {
     return destroyed_event_.GetObservable();
 }
 
@@ -1439,7 +1439,7 @@ void Window::OnMouseCaptureControlChanged(const MouseCaptureControlChangedInfo& 
 }
 
 
-Observable<MouseCaptureControlChangedInfo> Window::MouseCaptureControlChangedEvent() const {
+rx::Observable<MouseCaptureControlChangedInfo> Window::MouseCaptureControlChangedEvent() const {
     return mouse_capture_control_changed_event_.GetObservable();
 }
 
@@ -1449,7 +1449,7 @@ std::shared_ptr<Control> Window::FocusedControl() const {
 }
 
 
-Observable<FocusedControlChangedInfo> Window::FocusedControlChangedEvent() const {
+rx::Observable<FocusedControlChangedInfo> Window::FocusedControlChangedEvent() const {
     return focused_control_changed_event_.GetObservable();
 }
 
@@ -1915,7 +1915,7 @@ void Window::OnRootControlChanged(const RootControlChangedInfo& event_info) {
 }
 
 
-Observable<RootControlChangedInfo> Window::RootControlChangedEvent() const {
+rx::Observable<RootControlChangedInfo> Window::RootControlChangedEvent() const {
     return root_control_changed_event_.GetObservable();
 }
 

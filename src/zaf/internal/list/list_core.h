@@ -34,7 +34,7 @@ struct ListCoreItemDoubleClickInfo {
 };
 
 
-class ListCore : public ListControlPartsBased, SubscriptionHost {
+class ListCore : public ListControlPartsBased, rx::SubscriptionHost {
 public:
     class InitializeParameters {
     public:
@@ -50,15 +50,15 @@ public:
 
     std::shared_ptr<ListDataSource> DataSource() const noexcept;
     void SetDataSource(std::weak_ptr<ListDataSource> data_source);
-    Observable<ListCoreDataSourceChangedInfo> DataSourceChangedEvent() const;
+    rx::Observable<ListCoreDataSourceChangedInfo> DataSourceChangedEvent() const;
 
     std::shared_ptr<ListControlDelegate> Delegate() const noexcept;
     void SetDelegate(std::weak_ptr<ListControlDelegate> delegate);
-    Observable<ListCoreDelegateChangedInfo> DelegateChangedEvent() const;
+    rx::Observable<ListCoreDelegateChangedInfo> DelegateChangedEvent() const;
 
     std::shared_ptr<ListItemContainer> ItemContainer() const noexcept;
     void SetItemContainer(std::weak_ptr<ListItemContainer> item_container);
-    Observable<ListCoreItemContainerChangedInfo> ItemContainerChangedEvent() const;
+    rx::Observable<ListCoreItemContainerChangedInfo> ItemContainerChangedEvent() const;
 
     void OnLayout();
     void OnVerticalScrollBarChange();
@@ -83,8 +83,8 @@ public:
         }
     }
 
-    Observable<None> SelectionChangedEvent() const;
-    Observable<ListCoreItemDoubleClickInfo> ItemDoubleClickEvent() const;
+    rx::Observable<None> SelectionChangedEvent() const;
+    rx::Observable<ListCoreItemDoubleClickInfo> ItemDoubleClickEvent() const;
 
 private:
     void InstallDataSource(std::weak_ptr<ListDataSource> data_source);
@@ -124,19 +124,19 @@ private:
 
 private:
     std::weak_ptr<ListItemContainer> item_container_;
-    Subject<ListCoreItemContainerChangedInfo> item_container_changed_event_;
+    rx::Subject<ListCoreItemContainerChangedInfo> item_container_changed_event_;
 
     std::weak_ptr<ListDataSource> data_source_;
-    Subject<ListCoreDataSourceChangedInfo> data_source_changed_event_;
+    rx::Subject<ListCoreDataSourceChangedInfo> data_source_changed_event_;
 
     std::weak_ptr<ListControlDelegate> delegate_;
-    Subject<ListCoreDelegateChangedInfo> delegate_changed_event_;
+    rx::Subject<ListCoreDelegateChangedInfo> delegate_changed_event_;
 
-    SubscriptionBag data_source_subs_;
-    SubscriptionBag item_container_subs_;
+    rx::SubscriptionBag data_source_subs_;
+    rx::SubscriptionBag item_container_subs_;
 
-    Subscription vertical_scroll_bar_sub_;
-    Subscription exit_selecting_by_mouse_sub_;
+    rx::Subscription vertical_scroll_bar_sub_;
+    rx::Subscription exit_selecting_by_mouse_sub_;
 
     float current_total_height_{};
     bool disable_on_layout_{};
@@ -145,8 +145,8 @@ private:
 
     bool auto_adjust_scroll_bar_small_change_{ true };
 
-    Subject<None> selection_changed_event_;
-    Subject<ListCoreItemDoubleClickInfo> item_double_click_event_;
+    rx::Subject<None> selection_changed_event_;
+    rx::Subject<ListCoreItemDoubleClickInfo> item_double_click_event_;
 };
 
 }

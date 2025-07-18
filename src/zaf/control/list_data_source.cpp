@@ -4,7 +4,7 @@ namespace zaf {
 namespace {
 
 template<typename T>
-void RaiseRangedEvent(const Subject<T>& subject, std::size_t index, std::size_t count) {
+void RaiseRangedEvent(const rx::Subject<T>& subject, std::size_t index, std::size_t count) {
 
     if (count == 0) {
         return;

@@ -48,13 +48,13 @@ public:
     std::size_t GetAllSelectedCount() const;
     std::vector<std::size_t> GetAllSelectedIndexes() const;
 
-    zaf::Observable<ListSelectionStoreChangedInfo> ChangedEvent() const {
+    rx::Observable<ListSelectionStoreChangedInfo> ChangedEvent() const {
         return changed_event_.AsObservable();
     }
 
 private:
     RangeSet range_set_;
-    zaf::Subject<ListSelectionStoreChangedInfo> changed_event_;
+    zaf::rx::Subject<ListSelectionStoreChangedInfo> changed_event_;
 };
 
 }

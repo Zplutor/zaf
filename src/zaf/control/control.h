@@ -63,7 +63,7 @@ enum class HitTestResult;
  */
 class Control : 
     public Object, 
-    public SubscriptionHost, 
+    public rx::SubscriptionHost,
     public std::enable_shared_from_this<Control> {
 
 public:
@@ -535,7 +535,7 @@ public:
     */
     void SetIsVisible(bool is_visible);
 
-    Observable<IsVisibleChangedInfo> IsVisibleChangedEvent() const;
+    rx::Observable<IsVisibleChangedInfo> IsVisibleChangedEvent() const;
 
     /**
     Determines whether the control is enabled within the context of the parent.
@@ -557,7 +557,7 @@ public:
     */
     void SetIsEnabled(bool is_enabled);
 
-    Observable<IsEnabledChangedInfo> IsEnabledChangedEvent() const;
+    rx::Observable<IsEnabledChangedInfo> IsEnabledChangedEvent() const;
 
     /**
     Determines whether the control is selected within the context of the parent.
@@ -579,7 +579,7 @@ public:
     */
     void SetIsSelected(bool is_selected);
 
-    Observable<IsSelectedChangedInfo> IsSelectedChangedEvent() const;
+    rx::Observable<IsSelectedChangedInfo> IsSelectedChangedEvent() const;
 
     /**
      Get a value indicating that whether the control itself is under mouse cursor.
@@ -686,7 +686,7 @@ public:
     Gets mouse captured event. This event is raised after the control calling CaptureMouse() and 
     capturing mouse successfully.
     */
-    Observable<MouseCapturedInfo> MouseCapturedEvent() const;
+    rx::Observable<MouseCapturedInfo> MouseCapturedEvent() const;
 
     /**
      Release the mouse.
@@ -697,7 +697,7 @@ public:
     Gets mouse released event. This event is raised after the control releasing mouse capture with 
     ReleaseMouse(), or losing mouse capture passively.
     */
-    Observable<MouseReleasedInfo> MouseReleasedEvent() const;
+    rx::Observable<MouseReleasedInfo> MouseReleasedEvent() const;
 
     /**
      The the mouse position in control's coordinate.
@@ -768,63 +768,63 @@ public:
     */
     Point TranslateFromParent(const Point& position) const;
 
-    Observable<StyleUpdateInfo> StyleUpdateEvent() const;
+    rx::Observable<StyleUpdateInfo> StyleUpdateEvent() const;
 
     /**
      Get rect change event.
 
      This event is raised when the control's rect is changed.
      */
-    Observable<RectChangedInfo> RectChangedEvent() const;
-    Observable<PositionChangedInfo> PositionChangedEvent() const;
-    Observable<SizeChangedInfo> SizeChangedEvent() const;
+    rx::Observable<RectChangedInfo> RectChangedEvent() const;
+    rx::Observable<PositionChangedInfo> PositionChangedEvent() const;
+    rx::Observable<SizeChangedInfo> SizeChangedEvent() const;
 
-    Observable<PreFocusGainedInfo> PreFocusGainedEvent() const;
-    Observable<FocusGainedInfo> FocusGainedEvent() const;
+    rx::Observable<PreFocusGainedInfo> PreFocusGainedEvent() const;
+    rx::Observable<FocusGainedInfo> FocusGainedEvent() const;
 
-    Observable<PreFocusLostInfo> PreFocusLostEvent() const;
-    Observable<FocusLostInfo> FocusLostEvent() const;
+    rx::Observable<PreFocusLostInfo> PreFocusLostEvent() const;
+    rx::Observable<FocusLostInfo> FocusLostEvent() const;
 
-    Observable<MouseCursorChangingInfo> MouseCursorChangingEvent() const;
+    rx::Observable<MouseCursorChangingInfo> MouseCursorChangingEvent() const;
 
-    Observable<PreMouseMoveInfo> PreMouseMoveEvent() const;
-    Observable<MouseMoveInfo> MouseMoveEvent() const;
+    rx::Observable<PreMouseMoveInfo> PreMouseMoveEvent() const;
+    rx::Observable<MouseMoveInfo> MouseMoveEvent() const;
 
-    Observable<MouseEnterInfo> MouseEnterEvent() const;
-    Observable<MouseLeaveInfo> MouseLeaveEvent() const;
-    Observable<MouseHoverInfo> MouseHoverEvent() const;
+    rx::Observable<MouseEnterInfo> MouseEnterEvent() const;
+    rx::Observable<MouseLeaveInfo> MouseLeaveEvent() const;
+    rx::Observable<MouseHoverInfo> MouseHoverEvent() const;
 
-    Observable<PreMouseDownInfo> PreMouseDownEvent() const;
-    Observable<MouseDownInfo> MouseDownEvent() const;
+    rx::Observable<PreMouseDownInfo> PreMouseDownEvent() const;
+    rx::Observable<MouseDownInfo> MouseDownEvent() const;
 
-    Observable<PreMouseUpInfo> PreMouseUpEvent() const;
-    Observable<MouseUpInfo> MouseUpEvent() const;
+    rx::Observable<PreMouseUpInfo> PreMouseUpEvent() const;
+    rx::Observable<MouseUpInfo> MouseUpEvent() const;
 
-    Observable<DoubleClickInfo> DoubleClickEvent() const;
+    rx::Observable<DoubleClickInfo> DoubleClickEvent() const;
 
-    Observable<PreMouseWheelInfo> PreMouseWheelEvent() const;
-    Observable<MouseWheelInfo> MouseWheelEvent() const;
+    rx::Observable<PreMouseWheelInfo> PreMouseWheelEvent() const;
+    rx::Observable<MouseWheelInfo> MouseWheelEvent() const;
 
-    Observable<PreKeyDownInfo> PreKeyDownEvent() const;
-    Observable<KeyDownInfo> KeyDownEvent() const;
+    rx::Observable<PreKeyDownInfo> PreKeyDownEvent() const;
+    rx::Observable<KeyDownInfo> KeyDownEvent() const;
 
-    Observable<PreKeyUpInfo> PreKeyUpEvent() const;
-    Observable<KeyUpInfo> KeyUpEvent() const;
+    rx::Observable<PreKeyUpInfo> PreKeyUpEvent() const;
+    rx::Observable<KeyUpInfo> KeyUpEvent() const;
 
-    Observable<PreCharInputInfo> PreCharInputEvent() const;
-    Observable<CharInputInfo> CharInputEvent() const;
+    rx::Observable<PreCharInputInfo> PreCharInputEvent() const;
+    rx::Observable<CharInputInfo> CharInputEvent() const;
 
-    Observable<PreSysKeyDownInfo> PreSysKeyDownEvent() const;
-    Observable<SysKeyDownInfo> SysKeyDownEvent() const;
+    rx::Observable<PreSysKeyDownInfo> PreSysKeyDownEvent() const;
+    rx::Observable<SysKeyDownInfo> SysKeyDownEvent() const;
 
-    Observable<PreSysKeyUpInfo> PreSysKeyUpEvent() const;
-    Observable<SysKeyUpInfo> SysKeyUpEvent() const;
+    rx::Observable<PreSysKeyUpInfo> PreSysKeyUpEvent() const;
+    rx::Observable<SysKeyUpInfo> SysKeyUpEvent() const;
 
-    Observable<PreSysCharInputInfo> PreSysCharInputEvent() const;
-    Observable<SysCharInputInfo> SysCharInputEvent() const;
+    rx::Observable<PreSysCharInputInfo> PreSysCharInputEvent() const;
+    rx::Observable<SysCharInputInfo> SysCharInputEvent() const;
 
-    Observable<ParentChangedInfo> ParentChangedEvent() const;
-    Observable<WindowChangedInfo> WindowChangedEvent() const;
+    rx::Observable<ParentChangedInfo> ParentChangedEvent() const;
+    rx::Observable<WindowChangedInfo> WindowChangedEvent() const;
 
 protected:
     void InvokeInitialize() override;

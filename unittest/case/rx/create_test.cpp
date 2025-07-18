@@ -9,7 +9,7 @@
 
 TEST(RxCreateTest, Create_OnCompleted) {
 
-    auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
+    auto observable = zaf::rx::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
         subscriber.OnNext(39);
         subscriber.OnNext(40);
         subscriber.OnCompleted();
@@ -42,7 +42,7 @@ TEST(RxCreateTest, Create_OnCompleted) {
 
 TEST(RxCreateTest, Create_OnError) {
 
-    auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
+    auto observable = zaf::rx::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
         subscriber.OnNext(39);
         subscriber.OnError(std::runtime_error("Test error"));
         //The following emissions should be ignored.
@@ -79,7 +79,7 @@ TEST(RxCreateTest, Create_OnError) {
 
 TEST(RxCreateTest, Create_ThrowBeforeTermination) {
 
-    auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
+    auto observable = zaf::rx::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
         subscriber.OnNext(57);
         subscriber.OnNext(58);
         throw std::runtime_error("thrown");
@@ -116,7 +116,7 @@ The exception thrown after termination should be propagated to the caller of Sub
 */
 TEST(RxCreateTest, Create_ThrowAfterOnCompleted) {
 
-    auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
+    auto observable = zaf::rx::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
         subscriber.OnCompleted();
         throw zaf::InvalidOperationError();
     });
@@ -145,7 +145,7 @@ TEST(RxCreateTest, Create_ThrowAfterOnCompleted) {
 
 TEST(RxCreateTest, Create_ThrowAfterOnError) {
 
-    auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
+    auto observable = zaf::rx::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
         subscriber.OnError(zaf::InvalidOperationError());
         throw zaf::InvalidDataError();
     });
@@ -169,20 +169,20 @@ TEST(RxCreateTest, Create_ThrowAfterOnError) {
 
 TEST(RxCreateTest, Create_Unsubscribe) {
 
-    auto observable = zaf::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
+    auto observable = zaf::rx::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
         while (!subscriber.IsUnsubscribed()) {
             subscriber.OnNext(0);
         }
     });
 
-    auto subscribe_scheduler = zaf::Scheduler::CreateOnSingleThread();
-    auto observe_scheduler = zaf::Scheduler::CreateOnSingleThread();
+    auto subscribe_scheduler = zaf::rx::Scheduler::CreateOnSingleThread();
+    auto observe_scheduler = zaf::rx::Scheduler::CreateOnSingleThread();
 
     std::condition_variable cv;
     std::mutex lock;
     std::unique_lock<std::mutex> unique_lock{ lock };
 
-    zaf::Subscription sub;
+    zaf::rx::Subscription sub;
     sub = observable.SubscribeOn(subscribe_scheduler)
         .ObserveOn(observe_scheduler)
         .Subscribe([&](int value) {
@@ -243,11 +243,11 @@ TEST(RxCreateTest, Create_Single) {
 
 TEST(RxCreateTest, CreateOn_ThreadID) {
 
-    auto scheduler = zaf::Scheduler::CreateOnSingleThread();
+    auto scheduler = zaf::rx::Scheduler::CreateOnSingleThread();
     std::thread::id run_thread_id = std::this_thread::get_id();
     std::thread::id on_next_thread_id;
 
-    auto observable = zaf::Observable<int>::CreateOn(
+    auto observable = zaf::rx::Observable<int>::CreateOn(
         scheduler, 
         [&run_thread_id](zaf::rx::Subscriber<int> subscriber) {
 
@@ -277,7 +277,7 @@ TEST(RxCreateTest, CreateOn_ThreadID) {
 
 TEST(RxCreateTest, CreateOn_Single) {
 
-    auto scheduler = zaf::Scheduler::CreateOnSingleThread();
+    auto scheduler = zaf::rx::Scheduler::CreateOnSingleThread();
     std::thread::id run_thread_id = std::this_thread::get_id();
     std::thread::id on_success_thread_id;
 

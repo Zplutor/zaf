@@ -3064,9 +3064,6 @@
     <ClInclude Include="src\zaf\rx\internal\observable\custom_observable.h">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\observable_traits.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\base_subject.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>

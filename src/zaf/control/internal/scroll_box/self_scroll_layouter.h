@@ -7,7 +7,7 @@
 namespace zaf {
 namespace internal {
 
-class SelfScrollLayouter : public ScrollBoxLayouter, public SubscriptionHost {
+class SelfScrollLayouter : public ScrollBoxLayouter, public rx::SubscriptionHost {
 public:
     explicit SelfScrollLayouter(zaf::ScrollBox* scroll_box);
     ~SelfScrollLayouter();

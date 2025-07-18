@@ -10,9 +10,9 @@ namespace zaf::rx::internal {
 class ObserverCore : NonCopyableNonMovable {
 public:
     static std::shared_ptr<ObserverCore> Create(
-        zaf::OnNext<std::any> on_next,
-        zaf::OnError on_error,
-        zaf::OnCompleted on_completed);
+        rx::OnNext<std::any> on_next,
+        rx::OnError on_error,
+        rx::OnCompleted on_completed);
 
 public:
     ObserverCore() = default;

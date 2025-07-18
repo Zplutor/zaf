@@ -63,7 +63,7 @@ private:
 
 private:
     std::weak_ptr<RichEdit> rich_edit_;
-    std::map<UINT, Subscription> timers_;
+    std::map<UINT, rx::Subscription> timers_;
 };
 
 }

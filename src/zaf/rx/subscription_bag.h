@@ -6,7 +6,7 @@
 #include <zaf/rx/internal/subscription/unsubscribe_notification.h>
 #include <zaf/rx/subscription.h>
 
-namespace zaf {
+namespace zaf::rx {
 
 /**
 Represents a container that unsubscribes added subscriptions when cleared or destroyed.

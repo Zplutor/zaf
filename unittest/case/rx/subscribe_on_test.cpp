@@ -15,14 +15,14 @@ TEST(RxSubscribeOnTest, SubscribeOn) {
     std::mutex lock;
     std::unique_lock<std::mutex> unique_lock{ lock };
 
-    auto observable = zaf::Observable<int>::Create([&](zaf::rx::Subscriber<int> subscriber) {
+    auto observable = zaf::rx::Observable<int>::Create([&](zaf::rx::Subscriber<int> subscriber) {
         produce_thread = std::this_thread::get_id();
         subscriber.OnNext(0);
         subscriber.OnCompleted();
-        return zaf::Subscription{};
+        return zaf::rx::Subscription{};
     });
 
-    observable = observable.SubscribeOn(zaf::Scheduler::CreateOnSingleThread());
+    observable = observable.SubscribeOn(zaf::rx::Scheduler::CreateOnSingleThread());
     auto subscription = observable.Subscribe([&](int) {
         on_next_thread = std::this_thread::get_id();
     },

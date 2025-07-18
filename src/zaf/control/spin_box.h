@@ -15,7 +15,7 @@ public:
 
     int Value() const;
     void SetValue(int value);
-    Observable<SpinBoxValueChangedInfo> ValueChangedEvent() const;
+    rx::Observable<SpinBoxValueChangedInfo> ValueChangedEvent() const;
 
     int MinValue() const;
     void SetMinValue(int min_value);
@@ -37,22 +37,22 @@ private:
     void InitializeButtonEvents(
         bool is_down_button,
         const std::shared_ptr<SpinButton>& button, 
-        SubscriptionBag& subscriptions,
-        Subscription& timer_subscription);
+        rx::SubscriptionBag& subscriptions,
+        rx::Subscription& timer_subscription);
     void ChangeValueByButtonEvent(bool increase);
 
 private:
     std::shared_ptr<SpinEdit> edit_;
-    SubscriptionBag edit_subscriptions_;
+    rx::SubscriptionBag edit_subscriptions_;
     bool is_setting_value_{};
 
     std::shared_ptr<SpinButton> up_button_;
-    SubscriptionBag up_button_subscriptions_;
-    Subscription up_button_timer_subscription_;
+    rx::SubscriptionBag up_button_subscriptions_;
+    rx::Subscription up_button_timer_subscription_;
 
     std::shared_ptr<SpinButton> down_button_;
-    SubscriptionBag down_button_subscriptions_;
-    Subscription down_button_timer_subscription_;
+    rx::SubscriptionBag down_button_subscriptions_;
+    rx::Subscription down_button_timer_subscription_;
 
     float button_width_{ 16 };
 

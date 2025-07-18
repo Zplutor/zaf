@@ -2,15 +2,15 @@
 #include <zaf/rx/subject.h>
 #include <zaf/rx/internal/subject/subject_core.h>
 
-static_assert(!std::is_copy_assignable_v<zaf::Subject<int>>);
-static_assert(!std::is_copy_constructible_v<zaf::Subject<int>>);
-static_assert(std::is_move_assignable_v<zaf::Subject<int>>);
-static_assert(std::is_move_constructible_v<zaf::Subject<int>>);
+static_assert(!std::is_copy_assignable_v<zaf::rx::Subject<int>>);
+static_assert(!std::is_copy_constructible_v<zaf::rx::Subject<int>>);
+static_assert(std::is_move_assignable_v<zaf::rx::Subject<int>>);
+static_assert(std::is_move_constructible_v<zaf::rx::Subject<int>>);
 
 
 TEST(RxSubjectTest, Normal) {
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
 
     std::vector<int> values;
     auto subscription = subject.AsObservable().Subscribe(
@@ -31,7 +31,7 @@ TEST(RxSubjectTest, Normal) {
 
 TEST(RxSubjectTest, CancelSubscriptionExplicit) {
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
 
     std::vector<int> values;
     auto subscription = subject.AsObservable().Subscribe(
@@ -51,7 +51,7 @@ TEST(RxSubjectTest, CancelSubscriptionExplicit) {
 
 TEST(RxSubjectTest, CancelSubscriptionImplicit) {
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
 
     std::vector<int> values;
     {
@@ -72,7 +72,7 @@ TEST(RxSubjectTest, CancelSubscriptionImplicit) {
 
 TEST(RxSubjectTest, SubscriptionCount) {
 
-    zaf::Subject<int> subject;
+    zaf::rx::Subject<int> subject;
     ASSERT_EQ(subject.Core()->SubscriptionCount(), 0);
 
     auto subscription1 = subject.AsObservable().Subscribe([](int) {});

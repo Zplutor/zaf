@@ -3,7 +3,7 @@
 #include <exception>
 #include <functional>
 
-namespace zaf {
+namespace zaf::rx {
 
 template<typename T>
 using OnNext = std::function<void(const T&)>;

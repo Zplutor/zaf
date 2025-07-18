@@ -13,7 +13,7 @@ namespace zaf::internal {
 
 class TextBoxSelectionChangedInfo;
 
-class TextBoxSelectionManager : public TextBoxModule, public SubscriptionHost {
+class TextBoxSelectionManager : public TextBoxModule, public rx::SubscriptionHost {
 public:
     explicit TextBoxSelectionManager(TextBoxModuleContext* context);
 
@@ -41,7 +41,7 @@ public:
         return caret_last_x_;
     }
 
-    Observable<TextBoxSelectionChangedInfo> SelectionChangedEvent() const {
+    rx::Observable<TextBoxSelectionChangedInfo> SelectionChangedEvent() const {
         return selection_changed_event_.AsObservable();
     }
 
@@ -58,7 +58,7 @@ private:
     std::size_t anchor_index_{};
     float caret_last_x_{};
 
-    Subject<TextBoxSelectionChangedInfo> selection_changed_event_;
+    rx::Subject<TextBoxSelectionChangedInfo> selection_changed_event_;
 };
 
 

@@ -158,17 +158,17 @@ void TrackBarThumb::SetThumbColorPicker(ColorPicker color_picker) {
 }
 
 
-Observable<TrackBarThumbDragStartedInfo> TrackBarThumb::DragStartedEvent() const {
+rx::Observable<TrackBarThumbDragStartedInfo> TrackBarThumb::DragStartedEvent() const {
     return drag_started_event_.GetObservable();
 }
 
 
-Observable<TrackBarThumbDraggingInfo> TrackBarThumb::DraggingEvent() const {
+rx::Observable<TrackBarThumbDraggingInfo> TrackBarThumb::DraggingEvent() const {
     return dragging_event_.GetObservable();
 }
 
 
-Observable<TrackBarThumbDragEndedInfo> TrackBarThumb::DragEndedEvent() const {
+rx::Observable<TrackBarThumbDragEndedInfo> TrackBarThumb::DragEndedEvent() const {
     return drag_ended_event_.GetObservable();
 }
 

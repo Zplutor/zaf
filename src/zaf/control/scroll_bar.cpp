@@ -382,7 +382,7 @@ void ScrollBar::ChangeVerticalRectToHorizontalRect(zaf::Rect& rect) {
 }
 
 
-Observable<ScrollBarScrollInfo> ScrollBar::ScrollEvent() const {
+rx::Observable<ScrollBarScrollInfo> ScrollBar::ScrollEvent() const {
     return scroll_event_.GetObservable();
 }
 

@@ -195,7 +195,7 @@ TEST(RxReplaySubjectTest, DestroySubjectDuringEmission) {
     auto sub = observable.Subscribe([&](int value) {
         if (value == 1) {
             subject.reset();
-            observable = zaf::Observable<int>::Empty();
+            observable = zaf::rx::Observable<int>::Empty();
         }
     });
 }

@@ -32,7 +32,7 @@ public:
      */
     void Click();
 
-    Observable<ClickInfo> ClickEvent() const;
+    rx::Observable<ClickInfo> ClickEvent() const;
 
 protected:
     void Initialize() override;
