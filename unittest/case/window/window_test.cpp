@@ -334,31 +334,21 @@ TEST(WindowTest, WhenNotSizingOrMoving) {
     
     //Observable emits immediate if the handle is not created.
     {
-        bool on_next_called{};
-        bool on_completed_called{};
+        bool on_success_called{};
         auto subscription = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
-            on_next_called = true;
-        },
-        [&]() {
-            on_completed_called = true;
+            on_success_called = true;
         });
-        ASSERT_TRUE(on_next_called);
-        ASSERT_TRUE(on_completed_called);
+        ASSERT_TRUE(on_success_called);
     }
 
     //Observable emits immediate if the handle is created.
     {
         auto holder = window->CreateHandle();
-        bool on_next_called{};
-        bool on_completed_called{};
+        bool on_success_called{};
         auto subscription = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
-            on_next_called = true;
-        },
-        [&]() {
-            on_completed_called = true;
+            on_success_called = true;
         });
-        ASSERT_TRUE(on_next_called);
-        ASSERT_TRUE(on_completed_called);
+        ASSERT_TRUE(on_success_called);
     }
 
     {
@@ -367,20 +357,14 @@ TEST(WindowTest, WhenNotSizingOrMoving) {
         window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
 
         int call_count{};
-        bool is_completed_called{};
         auto subscription = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
             call_count++;
-        },
-        [&]() {
-            is_completed_called = true;
         });
         ASSERT_EQ(call_count, 0);
-        ASSERT_FALSE(is_completed_called);
 
         //Observable emits when the window finishes resizing or moving.
         window->Messager().Send(WM_EXITSIZEMOVE, 0, 0);
         ASSERT_EQ(call_count, 1);
-        ASSERT_TRUE(is_completed_called);
 
         //Previous observable should not emit again.
         window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);

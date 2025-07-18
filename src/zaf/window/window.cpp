@@ -413,8 +413,7 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         handle_specific_state_.is_sizing_or_moving = false;
         if (handle_specific_state_.exit_sizing_or_moving_subject) {
             auto observer = handle_specific_state_.exit_sizing_or_moving_subject->AsObserver();
-            observer.OnNext({});
-            observer.OnCompleted();
+            observer.OnSuccess({});
             handle_specific_state_.exit_sizing_or_moving_subject.reset();
         }
         return 0;
@@ -814,17 +813,17 @@ rx::Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() const {
 }
 
 
-rx::Observable<None> Window::WhenNotSizingOrMoving() const {
+rx::Single<None> Window::WhenNotSizingOrMoving() const {
 
     if (!handle_specific_state_.is_sizing_or_moving) {
-        return rx::Observable<None>::Just({});
+        return rx::Single<None>::Just({});
     }
 
     if (!handle_specific_state_.exit_sizing_or_moving_subject) {
         handle_specific_state_.exit_sizing_or_moving_subject.emplace();
     }
 
-    return handle_specific_state_.exit_sizing_or_moving_subject->AsObservable();
+    return handle_specific_state_.exit_sizing_or_moving_subject->AsSingle();
 }
 
 

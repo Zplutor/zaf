@@ -11,6 +11,7 @@
 #include <zaf/internal/message_loop.h>
 #include <zaf/object/object.h>
 #include <zaf/object/property_support.h>
+#include <zaf/rx/single_subject.h>
 #include <zaf/rx/subscription_host.h>
 #include <zaf/window/activate_option.h>
 #include <zaf/window/event/activate_event_info.h>
@@ -268,15 +269,18 @@ public:
     rx::Observable<WindowSizeChangedInfo> SizeChangedEvent() const;
 
     /**
-    Gets an observable that triggers when the window has exited both the sizing and moving states.
+    Gets a single that emits when the window has exited both the sizing and moving states.
 
-    The observable emits immediately if the window is not in a sizing or moving state when
-    subscribed.
+    @details
+        The returned single emits immediately if the window is not in a sizing or moving state when
+        calling this method.
 
     @return
-        An observable that emits when the window is not currently resizing or moving.
+        A single that emits only `OnSuccess` and won't emit `OnError`.
+
+    @throw std::bad_alloc
     */
-    rx::Observable<None> WhenNotSizingOrMoving() const;
+    rx::Single<None> WhenNotSizingOrMoving() const;
 
     /**
      Get window's activate option.
@@ -936,7 +940,7 @@ private:
 
     struct {
         bool is_sizing_or_moving{};
-        mutable std::optional<rx::Subject<zaf::None>> exit_sizing_or_moving_subject;
+        mutable std::optional<rx::SingleSubject<zaf::None>> exit_sizing_or_moving_subject;
     } handle_specific_state_;
 
     //A flag to avoid reentering.
