@@ -4,6 +4,7 @@
 #include <ranges>
 #include <zaf/rx/base_observable.h>
 #include <zaf/rx/internal/observable/concat_observable.h>
+#include <zaf/rx/internal/observable/connectable_observable_core.h>
 #include <zaf/rx/internal/observable/empty_observable.h>
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/observer.h>
@@ -19,6 +20,9 @@ class ObservableFactory;
 namespace zaf::rx {
 
 class Scheduler;
+
+template<typename T>
+class ConnectableObservable;
 
 template<typename T>
 class Observable : public rx::BaseObservable<Observable, Observer, rx::Subscriber, T> {
@@ -99,6 +103,15 @@ public:
         return Do(nullptr, nullptr, std::move(on_completed));
     }
 
+    ConnectableObservable<T> Publish();
+    ConnectableObservable<T> Replay();
+    ConnectableObservable<T> Replay(std::size_t replay_size);
+
+protected:
+    explicit Observable(std::shared_ptr<rx::internal::ObservableCore> core) noexcept :
+        Base(std::move(core)) {
+    }
+
 private:
     friend Base;
     friend class rx::internal::ObservableFactory<T>;
@@ -110,10 +123,47 @@ private:
         typename K
     >
     friend class rx::BaseObservable;
+};
 
-    explicit Observable(std::shared_ptr<rx::internal::ObservableCore> core) noexcept :
-        Base(std::move(core)) {
+
+template<typename T>
+class ConnectableObservable : public Observable<T> {
+public:
+    [[nodiscard]]
+    Subscription Connect() {
+        auto core = static_cast<internal::ConnectableObservableCore*>(this->Core().get());
+        auto sub_core = core->Connect();
+        return Subscription{ std::move(sub_core) };
+    }
+
+private:
+    friend class Observable<T>;
+
+    explicit ConnectableObservable(
+        std::shared_ptr<internal::ConnectableObservableCore> core) noexcept 
+        :
+        Observable<T>(std::move(core)) {
+
     }
 };
+
+
+template<typename T>
+ConnectableObservable<T> Observable<T>::Publish() {
+    auto core = this->Core()->Publish();
+    return ConnectableObservable<T>{ std::move(core) };
+}
+
+template<typename T>
+ConnectableObservable<T> Observable<T>::Replay() {
+    auto core = this->Core()->Replay(std::nullopt);
+    return ConnectableObservable<T>{ std::move(core) };
+}
+
+template<typename T>
+ConnectableObservable<T> Observable<T>::Replay(std::size_t replay_size) {
+    auto core = this->Core()->Replay(replay_size);
+    return ConnectableObservable<T>{ std::move(core) };
+}
 
 }

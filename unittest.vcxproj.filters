@@ -659,6 +659,12 @@
     <ClCompile Include="unittest\case\rx\create_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\rx\publish_test.cpp">
+      <Filter>case\rx</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest\case\rx\replay_test.cpp">
+      <Filter>case\rx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

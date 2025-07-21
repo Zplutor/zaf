@@ -1312,6 +1312,9 @@
     <ClCompile Include="src\zaf\rx\internal\observable\custom_observable.cpp">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observable\connectable_observable_core.cpp">
+      <Filter>zaf\rx\internal\observable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3066,6 +3069,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\base_subject.h">
       <Filter>zaf\rx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observable\connectable_observable_core.h">
+      <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

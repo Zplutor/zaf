@@ -13,6 +13,7 @@ class Scheduler;
 
 namespace zaf::rx::internal {
 
+class ConnectableObservableCore;
 class ObserverCore;
 class SubscriptionCore;
 
@@ -38,6 +39,9 @@ public:
 
     std::shared_ptr<ObservableCore> Map(Mapper mapper);
     std::shared_ptr<ObservableCore> FlatMap(FlatMapper mapper);
+
+    std::shared_ptr<ConnectableObservableCore> Publish();
+    std::shared_ptr<ConnectableObservableCore> Replay(std::optional<std::size_t> replay_size);
 };
 
 }

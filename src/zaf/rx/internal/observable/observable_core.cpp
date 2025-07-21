@@ -1,4 +1,5 @@
 #include <zaf/rx/internal/observable/observable_core.h>
+#include <zaf/rx/internal/observable/connectable_observable_core.h>
 #include <zaf/rx/internal/operator/catch_operator.h>
 #include <zaf/rx/internal/operator/do_after_terminate_operator.h>
 #include <zaf/rx/internal/operator/do_on_terminate_operator.h>
@@ -8,6 +9,7 @@
 #include <zaf/rx/internal/operator/map_operator.h>
 #include <zaf/rx/internal/operator/observe_on_operator.h>
 #include <zaf/rx/internal/operator/subscribe_on_operator.h>
+#include <zaf/rx/internal/subject/subject_core_indirect.h>
 
 namespace zaf::rx::internal {
 
@@ -19,7 +21,6 @@ std::shared_ptr<ObservableCore> ObservableCore::SubscribeOn(
 
 
 std::shared_ptr<ObservableCore> ObservableCore::ObserveOn(std::shared_ptr<Scheduler> scheduler) {
-
     return std::make_shared<ObserveOnOperator>(shared_from_this(), std::move(scheduler));
 }
 
@@ -40,26 +41,36 @@ std::shared_ptr<ObservableCore> ObservableCore::DoAfterTerminate(Work work) {
 }
 
 std::shared_ptr<ObservableCore> ObservableCore::Catch(CatchHandler handler) {
-
     return std::make_shared<CatchOperator>(shared_from_this(), std::move(handler));
 }
 
 
 std::shared_ptr<ObservableCore> ObservableCore::Finally(Work work) {
-
     return std::make_shared<FinallyOperator>(shared_from_this(), std::move(work));
 }
 
 
 std::shared_ptr<ObservableCore> ObservableCore::Map(Mapper mapper) {
-
     return std::make_shared<MapOperator>(shared_from_this(), std::move(mapper));
 }
 
 
 std::shared_ptr<ObservableCore> ObservableCore::FlatMap(FlatMapper mapper) {
-
     return std::make_shared<FlatMapOperator>(shared_from_this(), std::move(mapper));
+}
+
+
+std::shared_ptr<ConnectableObservableCore> ObservableCore::Publish() {
+    return std::make_shared<ConnectableObservableCore>(shared_from_this(), CreateSubjectCore());
+}
+
+
+std::shared_ptr<ConnectableObservableCore> ObservableCore::Replay(
+    std::optional<std::size_t> replay_size) {
+
+    return std::make_shared<ConnectableObservableCore>(
+        shared_from_this(), 
+        CreateReplaySubjectCore(replay_size));
 }
 
 }
