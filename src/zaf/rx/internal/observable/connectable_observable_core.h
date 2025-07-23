@@ -16,6 +16,7 @@ public:
         const std::shared_ptr<ObserverCore>& observer) override;
 
     std::shared_ptr<SubscriptionCore> Connect();
+    std::shared_ptr<ObservableCore> RefCount();
 
 private:
     std::shared_ptr<ObservableCore> source_;

@@ -114,6 +114,7 @@ protected:
 
 private:
     friend Base;
+    friend class ConnectableObservable<T>;
     friend class rx::internal::ObservableFactory<T>;
 
     template<
@@ -134,6 +135,11 @@ public:
         auto core = static_cast<internal::ConnectableObservableCore*>(this->Core().get());
         auto sub_core = core->Connect();
         return Subscription{ std::move(sub_core) };
+    }
+
+    Observable<T> RefCount() {
+        auto core = static_cast<internal::ConnectableObservableCore*>(this->Core().get());
+        return Observable<T>{ core->RefCount() };
     }
 
 private:

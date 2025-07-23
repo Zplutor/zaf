@@ -1,4 +1,5 @@
 #include <zaf/rx/internal/observable/connectable_observable_core.h>
+#include <zaf/rx/internal/operator/ref_count_operator.h>
 #include <zaf/rx/internal/subject/subject_core.h>
 
 namespace zaf::rx::internal {
@@ -22,6 +23,12 @@ std::shared_ptr<SubscriptionCore> ConnectableObservableCore::Subscribe(
 
 std::shared_ptr<SubscriptionCore> ConnectableObservableCore::Connect() {
     return source_->Subscribe(subject_);
+}
+
+
+std::shared_ptr<ObservableCore> ConnectableObservableCore::RefCount() {
+    auto source = std::dynamic_pointer_cast<ConnectableObservableCore>(shared_from_this());
+    return std::make_shared<RefCountOperator>(std::move(source));
 }
 
 }
