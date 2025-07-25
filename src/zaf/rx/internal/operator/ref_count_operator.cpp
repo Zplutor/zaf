@@ -28,8 +28,13 @@ std::shared_ptr<SubscriptionCore> RefCountOperator::Subscribe(
         connection = current_connection_;
     }
 
-    // A connectable observable would never return a null subscription.
     auto sub = source_->Subscribe(observer);
+    if (!sub) {
+        // If the subscription is null, it means the observer is already unsubscribed.
+        // In this case, we decrease the reference count and return.
+        DecreaseRef(connection);
+        return nullptr;
+    }
 
     auto notification_id = sub->RegisterUnsubscribeNotification(std::bind([connection]() {
         DecreaseRef(connection);

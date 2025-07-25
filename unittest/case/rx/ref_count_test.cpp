@@ -51,21 +51,52 @@ TEST(RxRefCountTest, TerminateOnConnect) {
     auto ref_count_operator =
         zaf::As<zaf::rx::internal::RefCountOperator>(observable.Core());
 
-    std::vector<int> values;
-    auto sub1 = observable.Subscribe([&](int value) {
-        values.push_back(value);
-    });
-    ASSERT_EQ(values, std::vector<int>{ 12 });
-    ASSERT_FALSE(ref_count_operator->HasConnection());
+    // The first subscription.
+    {
+        std::vector<int> values;
+        int on_error_count{};
+        int on_completed_count{};
+        auto sub1 = observable.Subscribe([&](int value) {
+            values.push_back(value);
+        }, 
+        [&](std::exception_ptr) {
+            on_error_count++;
+        },
+        [&]() {
+            on_completed_count++;
+        });
+        ASSERT_EQ(values, std::vector<int>{ 12 });
+        ASSERT_EQ(on_error_count, 0);
+        ASSERT_EQ(on_completed_count, 1);
+        ASSERT_FALSE(ref_count_operator->HasConnection());
+    }
 
-    auto sub2 = observable.Subscribe([&](int value) {
-        values.push_back(value);
-    });
-    ASSERT_EQ(values, (std::vector<int>{ 12, 12 }));
-    ASSERT_FALSE(ref_count_operator->HasConnection());
+    {
+        // The second subscription. It won't receive any value because the published observable
+        // is already terminated.
+        int on_next_count{};
+        int on_error_count{};
+        int on_completed_count{};
+        auto sub2 = observable.Subscribe([&](int value) {
+            on_next_count++;
+        },
+        [&](std::exception_ptr) {
+            on_error_count++;
+        },
+        [&]() {
+            on_completed_count++;
+        });
+        ASSERT_EQ(on_next_count, 0);
+        ASSERT_EQ(on_error_count, 0);
+        ASSERT_EQ(on_completed_count, 1);
+        ASSERT_FALSE(ref_count_operator->HasConnection());
+    }
 }
 
 
+/*
+In this test case, the subscription is unsubscribed immediately after it is subscribed.
+*/
 TEST(RxRefCountTest, TerminateOnSubscribe) {
 
     zaf::rx::Subject<int> subject;
@@ -84,6 +115,7 @@ TEST(RxRefCountTest, TerminateOnSubscribe) {
     ASSERT_EQ(values, std::vector<int>{ 1 });
     ASSERT_FALSE(ref_count_operator->HasConnection());
 
+    // This subscription will be unsubscribed immediately after it is subscribed.
     auto sub2 = observable.Subscribe([&values](int value) {
         values.push_back(value);
     });

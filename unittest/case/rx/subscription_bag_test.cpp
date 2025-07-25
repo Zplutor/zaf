@@ -81,27 +81,35 @@ TEST(RxSubscriptionBagTest, CancelSubscriptionByDestruction) {
 TEST(RxSubscriptionBagTest, RemoveAfterFinish) {
 
     zaf::rx::SubscriptionBag bag;
-    zaf::rx::Subject<std::string> subject;
 
     //Remove after OnError
-    bag += subject.AsObservable().Subscribe([](std::string) {});
-    subject.AsObserver().OnNext("a");
-    ASSERT_EQ(bag.Count(), 1);
-    subject.AsObserver().OnError(std::make_exception_ptr(10));
-    ASSERT_EQ(bag.Count(), 0);
+    {
+        zaf::rx::Subject<std::string> subject;
+        bag += subject.AsObservable().Subscribe([](std::string) {});
+        subject.AsObserver().OnNext("a");
+        ASSERT_EQ(bag.Count(), 1);
+        subject.AsObserver().OnError(std::make_exception_ptr(10));
+        ASSERT_EQ(bag.Count(), 0);
+    }
 
     //Remove after OnCompleted
-    bag += subject.AsObservable().Subscribe([](std::string) {});
-    subject.AsObserver().OnNext("b");
-    ASSERT_EQ(bag.Count(), 1);
-    subject.AsObserver().OnCompleted();
-    ASSERT_EQ(bag.Count(), 0);
+    {
+        zaf::rx::Subject<std::string> subject;
+        bag += subject.AsObservable().Subscribe([](std::string) {});
+        subject.AsObserver().OnNext("b");
+        ASSERT_EQ(bag.Count(), 1);
+        subject.AsObserver().OnCompleted();
+        ASSERT_EQ(bag.Count(), 0);
+    }
 
     //Remove after Unsubscribe
-    auto subscription = subject.AsObservable().Subscribe([](std::string) {});
-    bag += subscription;
-    subject.AsObserver().OnNext("c");
-    ASSERT_EQ(bag.Count(), 1);
-    subscription.Unsubscribe();
-    ASSERT_EQ(bag.Count(), 0);
+    {
+        zaf::rx::Subject<std::string> subject;
+        auto subscription = subject.AsObservable().Subscribe([](std::string) {});
+        bag += subscription;
+        subject.AsObserver().OnNext("c");
+        ASSERT_EQ(bag.Count(), 1);
+        subscription.Unsubscribe();
+        ASSERT_EQ(bag.Count(), 0);
+    }
 }
