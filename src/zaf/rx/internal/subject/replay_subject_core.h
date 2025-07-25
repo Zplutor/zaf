@@ -1,8 +1,7 @@
 #pragma once
 
 #include <deque>
-#include <variant>
-#include <zaf/base/none.h>
+#include <mutex>
 #include <zaf/rx/internal/subject/subject_core.h>
 
 namespace zaf::rx::internal {
@@ -15,18 +14,11 @@ public:
         const std::shared_ptr<ObserverCore>& observer) override;
 
     void OnNext(const std::any& value) override;
-    void OnError(const std::exception_ptr& error) override;
-    void OnCompleted() override;
 
 private:
-    bool IsTerminated() const noexcept;
-
-private:
+    const std::optional<std::size_t> replay_size_;
     std::deque<std::any> replay_values_;
-    std::optional<std::size_t> replay_size_;
-
-    //None for normal termination, std::exception_ptr for error termination.
-    std::variant<std::monostate, None, std::exception_ptr> termination_;
+    std::mutex lock_;
 };
 
 }

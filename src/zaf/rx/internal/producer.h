@@ -72,7 +72,7 @@ protected:
         Any shared pointer should be reset in this method, in order to break potential circular 
         references.
     */
-    virtual void OnUnsubscribe() = 0;
+    virtual void OnUnsubscribe() { }
 
 private:
     bool IsTerminated() const noexcept;

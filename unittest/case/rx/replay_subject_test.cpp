@@ -49,41 +49,52 @@ TEST(RxReplaySubjectTest, Replay) {
 }
 
 
-TEST(RxReplaySubjectTest, ReplayWithSize) {
+TEST(RxReplaySubjectTest, ZeroReplaySize) {
 
-    //Zero size.
-    {
-        zaf::rx::ReplaySubject<int> subject{ 0 };
-        auto observer = subject.AsObserver();
-        observer.OnNext(1);
-        observer.OnNext(2);
-        observer.OnNext(3);
-        std::vector<int> sequence;
-        auto subscription = subject.AsObservable().Subscribe([&sequence](int value) {
-            sequence.push_back(value);
-        });
-        std::vector<int> expected{};
-        ASSERT_EQ(sequence, expected);
-    }
+    zaf::rx::ReplaySubject<int> subject{ 0 };
+    auto observer = subject.AsObserver();
+    observer.OnNext(1);
+    observer.OnNext(2);
+    observer.OnNext(3);
+    std::vector<int> sequence;
+    // Emissions before subscription will be ignored.
+    auto subscription = subject.AsObservable().Subscribe([&sequence](int value) {
+        sequence.push_back(value);
+    });
+    std::vector<int> expected{};
+    ASSERT_EQ(sequence, expected);
 
-    //None zero size.
-    {
-        zaf::rx::ReplaySubject<int> subject{ 3 };
-        auto observer = subject.AsObserver();
-        observer.OnNext(1);
-        observer.OnNext(2);
-        observer.OnNext(3);
-        observer.OnNext(4);
-        observer.OnNext(5);
+    // Emission after subscription will be received.
+    observer.OnNext(4);
+    observer.OnNext(5);
+    expected = { 4, 5 };
+    ASSERT_EQ(sequence, expected);
+}
 
-        std::vector<int> sequence;
-        auto subscription = subject.AsObservable().Subscribe([&sequence](int value) {
-            sequence.push_back(value);
-        });
 
-        std::vector<int> expected{ 3, 4, 5 };
-        ASSERT_EQ(sequence, expected);
-    }
+TEST(RxReplaySubjectTest, NoneZeroReplaySize) {
+
+    zaf::rx::ReplaySubject<int> subject{ 3 };
+    auto observer = subject.AsObserver();
+    observer.OnNext(1);
+    observer.OnNext(2);
+    observer.OnNext(3);
+    observer.OnNext(4);
+    observer.OnNext(5);
+
+    std::vector<int> sequence;
+    auto subscription = subject.AsObservable().Subscribe([&sequence](int value) {
+        sequence.push_back(value);
+    });
+
+    std::vector<int> expected{ 3, 4, 5 };
+    ASSERT_EQ(sequence, expected);
+
+    observer.OnNext(6);
+    observer.OnNext(7);
+    expected.push_back(6);
+    expected.push_back(7);
+    ASSERT_EQ(sequence, expected);
 }
 
 
@@ -177,6 +188,59 @@ TEST(RxReplaySubjectTest, EmitAfterTermination) {
         ASSERT_EQ(on_error_count, 1);
         ASSERT_EQ(on_completed_count, 0);
     }
+}
+
+
+TEST(RxReplaySubjectTest, SubscribeAfterOnCompleted) {
+
+    zaf::rx::ReplaySubject<int> subject;
+    subject.AsObserver().OnNext(10);
+    subject.AsObserver().OnNext(11);
+    subject.AsObserver().OnCompleted();
+    
+    std::vector<int> values;
+    int on_error_count{};
+    int on_completed_count{};
+
+    auto sub = subject.AsObservable().Subscribe([&](int value) {
+        values.push_back(value);
+    },
+    [&](std::exception_ptr) {
+        on_error_count++;
+    },
+    [&]() {
+        on_completed_count++;
+    });
+    ASSERT_TRUE(sub.IsUnsubscribed());
+    ASSERT_EQ(values, (std::vector<int>{ 10, 11 }));
+    ASSERT_EQ(on_error_count, 0);
+    ASSERT_EQ(on_completed_count, 1);
+}
+
+
+TEST(RxReplaySubjectTest, SubscribeAfterOnError) {
+
+    zaf::rx::ReplaySubject<int> subject;
+    subject.AsObserver().OnNext(20);
+    subject.AsObserver().OnNext(21);
+    subject.AsObserver().OnError(std::make_exception_ptr(zaf::InvalidOperationError{}));
+
+    std::vector<int> values;
+    int on_error_count{};
+    int on_completed_count{};
+    auto sub = subject.AsObservable().Subscribe([&](int value) {
+        values.push_back(value);
+    },
+    [&](std::exception_ptr) {
+        on_error_count++;
+    },
+    [&]() {
+        on_completed_count++;
+    });
+    ASSERT_TRUE(sub.IsUnsubscribed());
+    ASSERT_EQ(values, (std::vector<int>{ 20, 21 }));
+    ASSERT_EQ(on_error_count, 1);
+    ASSERT_EQ(on_completed_count, 0);
 }
 
 

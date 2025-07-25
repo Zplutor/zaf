@@ -11,20 +11,18 @@ ReplaySubjectCore::ReplaySubjectCore(std::optional<std::size_t> replay_size) noe
 std::shared_ptr<SubscriptionCore> ReplaySubjectCore::Subscribe(
     const std::shared_ptr<ObserverCore>& observer) {
 
+    std::deque<std::any> copied_replay_values;
+    {
+        std::lock_guard<std::mutex> lock(lock_);
+        copied_replay_values = replay_values_;
+    }
+
     //This instance may be destroyed during the emissions.
     //Keep it alive here.
     auto shared_this = shared_from_this();
 
-    for (const auto& each_value : replay_values_) {
+    for (const auto& each_value : copied_replay_values) {
         observer->OnNext(each_value);
-    }
-
-    auto exception = std::get_if<std::exception_ptr>(&termination_);
-    if (exception) {
-        observer->OnError(*exception);
-    }
-    else if (std::holds_alternative<None>(termination_)) {
-        observer->OnCompleted();
     }
 
     return __super::Subscribe(observer);
@@ -33,7 +31,7 @@ std::shared_ptr<SubscriptionCore> ReplaySubjectCore::Subscribe(
 
 void ReplaySubjectCore::OnNext(const std::any& value) {
 
-    if (IsTerminated()) {
+    if (!TryEmitOnNext(value)) {
         return;
     }
 
@@ -41,42 +39,11 @@ void ReplaySubjectCore::OnNext(const std::any& value) {
         return;
     }
 
+    std::lock_guard<std::mutex> lock(lock_);
     if (replay_values_.size() == replay_size_) {
         replay_values_.pop_front();
     }
-
     replay_values_.push_back(value);
-
-    __super::OnNext(value);
-}
-
-
-void ReplaySubjectCore::OnError(const std::exception_ptr& error) {
-
-    if (IsTerminated()) {
-        return;
-    }
-
-    termination_ = error;
-
-    __super::OnError(error);
-}
-
-
-void ReplaySubjectCore::OnCompleted() {
-
-    if (IsTerminated()) {
-        return;
-    }
-
-    termination_ = None{};
-
-    __super::OnCompleted();
-}
-
-
-bool ReplaySubjectCore::IsTerminated() const noexcept {
-    return !std::holds_alternative<std::monostate>(termination_);
 }
 
 }

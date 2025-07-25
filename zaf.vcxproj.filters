@@ -1318,6 +1318,9 @@
     <ClCompile Include="src\zaf\rx\internal\operator\ref_count_operator.cpp">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\subject\multicast_observer.cpp">
+      <Filter>zaf\rx\internal\subject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3078,6 +3081,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\operator\ref_count_operator.h">
       <Filter>zaf\rx\internal\operator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\subject\multicast_observer.h">
+      <Filter>zaf\rx\internal\subject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
