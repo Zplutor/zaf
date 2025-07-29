@@ -213,8 +213,6 @@ public:
     */
     void SetMainWindow(std::shared_ptr<Window> window) noexcept;
     
-    void ReportUnhandledException(std::exception_ptr exception);
-
 private:
     friend class Window;
 

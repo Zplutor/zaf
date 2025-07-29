@@ -51,10 +51,6 @@ public:
     virtual void OnSessionEnd(const SessionEndInfo&) {
 
     }
-
-    virtual void OnUnhandledException(UnhandledExceptionInfo& event_info) {
-
-    }
 };
 
 }

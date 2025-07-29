@@ -1,6 +1,5 @@
 #include <zaf/rx/internal/producer.h>
 #include <vector>
-#include <zaf/application.h>
 
 namespace zaf::rx::internal {
 
@@ -134,16 +133,7 @@ void Producer::SendUnsubscribeNotifications() noexcept {
     }
 
     for (const auto& each_pair : notifications) {
-        try {
-            each_pair.second(each_pair.first);
-        }
-        catch (...) {
-            // This method is not allowed to throw exceptions, so we catch and report all 
-            // exceptions here.
-            // If the exception is handled by the application delegate, subsequent notifications 
-            // will be sent normally.
-            Application::Instance().ReportUnhandledException(std::current_exception());
-        }
+        each_pair.second(each_pair.first);
     }
 }
 
