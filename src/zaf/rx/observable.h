@@ -2,11 +2,11 @@
 
 #include <memory>
 #include <ranges>
-#include <zaf/rx/base_observable.h>
 #include <zaf/rx/internal/observable/concat_observable.h>
 #include <zaf/rx/internal/observable/connectable_observable_core.h>
 #include <zaf/rx/internal/observable/empty_observable.h>
 #include <zaf/rx/internal/observable/observable_core.h>
+#include <zaf/rx/observable_base.h>
 #include <zaf/rx/observer.h>
 #include <zaf/rx/observer_functions.h>
 #include <zaf/rx/subscriber.h>
@@ -25,9 +25,9 @@ template<typename T>
 class ConnectableObservable;
 
 template<typename T>
-class Observable : public rx::BaseObservable<Observable, Observer, rx::Subscriber, T> {
+class Observable : public rx::ObservableBase<Observable, Observer, rx::Subscriber, T> {
 
-    using Base = rx::BaseObservable<Observable, Observer, rx::Subscriber, T>;
+    using Base = rx::ObservableBase<Observable, Observer, rx::Subscriber, T>;
 
 public:
     /**
@@ -123,7 +123,7 @@ private:
         template<typename> typename SUBSCRIBER,
         typename K
     >
-    friend class rx::BaseObservable;
+    friend class rx::ObservableBase;
 };
 
 

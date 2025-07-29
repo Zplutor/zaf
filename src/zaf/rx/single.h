@@ -1,7 +1,7 @@
 #pragma once
 
-#include <zaf/rx/base_observable.h>
 #include <zaf/rx/internal/observable_factory.h>
+#include <zaf/rx/observable_base.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/single_observer.h>
 #include <zaf/rx/single_subscriber.h>
@@ -15,9 +15,9 @@ class SingleFactory;
 namespace zaf::rx {
 
 template<typename T>
-class Single : public BaseObservable<Single, SingleObserver, SingleSubscriber, T> {
+class Single : public ObservableBase<Single, SingleObserver, SingleSubscriber, T> {
 
-    using Base = BaseObservable<Single, SingleObserver, SingleSubscriber, T>;
+    using Base = ObservableBase<Single, SingleObserver, SingleSubscriber, T>;
 
 public:
     using Base::Do;
@@ -64,7 +64,7 @@ private:
         template<typename> typename SUBSCRIBER,
         typename K
     >
-    friend class BaseObservable;
+    friend class ObservableBase;
 
     explicit Single(std::shared_ptr<internal::ObservableCore> core) noexcept : 
         Base(std::move(core)) {

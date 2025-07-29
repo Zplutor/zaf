@@ -1,16 +1,16 @@
 #pragma once
 
-#include <zaf/rx/base_subject.h>
 #include <zaf/rx/internal/single_factory.h>
 #include <zaf/rx/single.h>
 #include <zaf/rx/single_observer.h>
+#include <zaf/rx/subject_base.h>
 
 namespace zaf::rx {
 
 template<typename T>
-class SingleSubject : public BaseSubject<T> {
+class SingleSubject : public SubjectBase<T> {
 public:
-    SingleSubject() : BaseSubject<T>(internal::CreateReplaySubjectCore(1)) {
+    SingleSubject() : SubjectBase<T>(internal::CreateReplaySubjectCore(1)) {
 
     }
 

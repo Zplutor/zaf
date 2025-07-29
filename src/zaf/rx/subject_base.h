@@ -9,15 +9,15 @@
 namespace zaf::rx {
 
 template<typename T> 
-class BaseSubject : NonCopyable {
+class SubjectBase : NonCopyable {
 public:
     /**
     This class is not used for polymorphism purpose, so there is no virtual destructor.
     */
-    ~BaseSubject() = default;
+    ~SubjectBase() = default;
 
-    BaseSubject(BaseSubject&&) = default;
-    BaseSubject& operator=(BaseSubject&&) = default;
+    SubjectBase(SubjectBase&&) = default;
+    SubjectBase& operator=(SubjectBase&&) = default;
 
     Observable<T> AsObservable() const noexcept {
         return internal::ObservableFactory<T>::CreateObservable(internal::AsObservableCore(core_));
@@ -32,7 +32,7 @@ public:
     }
 
 protected:
-    explicit BaseSubject(std::shared_ptr<internal::SubjectCore> core) noexcept : 
+    explicit SubjectBase(std::shared_ptr<internal::SubjectCore> core) noexcept : 
         core_(std::move(core)) { }
 
 private:

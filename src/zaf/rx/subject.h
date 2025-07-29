@@ -1,13 +1,13 @@
 #pragma once
 
-#include <zaf/rx/base_subject.h>
+#include <zaf/rx/subject_base.h>
 
 namespace zaf::rx {
 
 template<typename T>
-class Subject : public BaseSubject<T> {
+class Subject : public SubjectBase<T> {
 public:
-    Subject() : BaseSubject<T>(internal::CreateSubjectCore()) { }
+    Subject() : SubjectBase<T>(internal::CreateSubjectCore()) { }
 };
 
 }

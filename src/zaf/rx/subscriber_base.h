@@ -10,14 +10,14 @@ template<
     template<typename> typename OBSERVER, 
     typename T
 >
-class BaseSubscriber : public OBSERVER<T> {
+class SubscriberBase : public OBSERVER<T> {
 public:
     bool IsUnsubscribed() const noexcept {
         return subscription_core_->IsUnsubscribed();
     }
 
 protected:
-    BaseSubscriber(
+    SubscriberBase(
         std::shared_ptr<internal::ObserverCore> observer_core,
         std::shared_ptr<internal::SubscriptionCore> subscription_core) 
         :

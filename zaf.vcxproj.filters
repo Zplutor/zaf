@@ -3043,7 +3043,7 @@
     <ClInclude Include="src\zaf\rx\internal\single_factory.h">
       <Filter>zaf\rx\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\base_observable.h">
+    <ClInclude Include="src\zaf\rx\observable_base.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\operator\do_after_terminate_operator.h">
@@ -3061,7 +3061,7 @@
     <ClInclude Include="src\zaf\rx\subscriber.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\base_subscriber.h">
+    <ClInclude Include="src\zaf\rx\subscriber_base.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\single_subscriber.h">
@@ -3070,7 +3070,7 @@
     <ClInclude Include="src\zaf\rx\internal\observable\custom_observable.h">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\base_subject.h">
+    <ClInclude Include="src\zaf\rx\subject_base.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observable\connectable_observable_core.h">

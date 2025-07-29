@@ -16,7 +16,7 @@ template<
     template<typename> typename SUBSCRIBER,
     typename T
 >
-class BaseObservable {
+class ObservableBase {
 public:
     static OBSERVABLE<T> Just(T value) {
         auto core = std::make_shared<internal::JustObservable>(std::any{ std::move(value) });
@@ -168,7 +168,7 @@ public:
     }
 
 protected:
-    explicit BaseObservable(std::shared_ptr<internal::ObservableCore> core) noexcept :
+    explicit ObservableBase(std::shared_ptr<internal::ObservableCore> core) noexcept :
         core_(std::move(core)) {
 
     }

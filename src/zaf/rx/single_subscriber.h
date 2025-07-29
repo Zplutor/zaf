@@ -1,12 +1,12 @@
 #pragma once
 
-#include <zaf/rx/base_subscriber.h>
 #include <zaf/rx/single_observer.h>
+#include <zaf/rx/subscriber_base.h>
 
 namespace zaf::rx {
 
 template<typename T>
-class SingleSubscriber : public BaseSubscriber<SingleSubscriber, SingleObserver, T> {
+class SingleSubscriber : public SubscriberBase<SingleSubscriber, SingleObserver, T> {
 private:
     template<
         template<typename> typename OBSERVABLE,
@@ -14,9 +14,9 @@ private:
         template<typename> typename SUBSCRIBER,
         typename K
     >
-    friend class BaseObservable;
+    friend class ObservableBase;
 
-    using BaseSubscriber<SingleSubscriber, SingleObserver, T>::BaseSubscriber;
+    using SubscriberBase<SingleSubscriber, SingleObserver, T>::SubscriberBase;
 };
 
 }
