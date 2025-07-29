@@ -37,7 +37,7 @@ public:
         EmitOnCompleted();
     }
 
-    void OnUnsubscribe() override {
+    void OnUnsubscribe() noexcept override {
 
         if (is_emitting_termination_) {
             after_terminate_();

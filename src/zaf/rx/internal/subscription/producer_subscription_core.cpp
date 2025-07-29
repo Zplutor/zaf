@@ -16,7 +16,7 @@ ProducerSubscriptionCore::~ProducerSubscriptionCore() {
 }
 
 
-void ProducerSubscriptionCore::Unsubscribe() {
+void ProducerSubscriptionCore::Unsubscribe() noexcept {
     producer_->Unsubscribe();
 }
 

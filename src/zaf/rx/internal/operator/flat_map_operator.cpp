@@ -73,7 +73,7 @@ public:
         TryToDeliverOnCompleted();
     }
 
-    void OnUnsubscribe() override {
+    void OnUnsubscribe() noexcept override {
 
         if (source_subscription_) {
             source_subscription_->Unsubscribe();

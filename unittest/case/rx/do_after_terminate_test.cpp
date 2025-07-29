@@ -112,6 +112,16 @@ TEST(RxDoAfterTerminateTest, Unsubscribe) {
 }
 
 
+// The application will terminate if DoAfterTerminate throws an exception.
+TEST(RxDoAfterTerminateTest, ThrowException) {
+
+    auto observable = zaf::rx::Observable<int>::Just(57).DoAfterTerminate([]() {
+        throw zaf::InvalidOperationError{ "error" };
+    });
+    ASSERT_DEATH(auto sub = observable.Subscribe(), ".*");
+}
+
+
 TEST(RxDoAfterTerminateTest, Single) {
 
     //OnSuccess

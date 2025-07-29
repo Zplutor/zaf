@@ -17,7 +17,7 @@ public:
     }
 
 private:
-    void OnUnsubscribe() override {
+    void OnUnsubscribe() noexcept override {
         auto owner = owner_.lock();
         if (owner) {
             owner->RemoveProducer(this);

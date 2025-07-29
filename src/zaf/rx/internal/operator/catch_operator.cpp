@@ -45,7 +45,7 @@ public:
     }
 
 protected:
-    void OnUnsubscribe() override {
+    void OnUnsubscribe() noexcept override {
 
         UnsubscribeSource();
 

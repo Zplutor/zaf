@@ -29,7 +29,7 @@ public:
         SetTimer();
     }
 
-    void OnUnsubscribe() override {
+    void OnUnsubscribe() noexcept override {
 
         is_unsubscribed_.store(true);
         RxRuntime::GetInstance().GetTimerManager().CancelTimer(timer_id_);

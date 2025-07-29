@@ -20,7 +20,7 @@ public:
     explicit ProducerSubscriptionCore(std::shared_ptr<internal::Producer> producer) noexcept;
     ~ProducerSubscriptionCore();
 
-    void Unsubscribe() override;
+    void Unsubscribe() noexcept override;
     bool IsUnsubscribed() const noexcept override;
 
     std::optional<UnsubscribeNotificationID> RegisterUnsubscribeNotification(

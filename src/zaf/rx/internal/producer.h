@@ -56,7 +56,7 @@ public:
     @details
         It's legal to call this method multiple times, only the first call would take effect.
     */
-    void Unsubscribe();
+    void Unsubscribe() noexcept;
     bool IsUnsubscribed() const noexcept;
 
     std::optional<UnsubscribeNotificationID> RegisterUnsubscribeNotification(
@@ -72,7 +72,7 @@ protected:
         Any shared pointer should be reset in this method, in order to break potential circular 
         references.
     */
-    virtual void OnUnsubscribe() { }
+    virtual void OnUnsubscribe() noexcept { }
 
 private:
     bool IsTerminated() const noexcept;
@@ -84,7 +84,7 @@ private:
         True if the producer was successfully marked as terminated, false if it was already
         terminated.
     */
-    bool MarkTerminated();
+    bool MarkTerminated() noexcept;
 
     /**
     Marks the producer as unsubscribed.
@@ -95,8 +95,8 @@ private:
 
         This method will also mark the producer as terminated.
     */
-    bool MarkUnsubscribed();
-    void NotifyUnsubscribe();
+    bool MarkUnsubscribed() noexcept;
+    void SendUnsubscribeNotifications() noexcept;
 
 private:
     static constexpr int StateFlagTerminated = 1 << 0;
@@ -107,7 +107,6 @@ private:
     std::atomic<int> state_flags_{};
     int unsubscribe_notification_id_seed_{};
     std::map<UnsubscribeNotificationID, UnsubscribeNotification> unsubscribe_notifications_;
-
     std::mutex unsubscribe_notification_lock_;
 };
 

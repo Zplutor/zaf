@@ -133,6 +133,16 @@ TEST(RxFinallyTest, SubscribeMultipleTimes) {
 }
 
 
+// The application will terminate if an exception is thrown in Finally.
+TEST(RxFinallyTest, ThrowException) {
+
+    auto observable = zaf::rx::Observable<int>::Just(27).Finally([]() {
+        throw zaf::InvalidOperationError{};
+    });
+    ASSERT_DEATH(auto sub = observable.Subscribe(), ".*");
+}
+
+
 TEST(RxFinallyTest, Single) {
 
     // Finally with OnSuccess

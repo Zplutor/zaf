@@ -29,11 +29,6 @@ public:
         this->EmitOnCompleted();
     }
 
-protected:
-    void OnUnsubscribe() override {
-
-    }
-
 private:
     void InnerEmitOnError(const std::exception_ptr& error, bool is_caught_error) {
         if (!this->EmitOnError(error)) {

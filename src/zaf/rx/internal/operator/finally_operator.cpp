@@ -35,15 +35,15 @@ public:
         EmitOnCompleted();
     }
 
-    void OnUnsubscribe() override {
+    void OnUnsubscribe() noexcept override {
 
         if (source_subscription_) {
             source_subscription_->Unsubscribe();
             source_subscription_.reset();
         }
 
-        finally_work_();
-        finally_work_ = nullptr;
+        auto finally_work = std::move(finally_work_);
+        finally_work();
     }
 
 private:

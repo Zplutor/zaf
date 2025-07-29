@@ -1,5 +1,6 @@
 #include <zaf/rx/internal/producer.h>
 #include <vector>
+#include <zaf/application.h>
 
 namespace zaf::rx::internal {
 
@@ -63,21 +64,21 @@ bool Producer::EmitOnCompleted() {
 }
 
 
-void Producer::Unsubscribe() {
+void Producer::Unsubscribe() noexcept {
 
-    if (MarkUnsubscribed()) {
-
-        OnUnsubscribe();
-
-        NotifyUnsubscribe();
-
-        //Release observer to break potential circular reference.
-        observer_.reset();
+    if (!MarkUnsubscribed()) {
+        return;
     }
+
+    OnUnsubscribe();
+    SendUnsubscribeNotifications();
+
+    //Release observer to break potential circular reference.
+    observer_.reset();
 }
 
 
-bool Producer::MarkTerminated() {
+bool Producer::MarkTerminated() noexcept {
     int old_flags = state_flags_.fetch_or(StateFlagTerminated);
     return (old_flags & StateFlagTerminated) == 0;
 }
@@ -88,7 +89,7 @@ bool Producer::IsTerminated() const noexcept {
 }
 
 
-bool Producer::MarkUnsubscribed() {
+bool Producer::MarkUnsubscribed() noexcept {
     int new_flags = StateFlagTerminated | StateFlagUnsubscribed;
     int old_flags = state_flags_.fetch_or(new_flags);
     return (old_flags & StateFlagUnsubscribed) == 0;
@@ -124,7 +125,7 @@ void Producer::UnregisterUnsubscribeNotification(UnsubscribeNotificationID id) {
 }
 
 
-void Producer::NotifyUnsubscribe() {
+void Producer::SendUnsubscribeNotifications() noexcept {
 
     std::map<UnsubscribeNotificationID, UnsubscribeNotification> notifications;
     {
@@ -133,7 +134,16 @@ void Producer::NotifyUnsubscribe() {
     }
 
     for (const auto& each_pair : notifications) {
-        each_pair.second(each_pair.first);
+        try {
+            each_pair.second(each_pair.first);
+        }
+        catch (...) {
+            // This method is not allowed to throw exceptions, so we catch and report all 
+            // exceptions here.
+            // If the exception is handled by the application delegate, subsequent notifications 
+            // will be sent normally.
+            Application::Instance().ReportUnhandledException(std::current_exception());
+        }
     }
 }
 

@@ -21,7 +21,7 @@ public:
     Subscription(Subscription&& other) = default;
     Subscription& operator=(Subscription&& other) = default;
 
-    void Unsubscribe();
+    void Unsubscribe() noexcept;
 
     bool IsUnsubscribed() const noexcept;
 

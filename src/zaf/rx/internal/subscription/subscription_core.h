@@ -11,7 +11,7 @@ public:
     SubscriptionCore() = default;
     virtual ~SubscriptionCore() = default;
 
-    virtual void Unsubscribe() = 0;
+    virtual void Unsubscribe() noexcept = 0;
     virtual bool IsUnsubscribed() const noexcept = 0;
 
     virtual std::optional<UnsubscribeNotificationID> RegisterUnsubscribeNotification(

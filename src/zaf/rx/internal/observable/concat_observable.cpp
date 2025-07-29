@@ -38,7 +38,7 @@ public:
     }
 
 protected:
-    void OnUnsubscribe() override {
+    void OnUnsubscribe() noexcept override {
 
         if (current_sub_) {
             current_sub_->Unsubscribe();

@@ -31,7 +31,7 @@ public:
             As<SubscribeOnProducer>(shared_from_this())));
     }
 
-    void OnUnsubscribe() override {
+    void OnUnsubscribe() noexcept override {
 
         is_disposed_.store(true);
 

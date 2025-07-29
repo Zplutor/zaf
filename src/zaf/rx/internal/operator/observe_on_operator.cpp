@@ -46,7 +46,7 @@ public:
     }
 
 protected:
-    void OnUnsubscribe() override {
+    void OnUnsubscribe() noexcept override {
 
         is_unsubscribed_.store(true);
         if (source_subscription_) {

@@ -14,7 +14,7 @@ Subscription::~Subscription() {
 }
 
 
-void Subscription::Unsubscribe() {
+void Subscription::Unsubscribe() noexcept {
     if (core_) {
         core_->Unsubscribe();
     }
