@@ -12,13 +12,13 @@ public:
     RunLoopThread();
     ~RunLoopThread();
 
-    void DoWork(Work work) override;
+    void DoWork(Closure work) override;
 
 private:
     class State {
     public:
         std::atomic<bool> is_stopped{};
-        std::deque<Work> works;
+        std::deque<Closure> works;
         std::mutex works_lock;
         std::condition_variable work_event;
     };

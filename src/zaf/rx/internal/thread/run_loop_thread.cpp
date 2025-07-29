@@ -23,7 +23,7 @@ RunLoopThread::~RunLoopThread() {
 }
 
 
-void RunLoopThread::DoWork(Work work) {
+void RunLoopThread::DoWork(Closure work) {
 
     std::scoped_lock<std::mutex> lock(state_->works_lock);
     state_->works.push_back(std::move(work));

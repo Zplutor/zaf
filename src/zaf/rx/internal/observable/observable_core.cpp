@@ -32,11 +32,11 @@ std::shared_ptr<ObservableCore> ObservableCore::Do(
 }
 
 
-std::shared_ptr<ObservableCore> ObservableCore::DoOnTerminate(Work work) {
+std::shared_ptr<ObservableCore> ObservableCore::DoOnTerminate(Closure work) {
     return std::make_shared<DoOnTerminateOperator>(shared_from_this(), std::move(work));
 }
 
-std::shared_ptr<ObservableCore> ObservableCore::DoAfterTerminate(Work work) {
+std::shared_ptr<ObservableCore> ObservableCore::DoAfterTerminate(Closure work) {
     return std::make_shared<DoAfterTerminateOperator>(shared_from_this(), std::move(work));
 }
 
@@ -45,7 +45,7 @@ std::shared_ptr<ObservableCore> ObservableCore::Catch(CatchHandler handler) {
 }
 
 
-std::shared_ptr<ObservableCore> ObservableCore::Finally(Work work) {
+std::shared_ptr<ObservableCore> ObservableCore::Finally(Closure work) {
     return std::make_shared<FinallyOperator>(shared_from_this(), std::move(work));
 }
 

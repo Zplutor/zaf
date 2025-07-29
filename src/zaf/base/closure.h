@@ -4,6 +4,6 @@
 
 namespace zaf {
 
-using Work = std::function<void()>;
+using Closure = std::function<void()>;
 
 }

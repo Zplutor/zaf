@@ -40,7 +40,7 @@ LRESULT CALLBACK WindowThread::WindowProcedure(
 
     if (message_id == DoWorkMessageId) {
 
-        auto work = reinterpret_cast<Work*>(wparam);
+        auto work = reinterpret_cast<Closure*>(wparam);
         (*work)();
         delete work;
         return 0;
@@ -79,10 +79,10 @@ WindowThread::~WindowThread() {
 }
 
 
-void WindowThread::DoWork(Work work) {
+void WindowThread::DoWork(Closure work) {
 
-    auto cloned_word = new Work(std::move(work));
-    PostMessage(window_handle_, DoWorkMessageId, reinterpret_cast<WPARAM>(cloned_word), 0);
+    auto cloned_work = new Closure(std::move(work));
+    PostMessage(window_handle_, DoWorkMessageId, reinterpret_cast<WPARAM>(cloned_work), 0);
 }
 
 }

@@ -435,6 +435,7 @@
     <ClInclude Include="src\zaf\base\auto_reset.h" />
     <ClInclude Include="src\zaf\base\base64.h" />
     <ClInclude Include="src\zaf\base\byte_array.h" />
+    <ClInclude Include="src\zaf\base\closure.h" />
     <ClInclude Include="src\zaf\base\code_page.h" />
     <ClInclude Include="src\zaf\base\com_object.h" />
     <ClInclude Include="src\zaf\base\container\utility\copy.h" />
@@ -959,7 +960,6 @@
     <ClInclude Include="src\zaf\rx\subscription_bag.h" />
     <ClInclude Include="src\zaf\rx\subscription_host.h" />
     <ClInclude Include="src\zaf\rx\timer.h" />
-    <ClInclude Include="src\zaf\rx\work.h" />
     <ClInclude Include="src\zaf\application_event_infos.h" />
     <ClInclude Include="src\zaf\window\activate_option.h" />
     <ClInclude Include="src\zaf\window\event\activate_event_info.h" />

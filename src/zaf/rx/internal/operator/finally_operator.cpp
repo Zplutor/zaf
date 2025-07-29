@@ -12,7 +12,7 @@ class FinallyProducer : public Producer, public ObserverCore {
 public:
     FinallyProducer(
         std::shared_ptr<ObserverCore> next_observer,
-        Work finally_work)
+        Closure finally_work)
         :
         Producer(std::move(next_observer)),
         finally_work_(std::move(finally_work)) {
@@ -48,13 +48,13 @@ public:
 
 private:
     std::shared_ptr<SubscriptionCore> source_subscription_;
-    Work finally_work_;
+    Closure finally_work_;
 };
 
 }
 
 
-FinallyOperator::FinallyOperator(std::shared_ptr<ObservableCore> source, Work finally_work) :
+FinallyOperator::FinallyOperator(std::shared_ptr<ObservableCore> source, Closure finally_work) :
     source_(std::move(source)),
     finally_work_(std::move(finally_work)) {
 

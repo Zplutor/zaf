@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/rx/work.h>
+#include <zaf/base/closure.h>
 
 namespace zaf::rx::internal {
 
@@ -12,7 +12,7 @@ public:
     Thread(const Thread&) = delete;
     Thread& operator=(const Thread&) = delete;
 
-    virtual void DoWork(Work work) = 0;
+    virtual void DoWork(Closure work) = 0;
 };
 
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/rx/work.h>
+#include <zaf/base/closure.h>
 
 namespace zaf::rx {
 
@@ -17,7 +17,7 @@ public:
     Scheduler(const Scheduler&) = delete;
     Scheduler& operator=(const Scheduler&) = delete;
 
-    virtual void Schedule(Work work) = 0;
+    virtual void Schedule(Closure work) = 0;
 };
 
 }

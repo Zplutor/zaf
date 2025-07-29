@@ -10,7 +10,7 @@ public:
     WindowThread();
     ~WindowThread();
 
-    void DoWork(Work work) override;
+    void DoWork(Closure work) override;
 
 private:
     static void RegisterWindowClass();

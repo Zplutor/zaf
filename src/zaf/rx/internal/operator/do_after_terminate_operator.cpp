@@ -12,7 +12,7 @@ class DoAfterTerminateProducer : public Producer, public ObserverCore {
 public:
     DoAfterTerminateProducer(
         std::shared_ptr<ObserverCore> next_observer,
-        Work after_terminate)
+        Closure after_terminate)
         :
         Producer(std::move(next_observer)),
         after_terminate_(std::move(after_terminate)) {
@@ -52,7 +52,7 @@ public:
 
 private:
     std::shared_ptr<SubscriptionCore> source_subscription_;
-    Work after_terminate_;
+    Closure after_terminate_;
     bool is_emitting_termination_{};
 };
 
@@ -61,7 +61,7 @@ private:
 
 DoAfterTerminateOperator::DoAfterTerminateOperator(
     std::shared_ptr<ObservableCore> source,
-    Work after_terminate)
+    Closure after_terminate)
     : 
     source_(std::move(source)),
     after_terminate_(std::move(after_terminate)) {

@@ -1741,9 +1741,6 @@
     <ClInclude Include="src\zaf\rx\scheduler.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\work.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observer_core.h">
       <Filter>zaf\rx\internal</Filter>
     </ClInclude>
@@ -3084,6 +3081,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subject\multicast_observer.h">
       <Filter>zaf\rx\internal\subject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\closure.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@ class DoOnTerminateProducer : public Producer, public ObserverCore {
 public:
     DoOnTerminateProducer(
         std::shared_ptr<ObserverCore> next_observer,
-        Work on_terminate)
+        Closure on_terminate)
         :
         Producer(std::move(next_observer)),
         on_terminate_(std::move(on_terminate)) {
@@ -50,7 +50,7 @@ public:
 
 private:
     std::shared_ptr<SubscriptionCore> source_subscription_;
-    Work on_terminate_;
+    Closure on_terminate_;
 };
 
 }
@@ -58,7 +58,7 @@ private:
 
 DoOnTerminateOperator::DoOnTerminateOperator(
     std::shared_ptr<ObservableCore> source, 
-    Work on_terminate)
+    Closure on_terminate)
     :
     source_(std::move(source)),
     on_terminate_(std::move(on_terminate)) {

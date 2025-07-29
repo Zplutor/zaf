@@ -131,17 +131,17 @@ public:
     @return
         A new observable.
     */
-    OBSERVABLE<T> DoOnTerminate(Work work) {
+    OBSERVABLE<T> DoOnTerminate(Closure work) {
         const auto& core = static_cast<OBSERVABLE<T>*>(this)->Core();
         return OBSERVABLE<T>{ core->DoOnTerminate(std::move(work)) };
     }
 
-    OBSERVABLE<T> DoAfterTerminate(Work work) {
+    OBSERVABLE<T> DoAfterTerminate(Closure work) {
         const auto& core = static_cast<OBSERVABLE<T>*>(this)->Core();
         return OBSERVABLE<T>{ core->DoAfterTerminate(std::move(work)) };
     }
 
-    OBSERVABLE<T> Finally(Work work) {
+    OBSERVABLE<T> Finally(Closure work) {
         return OBSERVABLE<T>{ core_->Finally(std::move(work)) };
     }
 

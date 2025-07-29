@@ -11,7 +11,7 @@ public:
 
     }
 
-    void Schedule(Work work) override {
+    void Schedule(Closure work) override {
         thread_->DoWork(std::move(work));
     }
 
