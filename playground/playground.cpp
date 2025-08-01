@@ -1,136 +1,13 @@
-#include <Windows.h>
-#include <WindowsX.h>
-#include <richedit.h>
-#include <richole.h>
-#include <atlbase.h>
-#include <atlctl.h>
-#include <fstream>
-#include <charconv>
 #include <zaf/application.h>
-#include <zaf/base/log.h>
-#include <zaf/base/container/utility/find.h>
-#include <zaf/io/stream/stream.h>
-#include <zaf/base/string/to_string.h>
-#include <zaf/creation.h>
-#include <zaf/window/window.h>
-#include <zaf/window/dialog.h>
 #include <zaf/control/button.h>
-#include <zaf/control/rich_edit.h>
-#include <zaf/window/message/hit_test_result.h>
-#include <zaf/graphic/canvas.h>
-#include <zaf/graphic/image.h>
-#include <zaf/graphic/font.h>
-#include <zaf/graphic/dpi.h>
-#include <zaf/control/list_box.h>
-#include <zaf/object/object_type.h>
-#include <zaf/object/internal/reflection_manager.h>
-#include <zaf/object/object_property.h>
-#include <zaf/object/parsing/helpers.h>
-#include <zaf/object/parsing/xaml_reader.h>
-#include <zaf/object/creation.h>
-#include <zaf/control/layout/linear_layouter.h>
-#include <zaf/control/label.h>
-#include <zaf/control/image_box.h>
-#include <zaf/control/linear_box.h>
-#include <zaf/base/registry/registry.h>
-#include <zaf/base/error/error.h>
-#include <zaf/resource/resource_factory.h>
-#include <zaf/object/boxing/string.h>
-#include <zaf/object/boxing/boxing.h>
-#include <zaf/control/combo_box.h>
-#include <zaf/control/tree_control.h>
-#include <zaf/control/tree_data_source.h>
-#include <zaf/control/tree_control_delegate.h>
-#include <zaf/control/scroll_bar.h>
-#include <zaf/control/scroll_bar_thumb.h>
-#include <zaf/control/check_box.h>
-#include <zaf/rx/scheduler.h>
+#include <zaf/window/window.h>
 #include <zaf/rx/timer.h>
-#include <zaf/control/property_grid.h>
-#include <zaf/window/popup_menu.h>
-#include <zaf/control/menu_separator.h>
-#include <zaf/control/rich_edit/embedded_object.h>
-#include <zaf/control/rich_edit/ole_callback.h>
-#include <zaf/control/text_box.h>
-#include <zaf/graphic/graphic_factory.h>
-#include <zaf/input/mouse.h>
-#include <zaf/control/control_object.h>
-#include <zaf/control/textual/active_inline_object.h>
-#include <zaf/control/list_data_source.h>
+#include <zaf/base/timer.h>
+#include <zaf/control/layout/linear_layouter.h>
 
 void BeginRun(const zaf::BeginRunInfo& event_info);
 
-class DataSource : public zaf::ListDataSource {
-public:
-    DataSource() {
-
-        for (auto index : zaf::Range(0, 10)) {
-            data_.push_back(zaf::Box(std::to_wstring(index)));
-        }
-    }
-
-    std::size_t GetDataCount() const override {
-        return data_.size();
-    }
-
-    std::shared_ptr<zaf::Object> GetDataAtIndex(std::size_t index) const override {
-        return data_[index];
-    }
-
-    void Add() {
-
-        auto new_data = zaf::Box(std::to_wstring(100));
-        data_.insert(data_.begin(), new_data);
-        NotifyDataAdded(0, 1);
-    }
-
-    void Move() {
-
-        auto data = data_[0];
-        data_.erase(data_.begin());
-        data_.insert(std::next(data_.begin(), 2), data);
-
-        NotifyDataMoved(0, 2);
-    }
-
-private:
-    std::vector<std::shared_ptr<zaf::WideString>> data_;
-};
-
-
-class Delegate : public zaf::ListControlDelegate {
-public:
-    float EstimateItemHeight(
-        std::size_t item_index,
-        const std::shared_ptr<zaf::Object>& item_data) override {
-
-        return 40;
-    }
-
-    std::shared_ptr<zaf::ListItem> CreateItem(
-        std::size_t item_index,
-        const std::shared_ptr<zaf::Object>& item_data) {
-
-        auto result = __super::CreateItem(item_index, item_data);
-
-        auto old_picker = result->BackgroundColorPicker();
-        result->SetBackgroundColorPicker(zaf::ColorPicker([old_picker](const zaf::Control& control) {
-        
-            if (control.IsFocused()) {
-                return zaf::Color::Green();
-            }
-
-            if (control.IsMouseOver()) {
-                return zaf::Color::Yellow();
-            }
-
-            return old_picker(control);
-        }));
-
-        return result;
-    }
-};
-
+constexpr std::size_t TimerInterval = 100;
 
 class Window : public zaf::Window {
 protected:
@@ -140,39 +17,150 @@ protected:
 
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
 
-        list_ = zaf::Create<zaf::ListControl>();
-        list_->SetDataSource(zaf::Create<DataSource>());
-        list_->SetSelectionMode(zaf::ListSelectionMode::ExtendedMultiple);
+        auto rx_timer_button = zaf::Create<zaf::Button>();
+        rx_timer_button->SetFixedHeight(30);
+        rx_timer_button->SetText(L"Start rx timer.");
+        Subscriptions() += rx_timer_button->ClickEvent().Subscribe(std::bind([this]() {
+            
+            BeforeTimer();
 
-        Subscriptions() += list_->ContextMenuEvent().Subscribe(
-            [](const zaf::ListControlContextMenuInfo& event_info) {
-        
-                auto menu_item1 = zaf::Create<zaf::MenuItem>();
-                menu_item1->SetText(L"Menu1");
-
-                auto menu_item2 = zaf::Create<zaf::MenuItem>();
-                menu_item2->SetText(L"Menu2");
-
-                auto menu = zaf::Create<zaf::PopupMenu>();
-                menu->AddMenuItem(menu_item1);
-                menu->AddMenuItem(menu_item2);
-
-                event_info.SetMenu(menu);
+            rx_timer_ = zaf::rx::Interval(std::chrono::milliseconds(TimerInterval)).Subscribe([this](int) {
+                OnTimer();
             });
-
-        this->RootControl()->AddChild(list_);
-
-        auto button = zaf::Create<zaf::Button>();
-        button->SetFixedHeight(30);
-        button->SetText(L"Add");
-        Subscriptions() += button->ClickEvent().Subscribe(std::bind([this]() {
-            //data_source_->Add();
         }));
-        this->RootControl()->AddChild(button);
+        this->RootControl()->AddChild(rx_timer_button);
+
+        auto window_timer_button = zaf::Create<zaf::Button>();
+        window_timer_button->SetFixedHeight(30);
+        window_timer_button->SetText(L"Start window timer.");
+        Subscriptions() += window_timer_button->ClickEvent().Subscribe(std::bind([this]() {
+
+            BeforeTimer();
+
+            window_timer_ = std::make_unique<zaf::Timer>(zaf::Timer::Mode::ImmediatelyRepeated);
+            window_timer_->SetInterval(std::chrono::milliseconds(TimerInterval));
+            Subscriptions() += window_timer_->TriggerEvent().Subscribe([this](const zaf::TimerTriggerInfo& event_info) {
+                OnTimer();
+            });
+            window_timer_->Start();
+        }));
+        this->RootControl()->AddChild(window_timer_button);
     }
 
 private:
-    std::shared_ptr<zaf::ListControl> list_;
+    void BeforeTimer() {
+
+        rx_timer_.Unsubscribe();
+        window_timer_.reset();
+
+        start_time_ = std::chrono::steady_clock::now();
+        time_points_.clear();
+        time_points_.reserve(100);
+    }
+
+    void OnTimer() {
+
+        auto now = std::chrono::steady_clock::now();
+        time_points_.push_back(now);
+
+        auto debug_string = std::to_wstring(time_points_.size());
+        debug_string += L"\r\n";
+        OutputDebugString(debug_string.c_str());
+
+        if (time_points_.size() <= 100) {
+            return;
+        }
+
+        rx_timer_.Unsubscribe();
+        window_timer_.reset();
+
+        CalculateStatistic();
+    }
+
+    void CalculateStatistic() {
+
+        if (time_points_.size() < 2) {
+            return;
+        }
+
+        std::vector<std::size_t> elapsed_times;
+        for (std::size_t index = 0; index < time_points_.size() - 1; ++index) {
+            auto duration = time_points_[index + 1] - time_points_[index];
+            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+            elapsed_times.push_back(elapsed);
+        }
+
+        auto total_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(time_points_.back() - time_points_.front()).count();
+
+        auto average = CalculateAverage(elapsed_times);
+        auto min_max = CalculateMinMax(elapsed_times);
+        auto range = min_max.second - min_max.first;
+        auto variance = CalculateVariance(elapsed_times);
+        auto standard_deviation = CalculateStandardDeviation(elapsed_times);
+
+        std::wstring debug_string;
+        debug_string += L"Total Elapsed: " + std::to_wstring(total_elapsed) + L" ms\r\n";
+        debug_string += L"Average: " + std::to_wstring(average) + L" ms\r\n";
+        debug_string += L"Min: " + std::to_wstring(min_max.first) + L" ms\r\n";
+        debug_string += L"Max: " + std::to_wstring(min_max.second) + L" ms\r\n";
+        debug_string += L"Range: " + std::to_wstring(range) + L" ms\r\n";
+        debug_string += L"Standard Deviation: " + std::to_wstring(standard_deviation) + L" ms\r\n";
+        debug_string += L"Variance: " + std::to_wstring(variance) + L" ms^2\r\n";
+        OutputDebugString(debug_string.c_str());
+    }
+
+    double CalculateAverage(const std::vector<std::size_t>& elapsed_times) {
+
+        if (elapsed_times.empty()) {
+            return 0;
+        }
+
+        std::size_t total_elapsed = 0;
+        for (const auto& elapsed : elapsed_times) {
+            total_elapsed += elapsed;
+        }
+        double average_elapsed = static_cast<double>(total_elapsed) / (elapsed_times.size());
+        return average_elapsed;
+    }
+
+    std::pair<std::size_t, std::size_t> CalculateMinMax(const std::vector<std::size_t>& elapsed_times) {
+
+        if (elapsed_times.empty()) {
+            return {};
+        }
+
+        auto min_max = std::minmax_element(elapsed_times.begin(), elapsed_times.end());
+        return std::make_pair(*min_max.first, *min_max.second);
+    }
+
+    double CalculateVariance(const std::vector<std::size_t>& elapsed_times) {
+
+        if (elapsed_times.empty()) {
+            return 0;
+        }
+        double average_elapsed = CalculateAverage(elapsed_times);
+        double variance = 0.0;
+        for (const auto& elapsed : elapsed_times) {
+            double diff = static_cast<double>(elapsed) - average_elapsed;
+            variance += diff * diff;
+        }
+        variance /= elapsed_times.size();
+        return variance;
+    }
+
+    double CalculateStandardDeviation(const std::vector<std::size_t>& elapsed_times) {
+        if (elapsed_times.empty()) {
+            return 0;
+        }
+        double variance = CalculateVariance(elapsed_times);
+        return std::sqrt(variance);
+    }
+
+private:
+    std::chrono::steady_clock::time_point start_time_;
+    std::vector<std::chrono::steady_clock::time_point> time_points_;
+    zaf::rx::Subscription rx_timer_;
+    std::shared_ptr<zaf::Timer> window_timer_;
 };
 
 

@@ -24,8 +24,6 @@ public:
     }
 
     void Run() {
-
-        begin_time_point_ = std::chrono::steady_clock::now();
         SetTimer();
     }
 
@@ -46,30 +44,15 @@ private:
     }
 
     std::chrono::steady_clock::time_point GetNextTimePoint() {
-
-        auto delay_end = begin_time_point_ + delay_;
-        if (!interval_) {
-            return delay_end;
-        }
-
-        auto interval_end = delay_end + (*interval_ * trigger_count_);
-
         auto now = std::chrono::steady_clock::now();
-        if (now <= interval_end) {
-            return interval_end;
+        if (trigger_count_ == 0) {
+            return now + delay_;
         }
-
-        auto gap = now - interval_end;
-        auto interval_count = gap / *interval_;
-        if (interval_count == 0) {
-            return interval_end;
+        else if (interval_) {
+            return now + *interval_;
         }
-
-        auto adjust_interval = (*interval_ * interval_count);
-        auto new_interval_end = delay_end + adjust_interval;
-
-        begin_time_point_ += adjust_interval;
-        return new_interval_end;
+        // Should not reach here.
+        return now;
     }
 
     void OnTimer() {
@@ -93,7 +76,6 @@ private:
     std::chrono::steady_clock::duration delay_;
     std::optional<std::chrono::steady_clock::duration> interval_;
     std::shared_ptr<Scheduler> scheduler_;
-    std::chrono::steady_clock::time_point begin_time_point_;
     int trigger_count_{};
     TimerManager::TimerId timer_id_{};
     std::atomic<bool> is_unsubscribed_{};
