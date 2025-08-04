@@ -1,15 +1,15 @@
-#include <zaf/rx/internal/thread/run_loop_thread.h>
+#include <zaf/rx/default_run_loop_thread.h>
 
-namespace zaf::rx::internal {
+namespace zaf::rx {
 
-RunLoopThread::RunLoopThread() : 
+DefaultRunLoopThread::DefaultRunLoopThread() : 
     state_(std::make_shared<State>()),
-    thread_(std::bind(&RunLoopThread::Run, state_)) {
+    thread_(std::bind(&DefaultRunLoopThread::Run, state_)) {
 
 }
 
 
-RunLoopThread::~RunLoopThread() {
+DefaultRunLoopThread::~DefaultRunLoopThread() {
 
     state_->is_stopped.store(true);
     state_->work_event.notify_one();
@@ -23,7 +23,7 @@ RunLoopThread::~RunLoopThread() {
 }
 
 
-void RunLoopThread::DoWork(Closure work) {
+void DefaultRunLoopThread::PostWork(Closure work) {
 
     std::scoped_lock<std::mutex> lock(state_->works_lock);
     state_->works.push_back(std::move(work));
@@ -31,7 +31,7 @@ void RunLoopThread::DoWork(Closure work) {
 }
 
 
-void RunLoopThread::Run(const std::shared_ptr<State>& state) {
+void DefaultRunLoopThread::Run(const std::shared_ptr<State>& state) {
 
     while (true) {
 

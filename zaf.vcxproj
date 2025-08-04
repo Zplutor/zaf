@@ -355,6 +355,7 @@
     <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp" />
     <ClCompile Include="src\zaf\resource\resource_factory.cpp" />
     <ClCompile Include="src\zaf\resource\uri_loader.cpp" />
+    <ClCompile Include="src\zaf\rx\default_run_loop_thread.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\connectable_observable_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\custom_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observer_core.cpp" />
@@ -382,14 +383,13 @@
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core_indirect.cpp" />
     <ClCompile Include="src\zaf\rx\internal\subscription\producer_subscription_core.cpp" />
-    <ClCompile Include="src\zaf\rx\internal\thread\run_loop_thread.cpp" />
     <ClCompile Include="src\zaf\rx\internal\thread\thread_manager.cpp" />
-    <ClCompile Include="src\zaf\rx\internal\thread\window_thread.cpp" />
     <ClCompile Include="src\zaf\rx\internal\timer_manager.cpp" />
     <ClCompile Include="src\zaf\rx\scheduler.cpp" />
     <ClCompile Include="src\zaf\rx\subscription.cpp" />
     <ClCompile Include="src\zaf\rx\subscription_bag.cpp" />
     <ClCompile Include="src\zaf\rx\timer.cpp" />
+    <ClCompile Include="src\zaf\rx\main_thread.cpp" />
     <ClCompile Include="src\zaf\window\activate_option.cpp" />
     <ClCompile Include="src\zaf\window\event\activate_event_info.cpp" />
     <ClCompile Include="src\zaf\window\event\focused_control_changed_info.cpp" />
@@ -902,7 +902,9 @@
     <ClInclude Include="src\zaf\resource\invalid_uri_error.h" />
     <ClInclude Include="src\zaf\resource\resource_factory.h" />
     <ClInclude Include="src\zaf\resource\uri_loader.h" />
+    <ClInclude Include="src\zaf\rx\default_run_loop_thread.h" />
     <ClInclude Include="src\zaf\rx\observable_base.h" />
+    <ClInclude Include="src\zaf\rx\run_loop_thread.h" />
     <ClInclude Include="src\zaf\rx\subject_base.h" />
     <ClInclude Include="src\zaf\rx\subscriber_base.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\connectable_observable_core.h" />
@@ -940,10 +942,7 @@
     <ClInclude Include="src\zaf\rx\internal\subscription\producer_subscription_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subscription\subscription_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subscription\unsubscribe_notification.h" />
-    <ClInclude Include="src\zaf\rx\internal\thread\run_loop_thread.h" />
-    <ClInclude Include="src\zaf\rx\internal\thread\thread.h" />
     <ClInclude Include="src\zaf\rx\internal\thread\thread_manager.h" />
-    <ClInclude Include="src\zaf\rx\internal\thread\window_thread.h" />
     <ClInclude Include="src\zaf\rx\internal\timer_manager.h" />
     <ClInclude Include="src\zaf\rx\observable.h" />
     <ClInclude Include="src\zaf\rx\observer.h" />
@@ -961,6 +960,7 @@
     <ClInclude Include="src\zaf\rx\subscription_host.h" />
     <ClInclude Include="src\zaf\rx\timer.h" />
     <ClInclude Include="src\zaf\application_event_infos.h" />
+    <ClInclude Include="src\zaf\rx\main_thread.h" />
     <ClInclude Include="src\zaf\window\activate_option.h" />
     <ClInclude Include="src\zaf\window\event\activate_event_info.h" />
     <ClInclude Include="src\zaf\window\event\focused_control_changed_info.h" />

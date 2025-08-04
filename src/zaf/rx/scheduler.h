@@ -1,10 +1,11 @@
 #pragma once
 
 #include <zaf/base/closure.h>
+#include <zaf/base/non_copyable.h>
 
 namespace zaf::rx {
 
-class Scheduler {
+class Scheduler : NonCopyableNonMovable {
 public:
     static std::shared_ptr<Scheduler> Main();
     static std::shared_ptr<Scheduler> Timer();
@@ -13,9 +14,6 @@ public:
 public:
     Scheduler() = default;
     virtual ~Scheduler() = default;
-
-    Scheduler(const Scheduler&) = delete;
-    Scheduler& operator=(const Scheduler&) = delete;
 
     virtual void Schedule(Closure work) = 0;
 };

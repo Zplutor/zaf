@@ -1,20 +1,21 @@
-#include <zaf/rx/internal/thread/window_thread.h>
+#include <zaf/rx/main_thread.h>
 #include <zaf/base/error/win32_error.h>
+#include <zaf/rx/internal/rx_runtime.h>
 
-namespace zaf::rx::internal {
+namespace zaf::rx {
 namespace {
 
-constexpr const wchar_t* const WindowClassName = L"ZafWindowedThreadWindowClass";
+constexpr const wchar_t* const WindowClassName = L"ZAFMainThreadWindow";
 constexpr DWORD DoWorkMessageId = WM_USER + 1;
 
 }
 
-void WindowThread::RegisterWindowClass() {
+void MainThread::RegisterWindowClass() {
 
     WNDCLASSEX class_info{};
     class_info.cbSize = sizeof(class_info);
     class_info.style = 0;
-    class_info.lpfnWndProc = WindowThread::WindowProcedure;
+    class_info.lpfnWndProc = MainThread::WindowProcedure;
     class_info.cbClsExtra = 0;
     class_info.cbWndExtra = 0;
     class_info.hInstance = nullptr;
@@ -32,7 +33,7 @@ void WindowThread::RegisterWindowClass() {
 }
 
 
-LRESULT CALLBACK WindowThread::WindowProcedure(
+LRESULT CALLBACK MainThread::WindowProcedure(
     HWND hwnd,
     UINT message_id,
     WPARAM wparam,
@@ -50,7 +51,12 @@ LRESULT CALLBACK WindowThread::WindowProcedure(
 }
 
 
-WindowThread::WindowThread() {
+const std::shared_ptr<MainThread>& MainThread::Instance() noexcept {
+    return internal::RxRuntime::GetInstance().GetThreadManager().GetMainThread();
+}
+
+
+MainThread::MainThread() {
 
     RegisterWindowClass();
 
@@ -73,13 +79,12 @@ WindowThread::WindowThread() {
 }
 
 
-WindowThread::~WindowThread() {
-
+MainThread::~MainThread() {
     DestroyWindow(window_handle_);
 }
 
 
-void WindowThread::DoWork(Closure work) {
+void MainThread::PostWork(Closure work) {
 
     auto cloned_work = new Closure(std::move(work));
     PostMessage(window_handle_, DoWorkMessageId, reinterpret_cast<WPARAM>(cloned_work), 0);

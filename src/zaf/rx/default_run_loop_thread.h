@@ -3,16 +3,19 @@
 #include <deque>
 #include <mutex>
 #include <thread>
-#include <zaf/rx/internal/thread/thread.h>
+#include <zaf/rx/run_loop_thread.h>
 
-namespace zaf::rx::internal {
+namespace zaf::rx {
 
-class RunLoopThread : public Thread {
+/**
+Represents a run loop thread with a default implementation.
+*/
+class DefaultRunLoopThread : public RunLoopThread {
 public:
-    RunLoopThread();
-    ~RunLoopThread();
+    DefaultRunLoopThread();
+    ~DefaultRunLoopThread();
 
-    void DoWork(Closure work) override;
+    void PostWork(Closure work) override;
 
 private:
     class State {

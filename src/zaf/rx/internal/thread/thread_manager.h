@@ -1,28 +1,26 @@
 #pragma once
 
-#include <zaf/rx/internal/thread/thread.h>
-#include <zaf/rx/internal/thread/run_loop_thread.h>
-#include <zaf/rx/internal/thread/window_thread.h>
+#include <zaf/base/non_copyable.h>
+#include <zaf/rx/default_run_loop_thread.h>
+#include <zaf/rx/main_thread.h>
+#include <zaf/rx/run_loop_thread.h>
 
 namespace zaf::rx::internal {
 
-class ThreadManager {
+class ThreadManager : NonCopyableNonMovable {
 public:
     ThreadManager();
+    ~ThreadManager();
 
-    ThreadManager(const ThreadManager&) = delete;
-    ThreadManager& operator=(const ThreadManager&) = delete;
-
-    std::shared_ptr<Thread> GetMainThread() const {
+    const std::shared_ptr<MainThread>& GetMainThread() const noexcept {
         return main_thread_;
     }
 
-    std::shared_ptr<Thread> CreateNewThread();
+    std::shared_ptr<RunLoopThread> CreateNewThread();
 
 private:
-    std::shared_ptr<WindowThread> main_thread_;
-
-    std::vector<std::weak_ptr<RunLoopThread>> child_threads_;
+    std::shared_ptr<MainThread> main_thread_;
+    std::vector<std::weak_ptr<DefaultRunLoopThread>> child_threads_;
     std::mutex child_threads_lock_;
 };
 

@@ -3,14 +3,19 @@
 
 namespace zaf::rx::internal {
 
-ThreadManager::ThreadManager() : main_thread_(std::make_shared<WindowThread>()) {
+ThreadManager::ThreadManager() : main_thread_(new MainThread{}) {
 
 }
 
 
-std::shared_ptr<Thread> ThreadManager::CreateNewThread() {
+ThreadManager::~ThreadManager() {
 
-    auto new_thread = std::make_shared<RunLoopThread>();
+}
+
+
+std::shared_ptr<RunLoopThread> ThreadManager::CreateNewThread() {
+
+    auto new_thread = std::make_shared<DefaultRunLoopThread>();
 
     std::scoped_lock<std::mutex> lock(child_threads_lock_);
 
