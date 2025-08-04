@@ -86,8 +86,42 @@ MainThread::~MainThread() {
 
 void MainThread::PostWork(Closure work) {
 
-    auto cloned_work = new Closure(std::move(work));
-    PostMessage(window_handle_, DoWorkMessageId, reinterpret_cast<WPARAM>(cloned_work), 0);
+    auto cloned_work = std::make_unique<Closure>(std::move(work));
+    BOOL is_succeeded = PostMessage(
+        window_handle_, 
+        DoWorkMessageId, 
+        reinterpret_cast<WPARAM>(cloned_work.get()), 
+        0);
+
+    if (!is_succeeded) {
+        ZAF_THROW_WIN32_ERROR(GetLastError());
+    }
+
+    // Ownership is transferred to the message queue.
+    cloned_work.release();
+}
+
+
+void MainThread::PostDelayedWork(std::chrono::steady_clock::duration delay, Closure work) {
+
+    auto cloned_work = std::make_unique<Closure>(std::move(work));
+
+    UINT_PTR result = SetTimer(
+        window_handle_, 
+        reinterpret_cast<UINT_PTR>(cloned_work.get()), 
+        static_cast<UINT>(std::chrono::duration_cast<std::chrono::milliseconds>(delay).count()), 
+        [](HWND hwnd, UINT, UINT_PTR id, DWORD) {
+            std::unique_ptr<Closure> work{ reinterpret_cast<Closure*>(id) };
+            (*work)();
+            KillTimer(hwnd, id);
+        });
+
+    if (!result) {
+        ZAF_THROW_WIN32_ERROR(GetLastError());
+    }
+
+    // Ownership is transferred to the timer callback.
+    cloned_work.release();  
 }
 
 }

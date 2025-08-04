@@ -16,6 +16,7 @@ public:
     ~DefaultRunLoopThread();
 
     void PostWork(Closure work) override;
+    void PostDelayedWork(std::chrono::steady_clock::duration delay, Closure work) override;
 
 private:
     class State {

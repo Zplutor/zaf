@@ -20,6 +20,11 @@ public:
     ~MainThread();
 
     void PostWork(Closure work) override;
+    void PostDelayedWork(std::chrono::steady_clock::duration delay, Closure work) override;
+
+    HWND WindowHandle() const noexcept {
+        return window_handle_;
+    }
 
 private:
     static void RegisterWindowClass();

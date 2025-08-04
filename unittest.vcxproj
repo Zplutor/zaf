@@ -535,6 +535,7 @@
     <ClCompile Include="unittest\case\rx\finally_test.cpp" />
     <ClCompile Include="unittest\case\rx\flat_map_test.cpp" />
     <ClCompile Include="unittest\case\rx\just_test.cpp" />
+    <ClCompile Include="unittest\case\rx\main_thread_test.cpp" />
     <ClCompile Include="unittest\case\rx\map_test.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)rx_map_test.obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release-MT|Win32'">$(IntDir)rx_map_test.obj</ObjectFileName>

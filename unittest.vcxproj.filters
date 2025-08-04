@@ -668,6 +668,9 @@
     <ClCompile Include="unittest\case\rx\ref_count_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\rx\main_thread_test.cpp">
+      <Filter>case\rx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">
