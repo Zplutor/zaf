@@ -15,8 +15,16 @@ SingleThreadScheduler::SingleThreadScheduler(std::shared_ptr<RunLoopThread> thre
 }
 
 
-void SingleThreadScheduler::Schedule(Closure work) {
+void SingleThreadScheduler::ScheduleWork(Closure work) {
     thread_->PostWork(std::move(work));
+}
+
+
+void SingleThreadScheduler::ScheduleDelayedWork(
+    std::chrono::steady_clock::duration delay, 
+    Closure work) {
+
+    thread_->PostDelayedWork(delay, std::move(work));
 }
 
 }

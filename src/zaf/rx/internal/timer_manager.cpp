@@ -104,7 +104,7 @@ void TimerManager::ThreadEntry(const std::shared_ptr<ThreadState>& state) {
         state->timers.pop_front();
 
         lock.unlock();
-        scheduler->Schedule(std::bind(work, id));
+        scheduler->ScheduleWork(std::bind(work, id));
         lock.lock();
     }
 }

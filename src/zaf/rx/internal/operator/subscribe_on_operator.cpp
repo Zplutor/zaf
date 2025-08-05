@@ -26,7 +26,7 @@ public:
 
     void Run() {
 
-        scheduler_->Schedule(std::bind(
+        scheduler_->ScheduleWork(std::bind(
             &SubscribeOnProducer::SubscribeOnScheduler, 
             As<SubscribeOnProducer>(shared_from_this())));
     }
@@ -35,7 +35,7 @@ public:
 
         is_disposed_.store(true);
 
-        scheduler_->Schedule(std::bind(
+        scheduler_->ScheduleWork(std::bind(
             &SubscribeOnProducer::UnsubscribeOnScheduler,
             As<SubscribeOnProducer>(shared_from_this())));
     }

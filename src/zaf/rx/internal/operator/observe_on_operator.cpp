@@ -24,7 +24,7 @@ public:
 
     void OnNext(const std::any& value) override {
 
-        scheduler_->Schedule(std::bind(
+        scheduler_->ScheduleWork(std::bind(
             &ObserveOnProducer::OnNextOnScheduler,
             As<ObserveOnProducer>(shared_from_this()),
             value));
@@ -32,7 +32,7 @@ public:
 
     void OnError(const std::exception_ptr& error) override {
 
-        scheduler_->Schedule(std::bind(
+        scheduler_->ScheduleWork(std::bind(
             &ObserveOnProducer::OnErrorOnScheduler, 
             As<ObserveOnProducer>(shared_from_this()),
             error));
@@ -40,7 +40,7 @@ public:
 
     void OnCompleted() override {
 
-        scheduler_->Schedule(std::bind(
+        scheduler_->ScheduleWork(std::bind(
             &ObserveOnProducer::OnCompletedOnScheduler, 
             As<ObserveOnProducer>(shared_from_this())));
     }
