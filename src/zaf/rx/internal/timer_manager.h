@@ -4,7 +4,7 @@
 #include <deque>
 #include <thread>
 #include <mutex>
-#include <zaf/rx/scheduler.h>
+#include <zaf/rx/scheduler/scheduler.h>
 
 namespace zaf::rx::internal {
 

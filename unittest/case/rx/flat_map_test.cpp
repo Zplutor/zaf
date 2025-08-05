@@ -1,7 +1,7 @@
 #include <mutex>
 #include <optional>
 #include <gtest/gtest.h>
-#include <zaf/rx/scheduler.h>
+#include <zaf/rx/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/subject.h>
 
 TEST(RxFlatMapTest, FlatMap) {
@@ -67,7 +67,7 @@ TEST(RxFlatMapTest, AsyncObservable) {
 
     std::vector<std::string> result;
 
-    auto scheduler = zaf::rx::Scheduler::CreateOnSingleThread();
+    auto scheduler = std::make_shared<zaf::rx::SingleThreadScheduler>();
 
     zaf::rx::Subject<int> subject;
     auto sub = subject.AsObservable().ObserveOn(scheduler)

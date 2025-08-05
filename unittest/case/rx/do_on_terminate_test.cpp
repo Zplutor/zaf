@@ -1,7 +1,7 @@
 #include <mutex>
 #include <gtest/gtest.h>
 #include <zaf/base/error/error.h>
-#include <zaf/rx/scheduler.h>
+#include <zaf/rx/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/subject.h>
 #include <zaf/rx/subscription_host.h>
 
@@ -99,7 +99,7 @@ TEST(RxDoOnTerminatedTest, DestroySource) {
     std::unique_lock<std::mutex> unique_lock{ lock };
 
     sub_host->Subscriptions() += subject->AsObservable()
-        .ObserveOn(rx::Scheduler::CreateOnSingleThread())
+        .ObserveOn(std::make_shared<rx::SingleThreadScheduler>())
         .DoOnTerminate([&]() {
 
             subject.reset();

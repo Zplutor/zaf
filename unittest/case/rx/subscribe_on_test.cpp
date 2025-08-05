@@ -2,7 +2,7 @@
 #include <thread>
 #include <gtest/gtest.h>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/scheduler.h>
+#include <zaf/rx/scheduler/single_thread_scheduler.h>
 
 TEST(RxSubscribeOnTest, SubscribeOn) {
 
@@ -22,7 +22,7 @@ TEST(RxSubscribeOnTest, SubscribeOn) {
         return zaf::rx::Subscription{};
     });
 
-    observable = observable.SubscribeOn(zaf::rx::Scheduler::CreateOnSingleThread());
+    observable = observable.SubscribeOn(std::make_shared<zaf::rx::SingleThreadScheduler>());
     auto subscription = observable.Subscribe([&](int) {
         on_next_thread = std::this_thread::get_id();
     },

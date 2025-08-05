@@ -85,9 +85,6 @@
     <Filter Include="zaf\rx\internal\thread">
       <UniqueIdentifier>{a652b86e-a73a-4800-9586-d72c1011f010}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\rx\internal\scheduler">
-      <UniqueIdentifier>{b8fa2c2c-485a-499d-81f7-d6824a345d84}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\rx\internal\operator">
       <UniqueIdentifier>{8bc181b1-db4c-40cf-8d10-df9eb5d34dba}</UniqueIdentifier>
     </Filter>
@@ -201,6 +198,9 @@
     </Filter>
     <Filter Include="zaf\rx\thread">
       <UniqueIdentifier>{917a0620-aacd-4d62-8bb9-4bce337ab382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\rx\scheduler">
+      <UniqueIdentifier>{37e73615-4cc8-46d2-91ab-c66d0047a3da}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -423,9 +423,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\thread\thread_manager.cpp">
       <Filter>zaf\rx\internal\thread</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\rx\scheduler.cpp">
-      <Filter>zaf\rx</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\observer_core.cpp">
       <Filter>zaf\rx\internal</Filter>
@@ -1324,6 +1321,15 @@
     <ClCompile Include="src\zaf\rx\thread\main_thread.cpp">
       <Filter>zaf\rx\thread</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\scheduler\single_thread_scheduler.cpp">
+      <Filter>zaf\rx\scheduler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\scheduler\main_thread_scheduler.cpp">
+      <Filter>zaf\rx\scheduler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\scheduler\timer_scheduler.cpp">
+      <Filter>zaf\rx\scheduler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1728,12 +1734,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\thread\thread_manager.h">
       <Filter>zaf\rx\internal\thread</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\scheduler\single_thread_scheduler.h">
-      <Filter>zaf\rx\internal\scheduler</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\scheduler.h">
-      <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observer_core.h">
       <Filter>zaf\rx\internal</Filter>
@@ -3087,6 +3087,18 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\thread\run_loop_thread.h">
       <Filter>zaf\rx\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\scheduler\single_thread_scheduler.h">
+      <Filter>zaf\rx\scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\scheduler\scheduler.h">
+      <Filter>zaf\rx\scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\scheduler\main_thread_scheduler.h">
+      <Filter>zaf\rx\scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\scheduler\timer_scheduler.h">
+      <Filter>zaf\rx\scheduler</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

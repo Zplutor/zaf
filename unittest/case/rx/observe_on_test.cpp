@@ -1,7 +1,7 @@
 #include <mutex>
 #include <thread>
 #include <gtest/gtest.h>
-#include <zaf/rx/scheduler.h>
+#include <zaf/rx/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/subject.h>
 
 TEST(RxObserveOnTest, ObserveOn) {
@@ -18,7 +18,8 @@ TEST(RxObserveOnTest, ObserveOn) {
     //OnNext and OnCompleted
     {
         zaf::rx::Subject<int> subject;
-        auto observable = subject.AsObservable().ObserveOn(zaf::rx::Scheduler::CreateOnSingleThread());
+        auto observable = subject.AsObservable().ObserveOn(
+            std::make_shared<zaf::rx::SingleThreadScheduler>());
 
         auto subscription = observable.Subscribe([&](int) {
             on_next_thread = std::this_thread::get_id();
@@ -37,7 +38,8 @@ TEST(RxObserveOnTest, ObserveOn) {
     //OnError
     {
         zaf::rx::Subject<int> subject;
-        auto observable = subject.AsObservable().ObserveOn(zaf::rx::Scheduler::CreateOnSingleThread());
+        auto observable = subject.AsObservable().ObserveOn(
+            std::make_shared<zaf::rx::SingleThreadScheduler>());
 
         auto subscription = observable.Subscribe([](int) { },
         [&](const std::exception_ptr&) {

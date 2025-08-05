@@ -4,7 +4,7 @@
 #include <zaf/base/error/invalid_data_error.h>
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/scheduler.h>
+#include <zaf/rx/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/single.h>
 
 TEST(RxCreateTest, Create_OnCompleted) {
@@ -175,8 +175,8 @@ TEST(RxCreateTest, Create_Unsubscribe) {
         }
     });
 
-    auto subscribe_scheduler = zaf::rx::Scheduler::CreateOnSingleThread();
-    auto observe_scheduler = zaf::rx::Scheduler::CreateOnSingleThread();
+    auto subscribe_scheduler = std::make_shared<zaf::rx::SingleThreadScheduler>();
+    auto observe_scheduler = std::make_shared<zaf::rx::SingleThreadScheduler>();
 
     std::condition_variable cv;
     std::mutex lock;
@@ -243,7 +243,7 @@ TEST(RxCreateTest, Create_Single) {
 
 TEST(RxCreateTest, CreateOn_ThreadID) {
 
-    auto scheduler = zaf::rx::Scheduler::CreateOnSingleThread();
+    auto scheduler = std::make_shared<zaf::rx::SingleThreadScheduler>();
     std::thread::id run_thread_id = std::this_thread::get_id();
     std::thread::id on_next_thread_id;
 
@@ -277,7 +277,7 @@ TEST(RxCreateTest, CreateOn_ThreadID) {
 
 TEST(RxCreateTest, CreateOn_Single) {
 
-    auto scheduler = zaf::rx::Scheduler::CreateOnSingleThread();
+    auto scheduler = std::make_shared<zaf::rx::SingleThreadScheduler>();
     std::thread::id run_thread_id = std::this_thread::get_id();
     std::thread::id on_success_thread_id;
 

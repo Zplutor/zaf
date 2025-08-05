@@ -1,7 +1,7 @@
 #include <zaf/control/caret.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
-#include <zaf/rx/scheduler.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/window/window.h>
 
@@ -73,7 +73,7 @@ void Caret::ShowCaret() {
     is_blink_on_ = true;
 
     blink_timer_subscription_ = rx::Interval(std::chrono::milliseconds(blink_time))
-        .ObserveOn(rx::Scheduler::Main())
+        .ObserveOn(rx::MainThreadScheduler::Instance())
         .Subscribe([this](int) {
         
         is_blink_on_ = !is_blink_on_;

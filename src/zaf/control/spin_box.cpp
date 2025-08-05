@@ -6,7 +6,7 @@
 #include <zaf/control/spin_button.h>
 #include <zaf/control/spin_edit.h>
 #include <zaf/creation.h>
-#include <zaf/rx/scheduler.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 
 namespace zaf {
@@ -119,7 +119,7 @@ void SpinBox::InitializeButtonEvents(
         auto timer = rx::Timer(
             std::chrono::milliseconds(300),
             std::chrono::milliseconds(50),
-            rx::Scheduler::Main());
+            rx::MainThreadScheduler::Instance());
 
         timer_subscription = timer.Subscribe(std::bind([this, increase]() {
             ChangeValueByButtonEvent(increase);

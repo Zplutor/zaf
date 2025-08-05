@@ -8,6 +8,13 @@ RxRuntime& RxRuntime::GetInstance() {
 }
 
 
+RxRuntime::RxRuntime() {
+
+    main_thread_scheduler_.reset(new rx::MainThreadScheduler{ thread_manager_.GetMainThread() });
+    timer_scheduler_.reset(new rx::TimerScheduler{ thread_manager_.CreateNewThread() });
+}
+
+
 TimerManager& RxRuntime::GetTimerManager() {
 
     std::call_once(timer_manager_once_flag_, [this]() {

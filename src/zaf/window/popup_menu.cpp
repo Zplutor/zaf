@@ -4,7 +4,7 @@
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/dpi.h>
-#include <zaf/rx/scheduler.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/window/internal/popup_menu_controller.h>
 #include <zaf/window/window_class_registry.h>
@@ -406,7 +406,7 @@ void PopupMenu::DelayShowSubMenu() {
     SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &hover_time, 0);
 
     show_sub_menu_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
-        .ObserveOn(rx::Scheduler::Main())
+        .ObserveOn(rx::MainThreadScheduler::Instance())
         .Subscribe(std::bind(&PopupMenu::ShowCurrentSubMenu, this));
 }
 
@@ -431,7 +431,7 @@ void PopupMenu::DelayCloseSubMenu() {
     SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &hover_time, 0);
 
     close_sub_menu_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
-        .ObserveOn(rx::Scheduler::Main())
+        .ObserveOn(rx::MainThreadScheduler::Instance())
         .Subscribe(std::bind(&PopupMenu::CloseCurrentSubMenu, this));
 }
 

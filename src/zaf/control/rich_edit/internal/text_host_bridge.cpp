@@ -3,7 +3,7 @@
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/dpi.h>
-#include <zaf/rx/scheduler.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/window/window.h>
 
@@ -188,7 +188,7 @@ BOOL TextHostBridge::TxSetCaretPos(INT x, INT y) {
 BOOL TextHostBridge::TxSetTimer(UINT idTimer, UINT uTimeout) {
 
     timers_[idTimer] = rx::Interval(std::chrono::milliseconds(uTimeout))
-        .ObserveOn(rx::Scheduler::Main())
+        .ObserveOn(rx::MainThreadScheduler::Instance())
         .Subscribe([this, idTimer](int) {
 
         auto rich_edit = rich_edit_.lock();
