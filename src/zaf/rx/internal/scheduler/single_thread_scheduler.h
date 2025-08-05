@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/rx/scheduler.h>
-#include <zaf/rx/run_loop_thread.h>
+#include <zaf/rx/thread/run_loop_thread.h>
 
 namespace zaf::rx::internal {
 

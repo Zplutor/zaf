@@ -5,7 +5,7 @@
 #include <optional>
 #include <thread>
 #include <vector>
-#include <zaf/rx/run_loop_thread.h>
+#include <zaf/rx/thread/run_loop_thread.h>
 
 namespace zaf::testing {
 class DefaultRunLoopThreadTest;

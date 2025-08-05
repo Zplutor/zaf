@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_operation_error.h>
-#include <zaf/rx/default_run_loop_thread.h>
+#include <zaf/rx/thread/default_run_loop_thread.h>
 
 namespace zaf::testing {
 
