@@ -1,6 +1,5 @@
-#include "default_run_loop_thread.h"
-#include "default_run_loop_thread.h"
 #include <zaf/rx/default_run_loop_thread.h>
+#include <zaf/base/error/invalid_operation_error.h>
 
 namespace zaf::rx {
 
@@ -32,6 +31,9 @@ void DefaultRunLoopThread::PostWork(Closure work) {
 
     {
         std::lock_guard<std::mutex> lock(state_->lock);
+        if (state_->is_stopped) {
+            throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+        }
         state_->queued_works.push_back(std::move(work));
     }
     state_->work_event.notify_one();
@@ -56,6 +58,9 @@ void DefaultRunLoopThread::PostWorkAt(
 
     {
         std::lock_guard<std::mutex> lock(state_->lock);
+        if (state_->is_stopped) {
+            throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+        }
 
         auto iterator = std::lower_bound(
             state_->delayed_works.begin(),
