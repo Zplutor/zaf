@@ -40,11 +40,12 @@ void DefaultRunLoopThread::PostWork(Closure work) {
 }
 
 
-void DefaultRunLoopThread::PostDelayedWork(
+std::shared_ptr<Disposable> DefaultRunLoopThread::PostDelayedWork(
     std::chrono::steady_clock::duration delay, 
     Closure work) {
 
     PostWorkAt(std::chrono::steady_clock::now() + delay, std::move(work));
+    return nullptr;
 }
 
 

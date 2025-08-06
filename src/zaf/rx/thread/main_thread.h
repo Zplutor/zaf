@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <mutex>
 #include <zaf/rx/thread/run_loop_thread.h>
 
 namespace zaf::rx::internal {
@@ -20,11 +21,54 @@ public:
     ~MainThread();
 
     void PostWork(Closure work) override;
-    void PostDelayedWork(std::chrono::steady_clock::duration delay, Closure work) override;
+
+    std::shared_ptr<Disposable> PostDelayedWork(
+        std::chrono::steady_clock::duration delay, 
+        Closure work) override;
 
     HWND WindowHandle() const noexcept {
-        return window_handle_;
+        return state_->window_handle;
     }
+
+private:
+    class DelayedWorkItem;
+
+    class State {
+    public:
+        void AddDelayedWorkItem(std::shared_ptr<DelayedWorkItem> work_item);
+
+        std::shared_ptr<DelayedWorkItem> TakeDelayedWorkItem(
+            DelayedWorkItem* item_pointer) noexcept;
+
+    public:
+        HWND window_handle{};
+
+    private:
+        std::mutex lock_;
+        // Delayed work items, sorted by their pointer addresses.
+        std::vector<std::shared_ptr<DelayedWorkItem>> delayed_work_items_;
+    };
+
+    class DelayedWorkItem : public Disposable {
+    public:
+        DelayedWorkItem(Closure work, std::weak_ptr<State> state);
+
+        void Execute();
+
+        void Dispose() noexcept override;
+
+        bool IsDisposed() const noexcept override {
+            return is_disposed_;
+        }
+
+    private:
+        bool MarkAsDisposed() noexcept;
+
+    private:
+        Closure work_;
+        std::weak_ptr<State> state_;
+        std::atomic<bool> is_disposed_{ false };
+    };
 
 private:
     static void RegisterWindowClass();
@@ -40,8 +84,10 @@ private:
 
     MainThread();
 
+    void OnTimer(UINT_PTR timer_id);
+
 private:
-    HWND window_handle_{};
+    std::shared_ptr<State> state_;
 };
 
 }

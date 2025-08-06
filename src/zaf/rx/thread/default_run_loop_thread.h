@@ -22,7 +22,10 @@ public:
     ~DefaultRunLoopThread();
 
     void PostWork(Closure work) override;
-    void PostDelayedWork(std::chrono::steady_clock::duration delay, Closure work) override;
+
+    std::shared_ptr<Disposable> PostDelayedWork(
+        std::chrono::steady_clock::duration delay, 
+        Closure work) override;
 
 private:
     class DelayedWorkItem {

@@ -28,13 +28,17 @@ public:
 
     void OnUnsubscribe() noexcept override {
         is_unsubscribed_ = true;
+        if (timer_) {
+            timer_->Dispose();
+            timer_.reset();
+        }
     }
 
 private:
     void SetNextDelayTimer() {
 
         auto next_delay = GetNextDelay();
-        scheduler_->ScheduleDelayedWork(
+        timer_ = scheduler_->ScheduleDelayedWork(
             next_delay,
             std::bind(&TimerProducer::OnTimer, As<TimerProducer>(shared_from_this())));
     }
@@ -71,6 +75,7 @@ private:
     std::chrono::steady_clock::duration delay_;
     std::optional<std::chrono::steady_clock::duration> interval_;
     std::shared_ptr<Scheduler> scheduler_;
+    std::shared_ptr<Disposable> timer_;
     std::atomic<std::size_t> emission_value_{};
     std::atomic<bool> is_unsubscribed_{};
 };

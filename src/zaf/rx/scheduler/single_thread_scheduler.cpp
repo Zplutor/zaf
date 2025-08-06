@@ -20,11 +20,11 @@ void SingleThreadScheduler::ScheduleWork(Closure work) {
 }
 
 
-void SingleThreadScheduler::ScheduleDelayedWork(
+std::shared_ptr<Disposable> SingleThreadScheduler::ScheduleDelayedWork(
     std::chrono::steady_clock::duration delay, 
     Closure work) {
 
-    thread_->PostDelayedWork(delay, std::move(work));
+    return thread_->PostDelayedWork(delay, std::move(work));
 }
 
 }

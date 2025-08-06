@@ -17,7 +17,7 @@ void MainThread::RegisterWindowClass() {
     class_info.style = 0;
     class_info.lpfnWndProc = MainThread::WindowProcedure;
     class_info.cbClsExtra = 0;
-    class_info.cbWndExtra = 0;
+    class_info.cbWndExtra = sizeof(LONG_PTR);
     class_info.hInstance = nullptr;
     class_info.hIcon = nullptr;
     class_info.hCursor = nullptr;
@@ -39,11 +39,25 @@ LRESULT CALLBACK MainThread::WindowProcedure(
     WPARAM wparam,
     LPARAM lparam) {
 
-    if (message_id == DoWorkMessageId) {
-
+    if (message_id == WM_NCCREATE) {
+        auto create_struct = reinterpret_cast<const CREATESTRUCTA*>(lparam);
+        SetWindowLongPtr(
+            hwnd,
+            GWLP_USERDATA,
+            reinterpret_cast<LONG_PTR>(create_struct->lpCreateParams));
+    }
+    else if (message_id == DoWorkMessageId) {
         auto work = reinterpret_cast<Closure*>(wparam);
         (*work)();
         delete work;
+        return 0;
+    }
+    else if (message_id == WM_TIMER) {
+        LONG_PTR user_data = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+        auto main_thread = reinterpret_cast<MainThread*>(user_data);
+        if (main_thread) {
+            main_thread->OnTimer(static_cast<UINT_PTR>(wparam));
+        }
         return 0;
     }
 
@@ -56,11 +70,11 @@ const std::shared_ptr<MainThread>& MainThread::Instance() noexcept {
 }
 
 
-MainThread::MainThread() {
+MainThread::MainThread() : state_(std::make_shared<State>()) {
 
     RegisterWindowClass();
 
-    window_handle_ = CreateWindow(
+    state_->window_handle = CreateWindow(
         WindowClassName,
         L"", 
         0, 
@@ -70,17 +84,17 @@ MainThread::MainThread() {
         0, 
         HWND_MESSAGE, 
         nullptr, 
-        nullptr, 
-        0);
+        nullptr,
+        this);
 
-    if (!window_handle_) {
+    if (!state_->window_handle) {
         ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 }
 
 
 MainThread::~MainThread() {
-    DestroyWindow(window_handle_);
+    DestroyWindow(state_->window_handle);
 }
 
 
@@ -88,7 +102,7 @@ void MainThread::PostWork(Closure work) {
 
     auto cloned_work = std::make_unique<Closure>(std::move(work));
     BOOL is_succeeded = PostMessage(
-        window_handle_, 
+        state_->window_handle,
         DoWorkMessageId, 
         reinterpret_cast<WPARAM>(cloned_work.get()), 
         0);
@@ -102,26 +116,119 @@ void MainThread::PostWork(Closure work) {
 }
 
 
-void MainThread::PostDelayedWork(std::chrono::steady_clock::duration delay, Closure work) {
+std::shared_ptr<Disposable> MainThread::PostDelayedWork(
+    std::chrono::steady_clock::duration delay, 
+    Closure work) {
 
-    auto cloned_work = std::make_unique<Closure>(std::move(work));
+    auto work_item = std::make_shared<DelayedWorkItem>(std::move(work), state_);
+    state_->AddDelayedWorkItem(work_item);
 
     UINT_PTR result = SetTimer(
-        window_handle_, 
-        reinterpret_cast<UINT_PTR>(cloned_work.get()), 
-        static_cast<UINT>(std::chrono::duration_cast<std::chrono::milliseconds>(delay).count()), 
-        [](HWND hwnd, UINT, UINT_PTR id, DWORD) {
-            std::unique_ptr<Closure> work{ reinterpret_cast<Closure*>(id) };
-            (*work)();
-            KillTimer(hwnd, id);
-        });
+        state_->window_handle,
+        reinterpret_cast<UINT_PTR>(work_item.get()),
+        static_cast<UINT>(std::chrono::duration_cast<std::chrono::milliseconds>(delay).count()),
+        nullptr);
 
     if (!result) {
-        ZAF_THROW_WIN32_ERROR(GetLastError());
+
+        auto last_error = GetLastError();
+        // Remove the work item from the collection if the timer creation fails.
+        state_->TakeDelayedWorkItem(work_item.get());
+        ZAF_THROW_WIN32_ERROR(last_error);
     }
 
-    // Ownership is transferred to the timer callback.
-    cloned_work.release();  
+    return work_item;
+}
+
+
+void MainThread::OnTimer(UINT_PTR timer_id) {
+
+    // The timer of delayed work item is one-shot, so it will be killed after being triggered.
+    KillTimer(state_->window_handle, timer_id);
+
+    auto work_item_pointer = reinterpret_cast<DelayedWorkItem*>(timer_id);
+    auto work_item = state_->TakeDelayedWorkItem(work_item_pointer);
+    if (work_item) {
+        work_item->Execute();
+    }
+}
+
+
+void MainThread::State::AddDelayedWorkItem(std::shared_ptr<DelayedWorkItem> work_item) {
+
+    std::lock_guard<std::mutex> lock(lock_);
+
+    auto insert_iterator = std::lower_bound(
+        delayed_work_items_.begin(),
+        delayed_work_items_.end(),
+        work_item);
+
+    delayed_work_items_.insert(insert_iterator, std::move(work_item));
+}
+
+
+std::shared_ptr<MainThread::DelayedWorkItem> MainThread::State::TakeDelayedWorkItem(
+    DelayedWorkItem* item_pointer) noexcept {
+
+    std::lock_guard<std::mutex> lock(lock_);
+
+    auto iterator = std::lower_bound(
+        delayed_work_items_.begin(),
+        delayed_work_items_.end(),
+        item_pointer,
+        [](const std::shared_ptr<DelayedWorkItem>& item, DelayedWorkItem* pointer) {
+            return item.get() < pointer;
+        });
+
+    if (iterator == delayed_work_items_.end() || iterator->get() != item_pointer) {
+        return nullptr;
+    }
+
+    auto result = std::move(*iterator);
+    delayed_work_items_.erase(iterator);
+    return result;
+}
+
+
+MainThread::DelayedWorkItem::DelayedWorkItem(Closure work, std::weak_ptr<State> state) : 
+    work_(std::move(work)), 
+    state_(std::move(state)) {
+
+}
+
+
+void MainThread::DelayedWorkItem::Execute() {
+
+    if (!MarkAsDisposed()) {
+        return;
+    }
+
+    work_();
+    work_ = nullptr;
+}
+
+
+void MainThread::DelayedWorkItem::Dispose() noexcept {
+
+    if (!MarkAsDisposed()) {
+        return;
+    }
+
+    work_ = nullptr;
+
+    auto state = state_.lock();
+    if (!state) {
+        return;
+    }
+
+    KillTimer(state->window_handle, reinterpret_cast<UINT_PTR>(this));
+    state->TakeDelayedWorkItem(this);
+}
+
+
+bool MainThread::DelayedWorkItem::MarkAsDisposed() noexcept {
+    bool expected{ false };
+    return is_disposed_.compare_exchange_strong(expected, true);
 }
 
 }
