@@ -2,8 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/subscription/producer_subscription_core.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/rx_runtime.h>
-#include <zaf/rx/internal/timer_manager.h>
+#include <zaf/rx/scheduler/scheduler.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -24,60 +23,55 @@ public:
     }
 
     void Run() {
-        SetTimer();
+        SetNextDelayTimer();
     }
 
     void OnUnsubscribe() noexcept override {
-
-        is_unsubscribed_.store(true);
-        RxRuntime::GetInstance().GetTimerManager().CancelTimer(timer_id_);
+        is_unsubscribed_ = true;
     }
 
 private:
-    void SetTimer() {
+    void SetNextDelayTimer() {
 
-        auto& timer_manager = RxRuntime::GetInstance().GetTimerManager();
-        timer_id_ = timer_manager.SetTimer(
-            GetNextTimePoint(),
-            scheduler_,
+        auto next_delay = GetNextDelay();
+        scheduler_->ScheduleDelayedWork(
+            next_delay,
             std::bind(&TimerProducer::OnTimer, As<TimerProducer>(shared_from_this())));
     }
 
-    std::chrono::steady_clock::time_point GetNextTimePoint() {
-        auto now = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::duration GetNextDelay() {
         if (emission_value_ == 0) {
-            return now + delay_;
+            return delay_;
         }
         else if (interval_) {
-            return now + *interval_;
+            return *interval_;
         }
         // Should not reach here.
-        return now;
+        return std::chrono::steady_clock::duration::zero();
     }
 
     void OnTimer() {
 
-        if (is_unsubscribed_.load()) {
+        if (is_unsubscribed_) {
             return;
         }
 
-        EmitOnNext(emission_value_);
-        emission_value_++;
+        auto on_next_value = emission_value_.fetch_add(1);
+        EmitOnNext(on_next_value);
 
         if (!interval_) {
             EmitOnCompleted();
             return;
         }
 
-        SetTimer();
+        SetNextDelayTimer();
     }
 
 private:
     std::chrono::steady_clock::duration delay_;
     std::optional<std::chrono::steady_clock::duration> interval_;
     std::shared_ptr<Scheduler> scheduler_;
-    std::size_t emission_value_{};
-    TimerManager::TimerId timer_id_{};
+    std::atomic<std::size_t> emission_value_{};
     std::atomic<bool> is_unsubscribed_{};
 };
 

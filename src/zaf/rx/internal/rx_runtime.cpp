@@ -13,14 +13,4 @@ RxRuntime::RxRuntime() {
     main_thread_scheduler_.reset(new rx::MainThreadScheduler{ thread_manager_.GetMainThread() });
 }
 
-
-TimerManager& RxRuntime::GetTimerManager() {
-
-    std::call_once(timer_manager_once_flag_, [this]() {
-        timer_manager_ = std::make_unique<TimerManager>();
-    });
-
-    return *timer_manager_;
-}
-
 }
