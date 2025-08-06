@@ -405,8 +405,8 @@ void PopupMenu::DelayShowSubMenu() {
     UINT hover_time{};
     SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &hover_time, 0);
 
-    show_sub_menu_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
-        .ObserveOn(rx::MainThreadScheduler::Instance())
+    show_sub_menu_timer_ = 
+        rx::Timer(std::chrono::milliseconds(hover_time), rx::MainThreadScheduler::Instance())
         .Subscribe(std::bind(&PopupMenu::ShowCurrentSubMenu, this));
 }
 
@@ -430,8 +430,8 @@ void PopupMenu::DelayCloseSubMenu() {
     UINT hover_time{};
     SystemParametersInfo(SPI_GETMOUSEHOVERTIME, 0, &hover_time, 0);
 
-    close_sub_menu_timer_ = rx::Timer(std::chrono::milliseconds(hover_time))
-        .ObserveOn(rx::MainThreadScheduler::Instance())
+    close_sub_menu_timer_ = 
+        rx::Timer(std::chrono::milliseconds(hover_time), rx::MainThreadScheduler::Instance())
         .Subscribe(std::bind(&PopupMenu::CloseCurrentSubMenu, this));
 }
 

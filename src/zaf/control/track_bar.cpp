@@ -1,5 +1,6 @@
 #include <zaf/control/track_bar.h>
 #include <zaf/graphic/canvas.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 
 namespace zaf {
@@ -181,9 +182,10 @@ void TrackBar::StartPressingTimer(bool is_initial) {
 
     auto timeout = is_initial ? std::chrono::milliseconds(300) : std::chrono::milliseconds(50);
 
-    timer_sub_ = rx::Timer(timeout).Subscribe([this](int) {
-        ContinuePressing();
-    });
+    timer_sub_ = rx::Timer(timeout, rx::MainThreadScheduler::Instance()).Subscribe(
+        [this](std::size_t) {
+            ContinuePressing();
+        });
 }
 
 

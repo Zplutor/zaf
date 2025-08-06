@@ -1,12 +1,11 @@
 #include <zaf/rx/timer.h>
 #include <zaf/rx/internal/observable_factory.h>
 #include <zaf/rx/internal/observable/timer_observable.h>
-#include <zaf/rx/scheduler/timer_scheduler.h>
 
 namespace zaf::rx {
 namespace {
 
-Observable<int> CreateTimerObservable(
+Observable<std::size_t> CreateTimerObservable(
     std::chrono::steady_clock::duration delay,
     std::optional<std::chrono::steady_clock::duration> interval,
     std::shared_ptr<Scheduler> scheduler) {
@@ -16,17 +15,13 @@ Observable<int> CreateTimerObservable(
         std::move(interval),
         std::move(scheduler));
 
-    return internal::ObservableFactory<int>::CreateObservable(std::move(core));
+    return internal::ObservableFactory<std::size_t>::CreateObservable(std::move(core));
 }
 
-}
-
-Observable<int> Timer(std::chrono::steady_clock::duration delay) {
-    return CreateTimerObservable(std::move(delay), std::nullopt, TimerScheduler::Instance());
-}
+} // namespace
 
 
-Observable<int> Timer(
+Observable<std::size_t> Timer(
     std::chrono::steady_clock::duration delay,
     std::shared_ptr<Scheduler> scheduler) {
 
@@ -34,18 +29,7 @@ Observable<int> Timer(
 }
 
 
-Observable<int> Timer(
-    std::chrono::steady_clock::duration delay,
-    std::chrono::steady_clock::duration interval) {
-
-    return CreateTimerObservable(
-        std::move(delay), 
-        std::move(interval), 
-        TimerScheduler::Instance());
-}
-
-
-Observable<int> Timer(
+Observable<std::size_t> Timer(
     std::chrono::steady_clock::duration delay,
     std::chrono::steady_clock::duration interval,
     std::shared_ptr<Scheduler> scheduler) {
@@ -54,12 +38,7 @@ Observable<int> Timer(
 }
 
 
-Observable<int> Interval(std::chrono::steady_clock::duration interval) {
-    return CreateTimerObservable(interval, interval, TimerScheduler::Instance());
-}
-
-
-Observable<int> Interval(
+Observable<std::size_t> Interval(
     std::chrono::steady_clock::duration interval,
     std::shared_ptr<Scheduler> scheduler) {
 

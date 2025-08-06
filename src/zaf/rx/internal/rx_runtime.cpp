@@ -11,7 +11,6 @@ RxRuntime& RxRuntime::GetInstance() {
 RxRuntime::RxRuntime() {
 
     main_thread_scheduler_.reset(new rx::MainThreadScheduler{ thread_manager_.GetMainThread() });
-    timer_scheduler_.reset(new rx::TimerScheduler{ thread_manager_.CreateNewThread() });
 }
 
 

@@ -45,7 +45,7 @@ private:
 
     std::chrono::steady_clock::time_point GetNextTimePoint() {
         auto now = std::chrono::steady_clock::now();
-        if (trigger_count_ == 0) {
+        if (emission_value_ == 0) {
             return now + delay_;
         }
         else if (interval_) {
@@ -61,8 +61,8 @@ private:
             return;
         }
 
-        EmitOnNext(trigger_count_);
-        trigger_count_++;
+        EmitOnNext(emission_value_);
+        emission_value_++;
 
         if (!interval_) {
             EmitOnCompleted();
@@ -76,7 +76,7 @@ private:
     std::chrono::steady_clock::duration delay_;
     std::optional<std::chrono::steady_clock::duration> interval_;
     std::shared_ptr<Scheduler> scheduler_;
-    int trigger_count_{};
+    std::size_t emission_value_{};
     TimerManager::TimerId timer_id_{};
     std::atomic<bool> is_unsubscribed_{};
 };

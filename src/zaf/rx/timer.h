@@ -2,27 +2,29 @@
 
 #include <chrono>
 #include <zaf/rx/observable.h>
+#include <zaf/rx/scheduler/scheduler.h>
 
 namespace zaf::rx {
 
-Observable<int> Timer(std::chrono::steady_clock::duration delay);
-
-Observable<int> Timer(
+/**
+Creates an one-shot timer that emits after a delay.
+*/
+Observable<std::size_t> Timer(
     std::chrono::steady_clock::duration delay,
     std::shared_ptr<Scheduler> scheduler);
 
-Observable<int> Timer(
-    std::chrono::steady_clock::duration delay,
-    std::chrono::steady_clock::duration interval);
-
-Observable<int> Timer(
+/**
+Creates a timer that emits after a delay and then repeatedly emits at an interval.
+*/
+Observable<std::size_t> Timer(
     std::chrono::steady_clock::duration delay,
     std::chrono::steady_clock::duration interval,
     std::shared_ptr<Scheduler> scheduler);
 
-Observable<int> Interval(std::chrono::steady_clock::duration interval);
-
-Observable<int> Interval(
+/**
+Creates a repeating timer that emits at an interval.
+*/
+Observable<std::size_t> Interval(
     std::chrono::steady_clock::duration interval, 
     std::shared_ptr<Scheduler> scheduler);
 

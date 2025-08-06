@@ -1,6 +1,7 @@
 #include <zaf/application.h>
 #include <zaf/control/button.h>
 #include <zaf/window/window.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/base/timer.h>
 #include <zaf/control/layout/linear_layouter.h>
@@ -24,7 +25,9 @@ protected:
             
             BeforeTimer();
 
-            rx_timer_ = zaf::rx::Interval(std::chrono::milliseconds(TimerInterval)).Subscribe([this](int) {
+            rx_timer_ = zaf::rx::Interval(
+                std::chrono::milliseconds(TimerInterval),
+                zaf::rx::MainThreadScheduler::Instance()).Subscribe([this](std::size_t) {
                 OnTimer();
             });
         }));

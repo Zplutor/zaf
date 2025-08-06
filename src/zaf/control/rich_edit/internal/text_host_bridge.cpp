@@ -187,9 +187,11 @@ BOOL TextHostBridge::TxSetCaretPos(INT x, INT y) {
 
 BOOL TextHostBridge::TxSetTimer(UINT idTimer, UINT uTimeout) {
 
-    timers_[idTimer] = rx::Interval(std::chrono::milliseconds(uTimeout))
-        .ObserveOn(rx::MainThreadScheduler::Instance())
-        .Subscribe([this, idTimer](int) {
+    auto timer = rx::Interval(
+        std::chrono::milliseconds(uTimeout), 
+        rx::MainThreadScheduler::Instance());
+
+    timers_[idTimer] = timer.Subscribe([this, idTimer](std::size_t) {
 
         auto rich_edit = rich_edit_.lock();
         if (rich_edit) {

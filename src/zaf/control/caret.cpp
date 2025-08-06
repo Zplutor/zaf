@@ -72,10 +72,12 @@ void Caret::ShowCaret() {
 
     is_blink_on_ = true;
 
-    blink_timer_subscription_ = rx::Interval(std::chrono::milliseconds(blink_time))
-        .ObserveOn(rx::MainThreadScheduler::Instance())
-        .Subscribe([this](int) {
-        
+    auto timer = rx::Interval(
+        std::chrono::milliseconds(blink_time),
+        rx::MainThreadScheduler::Instance());
+
+    blink_timer_subscription_ = timer.Subscribe([this](std::size_t) {
+
         is_blink_on_ = !is_blink_on_;
         NeedRepaint();
     });

@@ -386,7 +386,6 @@
     <ClCompile Include="src\zaf\rx\internal\timer_manager.cpp" />
     <ClCompile Include="src\zaf\rx\scheduler\main_thread_scheduler.cpp" />
     <ClCompile Include="src\zaf\rx\scheduler\single_thread_scheduler.cpp" />
-    <ClCompile Include="src\zaf\rx\scheduler\timer_scheduler.cpp" />
     <ClCompile Include="src\zaf\rx\subscription.cpp" />
     <ClCompile Include="src\zaf\rx\subscription_bag.cpp" />
     <ClCompile Include="src\zaf\rx\thread\default_run_loop_thread.cpp" />
@@ -908,7 +907,6 @@
     <ClInclude Include="src\zaf\rx\scheduler\main_thread_scheduler.h" />
     <ClInclude Include="src\zaf\rx\scheduler\scheduler.h" />
     <ClInclude Include="src\zaf\rx\scheduler\single_thread_scheduler.h" />
-    <ClInclude Include="src\zaf\rx\scheduler\timer_scheduler.h" />
     <ClInclude Include="src\zaf\rx\subject_base.h" />
     <ClInclude Include="src\zaf\rx\subscriber_base.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\connectable_observable_core.h" />
