@@ -40,7 +40,7 @@ void ListCore::RegisterScrollBarEvents() {
 
 
 void ListCore::UnregisterScrollBarEvents() {
-    vertical_scroll_bar_sub_.Unsubscribe();
+    vertical_scroll_bar_sub_.Dispose();
 }
 
 

@@ -62,7 +62,7 @@ TEST(RxSubjectTest, SubscribeAfterOnCompleted) {
         [&](std::exception_ptr) { on_error_called = true; },
         [&]() { on_completed_called = true; }
     );
-    ASSERT_TRUE(sub.IsUnsubscribed());
+    ASSERT_TRUE(sub.IsDisposed());
     ASSERT_FALSE(on_next_called);
     ASSERT_FALSE(on_error_called);
     ASSERT_TRUE(on_completed_called);
@@ -133,7 +133,7 @@ TEST(RxSubjectTest, MultipleOnError) {
     [&]() {
         on_completed_called = true;
     });
-    ASSERT_TRUE(sub.IsUnsubscribed());
+    ASSERT_TRUE(sub.IsDisposed());
     ASSERT_TRUE(error.has_value());
     ASSERT_STREQ(error->what(), "error");
     ASSERT_FALSE(on_next_called);
@@ -157,7 +157,7 @@ TEST(RxSubjectTest, SubscribeAfterOnError) {
         [&](std::exception_ptr) { on_error_called = true; },
         [&]() { on_completed_called = true; }
     );
-    ASSERT_TRUE(sub.IsUnsubscribed());
+    ASSERT_TRUE(sub.IsDisposed());
     ASSERT_FALSE(on_next_called);
     ASSERT_TRUE(on_error_called);
     ASSERT_FALSE(on_completed_called);
@@ -200,8 +200,8 @@ TEST(RxSubjectTest, UnsubscribeOnDestroy) {
     auto sub2 = subject->AsObservable().Subscribe();
 
     subject.reset();
-    ASSERT_TRUE(sub1.IsUnsubscribed());
-    ASSERT_TRUE(sub2.IsUnsubscribed());
+    ASSERT_TRUE(sub1.IsDisposed());
+    ASSERT_TRUE(sub2.IsDisposed());
 }
 
 
@@ -217,7 +217,7 @@ TEST(RxSubjectTest, CancelSubscriptionExplicit) {
     });
 
     subject.AsObserver().OnNext(1);
-    subscription.Unsubscribe();
+    subscription.Dispose();
     subject.AsObserver().OnNext(2);
 
     std::vector<int> expected{ 1 };
@@ -257,9 +257,9 @@ TEST(RxSubjectTest, SubscriptionCount) {
     auto subscription2 = subject.AsObservable().Subscribe([](int) {});
     ASSERT_EQ(subject.Core()->SubscriptionCount(), 2);
 
-    subscription1.Unsubscribe();
+    subscription1.Dispose();
     ASSERT_EQ(subject.Core()->SubscriptionCount(), 1);
 
-    subscription2.Unsubscribe();
+    subscription2.Dispose();
     ASSERT_EQ(subject.Core()->SubscriptionCount(), 0);
 }

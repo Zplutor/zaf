@@ -29,7 +29,7 @@ TEST(RxSubscriptionBagTest, UnsubscribedSubscription) {
 
     zaf::rx::Subject<std::string> subject;
     auto sub = subject.AsObservable().Subscribe();
-    sub.Unsubscribe();
+    sub.Dispose();
 
     zaf::rx::SubscriptionBag bag;
     bag += sub;
@@ -102,14 +102,14 @@ TEST(RxSubscriptionBagTest, RemoveAfterFinish) {
         ASSERT_EQ(bag.Count(), 0);
     }
 
-    //Remove after Unsubscribe
+    //Remove after Dispose
     {
         zaf::rx::Subject<std::string> subject;
         auto subscription = subject.AsObservable().Subscribe([](std::string) {});
         bag += subscription;
         subject.AsObserver().OnNext("c");
         ASSERT_EQ(bag.Count(), 1);
-        subscription.Unsubscribe();
+        subscription.Dispose();
         ASSERT_EQ(bag.Count(), 0);
     }
 }

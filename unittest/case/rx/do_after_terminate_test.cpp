@@ -96,7 +96,7 @@ TEST(RxDoAfterTerminateTest, DoOnTerminate) {
 }
 
 
-TEST(RxDoAfterTerminateTest, Unsubscribe) {
+TEST(RxDoAfterTerminateTest, Dispose) {
 
     bool after_terminate_called{};
 
@@ -106,8 +106,8 @@ TEST(RxDoAfterTerminateTest, Unsubscribe) {
     })
     .Subscribe();
 
-    sub.Unsubscribe();
-    //Unsubscribe should not call DoAfterTerminate.
+    sub.Dispose();
+    //Dispose should not call DoAfterTerminate.
     ASSERT_EQ(after_terminate_called, false);
 }
 

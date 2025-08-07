@@ -258,8 +258,8 @@ void PopupMenu::OnDestroyed(const DestroyedInfo& event_info) {
 
     root_control_subscriptions_.Clear();
     showing_sub_menu_item_.reset();
-    show_sub_menu_timer_.Unsubscribe();
-    close_sub_menu_timer_.Unsubscribe();
+    show_sub_menu_timer_.Dispose();
+    close_sub_menu_timer_.Dispose();
 
     controller_->PopMenu(*this);
 }
@@ -362,7 +362,7 @@ void PopupMenu::SelectSpecifiedMenuItem(
     }
     //They are the same menu item, cancel closing sub menu.
     else {
-        close_sub_menu_timer_.Unsubscribe();
+        close_sub_menu_timer_.Dispose();
     }
 }
 
@@ -376,7 +376,7 @@ void PopupMenu::UnselectCurrentMenuItem() {
 
     selected_menu_item->SetIsSelected(false);
 
-    show_sub_menu_timer_.Unsubscribe();
+    show_sub_menu_timer_.Dispose();
     selected_menu_item_.reset();
 }
 
@@ -414,8 +414,8 @@ void PopupMenu::DelayShowSubMenu() {
 void PopupMenu::ShowCurrentSubMenu() {
 
     CloseCurrentSubMenu();
-    close_sub_menu_timer_.Unsubscribe();
-    show_sub_menu_timer_.Unsubscribe();
+    close_sub_menu_timer_.Dispose();
+    show_sub_menu_timer_.Dispose();
 
     auto new_showing_sub_menu_item = selected_menu_item_.lock();
     if (new_showing_sub_menu_item) {

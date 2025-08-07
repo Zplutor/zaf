@@ -53,7 +53,7 @@ protected:
 private:
     void BeforeTimer() {
 
-        rx_timer_.Unsubscribe();
+        rx_timer_.Dispose();
         window_timer_.reset();
 
         start_time_ = std::chrono::steady_clock::now();
@@ -74,7 +74,7 @@ private:
             return;
         }
 
-        rx_timer_.Unsubscribe();
+        rx_timer_.Dispose();
         window_timer_.reset();
 
         CalculateStatistic();

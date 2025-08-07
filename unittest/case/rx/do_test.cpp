@@ -184,7 +184,7 @@ TEST(RxDoTest, OnNextOnErrorOnCompleted) {
 }
 
 
-TEST(RxDoTest, Unsubscribe) {
+TEST(RxDoTest, Dispose) {
 
     std::vector<int> do_values;
     std::vector<int> observed_values;
@@ -199,7 +199,7 @@ TEST(RxDoTest, Unsubscribe) {
 
     subject.AsObserver().OnNext(1);
     subject.AsObserver().OnNext(2);
-    subscription.Unsubscribe();
+    subscription.Dispose();
     subject.AsObserver().OnNext(3);
 
     std::vector<int> expected{ 1, 2 };

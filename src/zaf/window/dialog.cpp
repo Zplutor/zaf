@@ -155,7 +155,7 @@ bool Dialog::RemoveDialogButton(const std::shared_ptr<Button>& button) {
         return false;
     }
 
-    iterator->second.click_event_subscription.Unsubscribe();
+    iterator->second.click_event_subscription.Dispose();
 
     dialog_buttons_.erase(iterator);
     return true;

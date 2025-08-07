@@ -21,8 +21,8 @@ void SubscriptionBag::Add(const Subscription& subscription) {
         return;
     }
 
-    auto notification_id = core->RegisterUnsubscribeNotification(std::bind(
-        &SubscriptionBag::OnSubscriptionCoreUnsubscribe,
+    auto notification_id = core->RegisterDisposeNotification(std::bind(
+        &SubscriptionBag::OnSubscriptionCoreDispose,
         this,
         std::placeholders::_1));
 
@@ -35,13 +35,13 @@ void SubscriptionBag::Add(const Subscription& subscription) {
 }
 
 
-void SubscriptionBag::OnSubscriptionCoreUnsubscribe(
-    rx::internal::UnsubscribeNotificationID notification_id) {
+void SubscriptionBag::OnSubscriptionCoreDispose(
+    rx::internal::DisposeNotificationID notification_id) {
 
     std::scoped_lock<std::mutex> lock(lock_);
 
     EraseIf(items_, [notification_id](const auto& item) {
-        return (item.unsubscribe_notification_id == notification_id);
+        return (item.dispose_notification_id == notification_id);
     });
 }
 
@@ -58,8 +58,8 @@ void SubscriptionBag::Clear() {
     for (const auto& each_item : items_) {
 
         const auto& core = each_item.subscription_core;
-        core->UnregisterUnsubscribeNotification(each_item.unsubscribe_notification_id);
-        core->Unsubscribe();
+        core->UnregisterDisposeNotification(each_item.dispose_notification_id);
+        core->Dispose();
     }
 
     items_.clear();

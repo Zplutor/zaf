@@ -4,7 +4,7 @@ void ControlViewPanel::SetExploredControl(const std::shared_ptr<zaf::Control>& c
 
     if (explored_control_ != nullptr) {
         RemoveChild(explored_control_);
-        explored_control_subscription_.Unsubscribe();
+        explored_control_subscription_.Dispose();
     }
 
     explored_control_ = control;

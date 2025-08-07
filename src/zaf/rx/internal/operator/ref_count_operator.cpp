@@ -36,7 +36,7 @@ std::shared_ptr<SubscriptionCore> RefCountOperator::Subscribe(
         return nullptr;
     }
 
-    auto notification_id = sub->RegisterUnsubscribeNotification(std::bind([connection]() {
+    auto notification_id = sub->RegisterDisposeNotification(std::bind([connection]() {
         DecreaseRef(connection);
     }));
 
@@ -104,7 +104,7 @@ void RefCountOperator::DecreaseRef(const std::shared_ptr<Connection>& connection
     }
 
     if (need_unsubscribe_subscription) {
-        need_unsubscribe_subscription->Unsubscribe();
+        need_unsubscribe_subscription->Dispose();
     }
 }
 

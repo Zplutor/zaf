@@ -20,13 +20,13 @@ public:
     explicit ProducerSubscriptionCore(std::shared_ptr<internal::Producer> producer) noexcept;
     ~ProducerSubscriptionCore();
 
-    void Unsubscribe() noexcept override;
-    bool IsUnsubscribed() const noexcept override;
+    void Dispose() noexcept override;
+    bool IsDisposed() const noexcept override;
 
-    std::optional<UnsubscribeNotificationID> RegisterUnsubscribeNotification(
-        UnsubscribeNotification callback) override;
+    std::optional<DisposeNotificationID> RegisterDisposeNotification(
+        DisposeNotification callback) override;
 
-    void UnregisterUnsubscribeNotification(UnsubscribeNotificationID id) override;
+    void UnregisterDisposeNotification(DisposeNotificationID id) override;
 
     const std::shared_ptr<internal::Producer>& Producer() const noexcept {
         return producer_;

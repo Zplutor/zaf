@@ -1,23 +1,16 @@
 #pragma once
 
-#include <functional>
-#include <zaf/base/non_copyable.h>
-#include <zaf/rx/internal/subscription/unsubscribe_notification.h>
+#include <zaf/rx/disposable.h>
+#include <zaf/rx/internal/subscription/dispose_notification.h>
 
 namespace zaf::rx::internal {
 
-class SubscriptionCore : NonCopyableNonMovable {
+class SubscriptionCore : public Disposable {
 public:
-    SubscriptionCore() = default;
-    virtual ~SubscriptionCore() = default;
+    virtual std::optional<DisposeNotificationID> RegisterDisposeNotification(
+        DisposeNotification callback) = 0;
 
-    virtual void Unsubscribe() noexcept = 0;
-    virtual bool IsUnsubscribed() const noexcept = 0;
-
-    virtual std::optional<UnsubscribeNotificationID> RegisterUnsubscribeNotification(
-        UnsubscribeNotification callback) = 0;
-
-    virtual void UnregisterUnsubscribeNotification(UnsubscribeNotificationID id) = 0;
+    virtual void UnregisterDisposeNotification(DisposeNotificationID id) = 0;
 };
 
 }

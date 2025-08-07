@@ -30,12 +30,12 @@ TEST(RxRefCountTest, Publish) {
     subject.AsObserver().OnNext(2);
     ASSERT_EQ(values, (std::vector<int>{ 1, 2, 2 }));
 
-    sub1.Unsubscribe();
+    sub1.Dispose();
     subject.AsObserver().OnNext(3);
     ASSERT_EQ(values, (std::vector<int>{ 1, 2, 2, 3 }));
 
     // The connection will be disconnected when the last subscription is unsubscribed.
-    sub2.Unsubscribe();
+    sub2.Dispose();
     subject.AsObserver().OnNext(4);
     ASSERT_EQ(values, (std::vector<int>{ 1, 2, 2, 3 }));
     ASSERT_FALSE(ref_count_operator->HasConnection());

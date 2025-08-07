@@ -10,9 +10,9 @@ SubjectCore::SubjectCore() :
 
 
 SubjectCore::~SubjectCore() {
-    // The multicast observer will unsubscribe all observers when it is destroyed.
+    // The multicast observer will dispose all observers when it is destroyed.
     multicast_observer_.reset();
-    producer_->Unsubscribe();
+    producer_->Dispose();
 }
 
 

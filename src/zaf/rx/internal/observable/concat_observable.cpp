@@ -38,10 +38,10 @@ public:
     }
 
 protected:
-    void OnUnsubscribe() noexcept override {
+    void OnDispose() noexcept override {
 
         if (current_sub_) {
-            current_sub_->Unsubscribe();
+            current_sub_->Dispose();
             current_sub_.reset();
         }
 

@@ -279,7 +279,7 @@ void ScrollBox::SetScrollContent(const std::shared_ptr<Control>& control) {
 
     auto update_guard = this->BeginUpdate();
 
-    scroll_content_rect_change_subscription_.Unsubscribe();
+    scroll_content_rect_change_subscription_.Dispose();
     viewport_control_->RemoveChild(previous_control);
 
     //Destroy layouter first for unregistering events before changing scroll content control.

@@ -40,7 +40,7 @@ TEST(RxTimerTest, OneShotTimer) {
     ASSERT_EQ(emitted_values, std::vector<std::size_t>{ 0 });
     ASSERT_FALSE(on_error_called);
     ASSERT_TRUE(on_completed_called);
-    ASSERT_TRUE(sub.IsUnsubscribed());
+    ASSERT_TRUE(sub.IsDisposed());
 }
 
 
@@ -76,7 +76,7 @@ TEST(RxTimerTest, DelayRepeatingTimer) {
     cv.wait(lock, [&]() {
         return emitted_values.size() >= 3;
     });
-    sub.Unsubscribe();
+    sub.Dispose();
 
     ASSERT_EQ(emitted_values, (std::vector<std::size_t>{ 0, 1, 2 }));
     ASSERT_FALSE(on_error_called);
@@ -115,7 +115,7 @@ TEST(RxTimerTest, RepeatingTimer) {
     cv.wait(lock, [&]() {
         return emitted_values.size() >= 3;
     });
-    sub.Unsubscribe();
+    sub.Dispose();
 
     ASSERT_EQ(emitted_values, (std::vector<std::size_t>{ 0, 1, 2 }));
     ASSERT_FALSE(on_error_called);

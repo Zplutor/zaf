@@ -31,7 +31,7 @@ public:
             As<SubscribeOnProducer>(shared_from_this())));
     }
 
-    void OnUnsubscribe() noexcept override {
+    void OnDispose() noexcept override {
 
         is_disposed_.store(true);
 
@@ -65,7 +65,7 @@ private:
     void UnsubscribeOnScheduler() {
 
         if (source_subscription_) {
-            source_subscription_->Unsubscribe();
+            source_subscription_->Dispose();
             source_subscription_.reset();
         }
 

@@ -3,13 +3,13 @@
 #include <mutex>
 #include <vector>
 #include <zaf/base/non_copyable.h>
-#include <zaf/rx/internal/subscription/unsubscribe_notification.h>
+#include <zaf/rx/internal/subscription/dispose_notification.h>
 #include <zaf/rx/subscription.h>
 
 namespace zaf::rx {
 
 /**
-Represents a container that unsubscribes added subscriptions when cleared or destroyed.
+Represents a container that disposes added subscriptions when cleared or destroyed.
 */
 class SubscriptionBag : NonCopyableNonMovable {
 public:
@@ -19,7 +19,7 @@ public:
     SubscriptionBag() noexcept;
 
     /**
-    Destructs the instance, unsubscribing all added subscriptions.
+    Destructs the instance, disposing all added subscriptions.
     */
     ~SubscriptionBag();
 
@@ -27,7 +27,7 @@ public:
     Adds a subscription to the bag.
 
     @param subscription
-        The subscription to add. The subscription won't be added if it is unsubscribed.
+        The subscription to add. The subscription won't be added if it is disposed.
 
     @throw std::bad_alloc
     */
@@ -44,7 +44,7 @@ public:
     void operator+=(const Subscription& subscription);
 
     /**
-    Clears and unsubscribes all subscriptions in the bag.
+    Clears and disposes all subscriptions in the bag.
     */
     void Clear();
 
@@ -57,11 +57,11 @@ private:
     class Item {
     public:
         std::shared_ptr<rx::internal::SubscriptionCore> subscription_core;
-        rx::internal::UnsubscribeNotificationID unsubscribe_notification_id{};
+        rx::internal::DisposeNotificationID dispose_notification_id{};
     };
 
 private:
-    void OnSubscriptionCoreUnsubscribe(rx::internal::UnsubscribeNotificationID notification_id);
+    void OnSubscriptionCoreDispose(rx::internal::DisposeNotificationID notification_id);
 
 private:
     mutable std::mutex lock_;

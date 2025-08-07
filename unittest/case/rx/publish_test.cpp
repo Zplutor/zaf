@@ -55,7 +55,7 @@ TEST(RxPublishTest, HotObservable) {
 }
 
 
-TEST(RxPublishTest, Unsubscribe) {
+TEST(RxPublishTest, Dispose) {
 
     zaf::rx::Subject<int> subject;
     auto observable = subject.AsObservable().Publish();
@@ -71,7 +71,7 @@ TEST(RxPublishTest, Unsubscribe) {
     auto connect_sub = observable.Connect();
     subject.AsObserver().OnNext(16);
 
-    connect_sub.Unsubscribe();
+    connect_sub.Dispose();
     subject.AsObserver().OnNext(16);
     ASSERT_EQ(on_next_values, (std::vector<int>{ 17, 18 }));
 }

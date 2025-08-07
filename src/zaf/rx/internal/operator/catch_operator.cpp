@@ -45,12 +45,12 @@ public:
     }
 
 protected:
-    void OnUnsubscribe() noexcept override {
+    void OnDispose() noexcept override {
 
         UnsubscribeSource();
 
         if (new_subscription_) {
-            new_subscription_->Unsubscribe();
+            new_subscription_->Dispose();
             new_subscription_.reset();
         }
 
@@ -86,7 +86,7 @@ private:
     void UnsubscribeSource() {
 
         if (source_subscription_) {
-            source_subscription_->Unsubscribe();
+            source_subscription_->Dispose();
             source_subscription_.reset();
         }
     }

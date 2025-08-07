@@ -37,9 +37,9 @@ public:
         EmitOnCompleted();
     }
 
-    void OnUnsubscribe() noexcept override {
+    void OnDispose() noexcept override {
         if (source_subscription_) {
-            source_subscription_->Unsubscribe();
+            source_subscription_->Dispose();
             source_subscription_.reset();
         }
         do_observer_.reset();

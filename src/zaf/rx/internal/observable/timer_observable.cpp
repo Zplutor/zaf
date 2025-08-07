@@ -26,7 +26,7 @@ public:
         SetNextDelayTimer();
     }
 
-    void OnUnsubscribe() noexcept override {
+    void OnDispose() noexcept override {
         is_unsubscribed_ = true;
         if (timer_) {
             timer_->Dispose();

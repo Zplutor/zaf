@@ -46,11 +46,11 @@ public:
     }
 
 protected:
-    void OnUnsubscribe() noexcept override {
+    void OnDispose() noexcept override {
 
         is_unsubscribed_.store(true);
         if (source_subscription_) {
-            source_subscription_->Unsubscribe();
+            source_subscription_->Dispose();
             source_subscription_.reset();
         }
     }

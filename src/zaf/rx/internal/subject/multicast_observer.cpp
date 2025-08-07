@@ -17,7 +17,7 @@ public:
     }
 
 private:
-    void OnUnsubscribe() noexcept override {
+    void OnDispose() noexcept override {
         auto owner = owner_.lock();
         if (owner) {
             owner->RemoveProducer(this);
@@ -31,9 +31,9 @@ private:
 
 MulticastObserver::~MulticastObserver() {
 
-    //Unsubscribe all producers.
+    //Dispose all producers.
     for (const auto& each_producer : producers_) {
-        each_producer->Unsubscribe();
+        each_producer->Dispose();
     }
 }
 

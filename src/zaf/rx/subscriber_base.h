@@ -12,8 +12,8 @@ template<
 >
 class SubscriberBase : public OBSERVER<T> {
 public:
-    bool IsUnsubscribed() const noexcept {
-        return subscription_core_->IsUnsubscribed();
+    bool IsDisposed() const noexcept {
+        return subscription_core_->IsDisposed();
     }
 
 protected:

@@ -170,7 +170,7 @@ TEST(RxCreateTest, Create_ThrowAfterOnError) {
 TEST(RxCreateTest, Create_Unsubscribe) {
 
     auto observable = zaf::rx::Observable<int>::Create([](zaf::rx::Subscriber<int> subscriber) {
-        while (!subscriber.IsUnsubscribed()) {
+        while (!subscriber.IsDisposed()) {
             subscriber.OnNext(0);
         }
     });
@@ -187,7 +187,7 @@ TEST(RxCreateTest, Create_Unsubscribe) {
         .ObserveOn(observe_scheduler)
         .Subscribe([&](int value) {
             std::scoped_lock<std::mutex> lock_guard(lock);
-            sub.Unsubscribe();
+            sub.Dispose();
             cv.notify_all();
         });
 

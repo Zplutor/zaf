@@ -3034,7 +3034,7 @@
     <ClInclude Include="src\zaf\rx\internal\operator\do_after_terminate_operator.h">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\subscription\unsubscribe_notification.h">
+    <ClInclude Include="src\zaf\rx\internal\subscription\dispose_notification.h">
       <Filter>zaf\rx\internal\subscription</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subscription\producer_subscription_core.h">

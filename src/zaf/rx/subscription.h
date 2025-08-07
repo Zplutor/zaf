@@ -21,9 +21,9 @@ public:
     Subscription(Subscription&& other) = default;
     Subscription& operator=(Subscription&& other) = default;
 
-    void Unsubscribe() noexcept;
+    void Dispose() noexcept;
 
-    bool IsUnsubscribed() const noexcept;
+    bool IsDisposed() const noexcept;
 
     const std::shared_ptr<rx::internal::SubscriptionCore>& Core() const noexcept {
         return core_;

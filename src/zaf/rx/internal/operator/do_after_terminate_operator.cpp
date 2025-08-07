@@ -37,14 +37,14 @@ public:
         EmitOnCompleted();
     }
 
-    void OnUnsubscribe() noexcept override {
+    void OnDispose() noexcept override {
 
         if (is_emitting_termination_) {
             after_terminate_();
         }
 
         if (source_subscription_) {
-            source_subscription_->Unsubscribe();
+            source_subscription_->Dispose();
             source_subscription_.reset();
         }
         after_terminate_ = nullptr;

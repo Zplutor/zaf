@@ -131,7 +131,7 @@ void SpinBox::InitializeButtonEvents(
     subscriptions += button->MouseUpEvent().Subscribe(
         [this, &timer_subscription](const zaf::MouseUpInfo& event_info) {
     
-        timer_subscription.Unsubscribe();
+        timer_subscription.Dispose();
     });
 }
 

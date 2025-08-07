@@ -172,7 +172,7 @@ TEST(ScrollBoxTest, MouseWheelEvent) {
         ASSERT_FALSE(is_handled);
     }
 
-    subscription.Unsubscribe();
+    subscription.Dispose();
     window->Destroy();
 }
 

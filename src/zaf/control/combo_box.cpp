@@ -112,7 +112,7 @@ void ComboBox::UninitializeDropDownListBox() {
     }
 
     drop_down_list_box_->SetMouseMoveCallback(nullptr);
-    drop_down_list_box_subscription_.Unsubscribe();
+    drop_down_list_box_subscription_.Dispose();
 }
 
 
@@ -137,7 +137,7 @@ void ComboBox::UninitializeEditBox() {
     }
 
     RemoveChild(edit_box_);
-    edit_box_subscription_.Unsubscribe();
+    edit_box_subscription_.Dispose();
 }
 
 

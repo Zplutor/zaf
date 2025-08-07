@@ -12,29 +12,29 @@ ProducerSubscriptionCore::ProducerSubscriptionCore(
 
 
 ProducerSubscriptionCore::~ProducerSubscriptionCore() {
-    producer_->Unsubscribe();
+    producer_->Dispose();
 }
 
 
-void ProducerSubscriptionCore::Unsubscribe() noexcept {
-    producer_->Unsubscribe();
+void ProducerSubscriptionCore::Dispose() noexcept {
+    producer_->Dispose();
 }
 
 
-bool ProducerSubscriptionCore::IsUnsubscribed() const noexcept {
-    return producer_->IsUnsubscribed();
+bool ProducerSubscriptionCore::IsDisposed() const noexcept {
+    return producer_->IsDisposed();
 }
 
 
-std::optional<UnsubscribeNotificationID> ProducerSubscriptionCore::RegisterUnsubscribeNotification(
-    UnsubscribeNotification callback) {
+std::optional<DisposeNotificationID> ProducerSubscriptionCore::RegisterDisposeNotification(
+    DisposeNotification callback) {
 
-    return producer_->RegisterUnsubscribeNotification(std::move(callback));
+    return producer_->RegisterDisposeNotification(std::move(callback));
 }
 
 
-void ProducerSubscriptionCore::UnregisterUnsubscribeNotification(UnsubscribeNotificationID id) {
-    producer_->UnregisterUnsubscribeNotification(id);
+void ProducerSubscriptionCore::UnregisterDisposeNotification(DisposeNotificationID id) {
+    producer_->UnregisterDisposeNotification(id);
 }
 
 }

@@ -50,7 +50,7 @@ void ScrollBoxLayouter::UnregisterScrollBarEvent(bool is_horizontal) {
         horizontal_scroll_bar_subscription_ : 
         vertical_scroll_bar_subscription_;
 
-    subscription.Unsubscribe();
+    subscription.Dispose();
 }
 
 

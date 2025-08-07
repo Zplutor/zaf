@@ -33,7 +33,7 @@ public:
         }
         catch (...) {
             if (source_subscription_) {
-                source_subscription_->Unsubscribe();
+                source_subscription_->Dispose();
             }
             TryToDeliverOnError(std::current_exception());
             return;
@@ -42,7 +42,7 @@ public:
         auto sub_id = ++mapper_subs_count_;
         auto mapper_sub = mapped_observable->Subscribe(ObserverCore::Create(
             [this](const std::any& value) {
-                if (!IsUnsubscribed()) {
+                if (!IsDisposed()) {
                     EmitOnNext(value);
                 }
             },
@@ -73,10 +73,10 @@ public:
         TryToDeliverOnCompleted();
     }
 
-    void OnUnsubscribe() noexcept override {
+    void OnDispose() noexcept override {
 
         if (source_subscription_) {
-            source_subscription_->Unsubscribe();
+            source_subscription_->Dispose();
             source_subscription_.reset();
         }
 
@@ -100,14 +100,14 @@ private:
     }
 
     void TryToDeliverOnError(const std::exception_ptr& error) {
-        if (!IsUnsubscribed()) {
+        if (!IsDisposed()) {
             EmitOnError(error);
         }
     }
 
     void TryToDeliverOnCompleted() {
 
-        if (IsUnsubscribed()) {
+        if (IsDisposed()) {
             return;
         }
 

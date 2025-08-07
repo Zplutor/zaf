@@ -49,7 +49,7 @@ TEST(RxFinallyTest, Finally) {
         ASSERT_EQ(test_state.on_completed_called, false);
         ASSERT_EQ(test_state.finally_called, false);
 
-        subscription.Unsubscribe();
+        subscription.Dispose();
         ASSERT_EQ(test_state.on_next_value, 2);
         ASSERT_EQ(test_state.on_error_called, false);
         ASSERT_EQ(test_state.on_completed_called, false);
@@ -69,7 +69,7 @@ TEST(RxFinallyTest, Finally) {
         ASSERT_EQ(test_state.finally_called, true);
 
         test_state = {};
-        subscription.Unsubscribe();
+        subscription.Dispose();
         ASSERT_EQ(test_state.finally_called, false);
     }
 
@@ -86,7 +86,7 @@ TEST(RxFinallyTest, Finally) {
         ASSERT_EQ(test_state.finally_called, true);
 
         test_state = {};
-        subscription.Unsubscribe();
+        subscription.Dispose();
         ASSERT_EQ(test_state.finally_called, false);
     }
 }

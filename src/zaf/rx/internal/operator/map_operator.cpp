@@ -26,7 +26,7 @@ public:
         }
         catch (...) {
             if (source_subscription_) {
-                source_subscription_->Unsubscribe();
+                source_subscription_->Dispose();
             }
             TryToDeliverOnError(std::current_exception());
             return;
@@ -40,16 +40,16 @@ public:
     }
 
     void OnCompleted() override {
-        if (!IsUnsubscribed()) {
+        if (!IsDisposed()) {
             EmitOnCompleted();
         }
     }
 
 protected:
-    void OnUnsubscribe() noexcept override {
+    void OnDispose() noexcept override {
 
         if (source_subscription_) {
-            source_subscription_->Unsubscribe();
+            source_subscription_->Dispose();
             source_subscription_.reset();
         }
 
@@ -58,7 +58,7 @@ protected:
 
 private:
     void TryToDeliverOnError(const std::exception_ptr& error) {
-        if (!IsUnsubscribed()) {
+        if (!IsDisposed()) {
             EmitOnError(error);
         }
     }

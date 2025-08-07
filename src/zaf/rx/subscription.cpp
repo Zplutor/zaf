@@ -14,16 +14,16 @@ Subscription::~Subscription() {
 }
 
 
-void Subscription::Unsubscribe() noexcept {
+void Subscription::Dispose() noexcept {
     if (core_) {
-        core_->Unsubscribe();
+        core_->Dispose();
     }
 }
 
 
-bool Subscription::IsUnsubscribed() const noexcept {
+bool Subscription::IsDisposed() const noexcept {
     if (core_) {
-        return core_->IsUnsubscribed();
+        return core_->IsDisposed();
     }
     return true;
 }
