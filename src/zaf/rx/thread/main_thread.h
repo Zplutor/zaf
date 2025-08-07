@@ -8,6 +8,10 @@ namespace zaf::rx::internal {
 class ThreadManager;
 }
 
+namespace zaf::testing {
+class MainThreadTest;
+}
+
 namespace zaf::rx {
 
 /**
@@ -25,10 +29,6 @@ public:
     std::shared_ptr<Disposable> PostDelayedWork(
         std::chrono::steady_clock::duration delay, 
         Closure work) override;
-
-    HWND WindowHandle() const noexcept {
-        return state_->window_handle;
-    }
 
 private:
     class DelayedWorkItem;
@@ -81,8 +81,13 @@ private:
 
 private:
     friend class internal::ThreadManager;
+    friend class testing::MainThreadTest;
 
     MainThread();
+
+    HWND WindowHandle() const noexcept {
+        return state_->window_handle;
+    }
 
     void OnTimer(UINT_PTR timer_id);
 
