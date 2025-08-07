@@ -5,6 +5,7 @@
 #include <optional>
 #include <thread>
 #include <vector>
+#include <zaf/rx/internal/thread/delayed_work_item_base.h>
 #include <zaf/rx/thread/run_loop_thread.h>
 
 namespace zaf::testing {
@@ -28,11 +29,7 @@ public:
         Closure work) override;
 
 private:
-    class DelayedWorkItem {
-    public:
-        std::chrono::steady_clock::time_point execute_time_point;
-        Closure work;
-    };
+    class DelayedWorkItem;
 
     class State {
     public:
@@ -45,7 +42,26 @@ private:
 
         // Works that need to be executed after a delay.
         // Sorted by execute time point.
-        std::deque<DelayedWorkItem> delayed_works;
+        std::deque<std::shared_ptr<DelayedWorkItem>> delayed_works;
+    };
+
+    class DelayedWorkItem : public internal::DelayedWorkItemBase {
+    public:
+        DelayedWorkItem(
+            std::chrono::steady_clock::time_point execute_time_point,
+            Closure work,
+            std::weak_ptr<State> state) noexcept;
+
+        const std::chrono::steady_clock::time_point& ExecuteTimePoint() const noexcept {
+            return execute_time_point_;
+        }
+
+    protected:
+        void OnDispose() noexcept override;
+
+    private:
+        std::chrono::steady_clock::time_point execute_time_point_;
+        std::weak_ptr<State> state_;
     };
 
 private:
@@ -57,7 +73,9 @@ private:
 private:
     friend class zaf::testing::DefaultRunLoopThreadTest;
 
-    void PostWorkAt(std::chrono::steady_clock::time_point execute_time_point, Closure work);
+    std::shared_ptr<Disposable> PostWorkAt(
+        std::chrono::steady_clock::time_point execute_time_point, 
+        Closure work);
 
 private:
     std::shared_ptr<State> state_;

@@ -44,18 +44,18 @@ std::shared_ptr<Disposable> DefaultRunLoopThread::PostDelayedWork(
     std::chrono::steady_clock::duration delay, 
     Closure work) {
 
-    PostWorkAt(std::chrono::steady_clock::now() + delay, std::move(work));
-    return nullptr;
+    return PostWorkAt(std::chrono::steady_clock::now() + delay, std::move(work));
 }
 
 
-void DefaultRunLoopThread::PostWorkAt(
+std::shared_ptr<Disposable> DefaultRunLoopThread::PostWorkAt(
     std::chrono::steady_clock::time_point execute_time_point, 
     Closure work) {
 
-    DelayedWorkItem work_item;
-    work_item.execute_time_point = execute_time_point;
-    work_item.work = std::move(work);
+    auto work_item = std::make_shared<DelayedWorkItem>(
+        execute_time_point,
+        std::move(work),
+        state_);
 
     {
         std::lock_guard<std::mutex> lock(state_->lock);
@@ -66,25 +66,26 @@ void DefaultRunLoopThread::PostWorkAt(
         auto iterator = std::lower_bound(
             state_->delayed_works.begin(),
             state_->delayed_works.end(),
-            work_item.execute_time_point,
-            [](const DelayedWorkItem& item,
-                const std::chrono::steady_clock::time_point& time_point) {
-                return item.execute_time_point < time_point;
+            work_item,
+            [](const std::shared_ptr<DelayedWorkItem>& existing,
+               const std::shared_ptr<DelayedWorkItem>& new_time) {
+                return existing->ExecuteTimePoint() < new_time->ExecuteTimePoint();
             });
 
         // The new work item should be inserted after the item which has the same execute time 
         // point. 
         if ((iterator != state_->delayed_works.end()) &&
-            (iterator->execute_time_point == work_item.execute_time_point)) {
+            ((*iterator)->ExecuteTimePoint() == work_item->ExecuteTimePoint())) {
 
-            state_->delayed_works.insert(std::next(iterator), std::move(work_item));
+            state_->delayed_works.insert(std::next(iterator), work_item);
         }
         else {
-            state_->delayed_works.insert(iterator, std::move(work_item));
+            state_->delayed_works.insert(iterator, work_item);
         }
     }
 
     state_->work_event.notify_one();
+    return work_item;
 }
 
 
@@ -138,13 +139,16 @@ std::optional<std::chrono::steady_clock::duration> DefaultRunLoopThread::Process
     while (!state->delayed_works.empty()) {
 
         auto& first_item = state->delayed_works.front();
-        if (first_item.execute_time_point <= now) {
+        if (first_item->ExecuteTimePoint() <= now) {
 
-            state->queued_works.push_back(std::move(first_item.work));
+            auto work = first_item->TakeWorkIfNotDisposed();
+            if (work) {
+                state->queued_works.push_back(std::move(work));
+            }
             state->delayed_works.pop_front();
         }
         else {
-            return first_item.execute_time_point - now;
+            return first_item->ExecuteTimePoint() - now;
         }
     }
 
@@ -157,6 +161,60 @@ void DefaultRunLoopThread::ExecuteQueuedWorks(std::vector<Closure>& queued_works
         each_work();
         // Free the memory of the work immediately after execution.
         each_work = nullptr;
+    }
+}
+
+
+DefaultRunLoopThread::DelayedWorkItem::DelayedWorkItem(
+    std::chrono::steady_clock::time_point execute_time_point,
+    Closure work,
+    std::weak_ptr<State> state) noexcept
+    :
+    DelayedWorkItemBase(std::move(work)),
+    execute_time_point_(execute_time_point),
+    state_(std::move(state)) {
+
+}
+
+
+void DefaultRunLoopThread::DelayedWorkItem::OnDispose() noexcept {
+
+    auto state = state_.lock();
+    if (!state) {
+        return;
+    }
+
+    bool need_notify{};
+    {
+        std::lock_guard<std::mutex> lock(state->lock);
+
+        auto iterator = std::lower_bound(
+            state->delayed_works.begin(),
+            state->delayed_works.end(),
+            this,
+            [](const std::shared_ptr<DelayedWorkItem>& existing,
+               DelayedWorkItem* current_item) {
+                return existing->ExecuteTimePoint() < current_item->ExecuteTimePoint();
+            });
+
+        for (; iterator != state->delayed_works.end(); ++iterator) {
+
+            if ((*iterator)->ExecuteTimePoint() != execute_time_point_) {
+                break;
+            }
+
+            if ((*iterator).get() == this) {
+                if (iterator == state->delayed_works.begin()) {
+                    need_notify = true;
+                }
+                state->delayed_works.erase(iterator);
+                break;
+            }
+        }
+    }
+
+    if (need_notify) {
+        state->work_event.notify_one();
     }
 }
 

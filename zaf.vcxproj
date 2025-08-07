@@ -903,6 +903,7 @@
     <ClInclude Include="src\zaf\resource\resource_factory.h" />
     <ClInclude Include="src\zaf\resource\uri_loader.h" />
     <ClInclude Include="src\zaf\rx\disposable.h" />
+    <ClInclude Include="src\zaf\rx\internal\thread\delayed_work_item_base.h" />
     <ClInclude Include="src\zaf\rx\observable_base.h" />
     <ClInclude Include="src\zaf\rx\scheduler\main_thread_scheduler.h" />
     <ClInclude Include="src\zaf\rx\scheduler\scheduler.h" />

@@ -3091,5 +3091,8 @@
     <ClInclude Include="src\zaf\rx\disposable.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\thread\delayed_work_item_base.h">
+      <Filter>zaf\rx\internal\thread</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

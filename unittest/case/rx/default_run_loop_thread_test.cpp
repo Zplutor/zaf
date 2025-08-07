@@ -27,10 +27,10 @@ protected:
     }
 
     // A wrapper method to expose the private PostWorkAt method for testing.
-    void PostWorkAt(
+    std::shared_ptr<zaf::rx::Disposable> PostWorkAt(
         std::chrono::steady_clock::time_point execute_time_point, 
         zaf::Closure work) {
-        run_loop_thread_->PostWorkAt(execute_time_point, std::move(work));
+        return run_loop_thread_->PostWorkAt(execute_time_point, std::move(work));
     }
 
 protected:
@@ -99,16 +99,19 @@ TEST_F(DefaultRunLoopThreadTest, PostDelayedWork) {
 
     std::thread::id execute_thread_id = std::this_thread::get_id();
 
-    RunLoopThread().PostDelayedWork(std::chrono::milliseconds(50), [&]() {
+    auto disposable = RunLoopThread().PostDelayedWork(std::chrono::milliseconds(50), [&]() {
         {
             std::lock_guard<std::mutex> lock_guard(mutex_);
             execute_thread_id = std::this_thread::get_id();
         }
         cv_.notify_one();
     });
+    ASSERT_NE(disposable, nullptr);
+    ASSERT_FALSE(disposable->IsDisposed());
 
     cv_.wait(lock);
     ASSERT_NE(execute_thread_id, std::this_thread::get_id());
+    ASSERT_TRUE(disposable->IsDisposed());
 }
 
 
@@ -151,7 +154,7 @@ TEST_F(DefaultRunLoopThreadTest, PostDelayedWork_ExecuteOrder) {
 
 // If two delayed works are executed at the same time point, they should be executed in the order 
 // they are posted.
-TEST_F(DefaultRunLoopThreadTest, PostDelayedWork_SameDelay) {
+TEST_F(DefaultRunLoopThreadTest, PostDelayedWork_SameTimePoint) {
 
     auto lock = GetLock();
 
@@ -176,6 +179,45 @@ TEST_F(DefaultRunLoopThreadTest, PostDelayedWork_SameDelay) {
         return execute_order.size() == 2;
     });
     ASSERT_EQ(execute_order, (std::vector<int>{ 1, 2 }));
+}
+
+
+TEST_F(DefaultRunLoopThreadTest, CancelDelayedWork) {
+
+    std::atomic<bool> is_work_executed{};
+    auto disposable = RunLoopThread().PostDelayedWork(std::chrono::milliseconds(50), [&]() {
+        is_work_executed = true;
+    });
+    ASSERT_NE(disposable, nullptr);
+    ASSERT_FALSE(disposable->IsDisposed());
+
+    disposable->Dispose();
+    ASSERT_TRUE(disposable->IsDisposed());
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    ASSERT_FALSE(is_work_executed.load());
+}
+
+
+TEST_F(DefaultRunLoopThreadTest, CancelDelayedWork_SameTimePoint) {
+
+    std::atomic<bool> is_work_executed{};
+    auto time_point = std::chrono::steady_clock::now() + std::chrono::milliseconds(50);
+    auto disposable1 = this->PostWorkAt(time_point, [&]() {
+        is_work_executed = true;
+    });
+    auto disposable2 = this->PostWorkAt(time_point, [&]() {
+        is_work_executed = true;
+    });
+
+    disposable2->Dispose();
+    ASSERT_TRUE(disposable2->IsDisposed());
+
+    disposable1->Dispose();
+    ASSERT_TRUE(disposable1->IsDisposed());
+    
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    ASSERT_FALSE(is_work_executed.load());
 }
 
 

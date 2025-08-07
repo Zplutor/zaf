@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <mutex>
+#include <zaf/rx/internal/thread/delayed_work_item_base.h>
 #include <zaf/rx/thread/run_loop_thread.h>
 
 namespace zaf::rx::internal {
@@ -49,25 +50,15 @@ private:
         std::vector<std::shared_ptr<DelayedWorkItem>> delayed_work_items_;
     };
 
-    class DelayedWorkItem : public Disposable {
+    class DelayedWorkItem : public internal::DelayedWorkItemBase {
     public:
         DelayedWorkItem(Closure work, std::weak_ptr<State> state);
 
-        void Execute();
-
-        void Dispose() noexcept override;
-
-        bool IsDisposed() const noexcept override {
-            return is_disposed_;
-        }
+    protected:
+        void OnDispose() noexcept override;
 
     private:
-        bool MarkAsDisposed() noexcept;
-
-    private:
-        Closure work_;
         std::weak_ptr<State> state_;
-        std::atomic<bool> is_disposed_{ false };
     };
 
 private:

@@ -149,7 +149,11 @@ void MainThread::OnTimer(UINT_PTR timer_id) {
     auto work_item_pointer = reinterpret_cast<DelayedWorkItem*>(timer_id);
     auto work_item = state_->TakeDelayedWorkItem(work_item_pointer);
     if (work_item) {
-        work_item->Execute();
+
+        auto work = work_item->TakeWorkIfNotDisposed();
+        if (work) {
+            work();
+        }
     }
 }
 
@@ -191,30 +195,13 @@ std::shared_ptr<MainThread::DelayedWorkItem> MainThread::State::TakeDelayedWorkI
 
 
 MainThread::DelayedWorkItem::DelayedWorkItem(Closure work, std::weak_ptr<State> state) : 
-    work_(std::move(work)), 
+    DelayedWorkItemBase(std::move(work)),
     state_(std::move(state)) {
 
 }
 
 
-void MainThread::DelayedWorkItem::Execute() {
-
-    if (!MarkAsDisposed()) {
-        return;
-    }
-
-    work_();
-    work_ = nullptr;
-}
-
-
-void MainThread::DelayedWorkItem::Dispose() noexcept {
-
-    if (!MarkAsDisposed()) {
-        return;
-    }
-
-    work_ = nullptr;
+void MainThread::DelayedWorkItem::OnDispose() noexcept {
 
     auto state = state_.lock();
     if (!state) {
@@ -223,12 +210,6 @@ void MainThread::DelayedWorkItem::Dispose() noexcept {
 
     KillTimer(state->window_handle, reinterpret_cast<UINT_PTR>(this));
     state->TakeDelayedWorkItem(this);
-}
-
-
-bool MainThread::DelayedWorkItem::MarkAsDisposed() noexcept {
-    bool expected{ false };
-    return is_disposed_.compare_exchange_strong(expected, true);
 }
 
 }
