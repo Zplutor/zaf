@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file
+    Defines the `zaf::rx::DefaultRunLoopThread` class.
+*/
+
 #include <deque>
 #include <mutex>
 #include <optional>
@@ -19,11 +24,41 @@ Represents a run loop thread with a default implementation.
 */
 class DefaultRunLoopThread : public RunLoopThread {
 public:
+    /**
+    Constructs the instance and starts the thread.
+
+    @throw std::bad_alloc
+    @throw std::system_error
+        Thrown if the thread cannot be created.
+    */
     DefaultRunLoopThread();
+
+    /**
+    Destructs the instance and stops the thread.
+
+    @details
+        This method waits for the thread to finish executing all queued works before returning.
+    */
     ~DefaultRunLoopThread();
 
+    /**
+    @copydoc zaf::rx::RunLoopThread::PostWork()
+
+    ---
+    @throw std::bad_alloc
+    @throw zaf::InvalidOperationError
+        Thrown if the thread is stopped.
+    */
     void PostWork(Closure work) override;
 
+    /**
+    @copydoc zaf::rx::RunLoopThread::PostDelayedWork()
+
+    ---
+    @throw std::bad_alloc
+    @throw zaf::InvalidOperationError
+        Thrown if the thread is stopped.
+    */
     std::shared_ptr<Disposable> PostDelayedWork(
         std::chrono::steady_clock::duration delay, 
         Closure work) override;

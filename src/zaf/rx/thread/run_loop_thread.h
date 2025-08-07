@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file
+    Defines the `zaf::rx::RunLoopThread` class.
+*/
+
 #include <chrono>
 #include <zaf/base/closure.h>
 #include <zaf/base/non_copyable.h>
@@ -7,13 +12,55 @@
 
 namespace zaf::rx {
 
+/**
+Represents a thread that runs a run loop.
+*/
 class RunLoopThread : NonCopyableNonMovable {
 public:
     RunLoopThread() = default;
     virtual ~RunLoopThread() = default;
 
+    /**
+    Posts a work to the thread which will be executed immediately.
+
+    @param work
+        The work to be executed.
+
+    @pre
+        The work is not null.
+
+    @throw zaf::PreconditionError
+    @throw ...
+        Any exception thrown by the run loop thread implementations.
+
+    @details
+        If the work is posted on the thread itself, it will be executed on the next run loop 
+        iteration.
+    */
     virtual void PostWork(Closure work) = 0;
 
+    /**
+    Posts a work to the thread which will be executed after a delay.
+
+    @param delay
+        The delay before executing the work.
+
+    @param work
+        The work to be executed.
+
+    @pre
+        The work is not null.
+
+    @return
+        A disposable object that can be used to cancel the delayed work.
+
+    @post
+        The returned object is not null.
+
+    @throw zaf::PreconditionError
+    @throw ...
+        Any exception thrown by the run loop thread implementations.
+    */
     virtual std::shared_ptr<Disposable> PostDelayedWork(
         std::chrono::steady_clock::duration delay, 
         Closure work) = 0;

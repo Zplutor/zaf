@@ -1,4 +1,5 @@
 #include <zaf/rx/thread/main_thread.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/base/error/win32_error.h>
 #include <zaf/rx/internal/rx_runtime.h>
 
@@ -100,6 +101,8 @@ MainThread::~MainThread() {
 
 void MainThread::PostWork(Closure work) {
 
+    ZAF_EXPECT(work);
+
     auto cloned_work = std::make_unique<Closure>(std::move(work));
     BOOL is_succeeded = PostMessage(
         state_->window_handle,
@@ -119,6 +122,8 @@ void MainThread::PostWork(Closure work) {
 std::shared_ptr<Disposable> MainThread::PostDelayedWork(
     std::chrono::steady_clock::duration delay, 
     Closure work) {
+
+    ZAF_EXPECT(work);
 
     auto work_item = std::make_shared<DelayedWorkItem>(std::move(work), state_);
     state_->AddDelayedWorkItem(work_item);

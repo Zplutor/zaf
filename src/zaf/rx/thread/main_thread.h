@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file
+    Defines the `zaf::rx::MainThread` class.
+*/
+
 #include <Windows.h>
 #include <mutex>
 #include <zaf/rx/internal/thread/delayed_work_item_base.h>
@@ -20,13 +25,41 @@ Represents the main thread of the application.
 */
 class MainThread : public RunLoopThread {
 public:
+    /**
+    Gets the singleton instance of the main thread.
+
+    @pre
+        The `zaf::Application::Initialize()` method has been called.
+
+    @return
+        The singleton instance of the main thread.
+
+    @post
+        The returned instance is not null.
+    */
     static const std::shared_ptr<MainThread>& Instance() noexcept;
 
 public:
     ~MainThread();
 
+    /**
+    @copydoc zaf::rx::RunLoopThread::PostWork()
+
+    ---
+    @throw std::bad_alloc
+    @throw zaf::Win32Error
+        Thrown if the work cannot be posted to the main thread.
+    */
     void PostWork(Closure work) override;
 
+    /**
+    @copydoc zaf::rx::RunLoopThread::PostDelayedWork()
+
+    ---
+    @throw std::bad_alloc
+    @throw zaf::Win32Error
+        Thrown if the delay timer cannot be created.
+    */
     std::shared_ptr<Disposable> PostDelayedWork(
         std::chrono::steady_clock::duration delay, 
         Closure work) override;

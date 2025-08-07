@@ -1,4 +1,5 @@
 #include <zaf/rx/thread/default_run_loop_thread.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/base/error/invalid_operation_error.h>
 
 namespace zaf::rx {
@@ -29,6 +30,8 @@ DefaultRunLoopThread::~DefaultRunLoopThread() {
 
 void DefaultRunLoopThread::PostWork(Closure work) {
 
+    ZAF_EXPECT(work);
+
     {
         std::lock_guard<std::mutex> lock(state_->lock);
         if (state_->is_stopped) {
@@ -43,6 +46,8 @@ void DefaultRunLoopThread::PostWork(Closure work) {
 std::shared_ptr<Disposable> DefaultRunLoopThread::PostDelayedWork(
     std::chrono::steady_clock::duration delay, 
     Closure work) {
+
+    ZAF_EXPECT(work);
 
     return PostWorkAt(std::chrono::steady_clock::now() + delay, std::move(work));
 }
