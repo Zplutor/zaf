@@ -160,7 +160,7 @@ private:
     }
 
 private:
-    std::chrono::steady_clock::time_point start_time_;
+    std::chrono::steady_clock::time_point start_time_{};
     std::vector<std::chrono::steady_clock::time_point> time_points_;
     zaf::rx::Subscription rx_timer_;
     std::shared_ptr<zaf::Timer> window_timer_;

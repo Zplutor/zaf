@@ -72,7 +72,7 @@ private:
     }
 
 private:
-    std::chrono::steady_clock::duration delay_;
+    std::chrono::steady_clock::duration delay_{};
     std::optional<std::chrono::steady_clock::duration> interval_;
     std::shared_ptr<Scheduler> scheduler_;
     std::shared_ptr<Disposable> timer_;
