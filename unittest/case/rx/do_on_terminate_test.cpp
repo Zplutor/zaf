@@ -1,6 +1,7 @@
 #include <mutex>
 #include <gtest/gtest.h>
 #include <zaf/base/error/error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/rx/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/subject.h>
 #include <zaf/rx/subscription_host.h>
@@ -112,4 +113,58 @@ TEST(RxDoOnTerminatedTest, DestroySource) {
 
     subject->AsObserver().OnCompleted();
     cv.wait(unique_lock);
+}
+
+
+// Exception thrown in DoOnTerminate() should be propagated to the OnError handler of the 
+// downstream observer.
+TEST(RxDoOnTerminatedTest, Throw) {
+
+    zaf::rx::Subject<int> subject;
+
+    // Triggered by OnCompleted.
+    {
+        bool on_error_called{};
+        bool on_completed_called{};
+        auto sub = subject.AsObservable().DoOnTerminate([&]() {
+            throw zaf::InvalidOperationError();
+        })
+        .Subscribe([](int) {
+        },
+        [&](const std::exception_ptr& error) {
+            on_error_called = true;
+        },
+        [&]() {
+            on_completed_called = true;
+        });
+
+        subject.AsObserver().OnCompleted();
+        ASSERT_TRUE(on_error_called);
+        ASSERT_FALSE(on_completed_called);
+    }
+
+    // Triggered by OnError.
+    {
+        std::string error_message;
+        bool on_completed_called{};
+        auto sub = subject.AsObservable().DoOnTerminate([&]() {
+            throw zaf::InvalidOperationError("DoOnTerminate");
+        })
+        .Subscribe([](int) {
+        },
+        [&](const std::exception_ptr& error) {
+            try {
+                std::rethrow_exception(error);
+            }
+            catch (const zaf::InvalidOperationError& e) {
+                error_message = e.what();
+            }
+        },
+        [&]() {
+            on_completed_called = true;
+        });
+        subject.AsObserver().OnError(zaf::InvalidOperationError("OnError"));
+        ASSERT_EQ(error_message, "DoOnTerminate");
+        ASSERT_FALSE(on_completed_called);
+    }
 }

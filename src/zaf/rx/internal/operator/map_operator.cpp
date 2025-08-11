@@ -25,24 +25,20 @@ public:
             mapped_value = mapper_(value);
         }
         catch (...) {
-            if (source_subscription_) {
-                source_subscription_->Dispose();
-            }
-            TryToDeliverOnError(std::current_exception());
+            // Exception thrown in the mapper should be propagated to the downstream OnError 
+            // handler.
+            EmitOnError(std::current_exception());
             return;
         }
-
         EmitOnNext(mapped_value);
     }
 
     void OnError(const std::exception_ptr& error) override {
-        TryToDeliverOnError(error);
+        EmitOnError(error);
     }
 
     void OnCompleted() override {
-        if (!IsDisposed()) {
-            EmitOnCompleted();
-        }
+        EmitOnCompleted();
     }
 
 protected:
@@ -52,15 +48,7 @@ protected:
             source_subscription_->Dispose();
             source_subscription_.reset();
         }
-
         mapper_ = nullptr;
-    }
-
-private:
-    void TryToDeliverOnError(const std::exception_ptr& error) {
-        if (!IsDisposed()) {
-            EmitOnError(error);
-        }
     }
 
 private:

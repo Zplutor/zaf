@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/rx/subject.h>
 #include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
@@ -240,4 +241,116 @@ TEST(RxDoTest, SubscribeMultipleTimes) {
 
     subject.AsObserver().OnNext(1);
     ASSERT_EQ(call_times, 2);
+}
+
+
+// Exception thrown in the OnNext handler should be propagated to the downstream OnError handler.
+TEST(RxDoTest, ThrowInOnNext) {
+
+    zaf::rx::Subject<int> subject;
+
+    bool do_on_error_called{};
+    bool do_on_completed_called{};
+    bool on_error_called{};
+    bool on_completed_called{};
+    auto sub = subject.AsObservable().Do(
+        [](int) {
+            throw zaf::InvalidOperationError();
+        }, 
+        [&](const std::exception_ptr& error) {
+            do_on_error_called = true;
+        },
+        [&]() {
+            do_on_completed_called = true;
+        })
+    .Subscribe(
+        [](int) {
+
+        },
+        [&](const std::exception_ptr& error) {
+            on_error_called = true;
+        },
+        [&]() {
+            on_completed_called = true;
+        });
+
+    subject.AsObserver().OnNext(1);
+    ASSERT_FALSE(do_on_error_called);
+    ASSERT_FALSE(do_on_completed_called);
+    ASSERT_TRUE(on_error_called);
+    ASSERT_FALSE(on_completed_called);
+}
+
+
+// Exception thrown in the OnError handler should be propagated to the downstream OnError handler.
+TEST(RxDoTest, ThrowInOnError) {
+
+    zaf::rx::Subject<int> subject;
+
+    bool do_on_completed_called{};
+    bool on_completed_called{};
+    std::string error_message;
+    auto sub = subject.AsObservable().Do(
+        [](int) {
+
+        },
+        [&](const std::exception_ptr& error) {
+            throw zaf::InvalidOperationError("DoOnError");
+        },
+        [&]() {
+            do_on_completed_called = true;
+        })
+    .Subscribe(
+        [](int) {
+
+        },
+        [&](const std::exception_ptr& error) {
+            try {
+                std::rethrow_exception(error);
+            }
+            catch (const zaf::InvalidOperationError& e) {
+                error_message = e.what();
+            }
+        },
+        [&]() {
+            on_completed_called = true;
+        });
+
+    subject.AsObserver().OnError(zaf::InvalidOperationError("OnError"));
+    ASSERT_EQ(error_message, "DoOnError");
+    ASSERT_FALSE(do_on_completed_called);
+    ASSERT_FALSE(on_completed_called);
+}
+
+
+// Exception thrown in the OnCompleted handler should be propagated to the downstream OnError 
+// handler.
+TEST(RxDoTest, ThrowInOnCompleted) {
+
+    zaf::rx::Subject<int> subject;
+    bool do_on_error_called{};
+    bool on_error_called{};
+    bool on_completed_called{};
+    auto sub = subject.AsObservable().Do(
+        [](int) {
+        },
+        [&](const std::exception_ptr& error) {
+            do_on_error_called = true;
+        },
+        [&]() {
+            throw zaf::InvalidOperationError("DoOnCompleted");
+        })
+    .Subscribe(
+        [](int) {
+        },
+        [&](const std::exception_ptr& error) {
+            on_error_called = true;
+        },
+        [&]() {
+            on_completed_called = true;
+        });
+    subject.AsObserver().OnCompleted();
+    ASSERT_FALSE(do_on_error_called);
+    ASSERT_TRUE(on_error_called);
+    ASSERT_FALSE(on_completed_called);
 }

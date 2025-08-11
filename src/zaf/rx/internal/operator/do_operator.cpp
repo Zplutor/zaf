@@ -23,17 +23,41 @@ public:
     }
 
     void OnNext(const std::any& value) override {
-        do_observer_->OnNext(value);
+        try {
+            do_observer_->OnNext(value);
+        }
+        catch (...) {
+            // Exception thrown in the OnNext handler of the Do observer should be propagated to 
+            // the downstream OnError handler.
+            EmitOnError(std::current_exception());
+            return;
+        }
         EmitOnNext(value);
     }
 
     void OnError(const std::exception_ptr& error) override {
-        do_observer_->OnError(error);
+        try {
+            do_observer_->OnError(error);
+        }
+        catch (...) {
+            // Exception thrown in the OnError handler of the Do observer should be propagated to 
+            // the downstream OnError handler.
+            EmitOnError(std::current_exception());
+            return;
+        }
         EmitOnError(error);
     }
 
     void OnCompleted() override {
-        do_observer_->OnCompleted();
+        try {
+            do_observer_->OnCompleted();
+        }
+        catch (...) {
+            // Exception thrown in the OnCompleted handler of the Do observer should be propagated 
+            // to the downstream OnError handler.
+            EmitOnError(std::current_exception());
+            return;
+        }
         EmitOnCompleted();
     }
 
