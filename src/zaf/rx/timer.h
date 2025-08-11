@@ -3,13 +3,14 @@
 #include <chrono>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/scheduler/scheduler.h>
+#include <zaf/rx/single.h>
 
 namespace zaf::rx {
 
 /**
 Creates an one-shot timer that emits after a delay.
 */
-Observable<std::size_t> Timer(
+Single<std::size_t> Timer(
     std::chrono::steady_clock::duration delay,
     std::shared_ptr<Scheduler> scheduler);
 

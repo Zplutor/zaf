@@ -9,7 +9,7 @@ TEST(RxTimerTest, OneShotTimer) {
     std::mutex mutex;
     std::unique_lock<std::mutex> lock(mutex);
 
-    auto timer = zaf::rx::Timer(
+    zaf::rx::Observable<std::size_t> timer = zaf::rx::Timer(
         std::chrono::milliseconds(50),
         std::make_shared<zaf::rx::SingleThreadScheduler>());
 
