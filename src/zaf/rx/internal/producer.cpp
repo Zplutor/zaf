@@ -3,8 +3,7 @@
 
 namespace zaf::rx::internal {
 
-Producer::Producer(std::shared_ptr<ObserverCore> observer) noexcept : 
-    observer_(std::move(observer)) {
+Producer::Producer(ObserverShim&& observer) noexcept : observer_(std::move(observer)) {
 
 }
 
@@ -15,9 +14,7 @@ bool Producer::EmitOnNext(const std::any& any) {
         return false;
     }
 
-    if (auto observer = observer_) {
-        observer->OnNext(any);
-    }
+    observer_.OnNext(any);
     return true;
 }
 
@@ -29,11 +26,8 @@ bool Producer::EmitOnError(const std::exception_ptr& error) {
     }
 
     auto keep_alive = shared_from_this();
-    {
-        if (auto observer = observer_) {
-            observer->OnError(error);
-        }
-    }
+    observer_.OnError(error);
+
     Dispose();
     return true;
 }
@@ -50,13 +44,7 @@ bool Producer::EmitOnCompleted() {
     //dangling pointer. Exception would occur if execution continue.
     //So we have to retain a shared pointer to keep producer alive during the notification.
     auto keep_alive = shared_from_this();
-    {
-        //Here is a similar protection as above. observer_ may be reset in Dispose() during the 
-        //OnCompleted() call, so we retain a new shared pointer to keep it alive. 
-        if (auto observer = observer_) {
-            observer->OnCompleted();
-        }
-    }
+    observer_.OnCompleted();
 
     Dispose();
     return true;
@@ -72,8 +60,8 @@ void Producer::Dispose() noexcept {
     OnDispose();
     SendDisposeNotifications();
 
-    //Release observer to break potential circular reference.
-    observer_.reset();
+    //Free the observer to break potential circular reference.
+    observer_ = {};
 }
 
 

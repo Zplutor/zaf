@@ -14,8 +14,7 @@ public:
         return observables_;
     }
 
-    std::shared_ptr<SubscriptionCore> Subscribe(
-        const std::shared_ptr<ObserverCore>& observer) override;
+    std::shared_ptr<SubscriptionCore> Subscribe(ObserverShim&& observer) override;
 
 private:
     ObservableCoreList observables_;

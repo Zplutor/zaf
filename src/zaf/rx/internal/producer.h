@@ -6,6 +6,7 @@
 #include <mutex>
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/observer_core.h>
+#include <zaf/rx/internal/observer_shim.h>
 #include <zaf/rx/internal/subscription/dispose_notification.h>
 
 namespace zaf::rx::internal {
@@ -23,7 +24,7 @@ A producer is responsible for emitting data sequence.
 */
 class Producer : public std::enable_shared_from_this<Producer>, NonCopyableNonMovable {
 public:
-    explicit Producer(std::shared_ptr<ObserverCore> observer) noexcept;
+    explicit Producer(ObserverShim&& observer) noexcept;
 
     /**
     Emits a data item to the observer.
@@ -102,7 +103,7 @@ private:
     static constexpr int StateFlagDisposed = 1 << 1;
 
 private:
-    std::shared_ptr<ObserverCore> observer_;
+    ObserverShim observer_;
     std::atomic<int> state_flags_{};
     int dispose_notification_id_seed_{};
     std::map<DisposeNotificationID, DisposeNotification> dispose_notifications_;

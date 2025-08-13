@@ -4,7 +4,7 @@ namespace zaf::rx::internal {
 
 SubjectCore::SubjectCore() : 
     multicast_observer_(std::make_shared<MulticastObserver>()),
-    producer_(std::make_shared<Producer>(multicast_observer_)) {
+    producer_(std::make_shared<Producer>(ObserverShim::FromShared(multicast_observer_))) {
 
 }
 
@@ -16,10 +16,8 @@ SubjectCore::~SubjectCore() {
 }
 
 
-std::shared_ptr<SubscriptionCore> SubjectCore::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
-
-    return multicast_observer_->AddObserver(observer);
+std::shared_ptr<SubscriptionCore> SubjectCore::Subscribe(ObserverShim&& observer) {
+    return multicast_observer_->AddObserver(std::move(observer));
 }
 
 

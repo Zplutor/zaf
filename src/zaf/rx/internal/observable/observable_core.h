@@ -3,6 +3,7 @@
 #include <any>
 #include <memory>
 #include <zaf/base/closure.h>
+#include <zaf/rx/internal/observer_shim.h>
 #include <zaf/rx/internal/operator/catch_handler.h>
 #include <zaf/rx/internal/operator/flat_mapper.h>
 #include <zaf/rx/internal/operator/mapper.h>
@@ -25,8 +26,7 @@ public:
     ObservableCore(const ObservableCore&) = delete;
     ObservableCore& operator=(const ObservableCore&) = delete;
 
-    virtual std::shared_ptr<SubscriptionCore> Subscribe(
-        const std::shared_ptr<ObserverCore>& observer) = 0;
+    virtual std::shared_ptr<SubscriptionCore> Subscribe(ObserverShim&& observer) = 0;
 
     std::shared_ptr<ObservableCore> SubscribeOn(std::shared_ptr<Scheduler> scheduler);
     std::shared_ptr<ObservableCore> ObserveOn(std::shared_ptr<Scheduler> scheduler);

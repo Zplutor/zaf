@@ -10,9 +10,7 @@ const std::shared_ptr<NeverObservable>& NeverObservable::Instance() {
 }
 
 
-std::shared_ptr<SubscriptionCore> NeverObservable::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
-
+std::shared_ptr<SubscriptionCore> NeverObservable::Subscribe(ObserverShim&& observer) {
     return nullptr;
 }
 

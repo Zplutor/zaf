@@ -70,7 +70,9 @@ public:
 public:
     [[nodiscard]]
     Subscription Subscribe(const OBSERVER<T>& observer) {
-        return Subscription{ core_->Subscribe(observer.Core()) };
+        return Subscription{
+            core_->Subscribe(internal::ObserverShim::FromShared(observer.Core()))
+        };
     }
 
     [[nodiscard]]

@@ -10,8 +10,7 @@ public:
         std::shared_ptr<ObservableCore> source,
         Closure finally_work);
 
-    std::shared_ptr<SubscriptionCore> Subscribe(
-        const std::shared_ptr<ObserverCore>& observer) override;
+    std::shared_ptr<SubscriptionCore> Subscribe(ObserverShim&& observer) override;
 
 private:
     std::shared_ptr<ObservableCore> source_;

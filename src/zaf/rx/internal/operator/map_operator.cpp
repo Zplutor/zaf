@@ -8,14 +8,15 @@ namespace {
 
 class MapProducer : public Producer, public ObserverCore {
 public:
-    MapProducer(std::shared_ptr<ObserverCore> next_observer, Mapper mapper) : 
+    MapProducer(ObserverShim&& next_observer, Mapper mapper) : 
         Producer(std::move(next_observer)),
         mapper_(std::move(mapper)) {
 
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
-        source_subscription_ = source->Subscribe(As<ObserverCore>(shared_from_this()));
+        source_subscription_ = source->Subscribe(
+            ObserverShim::FromWeak(As<ObserverCore>(shared_from_this())));
     }
 
     void OnNext(const std::any& value) override {
@@ -65,10 +66,9 @@ MapOperator::MapOperator(std::shared_ptr<ObservableCore> source, Mapper mapper) 
 }
 
 
-std::shared_ptr<SubscriptionCore> MapOperator::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> MapOperator::Subscribe(ObserverShim&& observer) {
 
-    auto producer = std::make_shared<MapProducer>(observer, mapper_);
+    auto producer = std::make_shared<MapProducer>(std::move(observer), mapper_);
     producer->Run(source_);
     return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }

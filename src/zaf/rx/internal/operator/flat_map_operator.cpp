@@ -13,7 +13,7 @@ namespace {
 class FlatMapProducer : public Producer, public ObserverCore {
 public:
     FlatMapProducer(
-        std::shared_ptr<ObserverCore> next_observer,
+        ObserverShim&& next_observer,
         FlatMapper mapper)
         :
         Producer(std::move(next_observer)),
@@ -22,7 +22,8 @@ public:
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
-        source_subscription_ = source->Subscribe(As<ObserverCore>(shared_from_this()));
+        source_subscription_ = source->Subscribe(
+            ObserverShim::FromWeak(As<ObserverCore>(shared_from_this())));
     }
 
     void OnNext(const std::any& value) override {
@@ -40,15 +41,15 @@ public:
         }
 
         auto sub_id = ++mapper_subs_count_;
-        auto mapper_sub = mapped_observable->Subscribe(ObserverCore::Create(
+        auto mapper_sub = mapped_observable->Subscribe(ObserverShim::MakeShared(
             [this](const std::any& value) {
                 if (!IsDisposed()) {
                     EmitOnNext(value);
                 }
             },
             [this, sub_id](const std::exception_ptr& error) {
-                //Observer will be destroyed once the subscription is disposed, hence we keep the 
-                //subscription alive until we have done everything.
+                // Observer will be destroyed once the subscription is disposed, hence we keep 
+                // the subscription alive until we have done everything.
                 auto sub = OnMapperSubFinished(sub_id);
                 TryToDeliverOnError(error);
             },
@@ -135,10 +136,9 @@ FlatMapOperator::FlatMapOperator(std::shared_ptr<ObservableCore> source, FlatMap
 }
 
 
-std::shared_ptr<SubscriptionCore> FlatMapOperator::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> FlatMapOperator::Subscribe(ObserverShim&& observer) {
 
-    auto producer = std::make_shared<FlatMapProducer>(observer, mapper_);
+    auto producer = std::make_shared<FlatMapProducer>(std::move(observer), mapper_);
     producer->Run(source_);
     return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }

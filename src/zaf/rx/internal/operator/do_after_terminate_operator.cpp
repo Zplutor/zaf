@@ -11,7 +11,7 @@ namespace {
 class DoAfterTerminateProducer : public Producer, public ObserverCore {
 public:
     DoAfterTerminateProducer(
-        std::shared_ptr<ObserverCore> next_observer,
+        ObserverShim&& next_observer,
         Closure after_terminate)
         :
         Producer(std::move(next_observer)),
@@ -20,7 +20,8 @@ public:
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
-        source_subscription_ = source->Subscribe(As<ObserverCore>(shared_from_this()));
+        source_subscription_ = source->Subscribe(
+            ObserverShim::FromWeak(As<ObserverCore>(shared_from_this())));
     }
 
     void OnNext(const std::any& value) override {
@@ -69,10 +70,12 @@ DoAfterTerminateOperator::DoAfterTerminateOperator(
 }
 
 
-std::shared_ptr<SubscriptionCore> DoAfterTerminateOperator::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> DoAfterTerminateOperator::Subscribe(ObserverShim&& observer) {
 
-    auto producer = std::make_shared<DoAfterTerminateProducer>(observer, after_terminate_);
+    auto producer = std::make_shared<DoAfterTerminateProducer>(
+        std::move(observer), 
+        after_terminate_);
+
     producer->Run(source_);
     return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }

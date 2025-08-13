@@ -8,8 +8,7 @@ ReplaySubjectCore::ReplaySubjectCore(std::optional<std::size_t> replay_size) noe
 }
 
 
-std::shared_ptr<SubscriptionCore> ReplaySubjectCore::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> ReplaySubjectCore::Subscribe(ObserverShim&& observer) {
 
     std::deque<std::any> copied_replay_values;
     {
@@ -22,10 +21,10 @@ std::shared_ptr<SubscriptionCore> ReplaySubjectCore::Subscribe(
     auto shared_this = shared_from_this();
 
     for (const auto& each_value : copied_replay_values) {
-        observer->OnNext(each_value);
+        observer.OnNext(each_value);
     }
 
-    return __super::Subscribe(observer);
+    return __super::Subscribe(std::move(observer));
 }
 
 

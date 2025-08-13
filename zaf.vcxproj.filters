@@ -1330,6 +1330,9 @@
     <ClCompile Include="src\zaf\rx\scheduler\immediate_scheduler.cpp">
       <Filter>zaf\rx\scheduler</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\observer_shim.cpp">
+      <Filter>zaf\rx\internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3105,6 +3108,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\scheduler\immediate_scheduler.h">
       <Filter>zaf\rx\scheduler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\observer_shim.h">
+      <Filter>zaf\rx\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

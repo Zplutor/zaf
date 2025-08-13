@@ -8,10 +8,10 @@ namespace zaf::rx::internal {
 class MulticastObserver::IndividualProducer : public Producer {
 public:
     IndividualProducer(
-        std::shared_ptr<ObserverCore> observer,
+        ObserverShim&& observer,
         std::weak_ptr<MulticastObserver> owner)
         : 
-        Producer(std::move(observer)), 
+        Producer(std::move(observer)),
         owner_(std::move(owner)) {
 
     }
@@ -38,8 +38,7 @@ MulticastObserver::~MulticastObserver() {
 }
 
 
-std::shared_ptr<SubscriptionCore> MulticastObserver::AddObserver(
-    std::shared_ptr<ObserverCore> observer) {
+std::shared_ptr<SubscriptionCore> MulticastObserver::AddObserver(ObserverShim&& observer) {
 
     std::variant<std::monostate, std::exception_ptr, None> termination;
     {
@@ -59,10 +58,10 @@ std::shared_ptr<SubscriptionCore> MulticastObserver::AddObserver(
     // The multicast observer is terminated, notify the observer immediately.
     auto exception = std::get_if<std::exception_ptr>(&termination);
     if (exception) {
-        observer->OnError(*exception);
+        observer.OnError(*exception);
     }
     else if (std::holds_alternative<None>(termination)) {
-        observer->OnCompleted();
+        observer.OnCompleted();
     }
     return nullptr;
 }

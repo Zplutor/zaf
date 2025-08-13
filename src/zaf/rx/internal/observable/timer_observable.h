@@ -13,8 +13,7 @@ public:
         std::optional<std::chrono::steady_clock::duration> interval,
         std::shared_ptr<Scheduler> scheduler);
 
-    std::shared_ptr<SubscriptionCore> Subscribe(
-        const std::shared_ptr<ObserverCore>& observer) override;
+    std::shared_ptr<SubscriptionCore> Subscribe(ObserverShim&& observer) override;
 
 private:
     std::chrono::steady_clock::duration delay_;

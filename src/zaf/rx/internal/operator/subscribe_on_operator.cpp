@@ -12,7 +12,7 @@ public:
     SubscribeOnProducer(
         std::shared_ptr<ObservableCore> source,
         std::shared_ptr<Scheduler> scheduler,
-        std::shared_ptr<ObserverCore> observer) 
+        ObserverShim&& observer) 
         :
         Producer(std::move(observer)),
         source_(std::move(source)),
@@ -59,7 +59,8 @@ private:
             return;
         }
 
-        source_subscription_ = source_->Subscribe(As<SubscribeOnProducer>(shared_from_this()));
+        source_subscription_ = source_->Subscribe(
+            ObserverShim::FromWeak(As<SubscribeOnProducer>(shared_from_this())));
     }
 
     void UnsubscribeOnScheduler() {
@@ -93,12 +94,13 @@ SubscribeOnOperator::SubscribeOnOperator(
 }
 
 
-std::shared_ptr<SubscriptionCore> SubscribeOnOperator::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> SubscribeOnOperator::Subscribe(ObserverShim&& observer) {
 
-    ZAF_EXPECT(observer);
+    auto producer = std::make_shared<SubscribeOnProducer>(
+        source_, 
+        scheduler_, 
+        std::move(observer));
 
-    auto producer = std::make_shared<SubscribeOnProducer>(source_, scheduler_, observer);
     producer->Run();
     return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }

@@ -8,17 +8,15 @@ namespace {
 
 class CatchProducer : public Producer, public ObserverCore {
 public:
-    CatchProducer(
-        std::shared_ptr<ObserverCore> next_observer,
-        CatchHandler handler)
-        :
+    CatchProducer(ObserverShim&& next_observer, CatchHandler handler) :
         Producer(std::move(next_observer)),
         handler_(std::move(handler)) {
 
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
-        source_subscription_ = source->Subscribe(As<ObserverCore>(shared_from_this()));
+        source_subscription_ = source->Subscribe(
+            ObserverShim::FromWeak(As<ObserverCore>(shared_from_this())));
     }
 
     void OnNext(const std::any& value) override {
@@ -65,7 +63,7 @@ private:
         //We use a weak pointer to check if the current producer has been freed to avoid this 
         //issue.
         auto weak_this = weak_from_this();
-        auto new_subscription = observable->Subscribe(ObserverCore::Create(
+        auto new_subscription = observable->Subscribe(ObserverShim::MakeShared(
             [this](const std::any& value) {
                 EmitOnNext(value);
             },
@@ -106,10 +104,9 @@ CatchOperator::CatchOperator(std::shared_ptr<ObservableCore> source, CatchHandle
 }
 
 
-std::shared_ptr<SubscriptionCore> CatchOperator::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> CatchOperator::Subscribe(ObserverShim&& observer) {
 
-    auto producer = std::make_shared<CatchProducer>(observer, handler_);
+    auto producer = std::make_shared<CatchProducer>(std::move(observer), handler_);
     producer->Run(source_);
     return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }

@@ -31,7 +31,9 @@ public:
     [[nodiscard]]
     Subscription Subscribe(OnSuccess<T> on_success, OnError on_error) {
         auto observer = SingleObserver<T>::Create(std::move(on_success), std::move(on_error));
-        return Subscription{ this->Core()->Subscribe(observer.Core())};
+        return Subscription{ 
+            this->Core()->Subscribe(internal::ObserverShim::FromShared(observer.Core()))
+        };
     }
 
     Single Do(OnSuccess<T> on_success) {

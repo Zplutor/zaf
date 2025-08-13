@@ -11,7 +11,7 @@ namespace {
 class FinallyProducer : public Producer, public ObserverCore {
 public:
     FinallyProducer(
-        std::shared_ptr<ObserverCore> next_observer,
+        ObserverShim&& next_observer,
         Closure finally_work)
         :
         Producer(std::move(next_observer)),
@@ -20,7 +20,8 @@ public:
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
-        source_subscription_ = source->Subscribe(As<ObserverCore>(shared_from_this()));
+        source_subscription_ = source->Subscribe(
+            ObserverShim::FromWeak(As<ObserverCore>(shared_from_this())));
     }
 
     void OnNext(const std::any& value) override {
@@ -61,10 +62,9 @@ FinallyOperator::FinallyOperator(std::shared_ptr<ObservableCore> source, Closure
 }
 
 
-std::shared_ptr<SubscriptionCore> FinallyOperator::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> FinallyOperator::Subscribe(ObserverShim&& observer) {
 
-    auto producer = std::make_shared<FinallyProducer>(observer, finally_work_);
+    auto producer = std::make_shared<FinallyProducer>(std::move(observer), finally_work_);
     producer->Run(source_);
     return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }

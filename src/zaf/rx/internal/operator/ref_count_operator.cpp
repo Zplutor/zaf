@@ -11,8 +11,7 @@ RefCountOperator::RefCountOperator(std::shared_ptr<ConnectableObservableCore> so
 }
 
 
-std::shared_ptr<SubscriptionCore> RefCountOperator::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> RefCountOperator::Subscribe(ObserverShim&& observer) {
 
     bool should_connect{};
     std::shared_ptr<Connection> connection;
@@ -28,7 +27,7 @@ std::shared_ptr<SubscriptionCore> RefCountOperator::Subscribe(
         connection = current_connection_;
     }
 
-    auto sub = source_->Subscribe(observer);
+    auto sub = source_->Subscribe(std::move(observer));
     if (!sub) {
         // If the subscription is null, it means the observer is already unsubscribed.
         // In this case, we decrease the reference count and return.

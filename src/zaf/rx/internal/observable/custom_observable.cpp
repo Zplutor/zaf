@@ -9,7 +9,7 @@ namespace {
 
 class CustomProducer : public Producer, public ObserverCore {
 public:
-    CustomProducer(std::shared_ptr<ObserverCore> observer) : Producer(std::move(observer)) {
+    explicit CustomProducer(ObserverShim&& observer) : Producer(std::move(observer)) {
 
     }
 
@@ -47,10 +47,9 @@ CustomObservable::CustomObservable(Procedure procedure) :
 }
 
 
-std::shared_ptr<SubscriptionCore> CustomObservable::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> CustomObservable::Subscribe(ObserverShim&& observer) {
 
-    auto producer = std::make_shared<CustomProducer>(observer);
+    auto producer = std::make_shared<CustomProducer>(std::move(observer));
     auto subscription_core = std::make_shared<ProducerSubscriptionCore>(producer);
 
     try {

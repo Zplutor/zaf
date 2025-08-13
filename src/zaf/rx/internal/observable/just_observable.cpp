@@ -9,11 +9,10 @@ JustObservable::JustObservable(std::any value) : value_(std::move(value)) {
 }
 
 
-std::shared_ptr<SubscriptionCore> JustObservable::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> JustObservable::Subscribe(ObserverShim&& observer) {
 
-    observer->OnNext(value_);
-    observer->OnCompleted();
+    observer.OnNext(value_);
+    observer.OnCompleted();
     return nullptr;
 }
 

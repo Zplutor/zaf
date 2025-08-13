@@ -15,7 +15,7 @@ class MulticastObserver :
 public:
     ~MulticastObserver();
 
-    std::shared_ptr<SubscriptionCore> AddObserver(std::shared_ptr<ObserverCore> observer);
+    std::shared_ptr<SubscriptionCore> AddObserver(ObserverShim&& observer);
 
     std::size_t ObserverCount() const noexcept;
 

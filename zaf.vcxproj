@@ -355,6 +355,7 @@
     <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp" />
     <ClCompile Include="src\zaf\resource\resource_factory.cpp" />
     <ClCompile Include="src\zaf\resource\uri_loader.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\observer_shim.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\connectable_observable_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\custom_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observer_core.cpp" />
@@ -905,6 +906,7 @@
     <ClInclude Include="src\zaf\resource\resource_factory.h" />
     <ClInclude Include="src\zaf\resource\uri_loader.h" />
     <ClInclude Include="src\zaf\rx\disposable.h" />
+    <ClInclude Include="src\zaf\rx\internal\observer_shim.h" />
     <ClInclude Include="src\zaf\rx\internal\thread\delayed_work_item_base.h" />
     <ClInclude Include="src\zaf\rx\observable_base.h" />
     <ClInclude Include="src\zaf\rx\scheduler\immediate_scheduler.h" />

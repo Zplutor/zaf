@@ -19,8 +19,7 @@ public:
 public:
     explicit RefCountOperator(std::shared_ptr<ConnectableObservableCore> source);
 
-    std::shared_ptr<SubscriptionCore> Subscribe(
-        const std::shared_ptr<ObserverCore>& observer) override;
+    std::shared_ptr<SubscriptionCore> Subscribe(ObserverShim&& observer) override;
 
     // For unit test.
     bool HasConnection() const noexcept {

@@ -9,8 +9,7 @@ public:
     static const std::shared_ptr<EmptyObservable>& Instance();
 
 public:
-    std::shared_ptr<SubscriptionCore> Subscribe(
-        const std::shared_ptr<ObserverCore>& observer) override;
+    std::shared_ptr<SubscriptionCore> Subscribe(ObserverShim&& observer) override;
 
 private:
     EmptyObservable() = default;

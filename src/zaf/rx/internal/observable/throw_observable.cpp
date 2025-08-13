@@ -9,10 +9,9 @@ ThrowObservable::ThrowObservable(std::exception_ptr error) : error_(std::move(er
 }
 
 
-std::shared_ptr<SubscriptionCore> ThrowObservable::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> ThrowObservable::Subscribe(ObserverShim&& observer) {
 
-    observer->OnError(error_);
+    observer.OnError(error_);
     return nullptr;
 }
 

@@ -10,7 +10,7 @@ namespace {
 class ObserveOnProducer : public Producer, public ObserverCore {
 public:
     ObserveOnProducer(
-        std::shared_ptr<ObserverCore> next_observer,
+        ObserverShim&& next_observer,
         std::shared_ptr<Scheduler> scheduler) 
         :
         Producer(std::move(next_observer)),
@@ -19,7 +19,8 @@ public:
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
-        source_subscription_ = source->Subscribe(As<ObserveOnProducer>(shared_from_this()));
+        source_subscription_ = source->Subscribe(
+            ObserverShim::FromWeak(As<ObserverCore>(shared_from_this())));
     }
 
     void OnNext(const std::any& value) override {
@@ -92,10 +93,9 @@ ObserveOnOperator::ObserveOnOperator(
 }
 
 
-std::shared_ptr<SubscriptionCore> ObserveOnOperator::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> ObserveOnOperator::Subscribe(ObserverShim&& observer) {
 
-    auto producer = std::make_shared<ObserveOnProducer>(observer, scheduler_);
+    auto producer = std::make_shared<ObserveOnProducer>(std::move(observer), scheduler_);
     producer->Run(source_);
     return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
 }

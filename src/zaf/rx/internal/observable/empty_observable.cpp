@@ -10,10 +10,9 @@ const std::shared_ptr<EmptyObservable>& EmptyObservable::Instance() {
 }
 
 
-std::shared_ptr<SubscriptionCore> EmptyObservable::Subscribe(
-    const std::shared_ptr<ObserverCore>& observer) {
+std::shared_ptr<SubscriptionCore> EmptyObservable::Subscribe(ObserverShim&& observer) {
 
-    observer->OnCompleted();
+    observer.OnCompleted();
     return nullptr;
 }
 
