@@ -2,7 +2,6 @@
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -50,15 +49,13 @@ CustomObservable::CustomObservable(Procedure procedure) :
 std::shared_ptr<SubscriptionCore> CustomObservable::Subscribe(ObserverShim&& observer) {
 
     auto producer = std::make_shared<CustomProducer>(std::move(observer));
-    auto subscription_core = std::make_shared<ProducerSubscriptionCore>(producer);
-
     try {
-        procedure_(producer, subscription_core);
+        procedure_(producer, producer);
     }
     catch (...) {
         producer->EmitCaughtError(std::current_exception());
     }
-    return subscription_core;
+    return producer;
 }
 
 }

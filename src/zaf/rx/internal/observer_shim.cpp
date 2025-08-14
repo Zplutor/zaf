@@ -43,13 +43,11 @@ void ObserverShim::OnNext(const std::any& value) {
     // Note that we use `auto` rather than `const auto&` here, because we want to copy the 
     // observer_core_ pointer to retain its lifetime during the call to OnNext().
     // The same as the OnError() and OnCompleted() methods.
-    std::visit([&](auto observer_core) {
+    std::visit([&value](auto observer_core) {
 
         using PointerType = std::decay_t<decltype(observer_core)>;
         if constexpr (std::is_same_v<PointerType, std::shared_ptr<ObserverCore>>) {
-            if (observer_core) {
-                observer_core->OnNext(value);
-            }
+            observer_core->OnNext(value);
         }
         else if constexpr (std::is_same_v<PointerType, std::weak_ptr<ObserverCore>>) {
             if (auto shared = observer_core.lock()) {
@@ -61,13 +59,11 @@ void ObserverShim::OnNext(const std::any& value) {
 
 
 void ObserverShim::OnError(const std::exception_ptr& error) {
-    std::visit([&](auto observer_core) {
+    std::visit([&error](auto observer_core) {
 
         using PointerType = std::decay_t<decltype(observer_core)>;
         if constexpr (std::is_same_v<PointerType, std::shared_ptr<ObserverCore>>) {
-            if (observer_core) {
-                observer_core->OnError(error);
-            }
+            observer_core->OnError(error);
         }
         else if constexpr (std::is_same_v<PointerType, std::weak_ptr<ObserverCore>>) {
             if (auto shared = observer_core.lock()) {
@@ -79,13 +75,11 @@ void ObserverShim::OnError(const std::exception_ptr& error) {
 
 
 void ObserverShim::OnCompleted() {
-    std::visit([&](auto observer_core) {
+    std::visit([](auto observer_core) {
 
         using PointerType = std::decay_t<decltype(observer_core)>;
         if constexpr (std::is_same_v<PointerType, std::shared_ptr<ObserverCore>>) {
-            if (observer_core) {
-                observer_core->OnCompleted();
-            }
+            observer_core->OnCompleted();
         }
         else if constexpr (std::is_same_v<PointerType, std::weak_ptr<ObserverCore>>) {
             if (auto shared = observer_core.lock()) {

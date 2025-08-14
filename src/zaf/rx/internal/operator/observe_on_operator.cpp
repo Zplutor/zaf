@@ -1,7 +1,6 @@
 #include <zaf/rx/internal/operator/observe_on_operator.h>
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/observer_core.h>
-#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::rx::internal {
@@ -16,6 +15,10 @@ public:
         Producer(std::move(next_observer)),
         scheduler_(std::move(scheduler)) { 
     
+    }
+
+    ~ObserveOnProducer() {
+        DoDisposal();
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
@@ -48,12 +51,7 @@ public:
 
 protected:
     void OnDispose() noexcept override {
-
-        is_unsubscribed_.store(true);
-        if (source_subscription_) {
-            source_subscription_->Dispose();
-            source_subscription_.reset();
-        }
+        DoDisposal();
     }
 
 private:
@@ -72,6 +70,14 @@ private:
     void OnCompletedOnScheduler() {
         if (!is_unsubscribed_.load()) {
             EmitOnCompleted();
+        }
+    }
+
+    void DoDisposal() noexcept {
+        is_unsubscribed_.store(true);
+        if (source_subscription_) {
+            source_subscription_->Dispose();
+            source_subscription_.reset();
         }
     }
 
@@ -97,7 +103,7 @@ std::shared_ptr<SubscriptionCore> ObserveOnOperator::Subscribe(ObserverShim&& ob
 
     auto producer = std::make_shared<ObserveOnProducer>(std::move(observer), scheduler_);
     producer->Run(source_);
-    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
+    return producer;
 }
 
 }

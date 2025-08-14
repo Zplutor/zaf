@@ -1,6 +1,5 @@
 #include <zaf/rx/internal/observable/timer_observable.h>
 #include <zaf/base/as.h>
-#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 #include <zaf/rx/internal/producer.h>
 #include <zaf/rx/scheduler/scheduler.h>
 
@@ -22,25 +21,31 @@ public:
 
     }
 
+    ~TimerProducer() {
+        DoDisposal();
+    }
+
     void Run() {
         SetNextDelayTimer();
     }
 
     void OnDispose() noexcept override {
-        is_unsubscribed_ = true;
-        if (timer_) {
-            timer_->Dispose();
-            timer_.reset();
-        }
+        DoDisposal();
     }
 
 private:
     void SetNextDelayTimer() {
 
         auto next_delay = GetNextDelay();
-        timer_ = scheduler_->ScheduleDelayedWork(
-            next_delay,
-            std::bind(&TimerProducer::OnTimer, As<TimerProducer>(shared_from_this())));
+
+        std::weak_ptr<TimerProducer> weak_this = As<TimerProducer>(shared_from_this());
+        timer_ = scheduler_->ScheduleDelayedWork(next_delay, [weak_this]() {
+
+            auto shared_this = weak_this.lock();
+            if (shared_this) {
+                shared_this->OnTimer();
+            }
+        });
     }
 
     std::chrono::steady_clock::duration GetNextDelay() {
@@ -69,6 +74,14 @@ private:
         }
 
         SetNextDelayTimer();
+    }
+
+    void DoDisposal() noexcept {
+        is_unsubscribed_ = true;
+        if (timer_) {
+            timer_->Dispose();
+            timer_.reset();
+        }
     }
 
 private:
@@ -103,7 +116,7 @@ std::shared_ptr<SubscriptionCore> TimerObservable::Subscribe(ObserverShim&& obse
         std::move(observer));
 
     producer->Run();
-    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
+    return producer;
 }
 
 }

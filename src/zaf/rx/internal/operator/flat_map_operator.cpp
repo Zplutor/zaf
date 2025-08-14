@@ -5,7 +5,6 @@
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/operator/flat_map_operator.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -19,6 +18,10 @@ public:
         Producer(std::move(next_observer)),
         mapper_(std::move(mapper)) {
 
+    }
+
+    ~FlatMapProducer() {
+        DoDisposal();
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
@@ -75,14 +78,7 @@ public:
     }
 
     void OnDispose() noexcept override {
-
-        if (source_subscription_) {
-            source_subscription_->Dispose();
-            source_subscription_.reset();
-        }
-
-        emitting_mapper_subs_.clear();
-        mapper_ = nullptr;
+        DoDisposal();
     }
 
 private:
@@ -117,6 +113,17 @@ private:
         }
     }
 
+    void DoDisposal() noexcept {
+
+        if (source_subscription_) {
+            source_subscription_->Dispose();
+            source_subscription_.reset();
+        }
+
+        emitting_mapper_subs_.clear();
+        mapper_ = nullptr;
+    }
+
 private:
     std::shared_ptr<SubscriptionCore> source_subscription_;
     FlatMapper mapper_;
@@ -140,7 +147,7 @@ std::shared_ptr<SubscriptionCore> FlatMapOperator::Subscribe(ObserverShim&& obse
 
     auto producer = std::make_shared<FlatMapProducer>(std::move(observer), mapper_);
     producer->Run(source_);
-    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
+    return producer;
 }
 
 }

@@ -1,7 +1,6 @@
 #include <zaf/rx/internal/operator/map_operator.h>
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -12,6 +11,10 @@ public:
         Producer(std::move(next_observer)),
         mapper_(std::move(mapper)) {
 
+    }
+
+    ~MapProducer() {
+        DoDisposal();
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
@@ -44,7 +47,11 @@ public:
 
 protected:
     void OnDispose() noexcept override {
+        DoDisposal();
+    }
 
+private:
+    void DoDisposal() noexcept {
         if (source_subscription_) {
             source_subscription_->Dispose();
             source_subscription_.reset();
@@ -70,7 +77,7 @@ std::shared_ptr<SubscriptionCore> MapOperator::Subscribe(ObserverShim&& observer
 
     auto producer = std::make_shared<MapProducer>(std::move(observer), mapper_);
     producer->Run(source_);
-    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
+    return producer;
 }
 
 }

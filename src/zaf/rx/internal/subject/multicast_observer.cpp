@@ -1,7 +1,6 @@
 #include <zaf/rx/internal/subject/multicast_observer.h>
 #include <zaf/base/as.h>
 #include <zaf/base/container/utility/erase.h>
-#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 
@@ -16,8 +15,16 @@ public:
 
     }
 
+    ~IndividualProducer() {
+        DoDisposal();
+    }
+
 private:
     void OnDispose() noexcept override {
+        DoDisposal();
+    }
+
+    void DoDisposal() noexcept {
         auto owner = owner_.lock();
         if (owner) {
             owner->RemoveProducer(this);
@@ -33,7 +40,10 @@ MulticastObserver::~MulticastObserver() {
 
     //Dispose all producers.
     for (const auto& each_producer : producers_) {
-        each_producer->Dispose();
+        auto producer = each_producer.lock();
+        if (producer) {
+            producer->Dispose();
+        }
     }
 }
 
@@ -50,7 +60,7 @@ std::shared_ptr<SubscriptionCore> MulticastObserver::AddObserver(ObserverShim&& 
                 shared_from_this());
 
             producers_.push_back(producer);
-            return std::make_shared<ProducerSubscriptionCore>(producer);
+            return producer;
         }
         termination = termination_;
     }
@@ -74,47 +84,54 @@ std::size_t MulticastObserver::ObserverCount() const noexcept {
 
 
 void MulticastObserver::OnNext(const std::any& value) {
-    std::vector<std::shared_ptr<IndividualProducer>> copied_producers;
+    std::vector<std::weak_ptr<IndividualProducer>> copied_producers;
     {
         std::lock_guard<std::mutex> lock(lock_);
         copied_producers = producers_;
     }
     for (const auto& each_producer : copied_producers) {
-        each_producer->EmitOnNext(value);
+        if (auto producer = each_producer.lock()) {
+            producer->EmitOnNext(value);
+        }
     }
 }
 
 
 void MulticastObserver::OnError(const std::exception_ptr& error) {
-    std::vector<std::shared_ptr<IndividualProducer>> copied_producers;
+    std::vector<std::weak_ptr<IndividualProducer>> copied_producers;
     {
         std::lock_guard<std::mutex> lock(lock_);
         copied_producers = producers_;
         termination_ = error;
     }
     for (const auto& each_producer : copied_producers) {
-        each_producer->EmitOnError(error);
+        if (auto producer = each_producer.lock()) {
+            producer->EmitOnError(error);
+        }
     }
 }
 
 
 void MulticastObserver::OnCompleted() {
-    std::vector<std::shared_ptr<IndividualProducer>> copied_producers;
+    std::vector<std::weak_ptr<IndividualProducer>> copied_producers;
     {
         std::lock_guard<std::mutex> lock(lock_);
         copied_producers = producers_;
         termination_ = None{};
     }
     for (const auto& each_producer : copied_producers) {
-        each_producer->EmitOnCompleted();
+        if (auto producer = each_producer.lock()) {
+            producer->EmitOnCompleted();
+        }
     }
 }
 
 
-void MulticastObserver::RemoveProducer(IndividualProducer* producer) {
+void MulticastObserver::RemoveProducer(IndividualProducer* producer) noexcept {
     std::lock_guard<std::mutex> lock(lock_);
     EraseIf(producers_, [producer](const auto& each) {
-        return each.get() == producer;
+        auto each_shared = each.lock();
+        return !each_shared || each_shared.get() == producer;
     });
 }
 

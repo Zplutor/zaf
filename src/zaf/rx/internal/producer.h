@@ -8,6 +8,7 @@
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/observer_shim.h>
 #include <zaf/rx/internal/subscription/dispose_notification.h>
+#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 
@@ -22,7 +23,7 @@ A producer is responsible for emitting data sequence.
     A producer transitions from subscribed state to disposed state either when Dispose() is
     called, or when EmitOnError() or EmitOnCompleted() is called.
 */
-class Producer : public std::enable_shared_from_this<Producer>, NonCopyableNonMovable {
+class Producer : public SubscriptionCore, public std::enable_shared_from_this<Producer> {
 public:
     explicit Producer(ObserverShim&& observer) noexcept;
 
@@ -57,13 +58,13 @@ public:
     @details
         It's legal to call this method multiple times, only the first call would take effect.
     */
-    void Dispose() noexcept;
-    bool IsDisposed() const noexcept;
+    void Dispose() noexcept override;
+    bool IsDisposed() const noexcept override;
 
     std::optional<DisposeNotificationID> RegisterDisposeNotification(
-        DisposeNotification callback);
+        DisposeNotification callback) override;
 
-    void UnregisterDisposeNotification(DisposeNotificationID id);
+    void UnregisterDisposeNotification(DisposeNotificationID id) override;
 
 protected:
     /**

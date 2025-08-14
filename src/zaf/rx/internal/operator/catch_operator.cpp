@@ -1,7 +1,6 @@
 #include <zaf/rx/internal/operator/catch_operator.h>
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -12,6 +11,10 @@ public:
         Producer(std::move(next_observer)),
         handler_(std::move(handler)) {
 
+    }
+
+    ~CatchProducer() {
+        DoDisposal();
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
@@ -44,15 +47,7 @@ public:
 
 protected:
     void OnDispose() noexcept override {
-
-        UnsubscribeSource();
-
-        if (new_subscription_) {
-            new_subscription_->Dispose();
-            new_subscription_.reset();
-        }
-
-        handler_ = nullptr;
+        DoDisposal();
     }
 
 private:
@@ -79,6 +74,18 @@ private:
         if (shared_this) {
             new_subscription_ = std::move(new_subscription);
         }
+    }
+
+    void DoDisposal() noexcept {
+
+        UnsubscribeSource();
+
+        if (new_subscription_) {
+            new_subscription_->Dispose();
+            new_subscription_.reset();
+        }
+
+        handler_ = nullptr;
     }
 
     void UnsubscribeSource() {
@@ -108,7 +115,7 @@ std::shared_ptr<SubscriptionCore> CatchOperator::Subscribe(ObserverShim&& observ
 
     auto producer = std::make_shared<CatchProducer>(std::move(observer), handler_);
     producer->Run(source_);
-    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
+    return producer;
 }
 
 }

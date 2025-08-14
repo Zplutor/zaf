@@ -3,7 +3,6 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -17,6 +16,10 @@ public:
         Producer(std::move(next_observer)),
         on_terminate_(std::move(on_terminate)) {
 
+    }
+
+    ~DoOnTerminateProducer() {
+        DoDisposal();
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
@@ -57,7 +60,11 @@ public:
     }
 
     void OnDispose() noexcept override {
+        DoDisposal();
+    }
 
+private:
+    void DoDisposal() noexcept {
         if (source_subscription_) {
             source_subscription_->Dispose();
             source_subscription_.reset();
@@ -87,7 +94,7 @@ std::shared_ptr<SubscriptionCore> DoOnTerminateOperator::Subscribe(ObserverShim&
 
     auto producer = std::make_shared<DoOnTerminateProducer>(std::move(observer), on_terminate_);
     producer->Run(source_);
-    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
+    return producer;
 }
 
 }

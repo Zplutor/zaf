@@ -1,7 +1,6 @@
 #include <zaf/rx/internal/operator/do_operator.h>
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/observer_core.h>
-#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::rx::internal {
@@ -16,6 +15,10 @@ public:
         Producer(std::move(next_observer)),
         do_observer_(std::move(do_observer)) {
 
+    }
+
+    ~DoProducer() {
+        DoDisposal();
     }
 
     void Run(const std::shared_ptr<ObservableCore>& source) {
@@ -63,6 +66,11 @@ public:
     }
 
     void OnDispose() noexcept override {
+        DoDisposal();
+    }
+
+private:
+    void DoDisposal() noexcept {
         if (source_subscription_) {
             source_subscription_->Dispose();
             source_subscription_.reset();
@@ -91,7 +99,7 @@ std::shared_ptr<SubscriptionCore> DoOperator::Subscribe(ObserverShim&& observer)
 
     auto producer = std::make_shared<DoProducer>(std::move(observer), do_observer_);
     producer->Run(source_);
-    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
+    return producer;
 }
 
 }

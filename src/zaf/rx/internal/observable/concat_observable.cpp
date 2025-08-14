@@ -2,7 +2,6 @@
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 namespace zaf::rx::internal {
 namespace {
@@ -16,6 +15,10 @@ public:
         Producer(std::move(observer)),
         concat_observable_(std::move(concat_observable)) {
 
+    }
+
+    ~ConcatProducer() {
+        DoDisposal();
     }
 
     void Run() {
@@ -39,13 +42,7 @@ public:
 
 protected:
     void OnDispose() noexcept override {
-
-        if (current_sub_) {
-            current_sub_->Dispose();
-            current_sub_.reset();
-        }
-
-        concat_observable_.reset();
+        DoDisposal();
     }
 
 private:
@@ -77,6 +74,16 @@ private:
         }
     }
 
+    void DoDisposal() noexcept {
+
+        if (current_sub_) {
+            current_sub_->Dispose();
+            current_sub_.reset();
+        }
+
+        concat_observable_.reset();
+    }
+
 private:
     //Refer to ConcatObservable directly to avoid additional memory allocation.
     std::shared_ptr<ConcatObservable> concat_observable_;
@@ -99,7 +106,7 @@ std::shared_ptr<SubscriptionCore> ConcatObservable::Subscribe(ObserverShim&& obs
         std::move(observer));
 
     producer->Run();
-    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
+    return producer;
 }
 
 }

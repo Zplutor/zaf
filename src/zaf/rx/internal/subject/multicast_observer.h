@@ -27,11 +27,11 @@ private:
     class IndividualProducer;
 
 private:
-    void RemoveProducer(IndividualProducer*);
+    void RemoveProducer(IndividualProducer*) noexcept;
 
 private:
     mutable std::mutex lock_;
-    std::vector<std::shared_ptr<IndividualProducer>> producers_;
+    std::vector<std::weak_ptr<IndividualProducer>> producers_;
     //std::exception_ptr for error termination; None for normal termination.
     std::variant<std::monostate, std::exception_ptr, None> termination_;
 };

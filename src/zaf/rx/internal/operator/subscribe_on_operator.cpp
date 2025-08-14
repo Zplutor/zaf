@@ -1,7 +1,6 @@
 #include <zaf/rx/internal/operator/subscribe_on_operator.h>
 #include <zaf/base/as.h>
 #include <zaf/base/error/contract_error.h>
-#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::rx::internal {
@@ -21,7 +20,7 @@ public:
     }
 
     ~SubscribeOnProducer() {
-
+        DoDisposal();
     }
 
     void Run() {
@@ -32,12 +31,7 @@ public:
     }
 
     void OnDispose() noexcept override {
-
-        is_disposed_.store(true);
-
-        scheduler_->ScheduleWork(std::bind(
-            &SubscribeOnProducer::UnsubscribeOnScheduler,
-            As<SubscribeOnProducer>(shared_from_this())));
+        DoDisposal();
     }
 
     void OnNext(const std::any& value) override {
@@ -59,24 +53,32 @@ private:
             return;
         }
 
-        source_subscription_ = source_->Subscribe(
+        source_sub_ = source_->Subscribe(
             ObserverShim::FromWeak(As<SubscribeOnProducer>(shared_from_this())));
     }
 
-    void UnsubscribeOnScheduler() {
+    void DoDisposal() noexcept {
 
-        if (source_subscription_) {
-            source_subscription_->Dispose();
-            source_subscription_.reset();
+        bool expected{ false };
+        if (!is_disposed_.compare_exchange_strong(expected, true)) {
+            return;
         }
 
-        source_.reset();
+        scheduler_->ScheduleWork(
+            [source = std::move(source_), source_sub = std::move(source_sub_)]() {
+        
+            if (source_sub) {
+                source_sub->Dispose();
+            }
+
+            // Implicitly destroy the source and subscription in the scheduler thread.
+        });
     }
 
 private:
     std::shared_ptr<ObservableCore> source_;
     std::shared_ptr<Scheduler> scheduler_;
-    std::shared_ptr<SubscriptionCore> source_subscription_;
+    std::shared_ptr<SubscriptionCore> source_sub_;
     std::atomic<bool> is_disposed_{};
 };
 
@@ -102,7 +104,7 @@ std::shared_ptr<SubscriptionCore> SubscribeOnOperator::Subscribe(ObserverShim&& 
         std::move(observer));
 
     producer->Run();
-    return std::make_shared<ProducerSubscriptionCore>(std::move(producer));
+    return producer;
 }
 
 }

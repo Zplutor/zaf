@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_operation_error.h>
+#include <zaf/rx/internal/producer.h>
 #include <zaf/rx/subject.h>
-#include <zaf/rx/internal/subscription/producer_subscription_core.h>
 
 TEST(RxDoTest, OnNext) {
 
@@ -215,10 +215,9 @@ TEST(RxDoTest, CircularReference) {
     auto observable = subject.AsObservable().Do([](int) {});
     auto subscription = observable.Subscribe();
 
-    auto core = 
-        std::dynamic_pointer_cast<zaf::rx::internal::ProducerSubscriptionCore>(subscription.Core());
-    std::weak_ptr<zaf::rx::internal::Producer> weak_producer = core->Producer();
-    core.reset();
+    auto producer = std::dynamic_pointer_cast<zaf::rx::internal::Producer>(subscription.Core());
+    std::weak_ptr<zaf::rx::internal::Producer> weak_producer = producer;
+    producer.reset();
 
     subscription = {};
 
