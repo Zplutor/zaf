@@ -355,6 +355,7 @@
     <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp" />
     <ClCompile Include="src\zaf\resource\resource_factory.cpp" />
     <ClCompile Include="src\zaf\resource\uri_loader.cpp" />
+    <ClCompile Include="src\zaf\rx\disposable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observer_shim.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\connectable_observable_core.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\custom_observable.cpp" />

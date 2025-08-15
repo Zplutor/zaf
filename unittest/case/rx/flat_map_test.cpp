@@ -77,9 +77,12 @@ TEST(RxFlatMapTest, AsyncObservable) {
             .SubscribeOn(scheduler);
     })
     .Subscribe([&](const std::string& value) {
-        result.push_back(value);
-        std::scoped_lock<std::mutex> lock_guard(lock);
+        {
+            std::scoped_lock<std::mutex> lock_guard(lock);
+            result.push_back(value);
+        }
         cv.notify_all();
+        std::this_thread::yield();
     });
 
     subject.AsObserver().OnNext(104);

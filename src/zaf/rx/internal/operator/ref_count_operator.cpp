@@ -35,15 +35,9 @@ std::shared_ptr<SubscriptionCore> RefCountOperator::Subscribe(ObserverShim&& obs
         return nullptr;
     }
 
-    auto notification_id = sub->RegisterDisposeNotification(std::bind([connection]() {
+    sub->AddDisposedCallback([connection]() {
         DecreaseRef(connection);
-    }));
-
-    // The subscription may terminate immediately, in which case we decrease the reference count.
-    if (!notification_id) {
-        DecreaseRef(connection);
-        return sub;
-    }
+    });
 
     if (should_connect) {
         auto subscription = source_->Connect();

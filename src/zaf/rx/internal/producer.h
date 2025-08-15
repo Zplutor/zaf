@@ -52,21 +52,11 @@ public:
     */
     bool EmitOnCompleted();
 
-    /**
-    Disposes the producer.
-
-    @details
-        It's legal to call this method multiple times, only the first call would take effect.
-    */
-    void Dispose() noexcept override;
     bool IsDisposed() const noexcept override;
 
-    std::optional<DisposeNotificationID> RegisterDisposeNotification(
-        DisposeNotification callback) override;
-
-    void UnregisterDisposeNotification(DisposeNotificationID id) override;
-
 protected:
+    bool EnsureDisposed() noexcept override final;
+
     /**
     Override this method in derived classes to do specific disposal work.
 
@@ -97,7 +87,6 @@ private:
         This method will also mark the producer as terminated.
     */
     bool MarkDisposed() noexcept;
-    void SendDisposeNotifications() noexcept;
 
 private:
     static constexpr int StateFlagTerminated = 1 << 0;
@@ -106,9 +95,6 @@ private:
 private:
     ObserverShim observer_;
     std::atomic<int> state_flags_{};
-    int dispose_notification_id_seed_{};
-    std::map<DisposeNotificationID, DisposeNotification> dispose_notifications_;
-    std::mutex dispose_notification_lock_;
 };
 
 }

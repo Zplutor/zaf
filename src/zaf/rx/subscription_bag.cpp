@@ -21,27 +21,28 @@ void SubscriptionBag::Add(const Subscription& subscription) {
         return;
     }
 
-    auto notification_id = core->RegisterDisposeNotification(std::bind(
-        &SubscriptionBag::OnSubscriptionCoreDispose,
-        this,
-        std::placeholders::_1));
-
-    if (!notification_id) {
+    if (core->IsDisposed()) {
         return;
     }
 
-    std::scoped_lock<std::mutex> lock(lock_);
-    items_.push_back({ core, *notification_id });
-}
+    {
+        std::lock_guard<std::mutex> lock(lock_);
+        if (items_.contains(core)) {
+            return;
+        }
+        items_.insert(core);
+    }
 
+    std::weak_ptr<Disposable> weak_core = core;
+    core->AddDisposedCallback([this, weak_core]() {
 
-void SubscriptionBag::OnSubscriptionCoreDispose(
-    rx::internal::DisposeNotificationID notification_id) {
+        auto core = weak_core.lock();
+        if (!core) {
+            return;
+        }
 
-    std::scoped_lock<std::mutex> lock(lock_);
-
-    EraseIf(items_, [notification_id](const auto& item) {
-        return (item.dispose_notification_id == notification_id);
+        std::lock_guard<std::mutex> lock(lock_);
+        items_.erase(core);
     });
 }
 
@@ -51,23 +52,22 @@ void SubscriptionBag::operator+=(const Subscription& subscription) {
 }
 
 
-void SubscriptionBag::Clear() {
+void SubscriptionBag::Clear() noexcept {
 
-    std::scoped_lock<std::mutex> lock(lock_);
-
-    for (const auto& each_item : items_) {
-
-        const auto& core = each_item.subscription_core;
-        core->UnregisterDisposeNotification(each_item.dispose_notification_id);
-        core->Dispose();
+    std::unordered_set<std::shared_ptr<Disposable>> disposing_items;
+    {
+        std::lock_guard<std::mutex> lock(lock_);
+        disposing_items = std::move(items_);
     }
 
-    items_.clear();
+    for (const auto& item : disposing_items) {
+        item->Dispose();
+    }
 }
 
 
-std::size_t SubscriptionBag::Count() const {
-    std::scoped_lock<std::mutex> lock(lock_);
+std::size_t SubscriptionBag::Count() const noexcept {
+    std::lock_guard<std::mutex> lock(lock_);
     return items_.size();
 }
 

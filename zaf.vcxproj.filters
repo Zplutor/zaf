@@ -1330,6 +1330,9 @@
     <ClCompile Include="src\zaf\rx\internal\observer_shim.cpp">
       <Filter>zaf\rx\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\disposable.cpp">
+      <Filter>zaf\rx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">

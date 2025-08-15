@@ -18,19 +18,20 @@ public:
         return nullptr;
     }
 
-    void Dispose() noexcept override final {
-        if (!MarkAsDispose()) {
-            return;
-        }
-        work_ = nullptr;
-        OnDispose();
-    }
-
     bool IsDisposed() const noexcept override final {
         return is_disposed_;
     }
 
 protected:
+    bool EnsureDisposed() noexcept override final {
+        if (!MarkAsDispose()) {
+            return false;
+        }
+        work_ = nullptr;
+        OnDispose();
+        return true;
+    }
+
     virtual void OnDispose() noexcept = 0;
 
 private:

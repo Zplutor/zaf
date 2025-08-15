@@ -51,17 +51,16 @@ bool Producer::EmitOnCompleted() {
 }
 
 
-void Producer::Dispose() noexcept {
+bool Producer::EnsureDisposed() noexcept {
 
     if (!MarkDisposed()) {
-        return;
+        return false;
     }
 
     OnDispose();
-    SendDisposeNotifications();
-
     //Free the observer to break potential circular reference.
     observer_ = {};
+    return true;
 }
 
 
@@ -85,44 +84,6 @@ bool Producer::MarkDisposed() noexcept {
 
 bool Producer::IsDisposed() const noexcept {
     return (state_flags_ & StateFlagDisposed) != 0;
-}
-
-
-std::optional<DisposeNotificationID> Producer::RegisterDisposeNotification(
-    DisposeNotification callback) {
-
-    std::lock_guard<std::mutex> lock(dispose_notification_lock_);
-    if (IsDisposed()) {
-        return std::nullopt;
-    }
-
-    auto id = std::make_pair(
-        reinterpret_cast<std::uintptr_t>(this), 
-        ++dispose_notification_id_seed_);
-
-    dispose_notifications_[id] = std::move(callback);
-    return id;
-}
-
-
-void Producer::UnregisterDisposeNotification(DisposeNotificationID id) {
-
-    std::lock_guard<std::mutex> lock(dispose_notification_lock_);
-    dispose_notifications_.erase(id);
-}
-
-
-void Producer::SendDisposeNotifications() noexcept {
-
-    std::map<DisposeNotificationID, DisposeNotification> notifications;
-    {
-        std::lock_guard<std::mutex> lock(dispose_notification_lock_);
-        notifications = std::move(dispose_notifications_);
-    }
-
-    for (const auto& each_pair : notifications) {
-        each_pair.second(each_pair.first);
-    }
 }
 
 }

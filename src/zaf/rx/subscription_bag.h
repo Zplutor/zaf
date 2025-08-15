@@ -1,8 +1,9 @@
 #pragma once
 
 #include <mutex>
-#include <vector>
+#include <unordered_set>
 #include <zaf/base/non_copyable.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/rx/internal/subscription/dispose_notification.h>
 #include <zaf/rx/subscription.h>
 
@@ -46,26 +47,16 @@ public:
     /**
     Clears and disposes all subscriptions in the bag.
     */
-    void Clear();
+    void Clear() noexcept;
 
     /**
     Gets the number of subscriptions in the bag.
     */
-    std::size_t Count() const;
-
-private:
-    class Item {
-    public:
-        std::shared_ptr<rx::internal::SubscriptionCore> subscription_core;
-        rx::internal::DisposeNotificationID dispose_notification_id{};
-    };
-
-private:
-    void OnSubscriptionCoreDispose(rx::internal::DisposeNotificationID notification_id);
+    std::size_t Count() const noexcept;
 
 private:
     mutable std::mutex lock_;
-    std::vector<Item> items_;
+    std::unordered_set<std::shared_ptr<Disposable>> items_;
 };
 
 }
