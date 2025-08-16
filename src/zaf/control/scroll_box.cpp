@@ -9,6 +9,7 @@
 #include <zaf/control/text_box.h>
 #include <zaf/creation.h>
 #include <zaf/internal/theme.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -279,7 +280,9 @@ void ScrollBox::SetScrollContent(const std::shared_ptr<Control>& control) {
 
     auto update_guard = this->BeginUpdate();
 
-    scroll_content_rect_change_subscription_.Dispose();
+    if (scroll_content_rect_change_subscription_) {
+        scroll_content_rect_change_subscription_->Dispose();
+    }
     viewport_control_->RemoveChild(previous_control);
 
     //Destroy layouter first for unregistering events before changing scroll content control.

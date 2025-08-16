@@ -1,8 +1,8 @@
 #pragma once
 
-#include <zaf/rx/subscription.h>
-
 namespace zaf::rx {
+
+class Disposable;
 
 template<
     template<typename> typename SUBSCRIBER,

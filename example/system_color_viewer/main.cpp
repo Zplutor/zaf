@@ -58,7 +58,7 @@ ColorItem g_color_items[] = {
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
     auto& application = zaf::Application::Instance();
-    application.Subscriptions() += application.BeginRunEvent().Subscribe(ShowMainWindow);
+    application.Disposables() += application.BeginRunEvent().Subscribe(ShowMainWindow);
 
     application.Initialize({});
     application.Run();

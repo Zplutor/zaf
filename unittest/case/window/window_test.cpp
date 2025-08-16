@@ -202,7 +202,7 @@ TEST(WindowTest, CreateHandle) {
 
     HWND handle{};
 
-    window->Subscriptions() += window->HandleCreatedEvent().Subscribe(
+    window->Disposables() += window->HandleCreatedEvent().Subscribe(
         [&handle](const zaf::HandleCreatedInfo& event_info) {
 
         handle = zaf::As<zaf::Window>(event_info.Source())->Handle();
@@ -221,12 +221,12 @@ TEST(WindowTest, ShowWindowEvent) {
     window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
     window->SetRect(zaf::Rect{ 0, 0, 1, 1 });
 
-    window->Subscriptions() += window->ShowEvent().Subscribe(
+    window->Disposables() += window->ShowEvent().Subscribe(
         [&is_show_event_called](const zaf::ShowInfo& event_info) {
         is_show_event_called = true;
     });
 
-    window->Subscriptions() += window->HideEvent().Subscribe(
+    window->Disposables() += window->HideEvent().Subscribe(
         [&is_hide_event_called](const zaf::HideInfo& event_info) {
         is_hide_event_called = true;
     });
@@ -249,12 +249,12 @@ TEST(WindowTest, FocusEvent) {
     auto is_focus_lost_event_called = std::make_shared<bool>();
     auto is_focus_gained_event_called = std::make_shared<bool>();
 
-    window->Subscriptions() += window->FocusLostEvent().Subscribe(
+    window->Disposables() += window->FocusLostEvent().Subscribe(
         [is_focus_lost_event_called](const zaf::WindowFocusLostInfo& event_info) {
         *is_focus_lost_event_called = true;
     });
 
-    window->Subscriptions() += window->FocusGainedEvent().Subscribe(
+    window->Disposables() += window->FocusGainedEvent().Subscribe(
         [is_focus_gained_event_called](const zaf::WindowFocusGainedInfo& event_info) {
         *is_focus_gained_event_called = true;
     });
@@ -275,7 +275,7 @@ TEST(WindowTest, Close) {
     ASSERT_EQ(window->Handle(), nullptr);
 
     holder = window->CreateHandle();
-    window->Subscriptions() += window->ClosingEvent().Subscribe(
+    window->Disposables() += window->ClosingEvent().Subscribe(
         [](const zaf::ClosingInfo& event_info) {
 
         event_info.SetCanClose(false);

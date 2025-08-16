@@ -9,11 +9,11 @@
 #include <zaf/graphic/dwrite/hit_test_metrics.h>
 #include <zaf/internal/textual/text_box_hit_test_manager.h>
 #include <zaf/internal/textual/text_box_module.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 
 namespace zaf::internal {
 
-class TextBoxMouseInputHandler : public TextBoxModule, rx::SubscriptionHost {
+class TextBoxMouseInputHandler : public TextBoxModule, rx::DisposableHost {
 public:
     explicit TextBoxMouseInputHandler(TextBoxModuleContext* context);
 

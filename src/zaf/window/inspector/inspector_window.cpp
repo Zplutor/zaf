@@ -72,7 +72,7 @@ void InspectorWindow::InitializeFirstPaneToolbar() {
 
     auto select_button = Create<Button>();
     select_button->SetText(L"Select");
-    Subscriptions() += select_button->ClickEvent().Subscribe(std::bind([this]() {
+    Disposables() += select_button->ClickEvent().Subscribe(std::bind([this]() {
         target_window_->BeginSelectInspectedControl();
     }));
 
@@ -98,7 +98,7 @@ void InspectorWindow::InitializeTreeControl() {
     tree_control_->ExpandItem(target_window_);
     tree_control_->ExpandItem(target_window_->RootControl());
 
-    Subscriptions() += tree_control_->SelectionChangeEvent().Subscribe(std::bind([this]() {
+    Disposables() += tree_control_->SelectionChangeEvent().Subscribe(std::bind([this]() {
 
         auto selected_item = tree_control_->GetFirstSelectedItem();
         if (!selected_item) {
@@ -123,7 +123,7 @@ void InspectorWindow::InitializeSecondPaneToolbar() {
 
     auto refresh_button = Create<Button>();
     refresh_button->SetText(L"Refresh");
-    Subscriptions() += refresh_button->ClickEvent().Subscribe(std::bind([this]() {
+    Disposables() += refresh_button->ClickEvent().Subscribe(std::bind([this]() {
         property_grid_->RefreshValues();
     }));
 
@@ -171,7 +171,7 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
 
     item->SetIsHighlight(item_data == highlight_object_);
 
-    Subscriptions() += item->MouseEnterEvent().Subscribe(
+    Disposables() += item->MouseEnterEvent().Subscribe(
         [this, item_data](const MouseEnterInfo& event_info) {
 
         ChangeHighlightObject(item_data);
@@ -182,7 +182,7 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
         }
     });
 
-    Subscriptions() += item->MouseLeaveEvent().Subscribe(
+    Disposables() += item->MouseLeaveEvent().Subscribe(
         [this, item_data](const MouseLeaveInfo& event_info) {
 
         if (highlight_object_ != item_data) {

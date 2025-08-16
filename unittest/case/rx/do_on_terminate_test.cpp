@@ -4,7 +4,7 @@
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/rx/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/subject.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 
 using namespace zaf;
 
@@ -92,14 +92,14 @@ TEST(RxDoOnTerminatedTest, DestroySource) {
     std::optional<rx::Subject<int>> subject;
     subject.emplace();
 
-    std::optional<rx::SubscriptionHost> sub_host;
+    std::optional<rx::DisposableHost> sub_host;
     sub_host.emplace();
 
     std::condition_variable cv;
     std::mutex lock;
     std::unique_lock<std::mutex> unique_lock{ lock };
 
-    sub_host->Subscriptions() += subject->AsObservable()
+    sub_host->Disposables() += subject->AsObservable()
         .ObserveOn(std::make_shared<rx::SingleThreadScheduler>())
         .DoOnTerminate([&]() {
 

@@ -1,5 +1,6 @@
 #include <mutex>
 #include <gtest/gtest.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/rx/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 
@@ -42,7 +43,7 @@ TEST(RxTimerTest, OneShotTimer) {
     ASSERT_TRUE(on_completed_called);
     // Wait for the timer to be disposed.
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    ASSERT_TRUE(sub.IsDisposed());
+    ASSERT_TRUE(sub->IsDisposed());
 }
 
 
@@ -78,7 +79,7 @@ TEST(RxTimerTest, DelayRepeatingTimer) {
     cv.wait(lock, [&]() {
         return emitted_values.size() >= 3;
     });
-    sub.Dispose();
+    sub->Dispose();
 
     ASSERT_EQ(emitted_values, (std::vector<std::size_t>{ 0, 1, 2 }));
     ASSERT_FALSE(on_error_called);
@@ -117,7 +118,7 @@ TEST(RxTimerTest, RepeatingTimer) {
     cv.wait(lock, [&]() {
         return emitted_values.size() >= 3;
     });
-    sub.Dispose();
+    sub->Dispose();
 
     ASSERT_EQ(emitted_values, (std::vector<std::size_t>{ 0, 1, 2 }));
     ASSERT_FALSE(on_error_called);

@@ -14,5 +14,5 @@ private:
 
 private:
     std::shared_ptr<zaf::Control> explored_control_;
-    zaf::rx::Subscription explored_control_subscription_;
+    std::shared_ptr<zaf::rx::Disposable> explored_control_subscription_;
 };

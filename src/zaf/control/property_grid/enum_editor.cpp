@@ -35,7 +35,7 @@ void EnumEditor::SetValue(const std::shared_ptr<Object>& value) {
     auto all_enum_values = enum_type->Values();
     InitializeComboBoxValues(all_enum_values, value);
 
-    Subscriptions() += combo_box_->SelectionChangedEvent().Subscribe(
+    Disposables() += combo_box_->SelectionChangedEvent().Subscribe(
         std::bind(&EnumEditor::OnSelectionChanged, this));
 }
 

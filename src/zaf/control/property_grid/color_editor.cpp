@@ -39,7 +39,7 @@ void ColorEditor::InitializeRichEdit() {
     color_edit_->SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
     color_edit_->SetAllowBeep(false);
 
-    Subscriptions() += color_edit_->KeyDownEvent().Subscribe(
+    Disposables() += color_edit_->KeyDownEvent().Subscribe(
         [this](const KeyDownInfo& event_info) {
     
         if (event_info.Message().Key() == Key::Enter) {
@@ -48,7 +48,7 @@ void ColorEditor::InitializeRichEdit() {
         }
     });
 
-    Subscriptions() += color_edit_->FocusLostEvent().Subscribe(std::bind([this]() {
+    Disposables() += color_edit_->FocusLostEvent().Subscribe(std::bind([this]() {
         ChangeColorByEdit();
     }));
 

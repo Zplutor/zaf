@@ -52,13 +52,13 @@ void TextBox::Initialize() {
         return Color::FromRGB(0xE4E4E4);
     }));
 
-    Subscriptions() += module_context_->SelectionManager().SelectionChangedEvent().Subscribe(
+    Disposables() += module_context_->SelectionManager().SelectionChangedEvent().Subscribe(
         std::bind(&TextBox::OnInnerSelectionChanged, this, std::placeholders::_1));
 
-    Subscriptions() += module_context_->KeyboardInputHandler().CopyingEvent().Subscribe(
+    Disposables() += module_context_->KeyboardInputHandler().CopyingEvent().Subscribe(
         std::bind(&TextBox::OnInnerCopying, this, std::placeholders::_1));
 
-    Subscriptions() += module_context_->Editor().PastingEvent().Subscribe(
+    Disposables() += module_context_->Editor().PastingEvent().Subscribe(
         std::bind(&TextBox::OnInnerPasting, this, std::placeholders::_1));
 
     SetCanFocus(true);

@@ -8,7 +8,7 @@ using namespace zaf;
 
 namespace {
 
-class ControlStyleTest : public testing::Test, public rx::SubscriptionHost {
+class ControlStyleTest : public testing::Test, public rx::DisposableHost {
 public:
     static void SetUpTestCase() {
         test_window_ = zaf::Create<zaf::Window>();
@@ -47,19 +47,19 @@ protected:
         //requirement in order to reset its style update requirement.
         leaf2_->SetPosition(Point{ 1000, 0 });
 
-        Subscriptions() += leaf1_->StyleUpdateEvent().Subscribe(std::bind([this]() {
+        Disposables() += leaf1_->StyleUpdateEvent().Subscribe(std::bind([this]() {
             leaf1_update_count_++;
         }));
 
-        Subscriptions() += leaf2_->StyleUpdateEvent().Subscribe(std::bind([this]() {
+        Disposables() += leaf2_->StyleUpdateEvent().Subscribe(std::bind([this]() {
             leaf2_update_count_++;
         }));
 
-        Subscriptions() += stem_->StyleUpdateEvent().Subscribe(std::bind([this]() {
+        Disposables() += stem_->StyleUpdateEvent().Subscribe(std::bind([this]() {
             stem_update_count_++;
         }));
 
-        Subscriptions() += test_window_->RootControl()->StyleUpdateEvent().Subscribe(
+        Disposables() += test_window_->RootControl()->StyleUpdateEvent().Subscribe(
             std::bind([this]() {
                 root_update_count_++;
             }));
@@ -133,7 +133,7 @@ TEST_F(ControlStyleTest, UpdateOnParentChange) {
     new_control->SetRect(Rect{ 0, 0, 50, 50 });
 
     int new_control_update_count{};
-    Subscriptions() += new_control->StyleUpdateEvent().Subscribe(std::bind([&]() {
+    Disposables() += new_control->StyleUpdateEvent().Subscribe(std::bind([&]() {
         ++new_control_update_count;
     }));
 

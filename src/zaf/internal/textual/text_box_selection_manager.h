@@ -6,14 +6,14 @@
 #include <zaf/internal/textual/text_model.h>
 #include <zaf/control/textual/selection_option.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 #include <zaf/rx/subject.h>
 
 namespace zaf::internal {
 
 class TextBoxSelectionChangedInfo;
 
-class TextBoxSelectionManager : public TextBoxModule, public rx::SubscriptionHost {
+class TextBoxSelectionManager : public TextBoxModule, public rx::DisposableHost {
 public:
     explicit TextBoxSelectionManager(TextBoxModuleContext* context);
 

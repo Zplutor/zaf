@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_operation_error.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/rx/single.h>
 #include <zaf/rx/subject.h>
 
@@ -106,7 +107,7 @@ TEST(RxDoAfterTerminateTest, Dispose) {
     })
     .Subscribe();
 
-    sub.Dispose();
+    sub->Dispose();
     //Dispose should not call DoAfterTerminate.
     ASSERT_EQ(after_terminate_called, false);
 }

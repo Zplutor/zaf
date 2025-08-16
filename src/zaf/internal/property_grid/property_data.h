@@ -8,14 +8,14 @@
 #include <zaf/object/object.h>
 #include <zaf/object/object_property.h>
 #include <zaf/rx/subject.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 
 namespace zaf::internal {
 
 class PropertyData : 
     public Object, 
     public std::enable_shared_from_this<PropertyData>, 
-    rx::SubscriptionHost,
+    rx::DisposableHost,
     NonCopyableNonMovable {
 
 public:

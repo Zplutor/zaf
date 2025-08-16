@@ -136,11 +136,11 @@ void MenuItem::CheckCreateSubMenu() {
 
     sub_menu_ = Create<PopupMenu>();
 
-    Subscriptions() += sub_menu_->ShowEvent().Subscribe([this](const ShowInfo& event_info) {
+    Disposables() += sub_menu_->ShowEvent().Subscribe([this](const ShowInfo& event_info) {
         sub_menu_show_event_.Raise(SubMenuShowInfo{ As<MenuItem>(shared_from_this()) });
     });
 
-    Subscriptions() += sub_menu_->DestroyedEvent().Subscribe(
+    Disposables() += sub_menu_->DestroyedEvent().Subscribe(
         [this](const DestroyedInfo& event_info) {
 
         sub_menu_close_event_.Raise(SubMenuCloseInfo{ As<MenuItem>(shared_from_this()) });

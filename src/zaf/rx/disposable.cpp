@@ -1,28 +1,6 @@
 #include <zaf/rx/disposable.h>
 
 namespace zaf::rx {
-namespace {
-
-class EmptyDisposable : public Disposable {
-public:
-    EmptyDisposable() noexcept = default;
-
-    bool IsDisposed() const noexcept override {
-        return true;
-    }
-
-    bool EnsureDisposed() noexcept override {
-        return false;
-    }
-};
-
-}
-
-const std::shared_ptr<Disposable>& Disposable::Empty() {
-    static std::shared_ptr<Disposable> instance = std::make_shared<EmptyDisposable>();
-    return instance;
-}
-
 
 Disposable::Disposable() noexcept {
     disposed_callbacks_.emplace();

@@ -1,6 +1,7 @@
 #include <zaf/control/internal/scroll_box/scroll_box_layouter.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_box.h>
+#include <zaf/rx/disposable.h>
 
 namespace zaf::internal {
 
@@ -50,7 +51,9 @@ void ScrollBoxLayouter::UnregisterScrollBarEvent(bool is_horizontal) {
         horizontal_scroll_bar_subscription_ : 
         vertical_scroll_bar_subscription_;
 
-    subscription.Dispose();
+    if (subscription) {
+        subscription->Dispose();
+    }
 }
 
 

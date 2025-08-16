@@ -4,6 +4,7 @@
 #include <zaf/control/scroll_box.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/dpi.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/window/window.h>
 
 using namespace zaf;
@@ -172,7 +173,7 @@ TEST(ScrollBoxTest, MouseWheelEvent) {
         ASSERT_FALSE(is_handled);
     }
 
-    subscription.Dispose();
+    subscription->Dispose();
     window->Destroy();
 }
 

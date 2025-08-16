@@ -93,7 +93,7 @@ void Application::InitializeSystemMessageWindow() {
 
     system_message_window_ = Create<internal::SystemMessageWindow>();
 
-    Subscriptions() += system_message_window_->SessionEndedEvent().Subscribe(
+    Disposables() += system_message_window_->SessionEndedEvent().Subscribe(
         [this](const SessionEndInfo& event_info) {
     
             if (delegate_) {

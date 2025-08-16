@@ -108,8 +108,8 @@ void SpinBox::InitializeDownButton() {
 void SpinBox::InitializeButtonEvents(
     bool increase,
     const std::shared_ptr<SpinButton>& button,
-    rx::SubscriptionBag& subscriptions,
-    rx::Subscription& timer_subscription) {
+    rx::DisposeBag& subscriptions,
+    std::shared_ptr<rx::Disposable>& timer_subscription) {
 
     subscriptions += button->MouseDownEvent().Subscribe(
         [this, increase, &timer_subscription](const zaf::MouseDownInfo& event_info) {
@@ -131,7 +131,9 @@ void SpinBox::InitializeButtonEvents(
     subscriptions += button->MouseUpEvent().Subscribe(
         [this, &timer_subscription](const zaf::MouseUpInfo& event_info) {
     
-        timer_subscription.Dispose();
+        if (timer_subscription) {
+            timer_subscription->Dispose();
+        }
     });
 }
 

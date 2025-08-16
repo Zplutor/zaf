@@ -10,7 +10,7 @@ using namespace zaf;
 
 namespace {
 
-class ControlFocusTest : public testing::Test, rx::SubscriptionHost {
+class ControlFocusTest : public testing::Test, rx::DisposableHost {
 public:
     static void SetUpTestCase() {
         test_window_ = zaf::Create<zaf::Window>();
@@ -113,14 +113,14 @@ private:
         auto controls = { control1_, control2_, control3_, test_window_->RootControl() };
         for (const auto& each_control : controls) {
 
-            Subscriptions() += each_control->PreFocusGainedEvent().Subscribe(
+            Disposables() += each_control->PreFocusGainedEvent().Subscribe(
                 pre_focus_gained_handler);
-            Subscriptions() += each_control->FocusGainedEvent().Subscribe(focus_gained_handler);
-            Subscriptions() += each_control->PreFocusLostEvent().Subscribe(pre_focus_lost_handler);
-            Subscriptions() += each_control->FocusLostEvent().Subscribe(focus_lost_handler);
+            Disposables() += each_control->FocusGainedEvent().Subscribe(focus_gained_handler);
+            Disposables() += each_control->PreFocusLostEvent().Subscribe(pre_focus_lost_handler);
+            Disposables() += each_control->FocusLostEvent().Subscribe(focus_lost_handler);
         }
 
-        Subscriptions() += test_window_->FocusedControlChangedEvent().Subscribe(
+        Disposables() += test_window_->FocusedControlChangedEvent().Subscribe(
             [this](const FocusedControlChangedInfo& event_info) {
                 event_logs_.push_back(std::format(L"FocusedControlChanged {}",
                 event_info.PreviousFocusedControl() ?
@@ -214,7 +214,7 @@ TEST_F(ControlFocusTest, CheckFocusInEvents) {
 
     Control1()->SetIsFocused(true);
 
-    rx::SubscriptionBag subs;
+    rx::DisposeBag subs;
     subs += Control1()->PreFocusLostEvent().Subscribe([this](const PreFocusLostInfo& event_info) {
 
         ASSERT_FALSE(As<Control>(event_info.Source())->IsFocused());

@@ -101,7 +101,7 @@ private:
     class DialogButtonItem {
     public:
         DialogResult dialog_result{ DialogResult::None };
-        rx::Subscription click_event_subscription;
+        std::shared_ptr<rx::Disposable> click_event_subscription;
     };
 
 private:

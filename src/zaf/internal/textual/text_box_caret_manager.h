@@ -3,11 +3,11 @@
 #include <zaf/control/caret.h>
 #include <zaf/internal/textual/text_box_module.h>
 #include <zaf/internal/textual/text_box_selection_manager.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 
 namespace zaf::internal {
 
-class TextBoxCaretManager : public TextBoxModule, rx::SubscriptionHost {
+class TextBoxCaretManager : public TextBoxModule, rx::DisposableHost {
 public:
     explicit TextBoxCaretManager(TextBoxModuleContext* context);
 

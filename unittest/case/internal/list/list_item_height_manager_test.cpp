@@ -5,7 +5,7 @@
 #include <zaf/internal/list/list_item_height_manager.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 
 class FakeItemSource : public zaf::ListDataSource, public zaf::ListControlDelegate {
 public:
@@ -56,28 +56,28 @@ public:
 };
 
 
-class ListControlItemHeightManagerTest : public testing::Test, zaf::rx::SubscriptionHost {
+class ListControlItemHeightManagerTest : public testing::Test, zaf::rx::DisposableHost {
 public:
     void SetUp() override {
         
         item_source_ = std::make_shared<FakeItemSource>();
 
-        Subscriptions() += item_source_->DataAddedEvent().Subscribe(
+        Disposables() += item_source_->DataAddedEvent().Subscribe(
             [this](const zaf::ListDataAddedInfo& event_info) {
                 item_height_manager_->OnDataAdded(event_info);
             });
 
-        Subscriptions() += item_source_->DataRemovedEvent().Subscribe(
+        Disposables() += item_source_->DataRemovedEvent().Subscribe(
             [this](const zaf::ListDataRemovedInfo& event_info) {
                 item_height_manager_->OnDataRemoved(event_info);
             });
 
-        Subscriptions() += item_source_->DataUpdatedEvent().Subscribe(
+        Disposables() += item_source_->DataUpdatedEvent().Subscribe(
             [this](const zaf::ListDataUpdatedInfo& event_info) {
                 item_height_manager_->OnDataUpdated(event_info);
             });
 
-        Subscriptions() += item_source_->DataMovedEvent().Subscribe(
+        Disposables() += item_source_->DataMovedEvent().Subscribe(
             [this](const zaf::ListDataMovedInfo& event_info) {
                 item_height_manager_->OnDataMoved(event_info);
             });

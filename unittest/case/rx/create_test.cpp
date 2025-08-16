@@ -182,12 +182,12 @@ TEST(RxCreateTest, Create_Unsubscribe) {
     std::mutex lock;
     std::unique_lock<std::mutex> unique_lock{ lock };
 
-    zaf::rx::Subscription sub;
+    std::shared_ptr<zaf::rx::Disposable> sub;
     sub = observable.SubscribeOn(subscribe_scheduler)
         .ObserveOn(observe_scheduler)
         .Subscribe([&](int value) {
             std::scoped_lock<std::mutex> lock_guard(lock);
-            sub.Dispose();
+            sub->Dispose();
             cv.notify_all();
         });
 

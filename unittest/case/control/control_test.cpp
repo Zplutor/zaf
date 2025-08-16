@@ -357,7 +357,7 @@ TEST(ControlTest, WindowChangedEvent) {
     auto subscribe_event = [](const std::shared_ptr<zaf::Control>& control) {
 
         auto result = std::make_shared<EventInfo>();
-        zaf::Application::Instance().Subscriptions() += control->WindowChangedEvent().Subscribe(
+        zaf::Application::Instance().Disposables() += control->WindowChangedEvent().Subscribe(
             [result](const zaf::WindowChangedInfo& event_info) {
 
             result->is_raised = true;
@@ -486,7 +486,7 @@ TEST(ControlTest, RectChangedEvent) {
     
         auto result = std::make_shared<EventInfo>();
 
-        auto& subscriptions = zaf::Application::Instance().Subscriptions();
+        auto& subscriptions = zaf::Application::Instance().Disposables();
         subscriptions += control->RectChangedEvent().Subscribe(
             [result](const zaf::RectChangedInfo& event_info) {
         
@@ -596,7 +596,7 @@ TEST(ControlTest, IsVisible) {
     ASSERT_FALSE(control->IsVisible());
 
     //Changing visibility will raise IsVisibleChangedEvent.
-    zaf::rx::SubscriptionBag subs;
+    zaf::rx::DisposeBag subs;
     bool is_event_raised{};
     subs += control->IsVisibleChangedEvent().Subscribe(
         [&](const zaf::IsVisibleChangedInfo& event_info) {
@@ -655,7 +655,7 @@ TEST(ControlTest, IsEnabled) {
     ASSERT_FALSE(control->IsEnabled());
 
     //Changing enabled state will raise IsEnabledChangedEvent.
-    zaf::rx::SubscriptionBag subs;
+    zaf::rx::DisposeBag subs;
     bool is_event_raised{};
     subs += control->IsEnabledChangedEvent().Subscribe(
         [&](const zaf::IsEnabledChangedInfo& event_info) {
@@ -714,7 +714,7 @@ TEST(ControlTest, IsSelected) {
 
     bool is_event_raised{};
 
-    zaf::rx::SubscriptionBag subs;
+    zaf::rx::DisposeBag subs;
     subs += control->IsSelectedChangedEvent().Subscribe(
         [&](const zaf::IsSelectedChangedInfo& event_info) {
     

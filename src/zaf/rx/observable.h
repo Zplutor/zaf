@@ -10,7 +10,6 @@
 #include <zaf/rx/observer.h>
 #include <zaf/rx/observer_functions.h>
 #include <zaf/rx/subscriber.h>
-#include <zaf/rx/subscription.h>
 
 namespace zaf::rx::internal {
 template<typename T>
@@ -57,22 +56,22 @@ public:
     using Base::Subscribe;
 
     [[nodiscard]]
-    Subscription Subscribe(OnNext<T> on_next) {
+    std::shared_ptr<Disposable> Subscribe(OnNext<T> on_next) {
         return Subscribe(std::move(on_next), nullptr, nullptr);
     }
 
     [[nodiscard]]
-    Subscription Subscribe(OnNext<T> on_next, OnError on_error) {
+    std::shared_ptr<Disposable> Subscribe(OnNext<T> on_next, OnError on_error) {
         return Subscribe(std::move(on_next), std::move(on_error), nullptr);
     }
 
     [[nodiscard]]
-    Subscription Subscribe(OnNext<T> on_next, OnCompleted on_completed) {
+    std::shared_ptr<Disposable> Subscribe(OnNext<T> on_next, OnCompleted on_completed) {
         return Subscribe(std::move(on_next), nullptr, std::move(on_completed));
     }
 
     [[nodiscard]]
-    Subscription Subscribe(OnNext<T> on_next, OnError on_error, OnCompleted on_completed) {
+    std::shared_ptr<Disposable> Subscribe(OnNext<T> on_next, OnError on_error, OnCompleted on_completed) {
         auto observer = Observer<T>::Create(
             std::move(on_next), 
             std::move(on_error), 
@@ -131,10 +130,10 @@ template<typename T>
 class ConnectableObservable : public Observable<T> {
 public:
     [[nodiscard]]
-    Subscription Connect() {
+    std::shared_ptr<Disposable> Connect() {
         auto core = static_cast<internal::ConnectableObservableCore*>(this->Core().get());
         auto sub_core = core->Connect();
-        return Subscription{ std::move(sub_core) };
+        return std::move(sub_core);
     }
 
     Observable<T> RefCount() {

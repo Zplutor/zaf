@@ -5,7 +5,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/split_control.h>
 #include <zaf/rx/subject.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 
 namespace zaf::internal {
 
@@ -18,7 +18,7 @@ public:
     bool is_changed_by_dragging{};
 };
 
-class SplitDistanceManager : rx::SubscriptionHost, NonCopyableNonMovable {
+class SplitDistanceManager : rx::DisposableHost, NonCopyableNonMovable {
 public:
     SplitDistanceManager();
 
@@ -52,7 +52,7 @@ private:
     float current_distance_{};
     bool is_distance_default_{ true };
 
-    std::map<std::shared_ptr<SplitControl>, rx::Subscription> split_controls_;
+    std::map<std::shared_ptr<SplitControl>, std::shared_ptr<rx::Disposable>> split_controls_;
     float max_split_control_x_{};
     rx::Subject<float> max_split_control_x_changed_event_;
 };

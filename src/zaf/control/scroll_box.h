@@ -3,7 +3,6 @@
 #include <zaf/control/control.h>
 #include <zaf/control/scroll_bar.h>
 #include <zaf/control/scroll_box_parser.h>
-#include <zaf/rx/subscription.h>
 
 namespace zaf {
 namespace internal {
@@ -317,7 +316,7 @@ private:
     float horizontal_scroll_bar_thickness_{ 17 };
 
     std::unique_ptr<internal::ScrollBoxLayouter> layouter_;
-    rx::Subscription scroll_content_rect_change_subscription_;
+    std::shared_ptr<rx::Disposable> scroll_content_rect_change_subscription_;
 };
 
 ZAF_OBJECT_BEGIN(ScrollBox);

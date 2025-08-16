@@ -123,7 +123,7 @@ TEST(RxDoTest, OnNextOnErrorOnCompleted) {
     };
 
     TestState test_state;
-    zaf::rx::Subscription subscription;
+    std::shared_ptr<zaf::rx::Disposable> subscription;
     auto create_test_subject = [&]() {
     
         test_state = {};
@@ -200,7 +200,7 @@ TEST(RxDoTest, Dispose) {
 
     subject.AsObserver().OnNext(1);
     subject.AsObserver().OnNext(2);
-    subscription.Dispose();
+    subscription->Dispose();
     subject.AsObserver().OnNext(3);
 
     std::vector<int> expected{ 1, 2 };
@@ -215,7 +215,7 @@ TEST(RxDoTest, CircularReference) {
     auto observable = subject.AsObservable().Do([](int) {});
     auto subscription = observable.Subscribe();
 
-    auto producer = std::dynamic_pointer_cast<zaf::rx::internal::Producer>(subscription.Core());
+    auto producer = std::dynamic_pointer_cast<zaf::rx::internal::Producer>(subscription);
     std::weak_ptr<zaf::rx::internal::Producer> weak_producer = producer;
     producer.reset();
 

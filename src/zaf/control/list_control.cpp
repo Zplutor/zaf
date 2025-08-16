@@ -33,19 +33,19 @@ void ListControl::Initialize() {
     delegate_.Assign(ListControlDelegate::Default(), this);
     item_container_ = Create<ListItemContainer>();
 
-    Subscriptions() += parts_->Core().DataSourceChangedEvent().Subscribe(
+    Disposables() += parts_->Core().DataSourceChangedEvent().Subscribe(
         std::bind_front(&ListControl::OnCoreDataSourceChanged, this));
 
-    Subscriptions() += parts_->Core().DelegateChangedEvent().Subscribe(
+    Disposables() += parts_->Core().DelegateChangedEvent().Subscribe(
         std::bind_front(&ListControl::OnCoreDelegateChanged, this));
 
-    Subscriptions() += parts_->Core().SelectionChangedEvent().Subscribe(
+    Disposables() += parts_->Core().SelectionChangedEvent().Subscribe(
         std::bind_front(&ListControl::OnCoreSelectionChanged, this));
 
-    Subscriptions() += parts_->Core().ItemDoubleClickEvent().Subscribe(
+    Disposables() += parts_->Core().ItemDoubleClickEvent().Subscribe(
         std::bind_front(&ListControl::OnCoreItemDoubleClick, this));
 
-    Subscriptions() += parts_->Core().ItemContainerChangedEvent().Subscribe(
+    Disposables() += parts_->Core().ItemContainerChangedEvent().Subscribe(
         std::bind_front(&ListControl::OnCoreItemContainerChanged, this));
 
     internal::ListCore::InitializeParameters init_params;

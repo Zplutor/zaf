@@ -12,7 +12,7 @@
 #include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/internal/list/list_selection_store.h>
 #include <zaf/rx/subject.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 #include <zaf/window/popup_menu.h>
 
 namespace zaf::internal {
@@ -34,7 +34,7 @@ struct ListCoreItemDoubleClickInfo {
 };
 
 
-class ListCore : public ListControlPartsBased, rx::SubscriptionHost {
+class ListCore : public ListControlPartsBased, rx::DisposableHost {
 public:
     class InitializeParameters {
     public:
@@ -132,11 +132,11 @@ private:
     std::weak_ptr<ListControlDelegate> delegate_;
     rx::Subject<ListCoreDelegateChangedInfo> delegate_changed_event_;
 
-    rx::SubscriptionBag data_source_subs_;
-    rx::SubscriptionBag item_container_subs_;
+    rx::DisposeBag data_source_subs_;
+    rx::DisposeBag item_container_subs_;
 
-    rx::Subscription vertical_scroll_bar_sub_;
-    rx::Subscription exit_selecting_by_mouse_sub_;
+    std::shared_ptr<rx::Disposable> vertical_scroll_bar_sub_;
+    std::shared_ptr<rx::Disposable> exit_selecting_by_mouse_sub_;
 
     float current_total_height_{};
     bool disable_on_layout_{};

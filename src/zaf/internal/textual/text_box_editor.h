@@ -8,11 +8,11 @@
 #include <zaf/control/textual/pasting_info.h>
 #include <zaf/internal/textual/text_box_edit_command.h>
 #include <zaf/internal/textual/text_box_module.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 
 namespace zaf::internal {
 
-class TextBoxEditor : public TextBoxModule, rx::SubscriptionHost {
+class TextBoxEditor : public TextBoxModule, rx::DisposableHost {
 public:
     explicit TextBoxEditor(TextBoxModuleContext* context);
 

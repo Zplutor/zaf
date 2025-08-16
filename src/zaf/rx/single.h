@@ -5,7 +5,6 @@
 #include <zaf/rx/observable.h>
 #include <zaf/rx/single_observer.h>
 #include <zaf/rx/single_subscriber.h>
-#include <zaf/rx/subscription.h>
 
 namespace zaf::rx::internal {
 template<typename T>
@@ -24,16 +23,14 @@ public:
     using Base::Subscribe;
 
     [[nodiscard]]
-    Subscription Subscribe(OnSuccess<T> on_success) {
+    std::shared_ptr<Disposable> Subscribe(OnSuccess<T> on_success) {
         return Subscribe(std::move(on_success), nullptr);
     }
 
     [[nodiscard]]
-    Subscription Subscribe(OnSuccess<T> on_success, OnError on_error) {
+    std::shared_ptr<Disposable> Subscribe(OnSuccess<T> on_success, OnError on_error) {
         auto observer = SingleObserver<T>::Create(std::move(on_success), std::move(on_error));
-        return Subscription{ 
-            this->Core()->Subscribe(internal::ObserverShim::FromShared(observer.Core()))
-        };
+        return this->Core()->Subscribe(internal::ObserverShim::FromShared(observer.Core()));
     }
 
     Single Do(OnSuccess<T> on_success) {

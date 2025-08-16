@@ -444,7 +444,7 @@ void ScrollBar::BeginTimer(TimerEvent timer_event) {
 
     timer_ = std::make_shared<Timer>(Timer::Mode::OneShot);
     timer_->SetInterval(std::chrono::milliseconds(kTimerInitialInterval));
-    Subscriptions() += timer_->TriggerEvent().Subscribe(std::bind(&ScrollBar::TimerTrigger, this));
+    Disposables() += timer_->TriggerEvent().Subscribe(std::bind(&ScrollBar::TimerTrigger, this));
     timer_->Start();
 }
 
@@ -457,7 +457,7 @@ void ScrollBar::TimerTrigger() {
 
         timer_ = std::make_shared<Timer>(Timer::Mode::DeferredRepeated);
         timer_->SetInterval(std::chrono::milliseconds(kTimerContinuousInterval));
-        Subscriptions() += timer_->TriggerEvent().Subscribe(
+        Disposables() += timer_->TriggerEvent().Subscribe(
             std::bind(&ScrollBar::TimerTrigger, this));
         timer_->Start();
     }

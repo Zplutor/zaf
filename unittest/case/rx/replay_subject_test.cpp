@@ -1,6 +1,7 @@
 #include <mutex>
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_operation_error.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/rx/replay_subject.h>
 
 static_assert(!std::is_copy_assignable_v<zaf::rx::ReplaySubject<int>>);
@@ -211,7 +212,8 @@ TEST(RxReplaySubjectTest, SubscribeAfterOnCompleted) {
     [&]() {
         on_completed_count++;
     });
-    ASSERT_TRUE(sub.IsDisposed());
+    // The returned disposable will be null if the subject is already terminated.
+    ASSERT_EQ(sub, nullptr);
     ASSERT_EQ(values, (std::vector<int>{ 10, 11 }));
     ASSERT_EQ(on_error_count, 0);
     ASSERT_EQ(on_completed_count, 1);
@@ -237,7 +239,8 @@ TEST(RxReplaySubjectTest, SubscribeAfterOnError) {
     [&]() {
         on_completed_count++;
     });
-    ASSERT_TRUE(sub.IsDisposed());
+    // The returned disposable will be null if the subject is already terminated.
+    ASSERT_EQ(sub, nullptr);
     ASSERT_EQ(values, (std::vector<int>{ 20, 21 }));
     ASSERT_EQ(on_error_count, 1);
     ASSERT_EQ(on_completed_count, 0);

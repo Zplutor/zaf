@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
 
@@ -71,7 +72,7 @@ TEST(RxPublishTest, Dispose) {
     auto connect_sub = observable.Connect();
     subject.AsObserver().OnNext(16);
 
-    connect_sub.Dispose();
+    connect_sub->Dispose();
     subject.AsObserver().OnNext(16);
     ASSERT_EQ(on_next_values, (std::vector<int>{ 17, 18 }));
 }

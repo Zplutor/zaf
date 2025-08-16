@@ -1,17 +1,18 @@
 #include <gtest/gtest.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/rx/subject.h>
-#include <zaf/rx/subscription_bag.h>
+#include <zaf/rx/dispose_bag.h>
 
-static_assert(!std::is_copy_assignable_v<zaf::rx::SubscriptionBag>);
-static_assert(!std::is_copy_constructible_v<zaf::rx::SubscriptionBag>);
-static_assert(!std::is_move_assignable_v<zaf::rx::SubscriptionBag>);
-static_assert(!std::is_move_constructible_v<zaf::rx::SubscriptionBag>);
+static_assert(!std::is_copy_assignable_v<zaf::rx::DisposeBag>);
+static_assert(!std::is_copy_constructible_v<zaf::rx::DisposeBag>);
+static_assert(!std::is_move_assignable_v<zaf::rx::DisposeBag>);
+static_assert(!std::is_move_constructible_v<zaf::rx::DisposeBag>);
 
 
 TEST(RxSubscriptionBagTest, EmptySubscription) {
 
-    zaf::rx::SubscriptionBag bag;
-    bag += zaf::rx::Subscription{};
+    zaf::rx::DisposeBag bag;
+    bag += nullptr;
     ASSERT_EQ(bag.Count(), 0);
 
     std::vector<float> values;
@@ -29,9 +30,9 @@ TEST(RxSubscriptionBagTest, UnsubscribedSubscription) {
 
     zaf::rx::Subject<std::string> subject;
     auto sub = subject.AsObservable().Subscribe();
-    sub.Dispose();
+    sub->Dispose();
 
-    zaf::rx::SubscriptionBag bag;
+    zaf::rx::DisposeBag bag;
     bag += sub;
     ASSERT_EQ(bag.Count(), 0);
 }
@@ -40,7 +41,7 @@ TEST(RxSubscriptionBagTest, UnsubscribedSubscription) {
 TEST(RxSubscriptionBagTest, CancelSubscription) {
 
     zaf::rx::Subject<std::string> subject;
-    zaf::rx::SubscriptionBag bag;
+    zaf::rx::DisposeBag bag;
 
     std::vector<std::string> values;
     bag += subject.AsObservable().Subscribe([&values](const std::string& value) {
@@ -61,7 +62,7 @@ TEST(RxSubscriptionBagTest, CancelSubscription) {
 TEST(RxSubscriptionBagTest, CancelSubscriptionByDestruction) {
 
     zaf::rx::Subject<std::string> subject;
-    auto bag = std::make_unique<zaf::rx::SubscriptionBag>();
+    auto bag = std::make_unique<zaf::rx::DisposeBag>();
 
     std::vector<std::string> values;
     *bag += subject.AsObservable().Subscribe([&values](const std::string& value) {
@@ -80,7 +81,7 @@ TEST(RxSubscriptionBagTest, CancelSubscriptionByDestruction) {
 
 TEST(RxSubscriptionBagTest, RemoveAfterFinish) {
 
-    zaf::rx::SubscriptionBag bag;
+    zaf::rx::DisposeBag bag;
 
     //Remove after OnError
     {
@@ -109,7 +110,7 @@ TEST(RxSubscriptionBagTest, RemoveAfterFinish) {
         bag += subscription;
         subject.AsObserver().OnNext("c");
         ASSERT_EQ(bag.Count(), 1);
-        subscription.Dispose();
+        subscription->Dispose();
         ASSERT_EQ(bag.Count(), 0);
     }
 }

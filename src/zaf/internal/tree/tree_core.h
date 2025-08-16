@@ -17,7 +17,7 @@ class TreeCore :
     public ListDataSource, 
     public ListControlDelegate,
     public std::enable_shared_from_this<TreeCore>,
-    rx::SubscriptionHost {
+    rx::DisposableHost {
 
 public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<TreeDataSource>&)>;
@@ -175,8 +175,8 @@ private:
     ItemExpandEvent item_expand_event_;
     ItemCollapseEvent item_collapse_event_;
 
-    rx::SubscriptionBag item_container_subs_;
-    rx::SubscriptionBag data_source_subscriptions_;
+    rx::DisposeBag item_container_subs_;
+    rx::DisposeBag data_source_subscriptions_;
     
     TreeIndexMapping tree_index_mapping_;
     TreeDataManager tree_data_manager_;

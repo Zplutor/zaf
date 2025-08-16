@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <zaf/base/non_copyable.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 #include <zaf/window/popup_menu.h>
 
 namespace zaf::internal {
@@ -10,7 +10,7 @@ namespace zaf::internal {
 /**
 Controls message redirection between popup menu, owner window and sub menus.
 */
-class PopupMenuController : rx::SubscriptionHost, NonCopyableNonMovable {
+class PopupMenuController : rx::DisposableHost, NonCopyableNonMovable {
 public:
     void PushMenu(const std::shared_ptr<PopupMenu>& menu);
     void PopMenu(const PopupMenu& menu);

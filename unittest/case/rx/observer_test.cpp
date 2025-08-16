@@ -131,7 +131,7 @@ TEST(RxObserverTest, OnError) {
 
     std::string string_error;
     double double_error{};
-    rx::Subscription sub;
+    std::shared_ptr<zaf::rx::Disposable> sub;
 
     auto create_observer = [&]() {
         rx::Subject<int> subject;

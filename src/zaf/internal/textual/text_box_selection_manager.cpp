@@ -15,7 +15,7 @@ TextBoxSelectionManager::TextBoxSelectionManager(TextBoxModuleContext* context) 
 
 void TextBoxSelectionManager::Initialize() {
 
-    Subscriptions() += Context().TextModel().TextChangedEvent().Subscribe(
+    Disposables() += Context().TextModel().TextChangedEvent().Subscribe(
         std::bind(&TextBoxSelectionManager::OnTextModelChanged, this, std::placeholders::_1));
 }
 

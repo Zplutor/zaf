@@ -12,7 +12,7 @@
 #include <zaf/object/object.h>
 #include <zaf/object/property_support.h>
 #include <zaf/rx/single_subject.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 #include <zaf/window/activate_option.h>
 #include <zaf/window/event/activate_event_info.h>
 #include <zaf/window/event/closing_info.h>
@@ -54,7 +54,7 @@ enum class HitTestResult;
  */
 class Window : 
     public Object, 
-    public rx::SubscriptionHost,
+    public rx::DisposableHost,
     public std::enable_shared_from_this<Window>,
     NonCopyableNonMovable {
 

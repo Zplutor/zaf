@@ -15,10 +15,10 @@ void ParsableValueEditor::Initialize() {
     rich_edit_->SetParagraphAlignment(dwrite::ParagraphAlignment::Center);
     rich_edit_->SetAllowBeep(false);
 
-    Subscriptions() += rich_edit_->FocusLostEvent().Subscribe(
+    Disposables() += rich_edit_->FocusLostEvent().Subscribe(
         std::bind(&ParsableValueEditor::OnRichEditFocusLost, this, std::placeholders::_1));
 
-    Subscriptions() += rich_edit_->KeyDownEvent().Subscribe(
+    Disposables() += rich_edit_->KeyDownEvent().Subscribe(
         [this](const KeyDownInfo& event_info) {
     
         if (event_info.Message().Key() == Key::Enter) {

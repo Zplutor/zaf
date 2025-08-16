@@ -9,7 +9,7 @@
 #include <zaf/config.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 
 namespace zaf::rx::internal {
 class RxRuntime;
@@ -64,7 +64,7 @@ provides access global shared objects and resources.
     main window is destroyed, the application ends automatically. Users also can call Terminate()
     to end the application manually.
 */
-class Application : public rx::SubscriptionHost, NonCopyableNonMovable {
+class Application : public rx::DisposableHost, NonCopyableNonMovable {
 public:
     /**
     Gets the singleton instance.

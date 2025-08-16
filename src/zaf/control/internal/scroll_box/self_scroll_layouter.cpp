@@ -13,10 +13,10 @@ SelfScrollLayouter::SelfScrollLayouter(zaf::ScrollBox* scroll_box) :
 
     auto self_scroll_control = SelfScrollControl();
 
-    Subscriptions() += self_scroll_control->ScrollBarChangeEvent().Subscribe(
+    Disposables() += self_scroll_control->ScrollBarChangeEvent().Subscribe(
         std::bind(&SelfScrollLayouter::SelfScrollingControlScrollBarChange, this));
 
-    Subscriptions() += self_scroll_control->ScrollValuesChangeEvent().Subscribe(
+    Disposables() += self_scroll_control->ScrollValuesChangeEvent().Subscribe(
        std::bind(
            &SelfScrollLayouter::SelfScrollingControlScrollValuesChange, 
            this, 

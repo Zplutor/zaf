@@ -5,7 +5,7 @@ namespace zaf::internal {
 
 SplitDistanceManager::SplitDistanceManager() {
 
-    Subscriptions() += distance_changed_subject_.AsObservable().Subscribe(
+    Disposables() += distance_changed_subject_.AsObservable().Subscribe(
         [this](const ItemSplitDistanceChangedInfo& event_info) {
     
         if (!event_info.changing_item) {

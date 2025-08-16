@@ -92,7 +92,7 @@ void MainWindow::InitializeButtons() {
 
                 button->SetRect(zaf::Rect(x, y, button_width, height));
 
-                Subscriptions() += button->ClickEvent().Subscribe(
+                Disposables() += button->ClickEvent().Subscribe(
                     std::bind(&MainWindow::ButtonClick, this, std::placeholders::_1));
 
                 RootControl()->AddChild(button);

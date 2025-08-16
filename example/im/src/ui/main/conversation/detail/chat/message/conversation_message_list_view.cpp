@@ -43,7 +43,7 @@ void ConversationMessageListView::Initialize() {
     auto scroll_bar = VerticalScrollBar();
     scroll_bar->SetSmallChange(14);
 
-    Subscriptions() += Service::GetInstance().GetMessageAddEvent().Subscribe(
+    Disposables() += Service::GetInstance().GetMessageAddEvent().Subscribe(
         std::bind(&ConversationMessageListView::OnMessageAdd, this, std::placeholders::_1));
 }
 

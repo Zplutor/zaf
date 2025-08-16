@@ -23,7 +23,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     application.Initialize(initialize_parameters);
 
     //Register the begin run event, do something when the event triggers.
-    application.Subscriptions() += application.BeginRunEvent().Subscribe(OnBeginRun);
+    application.Disposables() += application.BeginRunEvent().Subscribe(OnBeginRun);
 
     //Begin to run.
     application.Run();
@@ -92,7 +92,7 @@ static std::vector<std::shared_ptr<zaf::Control>> CreateControls() {
     auto sign_in_button = zaf::Create<zaf::Button>();
     sign_in_button->SetText(L"Sign in");
     sign_in_button->SetRect(zaf::Rect(110, 110, 80, 30));
-    sign_in_button->Subscriptions() += sign_in_button->ClickEvent().Subscribe(std::bind(
+    sign_in_button->Disposables() += sign_in_button->ClickEvent().Subscribe(std::bind(
         OnSignInClick, 
         account_edit, 
         password_edit_, 

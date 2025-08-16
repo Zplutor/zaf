@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/as.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/rx/internal/operator/ref_count_operator.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
@@ -30,12 +31,12 @@ TEST(RxRefCountTest, Publish) {
     subject.AsObserver().OnNext(2);
     ASSERT_EQ(values, (std::vector<int>{ 1, 2, 2 }));
 
-    sub1.Dispose();
+    sub1->Dispose();
     subject.AsObserver().OnNext(3);
     ASSERT_EQ(values, (std::vector<int>{ 1, 2, 2, 3 }));
 
     // The connection will be disconnected when the last subscription is unsubscribed.
-    sub2.Dispose();
+    sub2->Dispose();
     subject.AsObserver().OnNext(4);
     ASSERT_EQ(values, (std::vector<int>{ 1, 2, 2, 3 }));
     ASSERT_FALSE(ref_count_operator->HasConnection());

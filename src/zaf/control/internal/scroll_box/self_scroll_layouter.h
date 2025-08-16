@@ -2,12 +2,12 @@
 
 #include <zaf/control/internal/scroll_box/scroll_box_layouter.h>
 #include <zaf/control/self_scroll_control.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 
 namespace zaf {
 namespace internal {
 
-class SelfScrollLayouter : public ScrollBoxLayouter, public rx::SubscriptionHost {
+class SelfScrollLayouter : public ScrollBoxLayouter, public rx::DisposableHost {
 public:
     explicit SelfScrollLayouter(zaf::ScrollBox* scroll_box);
     ~SelfScrollLayouter();

@@ -71,7 +71,7 @@ void ConversationListView::LoadConversations() {
 
     Reload();
 
-    Subscriptions() += Service::GetInstance().GetConversationUpdateEvent().Subscribe(
+    Disposables() += Service::GetInstance().GetConversationUpdateEvent().Subscribe(
         std::bind(&ConversationListView::ConversationUpdate, this, std::placeholders::_1));
 }
 

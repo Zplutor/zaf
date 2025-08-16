@@ -10,7 +10,7 @@ TEST(RxFlatMapTest, FlatMap) {
         std::vector<std::string> result;
         int error_count{};
         int completed_count{};
-        zaf::rx::Subscription sub;
+        std::shared_ptr<zaf::rx::Disposable> sub;
     } test_data;
 
     auto create_subject = [&]() {

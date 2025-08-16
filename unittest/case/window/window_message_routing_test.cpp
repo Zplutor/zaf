@@ -21,7 +21,7 @@ protected:
 
         __super::Initialize();
 
-        Subscriptions() += this->MessageReceivedEvent().Subscribe(
+        Disposables() += this->MessageReceivedEvent().Subscribe(
             [this](const zaf::MessageReceivedInfo& event_info) {
 
             if (event_info.Message().ID() == TestMessage) {
@@ -29,7 +29,7 @@ protected:
             }
         });
 
-        Subscriptions() += this->MessageHandledEvent().Subscribe(
+        Disposables() += this->MessageHandledEvent().Subscribe(
             [this](const zaf::MessageHandledInfo& event_info) {
 
             if (event_info.Message().ID() == TestMessage) {

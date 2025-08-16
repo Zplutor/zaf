@@ -458,7 +458,7 @@ private:
     internal::ColorField selection_back_color_field_;
     textual::WordExtractor word_extractor_;
 
-    rx::Subscription ime_message_subscription_;
+    std::shared_ptr<rx::Disposable> ime_message_subscription_;
 
     Event<textual::SelectionChangedInfo> selection_changed_event_;
     Event<textual::CopyingInfo> copying_event_;

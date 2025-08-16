@@ -1,10 +1,13 @@
 #include "control_view_panel.h"
+#include <zaf/rx/disposable.h>
 
 void ControlViewPanel::SetExploredControl(const std::shared_ptr<zaf::Control>& control) {
 
     if (explored_control_ != nullptr) {
         RemoveChild(explored_control_);
-        explored_control_subscription_.Dispose();
+        if (explored_control_subscription_) {
+            explored_control_subscription_->Dispose();
+        }
     }
 
     explored_control_ = control;

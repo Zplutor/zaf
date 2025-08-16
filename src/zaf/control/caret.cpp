@@ -89,7 +89,9 @@ void Caret::HideCaret() {
     DestroySystemCaret();
     NeedRepaint();
 
-    blink_timer_subscription_.Dispose();
+    if (blink_timer_subscription_) {
+        blink_timer_subscription_->Dispose();
+    }
 }
 
 

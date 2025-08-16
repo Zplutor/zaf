@@ -66,10 +66,10 @@ void TextualControl::Initialize() {
         }
     }));
 
-    Subscriptions() += text_model_->InlineObjectAttachedEvent().Subscribe(
+    Disposables() += text_model_->InlineObjectAttachedEvent().Subscribe(
         std::bind(&TextualControl::OnInlineObjectAttached, this, std::placeholders::_1));
 
-    Subscriptions() += text_model_->TextChangedEvent().Subscribe(
+    Disposables() += text_model_->TextChangedEvent().Subscribe(
         std::bind(&TextualControl::OnTextModelChanged, this, std::placeholders::_1));
 }
 

@@ -427,7 +427,7 @@ private:
     mutable std::optional<float> cached_text_height_;
     internal::ColorField text_color_field_;
 
-    rx::Subscription ime_message_subscription_;
+    std::shared_ptr<rx::Disposable> ime_message_subscription_;
 
     Event<rich_edit::TextChangingInfo> text_changing_event_;
     Event<rich_edit::TextChangedInfo> text_changed_event_;

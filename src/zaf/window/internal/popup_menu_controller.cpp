@@ -54,7 +54,7 @@ void PopupMenuController::InitializeOwnerMessageRedirection(
     SetForegroundWindow(owner->Handle());
     SetCapture(owner->Handle());
 
-    Subscriptions() += owner->MessageReceivedEvent().Subscribe(
+    Disposables() += owner->MessageReceivedEvent().Subscribe(
         std::bind(&PopupMenuController::OnOwnerMessageReceived, this, std::placeholders::_1));
 }
 
@@ -97,7 +97,7 @@ void PopupMenuController::PopMenu(const PopupMenu& menu) {
             ReleaseCapture();
         }
 
-        Subscriptions().Clear();
+        Disposables().Clear();
 
         //Recover the focus of owner.
         auto focused_control = owner_focused_control_.lock();

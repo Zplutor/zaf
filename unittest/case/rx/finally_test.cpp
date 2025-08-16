@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_operation_error.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/rx/single.h>
 #include <zaf/rx/subject.h>
 
@@ -13,7 +14,7 @@ TEST(RxFinallyTest, Finally) {
     };
 
     TestState test_state;
-    zaf::rx::Subscription subscription;
+    std::shared_ptr<zaf::rx::Disposable> subscription;
     auto create_test_subject = [&]() {
 
         zaf::rx::Subject<int> subject;
@@ -49,7 +50,7 @@ TEST(RxFinallyTest, Finally) {
         ASSERT_EQ(test_state.on_completed_called, false);
         ASSERT_EQ(test_state.finally_called, false);
 
-        subscription.Dispose();
+        subscription->Dispose();
         ASSERT_EQ(test_state.on_next_value, 2);
         ASSERT_EQ(test_state.on_error_called, false);
         ASSERT_EQ(test_state.on_completed_called, false);
@@ -69,7 +70,7 @@ TEST(RxFinallyTest, Finally) {
         ASSERT_EQ(test_state.finally_called, true);
 
         test_state = {};
-        subscription.Dispose();
+        subscription->Dispose();
         ASSERT_EQ(test_state.finally_called, false);
     }
 
@@ -86,7 +87,7 @@ TEST(RxFinallyTest, Finally) {
         ASSERT_EQ(test_state.finally_called, true);
 
         test_state = {};
-        subscription.Dispose();
+        subscription->Dispose();
         ASSERT_EQ(test_state.finally_called, false);
     }
 }

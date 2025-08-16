@@ -31,7 +31,7 @@ TEST(EventTest, Raise) {
     zaf::Event<int> event;
 
     int value{};
-    zaf::Application::Instance().Subscriptions() += event.GetObservable().Subscribe(
+    zaf::Application::Instance().Disposables() += event.GetObservable().Subscribe(
         [&value](int v) {
         
         value = v;
@@ -51,7 +51,7 @@ TEST(EventTest, RaiseWithoutSubscription) {
     event.Raise(test_object);
     ASSERT_EQ(*has_copied, false);
 
-    zaf::Application::Instance().Subscriptions() += event.GetObservable().Subscribe(
+    zaf::Application::Instance().Disposables() += event.GetObservable().Subscribe(
         [](const TestObject&) { });
 
     event.Raise(test_object);

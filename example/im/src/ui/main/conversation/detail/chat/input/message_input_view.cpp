@@ -14,11 +14,11 @@ void MessageInputView::Initialize() {
     rich_edit_ = zaf::Create<zaf::RichEdit>();
     rich_edit_->SetBorder(zaf::Frame(0));
     rich_edit_->SetBackgroundColor(zaf::Color::Transparent());
-    Subscriptions() += rich_edit_->FocusGainedEvent().Subscribe(
+    Disposables() += rich_edit_->FocusGainedEvent().Subscribe(
         std::bind(&MessageInputView::RichEditFocusChange, this));
-    Subscriptions() += rich_edit_->FocusLostEvent().Subscribe(
+    Disposables() += rich_edit_->FocusLostEvent().Subscribe(
         std::bind(&MessageInputView::RichEditFocusChange, this));
-    Subscriptions() += rich_edit_->KeyDownEvent().Subscribe(
+    Disposables() += rich_edit_->KeyDownEvent().Subscribe(
         std::bind(&MessageInputView::RichEditKeyDown, this, std::placeholders::_1));
     AddChild(rich_edit_);
 
@@ -32,7 +32,7 @@ void MessageInputView::Initialize() {
         return zaf::Color::FromRGB(send_button.IsMouseOver() ? 0x3986E0 : 0x788894);
     }));
 
-    Subscriptions() += send_button_->ClickEvent().Subscribe(
+    Disposables() += send_button_->ClickEvent().Subscribe(
         std::bind(&MessageInputView::SendButtonClick, this));
 
     auto send_button_container = zaf::Create<zaf::Control>();

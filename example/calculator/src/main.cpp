@@ -9,7 +9,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     
     application.Initialize({});
 
-    application.Subscriptions() += application.BeginRunEvent().Subscribe(
+    application.Disposables() += application.BeginRunEvent().Subscribe(
         [](const zaf::BeginRunInfo&) {
 
             auto main_window = zaf::Create<MainWindow>();

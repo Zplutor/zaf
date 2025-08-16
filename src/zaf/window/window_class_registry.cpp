@@ -83,7 +83,7 @@ std::shared_ptr<WindowClass> WindowClassRegistry::RegisterWindowClass(
     const WindowClassProperties& properties) {
 
     std::shared_ptr<WindowClass> window_class{ new WindowClass(properties) };
-    Subscriptions() += window_class->DestroyEvent().Subscribe(
+    Disposables() += window_class->DestroyEvent().Subscribe(
         [this](const std::wstring& class_name) {
         class_map_.erase(class_name);
     });

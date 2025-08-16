@@ -32,7 +32,7 @@ TEST(ControlKeyboardEventRoutingTest, RoutingPath) {
     not_focused->SetCanFocus(true);
     focused->AddChild(not_focused);
 
-    zaf::rx::SubscriptionBag subs;
+    zaf::rx::DisposeBag subs;
     int event_seed{};
 
     subs += window->RootControl()->PreKeyDownEvent().Subscribe(
@@ -107,7 +107,7 @@ TEST(ControlKeyboardEventRoutingTest, IsHandled) {
     auto window = CreateTestWindow();
     window->RootControl()->SetCanFocus(true);
 
-    zaf::rx::SubscriptionBag subs;
+    zaf::rx::DisposeBag subs;
     subs += window->RootControl()->PreKeyDownEvent().Subscribe(
         [](const zaf::PreKeyDownInfo& event_info) {
 
@@ -146,7 +146,7 @@ TEST(ControlKeyboardEventRoutingTest, EventType) {
         event_message_id = event_info.Message().ID();
     };
 
-    zaf::rx::SubscriptionBag subs;
+    zaf::rx::DisposeBag subs;
 
     struct {
         UINT message_id;

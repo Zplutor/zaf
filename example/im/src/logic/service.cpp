@@ -62,7 +62,7 @@ void Service::StartMessageGeneratingTimer() {
 
     if (message_generating_timer_ == nullptr) {
         message_generating_timer_ = std::make_shared<zaf::Timer>(zaf::Timer::Mode::OneShot);
-        Subscriptions() += message_generating_timer_->TriggerEvent().Subscribe(
+        Disposables() += message_generating_timer_->TriggerEvent().Subscribe(
             std::bind(&Service::MessageGeneratingTimerTrigger, this));
     }
 
@@ -135,7 +135,7 @@ void Service::SendMessageToConversation(const std::wstring& content, Id conversa
 
     reply_timer_ = std::make_shared<zaf::Timer>(zaf::Timer::Mode::OneShot);
     reply_timer_->SetInterval(std::chrono::seconds(1));
-    Subscriptions() += reply_timer_->TriggerEvent().Subscribe(std::bind([this, conversation]() {
+    Disposables() += reply_timer_->TriggerEvent().Subscribe(std::bind([this, conversation]() {
         GenerateMessageToConversation(conversation, true);
     }));
     reply_timer_->Start();

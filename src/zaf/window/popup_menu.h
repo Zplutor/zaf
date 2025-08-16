@@ -100,7 +100,7 @@ private:
     class MenuItemInfo : zaf::NonCopyableNonMovable {
     public:
         std::shared_ptr<MenuItem> menu_item;
-        rx::SubscriptionBag subscriptions;
+        rx::DisposeBag subscriptions;
     };
 
 private:
@@ -151,14 +151,14 @@ private:
 
 private:
     std::shared_ptr<internal::PopupMenuController> controller_;
-    rx::SubscriptionBag root_control_subscriptions_;
+    rx::DisposeBag root_control_subscriptions_;
 
     std::vector<std::unique_ptr<MenuItemInfo>> menu_item_infos_;
     std::weak_ptr<MenuItem> selected_menu_item_;
 
     std::weak_ptr<MenuItem> showing_sub_menu_item_;
-    rx::Subscription show_sub_menu_timer_;
-    rx::Subscription close_sub_menu_timer_;
+    std::shared_ptr<rx::Disposable> show_sub_menu_timer_;
+    std::shared_ptr<rx::Disposable> close_sub_menu_timer_;
 
     Event<SelectedMenuItemChangedInfo> selected_menu_item_changed_event_;
 };

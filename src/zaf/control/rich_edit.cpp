@@ -1325,7 +1325,9 @@ void RichEdit::OnWindowChanged(const WindowChangedInfo& event_info) {
 
     __super::OnWindowChanged(event_info);
 
-    ime_message_subscription_.Dispose();
+    if (ime_message_subscription_) {
+        ime_message_subscription_->Dispose();
+    }
 
     auto window = Window();
     if (!window) {

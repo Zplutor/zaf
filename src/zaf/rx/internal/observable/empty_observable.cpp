@@ -1,5 +1,4 @@
 #include <zaf/rx/internal/observable/empty_observable.h>
-#include <zaf/rx/disposable.h>
 #include <zaf/rx/internal/observer_core.h>
 
 namespace zaf::rx::internal {
@@ -13,7 +12,7 @@ const std::shared_ptr<EmptyObservable>& EmptyObservable::Instance() {
 std::shared_ptr<Disposable> EmptyObservable::Subscribe(ObserverShim&& observer) {
 
     observer.OnCompleted();
-    return Disposable::Empty();
+    return nullptr;
 }
 
 }

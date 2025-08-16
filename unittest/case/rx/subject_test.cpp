@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/rx/subject.h>
 #include <zaf/rx/internal/subject/subject_core.h>
 
@@ -62,7 +63,8 @@ TEST(RxSubjectTest, SubscribeAfterOnCompleted) {
         [&](std::exception_ptr) { on_error_called = true; },
         [&]() { on_completed_called = true; }
     );
-    ASSERT_TRUE(sub.IsDisposed());
+    // The returned disposable will be null if the subject is already terminated.
+    ASSERT_EQ(sub, nullptr);
     ASSERT_FALSE(on_next_called);
     ASSERT_FALSE(on_error_called);
     ASSERT_TRUE(on_completed_called);
@@ -133,7 +135,7 @@ TEST(RxSubjectTest, MultipleOnError) {
     [&]() {
         on_completed_called = true;
     });
-    ASSERT_TRUE(sub.IsDisposed());
+    ASSERT_EQ(sub, nullptr);
     ASSERT_TRUE(error.has_value());
     ASSERT_STREQ(error->what(), "error");
     ASSERT_FALSE(on_next_called);
@@ -157,7 +159,7 @@ TEST(RxSubjectTest, SubscribeAfterOnError) {
         [&](std::exception_ptr) { on_error_called = true; },
         [&]() { on_completed_called = true; }
     );
-    ASSERT_TRUE(sub.IsDisposed());
+    ASSERT_EQ(sub, nullptr);
     ASSERT_FALSE(on_next_called);
     ASSERT_TRUE(on_error_called);
     ASSERT_FALSE(on_completed_called);
@@ -200,8 +202,8 @@ TEST(RxSubjectTest, UnsubscribeOnDestroy) {
     auto sub2 = subject->AsObservable().Subscribe();
 
     subject.reset();
-    ASSERT_TRUE(sub1.IsDisposed());
-    ASSERT_TRUE(sub2.IsDisposed());
+    ASSERT_TRUE(sub1->IsDisposed());
+    ASSERT_TRUE(sub2->IsDisposed());
 }
 
 
@@ -217,7 +219,7 @@ TEST(RxSubjectTest, CancelSubscriptionExplicit) {
     });
 
     subject.AsObserver().OnNext(1);
-    subscription.Dispose();
+    subscription->Dispose();
     subject.AsObserver().OnNext(2);
 
     std::vector<int> expected{ 1 };
@@ -257,9 +259,9 @@ TEST(RxSubjectTest, SubscriptionCount) {
     auto subscription2 = subject.AsObservable().Subscribe([](int) {});
     ASSERT_EQ(subject.Core()->SubscriptionCount(), 2);
 
-    subscription1.Dispose();
+    subscription1->Dispose();
     ASSERT_EQ(subject.Core()->SubscriptionCount(), 1);
 
-    subscription2.Dispose();
+    subscription2->Dispose();
     ASSERT_EQ(subject.Core()->SubscriptionCount(), 0);
 }

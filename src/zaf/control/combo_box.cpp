@@ -14,6 +14,7 @@
 #include <zaf/graphic/d2d/path_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/window.h>
 
@@ -82,7 +83,7 @@ void ComboBox::Initialize() {
     drop_down_window_->SetActivateOption(ActivateOption::NoActivate);
     drop_down_window_->SetInitialRectStyle(InitialRectStyle::Custom);
 
-    Subscriptions() += drop_down_window_->DestroyedEvent().Subscribe(
+    Disposables() += drop_down_window_->DestroyedEvent().Subscribe(
         std::bind(&ComboBox::DropDownWindowDestroy, this));
 
     drop_down_list_box_ = Create<ComboBoxDropDownListBox>();
@@ -112,7 +113,9 @@ void ComboBox::UninitializeDropDownListBox() {
     }
 
     drop_down_list_box_->SetMouseMoveCallback(nullptr);
-    drop_down_list_box_subscription_.Dispose();
+    if (drop_down_list_box_subscription_) {
+        drop_down_list_box_subscription_->Dispose();
+    }
 }
 
 
@@ -137,7 +140,9 @@ void ComboBox::UninitializeEditBox() {
     }
 
     RemoveChild(edit_box_);
-    edit_box_subscription_.Dispose();
+    if (edit_box_subscription_) {
+        edit_box_subscription_->Dispose();
+    }
 }
 
 

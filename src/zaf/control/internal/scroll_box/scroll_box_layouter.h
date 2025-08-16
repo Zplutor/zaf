@@ -45,8 +45,8 @@ private:
 private:
     zaf::ScrollBox* scroll_box_{};
 
-    rx::Subscription horizontal_scroll_bar_subscription_;
-    rx::Subscription vertical_scroll_bar_subscription_;
+    std::shared_ptr<rx::Disposable> horizontal_scroll_bar_subscription_;
+    std::shared_ptr<rx::Disposable> vertical_scroll_bar_subscription_;
 };
 
 }

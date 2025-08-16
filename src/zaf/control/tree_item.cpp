@@ -18,7 +18,7 @@ void TreeItem::Initialize() {
 
     expand_button_ = Create<TreeItemExpandButton>();
 
-    Subscriptions() += expand_button_->ClickEvent().Subscribe(
+    Disposables() += expand_button_->ClickEvent().Subscribe(
         std::bind(&TreeItem::ExpandButtonClick, this));
 
     AddChild(expand_button_);

@@ -1,12 +1,12 @@
 #pragma once
 
 #include <zaf/base/timer.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 #include "storage/conversation_storage.h"
 #include "storage/message_storage.h"
 #include "storage/user_storage.h"
 
-class Service : public zaf::rx::SubscriptionHost {
+class Service : public zaf::rx::DisposableHost {
 public:
     static Service& GetInstance();
 

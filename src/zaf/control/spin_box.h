@@ -37,22 +37,22 @@ private:
     void InitializeButtonEvents(
         bool is_down_button,
         const std::shared_ptr<SpinButton>& button, 
-        rx::SubscriptionBag& subscriptions,
-        rx::Subscription& timer_subscription);
+        rx::DisposeBag& subscriptions,
+        std::shared_ptr<rx::Disposable>& timer_subscription);
     void ChangeValueByButtonEvent(bool increase);
 
 private:
     std::shared_ptr<SpinEdit> edit_;
-    rx::SubscriptionBag edit_subscriptions_;
+    rx::DisposeBag edit_subscriptions_;
     bool is_setting_value_{};
 
     std::shared_ptr<SpinButton> up_button_;
-    rx::SubscriptionBag up_button_subscriptions_;
-    rx::Subscription up_button_timer_subscription_;
+    rx::DisposeBag up_button_subscriptions_;
+    std::shared_ptr<rx::Disposable> up_button_timer_subscription_;
 
     std::shared_ptr<SpinButton> down_button_;
-    rx::SubscriptionBag down_button_subscriptions_;
-    rx::Subscription down_button_timer_subscription_;
+    rx::DisposeBag down_button_subscriptions_;
+    std::shared_ptr<rx::Disposable> down_button_timer_subscription_;
 
     float button_width_{ 16 };
 

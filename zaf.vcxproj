@@ -388,8 +388,7 @@
     <ClCompile Include="src\zaf\rx\scheduler\main_thread_scheduler.cpp" />
     <ClCompile Include="src\zaf\rx\scheduler\single_thread_scheduler.cpp" />
     <ClCompile Include="src\zaf\rx\scheduler\trampoline_scheduler.cpp" />
-    <ClCompile Include="src\zaf\rx\subscription.cpp" />
-    <ClCompile Include="src\zaf\rx\subscription_bag.cpp" />
+    <ClCompile Include="src\zaf\rx\dispose_bag.cpp" />
     <ClCompile Include="src\zaf\rx\thread\default_run_loop_thread.cpp" />
     <ClCompile Include="src\zaf\rx\thread\main_thread.cpp" />
     <ClCompile Include="src\zaf\rx\timer.cpp" />
@@ -958,9 +957,8 @@
     <ClInclude Include="src\zaf\rx\single_subscriber.h" />
     <ClInclude Include="src\zaf\rx\subject.h" />
     <ClInclude Include="src\zaf\rx\subscriber.h" />
-    <ClInclude Include="src\zaf\rx\subscription.h" />
-    <ClInclude Include="src\zaf\rx\subscription_bag.h" />
-    <ClInclude Include="src\zaf\rx\subscription_host.h" />
+    <ClInclude Include="src\zaf\rx\dispose_bag.h" />
+    <ClInclude Include="src\zaf\rx\disposable_host.h" />
     <ClInclude Include="src\zaf\rx\thread\default_run_loop_thread.h" />
     <ClInclude Include="src\zaf\rx\thread\main_thread.h" />
     <ClInclude Include="src\zaf\rx\thread\run_loop_thread.h" />

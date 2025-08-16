@@ -6,12 +6,12 @@
 #include <zaf/graphic/gif_metadata_querier.h>
 #include <zaf/graphic/wic/bitmap_decoder.h>
 #include <zaf/graphic/d2d/bitmap_renderer.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 
 namespace zaf {
 namespace internal {
 
-class GifPlayer : public ImagePlayer, public rx::SubscriptionHost {
+class GifPlayer : public ImagePlayer, public rx::DisposableHost {
 public:
     GifPlayer(const wic::BitmapDecoder& image_decoder);
 

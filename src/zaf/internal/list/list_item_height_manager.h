@@ -6,7 +6,7 @@
 #include <zaf/internal/list/list_item_height_strategy.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
-#include <zaf/rx/subscription_bag.h>
+#include <zaf/rx/dispose_bag.h>
 
 namespace zaf::internal {
 

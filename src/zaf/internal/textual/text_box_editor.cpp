@@ -66,7 +66,7 @@ TextBoxEditor::TextBoxEditor(TextBoxModuleContext* context) : TextBoxModule(cont
 
 void TextBoxEditor::Initialize() {
 
-    Subscriptions() += Context().TextModel().TextChangedEvent().Subscribe(
+    Disposables() += Context().TextModel().TextChangedEvent().Subscribe(
         std::bind(&TextBoxEditor::OnTextModelChanged, this));
 }
 

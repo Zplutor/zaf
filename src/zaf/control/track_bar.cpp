@@ -111,7 +111,9 @@ void TrackBar::OnMouseUp(const MouseUpInfo& event_info) {
     }
 
     pressing_zone_.reset();
-    timer_sub_.Dispose();
+    if (timer_sub_) {
+        timer_sub_->Dispose();
+    }
 
     if (IsCapturingMouse()) {
         ReleaseMouse();

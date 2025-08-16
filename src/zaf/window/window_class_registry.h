@@ -1,14 +1,14 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 #include <zaf/window/window_class.h>
 
 namespace zaf {
 
 class Application;
 
-class WindowClassRegistry : rx::SubscriptionHost, NonCopyableNonMovable {
+class WindowClassRegistry : rx::DisposableHost, NonCopyableNonMovable {
 public:
     static WindowClassRegistry& Instance();
 

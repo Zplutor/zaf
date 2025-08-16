@@ -17,7 +17,7 @@ void TextBoxCaretManager::Initialize() {
 
     caret_ = zaf::Create<zaf::Caret>(As<TextBox>(Context().Owner().shared_from_this()));
 
-    Subscriptions() += Context().Editor().CanEditChangedEvent().Subscribe(
+    Disposables() += Context().Editor().CanEditChangedEvent().Subscribe(
         std::bind(&TextBoxCaretManager::UpdateCaretOnPropertyChanged, this));
 }
 

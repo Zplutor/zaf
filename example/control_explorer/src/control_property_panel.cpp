@@ -12,7 +12,7 @@ void ControlPropertyPanel::Initialize() {
     refresh_button_->SetText(L"Refresh");
     refresh_button_->SetFixedHeight(30);
     refresh_button_->SetIsVisible(false);
-    Subscriptions() += refresh_button_->ClickEvent().Subscribe(std::bind([this]() {
+    Disposables() += refresh_button_->ClickEvent().Subscribe(std::bind([this]() {
         property_grid_->RefreshValues();
     }));
     AddChild(refresh_button_);

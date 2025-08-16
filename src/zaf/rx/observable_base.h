@@ -6,7 +6,6 @@
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/internal/observable/throw_observable.h>
 #include <zaf/rx/observer_functions.h>
-#include <zaf/rx/subscription.h>
 
 namespace zaf::rx {
 
@@ -50,9 +49,9 @@ public:
 
         auto bridged_producer = [producer = std::move(producer)](
             std::shared_ptr<internal::ObserverCore> observer_core,
-            std::shared_ptr<Disposable> subscription_core) {
+            std::shared_ptr<Disposable> subscription) {
 
-            SUBSCRIBER<T> subscriber{ std::move(observer_core), std::move(subscription_core) };
+            SUBSCRIBER<T> subscriber{ std::move(observer_core), std::move(subscription) };
             producer(std::move(subscriber));
         };
 
@@ -69,14 +68,12 @@ public:
 
 public:
     [[nodiscard]]
-    Subscription Subscribe(const OBSERVER<T>& observer) {
-        return Subscription{
-            core_->Subscribe(internal::ObserverShim::FromShared(observer.Core()))
-        };
+    std::shared_ptr<Disposable> Subscribe(const OBSERVER<T>& observer) {
+        return core_->Subscribe(internal::ObserverShim::FromShared(observer.Core()));
     }
 
     [[nodiscard]]
-    Subscription Subscribe() {
+    std::shared_ptr<Disposable> Subscribe() {
         return Subscribe(OBSERVER<T>::Create());
     }
 

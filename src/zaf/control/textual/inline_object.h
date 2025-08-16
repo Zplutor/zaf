@@ -8,7 +8,7 @@
 #include <zaf/graphic/size.h>
 #include <zaf/graphic/dwrite/inline_object_metrics.h>
 #include <zaf/object/object.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 #include <zaf/xml/xml_serializable.h>
 
 namespace zaf {
@@ -32,7 +32,7 @@ constexpr wchar_t ObjectReplacementChar = L'\uFFFC';
 
 class InlineObject : 
     public Object, 
-    public rx::SubscriptionHost,
+    public rx::DisposableHost,
     public XMLSerializable,
     public std::enable_shared_from_this<InlineObject>,
     NonCopyableNonMovable {

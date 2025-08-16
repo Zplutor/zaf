@@ -388,13 +388,10 @@
     <ClCompile Include="src\zaf\control\internal\cached_painting.cpp">
       <Filter>zaf\control\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\subscription.cpp">
-      <Filter>zaf\rx</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\subject\subject_core.cpp">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\subscription_bag.cpp">
+    <ClCompile Include="src\zaf\rx\dispose_bag.cpp">
       <Filter>zaf\rx</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\window\inspector\inspector_window.cpp">
@@ -1684,19 +1681,16 @@
     <ClInclude Include="src\zaf\rx\observer_functions.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\subscription.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core.h">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\subject.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\subscription_bag.h">
+    <ClInclude Include="src\zaf\rx\dispose_bag.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\subscription_host.h">
+    <ClInclude Include="src\zaf\rx\disposable_host.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\object\internal\is_equal_comparable.h">

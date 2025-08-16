@@ -9,7 +9,7 @@
 #include <zaf/control/scroll_bar_thumb.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject.h>
-#include <zaf/rx/subscription_bag.h>
+#include <zaf/rx/dispose_bag.h>
 
 namespace zaf {
 
@@ -253,9 +253,9 @@ private:
     std::shared_ptr<ScrollBarArrow> decremental_arrow_;
     std::shared_ptr<ScrollBarThumb> thumb_;
 
-    zaf::rx::SubscriptionBag incremental_arrow_subscriptions_;
-    zaf::rx::SubscriptionBag decremental_arrow_subscriptions_;
-    zaf::rx::SubscriptionBag thumb_subscriptions_;
+    zaf::rx::DisposeBag incremental_arrow_subscriptions_;
+    zaf::rx::DisposeBag decremental_arrow_subscriptions_;
+    zaf::rx::DisposeBag thumb_subscriptions_;
 
     std::optional<float> arrow_length_;
 

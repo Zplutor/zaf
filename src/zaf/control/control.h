@@ -37,7 +37,7 @@
 #include <zaf/internal/control/color_field.h>
 #include <zaf/object/object.h>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/subscription_host.h>
+#include <zaf/rx/disposable_host.h>
 
 namespace zaf {
 namespace internal {
@@ -63,7 +63,7 @@ enum class HitTestResult;
  */
 class Control : 
     public Object, 
-    public rx::SubscriptionHost,
+    public rx::DisposableHost,
     public std::enable_shared_from_this<Control> {
 
 public:

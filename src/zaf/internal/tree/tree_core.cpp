@@ -79,7 +79,7 @@ void TreeCore::InitializeListImplementation(
     const InitializeParameters& parameters) {
 
     //This event must be subscribed before initializing the list core.
-    Subscriptions() +=
+    Disposables() +=
         list_parts_.SelectionStore().ChangedEvent().Subscribe(
             std::bind_front(&TreeCore::OnListSelectionStoreChanged, this));
 
@@ -88,10 +88,10 @@ void TreeCore::InitializeListImplementation(
     list_initialize_parameters.data_source = As<ListDataSource>(shared_from_this());
     list_initialize_parameters.delegate = As<ListControlDelegate>(shared_from_this());
 
-    Subscriptions() += list_parts_.Core().SelectionChangedEvent().Subscribe(
+    Disposables() += list_parts_.Core().SelectionChangedEvent().Subscribe(
         std::bind_front(&TreeCore::OnListSelectionChange, this));
 
-    Subscriptions() += list_parts_.Core().ItemDoubleClickEvent().Subscribe(
+    Disposables() += list_parts_.Core().ItemDoubleClickEvent().Subscribe(
         std::bind_front(&TreeCore::OnListItemDoubleClick, this));
 
     list_parts_.Core().Initialize(list_initialize_parameters);

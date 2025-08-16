@@ -90,7 +90,7 @@ void Window::Initialize() {
     __super::Initialize();
 
     focused_control_manager_ = std::make_unique<internal::WindowFocusedControlManager>(*this);
-    Subscriptions() += focused_control_manager_->FocusedControlChangedEvent().Subscribe(
+    Disposables() += focused_control_manager_->FocusedControlChangedEvent().Subscribe(
         [this](const std::shared_ptr<Control>& previous_focused_control) {
             OnFocusedControlChanged(FocusedControlChangedInfo{ 
                 shared_from_this(), 

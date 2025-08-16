@@ -4,6 +4,7 @@
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/range.h>
 #include <zaf/internal/list/list_control_parts_context.h>
+#include <zaf/rx/disposable.h>
 
 namespace zaf::internal {
 
@@ -22,7 +23,7 @@ void ListCore::Initialize(const InitializeParameters& parameters) {
 
     RegisterScrollBarEvents();
 
-    Subscriptions() += Parts().SelectionStore().ChangedEvent().Subscribe(
+    Disposables() += Parts().SelectionStore().ChangedEvent().Subscribe(
         std::bind_front(&ListCore::OnSelectionStoreChanged, this));
 
     Reload();
@@ -40,7 +41,9 @@ void ListCore::RegisterScrollBarEvents() {
 
 
 void ListCore::UnregisterScrollBarEvents() {
-    vertical_scroll_bar_sub_.Dispose();
+    if (vertical_scroll_bar_sub_) {
+        vertical_scroll_bar_sub_->Dispose();
+    }
 }
 
 

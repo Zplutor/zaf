@@ -20,7 +20,7 @@ TextBoxMouseInputHandler::TextBoxMouseInputHandler(TextBoxModuleContext* context
 
 void TextBoxMouseInputHandler::Initialize() {
 
-    Subscriptions() += Context().SelectionManager().SelectionChangedEvent().Subscribe(
+    Disposables() += Context().SelectionManager().SelectionChangedEvent().Subscribe(
         std::bind(&TextBoxMouseInputHandler::OnSelectionChanged, this));
 }
 

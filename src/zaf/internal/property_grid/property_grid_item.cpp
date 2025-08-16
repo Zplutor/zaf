@@ -39,7 +39,7 @@ void PropertyGridItem::Initialize() {
         return;
     }
 
-    Subscriptions() += manager->DistanceChangedSubject().AsObservable().Subscribe(
+    Disposables() += manager->DistanceChangedSubject().AsObservable().Subscribe(
         [this](const ItemSplitDistanceChangedInfo& event_info) {
 
         auto auto_reset = MakeAutoReset(is_handling_split_distance_event_, true);
@@ -49,7 +49,7 @@ void PropertyGridItem::Initialize() {
         }
     });
 
-    Subscriptions() += manager->MaxSplitControlXChangedEvent().Subscribe([this](float new_x) {
+    Disposables() += manager->MaxSplitControlXChangedEvent().Subscribe([this](float new_x) {
 
         SetFirstPaneMinLength(new_x);
     });
@@ -85,10 +85,10 @@ void PropertyGridItem::InitializeValueView() {
     value_editor_->SetValue(property_data_->Value());
     value_editor_->SetPadding(Frame{ 4, 0, 4, 0 });
 
-    Subscriptions() += value_editor_->ValueChangedEvent().Subscribe(
+    Disposables() += value_editor_->ValueChangedEvent().Subscribe(
         std::bind_front(&PropertyGridItem::OnEditorValueChanged, this));
 
-    Subscriptions() += property_data_->ValueChangedEvent().Subscribe(
+    Disposables() += property_data_->ValueChangedEvent().Subscribe(
         std::bind_front(&PropertyGridItem::OnPropertyValueChanged, this));
 }
 
@@ -141,7 +141,7 @@ void PropertyGridItem::InitializeSplitControl() {
         return Color::FromRGB(DelimiterLineColor);
     }));
 
-    Subscriptions() += split_control_->SplitDistanceChangedEvent().Subscribe(
+    Disposables() += split_control_->SplitDistanceChangedEvent().Subscribe(
         [this](const SplitDistanceChangedInfo& event_info) {
 
         //Don't raise event again if it is handling distance changed event.

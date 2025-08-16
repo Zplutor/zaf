@@ -19,7 +19,7 @@ TEST(RxSubscribeOnTest, SubscribeOn) {
         produce_thread = std::this_thread::get_id();
         subscriber.OnNext(0);
         subscriber.OnCompleted();
-        return zaf::rx::Subscription{};
+        return nullptr;
     });
 
     observable = observable.SubscribeOn(std::make_shared<zaf::rx::SingleThreadScheduler>());

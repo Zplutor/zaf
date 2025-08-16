@@ -32,7 +32,7 @@ std::shared_ptr<TreeItem> PropertyGridItemManager::CreateItem(
     auto value_editor = type_config->CreateValueEditor();
 
     std::weak_ptr<Object> weak_data = data;
-    Subscriptions() += value_editor->FocusGainedEvent().Subscribe(
+    Disposables() += value_editor->FocusGainedEvent().Subscribe(
         std::bind_front(&PropertyGridItemManager::OnValueEditorGainedFocus, this, weak_data));
 
     return Create<PropertyGridItem>(data, value_editor, split_distance_manager_);

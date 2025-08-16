@@ -10,9 +10,6 @@ namespace zaf::rx {
 
 class Disposable : NonCopyableNonMovable {
 public:
-    static const std::shared_ptr<Disposable>& Empty();
-
-public:
     Disposable() noexcept;
     virtual ~Disposable() = default;
 
