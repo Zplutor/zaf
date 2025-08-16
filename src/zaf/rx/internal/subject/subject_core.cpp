@@ -16,7 +16,7 @@ SubjectCore::~SubjectCore() {
 }
 
 
-std::shared_ptr<SubscriptionCore> SubjectCore::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> SubjectCore::Subscribe(ObserverShim&& observer) {
     return multicast_observer_->AddObserver(std::move(observer));
 }
 

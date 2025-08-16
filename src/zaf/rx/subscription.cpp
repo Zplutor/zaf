@@ -1,9 +1,9 @@
 #include <zaf/rx/subscription.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/disposable.h>
 
 namespace zaf::rx {
 
-Subscription::Subscription(std::shared_ptr<rx::internal::SubscriptionCore> core) noexcept :
+Subscription::Subscription(std::shared_ptr<Disposable> core) noexcept :
     core_(std::move(core)) {
 
 }

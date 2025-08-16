@@ -60,7 +60,7 @@ private:
     }
 
 private:
-    std::shared_ptr<SubscriptionCore> source_subscription_;
+    std::shared_ptr<Disposable> source_subscription_;
     Mapper mapper_;
 };
 
@@ -73,7 +73,7 @@ MapOperator::MapOperator(std::shared_ptr<ObservableCore> source, Mapper mapper) 
 }
 
 
-std::shared_ptr<SubscriptionCore> MapOperator::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> MapOperator::Subscribe(ObserverShim&& observer) {
 
     auto producer = std::make_shared<MapProducer>(std::move(observer), mapper_);
     producer->Run(source_);

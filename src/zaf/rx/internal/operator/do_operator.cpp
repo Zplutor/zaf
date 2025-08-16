@@ -79,7 +79,7 @@ private:
     }
 
 private:
-    std::shared_ptr<SubscriptionCore> source_subscription_;
+    std::shared_ptr<Disposable> source_subscription_;
     std::shared_ptr<ObserverCore> do_observer_;
 };
 
@@ -95,7 +95,7 @@ DoOperator::DoOperator(
 }
 
 
-std::shared_ptr<SubscriptionCore> DoOperator::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> DoOperator::Subscribe(ObserverShim&& observer) {
 
     auto producer = std::make_shared<DoProducer>(std::move(observer), do_observer_);
     producer->Run(source_);

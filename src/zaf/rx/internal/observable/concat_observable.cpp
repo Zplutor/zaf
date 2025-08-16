@@ -88,7 +88,7 @@ private:
     //Refer to ConcatObservable directly to avoid additional memory allocation.
     std::shared_ptr<ConcatObservable> concat_observable_;
     std::optional<std::size_t> current_index_{};
-    std::shared_ptr<SubscriptionCore> current_sub_;
+    std::shared_ptr<Disposable> current_sub_;
 };
 
 }
@@ -99,7 +99,7 @@ ConcatObservable::ConcatObservable(ObservableCoreList observables) :
 }
 
 
-std::shared_ptr<SubscriptionCore> ConcatObservable::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> ConcatObservable::Subscribe(ObserverShim&& observer) {
 
     auto producer = std::make_shared<ConcatProducer>(
         As<ConcatObservable>(shared_from_this()),

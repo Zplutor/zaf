@@ -73,9 +73,6 @@
     <Filter Include="zaf\rx\internal\subject">
       <UniqueIdentifier>{1fe2999e-539f-473a-b31b-10009ec50146}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\rx\internal\subscription">
-      <UniqueIdentifier>{c4bfd136-d765-4aca-9264-371471366272}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\window\inspector">
       <UniqueIdentifier>{a474fbd8-df16-4454-bfd9-f59ac1911709}</UniqueIdentifier>
     </Filter>
@@ -1741,9 +1738,6 @@
     <ClInclude Include="src\zaf\rx\internal\observer_core.h">
       <Filter>zaf\rx\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\subscription\subscription_core.h">
-      <Filter>zaf\rx\internal\subscription</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core_indirect.h">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClInclude>
@@ -3042,9 +3036,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\operator\do_after_terminate_operator.h">
       <Filter>zaf\rx\internal\operator</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\subscription\dispose_notification.h">
-      <Filter>zaf\rx\internal\subscription</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observable_factory.h">
       <Filter>zaf\rx\internal</Filter>

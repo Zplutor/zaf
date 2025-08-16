@@ -48,7 +48,7 @@ MulticastObserver::~MulticastObserver() {
 }
 
 
-std::shared_ptr<SubscriptionCore> MulticastObserver::AddObserver(ObserverShim&& observer) {
+std::shared_ptr<Disposable> MulticastObserver::AddObserver(ObserverShim&& observer) {
 
     std::variant<std::monostate, std::exception_ptr, None> termination;
     {

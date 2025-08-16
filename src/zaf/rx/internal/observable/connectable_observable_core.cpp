@@ -14,12 +14,12 @@ ConnectableObservableCore::ConnectableObservableCore(
 }
 
 
-std::shared_ptr<SubscriptionCore> ConnectableObservableCore::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> ConnectableObservableCore::Subscribe(ObserverShim&& observer) {
     return subject_->Subscribe(std::move(observer));
 }
 
 
-std::shared_ptr<SubscriptionCore> ConnectableObservableCore::Connect() {
+std::shared_ptr<Disposable> ConnectableObservableCore::Connect() {
     return source_->Subscribe(ObserverShim::FromShared(subject_));
 }
 

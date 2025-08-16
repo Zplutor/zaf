@@ -12,7 +12,7 @@ public:
     SubjectCore();
     ~SubjectCore();
 
-    std::shared_ptr<SubscriptionCore> Subscribe(ObserverShim&& observer) override;
+    std::shared_ptr<Disposable> Subscribe(ObserverShim&& observer) override;
 
     void OnNext(const std::any& value) override;
     void OnError(const std::exception_ptr& error) override;

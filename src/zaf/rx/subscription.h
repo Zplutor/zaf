@@ -3,16 +3,14 @@
 #include <functional>
 #include <memory>
 
-namespace zaf::rx::internal {
-class SubscriptionCore;
-}
-
 namespace zaf::rx {
+
+class Disposable;
 
 class Subscription {
 public:
     Subscription() = default;
-    explicit Subscription(std::shared_ptr<rx::internal::SubscriptionCore> core) noexcept;
+    explicit Subscription(std::shared_ptr<Disposable> core) noexcept;
     ~Subscription();
 
     Subscription(const Subscription&) = default;
@@ -25,12 +23,12 @@ public:
 
     bool IsDisposed() const noexcept;
 
-    const std::shared_ptr<rx::internal::SubscriptionCore>& Core() const noexcept {
+    const std::shared_ptr<Disposable>& Core() const noexcept {
         return core_;
     }
 
 private:
-    std::shared_ptr<rx::internal::SubscriptionCore> core_;
+    std::shared_ptr<Disposable> core_;
 };
 
 

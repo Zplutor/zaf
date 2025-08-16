@@ -73,7 +73,7 @@ private:
     }
 
 private:
-    std::shared_ptr<SubscriptionCore> source_subscription_;
+    std::shared_ptr<Disposable> source_subscription_;
     Closure on_terminate_;
 };
 
@@ -90,7 +90,7 @@ DoOnTerminateOperator::DoOnTerminateOperator(
 }
 
 
-std::shared_ptr<SubscriptionCore> DoOnTerminateOperator::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> DoOnTerminateOperator::Subscribe(ObserverShim&& observer) {
 
     auto producer = std::make_shared<DoOnTerminateProducer>(std::move(observer), on_terminate_);
     producer->Run(source_);

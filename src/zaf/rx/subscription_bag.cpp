@@ -1,6 +1,5 @@
 #include <zaf/rx/subscription_bag.h>
 #include <zaf/base/container/utility/erase.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx {
 

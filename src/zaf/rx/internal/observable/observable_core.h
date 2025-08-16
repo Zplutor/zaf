@@ -9,6 +9,7 @@
 #include <zaf/rx/internal/operator/mapper.h>
 
 namespace zaf::rx {
+class Disposable;
 class Scheduler;
 }
 
@@ -16,7 +17,6 @@ namespace zaf::rx::internal {
 
 class ConnectableObservableCore;
 class ObserverCore;
-class SubscriptionCore;
 
 class ObservableCore : public std::enable_shared_from_this<ObservableCore> {
 public:
@@ -26,7 +26,7 @@ public:
     ObservableCore(const ObservableCore&) = delete;
     ObservableCore& operator=(const ObservableCore&) = delete;
 
-    virtual std::shared_ptr<SubscriptionCore> Subscribe(ObserverShim&& observer) = 0;
+    virtual std::shared_ptr<Disposable> Subscribe(ObserverShim&& observer) = 0;
 
     std::shared_ptr<ObservableCore> SubscribeOn(std::shared_ptr<Scheduler> scheduler);
     std::shared_ptr<ObservableCore> ObserveOn(std::shared_ptr<Scheduler> scheduler);

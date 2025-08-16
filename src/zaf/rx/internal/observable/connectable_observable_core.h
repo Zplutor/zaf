@@ -12,9 +12,9 @@ public:
         std::shared_ptr<ObservableCore> source,
         std::shared_ptr<SubjectCore> subject) noexcept;
 
-    std::shared_ptr<SubscriptionCore> Subscribe(ObserverShim&& observer) override;
+    std::shared_ptr<Disposable> Subscribe(ObserverShim&& observer) override;
 
-    std::shared_ptr<SubscriptionCore> Connect();
+    std::shared_ptr<Disposable> Connect();
     std::shared_ptr<ObservableCore> RefCount();
 
 private:

@@ -131,7 +131,7 @@ private:
             source_sub_.reset();
         }
 
-        std::map<std::size_t, std::shared_ptr<SubscriptionCore>> mapper_subs;
+        std::map<std::size_t, std::shared_ptr<Disposable>> mapper_subs;
         {
             std::lock_guard<std::mutex> lock(mutex_);
             mapper_subs = std::move(*emitting_mapper_subs_);
@@ -144,14 +144,14 @@ private:
     }
 
 private:
-    std::shared_ptr<SubscriptionCore> source_sub_;
+    std::shared_ptr<Disposable> source_sub_;
     FlatMapper mapper_;
 
     std::mutex mutex_;
     std::atomic<bool> is_source_completed_{};
     std::atomic<std::size_t> mapper_subs_count_{};
     // Will be std::nullopt if disposed.
-    std::optional<std::map<std::size_t, std::shared_ptr<SubscriptionCore>>> emitting_mapper_subs_;
+    std::optional<std::map<std::size_t, std::shared_ptr<Disposable>>> emitting_mapper_subs_;
     std::set<std::size_t> terminated_mapper_subs_;
 };
 
@@ -164,7 +164,7 @@ FlatMapOperator::FlatMapOperator(std::shared_ptr<ObservableCore> source, FlatMap
 }
 
 
-std::shared_ptr<SubscriptionCore> FlatMapOperator::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> FlatMapOperator::Subscribe(ObserverShim&& observer) {
 
     auto producer = std::make_shared<FlatMapProducer>(std::move(observer), mapper_);
     producer->Run(source_);

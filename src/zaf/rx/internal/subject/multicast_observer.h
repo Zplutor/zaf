@@ -4,7 +4,6 @@
 #include <zaf/base/none.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 
@@ -15,7 +14,7 @@ class MulticastObserver :
 public:
     ~MulticastObserver();
 
-    std::shared_ptr<SubscriptionCore> AddObserver(ObserverShim&& observer);
+    std::shared_ptr<Disposable> AddObserver(ObserverShim&& observer);
 
     std::size_t ObserverCount() const noexcept;
 

@@ -2,7 +2,6 @@
 
 #include <mutex>
 #include <zaf/rx/internal/observable/connectable_observable_core.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 
@@ -12,14 +11,14 @@ public:
     public:
         std::shared_ptr<std::mutex> shared_lock;
         std::weak_ptr<RefCountOperator> owner;
-        std::shared_ptr<SubscriptionCore> subscription;
+        std::shared_ptr<Disposable> subscription;
         std::size_t ref_count{};
     };
 
 public:
     explicit RefCountOperator(std::shared_ptr<ConnectableObservableCore> source);
 
-    std::shared_ptr<SubscriptionCore> Subscribe(ObserverShim&& observer) override;
+    std::shared_ptr<Disposable> Subscribe(ObserverShim&& observer) override;
 
     // For unit test.
     bool HasConnection() const noexcept {
@@ -29,7 +28,7 @@ public:
 private:
     static void InstallSubscription(
         const std::shared_ptr<Connection>& connection,
-        std::shared_ptr<SubscriptionCore> subscription);
+        std::shared_ptr<Disposable> subscription);
     static void DecreaseRef(const std::shared_ptr<Connection>& connection);
 
 private:

@@ -1,6 +1,6 @@
 #include <zaf/rx/internal/operator/ref_count_operator.h>
 #include <zaf/base/as.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
+#include <zaf/rx/disposable.h>
 
 namespace zaf::rx::internal {
 
@@ -11,7 +11,7 @@ RefCountOperator::RefCountOperator(std::shared_ptr<ConnectableObservableCore> so
 }
 
 
-std::shared_ptr<SubscriptionCore> RefCountOperator::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> RefCountOperator::Subscribe(ObserverShim&& observer) {
 
     bool should_connect{};
     std::shared_ptr<Connection> connection;
@@ -49,7 +49,7 @@ std::shared_ptr<SubscriptionCore> RefCountOperator::Subscribe(ObserverShim&& obs
 
 void RefCountOperator::InstallSubscription(
     const std::shared_ptr<Connection>& connection, 
-    std::shared_ptr<SubscriptionCore> subscription) {
+    std::shared_ptr<Disposable> subscription) {
 
     // The subscription of the connection may be null if the underlying observable is cold.
     if (!subscription) {
@@ -69,7 +69,7 @@ void RefCountOperator::InstallSubscription(
 
 void RefCountOperator::DecreaseRef(const std::shared_ptr<Connection>& connection) {
 
-    std::shared_ptr<SubscriptionCore> need_unsubscribe_subscription;
+    std::shared_ptr<Disposable> need_unsubscribe_subscription;
 
     {
         std::lock_guard<std::mutex> lock(*connection->shared_lock);

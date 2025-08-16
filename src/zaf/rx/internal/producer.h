@@ -5,10 +5,9 @@
 #include <map>
 #include <mutex>
 #include <zaf/base/non_copyable.h>
+#include <zaf/rx/disposable.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/observer_shim.h>
-#include <zaf/rx/internal/subscription/dispose_notification.h>
-#include <zaf/rx/internal/subscription/subscription_core.h>
 
 namespace zaf::rx::internal {
 
@@ -23,7 +22,7 @@ A producer is responsible for emitting data sequence.
     A producer transitions from subscribed state to disposed state either when Dispose() is
     called, or when EmitOnError() or EmitOnCompleted() is called.
 */
-class Producer : public SubscriptionCore, public std::enable_shared_from_this<Producer> {
+class Producer : public Disposable, public std::enable_shared_from_this<Producer> {
 public:
     explicit Producer(ObserverShim&& observer) noexcept;
 

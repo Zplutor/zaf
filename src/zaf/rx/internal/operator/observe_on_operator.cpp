@@ -83,7 +83,7 @@ private:
 
 private:
     std::shared_ptr<Scheduler> scheduler_;
-    std::shared_ptr<SubscriptionCore> source_subscription_;
+    std::shared_ptr<Disposable> source_subscription_;
     std::atomic<bool> is_unsubscribed_{ false };
 };
 
@@ -99,7 +99,7 @@ ObserveOnOperator::ObserveOnOperator(
 }
 
 
-std::shared_ptr<SubscriptionCore> ObserveOnOperator::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> ObserveOnOperator::Subscribe(ObserverShim&& observer) {
 
     auto producer = std::make_shared<ObserveOnProducer>(std::move(observer), scheduler_);
     producer->Run(source_);

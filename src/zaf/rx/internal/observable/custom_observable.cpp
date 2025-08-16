@@ -46,7 +46,7 @@ CustomObservable::CustomObservable(Procedure procedure) :
 }
 
 
-std::shared_ptr<SubscriptionCore> CustomObservable::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> CustomObservable::Subscribe(ObserverShim&& observer) {
 
     auto producer = std::make_shared<CustomProducer>(std::move(observer));
     try {

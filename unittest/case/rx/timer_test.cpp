@@ -40,6 +40,8 @@ TEST(RxTimerTest, OneShotTimer) {
     ASSERT_EQ(emitted_values, std::vector<std::size_t>{ 0 });
     ASSERT_FALSE(on_error_called);
     ASSERT_TRUE(on_completed_called);
+    // Wait for the timer to be disposed.
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
     ASSERT_TRUE(sub.IsDisposed());
 }
 

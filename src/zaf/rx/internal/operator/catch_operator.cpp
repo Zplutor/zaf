@@ -97,9 +97,9 @@ private:
     }
 
 private:
-    std::shared_ptr<SubscriptionCore> source_subscription_;
+    std::shared_ptr<Disposable> source_subscription_;
     CatchHandler handler_;
-    std::shared_ptr<SubscriptionCore> new_subscription_;
+    std::shared_ptr<Disposable> new_subscription_;
 };
 
 }
@@ -111,7 +111,7 @@ CatchOperator::CatchOperator(std::shared_ptr<ObservableCore> source, CatchHandle
 }
 
 
-std::shared_ptr<SubscriptionCore> CatchOperator::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> CatchOperator::Subscribe(ObserverShim&& observer) {
 
     auto producer = std::make_shared<CatchProducer>(std::move(observer), handler_);
     producer->Run(source_);

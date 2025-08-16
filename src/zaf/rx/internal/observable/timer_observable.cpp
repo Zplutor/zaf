@@ -107,7 +107,7 @@ TimerObservable::TimerObservable(
 }
 
 
-std::shared_ptr<SubscriptionCore> TimerObservable::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> TimerObservable::Subscribe(ObserverShim&& observer) {
 
     auto producer = std::make_shared<TimerProducer>(
         delay_,

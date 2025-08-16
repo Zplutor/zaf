@@ -11,7 +11,7 @@ public:
         std::shared_ptr<ObservableCore> source,
         std::shared_ptr<Scheduler> scheduler);
 
-    std::shared_ptr<SubscriptionCore> Subscribe(ObserverShim&& observer) override;
+    std::shared_ptr<Disposable> Subscribe(ObserverShim&& observer) override;
 
 private:
     std::shared_ptr<ObservableCore> source_;

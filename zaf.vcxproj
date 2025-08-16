@@ -947,8 +947,6 @@
     <ClInclude Include="src\zaf\rx\internal\subject\replay_subject_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core_indirect.h" />
-    <ClInclude Include="src\zaf\rx\internal\subscription\subscription_core.h" />
-    <ClInclude Include="src\zaf\rx\internal\subscription\dispose_notification.h" />
     <ClInclude Include="src\zaf\rx\internal\thread\thread_manager.h" />
     <ClInclude Include="src\zaf\rx\observable.h" />
     <ClInclude Include="src\zaf\rx\observer.h" />

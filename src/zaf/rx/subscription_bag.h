@@ -4,7 +4,6 @@
 #include <unordered_set>
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/disposable.h>
-#include <zaf/rx/internal/subscription/dispose_notification.h>
 #include <zaf/rx/subscription.h>
 
 namespace zaf::rx {

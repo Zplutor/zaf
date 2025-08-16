@@ -8,7 +8,7 @@ ReplaySubjectCore::ReplaySubjectCore(std::optional<std::size_t> replay_size) noe
 }
 
 
-std::shared_ptr<SubscriptionCore> ReplaySubjectCore::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> ReplaySubjectCore::Subscribe(ObserverShim&& observer) {
 
     std::deque<std::any> copied_replay_values;
     {

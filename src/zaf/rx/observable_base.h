@@ -50,7 +50,7 @@ public:
 
         auto bridged_producer = [producer = std::move(producer)](
             std::shared_ptr<internal::ObserverCore> observer_core,
-            std::shared_ptr<internal::SubscriptionCore> subscription_core) {
+            std::shared_ptr<Disposable> subscription_core) {
 
             SUBSCRIBER<T> subscriber{ std::move(observer_core), std::move(subscription_core) };
             producer(std::move(subscriber));

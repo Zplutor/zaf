@@ -58,7 +58,7 @@ private:
     }
 
 private:
-    std::shared_ptr<SubscriptionCore> source_subscription_;
+    std::shared_ptr<Disposable> source_subscription_;
     Closure finally_work_;
 };
 
@@ -72,7 +72,7 @@ FinallyOperator::FinallyOperator(std::shared_ptr<ObservableCore> source, Closure
 }
 
 
-std::shared_ptr<SubscriptionCore> FinallyOperator::Subscribe(ObserverShim&& observer) {
+std::shared_ptr<Disposable> FinallyOperator::Subscribe(ObserverShim&& observer) {
 
     auto producer = std::make_shared<FinallyProducer>(std::move(observer), finally_work_);
     producer->Run(source_);
