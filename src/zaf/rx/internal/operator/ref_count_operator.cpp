@@ -28,13 +28,6 @@ std::shared_ptr<Disposable> RefCountOperator::Subscribe(ObserverShim&& observer)
     }
 
     auto sub = source_->Subscribe(std::move(observer));
-    if (!sub) {
-        // If the subscription is null, it means the observer is already unsubscribed.
-        // In this case, we decrease the reference count and return.
-        DecreaseRef(connection);
-        return nullptr;
-    }
-
     sub->AddDisposedCallback([connection]() {
         DecreaseRef(connection);
     });

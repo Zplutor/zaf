@@ -212,8 +212,7 @@ TEST(RxReplaySubjectTest, SubscribeAfterOnCompleted) {
     [&]() {
         on_completed_count++;
     });
-    // The returned disposable will be null if the subject is already terminated.
-    ASSERT_EQ(sub, nullptr);
+    ASSERT_TRUE(sub->IsDisposed());
     ASSERT_EQ(values, (std::vector<int>{ 10, 11 }));
     ASSERT_EQ(on_error_count, 0);
     ASSERT_EQ(on_completed_count, 1);
@@ -239,8 +238,7 @@ TEST(RxReplaySubjectTest, SubscribeAfterOnError) {
     [&]() {
         on_completed_count++;
     });
-    // The returned disposable will be null if the subject is already terminated.
-    ASSERT_EQ(sub, nullptr);
+    ASSERT_TRUE(sub->IsDisposed());
     ASSERT_EQ(values, (std::vector<int>{ 20, 21 }));
     ASSERT_EQ(on_error_count, 1);
     ASSERT_EQ(on_completed_count, 0);

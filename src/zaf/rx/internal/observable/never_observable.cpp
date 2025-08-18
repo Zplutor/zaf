@@ -1,4 +1,5 @@
 #include <zaf/rx/internal/observable/never_observable.h>
+#include <zaf/rx/disposable.h>
 
 namespace zaf::rx::internal {
 
@@ -10,7 +11,7 @@ const std::shared_ptr<NeverObservable>& NeverObservable::Instance() {
 
 
 std::shared_ptr<Disposable> NeverObservable::Subscribe(ObserverShim&& observer) {
-    return nullptr;
+    return Disposable::Empty();
 }
 
 }

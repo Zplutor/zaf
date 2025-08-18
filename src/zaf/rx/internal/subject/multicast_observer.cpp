@@ -1,6 +1,7 @@
 #include <zaf/rx/internal/subject/multicast_observer.h>
 #include <zaf/base/as.h>
 #include <zaf/base/container/utility/erase.h>
+#include <zaf/rx/disposable.h>
 
 namespace zaf::rx::internal {
 
@@ -73,7 +74,7 @@ std::shared_ptr<Disposable> MulticastObserver::AddObserver(ObserverShim&& observ
     else if (std::holds_alternative<None>(termination)) {
         observer.OnCompleted();
     }
-    return nullptr;
+    return Disposable::Empty();
 }
 
 

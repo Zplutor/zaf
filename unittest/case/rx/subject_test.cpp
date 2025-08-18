@@ -63,8 +63,7 @@ TEST(RxSubjectTest, SubscribeAfterOnCompleted) {
         [&](std::exception_ptr) { on_error_called = true; },
         [&]() { on_completed_called = true; }
     );
-    // The returned disposable will be null if the subject is already terminated.
-    ASSERT_EQ(sub, nullptr);
+    ASSERT_TRUE(sub->IsDisposed());
     ASSERT_FALSE(on_next_called);
     ASSERT_FALSE(on_error_called);
     ASSERT_TRUE(on_completed_called);
@@ -135,7 +134,7 @@ TEST(RxSubjectTest, MultipleOnError) {
     [&]() {
         on_completed_called = true;
     });
-    ASSERT_EQ(sub, nullptr);
+    ASSERT_TRUE(sub->IsDisposed());
     ASSERT_TRUE(error.has_value());
     ASSERT_STREQ(error->what(), "error");
     ASSERT_FALSE(on_next_called);
@@ -159,7 +158,7 @@ TEST(RxSubjectTest, SubscribeAfterOnError) {
         [&](std::exception_ptr) { on_error_called = true; },
         [&]() { on_completed_called = true; }
     );
-    ASSERT_EQ(sub, nullptr);
+    ASSERT_TRUE(sub->IsDisposed());
     ASSERT_FALSE(on_next_called);
     ASSERT_TRUE(on_error_called);
     ASSERT_FALSE(on_completed_called);
