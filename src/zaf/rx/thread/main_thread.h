@@ -6,8 +6,9 @@
 */
 
 #include <Windows.h>
+#include <deque>
 #include <mutex>
-#include <zaf/rx/internal/thread/delayed_work_item_base.h>
+#include <zaf/rx/internal/thread/thread_work_item_base.h>
 #include <zaf/rx/thread/run_loop_thread.h>
 
 namespace zaf::rx::internal {
@@ -50,7 +51,7 @@ public:
     @throw zaf::Win32Error
         Thrown if the work cannot be posted to the main thread.
     */
-    void PostWork(Closure work) override;
+    std::shared_ptr<Disposable> PostWork(Closure work) override;
 
     /**
     @copydoc zaf::rx::RunLoopThread::PostDelayedWork()
@@ -65,10 +66,15 @@ public:
         Closure work) override;
 
 private:
+    class WorkItem;
     class DelayedWorkItem;
 
     class State {
     public:
+        void AddWorkItem(std::shared_ptr<WorkItem> work_item);
+
+        std::shared_ptr<WorkItem> TakeWorkItem(WorkItem* item_pointer) noexcept;
+
         void AddDelayedWorkItem(std::shared_ptr<DelayedWorkItem> work_item);
 
         std::shared_ptr<DelayedWorkItem> TakeDelayedWorkItem(
@@ -78,12 +84,30 @@ private:
         HWND window_handle{};
 
     private:
-        std::mutex lock_;
+        // Work items that will be executed without delay, sorted by FIFO order.
+        std::deque<std::shared_ptr<WorkItem>> work_items_;
+        std::mutex work_item_mutex_;
+
         // Delayed work items, sorted by their pointer addresses.
         std::vector<std::shared_ptr<DelayedWorkItem>> delayed_work_items_;
+        std::mutex delayed_work_item_mutex_;
     };
 
-    class DelayedWorkItem : public internal::DelayedWorkItemBase {
+    // Represents a work item that will be executed without delay.
+    class WorkItem : public internal::ThreadWorkItemBase {
+    public:
+        explicit WorkItem(Closure work) : internal::ThreadWorkItemBase(std::move(work)) {
+
+        }
+
+    private:
+        void OnDispose() noexcept override {
+            // No additional cleanup needed for WorkItem.
+        }
+    };
+
+    // Represents a work item that will be executed after a delay.
+    class DelayedWorkItem : public internal::ThreadWorkItemBase {
     public:
         DelayedWorkItem(Closure work, std::weak_ptr<State> state);
 
@@ -113,6 +137,7 @@ private:
         return state_->window_handle;
     }
 
+    void OnDoWork(UINT_PTR work_item_id);
     void OnTimer(UINT_PTR timer_id);
 
 private:

@@ -48,9 +48,11 @@ LRESULT CALLBACK MainThread::WindowProcedure(
             reinterpret_cast<LONG_PTR>(create_struct->lpCreateParams));
     }
     else if (message_id == DoWorkMessageId) {
-        auto work = reinterpret_cast<Closure*>(wparam);
-        (*work)();
-        delete work;
+        LONG_PTR user_data = GetWindowLongPtr(hwnd, GWLP_USERDATA);
+        auto main_thread = reinterpret_cast<MainThread*>(user_data);
+        if (main_thread) {
+            main_thread->OnDoWork(static_cast<UINT_PTR>(wparam));
+        }
         return 0;
     }
     else if (message_id == WM_TIMER) {
@@ -99,23 +101,27 @@ MainThread::~MainThread() {
 }
 
 
-void MainThread::PostWork(Closure work) {
+std::shared_ptr<Disposable> MainThread::PostWork(Closure work) {
 
     ZAF_EXPECT(work);
 
-    auto cloned_work = std::make_unique<Closure>(std::move(work));
+    auto work_item = std::make_shared<WorkItem>(std::move(work));
+    state_->AddWorkItem(work_item);
+
     BOOL is_succeeded = PostMessage(
         state_->window_handle,
-        DoWorkMessageId, 
-        reinterpret_cast<WPARAM>(cloned_work.get()), 
+        DoWorkMessageId,
+        reinterpret_cast<WPARAM>(work_item.get()),
         0);
 
     if (!is_succeeded) {
-        ZAF_THROW_WIN32_ERROR(GetLastError());
+        auto last_error = GetLastError();
+        // Remove the work item if the message posting fails.
+        state_->TakeWorkItem(work_item.get());
+        ZAF_THROW_WIN32_ERROR(last_error);
     }
 
-    // Ownership is transferred to the message queue.
-    cloned_work.release();
+    return work_item;
 }
 
 
@@ -146,6 +152,20 @@ std::shared_ptr<Disposable> MainThread::PostDelayedWork(
 }
 
 
+void MainThread::OnDoWork(UINT_PTR work_item_id) {
+
+    auto work_item_pointer = reinterpret_cast<WorkItem*>(work_item_id);
+    auto work_item = state_->TakeWorkItem(work_item_pointer);
+    if (work_item) {
+
+        auto work = work_item->TakeWorkIfNotDisposed();
+        if (work) {
+            work();
+        }
+    }
+}
+
+
 void MainThread::OnTimer(UINT_PTR timer_id) {
 
     // The timer of delayed work item is one-shot, so it will be killed after being triggered.
@@ -163,9 +183,38 @@ void MainThread::OnTimer(UINT_PTR timer_id) {
 }
 
 
+void MainThread::State::AddWorkItem(std::shared_ptr<WorkItem> work_item) {
+
+    std::lock_guard<std::mutex> lock(work_item_mutex_);
+    work_items_.push_back(std::move(work_item));
+}
+
+
+std::shared_ptr<MainThread::WorkItem> MainThread::State::TakeWorkItem(
+    WorkItem* item_pointer) noexcept {
+
+    std::lock_guard<std::mutex> lock(work_item_mutex_);
+
+    auto iterator = std::find_if(
+        work_items_.begin(), 
+        work_items_.end(),
+        [item_pointer](const std::shared_ptr<WorkItem>& item) {
+            return item.get() == item_pointer;
+        });
+
+    if (iterator != work_items_.end()) {
+        auto result = *iterator;
+        work_items_.erase(iterator);
+        return result;
+    }
+
+    return nullptr;
+}
+
+
 void MainThread::State::AddDelayedWorkItem(std::shared_ptr<DelayedWorkItem> work_item) {
 
-    std::lock_guard<std::mutex> lock(lock_);
+    std::lock_guard<std::mutex> lock(delayed_work_item_mutex_);
 
     auto insert_iterator = std::lower_bound(
         delayed_work_items_.begin(),
@@ -179,7 +228,7 @@ void MainThread::State::AddDelayedWorkItem(std::shared_ptr<DelayedWorkItem> work
 std::shared_ptr<MainThread::DelayedWorkItem> MainThread::State::TakeDelayedWorkItem(
     DelayedWorkItem* item_pointer) noexcept {
 
-    std::lock_guard<std::mutex> lock(lock_);
+    std::lock_guard<std::mutex> lock(delayed_work_item_mutex_);
 
     auto iterator = std::lower_bound(
         delayed_work_items_.begin(),
@@ -200,7 +249,7 @@ std::shared_ptr<MainThread::DelayedWorkItem> MainThread::State::TakeDelayedWorkI
 
 
 MainThread::DelayedWorkItem::DelayedWorkItem(Closure work, std::weak_ptr<State> state) : 
-    DelayedWorkItemBase(std::move(work)),
+    ThreadWorkItemBase(std::move(work)),
     state_(std::move(state)) {
 
 }

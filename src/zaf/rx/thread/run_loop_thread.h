@@ -21,13 +21,21 @@ public:
     virtual ~RunLoopThread() = default;
 
     /**
-    Posts a work to the thread which will be executed immediately.
+    Posts a work to the thread which will be executed without delay.
 
     @param work
         The work to be executed.
 
     @pre
         The work is not null.
+
+    @return
+        A disposable object that can be used to cancel the work if it is not being executed or is 
+        not ready to be executed. It is guaranteed that a work posted and then cancelled on the 
+        thread itself during the same run loop iteration will not be executed.
+
+    @post
+        The returned object is not null.
 
     @throw zaf::PreconditionError
     @throw ...
@@ -37,7 +45,7 @@ public:
         If the work is posted on the thread itself, it will be executed on the next run loop 
         iteration.
     */
-    virtual void PostWork(Closure work) = 0;
+    virtual std::shared_ptr<Disposable> PostWork(Closure work) = 0;
 
     /**
     Posts a work to the thread which will be executed after a delay.

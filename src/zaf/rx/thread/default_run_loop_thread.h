@@ -10,7 +10,7 @@
 #include <optional>
 #include <thread>
 #include <vector>
-#include <zaf/rx/internal/thread/delayed_work_item_base.h>
+#include <zaf/rx/internal/thread/thread_work_item_base.h>
 #include <zaf/rx/thread/run_loop_thread.h>
 
 namespace zaf::testing {
@@ -49,7 +49,7 @@ public:
     @throw zaf::InvalidOperationError
         Thrown if the thread is stopped.
     */
-    void PostWork(Closure work) override;
+    std::shared_ptr<Disposable> PostWork(Closure work) override;
 
     /**
     @copydoc zaf::rx::RunLoopThread::PostDelayedWork()
@@ -80,7 +80,7 @@ private:
         std::deque<std::shared_ptr<DelayedWorkItem>> delayed_works;
     };
 
-    class DelayedWorkItem : public internal::DelayedWorkItemBase {
+    class DelayedWorkItem : public internal::ThreadWorkItemBase {
     public:
         DelayedWorkItem(
             std::chrono::steady_clock::time_point execute_time_point,

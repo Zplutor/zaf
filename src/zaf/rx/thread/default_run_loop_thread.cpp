@@ -28,7 +28,7 @@ DefaultRunLoopThread::~DefaultRunLoopThread() {
 }
 
 
-void DefaultRunLoopThread::PostWork(Closure work) {
+std::shared_ptr<Disposable> DefaultRunLoopThread::PostWork(Closure work) {
 
     ZAF_EXPECT(work);
 
@@ -40,6 +40,7 @@ void DefaultRunLoopThread::PostWork(Closure work) {
         state_->queued_works.push_back(std::move(work));
     }
     state_->work_event.notify_one();
+    return Disposable::Empty();
 }
 
 
@@ -175,7 +176,7 @@ DefaultRunLoopThread::DelayedWorkItem::DelayedWorkItem(
     Closure work,
     std::weak_ptr<State> state) noexcept
     :
-    DelayedWorkItemBase(std::move(work)),
+    ThreadWorkItemBase(std::move(work)),
     execute_time_point_(execute_time_point),
     state_(std::move(state)) {
 

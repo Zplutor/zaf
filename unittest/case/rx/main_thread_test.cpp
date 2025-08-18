@@ -66,7 +66,8 @@ TEST_F(MainThreadTest, PostWork) {
     Work test_work;
     auto execute_count = test_work.ExecuteCount();
     auto destruct_count = test_work.DestructCount();
-    main_thread->PostWork(std::move(test_work));
+    auto disposable = main_thread->PostWork(std::move(test_work));
+    ASSERT_NE(disposable, nullptr);
 
     MSG msg{};
     BOOL has_message = PeekMessage(&msg, MainWindowHandle(), 0, 0, PM_REMOVE);
@@ -74,6 +75,31 @@ TEST_F(MainThreadTest, PostWork) {
 
     DispatchMessage(&msg);
     ASSERT_EQ(*execute_count, 1);
+    ASSERT_EQ(*destruct_count, 1);
+}
+
+
+TEST_F(MainThreadTest, CancelWork) {
+
+    auto main_thread = zaf::rx::MainThread::Instance();
+
+    Work test_work;
+    auto execute_count = test_work.ExecuteCount();
+    auto destruct_count = test_work.DestructCount();
+    auto disposable = main_thread->PostWork(std::move(test_work));
+    ASSERT_NE(disposable, nullptr);
+
+    disposable->Dispose();
+    ASSERT_TRUE(disposable->IsDisposed());
+
+    // Should have message even if cancel.
+    MSG msg{};
+    BOOL has_message = PeekMessage(&msg, MainWindowHandle(), 0, 0, PM_REMOVE);
+    ASSERT_TRUE(has_message);
+
+    // But the work shouldn't be executed.
+    DispatchMessage(&msg);
+    ASSERT_EQ(*execute_count, 0);
     ASSERT_EQ(*destruct_count, 1);
 }
 

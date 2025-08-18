@@ -5,9 +5,9 @@
 
 namespace zaf::rx::internal {
 
-class DelayedWorkItemBase : public Disposable {
+class ThreadWorkItemBase : public Disposable {
 public:
-    explicit DelayedWorkItemBase(Closure work) : work_(std::move(work)) {
+    explicit ThreadWorkItemBase(Closure work) : work_(std::move(work)) {
 
     }
 
