@@ -68,12 +68,14 @@ TEST_F(MainThreadTest, PostWork) {
     auto destruct_count = test_work.DestructCount();
     auto disposable = main_thread->PostWork(std::move(test_work));
     ASSERT_NE(disposable, nullptr);
+    ASSERT_FALSE(disposable->IsDisposed());
 
     MSG msg{};
     BOOL has_message = PeekMessage(&msg, MainWindowHandle(), 0, 0, PM_REMOVE);
     ASSERT_TRUE(has_message);
 
     DispatchMessage(&msg);
+    ASSERT_TRUE(disposable->IsDisposed());
     ASSERT_EQ(*execute_count, 1);
     ASSERT_EQ(*destruct_count, 1);
 }
@@ -88,6 +90,7 @@ TEST_F(MainThreadTest, CancelWork) {
     auto destruct_count = test_work.DestructCount();
     auto disposable = main_thread->PostWork(std::move(test_work));
     ASSERT_NE(disposable, nullptr);
+    ASSERT_FALSE(disposable->IsDisposed());
 
     disposable->Dispose();
     ASSERT_TRUE(disposable->IsDisposed());

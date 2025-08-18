@@ -47,16 +47,36 @@ TEST_F(DefaultRunLoopThreadTest, PostWork) {
     auto lock = GetLock();
 
     std::thread::id execute_thread_id = std::this_thread::get_id();
-    RunLoopThread().PostWork([&]() {
+    auto disposable = RunLoopThread().PostWork([&]() {
         {
             std::lock_guard<std::mutex> lock_guard(mutex_);
             execute_thread_id = std::this_thread::get_id();
         }
         cv_.notify_one();
     });
+    ASSERT_NE(disposable, nullptr);
+    ASSERT_FALSE(disposable->IsDisposed());
 
     cv_.wait(lock);
+    ASSERT_TRUE(disposable->IsDisposed());
     ASSERT_NE(execute_thread_id, std::this_thread::get_id());
+}
+
+
+TEST_F(DefaultRunLoopThreadTest, CancelWork) {
+
+    auto disposable = RunLoopThread().PostWork([&]() {
+        FAIL();
+    });
+
+    ASSERT_NE(disposable, nullptr);
+    ASSERT_FALSE(disposable->IsDisposed());
+
+    disposable->Dispose();
+    ASSERT_TRUE(disposable->IsDisposed());
+
+    // Make sure the work is not executed.
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 

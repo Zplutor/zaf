@@ -64,6 +64,7 @@ public:
         Closure work) override;
 
 private:
+    class WorkItem;
     class DelayedWorkItem;
 
     class State {
@@ -72,15 +73,27 @@ private:
         std::atomic<bool> is_stopped{};
         std::condition_variable work_event;
 
-        // Works that need to be executed immediately.
-        std::vector<Closure> queued_works;
+        // Works that need to be executed without delay.
+        std::vector<std::shared_ptr<WorkItem>> queued_work_items;
 
         // Works that need to be executed after a delay.
         // Sorted by execute time point.
-        std::deque<std::shared_ptr<DelayedWorkItem>> delayed_works;
+        std::deque<std::shared_ptr<DelayedWorkItem>> delayed_work_items;
     };
 
-    class DelayedWorkItem : public internal::ThreadWorkItemBase {
+    class WorkItem : public internal::ThreadWorkItemBase {
+    public:
+        explicit WorkItem(Closure work) noexcept : internal::ThreadWorkItemBase(std::move(work)) {
+
+        }
+
+    protected:
+        void OnDispose() noexcept override {
+            // No additional cleanup is needed for this work item.
+        }
+    };
+
+    class DelayedWorkItem : public WorkItem {
     public:
         DelayedWorkItem(
             std::chrono::steady_clock::time_point execute_time_point,
@@ -101,9 +114,9 @@ private:
 
 private:
     static void ThreadProcedure(const std::shared_ptr<State>& state);
-    static std::optional<std::chrono::steady_clock::duration> ProcessDueDelayedWorks(
+    static std::optional<std::chrono::steady_clock::duration> ProcessDueDelayedWorkItems(
         const std::shared_ptr<State>& state);
-    static void ExecuteQueuedWorks(std::vector<Closure>& queued_works);
+    static void ExecuteQueuedWorkItems(const std::vector<std::shared_ptr<WorkItem>>& work_items);
 
 private:
     friend class zaf::testing::DefaultRunLoopThreadTest;
