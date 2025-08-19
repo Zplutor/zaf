@@ -4,7 +4,7 @@
 #include <zaf/control/control.h>
 #include <zaf/control/event/split_bar_event_info.h>
 #include <zaf/control/event/split_distance_changed_info.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subjects/subject.h>
 #include <zaf/rx/dispose_bag.h>
 
 namespace zaf {

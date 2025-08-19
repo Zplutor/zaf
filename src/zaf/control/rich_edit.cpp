@@ -19,7 +19,7 @@
 #include <zaf/graphic/d2d/renderer.h>
 #include <zaf/graphic/font.h>
 #include <zaf/internal/theme.h>
-#include <zaf/rx/scheduler/scheduler.h>
+#include <zaf/rx/schedulers/scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>

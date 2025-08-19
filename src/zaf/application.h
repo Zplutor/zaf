@@ -8,8 +8,8 @@
 #include <zaf/application_event_infos.h>
 #include <zaf/config.h>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/subject.h>
 #include <zaf/rx/disposable_host.h>
+#include <zaf/rx/subjects/subject.h>
 
 namespace zaf::rx::internal {
 class RxRuntime;

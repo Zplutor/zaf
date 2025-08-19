@@ -2,7 +2,7 @@
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/object/object_type.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subjects/subject.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/mouse_message.h>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/rx/scheduler/scheduler.h>
+#include <zaf/rx/schedulers/scheduler.h>
 
 namespace zaf::rx {
 

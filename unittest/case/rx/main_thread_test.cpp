@@ -1,6 +1,6 @@
 #include <thread>
 #include <gtest/gtest.h>
-#include <zaf/rx/thread/main_thread.h>
+#include <zaf/rx/threads/main_thread.h>
 
 namespace zaf::testing {
 namespace {

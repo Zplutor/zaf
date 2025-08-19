@@ -4,7 +4,7 @@
 #include <memory>
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/split_control.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subjects/subject.h>
 #include <zaf/rx/disposable_host.h>
 
 namespace zaf::internal {

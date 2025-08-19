@@ -6,7 +6,7 @@
 #include <zaf/control/spin_button.h>
 #include <zaf/control/spin_edit.h>
 #include <zaf/creation.h>
-#include <zaf/rx/scheduler/main_thread_scheduler.h>
+#include <zaf/rx/schedulers/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 
 namespace zaf {

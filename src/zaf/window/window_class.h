@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subjects/subject.h>
 #include <zaf/window/window_class_properties.h>
 
 namespace zaf {

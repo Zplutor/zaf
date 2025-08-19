@@ -1,9 +1,9 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/rx/thread/default_run_loop_thread.h>
-#include <zaf/rx/thread/main_thread.h>
-#include <zaf/rx/thread/run_loop_thread.h>
+#include <zaf/rx/threads/default_run_loop_thread.h>
+#include <zaf/rx/threads/main_thread.h>
+#include <zaf/rx/threads/run_loop_thread.h>
 
 namespace zaf::rx::internal {
 

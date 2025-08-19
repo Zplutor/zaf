@@ -11,7 +11,7 @@
 #include <zaf/control/list_selection_mode.h>
 #include <zaf/internal/list/list_control_parts_based.h>
 #include <zaf/internal/list/list_selection_store.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subjects/subject.h>
 #include <zaf/rx/disposable_host.h>
 #include <zaf/window/popup_menu.h>
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/rx/internal/observable/observable_core.h>
-#include <zaf/rx/scheduler/scheduler.h>
+#include <zaf/rx/schedulers/scheduler.h>
 
 namespace zaf::rx::internal {
 

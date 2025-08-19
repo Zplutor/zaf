@@ -193,11 +193,14 @@
     <Filter Include="zaf\base\type_traits">
       <UniqueIdentifier>{82e11c77-516c-45be-a15b-ee58859916d6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\rx\thread">
+    <Filter Include="zaf\rx\threads">
       <UniqueIdentifier>{917a0620-aacd-4d62-8bb9-4bce337ab382}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\rx\scheduler">
+    <Filter Include="zaf\rx\schedulers">
       <UniqueIdentifier>{37e73615-4cc8-46d2-91ab-c66d0047a3da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\rx\subjects">
+      <UniqueIdentifier>{03cba283-f93d-4eab-8e7b-334d12130035}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1303,29 +1306,29 @@
     <ClCompile Include="src\zaf\rx\internal\subject\multicast_observer.cpp">
       <Filter>zaf\rx\internal\subject</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\thread\default_run_loop_thread.cpp">
-      <Filter>zaf\rx\thread</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\rx\thread\main_thread.cpp">
-      <Filter>zaf\rx\thread</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\rx\scheduler\single_thread_scheduler.cpp">
-      <Filter>zaf\rx\scheduler</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\rx\scheduler\main_thread_scheduler.cpp">
-      <Filter>zaf\rx\scheduler</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\rx\scheduler\trampoline_scheduler.cpp">
-      <Filter>zaf\rx\scheduler</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\rx\scheduler\immediate_scheduler.cpp">
-      <Filter>zaf\rx\scheduler</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\rx\internal\observer_shim.cpp">
       <Filter>zaf\rx\internal</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\rx\disposable.cpp">
       <Filter>zaf\rx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\threads\default_run_loop_thread.cpp">
+      <Filter>zaf\rx\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\threads\main_thread.cpp">
+      <Filter>zaf\rx\threads</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\schedulers\immediate_scheduler.cpp">
+      <Filter>zaf\rx\schedulers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\schedulers\main_thread_scheduler.cpp">
+      <Filter>zaf\rx\schedulers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\schedulers\single_thread_scheduler.cpp">
+      <Filter>zaf\rx\schedulers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\rx\schedulers\trampoline_scheduler.cpp">
+      <Filter>zaf\rx\schedulers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1683,9 +1686,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core.h">
       <Filter>zaf\rx\internal\subject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\subject.h">
-      <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\dispose_bag.h">
       <Filter>zaf\rx</Filter>
@@ -3013,13 +3013,7 @@
     <ClInclude Include="src\zaf\rx\single.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\single_subject.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\single_observer.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\replay_subject.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\single_factory.h">
@@ -3046,9 +3040,6 @@
     <ClInclude Include="src\zaf\rx\internal\observable\custom_observable.h">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\subject_base.h">
-      <Filter>zaf\rx</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observable\connectable_observable_core.h">
       <Filter>zaf\rx\internal\observable</Filter>
     </ClInclude>
@@ -3061,38 +3052,50 @@
     <ClInclude Include="src\zaf\base\closure.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\thread\default_run_loop_thread.h">
-      <Filter>zaf\rx\thread</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\thread\main_thread.h">
-      <Filter>zaf\rx\thread</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\thread\run_loop_thread.h">
-      <Filter>zaf\rx\thread</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\scheduler\single_thread_scheduler.h">
-      <Filter>zaf\rx\scheduler</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\scheduler\scheduler.h">
-      <Filter>zaf\rx\scheduler</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\scheduler\main_thread_scheduler.h">
-      <Filter>zaf\rx\scheduler</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\disposable.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\thread\thread_work_item_base.h">
       <Filter>zaf\rx\internal\thread</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\scheduler\trampoline_scheduler.h">
-      <Filter>zaf\rx\scheduler</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\scheduler\immediate_scheduler.h">
-      <Filter>zaf\rx\scheduler</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\observer_shim.h">
       <Filter>zaf\rx\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\threads\default_run_loop_thread.h">
+      <Filter>zaf\rx\threads</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\threads\main_thread.h">
+      <Filter>zaf\rx\threads</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\threads\run_loop_thread.h">
+      <Filter>zaf\rx\threads</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\schedulers\immediate_scheduler.h">
+      <Filter>zaf\rx\schedulers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\schedulers\main_thread_scheduler.h">
+      <Filter>zaf\rx\schedulers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\schedulers\scheduler.h">
+      <Filter>zaf\rx\schedulers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\schedulers\single_thread_scheduler.h">
+      <Filter>zaf\rx\schedulers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\schedulers\trampoline_scheduler.h">
+      <Filter>zaf\rx\schedulers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\subjects\replay_subject.h">
+      <Filter>zaf\rx\subjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\subjects\single_subject.h">
+      <Filter>zaf\rx\subjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\subjects\subject.h">
+      <Filter>zaf\rx\subjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\subjects\subject_base.h">
+      <Filter>zaf\rx\subjects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

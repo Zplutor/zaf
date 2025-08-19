@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/rx/disposable.h>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subjects/subject.h>
 
 TEST(RxPublishTest, ColdObservable) {
 

@@ -2,7 +2,7 @@
 
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/event/scroll_bar_thumb_event_info.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subjects/subject.h>
 
 namespace zaf {
 

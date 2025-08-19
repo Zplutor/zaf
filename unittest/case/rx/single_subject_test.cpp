@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_operation_error.h>
-#include <zaf/rx/single_subject.h>
+#include <zaf/rx/subjects/single_subject.h>
 
 TEST(RxSingleSubjectTest, OnSuccess) {
 

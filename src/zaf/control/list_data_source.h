@@ -5,7 +5,7 @@
 #include <zaf/creation.h>
 #include <zaf/object/object.h>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subjects/subject.h>
 
 namespace zaf {
 

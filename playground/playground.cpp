@@ -1,7 +1,8 @@
 #include <zaf/application.h>
 #include <zaf/control/button.h>
 #include <zaf/window/window.h>
-#include <zaf/rx/scheduler/main_thread_scheduler.h>
+#include <zaf/rx/schedulers/main_thread_scheduler.h>
+#include <zaf/rx/threads/main_thread.h>
 #include <zaf/rx/timer.h>
 #include <zaf/base/timer.h>
 #include <zaf/control/layout/linear_layouter.h>

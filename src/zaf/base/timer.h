@@ -4,7 +4,7 @@
 #include <chrono>
 #include <memory>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subjects/subject.h>
 
 namespace zaf {
 

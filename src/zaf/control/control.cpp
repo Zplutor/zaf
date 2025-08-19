@@ -17,7 +17,7 @@
 #include <zaf/graphic/image.h>
 #include <zaf/internal/theme.h>
 #include <zaf/internal/window/window_focused_control_manager.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subjects/subject.h>
 #include <zaf/window/inspector/internal/inspector_port.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>

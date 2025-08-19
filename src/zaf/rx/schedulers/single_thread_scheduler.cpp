@@ -1,5 +1,5 @@
-#include <zaf/rx/scheduler/single_thread_scheduler.h>
-#include <zaf/rx/thread/default_run_loop_thread.h>
+#include <zaf/rx/schedulers/single_thread_scheduler.h>
+#include <zaf/rx/threads/default_run_loop_thread.h>
 
 namespace zaf::rx {
 

@@ -1,4 +1,4 @@
-#include <zaf/rx/scheduler/immediate_scheduler.h>
+#include <zaf/rx/schedulers/immediate_scheduler.h>
 
 namespace zaf::rx {
 
