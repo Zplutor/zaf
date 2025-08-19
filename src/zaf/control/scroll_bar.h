@@ -13,8 +13,6 @@
 
 namespace zaf {
 
-class Timer;
-
 /**
  Represents a scroll bar control.
  */
@@ -273,7 +271,7 @@ private:
     Point begin_drag_mouse_position_;
 
     bool is_pressing_{};
-    std::shared_ptr<Timer> timer_;
+    std::shared_ptr<rx::Disposable> timer_sub_;
     TimerEvent timer_event_;
 
     double remaining_wheel_change_value_;

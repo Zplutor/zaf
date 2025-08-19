@@ -1,4 +1,6 @@
 #include "logic/service.h"
+#include <zaf/rx/schedulers/main_thread_scheduler.h>
+#include <zaf/rx/timer.h>
 #include "logic/data_generating/conversation_generating.h"
 #include "logic/data_generating/message_generating.h"
 #include "logic/data_generating/random.h"
@@ -60,15 +62,13 @@ std::vector<Id> Service::GenerateInitialMessages() {
 
 void Service::StartMessageGeneratingTimer() {
 
-    if (message_generating_timer_ == nullptr) {
-        message_generating_timer_ = std::make_shared<zaf::Timer>(zaf::Timer::Mode::OneShot);
-        Disposables() += message_generating_timer_->TriggerEvent().Subscribe(
-            std::bind(&Service::MessageGeneratingTimerTrigger, this));
-    }
-
     auto interval_seconds = GenerateRandomInteger<std::size_t>(2, 10);
-    message_generating_timer_->SetInterval(std::chrono::seconds(interval_seconds));
-    message_generating_timer_->Start();
+
+    auto timer = zaf::rx::Timer(
+        std::chrono::seconds(interval_seconds),
+        zaf::rx::MainThreadScheduler::Instance());
+
+    Disposables() += timer.Subscribe(std::bind(&Service::MessageGeneratingTimerTrigger, this));
 }
 
 
@@ -133,12 +133,13 @@ void Service::SendMessageToConversation(const std::wstring& content, Id conversa
         return;
     }
 
-    reply_timer_ = std::make_shared<zaf::Timer>(zaf::Timer::Mode::OneShot);
-    reply_timer_->SetInterval(std::chrono::seconds(1));
-    Disposables() += reply_timer_->TriggerEvent().Subscribe(std::bind([this, conversation]() {
+    auto reply_timer = zaf::rx::Timer(
+        std::chrono::seconds(1),
+        zaf::rx::MainThreadScheduler::Instance());
+
+    Disposables() += reply_timer.Subscribe(std::bind([this, conversation]() {
         GenerateMessageToConversation(conversation, true);
     }));
-    reply_timer_->Start();
 }
 
 

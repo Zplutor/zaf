@@ -1,7 +1,6 @@
 #pragma once
 
 #include <optional>
-#include <zaf/base/timer.h>
 #include <zaf/control/internal/image_box/image_player.h>
 #include <zaf/graphic/gif_metadata_querier.h>
 #include <zaf/graphic/wic/bitmap_decoder.h>
@@ -47,7 +46,7 @@ private:
     std::size_t frame_count_;
     Color background_color_;
     std::optional<std::size_t> total_loop_count_;
-    std::shared_ptr<Timer> delay_timer_;
+    std::shared_ptr<rx::Disposable> delay_timer_sub_;
 
     std::size_t next_frame_index_;
     std::uint16_t current_frame_delay_;

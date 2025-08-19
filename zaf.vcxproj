@@ -65,7 +65,6 @@
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp" />
     <ClCompile Include="src\zaf\base\registry\registry_value.cpp" />
     <ClCompile Include="src\zaf\base\string\encoding_conversion.cpp" />
-    <ClCompile Include="src\zaf\base\timer.cpp" />
     <ClCompile Include="src\zaf\clipboard\clipboard.cpp" />
     <ClCompile Include="src\zaf\clipboard\data_object.cpp" />
     <ClCompile Include="src\zaf\clipboard\drop_files_data.cpp" />
@@ -499,7 +498,6 @@
     <ClInclude Include="src\zaf\base\string\to_numeric.h" />
     <ClInclude Include="src\zaf\base\string\to_string.h" />
     <ClInclude Include="src\zaf\base\string\trim.h" />
-    <ClInclude Include="src\zaf\base\timer.h" />
     <ClInclude Include="src\zaf\base\type_traits\optional.h" />
     <ClInclude Include="src\zaf\clipboard\clipboard.h" />
     <ClInclude Include="src\zaf\clipboard\clipboard_data.h" />

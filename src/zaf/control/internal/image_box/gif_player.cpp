@@ -1,5 +1,7 @@
 #include <zaf/control/internal/image_box/gif_player.h>
 #include <zaf/graphic/wic/imaging_factory.h>
+#include <zaf/rx/schedulers/main_thread_scheduler.h>
+#include <zaf/rx/timer.h>
 
 namespace zaf {
 namespace internal {
@@ -263,14 +265,11 @@ void GifPlayer::RestoreFrame() {
 
 void GifPlayer::StartTimer() {
 
-    if (delay_timer_ == nullptr) {
-        delay_timer_ = std::make_shared<Timer>(Timer::Mode::OneShot);
-        Disposables() += delay_timer_->TriggerEvent().Subscribe(
-            std::bind(&GifPlayer::TimerTriggered, this));
-    }
+    auto delay_timer = rx::Timer(
+        std::chrono::milliseconds(current_frame_delay_ * 10),
+        rx::MainThreadScheduler::Instance());
 
-    delay_timer_->SetInterval(std::chrono::milliseconds(current_frame_delay_ * 10));
-    delay_timer_->Start();
+    delay_timer_sub_ = delay_timer.Subscribe(std::bind(&GifPlayer::TimerTriggered, this));
 }
 
 
@@ -304,7 +303,11 @@ void GifPlayer::Reset() {
 
     composed_frame_renderer_ = {};
     saved_frame_bitmap_ = {};
-    delay_timer_.reset();
+
+    if (delay_timer_sub_) {
+        delay_timer_sub_->Dispose();
+        delay_timer_sub_.reset();
+    }
 
     frame_count_ = 0;
     background_color_ = Color::Transparent();

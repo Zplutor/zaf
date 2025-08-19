@@ -4,7 +4,6 @@
 #include <zaf/rx/schedulers/main_thread_scheduler.h>
 #include <zaf/rx/threads/main_thread.h>
 #include <zaf/rx/timer.h>
-#include <zaf/base/timer.h>
 #include <zaf/control/layout/linear_layouter.h>
 
 void BeginRun(const zaf::BeginRunInfo& event_info);
@@ -33,29 +32,12 @@ protected:
             });
         }));
         this->RootControl()->AddChild(rx_timer_button);
-
-        auto window_timer_button = zaf::Create<zaf::Button>();
-        window_timer_button->SetFixedHeight(30);
-        window_timer_button->SetText(L"Start window timer.");
-        Disposables() += window_timer_button->ClickEvent().Subscribe(std::bind([this]() {
-
-            BeforeTimer();
-
-            window_timer_ = std::make_unique<zaf::Timer>(zaf::Timer::Mode::ImmediatelyRepeated);
-            window_timer_->SetInterval(std::chrono::milliseconds(TimerInterval));
-            Disposables() += window_timer_->TriggerEvent().Subscribe([this](const zaf::TimerTriggerInfo& event_info) {
-                OnTimer();
-            });
-            window_timer_->Start();
-        }));
-        this->RootControl()->AddChild(window_timer_button);
     }
 
 private:
     void BeforeTimer() {
 
         rx_timer_->Dispose();
-        window_timer_.reset();
 
         start_time_ = std::chrono::steady_clock::now();
         time_points_.clear();
@@ -76,7 +58,6 @@ private:
         }
 
         rx_timer_->Dispose();
-        window_timer_.reset();
 
         CalculateStatistic();
     }
@@ -164,7 +145,6 @@ private:
     std::chrono::steady_clock::time_point start_time_{};
     std::vector<std::chrono::steady_clock::time_point> time_points_;
     std::shared_ptr<zaf::rx::Disposable> rx_timer_;
-    std::shared_ptr<zaf::Timer> window_timer_;
 };
 
 

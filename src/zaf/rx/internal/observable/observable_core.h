@@ -2,6 +2,7 @@
 
 #include <any>
 #include <memory>
+#include <optional>
 #include <zaf/base/closure.h>
 #include <zaf/rx/internal/observer_shim.h>
 #include <zaf/rx/internal/operator/catch_handler.h>

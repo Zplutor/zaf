@@ -207,9 +207,6 @@
     <ClCompile Include="src\zaf\application.cpp">
       <Filter>zaf</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\timer.cpp">
-      <Filter>zaf\base</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\log.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
@@ -1334,9 +1331,6 @@
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
       <Filter>zaf</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\timer.h">
-      <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\log.h">
       <Filter>zaf\base</Filter>

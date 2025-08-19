@@ -1,6 +1,5 @@
 #include <zaf/control/scroll_bar.h>
 #include <zaf/base/error/contract_error.h>
-#include <zaf/base/timer.h>
 #include <zaf/control/control_object.h>
 #include <zaf/control/scroll_bar_arrow.h>
 #include <zaf/control/scroll_bar_thumb.h>
@@ -11,6 +10,9 @@
 #include <zaf/graphic/d2d/transformed_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
+#include <zaf/rx/disposable.h>
+#include <zaf/rx/schedulers/main_thread_scheduler.h>
+#include <zaf/rx/timer.h>
 #include <zaf/window/message/mouse_message.h>
 
 namespace zaf {
@@ -433,7 +435,10 @@ void ScrollBar::OnMouseReleased(const MouseReleasedInfo& event_info) {
 
     __super::OnMouseReleased(event_info);
 
-    timer_.reset();
+    if (timer_sub_) {
+        timer_sub_->Dispose();
+        timer_sub_.reset();
+    }
 }
 
 
@@ -442,25 +447,17 @@ void ScrollBar::BeginTimer(TimerEvent timer_event) {
     timer_event_ = timer_event;
     ApplyTimerEvent();
 
-    timer_ = std::make_shared<Timer>(Timer::Mode::OneShot);
-    timer_->SetInterval(std::chrono::milliseconds(kTimerInitialInterval));
-    Disposables() += timer_->TriggerEvent().Subscribe(std::bind(&ScrollBar::TimerTrigger, this));
-    timer_->Start();
+    auto timer = zaf::rx::Timer(
+        std::chrono::milliseconds(kTimerInitialInterval),
+        std::chrono::milliseconds(kTimerContinuousInterval),
+        zaf::rx::MainThreadScheduler::Instance());
+
+    timer_sub_ = timer.Subscribe(std::bind(&ScrollBar::TimerTrigger, this));
 }
 
 
 void ScrollBar::TimerTrigger() {
-
     ApplyTimerEvent();
-
-    if (timer_->GetInterval() == std::chrono::milliseconds(kTimerInitialInterval)) {
-
-        timer_ = std::make_shared<Timer>(Timer::Mode::DeferredRepeated);
-        timer_->SetInterval(std::chrono::milliseconds(kTimerContinuousInterval));
-        Disposables() += timer_->TriggerEvent().Subscribe(
-            std::bind(&ScrollBar::TimerTrigger, this));
-        timer_->Start();
-    }
 }
 
 
@@ -565,7 +562,10 @@ void ScrollBar::ArrowBeginPress(const ScrollBarArrowBeginPressInfo& event_info) 
 
 
 void ScrollBar::ArrowEndPress(const ScrollBarArrowEndPressInfo& event_info) {
-    timer_.reset();
+    if (timer_sub_) {
+        timer_sub_->Dispose();
+        timer_sub_.reset();
+    }
 }
 
 

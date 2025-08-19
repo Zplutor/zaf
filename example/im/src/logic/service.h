@@ -1,7 +1,8 @@
 #pragma once
 
-#include <zaf/base/timer.h>
 #include <zaf/rx/disposable_host.h>
+#include <zaf/rx/observable.h>
+#include <zaf/rx/subjects/subject.h>
 #include "storage/conversation_storage.h"
 #include "storage/message_storage.h"
 #include "storage/user_storage.h"
@@ -78,9 +79,6 @@ private:
     ConversationStorage conversation_storage_;
     MessageStorage message_storage_;
     UserStorage user_storage_;
-
-    std::shared_ptr<zaf::Timer> message_generating_timer_;
-    std::shared_ptr<zaf::Timer> reply_timer_;
 
     zaf::rx::Subject<std::shared_ptr<Conversation>> conversation_update_event_;
     zaf::rx::Subject<std::shared_ptr<Message>> message_add_event_;
