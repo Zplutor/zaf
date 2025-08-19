@@ -25,7 +25,7 @@ protected:
             
             BeforeTimer();
 
-            rx_timer_ = zaf::rx::Interval(
+            rx_timer_ = zaf::rx::Timer::Interval(
                 std::chrono::milliseconds(TimerInterval),
                 zaf::rx::MainThreadScheduler::Instance()).Subscribe([this](std::size_t) {
                 OnTimer();

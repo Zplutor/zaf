@@ -64,7 +64,7 @@ void Service::StartMessageGeneratingTimer() {
 
     auto interval_seconds = GenerateRandomInteger<std::size_t>(2, 10);
 
-    auto timer = zaf::rx::Timer(
+    auto timer = zaf::rx::Timer::Once(
         std::chrono::seconds(interval_seconds),
         zaf::rx::MainThreadScheduler::Instance());
 
@@ -133,7 +133,7 @@ void Service::SendMessageToConversation(const std::wstring& content, Id conversa
         return;
     }
 
-    auto reply_timer = zaf::rx::Timer(
+    auto reply_timer = zaf::rx::Timer::Once(
         std::chrono::seconds(1),
         zaf::rx::MainThreadScheduler::Instance());
 

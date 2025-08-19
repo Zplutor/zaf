@@ -72,7 +72,7 @@ void Caret::ShowCaret() {
 
     is_blink_on_ = true;
 
-    auto timer = rx::Interval(
+    auto timer = rx::Timer::Interval(
         std::chrono::milliseconds(blink_time),
         rx::MainThreadScheduler::Instance());
 

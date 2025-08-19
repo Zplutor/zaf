@@ -1,13 +1,16 @@
 #include <zaf/rx/timer.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/internal/observable_factory.h>
 #include <zaf/rx/internal/observable/timer_observable.h>
 #include <zaf/rx/internal/single_factory.h>
 
 namespace zaf::rx {
 
-Single<std::size_t> Timer(
+Single<std::size_t> Timer::Once(
     std::chrono::steady_clock::duration delay,
     std::shared_ptr<Scheduler> scheduler) {
+
+    ZAF_EXPECT(scheduler);
 
     auto core = std::make_shared<internal::TimerObservable>(
         delay, 
@@ -18,13 +21,14 @@ Single<std::size_t> Timer(
 }
 
 
-Observable<std::size_t> Timer(
-    std::chrono::steady_clock::duration delay,
+Observable<std::size_t> Timer::Interval(
     std::chrono::steady_clock::duration interval,
     std::shared_ptr<Scheduler> scheduler) {
 
+    ZAF_EXPECT(scheduler);
+
     auto core = std::make_shared<internal::TimerObservable>(
-        delay,
+        interval,
         interval,
         std::move(scheduler));
 
@@ -32,12 +36,15 @@ Observable<std::size_t> Timer(
 }
 
 
-Observable<std::size_t> Interval(
+Observable<std::size_t> Timer::DelayInterval(
+    std::chrono::steady_clock::duration delay,
     std::chrono::steady_clock::duration interval,
     std::shared_ptr<Scheduler> scheduler) {
 
+    ZAF_EXPECT(scheduler);
+
     auto core = std::make_shared<internal::TimerObservable>(
-        interval,
+        delay,
         interval,
         std::move(scheduler));
 

@@ -73,7 +73,13 @@ private:
             return;
         }
 
-        SetNextDelayTimer();
+        try {
+            SetNextDelayTimer();
+        }
+        catch (...) {
+            // If an error occurs while setting the next timer, emit the error.
+            EmitOnError(std::current_exception());
+        }
     }
 
     void DoDisposal() noexcept {

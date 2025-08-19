@@ -187,7 +187,7 @@ BOOL TextHostBridge::TxSetCaretPos(INT x, INT y) {
 
 BOOL TextHostBridge::TxSetTimer(UINT idTimer, UINT uTimeout) {
 
-    auto timer = rx::Interval(
+    auto timer = rx::Timer::Interval(
         std::chrono::milliseconds(uTimeout), 
         rx::MainThreadScheduler::Instance());
 

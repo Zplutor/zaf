@@ -184,7 +184,7 @@ void TrackBar::StartPressingTimer(bool is_initial) {
 
     auto timeout = is_initial ? std::chrono::milliseconds(300) : std::chrono::milliseconds(50);
 
-    timer_sub_ = rx::Timer(timeout, rx::MainThreadScheduler::Instance()).Subscribe(
+    timer_sub_ = rx::Timer::Once(timeout, rx::MainThreadScheduler::Instance()).Subscribe(
         [this](std::size_t) {
             ContinuePressing();
         });

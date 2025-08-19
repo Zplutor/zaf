@@ -116,7 +116,7 @@ void SpinBox::InitializeButtonEvents(
     
         ChangeValueByButtonEvent(increase);
 
-        auto timer = rx::Timer(
+        auto timer = rx::Timer::DelayInterval(
             std::chrono::milliseconds(300),
             std::chrono::milliseconds(50),
             rx::MainThreadScheduler::Instance());

@@ -265,7 +265,7 @@ void GifPlayer::RestoreFrame() {
 
 void GifPlayer::StartTimer() {
 
-    auto delay_timer = rx::Timer(
+    auto delay_timer = rx::Timer::Once(
         std::chrono::milliseconds(current_frame_delay_ * 10),
         rx::MainThreadScheduler::Instance());
 

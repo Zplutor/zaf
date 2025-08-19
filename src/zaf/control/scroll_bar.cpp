@@ -447,7 +447,7 @@ void ScrollBar::BeginTimer(TimerEvent timer_event) {
     timer_event_ = timer_event;
     ApplyTimerEvent();
 
-    auto timer = zaf::rx::Timer(
+    auto timer = zaf::rx::Timer::DelayInterval(
         std::chrono::milliseconds(kTimerInitialInterval),
         std::chrono::milliseconds(kTimerContinuousInterval),
         zaf::rx::MainThreadScheduler::Instance());

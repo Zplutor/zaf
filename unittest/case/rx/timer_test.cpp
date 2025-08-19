@@ -10,7 +10,7 @@ TEST(RxTimerTest, OneShotTimer) {
     std::mutex mutex;
     std::unique_lock<std::mutex> lock(mutex);
 
-    zaf::rx::Observable<std::size_t> timer = zaf::rx::Timer(
+    zaf::rx::Observable<std::size_t> timer = zaf::rx::Timer::Once(
         std::chrono::milliseconds(50),
         std::make_shared<zaf::rx::SingleThreadScheduler>());
 
@@ -53,7 +53,7 @@ TEST(RxTimerTest, DelayRepeatingTimer) {
     std::mutex mutex;
     std::unique_lock<std::mutex> lock(mutex);
 
-    auto timer = zaf::rx::Timer(
+    auto timer = zaf::rx::Timer::DelayInterval(
         std::chrono::milliseconds(50),
         std::chrono::milliseconds(20),
         std::make_shared<zaf::rx::SingleThreadScheduler>());
@@ -93,7 +93,7 @@ TEST(RxTimerTest, RepeatingTimer) {
     std::mutex mutex;
     std::unique_lock<std::mutex> lock(mutex);
 
-    auto timer = zaf::rx::Interval(
+    auto timer = zaf::rx::Timer::Interval(
         std::chrono::milliseconds(50),
         std::make_shared<zaf::rx::SingleThreadScheduler>());
 
