@@ -65,8 +65,9 @@ TEST_F(DefaultRunLoopThreadTest, PostWork) {
 
 TEST_F(DefaultRunLoopThreadTest, CancelWork) {
 
+    bool is_executed{};
     auto disposable = RunLoopThread().PostWork([&]() {
-        FAIL();
+        is_executed = true;
     });
 
     ASSERT_NE(disposable, nullptr);
@@ -77,6 +78,31 @@ TEST_F(DefaultRunLoopThreadTest, CancelWork) {
 
     // Make sure the work is not executed.
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    ASSERT_FALSE(is_executed);
+}
+
+
+TEST_F(DefaultRunLoopThreadTest, CancelWorkInSameIteration) {
+
+    auto lock = GetLock();
+    bool is_executed{};
+
+    RunLoopThread().PostWork([&]() {
+
+        auto disposable = RunLoopThread().PostWork([&]() {
+            is_executed = true;
+        });
+
+        // Cancel the work in the same iteration.
+        // The work should not be executed.
+        disposable->Dispose();
+        cv_.notify_one();
+    });
+
+    cv_.wait(lock);
+    // Make sure the work is not executed.
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    ASSERT_FALSE(is_executed);
 }
 
 
