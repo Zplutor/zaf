@@ -1,4 +1,4 @@
-#include <zaf/rx/threads/main_thread.h>
+#include <zaf/rx/thread/main_thread.h>
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/error/win32_error.h>
 #include <zaf/rx/internal/rx_runtime.h>

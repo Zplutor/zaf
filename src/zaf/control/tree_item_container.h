@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/control/list_item_container.h>
-#include <zaf/rx/subjects/subject.h>
+#include <zaf/rx/subject.h>
 
 namespace zaf {
 namespace internal {

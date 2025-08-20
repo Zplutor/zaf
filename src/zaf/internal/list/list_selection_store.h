@@ -4,7 +4,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/internal/range_set.h>
 #include <zaf/internal/list/list_selection_change_reason.h>
-#include <zaf/rx/subjects/subject.h>
+#include <zaf/rx/subject.h>
 
 namespace zaf {
 namespace internal {

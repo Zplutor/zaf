@@ -1,7 +1,7 @@
 #include <zaf/rx/internal/observable/timer_observable.h>
 #include <zaf/base/as.h>
 #include <zaf/rx/internal/producer.h>
-#include <zaf/rx/schedulers/scheduler.h>
+#include <zaf/rx/scheduler/scheduler.h>
 
 namespace zaf::rx::internal {
 namespace {

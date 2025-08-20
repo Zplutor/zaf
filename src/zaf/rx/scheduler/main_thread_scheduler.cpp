@@ -1,4 +1,4 @@
-#include <zaf/rx/schedulers/main_thread_scheduler.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/internal/rx_runtime.h>
 
 namespace zaf::rx {

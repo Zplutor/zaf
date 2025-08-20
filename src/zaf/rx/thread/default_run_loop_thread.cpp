@@ -1,4 +1,4 @@
-#include <zaf/rx/threads/default_run_loop_thread.h>
+#include <zaf/rx/thread/default_run_loop_thread.h>
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/error/invalid_operation_error.h>
 

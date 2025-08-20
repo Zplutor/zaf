@@ -7,7 +7,7 @@
 
 #include <chrono>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/schedulers/scheduler.h>
+#include <zaf/rx/scheduler/scheduler.h>
 #include <zaf/rx/single.h>
 
 namespace zaf::rx {

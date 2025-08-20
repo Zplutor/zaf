@@ -1,8 +1,8 @@
 #include <mutex>
 #include <optional>
 #include <gtest/gtest.h>
-#include <zaf/rx/schedulers/single_thread_scheduler.h>
-#include <zaf/rx/subjects/subject.h>
+#include <zaf/rx/scheduler/single_thread_scheduler.h>
+#include <zaf/rx/subject.h>
 
 TEST(RxFlatMapTest, FlatMap) {
 

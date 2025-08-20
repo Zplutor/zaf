@@ -3,7 +3,7 @@
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/arrow_direction.h>
 #include <zaf/control/event/scroll_bar_arrow_event_info.h>
-#include <zaf/rx/subjects/subject.h>
+#include <zaf/rx/subject.h>
 
 namespace zaf {
 

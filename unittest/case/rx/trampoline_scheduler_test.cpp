@@ -1,7 +1,7 @@
 #include <mutex>
 #include <gtest/gtest.h>
-#include <zaf/rx/schedulers/trampoline_scheduler.h>
-#include <zaf/rx/threads/default_run_loop_thread.h>
+#include <zaf/rx/scheduler/trampoline_scheduler.h>
+#include <zaf/rx/thread/default_run_loop_thread.h>
 
 // All threads share the same instance of TrampolineScheduler.
 TEST(TrampolineSchedulerTest, Instance) {

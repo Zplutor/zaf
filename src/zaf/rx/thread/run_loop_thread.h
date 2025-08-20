@@ -30,7 +30,9 @@ public:
         The work is not null.
 
     @return
-        A disposable object that can be used to cancel the work if it is not being executed.
+        A disposable object that can be used to cancel the work if it is not being executed or is 
+        not ready to be executed. It is guaranteed that a work posted and then cancelled on the 
+        thread itself during the same run loop iteration will not be executed.
 
     @post
         The returned object is not null.
@@ -41,8 +43,7 @@ public:
 
     @details
         If the work is posted on the thread itself, it will be executed on the next run loop 
-        iteration. It is guaranteed that a work posted and then cancelled on the thread itself 
-        during the same run loop iteration will not be executed.
+        iteration.
     */
     virtual std::shared_ptr<Disposable> PostWork(Closure work) = 0;
 
@@ -59,7 +60,7 @@ public:
         The work is not null.
 
     @return
-        A disposable object that can be used to cancel the work if it is not being executed.
+        A disposable object that can be used to cancel the delayed work.
 
     @post
         The returned object is not null.

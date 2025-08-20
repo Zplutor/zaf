@@ -1,6 +1,6 @@
 #include <zaf/control/track_bar.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/rx/schedulers/main_thread_scheduler.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 
 namespace zaf {

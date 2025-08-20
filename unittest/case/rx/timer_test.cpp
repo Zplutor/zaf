@@ -1,7 +1,7 @@
 #include <mutex>
 #include <gtest/gtest.h>
 #include <zaf/rx/disposable.h>
-#include <zaf/rx/schedulers/single_thread_scheduler.h>
+#include <zaf/rx/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 
 TEST(RxTimerTest, OneShotTimer) {

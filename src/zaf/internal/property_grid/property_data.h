@@ -7,7 +7,7 @@
 #include <zaf/control/property_grid_delegate.h>
 #include <zaf/object/object.h>
 #include <zaf/object/object_property.h>
-#include <zaf/rx/subjects/subject.h>
+#include <zaf/rx/subject.h>
 #include <zaf/rx/disposable_host.h>
 
 namespace zaf::internal {

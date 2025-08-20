@@ -7,7 +7,7 @@
 #include <zaf/control/textual/selection_option.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/rx/disposable_host.h>
-#include <zaf/rx/subjects/subject.h>
+#include <zaf/rx/subject.h>
 
 namespace zaf::internal {
 

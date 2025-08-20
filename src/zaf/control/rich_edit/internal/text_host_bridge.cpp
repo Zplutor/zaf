@@ -3,7 +3,7 @@
 #include <zaf/creation.h>
 #include <zaf/graphic/alignment.h>
 #include <zaf/graphic/dpi.h>
-#include <zaf/rx/schedulers/main_thread_scheduler.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/window/window.h>
 

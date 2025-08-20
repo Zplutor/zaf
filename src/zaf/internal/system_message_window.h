@@ -2,7 +2,7 @@
 
 #include <zaf/application_event_infos.h>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/subjects/subject.h>
+#include <zaf/rx/subject.h>
 #include <zaf/rx/disposable_host.h>
 #include <zaf/window/internal/inner_message_only_window.h>
 

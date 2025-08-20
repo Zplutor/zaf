@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/rx/schedulers/immediate_scheduler.h>
+#include <zaf/rx/scheduler/immediate_scheduler.h>
 
 TEST(ImmediateSchedulerTest, ScheduleWork_Serial) {
 

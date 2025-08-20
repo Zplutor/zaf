@@ -11,7 +11,7 @@
 #include <thread>
 #include <vector>
 #include <zaf/rx/internal/thread/thread_work_item_base.h>
-#include <zaf/rx/threads/run_loop_thread.h>
+#include <zaf/rx/thread/run_loop_thread.h>
 
 namespace zaf::testing {
 class DefaultRunLoopThreadTest;

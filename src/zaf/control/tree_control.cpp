@@ -5,7 +5,7 @@
 #include <zaf/control/tree_data_source.h>
 #include <zaf/control/tree_item_container.h>
 #include <zaf/internal/list/list_control_parts_context.h>
-#include <zaf/rx/subjects/subject.h>
+#include <zaf/rx/subject.h>
 
 namespace zaf {
 
