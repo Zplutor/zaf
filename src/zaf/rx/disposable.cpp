@@ -1,4 +1,5 @@
 #include <zaf/rx/disposable.h>
+#include <zaf/base/error/contract_error.h>
 
 namespace zaf::rx {
 namespace {
@@ -51,6 +52,8 @@ void Disposable::Dispose() noexcept {
 
 
 void Disposable::AddDisposedCallback(Closure callback) {
+
+    ZAF_EXPECT(callback);
 
     {
         std::lock_guard<std::mutex> lock(disposed_callbacks_mutex_);

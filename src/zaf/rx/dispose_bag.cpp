@@ -33,16 +33,27 @@ void DisposeBag::Add(const std::shared_ptr<Disposable>& disposable) {
     }
 
     std::weak_ptr<Disposable> weak = disposable;
-    disposable->AddDisposedCallback([this, weak]() {
 
-        auto strong = weak.lock();
-        if (!strong) {
-            return;
+    try {
+        disposable->AddDisposedCallback([this, weak]() {
+
+            auto strong = weak.lock();
+            if (!strong) {
+                return;
+            }
+
+            std::lock_guard<std::mutex> lock(lock_);
+            items_.erase(strong);
+        });
+    }
+    catch (...) {
+        // Remove the added item if fail to add the disposed callback.
+        {
+            std::lock_guard<std::mutex> lock(lock_);
+            items_.erase(disposable);
         }
-
-        std::lock_guard<std::mutex> lock(lock_);
-        items_.erase(strong);
-    });
+        throw;
+    }
 }
 
 

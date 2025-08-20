@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file
+    Defines the `zaf::rx::DisposeBag` class.
+*/
+
 #include <mutex>
 #include <unordered_set>
 #include <zaf/base/non_copyable.h>
@@ -20,6 +25,8 @@ public:
 
     /**
     Destructs the instance, disposing all added `Disposable` objects.
+
+    @see Clear()
     */
     ~DisposeBag();
 
@@ -27,15 +34,17 @@ public:
     Adds a `Disposable` object to the bag.
 
     @param disposable
-        The `Disposable` object to add. The object won't be added if it is disposed. If it is
-        nullptr, it will be ignored.
+        The `Disposable` object to add. The object won't be added if it is disposed or is null.
 
     @throw std::bad_alloc
+
+    @details
+        This method is thread-safe.
     */
     void Add(const std::shared_ptr<Disposable>& disposable);
 
     /**
-    Adds a `Disposable` object to the bag.
+    @copydoc Add(const std::shared_ptr<Disposable>&)
 
     @details
         This is a convenient operator for adding a `Disposable` object to the bag.
@@ -46,6 +55,12 @@ public:
 
     /**
     Clears and disposes all `Disposable` objects in the bag.
+
+    @details
+        @note
+            The order of disposal is not guaranteed.
+
+        This method is thread-safe.
     */
     void Clear() noexcept;
 
