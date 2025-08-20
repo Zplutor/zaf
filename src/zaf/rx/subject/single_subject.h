@@ -3,7 +3,7 @@
 #include <zaf/rx/internal/single_factory.h>
 #include <zaf/rx/single.h>
 #include <zaf/rx/single_observer.h>
-#include <zaf/rx/subject_base.h>
+#include <zaf/rx/subject/subject_base.h>
 
 namespace zaf::rx {
 

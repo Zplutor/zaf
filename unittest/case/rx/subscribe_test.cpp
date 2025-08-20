@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 
 //Make sure there is no exception with empty observer.
 TEST(RxSubscribeTest, EmptyObserver) {

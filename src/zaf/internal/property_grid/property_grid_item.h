@@ -6,7 +6,7 @@
 #include <zaf/control/property_grid/value_editor.h>
 #include <zaf/control/split_control.h>
 #include <zaf/control/tree_item.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 
 namespace zaf::internal {
 

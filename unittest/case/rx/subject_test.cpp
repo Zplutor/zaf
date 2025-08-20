@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/rx/disposable.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 #include <zaf/rx/internal/subject/subject_core.h>
 
 static_assert(!std::is_copy_assignable_v<zaf::rx::Subject<int>>);

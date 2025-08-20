@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/rx/subject_base.h>
+#include <zaf/rx/subject/subject_base.h>
 
 namespace zaf::rx {
 

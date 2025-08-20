@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <optional>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 
 using namespace zaf;
 

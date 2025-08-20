@@ -3,7 +3,7 @@
 #include <zaf/base/error/error.h>
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/rx/scheduler/single_thread_scheduler.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 #include <zaf/rx/disposable_host.h>
 
 using namespace zaf;

@@ -2,7 +2,7 @@
 
 #include <zaf/rx/disposable_host.h>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/subjects/subject.h>
+#include <zaf/rx/subject/subject.h>
 #include "storage/conversation_storage.h"
 #include "storage/message_storage.h"
 #include "storage/user_storage.h"

@@ -2,7 +2,7 @@
 
 #include <optional>
 #include <zaf/base/non_copyable.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 
 namespace zaf {
 

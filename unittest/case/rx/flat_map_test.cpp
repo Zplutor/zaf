@@ -2,7 +2,7 @@
 #include <optional>
 #include <gtest/gtest.h>
 #include <zaf/rx/scheduler/single_thread_scheduler.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 
 TEST(RxFlatMapTest, FlatMap) {
 

@@ -9,7 +9,7 @@
 #include <zaf/creation.h>
 #include <zaf/internal/list/list_control_parts_context.h>
 #include <zaf/internal/theme.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 
 namespace zaf {
 

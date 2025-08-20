@@ -11,7 +11,7 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>
 #include <zaf/rx/disposable.h>
-#include <zaf/rx/schedulers/main_thread_scheduler.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/window/message/mouse_message.h>
 

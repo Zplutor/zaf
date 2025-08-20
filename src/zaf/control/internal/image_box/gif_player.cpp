@@ -1,6 +1,6 @@
 #include <zaf/control/internal/image_box/gif_player.h>
 #include <zaf/graphic/wic/imaging_factory.h>
-#include <zaf/rx/schedulers/main_thread_scheduler.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 
 namespace zaf {

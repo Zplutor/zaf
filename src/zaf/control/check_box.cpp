@@ -9,7 +9,7 @@
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
 #include <zaf/object/object_type.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 
 namespace zaf {
 

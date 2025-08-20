@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 
 TEST(RxMapTest, Map) {
 

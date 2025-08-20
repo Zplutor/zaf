@@ -8,7 +8,7 @@
 #include <zaf/control/scroll_bar_arrow.h>
 #include <zaf/control/scroll_bar_thumb.h>
 #include <zaf/rx/observable.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 #include <zaf/rx/dispose_bag.h>
 
 namespace zaf {

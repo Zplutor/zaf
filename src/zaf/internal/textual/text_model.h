@@ -10,7 +10,7 @@
 #include <zaf/control/textual/styled_text.h>
 #include <zaf/internal/control/color_picker_equal.h>
 #include <zaf/internal/textual/inline_object_attached_info.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 
 namespace zaf::internal {
 

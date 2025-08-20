@@ -1,7 +1,7 @@
 #include <optional>
 #include <gtest/gtest.h>
-#include <zaf/rx/replay_subject.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/replay_subject.h>
+#include <zaf/rx/subject/subject.h>
 
 namespace {
 

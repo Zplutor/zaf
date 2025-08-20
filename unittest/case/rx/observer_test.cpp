@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 
 using namespace zaf;
 using namespace zaf::rx;

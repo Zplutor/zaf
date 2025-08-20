@@ -11,7 +11,7 @@
 #include <zaf/internal/message_loop.h>
 #include <zaf/object/object.h>
 #include <zaf/object/property_support.h>
-#include <zaf/rx/single_subject.h>
+#include <zaf/rx/subject/single_subject.h>
 #include <zaf/rx/disposable_host.h>
 #include <zaf/window/activate_option.h>
 #include <zaf/window/event/activate_event_info.h>

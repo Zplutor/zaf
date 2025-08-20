@@ -1,5 +1,5 @@
 #include "logic/service.h"
-#include <zaf/rx/schedulers/main_thread_scheduler.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 #include "logic/data_generating/conversation_generating.h"
 #include "logic/data_generating/message_generating.h"

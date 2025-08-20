@@ -8,7 +8,7 @@
 #include <zaf/control/list_selection_mode.h>
 #include <zaf/input/key.h>
 #include <zaf/internal/list/list_control_parts_based.h>
-#include <zaf/rx/subject.h>
+#include <zaf/rx/subject/subject.h>
 #include <zaf/window/popup_menu.h>
 
 namespace zaf::internal {
