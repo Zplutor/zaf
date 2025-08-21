@@ -202,6 +202,9 @@
     <Filter Include="zaf\rx\subject">
       <UniqueIdentifier>{dbc78465-4d4f-40f3-baeb-69e06a616bae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\rx\internal\insider">
+      <UniqueIdentifier>{06afa947-c3ff-44ff-bc36-30540c74a0ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -3090,6 +3093,15 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\subject\subject_base.h">
       <Filter>zaf\rx\subject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\insider\insider.h">
+      <Filter>zaf\rx\internal\insider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\insider\observer_insider.h">
+      <Filter>zaf\rx\internal\insider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\insider\single_observer_insider.h">
+      <Filter>zaf\rx\internal\insider</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

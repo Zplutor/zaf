@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <ranges>
+#include <zaf/rx/internal/insider/observer_insider.h>
 #include <zaf/rx/internal/observable/concat_observable.h>
 #include <zaf/rx/internal/observable/connectable_observable_core.h>
 #include <zaf/rx/internal/observable/empty_observable.h>

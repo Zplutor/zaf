@@ -6,6 +6,7 @@
 namespace zaf::rx::internal {
 template<typename T>
 class SingleFactory;
+class SingleObserverInsider;
 }
 
 namespace zaf::rx {
@@ -61,17 +62,18 @@ public:
         core_->OnError(std::make_exception_ptr(std::forward<E>(error)));
     }
 
-    const std::shared_ptr<internal::ObserverCore>& Core() const noexcept {
-        return core_;
-    }
-
 protected:
     explicit SingleObserver(std::shared_ptr<internal::ObserverCore> core) :
         core_(std::move(core)) {
     }
 
+    const std::shared_ptr<internal::ObserverCore>& Core() const noexcept {
+        return core_;
+    }
+
 private:
     friend class internal::SingleFactory<T>;
+    friend class internal::SingleObserverInsider;
 
 private:
     std::shared_ptr<internal::ObserverCore> core_;

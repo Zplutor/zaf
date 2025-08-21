@@ -6,6 +6,7 @@
 namespace zaf::rx::internal {
 template<typename T>
 class ObservableFactory;
+class ObserverInsider;
 }
 
 namespace zaf::rx {
@@ -65,17 +66,18 @@ public:
         core_->OnCompleted();
     }
 
-    const std::shared_ptr<rx::internal::ObserverCore>& Core() const noexcept {
-        return core_;
-    }
-
 protected:
     explicit Observer(std::shared_ptr<rx::internal::ObserverCore> core) noexcept :
         core_(std::move(core)) {
     }
 
+    const std::shared_ptr<rx::internal::ObserverCore>& Core() const noexcept {
+        return core_;
+    }
+
 private:
     friend class rx::internal::ObservableFactory<T>;
+    friend class rx::internal::ObserverInsider;
 
 private:
     std::shared_ptr<rx::internal::ObserverCore> core_;
