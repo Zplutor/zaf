@@ -1327,9 +1327,6 @@
     <ClCompile Include="src\zaf\rx\disposable.cpp">
       <Filter>zaf\rx</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\rx\internal\operator\dispose_with_operator.cpp">
-      <Filter>zaf\rx\internal\operator</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3093,9 +3090,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\subject\subject_base.h">
       <Filter>zaf\rx\subject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\operator\dispose_with_operator.h">
-      <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -93,9 +93,6 @@ public:
 
         If the object is destructed without being disposed, the stored callbacks will not be 
         invoked.
-
-        @note
-            The order of invoking the callbacks is not guaranteed.
     */
     void AddDisposedCallback(Closure callback);
 

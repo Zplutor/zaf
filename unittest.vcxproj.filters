@@ -683,9 +683,6 @@
     <ClCompile Include="unittest\case\rx\immediate_scheduler_test.cpp">
       <Filter>case\rx</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\rx\dispose_with_test.cpp">
-      <Filter>case\rx</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unittest\case\base\test_object.h">

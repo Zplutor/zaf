@@ -11,8 +11,6 @@
 
 namespace zaf::rx {
 class Disposable;
-class DisposableHost;
-class DisposeBag;
 class Scheduler;
 }
 
@@ -42,9 +40,6 @@ public:
 
     std::shared_ptr<ObservableCore> Map(Mapper mapper);
     std::shared_ptr<ObservableCore> FlatMap(FlatMapper mapper);
-
-    std::shared_ptr<ObservableCore> DisposeWith(DisposeBag& dispose_bag);
-    std::shared_ptr<ObservableCore> DisposeWith(DisposableHost& disposable_host);
 
     std::shared_ptr<ConnectableObservableCore> Publish();
     std::shared_ptr<ConnectableObservableCore> Replay(std::optional<std::size_t> replay_size);

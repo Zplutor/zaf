@@ -162,14 +162,6 @@ public:
         return OBSERVABLE<K>{ std::move(new_core) };
     }
 
-    OBSERVABLE<T> DisposeWith(DisposeBag& dispose_bag) {
-        return OBSERVABLE<T>{ core_->DisposeWith(dispose_bag) };
-    }
-
-    OBSERVABLE<T> DisposeWith(DisposableHost& disposable_host) {
-        return OBSERVABLE<T>{ core_->DisposeWith(disposable_host) };
-    }
-
     const std::shared_ptr<internal::ObservableCore>& Core() const noexcept {
         return core_;
     }
