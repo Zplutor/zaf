@@ -1,9 +1,12 @@
 #include <zaf/rx/internal/observable/observable_core.h>
+#include <zaf/rx/disposable_host.h>
+#include <zaf/rx/dispose_bag.h>
 #include <zaf/rx/internal/observable/connectable_observable_core.h>
 #include <zaf/rx/internal/operator/catch_operator.h>
 #include <zaf/rx/internal/operator/do_after_terminate_operator.h>
 #include <zaf/rx/internal/operator/do_on_terminate_operator.h>
 #include <zaf/rx/internal/operator/do_operator.h>
+#include <zaf/rx/internal/operator/dispose_with_operator.h>
 #include <zaf/rx/internal/operator/finally_operator.h>
 #include <zaf/rx/internal/operator/flat_map_operator.h>
 #include <zaf/rx/internal/operator/map_operator.h>
@@ -57,6 +60,18 @@ std::shared_ptr<ObservableCore> ObservableCore::Map(Mapper mapper) {
 
 std::shared_ptr<ObservableCore> ObservableCore::FlatMap(FlatMapper mapper) {
     return std::make_shared<FlatMapOperator>(shared_from_this(), std::move(mapper));
+}
+
+
+std::shared_ptr<ObservableCore> ObservableCore::DisposeWith(DisposeBag& dispose_bag) {
+    auto dispose_with_operator = std::make_shared<DisposeWithOperator>(shared_from_this());
+    dispose_bag.Add(dispose_with_operator->GetCompositeDisposable());
+    return dispose_with_operator;
+}
+
+
+std::shared_ptr<ObservableCore> ObservableCore::DisposeWith(DisposableHost& disposable_host) {
+    return DisposeWith(disposable_host.Disposables());
 }
 
 
