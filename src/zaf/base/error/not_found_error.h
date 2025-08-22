@@ -5,16 +5,16 @@
     Defines class zaf::NotFoundError.
 */
 
-#include <zaf/base/error/base_runtime_error.h>
+#include <zaf/base/error/runtime_error_base.h>
 
 namespace zaf {
 
 /**
 Represents an error indicating that the desired object or data is not found.
 */
-class NotFoundError : public BaseRuntimeError {
+class NotFoundError : public RuntimeErrorBase {
 public:
-    using BaseRuntimeError::BaseRuntimeError;
+    using RuntimeErrorBase::RuntimeErrorBase;
 };
 
 }

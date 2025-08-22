@@ -5,16 +5,16 @@
     Defines class zaf::InvalidOperationError.
 */
 
-#include <zaf/base/error/base_runtime_error.h>
+#include <zaf/base/error/runtime_error_base.h>
 
 namespace zaf {
 
 /**
 Represents an error indicating that the operation is unable to be performed.
 */
-class InvalidOperationError : public BaseRuntimeError {
+class InvalidOperationError : public RuntimeErrorBase {
 public:
-    using BaseRuntimeError::BaseRuntimeError;
+    using RuntimeErrorBase::RuntimeErrorBase;
 };
 
 }

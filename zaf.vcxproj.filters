@@ -1606,7 +1606,7 @@
     <ClInclude Include="src\zaf\base\error\error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\error\base_system_error.h">
+    <ClInclude Include="src\zaf\base\error\system_error_base.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\source_location.h">
@@ -2452,7 +2452,7 @@
     <ClInclude Include="src\zaf\internal\textual\text_box_ime_manager.h">
       <Filter>zaf\internal\textual</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\error\base_runtime_error.h">
+    <ClInclude Include="src\zaf\base\error\runtime_error_base.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\win32_error.h">
@@ -2479,7 +2479,7 @@
     <ClInclude Include="src\zaf\base\error\invalid_type_error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\error\base_logic_error.h">
+    <ClInclude Include="src\zaf\base\error\logic_error_base.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\unknown_runtime_error.h">

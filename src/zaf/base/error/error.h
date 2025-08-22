@@ -2,7 +2,7 @@
 
 /**
 @file
-Defines class zaf::Error.
+    Defines the `zaf::Error` class.
 */
 
 #include <zaf/base/source_location.h>
@@ -10,17 +10,18 @@ Defines class zaf::Error.
 namespace zaf {
 
 /**
-Base class for all error exceptions in the zaf library, provides more information about the error 
-than standard exceptions, such as the source location where the error occurs.
+`zaf::Error` is a mixin base class for all exceptions in the ZAF library, provides more information 
+about the error than standard exceptions, such as the source location where the error occurs.
 
 @details
-    Error is an extension to standard exceptions. It does not inherit from any standard exception. 
-    Instead, derived classes inherit from both standard exception and Error to remain compatible
-    with standard exception handling and gain the extended ability provided by Error.
+    `zaf::Error` is an extension to standard exceptions. It does not inherit from any standard 
+    exception. Instead, derived classes inherit from both standard exception and `zaf::Error` to 
+    remain compatible with standard exception handling and gain the extended ability provided by
+    `zaf::Error`.
 
-    Some pre-defined exception classes in zaf already inherit from standard exceptions and Error:
-    BaseLogicError, BaseRuntimeError and BaseSystemError. Users can conveniently define new 
-    exception classes by inheriting from these classes.
+    There are several pre-defined exception classes in ZAF already inherit from standard exceptions
+    and `zaf::Error`: `zaf::LogicErrorBase`, `zaf::RuntimeErrorBase` and `zaf::SystemErrorBase`. 
+    Users can conveniently define new exception classes by inheriting from these classes.
 */
 class Error {
 public:
@@ -41,11 +42,11 @@ public:
         The source location where the error occurs.
 
     @note
-        The source location is not mandatory to be provided when creating Error instances and 
-        might be left empty. 
-        
+        The source location is not mandatory to be provided when creating `zaf::Error` instances 
+        and might be left empty.
+
     @note
-        Exceptions thrown by the zaf library are guranteed to have a source location.
+        Exceptions thrown by the ZAF library are guaranteed to have a source location.
     */
     const SourceLocation& Location() const noexcept {
         return location_;

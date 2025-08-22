@@ -2,7 +2,7 @@
 
 /**
 @file 
-    Defines class zaf::BaseSystemError.
+    Defines the `zaf::SystemErrorBase` class.
 */
 
 #include <system_error>
@@ -11,7 +11,7 @@
 namespace zaf {
 
 /**
-A pre-defined base class that inherits from both std::system_error and Error, providing a
+A pre-defined base class that inherits from both `std::system_error` and `zaf::Error`, providing a
 convenient way to define concrete exception classes related to system errors.
 
 @details
@@ -21,11 +21,11 @@ convenient way to define concrete exception classes related to system errors.
     //Gets the user-defined error category.
     const std::error_category& MyErrorCategory();
 
-    class MySystemError : public BaseSystemError {
+    class MySystemError : public zaf::SystemErrorBase {
     public:
         //Constructs an instance with the specified error value in the user-defined error catgory.
         explicit MySystemError(int my_error_value) : 
-            BaseSystemError(my_error_value, MyErrorCategory()) {
+            SystemErrorBase(my_error_value, MyErrorCategory()) {
 
         }
 
@@ -33,15 +33,15 @@ convenient way to define concrete exception classes related to system errors.
     };
     @endcode
 
-    BaseSystemError is designed for inheritance purposes only, and it is not allow to be 
+    `zaf::SystemErrorBase` is designed for inheritance purposes only, and it is not allow to be 
     instantiated directly.
 
 @note
-    BaseSystemError does not inherit from BaseRuntimeError. Users should use std::runtime_error
-    in catch statements to catch exceptions inherit from either BaseRuntimeError or 
-    BaseSystemError. 
+    `zaf::SystemErrorBase` does not inherit from `zaf::RuntimeErrorBase`. Users should use 
+    `std::runtime_error` in catch statements to catch exceptions inherit from either 
+    `zaf::RuntimeErrorBase` or `zaf::SystemErrorBase`. 
 */
-class BaseSystemError : public std::system_error, public Error {
+class SystemErrorBase : public std::system_error, public Error {
 public:
     /**
     Constructs an instance with the specified error value and error category.
@@ -55,7 +55,7 @@ public:
     @throw std::bad_alloc
         Thrown by std::system_error if it fails to copy the message returned by the error category.
     */
-    BaseSystemError(int error_value, const std::error_category& category) : 
+    SystemErrorBase(int error_value, const std::error_category& category) : 
         system_error(error_value, category) {
 
     }
@@ -76,7 +76,7 @@ public:
         Thrown by std::system_error if it fails to copy the error message or the message returned 
         by the error category..
     */
-    BaseSystemError(
+    SystemErrorBase(
         int error_value, 
         const std::error_category& category,
         const std::string& message) 
@@ -100,7 +100,7 @@ public:
     @throw std::bad_alloc
         Thrown by std::system_error if it fails to copy the message returned by the error category.
     */
-    BaseSystemError(
+    SystemErrorBase(
         int error_value,
         const std::error_category& category,
         const SourceLocation& location) 
@@ -130,7 +130,7 @@ public:
         Thrown by std::system_error if it fails to copy the error message or the message returned 
         by the error category.
     */
-    BaseSystemError(
+    SystemErrorBase(
         int error_value,
         const std::error_category& category,
         const std::string& message,
@@ -150,7 +150,7 @@ public:
     @throw std::bad_alloc
         Thrown by std::system_error if it fails to copy the message returned by the error code.
     */
-    explicit BaseSystemError(const std::error_code& error_code) : system_error(error_code) {
+    explicit SystemErrorBase(const std::error_code& error_code) : system_error(error_code) {
 
     }
 
@@ -167,7 +167,7 @@ public:
         Thrown by std::system_error if it fails to copy the error message or the message returned
         by the error code.
     */
-    BaseSystemError(const std::error_code& error_code, const std::string& message) :
+    SystemErrorBase(const std::error_code& error_code, const std::string& message) :
         system_error(error_code, message) {
 
     }
@@ -184,9 +184,9 @@ public:
     @throw std::bad_alloc
         Thrown by std::system_error if it fails to copy the message returned by the error code.
     */
-    BaseSystemError(const std::error_code& error_code, const SourceLocation& site) :
+    SystemErrorBase(const std::error_code& error_code, const SourceLocation& location) :
         system_error(error_code),
-        Error(site) {
+        Error(location) {
 
     }
 
@@ -206,18 +206,18 @@ public:
         Thrown by std::system_error if it fails to copy the error message or the message returned
         by the error code.
     */
-    BaseSystemError(
+    SystemErrorBase(
         const std::error_code& error_code,
         const std::string& message,
-        const SourceLocation& site) 
+        const SourceLocation& location)
         :
         system_error(error_code, message),
-        Error(site) {
+        Error(location) {
 
     }
 
 protected:
-    ~BaseSystemError() = default;
+    ~SystemErrorBase() = default;
 };
 
 }

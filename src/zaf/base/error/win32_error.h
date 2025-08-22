@@ -6,7 +6,7 @@
 */
 
 #include <Windows.h>
-#include <zaf/base/error/base_system_error.h>
+#include <zaf/base/error/system_error_base.h>
 
 namespace zaf {
 
@@ -17,7 +17,7 @@ Represents an error returned by Win32 APIs.
     The Win32 error value referred to by Win32Error is typically the return value of 
     GetLastError().
 */
-class Win32Error : public BaseSystemError {
+class Win32Error : public SystemErrorBase {
 public:
     /**
     Gets the error category of Win32 errors.
@@ -46,9 +46,9 @@ public:
         The Win32 error value.
 
     @throw std::bad_alloc
-        Thrown by BaseSystemError if it fails to copy the error message.
+        Thrown by SystemErrorBase if it fails to copy the error message.
     */
-    explicit Win32Error(DWORD error_value) : BaseSystemError(MakeCode(error_value)) {
+    explicit Win32Error(DWORD error_value) : SystemErrorBase(MakeCode(error_value)) {
 
     }
 
@@ -62,10 +62,10 @@ public:
         The source location where the error occurs.
 
     @throw std::bad_alloc
-        Thrown by BaseSystemError if it fails to copy the error message.
+        Thrown by SystemErrorBase if it fails to copy the error message.
     */
     Win32Error(DWORD error_value, const SourceLocation& location) :
-        BaseSystemError(MakeCode(error_value), location) {
+        SystemErrorBase(MakeCode(error_value), location) {
 
     }
 };

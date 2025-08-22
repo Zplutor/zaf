@@ -5,16 +5,16 @@
     Defines class zaf::InvalidTypeError.
 */
 
-#include <zaf/base/error/base_runtime_error.h>
+#include <zaf/base/error/runtime_error_base.h>
 
 namespace zaf {
 
 /**
 Represents an error related to dynamic type cast failure.
 */
-class InvalidTypeError : public BaseRuntimeError {
+class InvalidTypeError : public RuntimeErrorBase {
 public:
-    using BaseRuntimeError::BaseRuntimeError;
+    using RuntimeErrorBase::RuntimeErrorBase;
 };
 
 }

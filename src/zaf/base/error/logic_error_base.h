@@ -2,7 +2,7 @@
 
 /**
 @file
-    Defines class zaf::BaseLogicError.
+    Defines the `zaf::LogicErrorBase` class.
 */
 
 #include <stdexcept>
@@ -11,29 +11,29 @@
 namespace zaf {
 
 /**
-A pre-defined base class that inherits from both std::logic_error and Error, providing a convenient
-way to define concrete exception classes related to logic errors.
+A pre-defined base class that inherits from both `std::logic_error` and `zaf::Error`, providing a 
+convenient way to define concrete exception classes related to logic errors.
 
 @details
     To define a concrete logic error exception class, users can follow the code shown below:
 
     @code{.cpp}
-    class MyLogicError : public BaseLogicError {
+    class MyLogicError : public zaf::LogicErrorBase {
     public:
-        //Instroduces various constructors from BaseLogicError.
-        using BaseLogicError::BaseLogicError;
+        //Introduces various constructors from zaf::LogicErrorBase.
+        using LogicErrorBase::LogicErrorBase;
     };
     @endcode
 
-    BaseLogicError is designed for inheritance purposes only, and it is not allow to be 
+    `zaf::LogicErrorBase` is designed for inheritance purposes only, and it is not allow to be 
     instantiated directly.
 */
-class BaseLogicError : public std::logic_error, public Error {
+class LogicErrorBase : public std::logic_error, public Error {
 public:
     /**
     Constructs an instance without any error information.
     */
-    BaseLogicError() noexcept : logic_error(nullptr) {
+    LogicErrorBase() noexcept : logic_error(nullptr) {
 
     }
 
@@ -44,9 +44,9 @@ public:
         The error message that describes the error.
 
     @throw std::bad_alloc
-        Thrown by std::logic_error if it fails to copy the message.
+        Thrown by `std::logic_error` if it fails to copy the message.
     */
-    explicit BaseLogicError(const std::string& message) : logic_error(message) {
+    explicit LogicErrorBase(const std::string& message) : logic_error(message) {
 
     }
 
@@ -57,9 +57,9 @@ public:
         The error message that describes the error. Can be null.
 
     @throw std::bad_alloc
-        Thrown by std::logic_error if it fails to copy the message.
+        Thrown by `std::logic_error` if it fails to copy the message.
     */
-    explicit BaseLogicError(const char* message) : logic_error(message) {
+    explicit LogicErrorBase(const char* message) : logic_error(message) {
 
     }
 
@@ -69,7 +69,7 @@ public:
     @param location
         The source location where the error occurs.
     */
-    explicit BaseLogicError(const SourceLocation& location) noexcept : 
+    explicit LogicErrorBase(const SourceLocation& location) noexcept : 
         logic_error(nullptr), 
         Error(location) {
 
@@ -85,9 +85,9 @@ public:
         The source location where the error occurs.
 
     @throw std::bad_alloc
-        Thrown by std::logic_error if it fails to copy the message.
+        Thrown by `std::logic_error` if it fails to copy the message.
     */
-    BaseLogicError(const std::string& message, const SourceLocation& location) :
+    LogicErrorBase(const std::string& message, const SourceLocation& location) :
         logic_error(message), 
         Error(location) {
 
@@ -103,16 +103,16 @@ public:
         The source location where the error occurs.
 
     @throw std::bad_alloc
-        Thrown by std::logic_error if it fails to copy the message.
+        Thrown by `std::logic_error` if it fails to copy the message.
     */
-    BaseLogicError(const char* message, const SourceLocation& location) :
+    LogicErrorBase(const char* message, const SourceLocation& location) :
         logic_error(message),
         Error(location) {
 
     }
 
 protected:
-    ~BaseLogicError() = default;
+    ~LogicErrorBase() = default;
 };
 
 }

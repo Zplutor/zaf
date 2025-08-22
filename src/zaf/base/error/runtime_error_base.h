@@ -2,7 +2,7 @@
 
 /**
 @file
-    Defines class zaf::BaseRuntimeError.
+    Defines the `zaf::RuntimeErrorBase` class.
 */
 
 #include <stdexcept>
@@ -11,29 +11,29 @@
 namespace zaf {
 
 /**
-A pre-defined base class that inherits from both std::runtime_error and Error, providing a 
+A pre-defined base class that inherits from both `std::runtime_error` and `zaf::Error`, providing a 
 convenient way to define concrete exception classes related to runtime errors.
 
 @details
     To define a concrete runtime error exception class, users can follow the code shown below:
 
     @code{.cpp}
-    class MyRuntimeError : public BaseRuntimeError {
+    class MyRuntimeError : public zaf::RuntimeErrorBase {
     public:
-        //Instroduces various constructors from BaseRuntimeError.
-        using BaseRuntimeError::BaseRuntimeError;
+        //Introduces various constructors from RuntimeErrorBase.
+        using RuntimeErrorBase::RuntimeErrorBase;
     };
     @endcode
 
-    BaseRuntimeError is designed for inheritance purposes only, and it is not allow to be
+    `zaf::RuntimeErrorBase` is designed for inheritance purposes only, and it is not allow to be
     instantiated directly.
 */
-class BaseRuntimeError : public std::runtime_error, public Error {
+class RuntimeErrorBase : public std::runtime_error, public Error {
 public:
     /**
     Constructs an instance without any error information.
     */
-    BaseRuntimeError() noexcept : runtime_error(nullptr) {
+    RuntimeErrorBase() noexcept : runtime_error(nullptr) {
 
     }
 
@@ -46,7 +46,7 @@ public:
     @throw std::bad_alloc
         Thrown by std::runtime_error if it fails to copy the message.
     */
-    explicit BaseRuntimeError(const std::string& message) : runtime_error(message) {
+    explicit RuntimeErrorBase(const std::string& message) : runtime_error(message) {
 
     }
 
@@ -59,7 +59,7 @@ public:
     @throw std::bad_alloc
         Thrown by std::runtime_error if it fails to copy the message.
     */
-    explicit BaseRuntimeError(const char* message) : runtime_error(message) {
+    explicit RuntimeErrorBase(const char* message) : runtime_error(message) {
 
     }
 
@@ -69,7 +69,7 @@ public:
     @param location
         The source location where the error occurs.
     */
-    explicit BaseRuntimeError(const SourceLocation& location) noexcept : 
+    explicit RuntimeErrorBase(const SourceLocation& location) noexcept : 
         runtime_error(nullptr), 
         Error(location) {
 
@@ -87,7 +87,7 @@ public:
     @throw std::bad_alloc
         Thrown by std::runtime_error if it fails to copy the message.
     */
-    BaseRuntimeError(const std::string& message, const SourceLocation& location) :
+    RuntimeErrorBase(const std::string& message, const SourceLocation& location) :
         runtime_error(message),
         Error(location) {
 
@@ -105,14 +105,14 @@ public:
     @throw std::bad_alloc
         Thrown by std::runtime_error if it fails to copy the message.
     */
-    BaseRuntimeError(const char* message, const SourceLocation& location) :
+    RuntimeErrorBase(const char* message, const SourceLocation& location) :
         runtime_error(message),
         Error(location) {
 
     }
 
 protected:
-    ~BaseRuntimeError() = default;
+    ~RuntimeErrorBase() = default;
 };
 
 }

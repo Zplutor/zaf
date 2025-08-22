@@ -5,16 +5,16 @@
     Defines class zaf::InvalidDataError.
 */
 
-#include <zaf/base/error/base_runtime_error.h>
+#include <zaf/base/error/runtime_error_base.h>
 
 namespace zaf {
 
 /**
 Represents an error caused by invalid data.
 */
-class InvalidDataError : public BaseRuntimeError {
+class InvalidDataError : public RuntimeErrorBase {
 public:
-    using BaseRuntimeError::BaseRuntimeError;
+    using RuntimeErrorBase::RuntimeErrorBase;
 };
 
 }

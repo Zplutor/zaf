@@ -5,13 +5,13 @@
     Defines the class zaf::XMLError.
 */
 
-#include <zaf/base/error/base_runtime_error.h>
+#include <zaf/base/error/runtime_error_base.h>
 
 namespace zaf {
 
-class XMLError : public BaseRuntimeError {
+class XMLError : public RuntimeErrorBase {
 public:
-    using BaseRuntimeError::BaseRuntimeError;
+    using RuntimeErrorBase::RuntimeErrorBase;
 };
 
 }

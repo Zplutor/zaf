@@ -6,14 +6,14 @@
 */
 
 #include <Windows.h>
-#include <zaf/base/error/base_system_error.h>
+#include <zaf/base/error/system_error_base.h>
 
 namespace zaf {
 
 /**
 Represents an error returned by COM interfaces.
 */
-class COMError : public BaseSystemError {
+class COMError : public SystemErrorBase {
 public:
     /**
     Gets the error category of COM errors.
@@ -42,9 +42,9 @@ public:
         The HRESULT value.
 
     @throw std::bad_alloc
-        Thrown by BaseSystemError if it fails to copy the error message.
+        Thrown by SystemErrorBase if it fails to copy the error message.
     */
-    explicit COMError(HRESULT hresult) : BaseSystemError(MakeCode(hresult)) {
+    explicit COMError(HRESULT hresult) : SystemErrorBase(MakeCode(hresult)) {
 
     }
 
@@ -58,10 +58,10 @@ public:
         The source location where the error occurs.
 
     @throw std::bad_alloc
-        Thrown by BaseSystemError if it fails to copy the error message.
+        Thrown by SystemErrorBase if it fails to copy the error message.
     */
     COMError(HRESULT hresult, const SourceLocation& location) : 
-        BaseSystemError(MakeCode(hresult), location) {
+        SystemErrorBase(MakeCode(hresult), location) {
 
     }
 };

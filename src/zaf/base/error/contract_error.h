@@ -5,16 +5,16 @@
 Defines classes, functions and macros related to contract programming.
 */
 
-#include <zaf/base/error/base_logic_error.h>
+#include <zaf/base/error/logic_error_base.h>
 
 namespace zaf {
 
 /**
 Base class for errors related to contract programming violations.
 */
-class ContractError : public BaseLogicError {
+class ContractError : public LogicErrorBase {
 public:
-    using BaseLogicError::BaseLogicError;
+    using LogicErrorBase::LogicErrorBase;
 };
 
 
