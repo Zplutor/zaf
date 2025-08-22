@@ -6,7 +6,7 @@ namespace {
 class NTErrorCategory : public std::error_category {
 public:
     const char* name() const noexcept override {
-        return "zaf.NT";
+        return "ZAF.NT";
     }
 
     std::string message(int condition) const override {

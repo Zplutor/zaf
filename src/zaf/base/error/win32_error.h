@@ -2,7 +2,7 @@
 
 /**
 @file
-    Defines class zaf::Win32Error.
+    Defines the `zaf::Win32Error` class.
 */
 
 #include <Windows.h>
@@ -14,8 +14,7 @@ namespace zaf {
 Represents an error returned by Win32 APIs.
 
 @details
-    The Win32 error value referred to by Win32Error is typically the return value of 
-    GetLastError().
+    The error value of a `zaf::Win32Error` is typically the return value of GetLastError().
 */
 class Win32Error : public SystemErrorBase {
 public:
@@ -23,7 +22,7 @@ public:
     Gets the error category of Win32 errors.
 
     @return
-        The error category whose name is `zaf.Win32`.
+        The error category whose name is `ZAF.Win32`.
     */
     static const std::error_category& Category();
 
@@ -46,7 +45,7 @@ public:
         The Win32 error value.
 
     @throw std::bad_alloc
-        Thrown by SystemErrorBase if it fails to copy the error message.
+        Thrown by `zaf::SystemErrorBase` if it fails to copy the error message.
     */
     explicit Win32Error(DWORD error_value) : SystemErrorBase(MakeCode(error_value)) {
 
@@ -62,7 +61,7 @@ public:
         The source location where the error occurs.
 
     @throw std::bad_alloc
-        Thrown by SystemErrorBase if it fails to copy the error message.
+        Thrown by `zaf::SystemErrorBase` if it fails to copy the error message.
     */
     Win32Error(DWORD error_value, const SourceLocation& location) :
         SystemErrorBase(MakeCode(error_value), location) {
@@ -72,13 +71,13 @@ public:
 
 
 /**
-Throws a zaf::Win32Error with the specified Win32 error value and the source location where this 
+Throws a `zaf::Win32Error` with the specified Win32 error value and the source location where this 
 macro is invoked.
 */
 #define ZAF_THROW_WIN32_ERROR(value) throw zaf::Win32Error{ value, ZAF_SOURCE_LOCATION() }
 
 /**
-Checks if the specified Win32 error value is failed and if it is, throws a zaf::SystemError with 
+Checks if the specified Win32 error value is failed and if it is, throws a `zaf::Win32Error` with 
 the error value and the source location where this macro is invoked.
 */
 #define ZAF_THROW_IF_WIN32_ERROR(value) if (value) { ZAF_THROW_WIN32_ERROR(value); }

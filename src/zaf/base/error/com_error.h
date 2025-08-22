@@ -2,7 +2,7 @@
 
 /**
 @file
-    Defines class zaf::COMError.
+    Defines the `zaf::COMError` class.
 */
 
 #include <Windows.h>
@@ -19,7 +19,7 @@ public:
     Gets the error category of COM errors.
 
     @return
-        The error category whose name is `zaf.COM`.
+        The error category whose name is `ZAF.COM`.
     */
     static const std::error_category& Category();
 
@@ -42,7 +42,7 @@ public:
         The HRESULT value.
 
     @throw std::bad_alloc
-        Thrown by SystemErrorBase if it fails to copy the error message.
+        Thrown by `zaf::SystemErrorBase` if it fails to copy the error message.
     */
     explicit COMError(HRESULT hresult) : SystemErrorBase(MakeCode(hresult)) {
 
@@ -58,7 +58,7 @@ public:
         The source location where the error occurs.
 
     @throw std::bad_alloc
-        Thrown by SystemErrorBase if it fails to copy the error message.
+        Thrown by `zaf::SystemErrorBase` if it fails to copy the error message.
     */
     COMError(HRESULT hresult, const SourceLocation& location) : 
         SystemErrorBase(MakeCode(hresult), location) {
@@ -68,13 +68,13 @@ public:
 
 
 /**
-Throws a zaf::COMError with the specified HRESULT value and the source location where this macro
+Throws a `zaf::COMError` with the specified HRESULT value and the source location where this macro
 is invoked.
 */
 #define ZAF_THROW_COM_ERROR(hresult) throw zaf::COMError{ hresult, ZAF_SOURCE_LOCATION() }
 
 /**
-Checks if the specified HRESULT value is failed and if it is, throws a zaf::COMError with the 
+Checks if the specified HRESULT value is failed and if it is, throws a `zaf::COMError` with the 
 HRESULT value and the source location where this macro is invoked. 
 */
 #define ZAF_THROW_IF_COM_ERROR(hresult) if (FAILED(hresult)) { ZAF_THROW_COM_ERROR(hresult); }

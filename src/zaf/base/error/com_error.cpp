@@ -6,7 +6,7 @@ namespace {
 class ComErrorCategory : public std::error_category {
 public:
     const char* name() const noexcept override {
-        return "zaf.COM";
+        return "ZAF.COM";
     }
 
     std::string message(int condition) const override {

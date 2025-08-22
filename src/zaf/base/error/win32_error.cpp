@@ -6,7 +6,7 @@ namespace {
 class Win32ErrorCategory: public std::error_category {
 public:
     const char* name() const noexcept override {
-        return "zaf.Win32";
+        return "ZAF.Win32";
     }
 
     std::string message(int condition) const override {

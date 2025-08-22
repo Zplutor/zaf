@@ -2,7 +2,7 @@
 
 /**
 @file
-    Defines class zaf::NTError.
+    Defines the `zaf::NTError` class.
 */
 
 #include <zaf/base/error/system_error_base.h>
@@ -18,7 +18,7 @@ public:
     Gets the error category of NTSTATUS errors.
 
     @return
-        The error category whose name is `zaf.NT`.
+        The error category whose name is `ZAF.NT`.
     */
     static const std::error_category& Category();
 
@@ -41,7 +41,7 @@ public:
         The NTSTATUS value.
 
     @throw std::bad_alloc
-        Thrown by SystemErrorBase if it fails to copy the error message.
+        Thrown by `zaf::SystemErrorBase` if it fails to copy the error message.
     */
     explicit NTError(NTSTATUS error_value) : SystemErrorBase(MakeCode(error_value)) {
 
@@ -57,7 +57,7 @@ public:
         The source location where the error occurs.
 
     @throw std::bad_alloc
-        Thrown by SystemErrorBase if it fails to copy the error message.
+        Thrown by `zaf::SystemErrorBase` if it fails to copy the error message.
     */
     NTError(NTSTATUS error_value, const SourceLocation& location) :
         SystemErrorBase(MakeCode(error_value), location) {
