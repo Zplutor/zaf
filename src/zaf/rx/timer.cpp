@@ -1,8 +1,8 @@
 #include <zaf/rx/timer.h>
 #include <zaf/base/error/contract_error.h>
+#include <zaf/rx/internal/insider/single_insider.h>
 #include <zaf/rx/internal/observable_factory.h>
 #include <zaf/rx/internal/observable/timer_observable.h>
-#include <zaf/rx/internal/single_factory.h>
 
 namespace zaf::rx {
 
@@ -17,7 +17,7 @@ Single<std::size_t> Timer::Once(
         std::nullopt,
         std::move(scheduler));
 
-    return internal::SingleFactory<std::size_t>::CreateSingle(std::move(core));
+    return internal::SingleInsider::Create<std::size_t>(std::move(core));
 }
 
 

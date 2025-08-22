@@ -905,6 +905,7 @@
     <ClInclude Include="src\zaf\rx\disposable.h" />
     <ClInclude Include="src\zaf\rx\internal\insider\insider.h" />
     <ClInclude Include="src\zaf\rx\internal\insider\observer_insider.h" />
+    <ClInclude Include="src\zaf\rx\internal\insider\single_insider.h" />
     <ClInclude Include="src\zaf\rx\internal\insider\single_observer_insider.h" />
     <ClInclude Include="src\zaf\rx\internal\observer_shim.h" />
     <ClInclude Include="src\zaf\rx\internal\thread\thread_work_item_base.h" />
@@ -945,7 +946,6 @@
     <ClInclude Include="src\zaf\rx\internal\operator\subscribe_on_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\producer.h" />
     <ClInclude Include="src\zaf\rx\internal\rx_runtime.h" />
-    <ClInclude Include="src\zaf\rx\internal\single_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\multicast_observer.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\replay_subject_core.h" />
     <ClInclude Include="src\zaf\rx\internal\subject\subject_core.h" />

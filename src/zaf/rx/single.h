@@ -8,8 +8,7 @@
 #include <zaf/rx/single_subscriber.h>
 
 namespace zaf::rx::internal {
-template<typename T>
-class SingleFactory;
+class SingleInsider;
 }
 
 namespace zaf::rx {
@@ -58,7 +57,7 @@ public:
 
 private:
     friend Base;
-    friend class internal::SingleFactory<T>;
+    friend class internal::SingleInsider;
 
     template<
         template<typename> typename OBSERVABLE, 

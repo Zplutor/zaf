@@ -8,6 +8,11 @@ namespace zaf::rx::internal {
 class SingleObserverInsider {
 public:
     template<typename T>
+    static SingleObserver<T> Create(std::shared_ptr<ObserverCore> core) noexcept {
+        return SingleObserver<T>{ std::move(core) };
+    }
+
+    template<typename T>
     static const std::shared_ptr<ObserverCore>& GetCore(const SingleObserver<T>& observer) {
         return observer.Core();
     }

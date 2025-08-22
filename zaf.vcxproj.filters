@@ -3013,9 +3013,6 @@
     <ClInclude Include="src\zaf\rx\single_observer.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\rx\internal\single_factory.h">
-      <Filter>zaf\rx\internal</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\rx\observable_base.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
@@ -3101,6 +3098,9 @@
       <Filter>zaf\rx\internal\insider</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\insider\single_observer_insider.h">
+      <Filter>zaf\rx\internal\insider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\insider\single_insider.h">
       <Filter>zaf\rx\internal\insider</Filter>
     </ClInclude>
   </ItemGroup>

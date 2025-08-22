@@ -4,8 +4,6 @@
 #include <zaf/rx/observer_functions.h>
 
 namespace zaf::rx::internal {
-template<typename T>
-class SingleFactory;
 class SingleObserverInsider;
 }
 
@@ -72,7 +70,6 @@ protected:
     }
 
 private:
-    friend class internal::SingleFactory<T>;
     friend class internal::SingleObserverInsider;
 
 private:
