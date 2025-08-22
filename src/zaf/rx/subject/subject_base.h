@@ -1,7 +1,8 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/rx/internal/observable_factory.h>
+#include <zaf/rx/internal/insider/observable_insider.h>
+#include <zaf/rx/internal/insider/observer_insider.h>
 #include <zaf/rx/internal/subject/subject_core_indirect.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/observer.h>
@@ -20,11 +21,11 @@ public:
     SubjectBase& operator=(SubjectBase&&) = default;
 
     Observable<T> AsObservable() const noexcept {
-        return internal::ObservableFactory<T>::CreateObservable(internal::AsObservableCore(core_));
+        return internal::ObservableInsider::Create<T>(internal::AsObservableCore(core_));
     }
 
     Observer<T> AsObserver() const noexcept {
-        return internal::ObservableFactory<T>::CreateObserver(internal::AsObserverCore(core_));
+        return internal::ObserverInsider::Create<T>(internal::AsObserverCore(core_));
     }
 
     const std::shared_ptr<internal::SubjectCore>& Core() const noexcept {

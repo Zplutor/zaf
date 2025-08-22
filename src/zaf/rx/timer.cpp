@@ -1,7 +1,7 @@
 #include <zaf/rx/timer.h>
 #include <zaf/base/error/contract_error.h>
+#include <zaf/rx/internal/insider/observable_insider.h>
 #include <zaf/rx/internal/insider/single_insider.h>
-#include <zaf/rx/internal/observable_factory.h>
 #include <zaf/rx/internal/observable/timer_observable.h>
 
 namespace zaf::rx {
@@ -32,7 +32,7 @@ Observable<std::size_t> Timer::Interval(
         interval,
         std::move(scheduler));
 
-    return internal::ObservableFactory<std::size_t>::CreateObservable(std::move(core));
+    return internal::ObservableInsider::Create<std::size_t>(std::move(core));
 }
 
 
@@ -48,7 +48,7 @@ Observable<std::size_t> Timer::DelayInterval(
         interval,
         std::move(scheduler));
 
-    return internal::ObservableFactory<std::size_t>::CreateObservable(std::move(core));
+    return internal::ObservableInsider::Create<std::size_t>(std::move(core));
 }
 
 }

@@ -69,7 +69,7 @@ public:
 public:
     [[nodiscard]]
     std::shared_ptr<Disposable> Subscribe(const OBSERVER<T>& observer) {
-        auto observer_core = internal::InsiderT<OBSERVER>::GetCore(observer);
+        auto observer_core = internal::InsiderT<OBSERVER<T>>::GetCore(observer);
         return core_->Subscribe(internal::ObserverShim::FromShared(std::move(observer_core)));
     }
 
@@ -87,7 +87,7 @@ public:
     }
 
     OBSERVABLE<T> Do(const OBSERVER<T>& observer) {
-        auto observer_core = internal::InsiderT<OBSERVER>::GetCore(observer);
+        auto observer_core = internal::InsiderT<OBSERVER<T>>::GetCore(observer);
         return OBSERVABLE<T>{ core_->Do(std::move(observer_core)) };
     }
 
@@ -164,14 +164,14 @@ public:
         return OBSERVABLE<K>{ std::move(new_core) };
     }
 
-    const std::shared_ptr<internal::ObservableCore>& Core() const noexcept {
-        return core_;
-    }
-
 protected:
     explicit ObservableBase(std::shared_ptr<internal::ObservableCore> core) noexcept :
         core_(std::move(core)) {
 
+    }
+
+    const std::shared_ptr<internal::ObservableCore>& Core() const noexcept {
+        return core_;
     }
 
 private:

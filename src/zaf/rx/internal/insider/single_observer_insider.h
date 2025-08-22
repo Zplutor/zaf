@@ -13,13 +13,15 @@ public:
     }
 
     template<typename T>
-    static const std::shared_ptr<ObserverCore>& GetCore(const SingleObserver<T>& observer) {
+    static const std::shared_ptr<ObserverCore>& GetCore(
+        const SingleObserver<T>& observer) noexcept {
+
         return observer.Core();
     }
 };
 
-template<>
-class Insider<SingleObserver> {
+template<typename T>
+class Insider<SingleObserver<T>> {
 public:
     using Type = SingleObserverInsider;
 };

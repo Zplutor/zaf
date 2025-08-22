@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/base/as.h>
 #include <zaf/rx/disposable.h>
+#include <zaf/rx/internal/insider/observable_insider.h>
 #include <zaf/rx/internal/operator/ref_count_operator.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject/subject.h>
@@ -11,8 +12,8 @@ TEST(RxRefCountTest, Publish) {
 
     auto connectable_observable = subject.AsObservable().Publish();
     auto ref_count_observable = connectable_observable.RefCount();
-    auto ref_count_operator = 
-        zaf::As<zaf::rx::internal::RefCountOperator>(ref_count_observable.Core());
+    auto ref_count_core = zaf::rx::internal::ObservableInsider::GetCore(ref_count_observable);
+    auto ref_count_operator = zaf::As<zaf::rx::internal::RefCountOperator>(ref_count_core);
 
     // The connectable observable will be connected when the first subscription is made.
     std::vector<int> values;
@@ -49,8 +50,8 @@ In this test case, the underlying observable is terminated immediately after it 
 TEST(RxRefCountTest, TerminateOnConnect) {
 
     auto observable = zaf::rx::Observable<int>::Just(12).Publish().RefCount();
-    auto ref_count_operator =
-        zaf::As<zaf::rx::internal::RefCountOperator>(observable.Core());
+    auto observable_core = zaf::rx::internal::ObservableInsider::GetCore(observable);
+    auto ref_count_operator = zaf::As<zaf::rx::internal::RefCountOperator>(observable_core);
 
     // The first subscription.
     {
@@ -103,8 +104,8 @@ TEST(RxRefCountTest, TerminateOnSubscribe) {
     zaf::rx::Subject<int> subject;
 
     auto observable = subject.AsObservable().Replay().RefCount();
-    auto ref_count_operator =
-        zaf::As<zaf::rx::internal::RefCountOperator>(observable.Core());
+    auto observable_core = zaf::rx::internal::ObservableInsider::GetCore(observable);
+    auto ref_count_operator = zaf::As<zaf::rx::internal::RefCountOperator>(observable_core);
 
     std::vector<int> values;
     auto sub1 = observable.Subscribe([&values](int value) {

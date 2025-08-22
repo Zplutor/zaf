@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <ranges>
+#include <zaf/rx/internal/insider/insider.h>
 #include <zaf/rx/internal/insider/observer_insider.h>
 #include <zaf/rx/internal/observable/concat_observable.h>
 #include <zaf/rx/internal/observable/connectable_observable_core.h>
@@ -13,8 +14,7 @@
 #include <zaf/rx/subscriber.h>
 
 namespace zaf::rx::internal {
-template<typename T>
-class ObservableFactory;
+class ObservableInsider;
 }
 
 namespace zaf::rx {
@@ -39,12 +39,14 @@ public:
 
     template<std::ranges::range RANGE>
     static Observable<T> Concat(RANGE&& range) {
+        using RangeValueType = std::ranges::range_value_t<RANGE>;
         rx::internal::ObservableCoreList observable_cores;
         for (const auto& each_observable : range) {
-            observable_cores.push_back(each_observable.Core());
+            auto core = internal::InsiderT<RangeValueType>::GetCore(each_observable);
+            observable_cores.push_back(std::move(core));
         }
         auto core = std::make_shared<rx::internal::ConcatObservable>(std::move(observable_cores));
-        return rx::internal::ObservableFactory<T>::CreateObservable(std::move(core));
+        return Observable<T>{ std::move(core) };
     }
 
     template<typename T>
@@ -115,7 +117,7 @@ protected:
 private:
     friend Base;
     friend class ConnectableObservable<T>;
-    friend class rx::internal::ObservableFactory<T>;
+    friend class rx::internal::ObservableInsider;
 
     template<
         template<typename> typename OBSERVABLE,

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/rx/internal/observable_factory.h>
+#include <zaf/rx/internal/insider/observable_insider.h>
 #include <zaf/rx/internal/insider/single_observer_insider.h>
 #include <zaf/rx/observable_base.h>
 #include <zaf/rx/observable.h>
@@ -52,7 +52,7 @@ public:
         specialized type of `Observable<>`.
     */
     operator Observable<T>() const noexcept {
-        return internal::ObservableFactory<T>::CreateObservable(this->Core());
+        return internal::ObservableInsider::Create<T>(this->Core());
     }
 
 private:

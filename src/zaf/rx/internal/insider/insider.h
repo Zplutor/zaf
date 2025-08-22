@@ -2,10 +2,10 @@
 
 namespace zaf::rx::internal {
 
-template<template<typename> typename T>
+template<typename T>
 class Insider;
 
-template<template<typename> typename T>
+template<typename T>
 using InsiderT = typename Insider<T>::Type;
 
 }

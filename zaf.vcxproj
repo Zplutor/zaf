@@ -904,6 +904,7 @@
     <ClInclude Include="src\zaf\resource\uri_loader.h" />
     <ClInclude Include="src\zaf\rx\disposable.h" />
     <ClInclude Include="src\zaf\rx\internal\insider\insider.h" />
+    <ClInclude Include="src\zaf\rx\internal\insider\observable_insider.h" />
     <ClInclude Include="src\zaf\rx\internal\insider\observer_insider.h" />
     <ClInclude Include="src\zaf\rx\internal\insider\single_insider.h" />
     <ClInclude Include="src\zaf\rx\internal\insider\single_observer_insider.h" />
@@ -922,7 +923,6 @@
     <ClInclude Include="src\zaf\rx\subscriber_base.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\connectable_observable_core.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\custom_observable.h" />
-    <ClInclude Include="src\zaf\rx\internal\observable_factory.h" />
     <ClInclude Include="src\zaf\rx\internal\observer_core.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\concat_observable.h" />
     <ClInclude Include="src\zaf\rx\internal\observable\empty_observable.h" />

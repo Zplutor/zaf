@@ -4,8 +4,6 @@
 #include <zaf/rx/internal/observer_core.h>
 
 namespace zaf::rx::internal {
-template<typename T>
-class ObservableFactory;
 class ObserverInsider;
 }
 
@@ -76,7 +74,6 @@ protected:
     }
 
 private:
-    friend class rx::internal::ObservableFactory<T>;
     friend class rx::internal::ObserverInsider;
 
 private:
