@@ -1,6 +1,19 @@
 #include <gtest/gtest.h>
 #include <zaf/rx/scheduler/immediate_scheduler.h>
 
+TEST(ImmediateSchedulerTest, ScheduleWork) {
+
+    auto scheduler = zaf::rx::ImmediateScheduler::Instance();
+    bool executed = false;
+    auto disposable = scheduler->ScheduleWork([&]() {
+        executed = true;
+    });
+    ASSERT_NE(disposable, nullptr);
+    ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_TRUE(executed);
+}
+
+
 TEST(ImmediateSchedulerTest, ScheduleWork_Serial) {
 
     auto scheduler = zaf::rx::ImmediateScheduler::Instance();
@@ -60,7 +73,8 @@ TEST(ImmediateSchedulerTest, ScheduleDelayedWork) {
             end = std::chrono::steady_clock::now();
         });
 
-    ASSERT_EQ(disposable, nullptr);
+    ASSERT_NE(disposable, nullptr);
+    ASSERT_TRUE(disposable->IsDisposed());
     ASSERT_TRUE(end.has_value());
 
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(*end - begin).count();

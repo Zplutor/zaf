@@ -8,23 +8,64 @@ namespace {
 
 class TrampolineSchedulerCore {
 public:
-    class WorkItem {
+    class WorkItem : public Disposable {
     public:
-        Closure work;
-        std::optional<std::chrono::steady_clock::time_point> execute_time_point;
+        WorkItem(
+            Closure work, 
+            std::optional<std::chrono::steady_clock::time_point> execute_time_point) noexcept 
+            :
+            work_(std::move(work)),
+            execute_time_point_(execute_time_point) {
+        }
+
+        bool IsDisposed() const noexcept override {
+            return is_disposed.load();
+        }
+
+        Closure TakeWorkIfNotDisposed() noexcept {
+            if (is_disposed.exchange(true)) {
+                return nullptr;
+            }
+            return std::move(work_);
+        }
+
+        const std::optional<std::chrono::steady_clock::time_point>& 
+            ExecuteTimePoint() const noexcept {
+            return execute_time_point_;
+        }
+
+    protected:
+        bool EnsureDisposed() noexcept override {
+            
+            if (is_disposed.exchange(true)) {
+                return false;
+            }
+
+            work_ = nullptr;
+            return true;
+        }
+
+    private:
+        std::atomic<bool> is_disposed{};
+        Closure work_;
+        std::optional<std::chrono::steady_clock::time_point> execute_time_point_;
     };
 
 public:
-    void ScheduleWorkItem(WorkItem work_item) {
+    std::shared_ptr<Disposable> ScheduleWorkItem(
+        Closure work,
+        std::optional<std::chrono::steady_clock::time_point> execute_time_point) {
 
         if (is_executing_work_) {
-            work_queue_.push_back(std::move(work_item));
-            return;
+            auto work_item = std::make_shared<WorkItem>(std::move(work), execute_time_point);
+            work_queue_.push_back(work_item);
+            return work_item;
         }
 
         auto auto_reset = zaf::MakeAutoReset(is_executing_work_, true);
-        ExecuteWorkItem(work_item);
+        ExecuteWorkItem(work, execute_time_point);
         DrainWorkQueue();
+        return Disposable::Empty();
     }
 
     void DrainWorkQueue() {
@@ -34,24 +75,32 @@ public:
             auto first_item = std::move(work_queue_.front());
             work_queue_.pop_front();
 
-            ExecuteWorkItem(first_item);
+            auto work = first_item->TakeWorkIfNotDisposed();
+            if (work) {
+                ExecuteWorkItem(work, first_item->ExecuteTimePoint());
+            }
         }
     }
 
-    void ExecuteWorkItem(const WorkItem& work_item) {
+    void ExecuteWorkItem(
+        const Closure& work,
+        const std::optional<std::chrono::steady_clock::time_point>& execute_time_point) {
 
-        if (work_item.execute_time_point) {
+        if (execute_time_point) {
+
             auto now = std::chrono::steady_clock::now();
-            if (now < *work_item.execute_time_point) {
-                auto wait_duration = *work_item.execute_time_point - now;
+            if (now < *execute_time_point) {
+
+                auto wait_duration = *execute_time_point - now;
                 std::this_thread::sleep_for(wait_duration);
             }
         }
-        work_item.work();
+
+        work();
     }
 
 private:
-    std::deque<WorkItem> work_queue_;
+    std::deque<std::shared_ptr<WorkItem>> work_queue_;
     bool is_executing_work_{};
 };
 
@@ -66,11 +115,8 @@ const std::shared_ptr<TrampolineScheduler>& TrampolineScheduler::Instance() {
 }
 
 
-void TrampolineScheduler::ScheduleWork(Closure work) {
-
-    trampoline_scheduler_core.ScheduleWorkItem({
-        .work = std::move(work),
-    });
+std::shared_ptr<Disposable> TrampolineScheduler::ScheduleWork(Closure work) {
+    return trampoline_scheduler_core.ScheduleWorkItem(std::move(work), std::nullopt);
 }
 
 
@@ -78,11 +124,9 @@ std::shared_ptr<Disposable> TrampolineScheduler::ScheduleDelayedWork(
     std::chrono::steady_clock::duration delay, 
     Closure work) {
 
-    trampoline_scheduler_core.ScheduleWorkItem({
-        .work = std::move(work),
-        .execute_time_point = std::chrono::steady_clock::now() + delay,
-    });
-    return nullptr;
+    return trampoline_scheduler_core.ScheduleWorkItem(
+        std::move(work),
+        std::chrono::steady_clock::now() + delay);
 }
 
 }

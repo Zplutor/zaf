@@ -1,4 +1,5 @@
 #include <zaf/rx/scheduler/immediate_scheduler.h>
+#include <zaf/rx/disposable.h>
 
 namespace zaf::rx {
 
@@ -8,8 +9,9 @@ const std::shared_ptr<ImmediateScheduler>& ImmediateScheduler::Instance() {
 }
 
 
-void ImmediateScheduler::ScheduleWork(Closure work) {
+std::shared_ptr<Disposable> ImmediateScheduler::ScheduleWork(Closure work) {
     work();
+    return Disposable::Empty();
 }
 
 
@@ -19,7 +21,7 @@ std::shared_ptr<Disposable> ImmediateScheduler::ScheduleDelayedWork(
 
     std::this_thread::sleep_for(delay);
     work();
-    return nullptr;
+    return Disposable::Empty();
 }
 
 }

@@ -12,7 +12,7 @@ public:
     Scheduler() = default;
     virtual ~Scheduler() = default;
 
-    virtual void ScheduleWork(Closure work) = 0;
+    virtual std::shared_ptr<Disposable> ScheduleWork(Closure work) = 0;
 
     virtual std::shared_ptr<Disposable> ScheduleDelayedWork(
         std::chrono::steady_clock::duration delay, 

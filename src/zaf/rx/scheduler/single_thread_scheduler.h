@@ -10,7 +10,7 @@ public:
     SingleThreadScheduler();
     explicit SingleThreadScheduler(std::shared_ptr<RunLoopThread> thread);
 
-    void ScheduleWork(Closure work) override;
+    std::shared_ptr<Disposable> ScheduleWork(Closure work) override;
 
     std::shared_ptr<Disposable> ScheduleDelayedWork(
         std::chrono::steady_clock::duration delay, 

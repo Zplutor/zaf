@@ -74,6 +74,56 @@ TEST(TrampolineSchedulerTest, DifferentThread) {
 }
 
 
+TEST(TrampolineSchedulerTest, SchedulerWork_Disposable) {
+
+    auto scheduler = zaf::rx::TrampolineScheduler::Instance();
+
+    std::shared_ptr<zaf::rx::Disposable> inner_disposable;
+    auto disposable = scheduler->ScheduleWork([&]() {
+
+        inner_disposable = scheduler->ScheduleWork([]() {
+            // Do nothing.
+        });
+        ASSERT_NE(inner_disposable, nullptr);
+        // Recursive work is not executed immediately, so it is not disposed.
+        ASSERT_FALSE(inner_disposable->IsDisposed());
+    });
+    ASSERT_NE(disposable, nullptr);
+    ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_NE(inner_disposable, nullptr);
+    // The inner work has been executed, so it is disposed.
+    ASSERT_TRUE(inner_disposable->IsDisposed());
+}
+
+
+TEST(TrampolineSchedulerTest, SchedulerWork_CancelWork) {
+
+    auto scheduler = zaf::rx::TrampolineScheduler::Instance();
+
+    std::shared_ptr<zaf::rx::Disposable> inner_disposable;
+    bool executed{};
+    auto disposable = scheduler->ScheduleWork([&]() {
+
+        inner_disposable = scheduler->ScheduleWork([&]() {
+            executed = true;
+        });
+
+        ASSERT_NE(inner_disposable, nullptr);
+        ASSERT_FALSE(inner_disposable->IsDisposed());
+        // Dispose the inner work before it is executed.
+        inner_disposable->Dispose();
+        ASSERT_TRUE(inner_disposable->IsDisposed());
+    });
+
+    ASSERT_NE(disposable, nullptr);
+    ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_NE(inner_disposable, nullptr);
+    // The inner work has been disposed before execution, so it is disposed.
+    ASSERT_TRUE(inner_disposable->IsDisposed());
+    ASSERT_FALSE(executed);
+}
+
+
 TEST(TrampolineSchedulerTest, ScheduleWork_Serial) {
 
     auto scheduler = zaf::rx::TrampolineScheduler::Instance();
@@ -101,7 +151,7 @@ TEST(TrampolineSchedulerTest, ScheduleWork_Recursive) {
     auto scheduler = zaf::rx::TrampolineScheduler::Instance();
     std::vector<int> values;
 
-    scheduler->ScheduleWork([&]() {
+    auto disposable1 = scheduler->ScheduleWork([&]() {
         values.push_back(1);
 
         scheduler->ScheduleWork([&]() {
@@ -133,7 +183,8 @@ TEST(TrampolineSchedulerTest, ScheduleDelayedWork) {
             end = std::chrono::steady_clock::now();
         });
 
-    ASSERT_EQ(disposable, nullptr);
+    ASSERT_NE(disposable, nullptr);
+    ASSERT_TRUE(disposable->IsDisposed());
     ASSERT_TRUE(end.has_value());
     
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(*end - begin).count();

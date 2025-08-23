@@ -15,8 +15,8 @@ SingleThreadScheduler::SingleThreadScheduler(std::shared_ptr<RunLoopThread> thre
 }
 
 
-void SingleThreadScheduler::ScheduleWork(Closure work) {
-    thread_->PostWork(std::move(work));
+std::shared_ptr<Disposable> SingleThreadScheduler::ScheduleWork(Closure work) {
+    return thread_->PostWork(std::move(work));
 }
 
 

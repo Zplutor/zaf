@@ -6,7 +6,7 @@ using namespace zaf;
 
 TEST(Win32ErrorTest, Category) {
 
-    ASSERT_STREQ(Win32Error::Category().name(), "zaf.Win32");
+    ASSERT_STREQ(Win32Error::Category().name(), "ZAF.Win32");
 }
 
 
