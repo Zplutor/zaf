@@ -2,31 +2,21 @@
 #include <deque>
 #include <optional>
 #include <zaf/base/auto_reset.h>
+#include <zaf/rx/internal/thread/thread_work_item_base.h>
 
 namespace zaf::rx {
 namespace {
 
 class TrampolineSchedulerCore {
 public:
-    class WorkItem : public Disposable {
+    class QueuedWorkItem : public internal::ThreadWorkItemBase {
     public:
-        WorkItem(
+        QueuedWorkItem(
             Closure work, 
             std::optional<std::chrono::steady_clock::time_point> execute_time_point) noexcept 
             :
-            work_(std::move(work)),
+            ThreadWorkItemBase(std::move(work)),
             execute_time_point_(execute_time_point) {
-        }
-
-        bool IsDisposed() const noexcept override {
-            return is_disposed.load();
-        }
-
-        Closure TakeWorkIfNotDisposed() noexcept {
-            if (is_disposed.exchange(true)) {
-                return nullptr;
-            }
-            return std::move(work_);
         }
 
         const std::optional<std::chrono::steady_clock::time_point>& 
@@ -35,19 +25,11 @@ public:
         }
 
     protected:
-        bool EnsureDisposed() noexcept override {
-            
-            if (is_disposed.exchange(true)) {
-                return false;
-            }
-
-            work_ = nullptr;
-            return true;
+        void OnDispose() noexcept override {
+            // Nothing to do.
         }
 
     private:
-        std::atomic<bool> is_disposed{};
-        Closure work_;
         std::optional<std::chrono::steady_clock::time_point> execute_time_point_;
     };
 
@@ -57,15 +39,23 @@ public:
         std::optional<std::chrono::steady_clock::time_point> execute_time_point) {
 
         if (is_executing_work_) {
-            auto work_item = std::make_shared<WorkItem>(std::move(work), execute_time_point);
+            auto work_item = std::make_shared<QueuedWorkItem>(std::move(work), execute_time_point);
             work_queue_.push_back(work_item);
             return work_item;
         }
 
         auto auto_reset = zaf::MakeAutoReset(is_executing_work_, true);
-        ExecuteWorkItem(work, execute_time_point);
+        RunImmediateWork(work, execute_time_point);
         DrainWorkQueue();
         return Disposable::Empty();
+    }
+
+    void RunImmediateWork(
+        const Closure& work,
+        std::optional<std::chrono::steady_clock::time_point> execute_time_point) {
+
+        SleepUntil(execute_time_point);
+        work();
     }
 
     void DrainWorkQueue() {
@@ -75,32 +65,37 @@ public:
             auto first_item = std::move(work_queue_.front());
             work_queue_.pop_front();
 
-            auto work = first_item->TakeWorkIfNotDisposed();
-            if (work) {
-                ExecuteWorkItem(work, first_item->ExecuteTimePoint());
-            }
+            RunQueuedWork(*first_item);
         }
     }
 
-    void ExecuteWorkItem(
-        const Closure& work,
-        const std::optional<std::chrono::steady_clock::time_point>& execute_time_point) {
+    void RunQueuedWork(QueuedWorkItem& work) {
 
-        if (execute_time_point) {
-
-            auto now = std::chrono::steady_clock::now();
-            if (now < *execute_time_point) {
-
-                auto wait_duration = *execute_time_point - now;
-                std::this_thread::sleep_for(wait_duration);
-            }
+        if (work.IsDisposed()) {
+            return;
         }
 
-        work();
+        SleepUntil(work.ExecuteTimePoint());
+        work.RunWork();
+    }
+
+    void SleepUntil(std::optional<std::chrono::steady_clock::time_point> execute_time_point) {
+
+        if (!execute_time_point) {
+            return;
+        }
+
+        auto now = std::chrono::steady_clock::now();
+        if (now >= *execute_time_point) {
+            return;
+        }
+
+        auto wait_duration = *execute_time_point - now;
+        std::this_thread::sleep_for(wait_duration);
     }
 
 private:
-    std::deque<std::shared_ptr<WorkItem>> work_queue_;
+    std::deque<std::shared_ptr<QueuedWorkItem>> work_queue_;
     bool is_executing_work_{};
 };
 

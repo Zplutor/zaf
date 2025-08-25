@@ -53,12 +53,21 @@ TEST_F(DefaultRunLoopThreadTest, PostWork) {
             execute_thread_id = std::this_thread::get_id();
         }
         cv_.notify_one();
+        // The disposable will be disposed after the work is done.
     });
     ASSERT_NE(disposable, nullptr);
     ASSERT_FALSE(disposable->IsDisposed());
 
+    bool disposed_callback_called{};
+    disposable->AddDisposedCallback([&]() {
+        disposed_callback_called = true;
+    });
+
     cv_.wait(lock);
+    // Wait for the thread to dispose the work item.
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
     ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_TRUE(disposed_callback_called);
     ASSERT_NE(execute_thread_id, std::this_thread::get_id());
 }
 
@@ -73,8 +82,14 @@ TEST_F(DefaultRunLoopThreadTest, CancelWork) {
     ASSERT_NE(disposable, nullptr);
     ASSERT_FALSE(disposable->IsDisposed());
 
+    bool disposed_callback_called{};
+    disposable->AddDisposedCallback([&]() {
+        disposed_callback_called = true;
+    });
+
     disposable->Dispose();
     ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_TRUE(disposed_callback_called);
 
     // Make sure the work is not executed.
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -151,13 +166,22 @@ TEST_F(DefaultRunLoopThreadTest, PostDelayedWork) {
             execute_thread_id = std::this_thread::get_id();
         }
         cv_.notify_one();
+        // The disposable will be disposed after the work is done.
     });
     ASSERT_NE(disposable, nullptr);
     ASSERT_FALSE(disposable->IsDisposed());
 
+    bool disposed_callback_called{};
+    disposable->AddDisposedCallback([&]() {
+        disposed_callback_called = true;
+    });
+
     cv_.wait(lock);
+    // Wait for the thread to dispose the work item.
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
     ASSERT_NE(execute_thread_id, std::this_thread::get_id());
     ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_TRUE(disposed_callback_called);
 }
 
 
@@ -237,8 +261,14 @@ TEST_F(DefaultRunLoopThreadTest, CancelDelayedWork) {
     ASSERT_NE(disposable, nullptr);
     ASSERT_FALSE(disposable->IsDisposed());
 
+    bool disposed_callback_called{};
+    disposable->AddDisposedCallback([&]() {
+        disposed_callback_called = true;
+    });
+
     disposable->Dispose();
     ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_TRUE(disposed_callback_called);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     ASSERT_FALSE(is_work_executed.load());

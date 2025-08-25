@@ -11,20 +11,21 @@ public:
 
     }
 
-    Closure TakeWorkIfNotDisposed() {
-        if (MarkAsDispose()) {
-            return std::move(work_);
+    void RunWork() {
+        if (!MarkDone()) {
+            return;
         }
-        return nullptr;
+        work_();
+        Dispose();
     }
 
     bool IsDisposed() const noexcept override final {
-        return is_disposed_;
+        return (state_flags_ & StateFlagDisposed) != 0;
     }
 
 protected:
     bool EnsureDisposed() noexcept override final {
-        if (!MarkAsDispose()) {
+        if (!MarkDisposed()) {
             return false;
         }
         work_ = nullptr;
@@ -35,13 +36,23 @@ protected:
     virtual void OnDispose() noexcept = 0;
 
 private:
-    bool MarkAsDispose() noexcept {
-        bool expected{ false };
-        return is_disposed_.compare_exchange_strong(expected, true);
+    static constexpr int StateFlagDone = 1 << 0;
+    static constexpr int StateFlagDisposed = 1 << 1;
+
+private:
+    bool MarkDone() noexcept {
+        int old_flags = state_flags_.fetch_or(StateFlagDone);
+        return (old_flags & StateFlagDone) == 0;
+    }
+
+    bool MarkDisposed() noexcept {
+        int new_flags = StateFlagDone | StateFlagDisposed;
+        int old_flags = state_flags_.fetch_or(new_flags);
+        return (old_flags & StateFlagDisposed) == 0;
     }
 
 private:
-    std::atomic<bool> is_disposed_{ false };
+    std::atomic<int> state_flags_{};
     Closure work_;
 };
 

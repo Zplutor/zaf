@@ -167,10 +167,7 @@ void DefaultRunLoopThread::ExecuteQueuedWorkItems(
     const std::vector<std::shared_ptr<WorkItem>>& work_items) {
 
     for (const auto& each_item : work_items) {
-        auto work = each_item->TakeWorkIfNotDisposed();
-        if (work) {
-            work();
-        }
+        each_item->RunWork();
     }
 }
 
@@ -180,10 +177,20 @@ DefaultRunLoopThread::DelayedWorkItem::DelayedWorkItem(
     Closure work,
     std::weak_ptr<State> state) noexcept
     :
-    WorkItem(std::move(work)),
+    WorkItem(std::bind(&DelayedWorkItem::DoWork, this, std::move(work))),
     execute_time_point_(execute_time_point),
     state_(std::move(state)) {
 
+}
+
+
+void DefaultRunLoopThread::DelayedWorkItem::DoWork(const Closure& work) {
+
+    work();
+
+    // The base class would call Dispose() after this method returns, and OnDispose() would be 
+    // called as well. We reset the state_ here to avoid unnecessary disposal work in OnDispose().
+    state_.reset();
 }
 
 

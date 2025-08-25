@@ -70,12 +70,18 @@ TEST_F(MainThreadTest, PostWork) {
     ASSERT_NE(disposable, nullptr);
     ASSERT_FALSE(disposable->IsDisposed());
 
+    bool disposed_callback_called{};
+    disposable->AddDisposedCallback([&]() {
+        disposed_callback_called = true;
+    });
+
     MSG msg{};
     BOOL has_message = PeekMessage(&msg, MainWindowHandle(), 0, 0, PM_REMOVE);
     ASSERT_TRUE(has_message);
 
     DispatchMessage(&msg);
     ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_TRUE(disposed_callback_called);
     ASSERT_EQ(*execute_count, 1);
     ASSERT_EQ(*destruct_count, 1);
 }
@@ -92,8 +98,14 @@ TEST_F(MainThreadTest, CancelWork) {
     ASSERT_NE(disposable, nullptr);
     ASSERT_FALSE(disposable->IsDisposed());
 
+    bool disposed_callback_called{};
+    disposable->AddDisposedCallback([&]() {
+        disposed_callback_called = true;
+    });
+
     disposable->Dispose();
     ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_TRUE(disposed_callback_called);
 
     // Should have message even if cancel.
     MSG msg{};
@@ -119,6 +131,12 @@ TEST_F(MainThreadTest, PostDelayedWork) {
         std::move(test_work));
 
     ASSERT_NE(disposable, nullptr);
+    ASSERT_FALSE(disposable->IsDisposed());
+
+    bool disposed_callback_called{};
+    disposable->AddDisposedCallback([&]() {
+        disposed_callback_called = true;
+    });
 
     // Wait for the delayed work to be executed.
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -130,6 +148,7 @@ TEST_F(MainThreadTest, PostDelayedWork) {
     DispatchMessage(&msg);
 
     ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_TRUE(disposed_callback_called);
     ASSERT_NO_THROW(disposable->Dispose());
 
     ASSERT_EQ(*execute_count, 1);
@@ -149,9 +168,16 @@ TEST_F(MainThreadTest, CancelDelayedWork) {
         std::move(test_work));
 
     ASSERT_NE(disposable, nullptr);
+    ASSERT_FALSE(disposable->IsDisposed());
+
+    bool disposed_callback_called{};
+    disposable->AddDisposedCallback([&]() {
+        disposed_callback_called = true;
+    });
 
     disposable->Dispose();
     ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_TRUE(disposed_callback_called);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 

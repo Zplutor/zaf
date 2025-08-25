@@ -157,11 +157,7 @@ void MainThread::OnDoWork(UINT_PTR work_item_id) {
     auto work_item_pointer = reinterpret_cast<WorkItem*>(work_item_id);
     auto work_item = state_->TakeWorkItem(work_item_pointer);
     if (work_item) {
-
-        auto work = work_item->TakeWorkIfNotDisposed();
-        if (work) {
-            work();
-        }
+        work_item->RunWork();
     }
 }
 
@@ -174,11 +170,7 @@ void MainThread::OnTimer(UINT_PTR timer_id) {
     auto work_item_pointer = reinterpret_cast<DelayedWorkItem*>(timer_id);
     auto work_item = state_->TakeDelayedWorkItem(work_item_pointer);
     if (work_item) {
-
-        auto work = work_item->TakeWorkIfNotDisposed();
-        if (work) {
-            work();
-        }
+        work_item->RunWork();
     }
 }
 
@@ -249,9 +241,19 @@ std::shared_ptr<MainThread::DelayedWorkItem> MainThread::State::TakeDelayedWorkI
 
 
 MainThread::DelayedWorkItem::DelayedWorkItem(Closure work, std::weak_ptr<State> state) : 
-    ThreadWorkItemBase(std::move(work)),
+    ThreadWorkItemBase(std::bind(&DelayedWorkItem::DoWork, this, std::move(work))),
     state_(std::move(state)) {
 
+}
+
+
+void MainThread::DelayedWorkItem::DoWork(const Closure& work) {
+
+    work();
+
+    // The base class would call Dispose() after this method returns, and OnDispose() would be 
+    // called as well. We reset the state_ here to avoid unnecessary disposal work in OnDispose().
+    state_.reset();
 }
 
 

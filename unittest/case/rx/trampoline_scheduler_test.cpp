@@ -79,6 +79,7 @@ TEST(TrampolineSchedulerTest, SchedulerWork_Disposable) {
     auto scheduler = zaf::rx::TrampolineScheduler::Instance();
 
     std::shared_ptr<zaf::rx::Disposable> inner_disposable;
+    bool inner_disposed_callback_called{};
     auto disposable = scheduler->ScheduleWork([&]() {
 
         inner_disposable = scheduler->ScheduleWork([]() {
@@ -87,12 +88,17 @@ TEST(TrampolineSchedulerTest, SchedulerWork_Disposable) {
         ASSERT_NE(inner_disposable, nullptr);
         // Recursive work is not executed immediately, so it is not disposed.
         ASSERT_FALSE(inner_disposable->IsDisposed());
+
+        inner_disposable->AddDisposedCallback([&]() {
+            inner_disposed_callback_called = true;
+        });
     });
     ASSERT_NE(disposable, nullptr);
     ASSERT_TRUE(disposable->IsDisposed());
     ASSERT_NE(inner_disposable, nullptr);
     // The inner work has been executed, so it is disposed.
     ASSERT_TRUE(inner_disposable->IsDisposed());
+    ASSERT_TRUE(inner_disposed_callback_called);
 }
 
 
@@ -110,9 +116,16 @@ TEST(TrampolineSchedulerTest, SchedulerWork_CancelWork) {
 
         ASSERT_NE(inner_disposable, nullptr);
         ASSERT_FALSE(inner_disposable->IsDisposed());
+
+        bool inner_disposed_callback_called{};
+        inner_disposable->AddDisposedCallback([&]() {
+            inner_disposed_callback_called = true;
+        });
+        
         // Dispose the inner work before it is executed.
         inner_disposable->Dispose();
         ASSERT_TRUE(inner_disposable->IsDisposed());
+        ASSERT_TRUE(inner_disposed_callback_called);
     });
 
     ASSERT_NE(disposable, nullptr);
@@ -185,10 +198,101 @@ TEST(TrampolineSchedulerTest, ScheduleDelayedWork) {
 
     ASSERT_NE(disposable, nullptr);
     ASSERT_TRUE(disposable->IsDisposed());
+    bool disposed_callback_called{};
+    disposable->AddDisposedCallback([&]() {
+        disposed_callback_called = true;
+    });
+    ASSERT_TRUE(disposed_callback_called);
+
     ASSERT_TRUE(end.has_value());
-    
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(*end - begin).count();
     ASSERT_GE(elapsed, 50);
+}
+
+
+TEST(TrampolineSchedulerTest, CancelDelayedWorkOnOtherThread) {
+
+    auto scheduler = zaf::rx::TrampolineScheduler::Instance();
+
+    auto begin = std::chrono::steady_clock::now();
+
+    std::condition_variable cv;
+    std::mutex mutex;
+    std::unique_lock<std::mutex> lock(mutex);
+
+    std::shared_ptr<zaf::rx::Disposable> disposable;
+
+    zaf::rx::DefaultRunLoopThread thread;
+    thread.PostWork([&]() {
+        std::lock_guard<std::mutex> lock(mutex);
+        disposable->Dispose();
+        cv.notify_one();
+    });
+
+    bool delay_executed{};
+    bool disposed_callback_called{};
+    scheduler->ScheduleWork([&]() {
+
+        // This delayed work won't be executed, but the delay time should still be waited.
+        disposable = scheduler->ScheduleDelayedWork(std::chrono::milliseconds(50), [&]() {
+            delay_executed = true;
+        });
+
+        ASSERT_NE(disposable, nullptr);
+        ASSERT_FALSE(disposable->IsDisposed());
+        disposable->AddDisposedCallback([&]() {
+            disposed_callback_called = true;
+        });
+
+        // Unlock the mutex to allow the other thread to dispose the work.
+        lock.unlock();
+    });
+
+    cv.wait(lock, [&]() {
+        return disposable->IsDisposed();
+    });
+    auto end = std::chrono::steady_clock::now();
+
+    ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_TRUE(disposed_callback_called);
+    ASSERT_FALSE(delay_executed);
+
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+    ASSERT_GE(elapsed, 50);
+}
+
+
+TEST(TrampolineSchedulerTest, CancelRecursiveDelayedWork) {
+
+    auto scheduler = zaf::rx::TrampolineScheduler::Instance();
+
+    auto begin = std::chrono::steady_clock::now();
+    bool delay_executed{};
+    auto disposable = scheduler->ScheduleWork([&]() {
+
+        // This delayed work won't be executed, and the delay time should not be waited.
+        auto disposable = scheduler->ScheduleDelayedWork(std::chrono::milliseconds(50), [&]() {
+            delay_executed = true;
+        });
+
+        ASSERT_NE(disposable, nullptr);
+        ASSERT_FALSE(disposable->IsDisposed());
+
+        bool disposed_callback_called{};
+        disposable->AddDisposedCallback([&]() {
+            disposed_callback_called = true;
+        });
+
+        disposable->Dispose();
+        ASSERT_TRUE(disposable->IsDisposed());
+        ASSERT_TRUE(disposed_callback_called);
+    });
+
+    ASSERT_FALSE(delay_executed);
+
+    auto end = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+    ASSERT_LT(elapsed, 50);
 }
 
 

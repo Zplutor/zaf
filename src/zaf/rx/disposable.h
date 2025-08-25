@@ -24,10 +24,18 @@ Represents an object that can be disposed, such as releasing resources or cancel
     operations rather than relying on the destructor only. This allows more flexible control over 
     the cleanup actions, especially in scenarios where the object's lifecycle is indeterminate.
 
+    There are generally two states of a disposable object: not disposed and disposed. A disposable
+    object is not disposed when it is created, and it transitions to the disposed state when 
+    `Dispose()` is called. `Dispose()` may be called in the following scenarios:
+    1. The user of the object calls `Dispose()` to explicitly release resources or cancel 
+       operations.
+    2. The object itself calls `Dispose()` when its work is done.
+
     When implementing a disposable class, besides the guidelines mentioned in the `IsDisposed()` 
     and `EnsureDisposed()` methods, the following guidelines should be followed as well:
     1. The object should not be disposed when it is created.
-    2. The destructor should perform the same disposal actions as what `EnsureDisposed()` does.
+    2. The object should call `Dispose()` when its work is done.
+    3. The destructor should perform the same disposal actions as what `EnsureDisposed()` does.
 */
 class Disposable : NonCopyableNonMovable {
 public:

@@ -108,6 +108,9 @@ private:
         void OnDispose() noexcept override;
 
     private:
+        void DoWork(const Closure& work);
+
+    private:
         std::chrono::steady_clock::time_point execute_time_point_{};
         std::weak_ptr<State> state_;
     };

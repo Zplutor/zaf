@@ -115,6 +115,9 @@ private:
         void OnDispose() noexcept override;
 
     private:
+        void DoWork(const Closure& work);
+
+    private:
         std::weak_ptr<State> state_;
     };
 
