@@ -385,6 +385,7 @@
     <ClCompile Include="src\zaf\rx\internal\thread\thread_manager.cpp" />
     <ClCompile Include="src\zaf\rx\scheduler\immediate_scheduler.cpp" />
     <ClCompile Include="src\zaf\rx\scheduler\main_thread_scheduler.cpp" />
+    <ClCompile Include="src\zaf\rx\scheduler\new_thread_scheduler.cpp" />
     <ClCompile Include="src\zaf\rx\scheduler\single_thread_scheduler.cpp" />
     <ClCompile Include="src\zaf\rx\scheduler\trampoline_scheduler.cpp" />
     <ClCompile Include="src\zaf\rx\dispose_bag.cpp" />
@@ -913,6 +914,7 @@
     <ClInclude Include="src\zaf\rx\observable_base.h" />
     <ClInclude Include="src\zaf\rx\scheduler\immediate_scheduler.h" />
     <ClInclude Include="src\zaf\rx\scheduler\main_thread_scheduler.h" />
+    <ClInclude Include="src\zaf\rx\scheduler\new_thread_scheduler.h" />
     <ClInclude Include="src\zaf\rx\scheduler\scheduler.h" />
     <ClInclude Include="src\zaf\rx\scheduler\single_thread_scheduler.h" />
     <ClInclude Include="src\zaf\rx\scheduler\trampoline_scheduler.h" />

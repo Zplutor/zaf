@@ -1330,6 +1330,9 @@
     <ClCompile Include="src\zaf\rx\disposable.cpp">
       <Filter>zaf\rx</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\scheduler\new_thread_scheduler.cpp">
+      <Filter>zaf\rx\scheduler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3102,6 +3105,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\insider\observable_insider.h">
       <Filter>zaf\rx\internal\insider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\scheduler\new_thread_scheduler.h">
+      <Filter>zaf\rx\scheduler</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
