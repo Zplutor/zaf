@@ -1,4 +1,5 @@
 #include <zaf/rx/scheduler/single_thread_scheduler.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/thread/default_run_loop_thread.h>
 
 namespace zaf::rx {
@@ -12,6 +13,7 @@ SingleThreadScheduler::SingleThreadScheduler() :
 SingleThreadScheduler::SingleThreadScheduler(std::shared_ptr<RunLoopThread> thread) :
     thread_(std::move(thread)) {
 
+    ZAF_EXPECT(thread_);
 }
 
 

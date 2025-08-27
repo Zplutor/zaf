@@ -2,6 +2,7 @@
 #include <deque>
 #include <optional>
 #include <zaf/base/auto_reset.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/internal/thread/thread_work_item_base.h>
 
 namespace zaf::rx {
@@ -37,6 +38,8 @@ public:
     std::shared_ptr<Disposable> ScheduleWorkItem(
         Closure work,
         std::optional<std::chrono::steady_clock::time_point> execute_time_point) {
+
+        ZAF_EXPECT(work);
 
         if (is_executing_work_) {
             auto work_item = std::make_shared<QueuedWorkItem>(std::move(work), execute_time_point);

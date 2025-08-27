@@ -1,5 +1,6 @@
 #include <mutex>
 #include <gtest/gtest.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/scheduler/trampoline_scheduler.h>
 #include <zaf/rx/thread/default_run_loop_thread.h>
 
@@ -71,6 +72,13 @@ TEST(TrampolineSchedulerTest, DifferentThread) {
     ASSERT_NE(main_thread_id, thread2_id);
     ASSERT_NE(thread1_id, thread2_id);
     ASSERT_EQ(main_thread_id, std::this_thread::get_id());
+}
+
+
+TEST(TrampolineSchedulerTest, SchedulerWork_Precondition) {
+
+    auto scheduler = zaf::rx::TrampolineScheduler::Instance();
+    ASSERT_THROW(scheduler->ScheduleWork(nullptr), zaf::PreconditionError);
 }
 
 
@@ -181,6 +189,15 @@ TEST(TrampolineSchedulerTest, ScheduleWork_Recursive) {
     });
 
     ASSERT_EQ(values, (std::vector<int>{ 1, 5, 2, 4, 3 }));
+}
+
+
+TEST(TrampolineSchedulerTest, ScheduleDelayedWork_Precondition) {
+
+    auto scheduler = zaf::rx::TrampolineScheduler::Instance();
+    ASSERT_THROW(
+        scheduler->ScheduleDelayedWork(std::chrono::milliseconds(10), nullptr),
+        zaf::PreconditionError);
 }
 
 

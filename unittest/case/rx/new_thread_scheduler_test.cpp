@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/scheduler/new_thread_scheduler.h>
 
 namespace zaf::testing {
@@ -16,6 +17,11 @@ protected:
 private:
     rx::NewThreadScheduler scheduler_;
 };
+
+
+TEST_F(NewThreadSchedulerTest, ScheduleWork_Precondition) {
+    ASSERT_THROW(Scheduler().ScheduleWork(nullptr), zaf::PreconditionError);
+}
 
 
 TEST_F(NewThreadSchedulerTest, ScheduleWork_ThreadID) {
@@ -60,6 +66,13 @@ TEST_F(NewThreadSchedulerTest, ScheduleWork_Disposable) {
     ASSERT_TRUE(is_executed);
     ASSERT_TRUE(disposable->IsDisposed());
     ASSERT_TRUE(disposed_callback_called);
+}
+
+
+TEST_F(NewThreadSchedulerTest, ScheduleDelayedWork_Precondition) {
+    ASSERT_THROW(
+        Scheduler().ScheduleDelayedWork(std::chrono::milliseconds(10), nullptr), 
+        zaf::PreconditionError);
 }
 
 

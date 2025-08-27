@@ -1,5 +1,13 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/scheduler/immediate_scheduler.h>
+
+TEST(ImmediateSchedulerTest, SchedulerWork_Precondition) {
+
+    auto scheduler = zaf::rx::ImmediateScheduler::Instance();
+    ASSERT_THROW(scheduler->ScheduleWork(nullptr), zaf::PreconditionError);
+}
+
 
 TEST(ImmediateSchedulerTest, ScheduleWork) {
 
@@ -58,6 +66,15 @@ TEST(ImmediateSchedulerTest, ScheduleWork_Recursive) {
     });
 
     ASSERT_EQ(values, (std::vector<int>{ 1, 2, 3, 4, 5 }));
+}
+
+
+TEST(ImmediateSchedulerTest, ScheduleDelayedWork_Precondition) {
+
+    auto scheduler = zaf::rx::ImmediateScheduler::Instance();
+    ASSERT_THROW(
+        scheduler->ScheduleDelayedWork(std::chrono::milliseconds(10), nullptr), 
+        zaf::PreconditionError);
 }
 
 

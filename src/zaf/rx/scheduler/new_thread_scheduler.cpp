@@ -1,4 +1,5 @@
 #include <zaf/rx/scheduler/new_thread_scheduler.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/thread/default_run_loop_thread.h>
 
 namespace zaf::rx {
@@ -10,6 +11,11 @@ const std::shared_ptr<NewThreadScheduler>& NewThreadScheduler::Default() {
 
 
 NewThreadScheduler::NewThreadScheduler() : shared_state_(std::make_shared<SharedState>()) {
+
+}
+
+
+NewThreadScheduler::~NewThreadScheduler() {
 
 }
 
@@ -30,6 +36,8 @@ std::shared_ptr<Disposable> NewThreadScheduler::ScheduleDelayedWork(
 std::shared_ptr<Disposable> NewThreadScheduler::ScheduleWorkOnThread(
     Closure work, 
     std::optional<std::chrono::steady_clock::duration> delay) {
+
+    ZAF_EXPECT(work);
 
     auto work_item = std::make_shared<WorkItem>(std::move(work), shared_state_);
     {
