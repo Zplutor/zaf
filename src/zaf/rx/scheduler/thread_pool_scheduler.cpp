@@ -72,6 +72,8 @@ void ThreadPoolScheduler::CreateTimerThreadIfNeeded() {
 
 std::shared_ptr<Disposable> ThreadPoolScheduler::ScheduleWork(Closure work) {
 
+    ZAF_EXPECT(work);
+
     // Ensure at least one thread in the pool, otherwise the work may not be executed if thread 
     // creation is failed after the work item is queued. 
     // If the first thread creation is failed, exception will be thrown and the work item won't be 
@@ -87,6 +89,8 @@ std::shared_ptr<Disposable> ThreadPoolScheduler::ScheduleWork(Closure work) {
 std::shared_ptr<Disposable> ThreadPoolScheduler::ScheduleDelayedWork(
     std::chrono::steady_clock::duration delay, 
     Closure work) {
+
+    ZAF_EXPECT(work);
 
     // Same as ScheduleWork, ensure at least one thread in the pool.
     CreateFirstThreadIfNeeded();
@@ -110,8 +114,10 @@ void ThreadPoolScheduler::ScheduleWorkItem(
     {
         std::lock_guard lock(shared_state->queued_work_items_mutex);
         shared_state->queued_work_items.push_back(std::move(work_item));
-        // If there is no free thread, a new thread is needed.
-        need_create_thread = (shared_state->free_thread_count == 0);
+
+        // If the queued work items are more than 1, it is considered that there is no free thread.
+        // So we need to create a new thread if possible.
+        need_create_thread = shared_state->queued_work_items.size() > 1;
     }
     shared_state->queued_work_items_cv.notify_one();
 
@@ -166,7 +172,6 @@ void ThreadPoolScheduler::ThreadProcedure(const std::shared_ptr<SharedState>& sh
         std::shared_ptr<WorkItem> work_item;
 
         lock.lock();
-        shared_state->free_thread_count++;
 
         if (shared_state->queued_work_items.empty()) {
             shared_state->queued_work_items_cv.wait(lock, [&shared_state]() {
@@ -181,7 +186,6 @@ void ThreadPoolScheduler::ThreadProcedure(const std::shared_ptr<SharedState>& sh
         work_item = std::move(shared_state->queued_work_items.front());
         shared_state->queued_work_items.pop_front();
 
-        shared_state->free_thread_count--;
         lock.unlock();
 
         if (work_item) {

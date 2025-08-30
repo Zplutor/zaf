@@ -69,6 +69,12 @@ public:
     */
     explicit ThreadPoolScheduler(std::size_t max_thread_count);
 
+    /**
+    Destructs the instance, stopping all threads in the thread pool.
+
+    @details
+        This method waits for all threads to finish executing all queued works before returning.
+    */
     ~ThreadPoolScheduler();
 
     /**
@@ -85,8 +91,32 @@ public:
         return shared_state_->max_thread_count;
     }
 
+    /**
+    @copydoc zaf::rx::Scheduler::ScheduleWork()
+
+    ---
+    @throw std::bad_alloc
+    @throw std::system_error
+        Thrown if the first thread in the thread pool cannot be created. Failing to create threads
+        other than the first one won't throw exception, as there is at least one thread in the pool
+        to execute the work.
+    @throw ...
+        Any exception thrown by the underlying thread implementation when initializing the first
+        thread.
+    */
     std::shared_ptr<Disposable> ScheduleWork(Closure work) override;
 
+    /**
+    @copydoc zaf::rx::Scheduler::ScheduleDelayedWork()
+
+    ---
+    @throw std::bad_alloc
+    @throw std::system_error
+        Thrown if the first thread in the thread pool or the timer thread cannot be created.
+    @throw ...
+        Any exception thrown by the underlying thread implementation when scheduling a delay in the
+        timer thread.
+    */
     std::shared_ptr<Disposable> ScheduleDelayedWork(
         std::chrono::steady_clock::duration delay,
         Closure work) override;
@@ -102,8 +132,7 @@ private:
         std::mutex queued_work_items_mutex;
         std::condition_variable queued_work_items_cv;
         
-        // The following variables should be accessed only when holding queued_work_items_mutex.
-        std::size_t free_thread_count{};
+        // This variables should be accessed only when holding queued_work_items_mutex.
         bool is_stopped{ false };
 
         std::vector<std::unique_ptr<RunLoopThread>> threads;
