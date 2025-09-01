@@ -17,7 +17,8 @@ public:
         Producer(std::move(observer)),
         delay_(std::move(delay)),
         interval_(std::move(interval)),
-        scheduler_(std::move(scheduler)) {
+        scheduler_(std::move(scheduler)),
+        atomic_timer_(Disposable::Empty()) {
 
     }
 
@@ -34,18 +35,32 @@ public:
     }
 
 private:
+    /* 
+    This method will be called in the scheduler thread, which may cause data race with the
+    DoDisposal method. We use the following strategies to resolve the issue:
+    1. Use std::atomic<std::shared_ptr<Disposable>> to hold the timer disposable.
+    2. Use Disposable::Empty() to indicate that the timer is not disposed yet and is ready to be 
+       set.
+    3. Use nullptr to indicate that the timer is disposed.
+    4. Use compare_exchange_strong to set a new timer. If the current value is not 
+       Disposable::Empty(), it means that the timer is disposed, so we should not set a new timer.
+    */
     void SetNextDelayTimer() {
 
         auto next_delay = GetNextDelay();
 
         std::weak_ptr<TimerProducer> weak_this = As<TimerProducer>(shared_from_this());
-        timer_ = scheduler_->ScheduleDelayedWork(next_delay, [weak_this]() {
-
+        auto new_timer = scheduler_->ScheduleDelayedWork(next_delay, [weak_this]() {
             auto shared_this = weak_this.lock();
             if (shared_this) {
                 shared_this->OnTimer();
             }
         });
+
+        auto expected = Disposable::Empty();
+        if (!atomic_timer_.compare_exchange_strong(expected, new_timer)) {
+            new_timer->Dispose();
+        }
     }
 
     std::chrono::steady_clock::duration GetNextDelay() {
@@ -61,7 +76,10 @@ private:
 
     void OnTimer() {
 
-        if (is_unsubscribed_) {
+        // Reset the timer to Disposable::Empty() to make it ready to be set again.
+        auto previous_timer = atomic_timer_.exchange(Disposable::Empty());
+        if (previous_timer == nullptr) {
+            // The timer is disposed, do nothing.
             return;
         }
 
@@ -83,20 +101,19 @@ private:
     }
 
     void DoDisposal() noexcept {
-        is_unsubscribed_ = true;
-        if (timer_) {
-            timer_->Dispose();
-            timer_.reset();
+
+        auto timer = atomic_timer_.exchange(nullptr);
+        if (timer) {
+            timer->Dispose();
         }
     }
 
 private:
-    std::chrono::steady_clock::duration delay_{};
-    std::optional<std::chrono::steady_clock::duration> interval_;
-    std::shared_ptr<Scheduler> scheduler_;
-    std::shared_ptr<Disposable> timer_;
+    const std::chrono::steady_clock::duration delay_{};
+    const std::optional<std::chrono::steady_clock::duration> interval_;
+    const std::shared_ptr<Scheduler> scheduler_;
+    std::atomic<std::shared_ptr<Disposable>> atomic_timer_;
     std::atomic<std::size_t> emission_value_{};
-    std::atomic<bool> is_unsubscribed_{};
 };
 
 }
