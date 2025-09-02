@@ -21,6 +21,10 @@ namespace zaf::rx {
 
 /**
 Represents a run loop thread with a default implementation.
+
+@details
+    The default run loop thread is designed for general-purpose use. It executes one work per run 
+    loop iteration, and checks for due delayed works per run loop iteration as well.
 */
 class DefaultRunLoopThread : public RunLoopThread {
 public:
@@ -73,12 +77,13 @@ private:
         std::atomic<bool> is_stopped{};
         std::condition_variable work_event;
 
-        // Works that need to be executed without delay.
-        std::vector<std::shared_ptr<WorkItem>> queued_work_items;
+        // A hybrid queue that contains both immediate works and delayed works.
+        // Immediate works are always in the front of the queue, sorting by their posting order.
+        // Delayed works are always in the back of the queue, sorting by their execute time point.
+        std::deque<std::shared_ptr<WorkItem>> hybrid_queue;
 
-        // Works that need to be executed after a delay.
-        // Sorted by execute time point.
-        std::deque<std::shared_ptr<DelayedWorkItem>> delayed_work_items;
+        // Count of immediate works in the hybrid queue.
+        std::size_t immediate_work_count{};
     };
 
     class WorkItem : public internal::ThreadWorkItemBase {
@@ -87,10 +92,26 @@ private:
 
         }
 
+        const std::chrono::steady_clock::time_point& ExecuteTimePoint() const noexcept {
+            return execute_time_point_;
+        }
+
     protected:
+        WorkItem(
+            Closure work,
+            std::chrono::steady_clock::time_point execute_time_point) 
+            :
+            internal::ThreadWorkItemBase(std::move(work)),
+            execute_time_point_(execute_time_point) {
+
+        }
+
         void OnDispose() noexcept override {
             // No additional cleanup is needed for this work item.
         }
+
+    private:
+        std::chrono::steady_clock::time_point execute_time_point_{};
     };
 
     class DelayedWorkItem : public WorkItem {
@@ -100,10 +121,6 @@ private:
             Closure work,
             std::weak_ptr<State> state) noexcept;
 
-        const std::chrono::steady_clock::time_point& ExecuteTimePoint() const noexcept {
-            return execute_time_point_;
-        }
-
     protected:
         void OnDispose() noexcept override;
 
@@ -111,15 +128,13 @@ private:
         void DoWork(const Closure& work);
 
     private:
-        std::chrono::steady_clock::time_point execute_time_point_{};
         std::weak_ptr<State> state_;
     };
 
 private:
     static void ThreadProcedure(const std::shared_ptr<State>& state);
     static std::optional<std::chrono::steady_clock::duration> ProcessDueDelayedWorkItems(
-        const std::shared_ptr<State>& state);
-    static void ExecuteQueuedWorkItems(const std::vector<std::shared_ptr<WorkItem>>& work_items);
+        const std::shared_ptr<State>& state) noexcept;
 
 private:
     friend class zaf::testing::DefaultRunLoopThreadTest;
