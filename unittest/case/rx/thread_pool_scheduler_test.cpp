@@ -2,7 +2,16 @@
 #include <zaf/base/error/contract_error.h>
 #include <zaf/rx/scheduler/thread_pool_scheduler.h>
 
-TEST(ThreadPoolSchedulerTest, DefaultInstance) {
+namespace zaf::testing {
+
+class ThreadPoolSchedulerTest : public ::testing::Test {
+protected:
+    static std::size_t GetHybridQueueSize(const zaf::rx::ThreadPoolScheduler& scheduler) {
+        return scheduler.HybridQueueSize();
+    }
+};
+
+TEST_F(ThreadPoolSchedulerTest, DefaultInstance) {
 
     auto instance = zaf::rx::ThreadPoolScheduler::Default();
     std::size_t max_thread_count = std::thread::hardware_concurrency();
@@ -13,7 +22,7 @@ TEST(ThreadPoolSchedulerTest, DefaultInstance) {
 }
 
 
-TEST(ThreadPoolSchedulerTest, DefaultConstructor) {
+TEST_F(ThreadPoolSchedulerTest, DefaultConstructor) {
 
     zaf::rx::ThreadPoolScheduler scheduler;
     std::size_t max_thread_count = std::thread::hardware_concurrency();
@@ -25,7 +34,7 @@ TEST(ThreadPoolSchedulerTest, DefaultConstructor) {
 }
 
 
-TEST(ThreadPoolSchedulerTest, ConstructorWithMaxThreadCount) {
+TEST_F(ThreadPoolSchedulerTest, ConstructorWithMaxThreadCount) {
 
     zaf::rx::ThreadPoolScheduler scheduler(10);
     ASSERT_EQ(scheduler.MaxThreadCount(), 10);
@@ -35,19 +44,19 @@ TEST(ThreadPoolSchedulerTest, ConstructorWithMaxThreadCount) {
 }
 
 
-TEST(ThreadPoolSchedulerTest, SchedulerWork_Precondition) {
+TEST_F(ThreadPoolSchedulerTest, SchedulerWork_Precondition) {
 
     auto scheduler = zaf::rx::ThreadPoolScheduler::Default();
     ASSERT_THROW(scheduler->ScheduleWork(nullptr), zaf::PreconditionError);
 }
 
 
-TEST(ThreadPoolSchedulerTest, ScheduleWork) {
+TEST_F(ThreadPoolSchedulerTest, ScheduleWork) {
 
     std::condition_variable cv;
     std::mutex mutex;
     std::unique_lock<std::mutex> lock(mutex);
-    
+
     zaf::rx::ThreadPoolScheduler scheduler;
     std::optional<std::thread::id> execute_thread_id;
     auto disposable = scheduler.ScheduleWork([&] {
@@ -70,7 +79,7 @@ TEST(ThreadPoolSchedulerTest, ScheduleWork) {
 }
 
 
-TEST(ThreadPoolSchedulerTest, ScheduleWork_NotMoreThanMaxThreadCount) {
+TEST_F(ThreadPoolSchedulerTest, ScheduleWork_NotMoreThanMaxThreadCount) {
 
     zaf::rx::ThreadPoolScheduler scheduler(3);
 
@@ -117,7 +126,7 @@ TEST(ThreadPoolSchedulerTest, ScheduleWork_NotMoreThanMaxThreadCount) {
 }
 
 
-TEST(ThreadPoolSchedulerTest, ScheduleWork_MoreThanMaxThreadCount) {
+TEST_F(ThreadPoolSchedulerTest, ScheduleWork_MoreThanMaxThreadCount) {
 
     zaf::rx::ThreadPoolScheduler scheduler(1);
 
@@ -162,7 +171,7 @@ TEST(ThreadPoolSchedulerTest, ScheduleWork_MoreThanMaxThreadCount) {
 }
 
 
-TEST(ThreadPoolSchedulerTest, ScheduleWork_SerialWorks) {
+TEST_F(ThreadPoolSchedulerTest, ScheduleWork_SerialWorks) {
 
     zaf::rx::ThreadPoolScheduler scheduler(2);
 
@@ -188,7 +197,7 @@ TEST(ThreadPoolSchedulerTest, ScheduleWork_SerialWorks) {
 }
 
 
-TEST(ThreadPoolSchedulerTest, ScheduleWork_CancelQueuedWork) {
+TEST_F(ThreadPoolSchedulerTest, ScheduleWork_CancelQueuedWork) {
 
     zaf::rx::ThreadPoolScheduler scheduler(1);
 
@@ -219,10 +228,11 @@ TEST(ThreadPoolSchedulerTest, ScheduleWork_CancelQueuedWork) {
     // Wait a moment to ensure the second work item won't be executed.
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     ASSERT_FALSE(is_executed);
+    ASSERT_EQ(GetHybridQueueSize(scheduler), 0);
 }
 
 
-TEST(ThreadPoolSchedulerTest, SchedulerDelayedWork_Precondition) {
+TEST_F(ThreadPoolSchedulerTest, SchedulerDelayedWork_Precondition) {
 
     auto scheduler = zaf::rx::ThreadPoolScheduler::Default();
     ASSERT_THROW(
@@ -231,7 +241,7 @@ TEST(ThreadPoolSchedulerTest, SchedulerDelayedWork_Precondition) {
 }
 
 
-TEST(ThreadPoolSchedulerTest, SchedulerDelayedWork) {
+TEST_F(ThreadPoolSchedulerTest, SchedulerDelayedWork) {
 
     zaf::rx::ThreadPoolScheduler scheduler;
 
@@ -262,7 +272,7 @@ TEST(ThreadPoolSchedulerTest, SchedulerDelayedWork) {
 }
 
 
-TEST(ThreadPoolSchedulerTest, SchedulerDelayedWork_Cancel) {
+TEST_F(ThreadPoolSchedulerTest, SchedulerDelayedWork_Cancel) {
 
     zaf::rx::ThreadPoolScheduler scheduler;
 
@@ -275,8 +285,11 @@ TEST(ThreadPoolSchedulerTest, SchedulerDelayedWork_Cancel) {
 
     disposable->Dispose();
     ASSERT_TRUE(disposable->IsDisposed());
+    ASSERT_EQ(GetHybridQueueSize(scheduler), 0);
 
     // Wait a moment to ensure the work item won't be executed.
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     ASSERT_FALSE(is_execute);
+}
+
 }

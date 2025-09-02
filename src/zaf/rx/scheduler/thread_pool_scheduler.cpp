@@ -27,15 +27,15 @@ ThreadPoolScheduler::ThreadPoolScheduler(std::size_t max_thread_count) {
 
 ThreadPoolScheduler::~ThreadPoolScheduler() {
     {
-        std::lock_guard lock(shared_state_->queued_work_items_mutex);
-        shared_state_->is_stopped = true;
+        std::lock_guard lock(state_->hybrid_queue_mutex);
+        state_->is_stopped = true;
     }
-    shared_state_->queued_work_items_cv.notify_all();
+    state_->hybrid_queue_cv.notify_all();
 
     std::vector<std::unique_ptr<RunLoopThread>> threads;
     {
-        std::lock_guard lock(shared_state_->threads_mutex);
-        threads = std::move(shared_state_->threads);
+        std::lock_guard lock(state_->threads_mutex);
+        threads = std::move(state_->threads);
     }
     // Wait for all threads to exit.
     threads.clear();
@@ -43,29 +43,29 @@ ThreadPoolScheduler::~ThreadPoolScheduler() {
 
 
 void ThreadPoolScheduler::Initialize(std::size_t max_thread_count) {
-    shared_state_ = std::make_shared<SharedState>();
-    shared_state_->max_thread_count = max_thread_count;
+    state_ = std::make_shared<SharedState>();
+    state_->max_thread_count = max_thread_count;
 }
 
 
 void ThreadPoolScheduler::CreateFirstThreadIfNeeded() {
 
-    if (shared_state_->total_thread_count > 0) {
+    if (state_->total_thread_count > 0) {
         return;
     }
 
-    std::lock_guard lock(shared_state_->threads_mutex);
-    if (shared_state_->total_thread_count > 0) {
+    std::lock_guard lock(state_->threads_mutex);
+    if (state_->total_thread_count > 0) {
         return;
     }
 
-    CreateThreadInLock(shared_state_);
+    CreateThreadInLock(state_);
 }
 
 
 void ThreadPoolScheduler::CreateTimerThreadIfNeeded() {
-    std::call_once(shared_state_->timer_thread_init_flag, [this]() {
-        shared_state_->timer_thread = std::make_unique<DefaultRunLoopThread>();
+    std::call_once(state_->timer_thread_init_flag, [this]() {
+        state_->timer_thread = std::make_unique<DefaultRunLoopThread>();
     });
 }
 
@@ -81,7 +81,26 @@ std::shared_ptr<Disposable> ThreadPoolScheduler::ScheduleWork(Closure work) {
     CreateFirstThreadIfNeeded();
 
     auto work_item = std::make_shared<WorkItem>(std::move(work));
-    ScheduleWorkItem(shared_state_, work_item);
+
+    bool need_create_thread{};
+    {
+        std::lock_guard lock(state_->hybrid_queue_mutex);
+
+        auto insert_position = state_->hybrid_queue.begin() + state_->immediate_work_count;
+        state_->hybrid_queue.insert(insert_position, work_item);
+        state_->immediate_work_count++;
+
+        // If the immediate work items are more than 1, it is considered that there is no free 
+        // thread. So we need to create a new thread if possible.
+        need_create_thread = state_->immediate_work_count > 1;
+    }
+    state_->hybrid_queue_cv.notify_one();
+
+    if (need_create_thread) {
+        // Try to create a new thread if possible. If failed, there is still at least one thread in
+        // the pool to process the work item.
+        TryCreateNewThread(state_);
+    }
     return work_item;
 }
 
@@ -96,53 +115,85 @@ std::shared_ptr<Disposable> ThreadPoolScheduler::ScheduleDelayedWork(
     CreateFirstThreadIfNeeded();
     CreateTimerThreadIfNeeded();
     
-    auto work_item = std::make_shared<DelayedWorkItem>(std::move(work));
-    auto delay_disposable = shared_state_->timer_thread->PostDelayedWork(
+    auto work_item = std::make_shared<DelayedWorkItem>(std::move(work), state_);
+
+    // Insert the delayed work item into the hybrid queue.
+    {
+        std::lock_guard lock(state_->hybrid_queue_mutex);
+
+        auto insert_position = std::lower_bound(
+            state_->hybrid_queue.begin() + state_->immediate_work_count,
+            state_->hybrid_queue.end(),
+            work_item);
+
+        state_->hybrid_queue.insert(insert_position, work_item);
+    }
+
+    auto delay_disposable = state_->timer_thread->PostDelayedWork(
         delay,
-        std::bind(&ThreadPoolScheduler::ScheduleWorkItem, shared_state_, work_item));
+        std::bind(&ThreadPoolScheduler::OnDelayedWorkItemReady, state_, work_item));
 
     work_item->SetDelayDisposable(std::move(delay_disposable));
     return work_item;
 }
 
 
-void ThreadPoolScheduler::ScheduleWorkItem(
-    const std::shared_ptr<SharedState>& shared_state,
-    std::shared_ptr<WorkItem> work_item) {
+void ThreadPoolScheduler::OnDelayedWorkItemReady(
+    const std::weak_ptr<SharedState>& weak_state,
+    const std::shared_ptr<WorkItem>& work_item) noexcept {
 
+    auto state = weak_state.lock();
+    if (!state) {
+        return;
+    }
+
+    // Move the due delayed work item to the immediate work items in the hybrid queue.
     bool need_create_thread{};
     {
-        std::lock_guard lock(shared_state->queued_work_items_mutex);
-        shared_state->queued_work_items.push_back(std::move(work_item));
+        std::lock_guard lock(state->hybrid_queue_mutex);
 
-        // If the queued work items are more than 1, it is considered that there is no free thread.
-        // So we need to create a new thread if possible.
-        need_create_thread = shared_state->queued_work_items.size() > 1;
+        auto iterator = std::lower_bound(
+            state->hybrid_queue.begin() + state->immediate_work_count,
+            state->hybrid_queue.end(),
+            work_item);
+
+        if (iterator == state->hybrid_queue.end() || (*iterator) != work_item) {
+            // The work item is not in the queue, probably disposed.
+            return;
+        }
+
+        std::rotate(
+            state->hybrid_queue.begin() + state->immediate_work_count,
+            iterator,
+            iterator + 1);
+
+        state->immediate_work_count++;
+
+        // Same as ScheduleWork.
+        need_create_thread = state->immediate_work_count > 1;
     }
-    shared_state->queued_work_items_cv.notify_one();
+
+    state->hybrid_queue_cv.notify_one();
 
     if (need_create_thread) {
-        // Try to create a new thread if possible. If failed, there is still at least one thread in
-        // the pool to process the work item.
-        TryCreateNewThread(shared_state);
+        TryCreateNewThread(state);
     }
 }
 
 
-void ThreadPoolScheduler::TryCreateNewThread(
-    const std::shared_ptr<SharedState>& shared_state) noexcept {
+void ThreadPoolScheduler::TryCreateNewThread(const std::shared_ptr<SharedState>& state) noexcept {
 
-    if (shared_state->total_thread_count >= shared_state->max_thread_count) {
+    if (state->total_thread_count >= state->max_thread_count) {
         return;
     }
 
-    std::lock_guard lock(shared_state->threads_mutex);
-    if (shared_state->total_thread_count >= shared_state->max_thread_count) {
+    std::lock_guard lock(state->threads_mutex);
+    if (state->total_thread_count >= state->max_thread_count) {
         return;
     }
 
     try {
-        CreateThreadInLock(shared_state);
+        CreateThreadInLock(state);
     }
     catch (...) {
         // Ignore all exceptions.
@@ -164,27 +215,26 @@ void ThreadPoolScheduler::CreateThreadInLock(const std::shared_ptr<SharedState>&
 }
 
 
-void ThreadPoolScheduler::ThreadProcedure(const std::shared_ptr<SharedState>& shared_state) {
+void ThreadPoolScheduler::ThreadProcedure(const std::shared_ptr<SharedState>& state) {
 
-    std::unique_lock<std::mutex> lock(shared_state->queued_work_items_mutex, std::defer_lock);
+    std::unique_lock<std::mutex> lock(state->hybrid_queue_mutex, std::defer_lock);
     while (true) {
-
-        std::shared_ptr<WorkItem> work_item;
 
         lock.lock();
 
-        if (shared_state->queued_work_items.empty()) {
-            shared_state->queued_work_items_cv.wait(lock, [&shared_state]() {
-                return !shared_state->queued_work_items.empty() || shared_state->is_stopped;
+        if (state->immediate_work_count == 0) {
+            state->hybrid_queue_cv.wait(lock, [&state]() {
+                return (state->immediate_work_count > 0) || state->is_stopped;
             });
             // Exit only when there is no work.
-            if (shared_state->is_stopped) {
+            if (state->is_stopped) {
                 break;
             }
         }
 
-        work_item = std::move(shared_state->queued_work_items.front());
-        shared_state->queued_work_items.pop_front();
+        auto work_item = std::move(state->hybrid_queue.front());
+        state->hybrid_queue.pop_front();
+        state->immediate_work_count--;
 
         lock.unlock();
 
@@ -192,6 +242,85 @@ void ThreadPoolScheduler::ThreadProcedure(const std::shared_ptr<SharedState>& sh
             work_item->RunWork();
         }
     }
+}
+
+
+std::size_t ThreadPoolScheduler::HybridQueueSize() const noexcept {
+    std::lock_guard<std::mutex> lock(state_->hybrid_queue_mutex);
+    return state_->hybrid_queue.size();
+}
+
+
+ThreadPoolScheduler::DelayedWorkItem::DelayedWorkItem(
+    Closure work, 
+    std::weak_ptr<SharedState> state)
+    :
+    WorkItem(std::move(work)),
+    state_(std::move(state)),
+    delay_disposable_(Disposable::Empty()) {
+
+}
+
+
+/*
+The delay_disposable_ may be called on multiple threads:
+1. The thread calls ScheduleDelayedWork to set the delay disposable.
+2. The thread in the pool that executes and disposes the work item.
+3. The thread that calls Dispose on the returned disposable.
+So delay_disposable_ must be accessed in a thread-safe way. See the TimerProducer for more details.
+*/
+void ThreadPoolScheduler::DelayedWorkItem::SetDelayDisposable(
+    const std::shared_ptr<Disposable>& disposable) noexcept {
+
+    auto expected = Disposable::Empty();
+    if (!delay_disposable_.compare_exchange_strong(expected, disposable)) {
+        disposable->Dispose();
+    }
+}
+
+
+ThreadPoolScheduler::DelayedWorkItem::~DelayedWorkItem() {
+    DisposeDelay();
+}
+
+
+void ThreadPoolScheduler::DelayedWorkItem::OnDispose() noexcept {
+    DisposeDelay();
+    RemoveFromQueue();
+}
+
+
+void ThreadPoolScheduler::DelayedWorkItem::DisposeDelay() noexcept {
+
+    auto disposable = delay_disposable_.exchange(nullptr);
+    if (disposable) {
+        disposable->Dispose();
+    }
+}
+
+
+void ThreadPoolScheduler::DelayedWorkItem::RemoveFromQueue() noexcept {
+
+    auto state = state_.lock();
+    if (!state) {
+        return;
+    }
+
+    std::lock_guard<std::mutex> lock(state->hybrid_queue_mutex);
+
+    auto iterator = std::lower_bound(
+        state->hybrid_queue.begin() + state->immediate_work_count,
+        state->hybrid_queue.end(),
+        this,
+        [](const std::shared_ptr<WorkItem>& existing, DelayedWorkItem* current) {
+            return existing.get() < current;
+        });
+
+    if (iterator == state->hybrid_queue.end() || (*iterator).get() != this) {
+        return;
+    }
+
+    state->hybrid_queue.erase(iterator);
 }
 
 }

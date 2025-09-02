@@ -12,6 +12,10 @@
 #include <zaf/rx/scheduler/scheduler.h>
 #include <zaf/rx/thread/run_loop_thread.h>
 
+namespace zaf::testing {
+class ThreadPoolSchedulerTest;
+}
+
 namespace zaf::rx {
 
 /**
@@ -81,14 +85,14 @@ public:
     Gets the number of currently existing threads in the thread pool.
     */
     std::size_t CurrentThreadCount() const noexcept {
-        return shared_state_->total_thread_count;
+        return state_->total_thread_count;
     }
 
     /**
     Gets the maximum number of threads that can be created in the thread pool.
     */
     std::size_t MaxThreadCount() const noexcept {
-        return shared_state_->max_thread_count;
+        return state_->max_thread_count;
     }
 
     /**
@@ -128,11 +132,19 @@ private:
     public:
         std::size_t max_thread_count{};
 
-        std::deque<std::shared_ptr<WorkItem>> queued_work_items;
-        std::mutex queued_work_items_mutex;
-        std::condition_variable queued_work_items_cv;
+        // A queue that contains both immediate work items and delayed work items.
+        // Immediate work items are always in the front of the queue, ordered by their scheduling 
+        // order. Delayed work items are always in the back of the queue, ordered by their pointer
+        // value.
+        std::deque<std::shared_ptr<WorkItem>> hybrid_queue;
+
+        // Count of immediate work items in the hybrid queue.
+        std::size_t immediate_work_count{};
+
+        std::mutex hybrid_queue_mutex;
+        std::condition_variable hybrid_queue_cv;
         
-        // This variables should be accessed only when holding queued_work_items_mutex.
+        // This variables should be accessed only when holding hybrid_queue_mutex.
         bool is_stopped{ false };
 
         std::vector<std::unique_ptr<RunLoopThread>> threads;
@@ -159,33 +171,22 @@ private:
 
     class DelayedWorkItem : public WorkItem {
     public:
-        explicit DelayedWorkItem(Closure work) : WorkItem(std::move(work)) {
+        DelayedWorkItem(Closure work, std::weak_ptr<SharedState> state);
 
-        }
+        void SetDelayDisposable(const std::shared_ptr<Disposable>& disposable) noexcept;
 
-        void SetDelayDisposable(std::shared_ptr<Disposable> disposable) {
-            delay_disposable_ = std::move(disposable);
-        }
-
-        ~DelayedWorkItem() {
-            DoDisposal();
-        }
+        ~DelayedWorkItem();
 
     protected:
-        void OnDispose() noexcept override {
-            DoDisposal();
-        }
+        void OnDispose() noexcept override;
 
     private:
-        void DoDisposal() {
-            if (delay_disposable_) {
-                delay_disposable_->Dispose();
-                delay_disposable_.reset();
-            }
-        }
+        void DisposeDelay() noexcept;
+        void RemoveFromQueue() noexcept;
 
     private:
-        std::shared_ptr<Disposable> delay_disposable_;
+        std::weak_ptr<SharedState> state_;
+        std::atomic<std::shared_ptr<Disposable>> delay_disposable_;
     };
 
 private:
@@ -193,17 +194,21 @@ private:
     void CreateFirstThreadIfNeeded();
     void CreateTimerThreadIfNeeded();
 
-    static void ScheduleWorkItem(
-        const std::shared_ptr<SharedState>& shared_state,
-        std::shared_ptr<WorkItem> work_item);
-    
-    static void TryCreateNewThread(const std::shared_ptr<SharedState>& shared_state) noexcept;
-    static void CreateThreadInLock(const std::shared_ptr<SharedState>& shared_state);
+    static void OnDelayedWorkItemReady(
+        const std::weak_ptr<SharedState>& weak_state,
+        const std::shared_ptr<WorkItem>& work_item) noexcept;
 
-    static void ThreadProcedure(const std::shared_ptr<SharedState>& shared_state);
+    static void TryCreateNewThread(const std::shared_ptr<SharedState>& state) noexcept;
+    static void CreateThreadInLock(const std::shared_ptr<SharedState>& state);
+
+    static void ThreadProcedure(const std::shared_ptr<SharedState>& state);
+
+    std::size_t HybridQueueSize() const noexcept;
 
 private:
-    std::shared_ptr<SharedState> shared_state_;
+    std::shared_ptr<SharedState> state_;
+
+    friend class zaf::testing::ThreadPoolSchedulerTest;
 };
 
 }
