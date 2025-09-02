@@ -59,9 +59,18 @@ public:
     @copydoc zaf::rx::Scheduler::ScheduleWork
 
     ---
+    @pre
+        The scheduler is not stopped.
+
+    @throw zaf::PreconditionError
+        Thrown if the scheduler is stopped. This may occur if the scheduler is being destructed 
+        while an executing work tries to schedule a new work.
+
     @throw std::bad_alloc
+
     @throw std::system_error
         Thrown if fails to create a new thread.
+
     @throw ...
         Any exception thrown by the underlying thread implementation.
 
@@ -74,9 +83,18 @@ public:
     @copydoc zaf::rx::Scheduler::ScheduleDelayedWork
 
     ---
+    @pre
+        The scheduler is not stopped.
+
+    @throw zaf::PreconditionError
+        Thrown if the scheduler is stopped. This may occur if the scheduler is being destructed
+        while an executing work tries to schedule a new work.
+
     @throw std::bad_alloc
+
     @throw std::system_error
         Thrown if fails to create a new thread.
+
     @throw ...
         Any exception thrown by the underlying thread implementation.
 
@@ -94,6 +112,7 @@ private:
     public:
         std::mutex mutex;
         std::unordered_set<std::shared_ptr<WorkItem>> work_items;
+        bool is_stopped{};
     };
 
     class WorkItem :
@@ -105,6 +124,7 @@ private:
         ~WorkItem();
 
         void RunOnThread(std::optional<std::chrono::steady_clock::duration> delay);
+        void JoinThread();
 
     protected:
         void OnDispose() noexcept override;

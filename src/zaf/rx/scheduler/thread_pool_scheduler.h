@@ -99,11 +99,20 @@ public:
     @copydoc zaf::rx::Scheduler::ScheduleWork()
 
     ---
+    @pre
+        The scheduler is not stopped.
+
+    @throw zaf::PreconditionError
+        Thrown if scheduler is stopped. This may occur if the scheduler is being destructed while 
+        an executing work tries to schedule a new work.
+
     @throw std::bad_alloc
+
     @throw std::system_error
         Thrown if the first thread in the thread pool cannot be created. Failing to create threads
         other than the first one won't throw exception, as there is at least one thread in the pool
         to execute the work.
+
     @throw ...
         Any exception thrown by the underlying thread implementation when initializing the first
         thread.
@@ -114,9 +123,18 @@ public:
     @copydoc zaf::rx::Scheduler::ScheduleDelayedWork()
 
     ---
+    @pre
+        The scheduler is not stopped.
+
+    @throw zaf::PreconditionError
+        Thrown if scheduler is stopped. This may occur if the scheduler is being destructed while
+        an executing work tries to schedule a new work.
+
     @throw std::bad_alloc
+
     @throw std::system_error
         Thrown if the first thread in the thread pool or the timer thread cannot be created.
+
     @throw ...
         Any exception thrown by the underlying thread implementation when scheduling a delay in the
         timer thread.

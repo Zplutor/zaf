@@ -143,4 +143,40 @@ TEST_F(NewThreadSchedulerTest, CancelDelayedWork) {
     ASSERT_EQ(ThreadCount(), 0);
 }
 
+
+TEST_F(NewThreadSchedulerTest, Destruct) {
+
+    std::optional<zaf::rx::NewThreadScheduler> scheduler;
+    scheduler.emplace();
+    std::atomic<std::size_t> executed_count{};
+    for (int count = 0; count < 3; ++count) {
+        scheduler->ScheduleWork([&]() {
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
+            ++executed_count;
+        });
+    }
+    // This destructs the scheduler and waits all works done.
+    scheduler.reset();
+    ASSERT_EQ(executed_count, 3);
+}
+
+
+TEST_F(NewThreadSchedulerTest, ScheduleWorkWhileDestructing) {
+
+    std::optional<zaf::rx::NewThreadScheduler> scheduler;
+    scheduler.emplace();
+
+    bool is_executed{};
+    scheduler->ScheduleWork([&]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        is_executed = true;
+        ASSERT_THROW(scheduler->ScheduleWork([]() {}), zaf::PreconditionError);
+        ASSERT_THROW(scheduler->ScheduleDelayedWork(std::chrono::milliseconds(10), []() {}), 
+            zaf::PreconditionError);
+    });
+
+    scheduler.reset();
+    ASSERT_TRUE(is_executed);
+}
+
 }

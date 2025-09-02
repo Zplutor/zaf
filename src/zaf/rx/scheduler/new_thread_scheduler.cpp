@@ -17,6 +17,16 @@ NewThreadScheduler::NewThreadScheduler() : shared_state_(std::make_shared<Shared
 
 NewThreadScheduler::~NewThreadScheduler() {
 
+    std::unordered_set<std::shared_ptr<WorkItem>> work_items;
+    {
+        std::lock_guard<std::mutex> lock(shared_state_->mutex);
+        shared_state_->is_stopped = true;
+        work_items = std::move(shared_state_->work_items);
+    }
+
+    for (const auto& work_item : work_items) {
+        work_item->JoinThread();
+    }
 }
 
 
@@ -42,6 +52,7 @@ std::shared_ptr<Disposable> NewThreadScheduler::ScheduleWorkOnThread(
     auto work_item = std::make_shared<WorkItem>(std::move(work), shared_state_);
     {
         std::lock_guard<std::mutex> lock(shared_state_->mutex);
+        ZAF_EXPECT(!shared_state_->is_stopped);
         shared_state_->work_items.insert(work_item);
     }
 
@@ -92,6 +103,11 @@ void NewThreadScheduler::WorkItem::RunOnThread(
     else {
         work_disposable_ = thread_->PostWork(std::move(thread_work));
     }
+}
+
+
+void NewThreadScheduler::WorkItem::JoinThread() {
+    thread_.reset();
 }
 
 

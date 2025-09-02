@@ -85,6 +85,7 @@ std::shared_ptr<Disposable> ThreadPoolScheduler::ScheduleWork(Closure work) {
     bool need_create_thread{};
     {
         std::lock_guard lock(state_->hybrid_queue_mutex);
+        ZAF_EXPECT(!state_->is_stopped);
 
         auto insert_position = state_->hybrid_queue.begin() + state_->immediate_work_count;
         state_->hybrid_queue.insert(insert_position, work_item);
@@ -120,6 +121,7 @@ std::shared_ptr<Disposable> ThreadPoolScheduler::ScheduleDelayedWork(
     // Insert the delayed work item into the hybrid queue.
     {
         std::lock_guard lock(state_->hybrid_queue_mutex);
+        ZAF_EXPECT(!state_->is_stopped);
 
         auto insert_position = std::lower_bound(
             state_->hybrid_queue.begin() + state_->immediate_work_count,

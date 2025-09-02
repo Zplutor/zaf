@@ -292,4 +292,42 @@ TEST_F(ThreadPoolSchedulerTest, SchedulerDelayedWork_Cancel) {
     ASSERT_FALSE(is_execute);
 }
 
+
+TEST_F(ThreadPoolSchedulerTest, Destruct) {
+
+    std::optional<zaf::rx::ThreadPoolScheduler> scheduler;
+    scheduler.emplace(2);
+
+    std::atomic<std::size_t> executed_count{};
+    for (int count = 0; count < 4; ++count) {
+        scheduler->ScheduleWork([&]() {
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            ++executed_count;
+        });
+    }
+
+    // This destructs the scheduler and waits all works done.
+    scheduler.reset();
+
+    ASSERT_EQ(executed_count, 4);
+}
+
+
+TEST_F(ThreadPoolSchedulerTest, ScheduleWorkWhileDestructing) {
+
+    std::optional<zaf::rx::ThreadPoolScheduler> scheduler;
+    scheduler.emplace(2);
+
+    scheduler->ScheduleWork([&]() {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+        // Posting new works to the scheduler while it is destructing.
+        ASSERT_THROW(scheduler->ScheduleWork([]() {}), zaf::PreconditionError);
+        ASSERT_THROW(scheduler->ScheduleDelayedWork(std::chrono::milliseconds(10), []() {}), 
+            zaf::PreconditionError);
+    });
+
+    scheduler.reset();
+}
+
 }

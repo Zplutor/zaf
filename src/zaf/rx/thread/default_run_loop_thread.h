@@ -49,9 +49,14 @@ public:
     @copydoc zaf::rx::RunLoopThread::PostWork()
 
     ---
+    @pre
+        The thread is not stopped.
+
+    @throw zaf::PreconditionError
+        Thrown if the thread is stopped. This may occur if the thread is being destructed while an 
+        executing work tries to post a new work.
+
     @throw std::bad_alloc
-    @throw zaf::InvalidOperationError
-        Thrown if the thread is stopped.
     */
     std::shared_ptr<Disposable> PostWork(Closure work) override;
 
@@ -59,9 +64,14 @@ public:
     @copydoc zaf::rx::RunLoopThread::PostDelayedWork()
 
     ---
+    @pre
+        The thread is not stopped.
+
+    @throw zaf::PreconditionError
+        Thrown if the thread is stopped. This may occur if the thread is being destructed while an 
+        executing work tries to post a new work.
+
     @throw std::bad_alloc
-    @throw zaf::InvalidOperationError
-        Thrown if the thread is stopped.
     */
     std::shared_ptr<Disposable> PostDelayedWork(
         std::chrono::steady_clock::duration delay, 

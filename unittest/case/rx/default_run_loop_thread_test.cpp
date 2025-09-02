@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/invalid_operation_error.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/thread/default_run_loop_thread.h>
 
 namespace zaf::testing {
@@ -311,14 +311,14 @@ TEST_F(DefaultRunLoopThreadTest, Destruct) {
 
         execute_values.push_back(2);
 
-        // Post new work to a stopped thread should throw an exception.
+        // Posting new work to a stopped thread should throw an exception.
         ASSERT_THROW(
             RunLoopThread().PostWork([&]() { execute_values.push_back(3); }),
-            zaf::InvalidOperationError);
+            zaf::PreconditionError);
 
         ASSERT_THROW(
             RunLoopThread().PostDelayedWork({}, [&]() { execute_values.push_back(4); }),
-            zaf::InvalidOperationError);
+            zaf::PreconditionError);
     });
 
     // Here will wait for the thread to stop.
