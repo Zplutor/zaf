@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/contract_error.h>
+#include <zaf/rx/execution_stopped_error.h>
 #include <zaf/rx/scheduler/single_thread_scheduler.h>
 
 TEST(SingleThreadSchedulerTest, Constructor_Precondition) {
@@ -33,9 +34,9 @@ TEST(SingleThreadSchedulerTest, Destruct) {
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
         is_executed = true;
 
-        ASSERT_THROW(scheduler->ScheduleWork([]() {}), zaf::PreconditionError);
+        ASSERT_THROW(scheduler->ScheduleWork([]() {}), zaf::rx::ExecutionStoppedError);
         ASSERT_THROW(scheduler->ScheduleDelayedWork(std::chrono::milliseconds(10), []() {}),
-            zaf::PreconditionError);
+            zaf::rx::ExecutionStoppedError);
     });
 
     scheduler.reset();

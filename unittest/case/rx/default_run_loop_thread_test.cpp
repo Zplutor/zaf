@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/contract_error.h>
+#include <zaf/rx/execution_stopped_error.h>
 #include <zaf/rx/thread/default_run_loop_thread.h>
 
 namespace zaf::testing {
@@ -314,11 +315,11 @@ TEST_F(DefaultRunLoopThreadTest, Destruct) {
         // Posting new work to a stopped thread should throw an exception.
         ASSERT_THROW(
             RunLoopThread().PostWork([&]() { execute_values.push_back(3); }),
-            zaf::PreconditionError);
+            zaf::rx::ExecutionStoppedError);
 
         ASSERT_THROW(
             RunLoopThread().PostDelayedWork({}, [&]() { execute_values.push_back(4); }),
-            zaf::PreconditionError);
+            zaf::rx::ExecutionStoppedError);
     });
 
     // Here will wait for the thread to stop.

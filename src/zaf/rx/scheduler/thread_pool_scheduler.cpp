@@ -1,5 +1,6 @@
 #include <zaf/rx/scheduler/thread_pool_scheduler.h>
 #include <zaf/base/error/contract_error.h>
+#include <zaf/rx/execution_stopped_error.h>
 #include <zaf/rx/thread/default_run_loop_thread.h>
 
 namespace zaf::rx {
@@ -85,7 +86,9 @@ std::shared_ptr<Disposable> ThreadPoolScheduler::ScheduleWork(Closure work) {
     bool need_create_thread{};
     {
         std::lock_guard lock(state_->hybrid_queue_mutex);
-        ZAF_EXPECT(!state_->is_stopped);
+        if (state_->is_stopped) {
+            throw ExecutionStoppedError(ZAF_SOURCE_LOCATION());
+        }
 
         auto insert_position = state_->hybrid_queue.begin() + state_->immediate_work_count;
         state_->hybrid_queue.insert(insert_position, work_item);
@@ -121,7 +124,9 @@ std::shared_ptr<Disposable> ThreadPoolScheduler::ScheduleDelayedWork(
     // Insert the delayed work item into the hybrid queue.
     {
         std::lock_guard lock(state_->hybrid_queue_mutex);
-        ZAF_EXPECT(!state_->is_stopped);
+        if (state_->is_stopped) {
+            throw ExecutionStoppedError(ZAF_SOURCE_LOCATION());
+        }
 
         auto insert_position = std::lower_bound(
             state_->hybrid_queue.begin() + state_->immediate_work_count,

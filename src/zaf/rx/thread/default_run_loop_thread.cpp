@@ -1,5 +1,6 @@
 #include <zaf/rx/thread/default_run_loop_thread.h>
 #include <zaf/base/error/contract_error.h>
+#include <zaf/rx/execution_stopped_error.h>
 
 namespace zaf::rx {
 
@@ -34,7 +35,9 @@ std::shared_ptr<Disposable> DefaultRunLoopThread::PostWork(Closure work) {
     std::shared_ptr<WorkItem> work_item;
     {
         std::lock_guard<std::mutex> lock(state_->lock);
-        ZAF_EXPECT(!state_->is_stopped);
+        if (state_->is_stopped) {
+            throw ExecutionStoppedError(ZAF_SOURCE_LOCATION());
+        }
 
         work_item = std::make_shared<WorkItem>(std::move(work));
 
@@ -69,7 +72,9 @@ std::shared_ptr<Disposable> DefaultRunLoopThread::PostWorkAt(
 
     {
         std::lock_guard<std::mutex> lock(state_->lock);
-        ZAF_EXPECT(!state_->is_stopped);
+        if (state_->is_stopped) {
+            throw ExecutionStoppedError(ZAF_SOURCE_LOCATION());
+        }
 
         auto iterator = std::lower_bound(
             state_->hybrid_queue.begin() + state_->immediate_work_count,

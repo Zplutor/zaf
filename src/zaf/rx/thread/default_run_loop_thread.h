@@ -49,10 +49,7 @@ public:
     @copydoc zaf::rx::RunLoopThread::PostWork()
 
     ---
-    @pre
-        The thread is not stopped.
-
-    @throw zaf::PreconditionError
+    @throw zaf::rx::ExecutionStoppedError
         Thrown if the thread is stopped. This may occur if the thread is being destructed while an 
         executing work tries to post a new work.
 
@@ -64,10 +61,7 @@ public:
     @copydoc zaf::rx::RunLoopThread::PostDelayedWork()
 
     ---
-    @pre
-        The thread is not stopped.
-
-    @throw zaf::PreconditionError
+    @throw zaf::rx::ExecutionStoppedError
         Thrown if the thread is stopped. This may occur if the thread is being destructed while an 
         executing work tries to post a new work.
 

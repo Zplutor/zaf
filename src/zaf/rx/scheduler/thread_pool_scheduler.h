@@ -99,10 +99,7 @@ public:
     @copydoc zaf::rx::Scheduler::ScheduleWork()
 
     ---
-    @pre
-        The scheduler is not stopped.
-
-    @throw zaf::PreconditionError
+    @throw zaf::rx::ExecutionStoppedError
         Thrown if scheduler is stopped. This may occur if the scheduler is being destructed while 
         an executing work tries to schedule a new work.
 
@@ -123,10 +120,7 @@ public:
     @copydoc zaf::rx::Scheduler::ScheduleDelayedWork()
 
     ---
-    @pre
-        The scheduler is not stopped.
-
-    @throw zaf::PreconditionError
+    @throw zaf::rx::ExecutionStoppedError
         Thrown if scheduler is stopped. This may occur if the scheduler is being destructed while
         an executing work tries to schedule a new work.
 

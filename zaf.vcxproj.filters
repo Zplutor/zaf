@@ -3115,5 +3115,8 @@
     <ClInclude Include="src\zaf\rx\scheduler\thread_pool_scheduler.h">
       <Filter>zaf\rx\scheduler</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\rx\execution_stopped_error.h">
+      <Filter>zaf\rx</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

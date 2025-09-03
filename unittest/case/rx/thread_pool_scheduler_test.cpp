@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/contract_error.h>
+#include <zaf/rx/execution_stopped_error.h>
 #include <zaf/rx/scheduler/thread_pool_scheduler.h>
 
 namespace zaf::testing {
@@ -322,9 +323,9 @@ TEST_F(ThreadPoolSchedulerTest, ScheduleWorkWhileDestructing) {
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
         // Posting new works to the scheduler while it is destructing.
-        ASSERT_THROW(scheduler->ScheduleWork([]() {}), zaf::PreconditionError);
+        ASSERT_THROW(scheduler->ScheduleWork([]() {}), zaf::rx::ExecutionStoppedError);
         ASSERT_THROW(scheduler->ScheduleDelayedWork(std::chrono::milliseconds(10), []() {}), 
-            zaf::PreconditionError);
+            zaf::rx::ExecutionStoppedError);
     });
 
     scheduler.reset();

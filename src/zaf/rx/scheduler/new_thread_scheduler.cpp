@@ -1,5 +1,6 @@
 #include <zaf/rx/scheduler/new_thread_scheduler.h>
 #include <zaf/base/error/contract_error.h>
+#include <zaf/rx/execution_stopped_error.h>
 #include <zaf/rx/thread/default_run_loop_thread.h>
 
 namespace zaf::rx {
@@ -52,7 +53,9 @@ std::shared_ptr<Disposable> NewThreadScheduler::ScheduleWorkOnThread(
     auto work_item = std::make_shared<WorkItem>(std::move(work), shared_state_);
     {
         std::lock_guard<std::mutex> lock(shared_state_->mutex);
-        ZAF_EXPECT(!shared_state_->is_stopped);
+        if (shared_state_->is_stopped) {
+            throw ExecutionStoppedError(ZAF_SOURCE_LOCATION());
+        }
         shared_state_->work_items.insert(work_item);
     }
 
