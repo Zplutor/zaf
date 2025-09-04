@@ -24,7 +24,7 @@ public:
     Posts a work to the thread which will be executed without delay.
 
     @param work
-        The work to be executed.
+        The work to be executed. It must not throw, otherwise the behavior is undefined.
 
     @pre
         The work is not null.
@@ -53,7 +53,7 @@ public:
         The delay before executing the work.
 
     @param work
-        The work to be executed.
+        The work to be executed. It must not throw, otherwise the behavior is undefined.
 
     @pre
         The work is not null.

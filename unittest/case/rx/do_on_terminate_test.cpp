@@ -8,6 +8,12 @@
 
 using namespace zaf;
 
+TEST(RxDoOnTerminatedTest, Precondition) {
+    auto observable = zaf::rx::Observable<int>::Just(0);
+    ASSERT_THROW(observable.DoOnTerminate(nullptr), zaf::PreconditionError);
+}
+
+
 TEST(RxDoOnTerminatedTest, OnError) {
 
     int call_sequence{};

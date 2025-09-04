@@ -1,5 +1,6 @@
 #include <zaf/rx/internal/operator/finally_operator.h>
 #include <zaf/base/as.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
@@ -69,6 +70,8 @@ FinallyOperator::FinallyOperator(std::shared_ptr<ObservableCore> source, Closure
     source_(std::move(source)),
     finally_work_(std::move(finally_work)) {
 
+    ZAF_EXPECT(source_);
+    ZAF_EXPECT(finally_work_);
 }
 
 

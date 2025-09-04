@@ -1,8 +1,16 @@
 #include <mutex>
 #include <thread>
 #include <gtest/gtest.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/scheduler/single_thread_scheduler.h>
+
+TEST(RxSubscribeOnTest, Precondition) {
+
+    auto observable = zaf::rx::Observable<int>::Just(0);
+    ASSERT_THROW(observable.SubscribeOn(nullptr), zaf::PreconditionError);
+}
+
 
 TEST(RxSubscribeOnTest, SubscribeOn) {
 

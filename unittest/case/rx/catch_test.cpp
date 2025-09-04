@@ -1,5 +1,7 @@
 #include <optional>
 #include <gtest/gtest.h>
+#include <zaf/base/error/invalid_data_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/rx/subject/replay_subject.h>
 #include <zaf/rx/subject/subject.h>
 
@@ -14,6 +16,14 @@ enum class MockError {
 };
 
 }
+
+
+TEST(RxCatchTest, Precondition) {
+
+    auto observable = zaf::rx::Observable<int>::Just(0);
+    ASSERT_THROW(observable.Catch(nullptr), zaf::PreconditionError);
+}
+
 
 TEST(RxCatchTest, Catch) {
 
@@ -155,4 +165,30 @@ TEST(RxCatchTest, FreeSubscriptionOnCompleted) {
 
     std::vector<int> expected{ 1, 99 };
     ASSERT_EQ(result, expected);
+}
+
+
+TEST(RxCatchTest, ThrowInHandler) {
+
+    zaf::rx::Subject<int> subject;
+    bool error_caught{};
+    auto sub = subject.AsObservable().Catch([](const std::exception_ptr& error) {
+        throw zaf::InvalidDataError{};
+        return zaf::rx::Observable<int>::Never();
+    })
+    .Subscribe(
+        [](int) {},
+        [&](const std::exception_ptr& error) {
+            try {
+                std::rethrow_exception(error);
+            }
+            catch (const zaf::InvalidDataError&) {
+                error_caught = true;
+            }
+            catch (...) {
+            }
+        }
+    );
+    subject.AsObserver().OnError(zaf::InvalidOperationError{});
+    ASSERT_TRUE(error_caught);
 }

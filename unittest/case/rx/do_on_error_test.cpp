@@ -1,8 +1,17 @@
 #include <gtest/gtest.h>
 #include <optional>
+#include <zaf/base/error/invalid_data_error.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/rx/subject/subject.h>
 
 using namespace zaf;
+
+TEST(RxDoOnErrorTest, NonTemplate_Precondition) {
+    rx::Subject<int> subject;
+    auto observable = subject.AsObservable();
+    ASSERT_THROW(observable.DoOnError(nullptr), zaf::PreconditionError);
+}
+
 
 TEST(RxDoOnErrorTest, NonTemplate) {
 
@@ -30,6 +39,38 @@ TEST(RxDoOnErrorTest, NonTemplate) {
     ASSERT_EQ(on_next_sequence, 1);
     ASSERT_EQ(do_error_sequence, 2);
     ASSERT_EQ(on_error_sequence, 3);
+}
+
+
+TEST(RxDoOnErrorTest, NonTemplate_Throw) {
+
+    rx::Subject<int> subject;
+    bool error_caught{};
+    auto sub = subject.AsObservable().DoOnError([&](const std::exception_ptr& exception) {
+        throw zaf::InvalidDataError{};
+    })
+    .Subscribe(
+        [](int) {},
+        [&](const std::exception_ptr& exception) {
+            try {
+                std::rethrow_exception(exception);
+            }
+            catch (const zaf::InvalidDataError&) {
+                error_caught = true;
+            }
+            catch (...) {
+            }
+        }
+    );
+    subject.AsObserver().OnError(zaf::InvalidOperationError{});
+    ASSERT_TRUE(error_caught);
+}
+
+
+TEST(RxDoOnErrorTest, Template_Precondition) {
+    rx::Subject<int> subject;
+    auto observable = subject.AsObservable();
+    ASSERT_THROW(observable.DoOnError<std::bad_alloc>(nullptr), zaf::PreconditionError);
 }
 
 
@@ -62,4 +103,31 @@ TEST(RxDoOnErrorTest, Template) {
         subject.AsObserver().OnError(std::runtime_error("DoOnError"));
         ASSERT_FALSE(do_on_error_called);
     }
+}
+
+
+TEST(RxDoOnErrorTest, Template_Throw) {
+
+    rx::Subject<int> subject;
+    bool error_caught{};
+    auto sub = subject.AsObservable().DoOnError<zaf::InvalidOperationError>(
+        [&](const zaf::InvalidOperationError& error) {
+            throw zaf::InvalidDataError{};
+        }
+    )
+    .Subscribe(
+        [](int) {},
+        [&](const std::exception_ptr& exception) {
+            try {
+                std::rethrow_exception(exception);
+            }
+            catch (const zaf::InvalidDataError&) {
+                error_caught = true;
+            }
+            catch (...) {
+            }
+        }
+    );
+    subject.AsObserver().OnError(zaf::InvalidOperationError{});
+    ASSERT_TRUE(error_caught);
 }

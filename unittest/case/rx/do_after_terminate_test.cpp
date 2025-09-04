@@ -4,6 +4,12 @@
 #include <zaf/rx/single.h>
 #include <zaf/rx/subject/subject.h>
 
+TEST(RxDoAfterTerminateTest, Precondition) {
+    auto observable = zaf::rx::Observable<int>::Just(0);
+    ASSERT_THROW(observable.DoAfterTerminate(nullptr), zaf::PreconditionError);
+}
+
+
 TEST(RxDoAfterTerminateTest, OnError) {
 
     int call_sequence{};

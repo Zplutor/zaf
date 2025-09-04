@@ -1,11 +1,20 @@
 #include <mutex>
 #include <thread>
 #include <gtest/gtest.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/base/error/invalid_data_error.h>
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/rx/observable.h>
+#include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/single.h>
+
+TEST(RxCreateTest, Create_Precondition) {
+
+    ASSERT_THROW(zaf::rx::Observable<int>::Create(nullptr), zaf::PreconditionError);
+    ASSERT_THROW(zaf::rx::Single<int>::Create(nullptr), zaf::PreconditionError);
+}
+
 
 TEST(RxCreateTest, Create_OnCompleted) {
 
@@ -238,6 +247,26 @@ TEST(RxCreateTest, Create_Single) {
         ASSERT_FALSE(on_success_called);
         ASSERT_EQ(error_message, "Test error");
     }
+}
+
+
+TEST(RxCreateTest, CreateOn_Precondition) {
+
+    ASSERT_THROW(
+        zaf::rx::Observable<int>::CreateOn(nullptr, [](zaf::rx::Subscriber<int>) {}), 
+        zaf::PreconditionError);
+
+    ASSERT_THROW(
+        zaf::rx::Single<int>::CreateOn(nullptr, [](zaf::rx::SingleSubscriber<int>) {}), 
+        zaf::PreconditionError);
+
+    ASSERT_THROW(
+        zaf::rx::Observable<int>::CreateOn(zaf::rx::MainThreadScheduler::Instance(), nullptr), 
+        zaf::PreconditionError);
+
+    ASSERT_THROW(
+        zaf::rx::Single<int>::CreateOn(zaf::rx::MainThreadScheduler::Instance(), nullptr), 
+        zaf::PreconditionError);
 }
 
 

@@ -4,6 +4,12 @@
 #include <zaf/rx/single.h>
 #include <zaf/rx/subject/subject.h>
 
+TEST(RxFinallyTest, Precondition) {
+    auto observable = zaf::rx::Observable<int>::Just(0);
+    ASSERT_THROW(observable.Finally(nullptr), zaf::PreconditionError);
+}
+
+
 TEST(RxFinallyTest, Finally) {
 
     struct TestState {

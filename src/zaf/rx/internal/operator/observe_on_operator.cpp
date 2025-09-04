@@ -1,5 +1,6 @@
 #include <zaf/rx/internal/operator/observe_on_operator.h>
 #include <zaf/base/as.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
 
@@ -96,6 +97,8 @@ ObserveOnOperator::ObserveOnOperator(
     source_(std::move(source)),
     scheduler_(std::move(scheduler)) {
 
+    ZAF_EXPECT(source_);
+    ZAF_EXPECT(scheduler_);
 }
 
 

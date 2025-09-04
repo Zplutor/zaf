@@ -1,6 +1,14 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/single.h>
+
+TEST(RxThrowTest, Precondition) {
+
+    ASSERT_THROW(zaf::rx::Observable<int>::Throw(std::exception_ptr{}), zaf::PreconditionError);
+    ASSERT_THROW(zaf::rx::Single<int>::Throw(std::exception_ptr{}), zaf::PreconditionError);
+}
+
 
 TEST(RxThrowTest, Observable_ExceptionPtr) {
 
