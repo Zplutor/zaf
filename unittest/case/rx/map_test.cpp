@@ -1,5 +1,13 @@
 #include <gtest/gtest.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/subject/subject.h>
+
+TEST(RxMapTest, Precondition)  {
+    zaf::rx::Subject<int> subject;
+    auto observable = subject.AsObservable();
+    ASSERT_THROW(observable.Map<std::string>(nullptr), zaf::PreconditionError);
+}
+
 
 TEST(RxMapTest, Map) {
 

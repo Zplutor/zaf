@@ -218,6 +218,7 @@ public:
     @post 
         The return object is not null.
 
+    @throw std::bad_alloc
     @throw ...
         Any exception thrown by the underlying observable implementation when subscribing.
     */
@@ -265,16 +266,16 @@ public:
     }
 
     /**
-    Creates a new observable that invokes the specified observer for each emission by the current
+    Creates a new observable that invokes the specified observer for all emissions by the current
     observable.
 
     @param observer
-        The observer to be invoked for each emission. It is invoked before the emission is sent to
+        The observer to be invoked for all emissions. It is invoked before the emission is sent to
         downstream observers. If any handler of the observer throws an exception, the new 
         observable will terminate with the thrown exception as an error.
 
     @return
-        An observable that invokes the specified observer for each emission.
+        An observable that invokes the specified observer for all emissions.
 
     @throw std::bad_alloc
     */
@@ -459,17 +460,72 @@ public:
         return OBSERVABLE<T>{ core_->Finally(std::move(handler)) };
     }
 
+    /**
+    Creates a new observable that applies a mapping function to each item emitted by the current
+    observable, transforming the items into items of another type.
+
+    @tparam K
+        The type of items emitted by the new observable.
+
+    @param mapper
+        The mapping function to apply to each item emitted by the current observable. It has the
+        following signature:
+        @code{.cpp}
+        K(const T& value);
+        @endcode
+        If the mapping function throws an exception, the new observable will terminate with the
+        thrown exception as an error.
+
+    @pre
+        The mapping function is not null.
+
+    @return
+        An observable that emits items of type `K`.
+
+    @throw zaf::PreconditionError
+    @throw std::bad_alloc
+    */
     template<typename K>
     OBSERVABLE<K> Map(std::function<K(const T&)> mapper) {
+        ZAF_EXPECT(mapper);
         auto new_core = core_->Map([mapper = std::move(mapper)](const std::any& value) {
             return mapper(std::any_cast<T>(value));
         });
         return OBSERVABLE<K>{ std::move(new_core) };
     }
 
+    /**
+    Creates a new observable that applies a mapping function to each item emitted by the current
+    observable, transforming the items into observables, and then flattens these observables into
+    one observable.
+
+    @tparam K
+        The type of items emitted by the new observable.
+
+    @param mapper
+        The mapping function to apply to each item emitted by the current observable. It has the
+        following signature:
+        @code{.cpp}
+        OBSERVABLE<K>(const T& value);
+        @endcode
+        If the mapping function throws an exception, the new observable will terminate with the
+        thrown exception as an error.
+
+    @pre
+        The mapping function is not null.
+
+    @return
+        An observable that emits items of type `K`. It terminates when one of the following
+        conditions is met:
+        - The current observable and all mapped observables have completed.
+        - The current observable or any mapped observable emits an error.
+
+    @throw zaf::PreconditionError
+    @throw std::bad_alloc
+    */
     template<typename K>
     OBSERVABLE<K> FlatMap(std::function<OBSERVABLE<K>(const T&)> mapper) {
-
+        ZAF_EXPECT(mapper);
         const auto& core = static_cast<const OBSERVABLE<T>*>(this)->Core();
         auto new_core = core->FlatMap([mapper = std::move(mapper)](const std::any& value) {
             return mapper(std::any_cast<T>(value)).Core();

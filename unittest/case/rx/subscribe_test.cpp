@@ -3,6 +3,35 @@
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject/subject.h>
 
+TEST(RxSubscribeTest, Precondition) {
+
+    auto observable = zaf::rx::Observable<int>::Just(0);
+
+    // OnNext
+    ASSERT_THROW(auto sub = observable.Subscribe(nullptr), zaf::PreconditionError);
+
+    // OnNext + OnError
+    ASSERT_THROW(
+        auto sub = observable.Subscribe(nullptr, [](std::exception_ptr) {}), 
+        zaf::PreconditionError);
+    ASSERT_THROW(
+        auto sub = observable.Subscribe([](int) {}, zaf::rx::OnError{}),
+        zaf::PreconditionError);
+
+    // OnNext + OnCompleted
+    ASSERT_THROW(
+        auto sub = observable.Subscribe(nullptr, []() {}), 
+        zaf::PreconditionError);
+    ASSERT_THROW(
+        auto sub = observable.Subscribe([](int) {}, zaf::rx::OnCompleted{}), 
+        zaf::PreconditionError);
+
+    // OnNext + OnError + OnCompleted
+    // This overload doesn't have precondition.
+    ASSERT_NO_THROW(auto sub = observable.Subscribe(nullptr, nullptr, nullptr));
+}
+
+
 //Make sure there is no exception with empty observer.
 TEST(RxSubscribeTest, EmptyObserver) {
 

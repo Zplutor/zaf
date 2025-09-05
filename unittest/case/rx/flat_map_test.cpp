@@ -1,8 +1,17 @@
 #include <mutex>
 #include <optional>
 #include <gtest/gtest.h>
+#include <zaf/base/error/contract_error.h>
 #include <zaf/rx/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/subject/subject.h>
+
+TEST(RxFlatMapTest, Precondition) {
+
+    zaf::rx::Subject<int> subject;
+    auto observable = subject.AsObservable();
+    ASSERT_THROW(observable.FlatMap<std::string>(nullptr), zaf::PreconditionError);
+}
+
 
 TEST(RxFlatMapTest, FlatMap) {
 

@@ -4,6 +4,32 @@
 using namespace zaf;
 using namespace zaf::rx;
 
+TEST(RxObserverTest, Precondition) {
+
+    // OnNext
+    ASSERT_THROW(Observer<int>::Create(OnNext<int>{}), zaf::PreconditionError);
+
+    // OnNext + OnError
+    ASSERT_THROW(
+        Observer<int>::Create(nullptr, [](std::exception_ptr) {}), 
+        zaf::PreconditionError);
+    ASSERT_THROW(
+        Observer<int>::Create([](int) {}, OnError{}),
+        zaf::PreconditionError);
+
+    // OnNext + OnCompleted
+    ASSERT_THROW(Observer<int>::Create(nullptr, []() {}), zaf::PreconditionError);
+    ASSERT_THROW(Observer<int>::Create([](int) {}, OnCompleted{}), zaf::PreconditionError);
+
+    // OnError
+    ASSERT_THROW(Observer<int>::Create(OnError{}), zaf::PreconditionError);
+
+    // OnNext + OnError + OnCompleted
+    // This overload does not have preconditions.
+    ASSERT_NO_THROW(Observer<int>::Create(nullptr, nullptr, nullptr));
+}
+
+
 //Make sure the five overloads work correctly.
 TEST(RxObserverTest, Create) {
 

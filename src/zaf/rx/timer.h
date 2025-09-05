@@ -31,10 +31,8 @@ public:
 
     @return
         A single that emits 0 on the specified scheduler after the specified delay. No error nor 
-        completion will be emitted.
-
-        When subscribing to the single, any exception will be thrown if the timer fails to start
-        on the specified scheduler.
+        completion will be emitted. When subscribing to the single, any exception will be thrown if 
+        the timer fails to start on the specified scheduler.
 
     @throw zaf::PreconditionError
     @throw std::bad_alloc
@@ -58,10 +56,9 @@ public:
     @return
         An observable that emits increasing numbers starting from 0 on the specified scheduler at
         the specified interval. An error will be emitted if the timer fails to set subsequent 
-        intervals after the first emission. No completion will be emitted.
-
-        When subscribing to the observable, any exception will be thrown if the timer fails to 
-        start on the specified scheduler.
+        intervals after the first emission. No completion will be emitted. When subscribing to the 
+        observable, any exception will be thrown if the timer fails to start on the specified 
+        scheduler.
 
     @throw zaf::PreconditionError
     @throw std::bad_alloc
@@ -89,10 +86,8 @@ public:
         An observable that emits increasing numbers starting from 0 on the specified scheduler 
         after the specified delay and then at the specified interval. An error will be emitted if 
         the timer fails to set subsequent intervals after the first emission. No completion will be
-        emitted.
-
-        When subscribing to the observable, any exception will be thrown if the timer fails to
-        start on the specified scheduler.
+        emitted. When subscribing to the observable, any exception will be thrown if the timer 
+        fails to start on the specified scheduler.
 
     @throw zaf::PreconditionError
     @throw std::bad_alloc

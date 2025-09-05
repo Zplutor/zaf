@@ -3,6 +3,30 @@
 #include <zaf/rx/internal/producer.h>
 #include <zaf/rx/subject/subject.h>
 
+TEST(RxDoTest, Precondition) {
+
+    auto observable = zaf::rx::Observable<int>::Just(0);
+
+    // OnNext
+    ASSERT_THROW(observable.Do(nullptr), zaf::PreconditionError);
+
+    // OnNext + OnError
+    ASSERT_THROW(observable.Do(nullptr, [](std::exception_ptr) {}), zaf::PreconditionError);
+    ASSERT_THROW(observable.Do([](int) {}, zaf::rx::OnError{}), zaf::PreconditionError);
+
+    // OnNext + OnCompleted
+    ASSERT_THROW(observable.Do(nullptr, []() {}), zaf::PreconditionError);
+    ASSERT_THROW(observable.Do([](int) {}, zaf::rx::OnCompleted{}), zaf::PreconditionError);
+
+    // DoOnCompleted
+    ASSERT_THROW(observable.DoOnCompleted(nullptr), zaf::PreconditionError);
+
+    // OnNext + OnError + OnCompleted
+    // This overload doesn't have precondition.
+    ASSERT_NO_THROW(observable.Do(nullptr, nullptr, nullptr));
+}
+
+
 TEST(RxDoTest, OnNext) {
 
     std::vector<int> do_values;
