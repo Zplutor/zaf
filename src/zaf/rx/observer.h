@@ -16,7 +16,7 @@ class ObserverInsider;
 namespace zaf::rx {
 
 /**
-Represents an observer that receives emissions from an observable.
+Represents an observer that receives emissions from a `zaf::rx::Observable<>`.
 
 @tparam T
     The type of values that the observer receives.
@@ -167,19 +167,64 @@ public:
     }
 
 public:
+    /**
+    Emits an item to the observer, invokes the item handler.
+
+    @param value
+        The item to emit.
+
+    @throw ...
+        Any exception thrown by the item handler.
+    */
     void OnNext(const T& value) const {
         core_->OnNext(value);
     }
 
+    /**
+    Emits an error to the observer, invokes the error handler.
+
+    @param error
+        The error to emit.
+
+    @pre 
+        The error is not null.
+
+    @throw zaf::PreconditionError
+    @throw ...
+        Any exception thrown by the error handler.
+    */
     void OnError(const std::exception_ptr& error) const {
+        ZAF_EXPECT(error);
         core_->OnError(error);
     }
 
+    /**
+    Emits an error to the observer, invokes the error handler.
+
+    @tparam E
+        The type of the error to emit.
+
+    @param error
+        The error to emit.
+
+    @throw ...
+        Any exception thrown by the error handler.
+
+    @details
+        This method is a convenience for creating an `std::exception_ptr` from the specified error
+        and calling the `OnError(const std::exception_ptr&)` overload.
+    */
     template<typename E>
     void OnError(E error) const {
         this->OnError(std::make_exception_ptr(std::move(error)));
     }
 
+    /**
+    Emits a completion notification to the observer, invokes the completion handler.
+
+    @throw ...
+        Any exception thrown by the completion handler.
+    */
     void OnCompleted() const {
         core_->OnCompleted();
     }

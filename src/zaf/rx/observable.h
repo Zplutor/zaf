@@ -130,6 +130,7 @@ public:
     */
     [[nodiscard]]
     std::shared_ptr<Disposable> Subscribe(OnNext<T> on_next) {
+        ZAF_EXPECT(on_next);
         return Subscribe(std::move(on_next), nullptr, nullptr);
     }
 
@@ -161,6 +162,8 @@ public:
     */
     [[nodiscard]]
     std::shared_ptr<Disposable> Subscribe(OnNext<T> on_next, OnError on_error) {
+        ZAF_EXPECT(on_next);
+        ZAF_EXPECT(on_error);
         return Subscribe(std::move(on_next), std::move(on_error), nullptr);
     }
 
@@ -192,6 +195,8 @@ public:
     */
     [[nodiscard]]
     std::shared_ptr<Disposable> Subscribe(OnNext<T> on_next, OnCompleted on_completed) {
+        ZAF_EXPECT(on_next);
+        ZAF_EXPECT(on_completed);
         return Subscribe(std::move(on_next), nullptr, std::move(on_completed));
     }
 
@@ -256,6 +261,7 @@ public:
     @throw std::bad_alloc
     */
     Observable Do(OnNext<T> on_next) {
+        ZAF_EXPECT(on_next);
         return Do(std::move(on_next), nullptr, nullptr);
     }
 
@@ -286,6 +292,8 @@ public:
         error.
     */
     Observable Do(OnNext<T> on_next, OnError on_error) {
+        ZAF_EXPECT(on_next);
+        ZAF_EXPECT(on_error);
         return Do(std::move(on_next), std::move(on_error), nullptr);
     }
 
@@ -316,6 +324,8 @@ public:
         error.
     */
     Observable Do(OnNext<T> on_next, OnCompleted on_completed) {
+        ZAF_EXPECT(on_next);
+        ZAF_EXPECT(on_completed);
         return Do(std::move(on_next), nullptr, std::move(on_completed));
     }
 
