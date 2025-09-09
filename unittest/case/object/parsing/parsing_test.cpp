@@ -9,7 +9,7 @@
 
 namespace {
 
-class Base : public zaf::Object {
+class Base : public zaf::dynamic::Object {
 public:
     ZAF_OBJECT;
 
@@ -19,11 +19,11 @@ public:
 
 class BaseParser : public zaf::ObjectParser {
 public:
-    void ParseFromAttribute(const std::wstring& attribute_value, zaf::Object& object) override {
+    void ParseFromAttribute(const std::wstring& attribute_value, zaf::dynamic::Object& object) override {
 
     }
 
-    void ParseFromNode(const zaf::XamlNode& node, zaf::Object& object) override {
+    void ParseFromNode(const zaf::XamlNode& node, zaf::dynamic::Object& object) override {
 
         __super::ParseFromNode(node, object);
 
@@ -74,11 +74,11 @@ public:
 
 class Derived2Praser : public BaseParser {
 public:
-    void ParseFromAttribute(const std::wstring& attribute_value, zaf::Object& object) override {
+    void ParseFromAttribute(const std::wstring& attribute_value, zaf::dynamic::Object& object) override {
 
     }
 
-    void ParseFromNode(const zaf::XamlNode& node, zaf::Object& object) override {
+    void ParseFromNode(const zaf::XamlNode& node, zaf::dynamic::Object& object) override {
 
         __super::ParseFromNode(node, object);
 
@@ -127,7 +127,7 @@ TEST(ParsingTest, ParserLink) {
 
 namespace {
 
-class Host : public zaf::Object {
+class Host : public zaf::dynamic::Object {
 public:
     ZAF_OBJECT;
 
@@ -167,7 +167,7 @@ TEST(ParsingTest, ParseInvalidDynamicNode) {
 
 namespace {
 
-class PropertyNodeBase : public zaf::Object {
+class PropertyNodeBase : public zaf::dynamic::Object {
 public:
     ZAF_OBJECT;
 
@@ -238,7 +238,7 @@ TEST(ParsingTest, ParsePropertyNode) {
 
 namespace{
 
-class PropertyOrderObject : public zaf::Object {
+class PropertyOrderObject : public zaf::dynamic::Object {
 public:
     ZAF_OBJECT;
 

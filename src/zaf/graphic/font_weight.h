@@ -11,7 +11,7 @@ namespace zaf {
 /**
  Provides predefined values of font weight.
  */
-class FontWeight : public Object {
+class FontWeight : public dynamic::Object {
 public:
     ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY

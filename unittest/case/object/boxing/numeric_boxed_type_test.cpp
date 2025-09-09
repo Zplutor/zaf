@@ -63,7 +63,7 @@ TEST(NumericBoxedTypeTest, Parse) {
 TEST(NumericBoxedTypeTest, ParseToInvalidObject) {
 
     auto parser = zaf::Int32::StaticType()->Parser();
-    zaf::Object object;
+    zaf::dynamic::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"33", object), zaf::InvalidTypeError);
 

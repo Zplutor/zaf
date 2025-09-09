@@ -10,7 +10,7 @@ class CustomObject { };
 
 template<>
 struct zaf__CustomBoxingTraits<CustomObject> {
-    using BoxedType = Object;
+    using BoxedType = dynamic::Object;
 };
 
 }

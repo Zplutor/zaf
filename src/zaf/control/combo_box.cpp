@@ -652,7 +652,7 @@ void ComboBoxDropDownListBox::OnMouseMove(const MouseMoveInfo& event_info) {
 
 std::shared_ptr<ListItem> ComboBoxDropDownListBox::DropDownListBoxDelegate::CreateItem(
     std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<dynamic::Object>& item_data) {
 
     auto result = __super::CreateItem(item_index, item_data);
 

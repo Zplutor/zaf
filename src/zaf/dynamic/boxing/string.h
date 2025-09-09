@@ -8,11 +8,11 @@
 namespace zaf {
 
 #define __ZAF_INTERNAL_DEFINE_STRING_BOXED_TYPE(NonBoxedType, BoxedTypeName)                      \
-class BoxedTypeName : public Object, public internal::BoxedRepresent<NonBoxedType> {              \
+class BoxedTypeName : public dynamic::Object, public internal::BoxedRepresent<NonBoxedType> {              \
 public:                                                                                           \
     ZAF_OBJECT;                                                                                   \
     using BoxedRepresent<NonBoxedType>::BoxedRepresent;                                           \
-    bool IsEqual(const Object& other) const override;                                             \
+    bool IsEqual(const dynamic::Object& other) const override;                                             \
     std::size_t Hash() const override;                                                            \
     std::wstring ToString() const override;                                                       \
 };                                                                                                \

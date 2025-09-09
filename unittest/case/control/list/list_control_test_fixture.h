@@ -42,7 +42,7 @@ public:
     TestListDataSource();
 
     std::size_t GetDataCount() const;
-    std::shared_ptr<zaf::Object> GetDataAtIndex(std::size_t index) const;
+    std::shared_ptr<zaf::dynamic::Object> GetDataAtIndex(std::size_t index) const;
 
     void AddAt(int value, std::size_t index);
     void RemoveAt(std::size_t index);

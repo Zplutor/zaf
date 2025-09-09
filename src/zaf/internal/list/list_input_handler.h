@@ -18,7 +18,7 @@ public:
     using ContextMenuCallback = std::function<
         std::shared_ptr<PopupMenu>(
             std::size_t item_index,
-            const std::shared_ptr<Object>& item_data)>;
+            const std::shared_ptr<dynamic::Object>& item_data)>;
 
 public:
     using ListControlPartsBased::ListControlPartsBased;

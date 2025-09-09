@@ -6,18 +6,18 @@ namespace zaf {
 
 class EventInfo {
 public:
-    explicit EventInfo(const std::shared_ptr<Object>& source) : source_(source) {
+    explicit EventInfo(const std::shared_ptr<dynamic::Object>& source) : source_(source) {
 
     }
 
     virtual ~EventInfo() = default;
 
-    const std::shared_ptr<Object>& Source() const {
+    const std::shared_ptr<dynamic::Object>& Source() const {
         return source_;
     }
 
 private:
-    std::shared_ptr<Object> source_;
+    std::shared_ptr<dynamic::Object> source_;
 };
 
 }

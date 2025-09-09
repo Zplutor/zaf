@@ -6,7 +6,7 @@ namespace zaf::internal {
 PropertyData::PropertyData(
     std::shared_ptr<PropertyData> parent,
     zaf::ObjectProperty* property,
-    const std::shared_ptr<zaf::Object>& value,
+    const std::shared_ptr<zaf::dynamic::Object>& value,
     const std::shared_ptr<PropertyGridDelegate>& delegate)
     :
     parent_(std::move(parent)),
@@ -71,7 +71,7 @@ std::vector<std::shared_ptr<PropertyData>> PropertyData::LoadChildren() {
 }
 
 
-std::vector<dynamic::ObjectType*> PropertyData::GetObjectTypeChain(const Object& object) {
+std::vector<dynamic::ObjectType*> PropertyData::GetObjectTypeChain(const dynamic::Object& object) {
 
     std::vector<dynamic::ObjectType*> type_chain;
 
@@ -108,7 +108,7 @@ property_grid::PropertyTable PropertyData::CreatePropertyTable(
 }
 
 
-void PropertyData::ChangeValue(std::shared_ptr<Object> new_value) {
+void PropertyData::ChangeValue(std::shared_ptr<dynamic::Object> new_value) {
 
     auto auto_reset = MakeAutoReset(is_changing_value_, true);
 
@@ -118,7 +118,7 @@ void PropertyData::ChangeValue(std::shared_ptr<Object> new_value) {
 }
 
 
-void PropertyData::SetValue(std::shared_ptr<Object> new_value) {
+void PropertyData::SetValue(std::shared_ptr<dynamic::Object> new_value) {
     value_ = std::move(new_value);
     value_changed_event_.AsObserver().OnNext(shared_from_this());
 }
@@ -153,7 +153,7 @@ void PropertyData::PropagateValueChangedToChildren() {
 
     for (const auto& each_child : *children_) {
 
-        std::shared_ptr<Object> new_child_value;
+        std::shared_ptr<dynamic::Object> new_child_value;
         if (value_) {
             new_child_value = each_child->Property()->GetValue(*value_);
         }
@@ -163,7 +163,7 @@ void PropertyData::PropagateValueChangedToChildren() {
 }
 
 
-void PropertyData::ChangeValueFromParent(std::shared_ptr<Object> new_value) {
+void PropertyData::ChangeValueFromParent(std::shared_ptr<dynamic::Object> new_value) {
 
     if (is_changing_value_) {
         return;

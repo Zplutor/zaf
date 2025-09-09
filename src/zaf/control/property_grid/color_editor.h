@@ -8,7 +8,7 @@ namespace zaf::property_grid {
 class ColorEditor : public ValueEditor {
 public:
     void SetAccessMethod(AccessMethod) override;
-    void SetValue(const std::shared_ptr<Object>& object) override;
+    void SetValue(const std::shared_ptr<dynamic::Object>& object) override;
 
 protected:
     void Initialize() override;

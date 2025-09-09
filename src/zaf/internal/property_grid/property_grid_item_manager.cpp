@@ -21,9 +21,9 @@ PropertyGridItemManager::PropertyGridItemManager(
 
 
 std::shared_ptr<TreeItem> PropertyGridItemManager::CreateItem(
-    const std::shared_ptr<Object>& parent_item_data,
+    const std::shared_ptr<dynamic::Object>& parent_item_data,
     std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<dynamic::Object>& item_data) {
 
     auto data = As<PropertyData>(item_data);
     ZAF_EXPECT(data);
@@ -31,7 +31,7 @@ std::shared_ptr<TreeItem> PropertyGridItemManager::CreateItem(
     auto type_config = delegate_->GetTypeConfig(data->Property()->ValueType());
     auto value_editor = type_config->CreateValueEditor();
 
-    std::weak_ptr<Object> weak_data = data;
+    std::weak_ptr<dynamic::Object> weak_data = data;
     Disposables() += value_editor->FocusGainedEvent().Subscribe(
         std::bind_front(&PropertyGridItemManager::OnValueEditorGainedFocus, this, weak_data));
 
@@ -40,7 +40,7 @@ std::shared_ptr<TreeItem> PropertyGridItemManager::CreateItem(
 
 
 void PropertyGridItemManager::OnValueEditorGainedFocus(
-    const std::weak_ptr<Object>& weak_data,
+    const std::weak_ptr<dynamic::Object>& weak_data,
     const FocusGainedInfo& event_info) {
 
     auto data = weak_data.lock();

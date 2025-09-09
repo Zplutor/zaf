@@ -27,7 +27,7 @@ void EnumEditor::SetAccessMethod(AccessMethod access_method) {
 }
 
 
-void EnumEditor::SetValue(const std::shared_ptr<Object>& value) {
+void EnumEditor::SetValue(const std::shared_ptr<dynamic::Object>& value) {
 
     auto enum_type = dynamic_cast<EnumType*>(value->DynamicType());
     ZAF_EXPECT(enum_type);
@@ -41,8 +41,8 @@ void EnumEditor::SetValue(const std::shared_ptr<Object>& value) {
 
 
 void EnumEditor::InitializeComboBoxValues(
-    const std::vector<std::shared_ptr<Object>>& values,
-    const std::shared_ptr<Object>& selected_object) {
+    const std::vector<std::shared_ptr<dynamic::Object>>& values,
+    const std::shared_ptr<dynamic::Object>& selected_object) {
 
     auto drop_down_list = combo_box_->DropDownListBox();
     auto update_gurad = drop_down_list->BeginUpdate();

@@ -19,7 +19,7 @@ public:
 
     float EstimateItemHeight(
         std::size_t index, 
-        const std::shared_ptr<zaf::Object>& item_data) override {
+        const std::shared_ptr<zaf::dynamic::Object>& item_data) override {
 
         if (has_variable_item_heights) {
             return index % 10 + item_height + variable_item_height_adjustment;

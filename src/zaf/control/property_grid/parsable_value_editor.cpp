@@ -43,7 +43,7 @@ void ParsableValueEditor::SetAccessMethod(AccessMethod access_method) {
 }
 
 
-void ParsableValueEditor::SetValue(const std::shared_ptr<Object>& value) {
+void ParsableValueEditor::SetValue(const std::shared_ptr<dynamic::Object>& value) {
 
     value_ = value;
     rich_edit_->SetText(value_->ToString());

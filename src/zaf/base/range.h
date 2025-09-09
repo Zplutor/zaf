@@ -14,7 +14,7 @@ namespace zaf {
 /**
 Describes a range using start index and length.
 */
-class Range : public Object, public XMLSerializable {
+class Range : public dynamic::Object, public XMLSerializable {
 public:
     ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY;

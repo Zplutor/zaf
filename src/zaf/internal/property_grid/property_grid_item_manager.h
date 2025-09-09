@@ -16,21 +16,21 @@ public:
         const std::weak_ptr<zaf::internal::TreeCore>& tree_core);
 
     float EstimateItemHeight(
-        const std::shared_ptr<Object>& parent_item_data,
+        const std::shared_ptr<dynamic::Object>& parent_item_data,
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override {
+        const std::shared_ptr<dynamic::Object>& item_data) override {
 
         return 22;
     }
 
     std::shared_ptr<TreeItem> CreateItem(
-        const std::shared_ptr<Object>& parent_item_data,
+        const std::shared_ptr<dynamic::Object>& parent_item_data,
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override;
+        const std::shared_ptr<dynamic::Object>& item_data) override;
 
 private:
     void OnValueEditorGainedFocus(
-        const std::weak_ptr<Object>& data,
+        const std::weak_ptr<dynamic::Object>& data,
         const FocusGainedInfo& event_info);
 
 private:

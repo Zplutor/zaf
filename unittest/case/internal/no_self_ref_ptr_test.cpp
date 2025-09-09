@@ -16,7 +16,7 @@ TEST(NoSelfRefPtrTest, DefaultConstruction) {
 
 TEST(NoSelfRefPtrTest, StoreSharedPtr) {
 
-    Object owner;
+    dynamic::Object owner;
 
     auto range = Create<Range>();
     NoSelfRefPtr<Range> ptr{ range, &owner };
@@ -28,9 +28,9 @@ TEST(NoSelfRefPtrTest, StoreSharedPtr) {
 
 TEST(NoSelfRefPtrTest, StoreWeakPtr) {
 
-    auto owner = Create<Object>();
+    auto owner = Create<dynamic::Object>();
 
-    NoSelfRefPtr<Object> ptr{ owner, owner.get() };
+    NoSelfRefPtr<dynamic::Object> ptr{ owner, owner.get() };
 
     ASSERT_TRUE(ptr);
     ASSERT_EQ(ptr.ToSharedPtr(), owner);

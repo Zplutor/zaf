@@ -41,7 +41,7 @@ std::size_t ConversationListView::GetDataCount() const {
 
 float ConversationListView::EstimateItemHeight(
     std::size_t index, 
-    const std::shared_ptr<zaf::Object>& data) {
+    const std::shared_ptr<zaf::dynamic::Object>& data) {
 
     return 64;
 }
@@ -49,7 +49,7 @@ float ConversationListView::EstimateItemHeight(
 
 std::shared_ptr<zaf::ListItem> ConversationListView::CreateItem(
     std::size_t index,
-    const std::shared_ptr<zaf::Object>& data) {
+    const std::shared_ptr<zaf::dynamic::Object>& data) {
 
     if (index >= conversations_.size()) {
         return nullptr;

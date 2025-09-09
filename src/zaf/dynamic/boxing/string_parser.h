@@ -12,11 +12,11 @@ namespace zaf {
 template<typename T>
 class StringParser : public ObjectParser {
 public:
-    void ParseFromAttribute(const std::wstring& value, Object& object) override {
+    void ParseFromAttribute(const std::wstring& value, dynamic::Object& object) override {
         Parse(value, object);
     }
 
-    void ParseFromNode(const XamlNode& node, Object& object) override {
+    void ParseFromNode(const XamlNode& node, dynamic::Object& object) override {
 
         __super::ParseFromNode(node, object);
 
@@ -34,7 +34,7 @@ public:
     }
 
 private:
-    void Parse(const std::wstring& value, Object& object) {
+    void Parse(const std::wstring& value, dynamic::Object& object) {
 
         As<T>(object).SetValue(internal::StringConversionShim<typename T::ValueType>::From(value));
     }

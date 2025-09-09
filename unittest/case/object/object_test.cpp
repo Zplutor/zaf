@@ -5,7 +5,7 @@
 
 namespace {
 
-class DefaultConstructible : public zaf::Object {
+class DefaultConstructible : public zaf::dynamic::Object {
 public:
     ZAF_OBJECT;
 
@@ -17,7 +17,7 @@ ZAF_OBJECT_END;
 ZAF_OBJECT_IMPL(DefaultConstructible);
 
 
-class NotDefaultConstructible : public zaf::Object {
+class NotDefaultConstructible : public zaf::dynamic::Object {
 public:
     ZAF_OBJECT;
 

@@ -5,7 +5,7 @@
 namespace zaf::internal {
 
 struct TreeDataHash {
-    std::size_t operator()(const std::shared_ptr<Object>& object) const {
+    std::size_t operator()(const std::shared_ptr<dynamic::Object>& object) const {
         if (object) {
             return object->Hash();
         }
@@ -14,7 +14,7 @@ struct TreeDataHash {
 };
 
 struct TreeDataEqual {
-    bool operator()(const std::shared_ptr<Object>& o1, const std::shared_ptr<Object>& o2) const {
+    bool operator()(const std::shared_ptr<dynamic::Object>& o1, const std::shared_ptr<dynamic::Object>& o2) const {
 
         if (!o1 && !o2) {
             return true;

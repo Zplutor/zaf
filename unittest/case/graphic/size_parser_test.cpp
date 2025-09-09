@@ -39,7 +39,7 @@ TEST(SizeParserTest, ParseFromNode) {
 TEST(SizeParserTest, ParseToInvalidObject) {
 
     auto parser = zaf::Size::StaticType()->Parser();
-    zaf::Object object;
+    zaf::dynamic::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"400,400", object), zaf::InvalidTypeError);
 }

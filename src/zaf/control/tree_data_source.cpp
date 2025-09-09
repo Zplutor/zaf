@@ -6,7 +6,7 @@ namespace {
 template<typename T>
 void RaiseEvent(
     rx::Subject<T>& subject,
-    const std::shared_ptr<Object>& parent_data,
+    const std::shared_ptr<dynamic::Object>& parent_data,
     std::size_t index,
     std::size_t count) {
 
@@ -30,7 +30,7 @@ const std::shared_ptr<TreeDataSource>& TreeDataSource::Empty() {
 
 
 void TreeDataSource::NotifyDataAdd(
-    const std::shared_ptr<Object>& parent_data,
+    const std::shared_ptr<dynamic::Object>& parent_data,
     std::size_t index,
     std::size_t count) {
 
@@ -39,7 +39,7 @@ void TreeDataSource::NotifyDataAdd(
 
 
 void TreeDataSource::NotifyDataRemove(
-    const std::shared_ptr<Object>& parent_data,
+    const std::shared_ptr<dynamic::Object>& parent_data,
     std::size_t index,
     std::size_t count) {
 
@@ -48,7 +48,7 @@ void TreeDataSource::NotifyDataRemove(
 
 
 void TreeDataSource::NotifyDataUpdate(
-    const std::shared_ptr<Object>& parent_data,
+    const std::shared_ptr<dynamic::Object>& parent_data,
     std::size_t index,
     std::size_t count) {
 

@@ -15,7 +15,7 @@ namespace zaf {
 /**
  Describes the x-coordinate and y-coordinate of a point. 
  */
-class Point : public Object {
+class Point : public dynamic::Object {
 public:
     ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY

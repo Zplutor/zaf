@@ -9,10 +9,10 @@
 #include <zaf/dynamic/internal/reflection_manager.h>
 #include <zaf/resource/resource_factory.h>
 
-namespace zaf {
+namespace zaf::dynamic {
 namespace {
 
-void ParseObject(dynamic::ObjectType& type, Object& object) {
+void ParseObject(ObjectType& type, Object& object) {
 
     auto base_type = type.BaseType();
     if (base_type) {
@@ -48,7 +48,7 @@ Object::Type::Type() {
     zaf::internal::ReflectionManager::Instance().RegisterType(this);
 }
 
-dynamic::ObjectType* Object::Type::BaseType() const noexcept {
+ObjectType* Object::Type::BaseType() const noexcept {
     return nullptr;
 }
 
@@ -57,7 +57,7 @@ std::wstring_view Object::Type::Name() const noexcept {
 }
 
 std::shared_ptr<Object> Object::Type::CreateInstance() const {
-    return Create<Object>();
+    return Create<dynamic::Object>();
 }
 
 ObjectParser* Object::Type::Parser() const {
@@ -66,7 +66,7 @@ ObjectParser* Object::Type::Parser() const {
 }
 
 
-dynamic::ObjectType* Object::StaticType() {
+ObjectType* Object::StaticType() {
     return Type::Instance();
 }
 
@@ -99,7 +99,7 @@ void Object::AfterParse() {
 }
 
 
-dynamic::ObjectType* Object::DynamicType() const {
+ObjectType* Object::DynamicType() const {
     return StaticType();
 }
 

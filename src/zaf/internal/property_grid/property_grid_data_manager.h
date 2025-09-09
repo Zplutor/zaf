@@ -10,14 +10,14 @@ class PropertyGridDataManager : public TreeDataSource {
 public:
     explicit PropertyGridDataManager(std::shared_ptr<PropertyGridDelegate> delegate);
 
-    void SetTargetObject(const std::shared_ptr<Object>& target_object);
+    void SetTargetObject(const std::shared_ptr<dynamic::Object>& target_object);
 
-    bool DoesDataHasChildren(const std::shared_ptr<Object>& data);
+    bool DoesDataHasChildren(const std::shared_ptr<dynamic::Object>& data);
 
-    std::size_t GetChildDataCount(const std::shared_ptr<Object>& parent_data);
+    std::size_t GetChildDataCount(const std::shared_ptr<dynamic::Object>& parent_data);
 
-    std::shared_ptr<Object> GetChildDataAtIndex(
-        const std::shared_ptr<Object>& parent_data,
+    std::shared_ptr<dynamic::Object> GetChildDataAtIndex(
+        const std::shared_ptr<dynamic::Object>& parent_data,
         std::size_t index);
 
     void RefreshValues();

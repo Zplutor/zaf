@@ -118,13 +118,13 @@ Color DecodeColorValue(const std::wstring& value) {
 }
 
 
-void ColorParser::ParseFromAttribute(const std::wstring& attribute, Object& object) {
+void ColorParser::ParseFromAttribute(const std::wstring& attribute, dynamic::Object& object) {
 
     As<Color>(object) = DecodeColorValue(attribute);
 }
 
 
-void ColorParser::ParseFromNode(const XamlNode& node, Object& object) {
+void ColorParser::ParseFromNode(const XamlNode& node, dynamic::Object& object) {
 
     __super::ParseFromNode(node, object);
 

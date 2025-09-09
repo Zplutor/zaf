@@ -14,7 +14,7 @@ namespace zaf {
 /**
  Describes the width and height of a size.    
  */
-class Size : public Object {
+class Size : public dynamic::Object {
 public:
     ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY;

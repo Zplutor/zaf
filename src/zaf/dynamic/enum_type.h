@@ -17,14 +17,14 @@ public:
 
     EnumConstant* GetConstant(std::wstring_view name) const noexcept;
 
-    std::vector<std::shared_ptr<Object>> Values() const;
-    std::shared_ptr<Object> GetValue(std::wstring_view name) const noexcept;
-    std::wstring GetValueName(const Object& object) const;
+    std::vector<std::shared_ptr<dynamic::Object>> Values() const;
+    std::shared_ptr<dynamic::Object> GetValue(std::wstring_view name) const noexcept;
+    std::wstring GetValueName(const dynamic::Object& object) const;
 
-    virtual void SetValue(Object& result, const Object& value) const = 0;
+    virtual void SetValue(dynamic::Object& result, const dynamic::Object& value) const = 0;
 
     virtual bool IsFlagsEnum() const noexcept = 0;
-    virtual void CombineFlagValue(Object& result, const Object& value) const = 0;
+    virtual void CombineFlagValue(dynamic::Object& result, const dynamic::Object& value) const = 0;
 
 private:
     friend class internal::EnumConstantRegistrar;

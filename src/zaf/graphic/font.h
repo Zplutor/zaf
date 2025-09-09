@@ -15,7 +15,7 @@ namespace zaf {
 /**
  Describes various properties of a font.
  */
-class Font : public Object, public XMLSerializable {
+class Font : public dynamic::Object, public XMLSerializable {
 public:
     ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY;

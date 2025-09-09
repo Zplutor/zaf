@@ -50,7 +50,7 @@ non-reflective types.
     class MyNonBoxedValue { };
 
     //The corresponding boxed type.
-    class MyBoxedObject : public zaf::Object {
+    class MyBoxedObject : public zaf::dynamic::Object {
     public:
         ZAF_OBJECT;
 

@@ -7,13 +7,13 @@
 
 namespace zaf {
 
-class Boolean : public Object, public internal::BoxedRepresent<bool> {
+class Boolean : public dynamic::Object, public internal::BoxedRepresent<bool> {
 public:
     ZAF_OBJECT;
 
     using BoxedRepresent<bool>::BoxedRepresent;
 
-    bool IsEqual(const Object& other) const override;
+    bool IsEqual(const dynamic::Object& other) const override;
     std::size_t Hash() const override;
     std::wstring ToString() const override;
 };

@@ -8,15 +8,15 @@ namespace zaf::property_grid {
 class EnumEditor : public ValueEditor {
 public:
     void SetAccessMethod(AccessMethod) override;
-    void SetValue(const std::shared_ptr<Object>& object) override;
+    void SetValue(const std::shared_ptr<dynamic::Object>& object) override;
 
 protected:
     void Initialize() override;
 
 private:
     void InitializeComboBoxValues(
-        const std::vector<std::shared_ptr<Object>>& values, 
-        const std::shared_ptr<Object>& selected_object);
+        const std::vector<std::shared_ptr<dynamic::Object>>& values, 
+        const std::shared_ptr<dynamic::Object>& selected_object);
 
     void OnSelectionChanged();
 

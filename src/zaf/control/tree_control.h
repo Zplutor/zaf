@@ -36,18 +36,18 @@ public:
 
     void SetSelectionMode(ListSelectionMode selection_mode);
 
-    std::vector<std::shared_ptr<Object>> GetAllSelectedItems() const;
-    std::shared_ptr<Object> GetFirstSelectedItem() const;
+    std::vector<std::shared_ptr<dynamic::Object>> GetAllSelectedItems() const;
+    std::shared_ptr<dynamic::Object> GetFirstSelectedItem() const;
 
-    void SelectItem(const std::shared_ptr<Object>& data);
-    void UnselectItem(const std::shared_ptr<Object>& data);
+    void SelectItem(const std::shared_ptr<dynamic::Object>& data);
+    void UnselectItem(const std::shared_ptr<dynamic::Object>& data);
 
-    void ExpandItem(const std::shared_ptr<Object>& data);
-    void CollapseItem(const std::shared_ptr<Object>& data);
+    void ExpandItem(const std::shared_ptr<dynamic::Object>& data);
+    void CollapseItem(const std::shared_ptr<dynamic::Object>& data);
 
-    void ScrollToItem(const std::shared_ptr<Object>& data);
+    void ScrollToItem(const std::shared_ptr<dynamic::Object>& data);
 
-    void ReloadItem(const std::shared_ptr<Object>& data);
+    void ReloadItem(const std::shared_ptr<dynamic::Object>& data);
 
     rx::Observable<TreeControlSelectionChangeInfo> SelectionChangeEvent() const;
     rx::Observable<TreeControlItemExpandInfo> ItemExpandEvent() const;
@@ -75,8 +75,8 @@ protected:
 
 private:
     void SelectionChange();
-    void ItemExpand(const std::shared_ptr<Object>& data);
-    void ItemCollapse(const std::shared_ptr<Object>& data);
+    void ItemExpand(const std::shared_ptr<dynamic::Object>& data);
+    void ItemCollapse(const std::shared_ptr<dynamic::Object>& data);
 
 private:
     std::shared_ptr<TreeItemContainer> item_container_;
@@ -119,19 +119,19 @@ class TreeControlItemExpandInfo : public TreeControlEventInfo {
 public:
     TreeControlItemExpandInfo(
         const std::shared_ptr<zaf::TreeControl>& tree_control, 
-        const std::shared_ptr<Object>& item_data)
+        const std::shared_ptr<dynamic::Object>& item_data)
         : 
         TreeControlEventInfo(tree_control),
         item_data_(item_data) {
 
     }
 
-    const std::shared_ptr<Object>& ItemData() const {
+    const std::shared_ptr<dynamic::Object>& ItemData() const {
         return item_data_;
     }
 
 private:
-    std::shared_ptr<Object> item_data_;
+    std::shared_ptr<dynamic::Object> item_data_;
 };
 
 
@@ -139,19 +139,19 @@ class TreeControlItemCollapseInfo : public TreeControlEventInfo {
 public:
     TreeControlItemCollapseInfo(
         const std::shared_ptr<zaf::TreeControl>& tree_control,
-        const std::shared_ptr<Object>& item_data)
+        const std::shared_ptr<dynamic::Object>& item_data)
         :
         TreeControlEventInfo(tree_control),
         item_data_(item_data) {
 
     }
 
-    const std::shared_ptr<Object>& ItemData() const {
+    const std::shared_ptr<dynamic::Object>& ItemData() const {
         return item_data_;
     }
 
 private:
-    std::shared_ptr<Object> item_data_;
+    std::shared_ptr<dynamic::Object> item_data_;
 };
 
 }

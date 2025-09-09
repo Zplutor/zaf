@@ -9,13 +9,13 @@ class EnumParser : public ObjectParser {
 public:
     explicit EnumParser(const EnumType* type);
 
-    void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override;
-    void ParseFromNode(const XamlNode& node, Object& object) override;
+    void ParseFromAttribute(const std::wstring& attribute_value, dynamic::Object& object) override;
+    void ParseFromNode(const XamlNode& node, dynamic::Object& object) override;
 
 private:
-    void Parse(const std::wstring& text, Object& object);
-    std::shared_ptr<Object> ParseValue(const std::wstring& text);
-    std::shared_ptr<Object> ParseSingleValue(const std::wstring& text);
+    void Parse(const std::wstring& text, dynamic::Object& object);
+    std::shared_ptr<dynamic::Object> ParseValue(const std::wstring& text);
+    std::shared_ptr<dynamic::Object> ParseSingleValue(const std::wstring& text);
 
 private:
     const EnumType* enum_type_{};

@@ -165,13 +165,13 @@ std::size_t ListControl::ItemCount() const {
 }
 
 
-std::shared_ptr<Object> ListControl::GetItemDataAtIndex(std::size_t index) const {
+std::shared_ptr<dynamic::Object> ListControl::GetItemDataAtIndex(std::size_t index) const {
 
     auto data_source = DataSource();
     if (data_source) {
         return data_source->GetDataAtIndex(index);
     }
-    return Create<Object>();
+    return Create<dynamic::Object>();
 }
 
 
@@ -233,7 +233,7 @@ std::optional<std::size_t> ListControl::FirstSelectedItemIndex() const noexcept 
 }
 
 
-std::shared_ptr<Object> ListControl::FirstSelectedItemData() const {
+std::shared_ptr<dynamic::Object> ListControl::FirstSelectedItemData() const {
 
     auto index = FirstSelectedItemIndex();
     if (!index) {
@@ -310,7 +310,7 @@ rx::Observable<ListControlItemDoubleClickInfo> ListControl::ItemDoubleClickEvent
 
 std::shared_ptr<PopupMenu> ListControl::OnCoreContextMenu(
     std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<dynamic::Object>& item_data) {
 
     ListControlContextMenuInfo event_info{
         As<ListControl>(shared_from_this()),

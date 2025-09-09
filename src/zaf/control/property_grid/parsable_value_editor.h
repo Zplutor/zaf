@@ -8,7 +8,7 @@ namespace zaf::property_grid {
 class ParsableValueEditor : public ValueEditor {
 public:
     void SetAccessMethod(AccessMethod) override;
-    void SetValue(const std::shared_ptr<Object>& value) override;
+    void SetValue(const std::shared_ptr<dynamic::Object>& value) override;
 
 protected:
     void Initialize() override;
@@ -16,7 +16,7 @@ protected:
     void ChangeValue();
 
 private:
-    std::shared_ptr<Object> value_;
+    std::shared_ptr<dynamic::Object> value_;
     std::shared_ptr<RichEdit> rich_edit_;
 };
 

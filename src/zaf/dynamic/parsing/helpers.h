@@ -6,7 +6,7 @@
 namespace zaf {
 namespace internal {
 
-std::shared_ptr<Object> CreateReflectionObjectFromXaml(const std::string& xaml);
+std::shared_ptr<dynamic::Object> CreateReflectionObjectFromXaml(const std::string& xaml);
 
 }
 

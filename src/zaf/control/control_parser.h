@@ -11,7 +11,7 @@ Parses a control's properties and children from XAML.
 */
 class ControlParser : public ObjectParser {
 public:
-    void ParseFromNode(const XamlNode& node, Object& object) override;
+    void ParseFromNode(const XamlNode& node, dynamic::Object& object) override;
 
 protected:
     /**

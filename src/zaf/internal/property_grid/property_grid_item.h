@@ -31,7 +31,7 @@ private:
     void SetAbsoluteSplitDistance(float new_distance);
     void SetFirstPaneMinLength(float max_x);
 
-    void OnEditorValueChanged(const std::shared_ptr<Object>& new_value);
+    void OnEditorValueChanged(const std::shared_ptr<dynamic::Object>& new_value);
     void OnPropertyValueChanged(const std::shared_ptr<PropertyData>& property_data);
 
 private:

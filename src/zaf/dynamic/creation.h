@@ -5,11 +5,11 @@
 namespace zaf {
 namespace internal {
 
-std::shared_ptr<Object> CreateReflectionObjectByName(const std::wstring& name);
+std::shared_ptr<dynamic::Object> CreateReflectionObjectByName(const std::wstring& name);
 
 }
 
-template<typename T = Object>
+template<typename T = dynamic::Object>
 std::shared_ptr<T> CreateObjectByName(const std::wstring& name) {
 
     auto object = internal::CreateReflectionObjectByName(name);

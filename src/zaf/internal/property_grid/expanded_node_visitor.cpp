@@ -9,7 +9,7 @@ ExpandedNodeVisitor::ExpandedNodeVisitor() : root_node_(nullptr) {
 }
 
 
-void ExpandedNodeVisitor::VisitNode(const std::shared_ptr<Object>& node_data) {
+void ExpandedNodeVisitor::VisitNode(const std::shared_ptr<dynamic::Object>& node_data) {
 
     auto data = As<PropertyData>(node_data);
     if (data) {

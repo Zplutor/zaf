@@ -62,7 +62,7 @@ enum class HitTestResult;
  This is the base class of all controls.
  */
 class Control : 
-    public Object, 
+    public dynamic::Object, 
     public rx::DisposableHost,
     public std::enable_shared_from_this<Control> {
 

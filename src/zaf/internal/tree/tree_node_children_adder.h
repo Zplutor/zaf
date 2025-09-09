@@ -20,7 +20,7 @@ public:
 
     bool MoveToNextChild();
     std::size_t GetCurrentChildIndex() const;
-    void SetDataToCurrentChild(const std::shared_ptr<Object>& data);
+    void SetDataToCurrentChild(const std::shared_ptr<dynamic::Object>& data);
 
 private:
     TreeDataManager& tree_data_manager_;

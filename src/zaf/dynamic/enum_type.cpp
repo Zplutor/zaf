@@ -40,9 +40,9 @@ EnumConstant* EnumType::GetConstant(std::wstring_view name) const noexcept {
 }
 
 
-std::vector<std::shared_ptr<Object>> EnumType::Values() const {
+std::vector<std::shared_ptr<dynamic::Object>> EnumType::Values() const {
 
-    std::vector<std::shared_ptr<Object>> result;
+    std::vector<std::shared_ptr<dynamic::Object>> result;
     for (const auto& each_pair : value_map_) {
         result.push_back(each_pair.first);
     }
@@ -50,7 +50,7 @@ std::vector<std::shared_ptr<Object>> EnumType::Values() const {
 }
 
 
-std::shared_ptr<Object> EnumType::GetValue(std::wstring_view name) const noexcept {
+std::shared_ptr<dynamic::Object> EnumType::GetValue(std::wstring_view name) const noexcept {
 
     auto constant = GetConstant(name);
     if (constant) {
@@ -60,7 +60,7 @@ std::shared_ptr<Object> EnumType::GetValue(std::wstring_view name) const noexcep
 }
 
 
-std::wstring EnumType::GetValueName(const Object& object) const {
+std::wstring EnumType::GetValueName(const dynamic::Object& object) const {
 
     auto iterator = value_map_.find(object);
     if (iterator != value_map_.end()) {

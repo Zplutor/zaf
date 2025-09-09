@@ -6,8 +6,8 @@ namespace zaf {
 
 class ColorParser : public ObjectParser {
 public:
-    void ParseFromAttribute(const std::wstring& attribute, Object& object) override;
-    void ParseFromNode(const XamlNode& node, Object& object) override;
+    void ParseFromAttribute(const std::wstring& attribute, dynamic::Object& object) override;
+    void ParseFromNode(const XamlNode& node, dynamic::Object& object) override;
 };
 
 }

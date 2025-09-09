@@ -10,7 +10,7 @@ namespace zaf::internal {
 template<typename EnumT, typename ObjectT, typename = void>
 struct EnumValueCombiner {
 
-    static void Combine(Object& result, const Object& value) {
+    static void Combine(dynamic::Object& result, const dynamic::Object& value) {
         throw zaf::InvalidOperationError{ ZAF_SOURCE_LOCATION() };
     }
 };
@@ -19,7 +19,7 @@ struct EnumValueCombiner {
 template<typename EnumT, typename ObjectT>
 struct EnumValueCombiner<EnumT, ObjectT, std::enable_if_t<IsFlagsEnumV<EnumT>>> {
 
-    static void Combine(Object& result, const Object& value) {
+    static void Combine(dynamic::Object& result, const dynamic::Object& value) {
         As<ObjectT>(result).Value() |= As<ObjectT>(value).Value();
     }
 };

@@ -6,7 +6,7 @@
 
 namespace zaf {
 
-void ControlParser::ParseFromNode(const XamlNode& node, Object& object) {
+void ControlParser::ParseFromNode(const XamlNode& node, dynamic::Object& object) {
 
     auto& control = As<Control>(object);
     auto update_guard = control.BeginUpdate();

@@ -4,7 +4,7 @@ namespace zaf {
 
 float ListBoxDelegate::EstimateItemHeight(
     std::size_t item_index, 
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<dynamic::Object>& item_data) {
 
     return item_height_;
 }

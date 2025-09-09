@@ -24,7 +24,7 @@ ListControlItemDoubleClickInfo::ListControlItemDoubleClickInfo(
 ListControlContextMenuInfo::ListControlContextMenuInfo(
     std::shared_ptr<ListControl> source, 
     std::size_t item_index, 
-    std::shared_ptr<Object> item_data)
+    std::shared_ptr<dynamic::Object> item_data)
     :
     EventInfo(std::move(source)),
     item_index_(item_index_),

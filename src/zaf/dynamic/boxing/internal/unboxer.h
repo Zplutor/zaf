@@ -14,19 +14,19 @@ struct Unboxer { };
 template<typename T>
 struct Unboxer<T, std::enable_if_t<IsReflectiveTypeV<std::decay_t<T>>>> {
 
-    static const T* TryUnbox(const Object& object) {
+    static const T* TryUnbox(const dynamic::Object& object) {
         return dynamic_cast<const T*>(&object);
     }
 
-    static T* TryUnbox(Object& object) {
+    static T* TryUnbox(dynamic::Object& object) {
         return dynamic_cast<T*>(&object);
     }
 
-    static const T& Unbox(const Object& object) {
+    static const T& Unbox(const dynamic::Object& object) {
         return As<T>(object);
     }
 
-    static T& Unbox(Object& object) {
+    static T& Unbox(dynamic::Object& object) {
         return As<T>(object);
     }
 };
@@ -38,7 +38,7 @@ private:
     using BoxedType = typename BoxingTraits::BoxedType;
 
 public:
-    static const T* TryUnbox(const Object& object) {
+    static const T* TryUnbox(const dynamic::Object& object) {
         auto boxed_object = dynamic_cast<const BoxedType*>(&object);
         if (boxed_object) {
             return BoxingTraits::Unbox(*boxed_object);
@@ -46,7 +46,7 @@ public:
         return nullptr;
     }
 
-    static T* TryUnbox(Object& object) {
+    static T* TryUnbox(dynamic::Object& object) {
         auto boxed_object = dynamic_cast<BoxedType*>(&object);
         if (boxed_object) {
             return const_cast<T*>(BoxingTraits::Unbox(*boxed_object));
@@ -54,11 +54,11 @@ public:
         return nullptr;
     }
 
-    static const T& Unbox(const Object& object) {
+    static const T& Unbox(const dynamic::Object& object) {
         return *BoxingTraits::Unbox(As<BoxedType>(object));
     }
 
-    static T& Unbox(Object& object) {
+    static T& Unbox(dynamic::Object& object) {
         return const_cast<T&>(*BoxingTraits::Unbox(As<BoxedType>(object)));
     }
 };

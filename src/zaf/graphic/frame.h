@@ -13,7 +13,7 @@ namespace zaf {
 /**
  Represents a rectangle frame.   
  */
-class Frame : public Object {
+class Frame : public dynamic::Object {
 public:
     ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY

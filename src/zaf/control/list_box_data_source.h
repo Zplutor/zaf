@@ -6,7 +6,7 @@ namespace zaf {
 
 class ListBoxDataSource : public ListDataSource {
 public:
-    void AddDataAtIndex(std::size_t index, const std::shared_ptr<Object>& data);
+    void AddDataAtIndex(std::size_t index, const std::shared_ptr<dynamic::Object>& data);
     void RemoveDataAtIndex(std::size_t index);
     void RemoveAllData();
 
@@ -14,12 +14,12 @@ public:
         return data_list_.size();
     }
 
-    std::shared_ptr<Object> GetDataAtIndex(std::size_t index) const override {
+    std::shared_ptr<dynamic::Object> GetDataAtIndex(std::size_t index) const override {
         return data_list_[index];
     }
 
 private:
-    std::vector<std::shared_ptr<Object>> data_list_;
+    std::vector<std::shared_ptr<dynamic::Object>> data_list_;
 };
 
 }

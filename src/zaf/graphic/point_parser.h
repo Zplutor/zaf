@@ -6,7 +6,7 @@ namespace zaf {
 
 class PointParser : public ObjectParser {
 public:
-    void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override;
+    void ParseFromAttribute(const std::wstring& attribute_value, dynamic::Object& object) override;
 };
 
 }

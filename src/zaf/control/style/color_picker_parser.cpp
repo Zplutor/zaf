@@ -6,7 +6,7 @@
 
 namespace zaf {
 
-void ColorPickerParser::ParseFromNode(const XamlNode& node, Object& object) {
+void ColorPickerParser::ParseFromNode(const XamlNode& node, dynamic::Object& object) {
 
     __super::ParseFromNode(node, object);
 

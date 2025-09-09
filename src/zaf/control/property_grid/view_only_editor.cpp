@@ -27,7 +27,7 @@ void ViewOnlyEditor::SetAccessMethod(AccessMethod access_method) {
 }
 
 
-void ViewOnlyEditor::SetValue(const std::shared_ptr<Object>& value) {
+void ViewOnlyEditor::SetValue(const std::shared_ptr<dynamic::Object>& value) {
 
     if (value) {
         label_->SetText(value->ToString());

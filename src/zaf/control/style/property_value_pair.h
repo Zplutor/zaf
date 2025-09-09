@@ -22,18 +22,18 @@ public:
     };
 
 public:
-    PropertyValuePair(ObjectProperty* property, std::shared_ptr<Object> value);
+    PropertyValuePair(ObjectProperty* property, std::shared_ptr<dynamic::Object> value);
     PropertyValuePair(std::wstring property_name, std::wstring value);
 
     std::wstring_view PropertyName() const noexcept;
 
-    void SetTo(Object& object) const;
-    bool IsSetIn(const Object& object) const;
+    void SetTo(dynamic::Object& object) const;
+    bool IsSetIn(const dynamic::Object& object) const;
 
 private:
     struct ParsedData {
         ObjectProperty* property{};
-        std::shared_ptr<Object> value;
+        std::shared_ptr<dynamic::Object> value;
     };
 
     struct NotParsedData {
@@ -42,15 +42,15 @@ private:
     };
 
 private:
-    static void SetWithParsedData(const ParsedData& data, Object& object);
-    static void SetWithNotParsedData(const NotParsedData& data, Object& object);
+    static void SetWithParsedData(const ParsedData& data, dynamic::Object& object);
+    static void SetWithNotParsedData(const NotParsedData& data, dynamic::Object& object);
 
-    static bool IsSetWithParsedData(const ParsedData& data, const Object& object);
-    static bool IsSetWithNotParsedData(const NotParsedData& data, const Object& object);
+    static bool IsSetWithParsedData(const ParsedData& data, const dynamic::Object& object);
+    static bool IsSetWithNotParsedData(const NotParsedData& data, const dynamic::Object& object);
 
     static std::optional<ParsedData> ConvertToParsedData(
         const NotParsedData& data,
-        const Object& object);
+        const dynamic::Object& object);
 
 private:
     std::variant<ParsedData, NotParsedData> data_;

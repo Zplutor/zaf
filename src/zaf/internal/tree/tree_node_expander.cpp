@@ -56,7 +56,7 @@ std::shared_ptr<TreeNodeExpander> TreeNodeExpander::GetCurrentChildExpander() {
 }
 
 
-void TreeNodeExpander::SetDataToCurrentChild(const std::shared_ptr<Object>& data) {
+void TreeNodeExpander::SetDataToCurrentChild(const std::shared_ptr<dynamic::Object>& data) {
 
     ZAF_EXPECT(current_child_index_);
 

@@ -6,11 +6,11 @@ namespace zaf {
 
 class FontWeightParser : public ObjectParser {
 public:
-    void ParseFromAttribute(const std::wstring& attribute_value, Object& object) override;
-    void ParseFromNode(const XamlNode& node, Object& object) override;
+    void ParseFromAttribute(const std::wstring& attribute_value, dynamic::Object& object) override;
+    void ParseFromNode(const XamlNode& node, dynamic::Object& object) override;
 
 private:
-    void Parse(const std::wstring& string_value, Object& object);
+    void Parse(const std::wstring& string_value, dynamic::Object& object);
     int ParseValue(const std::wstring& value);
 };
 

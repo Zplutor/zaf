@@ -3,7 +3,7 @@
 
 namespace zaf {
 
-void ListBoxDataSource::AddDataAtIndex(std::size_t index, const std::shared_ptr<Object>& data) {
+void ListBoxDataSource::AddDataAtIndex(std::size_t index, const std::shared_ptr<dynamic::Object>& data) {
 
     ZAF_EXPECT(0 <= index && index <= data_list_.size());
 

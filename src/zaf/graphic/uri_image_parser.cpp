@@ -4,12 +4,12 @@
 
 namespace zaf {
 
-void URIImageParser::ParseFromAttribute(const std::wstring& attribute_value, Object& object) {
+void URIImageParser::ParseFromAttribute(const std::wstring& attribute_value, dynamic::Object& object) {
     As<URIImage>(object).InitializeWithURI(attribute_value);
 }
 
 
-void URIImageParser::ParseFromNode(const XamlNode& node, Object& object) {
+void URIImageParser::ParseFromNode(const XamlNode& node, dynamic::Object& object) {
 
     __super::ParseFromNode(node, object);
 

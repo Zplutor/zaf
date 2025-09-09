@@ -43,7 +43,7 @@ TEST(PointParserTest, ParseFromNode) {
 TEST(PointParserTest, ParseToInvalidObject) {
 
     auto parser = zaf::Point::StaticType()->Parser();
-    zaf::Object object;
+    zaf::dynamic::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"120,34", object), zaf::InvalidTypeError);
 

@@ -12,7 +12,7 @@ class ListItem : public Control {
 public:
     ZAF_OBJECT;
 
-    const std::shared_ptr<Object>& ItemData() const {
+    const std::shared_ptr<dynamic::Object>& ItemData() const {
         return item_data_;
     }
 
@@ -27,14 +27,14 @@ protected:
 private:
     friend class internal::ListVisibleItemManager;
 
-    void SetItemData(std::shared_ptr<Object> data);
+    void SetItemData(std::shared_ptr<dynamic::Object> data);
 
 private:
     bool IsInFocusContext() const;
     void RepaintOnFocusChanged();
 
 private:
-    std::shared_ptr<Object> item_data_;
+    std::shared_ptr<dynamic::Object> item_data_;
 };
 
 ZAF_OBJECT_BEGIN(ListItem);

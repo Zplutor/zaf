@@ -220,7 +220,7 @@ void PropertyGridItem::OnParentChanged(const ParentChangedInfo& event_info) {
 }
 
 
-void PropertyGridItem::OnEditorValueChanged(const std::shared_ptr<Object>& new_value) {
+void PropertyGridItem::OnEditorValueChanged(const std::shared_ptr<dynamic::Object>& new_value) {
 
     if (is_setting_editor_value_) {
         return;

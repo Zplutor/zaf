@@ -49,7 +49,7 @@ std::size_t TreeNodeChildrenAdder::GetCurrentChildIndex() const {
 }
 
 
-void TreeNodeChildrenAdder::SetDataToCurrentChild(const std::shared_ptr<Object>& data) {
+void TreeNodeChildrenAdder::SetDataToCurrentChild(const std::shared_ptr<dynamic::Object>& data) {
 
     ZAF_EXPECT(current_index_);
 

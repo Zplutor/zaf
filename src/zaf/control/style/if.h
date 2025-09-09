@@ -6,34 +6,34 @@
 
 namespace zaf {
 
-class If : public Object {
+class If : public dynamic::Object {
 public:
     ZAF_OBJECT;
 
 public:
     If();
 
-    void AddCondition(ObjectProperty* property, std::shared_ptr<Object> value);
+    void AddCondition(ObjectProperty* property, std::shared_ptr<dynamic::Object> value);
     void AddCondition(std::wstring property_name, std::wstring value);
 
     const PropertyValuePairSet& Conditions() const noexcept {
         return conditions_;
     }
 
-    void SetResult(std::shared_ptr<Object> result);
+    void SetResult(std::shared_ptr<dynamic::Object> result);
 
-    const std::shared_ptr<Object>& Result() const noexcept {
+    const std::shared_ptr<dynamic::Object>& Result() const noexcept {
         return result_;
     }
 
-    std::shared_ptr<Object> Evaluate(const Object& object) const;
+    std::shared_ptr<dynamic::Object> Evaluate(const dynamic::Object& object) const;
 
 private:
-    bool MeetsConditions(const Object& object) const;
+    bool MeetsConditions(const dynamic::Object& object) const;
 
 private:
     PropertyValuePairSet conditions_;
-    std::shared_ptr<Object> result_;
+    std::shared_ptr<dynamic::Object> result_;
 };
 
 ZAF_OBJECT_BEGIN(If);

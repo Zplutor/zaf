@@ -32,8 +32,8 @@ public:
      */
     void SetDefaultItemHeight(float item_height);
 
-    void AddItem(const std::shared_ptr<Object>& data);
-    void AddItemAtIndex(std::size_t index, const std::shared_ptr<Object>& data);
+    void AddItem(const std::shared_ptr<dynamic::Object>& data);
+    void AddItemAtIndex(std::size_t index, const std::shared_ptr<dynamic::Object>& data);
     void RemoveItemAtIndex(std::size_t index);
     void RemoveAllItems();
 

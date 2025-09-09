@@ -5,7 +5,9 @@
 
 namespace zaf {
 
+namespace dynamic {
 class Object;
+}
 class XamlNode;
 
 /**
@@ -33,7 +35,7 @@ public:
 
         The default implementation of this method is empty.
     */
-    virtual void ParseFromAttribute(const std::wstring& attribute_value, Object& object);
+    virtual void ParseFromAttribute(const std::wstring& attribute_value, dynamic::Object& object);
 
     /**
     Parses a XAML node and sets the result to a specified object.
@@ -55,17 +57,17 @@ public:
         Derived classes should override this method if they need to parse content nodes and should 
         call the default implementation to retain the ability of property parsing.
     */
-    virtual void ParseFromNode(const XamlNode& node, Object& object);
+    virtual void ParseFromNode(const XamlNode& node, dynamic::Object& object);
 
 protected:
     virtual void ParsePropertyNode(
         const XamlNode& node,
         const std::wstring& property_name, 
-        Object& object);
+        dynamic::Object& object);
 
 private:
-    void ParsePropertyNodes(const XamlNode& node, Object& object);
-    void ParseSinglePropertyNode(const XamlNode& node, Object& object);
+    void ParsePropertyNodes(const XamlNode& node, dynamic::Object& object);
+    void ParseSinglePropertyNode(const XamlNode& node, dynamic::Object& object);
 };
 
 }

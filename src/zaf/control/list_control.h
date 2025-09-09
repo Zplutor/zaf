@@ -70,7 +70,7 @@ public:
     */
     std::size_t ItemCount() const;
 
-    std::shared_ptr<Object> GetItemDataAtIndex(std::size_t index) const;
+    std::shared_ptr<dynamic::Object> GetItemDataAtIndex(std::size_t index) const;
 
     /**
     Gets the visible list item at the specified index.
@@ -170,7 +170,7 @@ public:
      @return
          Return nullptr if there is no selection.
      */
-    std::shared_ptr<Object> FirstSelectedItemData() const;
+    std::shared_ptr<dynamic::Object> FirstSelectedItemData() const;
 
     /**
      Determinate whether the item at specified index is selected.
@@ -243,7 +243,7 @@ private:
     void OnCoreItemDoubleClick(const internal::ListCoreItemDoubleClickInfo& event_info);
     std::shared_ptr<PopupMenu> OnCoreContextMenu(
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data);
+        const std::shared_ptr<dynamic::Object>& item_data);
 
 private:
     std::unique_ptr<internal::ListControlPartsContext> parts_;

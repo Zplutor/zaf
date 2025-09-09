@@ -60,7 +60,7 @@ TEST(ColorParser, ParseInvalidValueInAttribute) {
     for (const auto& each_value : values) {
 
         auto parser = zaf::Color::StaticType()->Parser();
-        zaf::Object object;
+        zaf::dynamic::Object object;
 
         ASSERT_THROW(parser->ParseFromAttribute(each_value, object), zaf::ParseError);
     }
@@ -110,7 +110,7 @@ TEST(ColorParser, ParseInvalidValueInNode) {
 TEST(ColorParser, ParseToInvalidObject) {
 
     auto parser = zaf::Color::StaticType()->Parser();
-    zaf::Object object;
+    zaf::dynamic::Object object;
         
     ASSERT_THROW(parser->ParseFromAttribute(L"#112233", object), zaf::InvalidTypeError);
 

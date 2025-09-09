@@ -100,14 +100,14 @@ TEST(BoxingTest, UnboxPointer) {
 
     //Null pointer
     {
-        Object* boxed_object{};
+        dynamic::Object* boxed_object{};
         auto unboxed_bool = Unbox<bool>(boxed_object);
         ASSERT_EQ(unboxed_bool, nullptr);
     }
 
     //Const null pointer
     {
-        const Object* boxed_object{};
+        const dynamic::Object* boxed_object{};
         auto unboxed_bool = Unbox<bool>(boxed_object);
         ASSERT_EQ(unboxed_bool, nullptr);
     }
@@ -148,7 +148,7 @@ TEST(BoxingTest, UnboxSharedPtr) {
 
     //null std::shared_ptr
     {
-        std::shared_ptr<Object> object;
+        std::shared_ptr<dynamic::Object> object;
         auto unboxed_bool = Unbox<bool>(object);
         ASSERT_EQ(unboxed_bool, nullptr);
     }

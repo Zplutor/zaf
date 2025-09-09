@@ -11,7 +11,7 @@
 namespace zaf {
 namespace {
 
-std::shared_ptr<Object> ParsePropertyValueFromAttribute(
+std::shared_ptr<dynamic::Object> ParsePropertyValueFromAttribute(
     const ObjectProperty& property,
     const std::wstring& attribute_value) {
 
@@ -29,7 +29,7 @@ std::shared_ptr<Object> ParsePropertyValueFromAttribute(
 }
 
 
-void ParseAttributes(const XamlNode& node, Object& object) {
+void ParseAttributes(const XamlNode& node, dynamic::Object& object) {
 
     const auto& attributes = node.GetAttributes();
     for (const auto& each_attribute : attributes) {
@@ -61,7 +61,7 @@ bool IsTypeNameMatched(const std::wstring& type_name, dynamic::ObjectType* type)
 }
 
 
-std::shared_ptr<Object> ParsePropertyValueFromNode(
+std::shared_ptr<dynamic::Object> ParsePropertyValueFromNode(
     const ObjectProperty& property,
     const XamlNode& node) {
 
@@ -72,7 +72,7 @@ std::shared_ptr<Object> ParsePropertyValueFromNode(
             throw ParseError{ ZAF_SOURCE_LOCATION() };
         }
 
-        return internal::CreateObjectFromNode<Object>(content_nodes.front());
+        return internal::CreateObjectFromNode<dynamic::Object>(content_nodes.front());
     }
     else {
 
@@ -85,19 +85,19 @@ std::shared_ptr<Object> ParsePropertyValueFromNode(
 
 }
 
-void ObjectParser::ParseFromAttribute(const std::wstring& attribute_value, Object& object) {
+void ObjectParser::ParseFromAttribute(const std::wstring& attribute_value, dynamic::Object& object) {
     //Nothing to do.
 }
 
 
-void ObjectParser::ParseFromNode(const XamlNode& node, Object& object) {
+void ObjectParser::ParseFromNode(const XamlNode& node, dynamic::Object& object) {
 
     ParseAttributes(node, object);
     ParsePropertyNodes(node, object);
 }
 
 
-void ObjectParser::ParsePropertyNodes(const XamlNode& node, Object& object) {
+void ObjectParser::ParsePropertyNodes(const XamlNode& node, dynamic::Object& object) {
 
     const auto& property_nodes = node.GetPropertyNodes();
     for (const auto& each_node : property_nodes) {
@@ -106,7 +106,7 @@ void ObjectParser::ParsePropertyNodes(const XamlNode& node, Object& object) {
 }
 
 
-void ObjectParser::ParseSinglePropertyNode(const XamlNode& node, Object& object) {
+void ObjectParser::ParseSinglePropertyNode(const XamlNode& node, dynamic::Object& object) {
 
     auto splitted = Split(node.Value(), L'.');
     if (splitted.size() < 2) {
@@ -127,7 +127,7 @@ void ObjectParser::ParseSinglePropertyNode(const XamlNode& node, Object& object)
 void ObjectParser::ParsePropertyNode(
     const XamlNode& node,
     const std::wstring& property_name, 
-    Object& object) {
+    dynamic::Object& object) {
 
     auto property = object.DynamicType()->GetProperty(property_name);
     if (!property) {

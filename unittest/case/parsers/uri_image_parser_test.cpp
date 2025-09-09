@@ -42,7 +42,7 @@ TEST(URIImageParser, ParseFromNode) {
 TEST(URIImageParser, ParseToInvalidObject) {
 
     auto parser = URIImage::StaticType()->Parser();
-    zaf::Object object;
+    zaf::dynamic::Object object;
 
     ASSERT_THROW(
         parser->ParseFromAttribute(L"file:///C:/image.png", object), 

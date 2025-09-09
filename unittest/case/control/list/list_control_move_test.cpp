@@ -25,7 +25,7 @@ public:
         return data_.size();
     }
 
-    std::shared_ptr<Object> GetDataAtIndex(std::size_t index) const override {
+    std::shared_ptr<dynamic::Object> GetDataAtIndex(std::size_t index) const override {
         return data_[index];
     }
 
@@ -50,7 +50,7 @@ public:
 
     float EstimateItemHeight(
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override {
+        const std::shared_ptr<dynamic::Object>& item_data) override {
 
         return float(As<Int32>(item_data)->Value() * 10);
     }

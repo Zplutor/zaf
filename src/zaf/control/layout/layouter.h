@@ -10,7 +10,7 @@ namespace zaf {
 class Control;
 class Rect;
 
-class Layouter : public Object {
+class Layouter : public dynamic::Object {
 public:
     ZAF_OBJECT;
 

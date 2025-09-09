@@ -18,14 +18,14 @@ public:
     InspectorWindow(const std::shared_ptr<Window>& target_window);
     
     float EstimateItemHeight(
-        const std::shared_ptr<Object>& parent_item_data,
+        const std::shared_ptr<dynamic::Object>& parent_item_data,
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override;
+        const std::shared_ptr<dynamic::Object>& item_data) override;
 
     std::shared_ptr<TreeItem> CreateItem(
-        const std::shared_ptr<Object>& parent_item_data,
+        const std::shared_ptr<dynamic::Object>& parent_item_data,
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override;
+        const std::shared_ptr<dynamic::Object>& item_data) override;
 
     void HighlightControl(const std::shared_ptr<Control>& control) override;
     void SelectControl(const std::shared_ptr<Control>& control) override;
@@ -48,7 +48,7 @@ private:
     void InitializeTreeControl();
     void InitializeSecondPaneToolbar();
     void InitializePropertyGrid();
-    void ChangeHighlightObject(const std::shared_ptr<Object>& object);
+    void ChangeHighlightObject(const std::shared_ptr<dynamic::Object>& object);
 
 private:
     std::shared_ptr<SplitControl> split_control_;
@@ -57,7 +57,7 @@ private:
     std::shared_ptr<internal::InspectDataSource> data_source_;
     std::shared_ptr<Window> target_window_;
 
-    std::shared_ptr<Object> highlight_object_;
+    std::shared_ptr<dynamic::Object> highlight_object_;
 };
 
 }

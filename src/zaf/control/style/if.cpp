@@ -5,12 +5,12 @@ namespace zaf {
 
 ZAF_OBJECT_IMPL(If);
 
-If::If() : result_(Create<Object>()) {
+If::If() : result_(Create<dynamic::Object>()) {
 
 }
 
 
-void If::AddCondition(ObjectProperty* property, std::shared_ptr<Object> value) {
+void If::AddCondition(ObjectProperty* property, std::shared_ptr<dynamic::Object> value) {
     conditions_.emplace(property, std::move(value));
 }
 
@@ -20,13 +20,13 @@ void If::AddCondition(std::wstring property_name, std::wstring value) {
 }
 
 
-void If::SetResult(std::shared_ptr<Object> result) {
+void If::SetResult(std::shared_ptr<dynamic::Object> result) {
     ZAF_EXPECT(result);
     result_ = std::move(result);
 }
 
 
-std::shared_ptr<Object> If::Evaluate(const Object& object) const{
+std::shared_ptr<dynamic::Object> If::Evaluate(const dynamic::Object& object) const{
     
     if (MeetsConditions(object)) {
         return result_;
@@ -37,7 +37,7 @@ std::shared_ptr<Object> If::Evaluate(const Object& object) const{
 }
 
 
-bool If::MeetsConditions(const Object& object) const {
+bool If::MeetsConditions(const dynamic::Object& object) const {
 
     for (const auto& each_condition : conditions_) {
 

@@ -21,7 +21,7 @@ ZAF_ENUM_CONSTANT(Word)
 ZAF_ENUM_END;
 
 
-class TextTrimming : public Object {
+class TextTrimming : public dynamic::Object {
 public:
     ZAF_OBJECT;
 

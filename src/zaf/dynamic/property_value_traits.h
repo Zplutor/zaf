@@ -47,14 +47,14 @@ the specified property value type.
       signature of the method is:
 
       @code
-      std::shared_ptr<zaf::Object> ToBoxedObject(T&& value);
+      std::shared_ptr<zaf::dynamic::Object> ToBoxedObject(T&& value);
       @endcode
 
     - A static method `FromBoxedObject` that converts a boxed instance to the property value. The
       signature of the method is:
 
       @code
-      ValueType FromBoxedObject(const std::shared_ptr<zaf::Object>& object);
+      ValueType FromBoxedObject(const std::shared_ptr<zaf::dynamic::Object>& object);
       @endcode
 
     The following types support being used for properties:
@@ -75,11 +75,11 @@ struct PropertyValueTraits<T, std::enable_if_t<HasBoxingTraitsV<T>>> {
     using ValueType = std::decay_t<T>;
     using BoxedType = typename BoxingTraits<T>::BoxedType;
 
-    static std::shared_ptr<Object> ToBoxedObject(T&& value) {
+    static std::shared_ptr<dynamic::Object> ToBoxedObject(T&& value) {
         return zaf::Box(std::forward<T>(value));
     }
 
-    static const ValueType& FromBoxedObject(const std::shared_ptr<Object>& object) {
+    static const ValueType& FromBoxedObject(const std::shared_ptr<dynamic::Object>& object) {
         return zaf::Unbox<ValueType>(*object);
     }
 };
@@ -90,11 +90,11 @@ struct PropertyValueTraits<T, std::enable_if_t<IsBoxedInstanceTypeV<T>>> {
     using ValueType = std::decay_t<T>;
     using BoxedType = typename ValueType::element_type;
 
-    static std::shared_ptr<Object> ToBoxedObject(T&& value) {
+    static std::shared_ptr<dynamic::Object> ToBoxedObject(T&& value) {
         return std::forward<T>(value);
     }
 
-    static T FromBoxedObject(const std::shared_ptr<Object>& object) {
+    static T FromBoxedObject(const std::shared_ptr<dynamic::Object>& object) {
         return As<typename ValueType::element_type>(object);
     }
 };
@@ -111,14 +111,14 @@ public:
     using ValueType = std::decay_t<T>;
     using BoxedType = typename BoxingTraits<OptionalValueType>::BoxedType;
 
-    static std::shared_ptr<Object> ToBoxedObject(T&& value) {
+    static std::shared_ptr<dynamic::Object> ToBoxedObject(T&& value) {
         if (value.has_value()) {
             return zaf::Box(std::forward<OptionalValueType>(*value));
         }
         return nullptr;
     }
 
-    static ValueType FromBoxedObject(const std::shared_ptr<Object>& object) {
+    static ValueType FromBoxedObject(const std::shared_ptr<dynamic::Object>& object) {
         if (object) {
             return zaf::Unbox<OptionalValueType>(*object);
         }
@@ -137,11 +137,11 @@ public:
     using ValueType = std::decay_t<T>;
     using BoxedType = typename CustomTraits::BoxedType;
 
-    static std::shared_ptr<Object> ToBoxedObject(T&& value) {
+    static std::shared_ptr<dynamic::Object> ToBoxedObject(T&& value) {
         return CustomTraits::ToBoxedObject(std::forward<T>(value));
     }
 
-    static T FromBoxedObject(const std::shared_ptr<Object>& object) {
+    static T FromBoxedObject(const std::shared_ptr<dynamic::Object>& object) {
         auto custom_boxed_object = As<BoxedType>(object);
         if (custom_boxed_object) {
             return CustomTraits::FromBoxedObject(custom_boxed_object);

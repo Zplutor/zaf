@@ -34,13 +34,13 @@ public:
     ListControlContextMenuInfo(
         std::shared_ptr<ListControl> source,
         std::size_t item_index,
-        std::shared_ptr<Object> item_data);
+        std::shared_ptr<dynamic::Object> item_data);
 
     std::size_t ItemIndex() const noexcept {
         return item_index_;
     }
 
-    const std::shared_ptr<Object>& ItemData() const noexcept {
+    const std::shared_ptr<dynamic::Object>& ItemData() const noexcept {
         return item_data_;
     }
 
@@ -54,7 +54,7 @@ public:
 
 private:
     std::size_t item_index_{};
-    std::shared_ptr<Object> item_data_;
+    std::shared_ptr<dynamic::Object> item_data_;
     std::shared_ptr<std::shared_ptr<PopupMenu>> menu_;
 };
 

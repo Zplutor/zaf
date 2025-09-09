@@ -11,12 +11,12 @@ EnumParser::EnumParser(const EnumType* type) : enum_type_(type) {
 }
 
 
-void EnumParser::ParseFromAttribute(const std::wstring& attribute_value, Object& object) {
+void EnumParser::ParseFromAttribute(const std::wstring& attribute_value, dynamic::Object& object) {
     Parse(attribute_value, object);
 }
 
 
-void EnumParser::ParseFromNode(const XamlNode& node, Object& object) {
+void EnumParser::ParseFromNode(const XamlNode& node, dynamic::Object& object) {
 
     __super::ParseFromNode(node, object);
 
@@ -29,14 +29,14 @@ void EnumParser::ParseFromNode(const XamlNode& node, Object& object) {
 }
 
 
-void EnumParser::Parse(const std::wstring& text, Object& object) {
+void EnumParser::Parse(const std::wstring& text, dynamic::Object& object) {
 
     auto parsed_value = ParseValue(text);
     enum_type_->SetValue(object, *parsed_value);
 }
 
 
-std::shared_ptr<Object> EnumParser::ParseValue(const std::wstring& text) {
+std::shared_ptr<dynamic::Object> EnumParser::ParseValue(const std::wstring& text) {
 
     if (!enum_type_->IsFlagsEnum()) {
         return ParseSingleValue(text);
@@ -60,7 +60,7 @@ std::shared_ptr<Object> EnumParser::ParseValue(const std::wstring& text) {
 }
 
 
-std::shared_ptr<Object> EnumParser::ParseSingleValue(const std::wstring& text) {
+std::shared_ptr<dynamic::Object> EnumParser::ParseSingleValue(const std::wstring& text) {
 
     auto value_object = enum_type_->GetValue(text);
     if (value_object) {

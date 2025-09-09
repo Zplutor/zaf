@@ -11,7 +11,7 @@ namespace {
 
 constexpr int ReadOnlyValue = 73;
 
-class PropertyHostBase : public zaf::Object {
+class PropertyHostBase : public zaf::dynamic::Object {
 public:
     ZAF_OBJECT;
 

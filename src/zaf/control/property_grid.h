@@ -23,11 +23,11 @@ public:
 public:
     PropertyGrid();
 
-    const std::shared_ptr<Object>& TargetObject() const {
+    const std::shared_ptr<dynamic::Object>& TargetObject() const {
         return target_object_;
     }
 
-    void SetTargetObject(std::shared_ptr<Object> object);
+    void SetTargetObject(std::shared_ptr<dynamic::Object> object);
 
     void SetDelegate(std::shared_ptr<PropertyGridDelegate> delegate);
 
@@ -52,12 +52,12 @@ protected:
 private:
     void ReCreateDataSource();
     void ReCreateDelegate();
-    void ExpandChildNodes(const PropertyGridNode& node, const std::shared_ptr<Object>& node_data);
+    void ExpandChildNodes(const PropertyGridNode& node, const std::shared_ptr<dynamic::Object>& node_data);
 
 private:
     std::shared_ptr<TreeItemContainer> item_container_;
     std::shared_ptr<internal::SplitDistanceManager> split_distance_manager_;
-    std::shared_ptr<Object> target_object_;
+    std::shared_ptr<dynamic::Object> target_object_;
     internal::NoSelfRefPtr<PropertyGridDelegate> delegate_;
     std::shared_ptr<internal::PropertyGridDataManager> data_manager_;
     std::shared_ptr<internal::PropertyGridItemManager> item_manager_;

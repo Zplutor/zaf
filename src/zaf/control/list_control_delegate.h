@@ -33,7 +33,7 @@ public:
      */
     virtual float EstimateItemHeight(
         std::size_t item_index, 
-        const std::shared_ptr<Object>& item_data) {
+        const std::shared_ptr<dynamic::Object>& item_data) {
 
         return 20;
     }
@@ -44,7 +44,7 @@ public:
 
     virtual std::shared_ptr<ListItem> CreateItem(
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data);
+        const std::shared_ptr<dynamic::Object>& item_data);
 };
 
 }

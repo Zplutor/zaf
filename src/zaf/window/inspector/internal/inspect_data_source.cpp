@@ -24,7 +24,7 @@ void InspectDataSource::ControlRemoveChild(
 }
 
 
-bool InspectDataSource::DoesDataHasChildren(const std::shared_ptr<Object>& data) {
+bool InspectDataSource::DoesDataHasChildren(const std::shared_ptr<dynamic::Object>& data) {
 
     auto window = dynamic_cast<Window*>(data.get());
     if (window) {
@@ -40,7 +40,7 @@ bool InspectDataSource::DoesDataHasChildren(const std::shared_ptr<Object>& data)
 }
 
 
-std::size_t InspectDataSource::GetChildDataCount(const std::shared_ptr<Object>& parent_data) {
+std::size_t InspectDataSource::GetChildDataCount(const std::shared_ptr<dynamic::Object>& parent_data) {
 
     if (!parent_data) {
         return 1;
@@ -60,8 +60,8 @@ std::size_t InspectDataSource::GetChildDataCount(const std::shared_ptr<Object>& 
 }
 
 
-std::shared_ptr<Object> InspectDataSource::GetChildDataAtIndex(
-    const std::shared_ptr<Object>& parent_data,
+std::shared_ptr<dynamic::Object> InspectDataSource::GetChildDataAtIndex(
+    const std::shared_ptr<dynamic::Object>& parent_data,
     std::size_t index) {
 
     if (!parent_data) {
@@ -78,7 +78,7 @@ std::shared_ptr<Object> InspectDataSource::GetChildDataAtIndex(
         return control->GetChildAtIndex(index);
     }
 
-    return Create<Object>();
+    return Create<dynamic::Object>();
 }
 
 }

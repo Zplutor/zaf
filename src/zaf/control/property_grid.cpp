@@ -24,7 +24,7 @@ void PropertyGrid::Initialize() {
 
     __super::Initialize();
 
-    target_object_ = Create<Object>();
+    target_object_ = Create<dynamic::Object>();
 
     item_container_ = Create<TreeItemContainer>();
 
@@ -96,7 +96,7 @@ void PropertyGrid::OnFocusLost(const FocusLostInfo& event_info) {
 }
 
 
-void PropertyGrid::SetTargetObject(std::shared_ptr<Object> object) {
+void PropertyGrid::SetTargetObject(std::shared_ptr<dynamic::Object> object) {
     ZAF_EXPECT(object);
     target_object_ = std::move(object);
     ReCreateDataSource();
@@ -161,7 +161,7 @@ void PropertyGrid::ExpandNodeTree(const PropertyGridNode& tree) {
 
 void PropertyGrid::ExpandChildNodes(
     const PropertyGridNode& parent_node, 
-    const std::shared_ptr<Object>& parent_data) {
+    const std::shared_ptr<dynamic::Object>& parent_data) {
 
     std::map<ObjectProperty*, const PropertyGridNode*> child_node_map;
     for (const auto& each_child : parent_node.Children()) {

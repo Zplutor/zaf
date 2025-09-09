@@ -14,12 +14,14 @@
 #include <zaf/dynamic/object.h>
 
 #define ZAF_ENUM_BEGIN(EnumName)                                                                  \
-class EnumName##Enum : public zaf::Object, public zaf::internal::BoxedRepresent<EnumName> {       \
+class EnumName##Enum : \
+    public zaf::dynamic::Object, \
+    public zaf::internal::BoxedRepresent<EnumName> {       \
 public:                                                                                           \
     ZAF_OBJECT;                                                                                   \
     static zaf::EnumType* EnumType();                                                             \
     using BoxedRepresent<EnumName>::BoxedRepresent;                                               \
-    bool IsEqual(const zaf::Object& other) const override;                                        \
+    bool IsEqual(const zaf::dynamic::Object& other) const override;                               \
     std::size_t Hash() const override;                                                            \
     std::wstring ToString() const override;                                                       \
 };                                                                                                \
@@ -41,26 +43,30 @@ private:                                                                        
     Type();                                                                                       \
 public:                                                                                           \
     static Type* Instance() { return &instance; }                                                 \
-    zaf::dynamic::ObjectType* BaseType() const noexcept override {                                         \
+    zaf::dynamic::ObjectType* BaseType() const noexcept override {                                \
         return Class::StaticBaseType();                                                           \
     }                                                                                             \
     std::wstring_view Name() const noexcept override {                                            \
         return std::wstring_view{ L#EnumName };                                                   \
     }                                                                                             \
-    std::shared_ptr<zaf::Object> CreateInstance() const override {                                \
+    std::shared_ptr<zaf::dynamic::Object> CreateInstance() const override {                       \
         return zaf::Create<EnumName##Enum>();                                                     \
     }                                                                                             \
     zaf::ObjectParser* Parser() const override {                                                  \
         static zaf::internal::EnumParser parser(this);                                            \
         return &parser;                                                                           \
     }                                                                                             \
-    void SetValue(Object& result, const Object& value) const override {                           \
-        As<Class>(result).Value() = As<Class>(value).Value();                                     \
+    void SetValue( \
+        zaf::dynamic::Object& result, \
+        const zaf::dynamic::Object& value) const override { \
+        zaf::As<Class>(result).Value() = zaf::As<Class>(value).Value();                           \
     }                                                                                             \
     bool IsFlagsEnum() const noexcept override {                                                  \
         return zaf::IsFlagsEnumV<EnumName>;                                                       \
     }                                                                                             \
-    void CombineFlagValue(Object& result, const Object& value) const override {                   \
+    void CombineFlagValue( \
+        zaf::dynamic::Object& result, \
+        const zaf::dynamic::Object& value) const override { \
         zaf::internal::EnumValueCombiner<DeclaredType, Class>::Combine(result, value);            \
     }
 
@@ -73,10 +79,10 @@ private:                                                                        
             static const std::wstring name{ L#ConstantName };                                     \
             return name;                                                                          \
         }                                                                                         \
-        zaf::dynamic::ObjectType* ValueType() const override {                                             \
+        zaf::dynamic::ObjectType* ValueType() const override {                                    \
             return Class::StaticType();                                                           \
         }                                                                                         \
-        std::shared_ptr<Object> Value() const override {                                          \
+        std::shared_ptr<zaf::dynamic::Object> Value() const override {                            \
             return std::make_shared<Class>(DeclaredType::ConstantName);                           \
         }                                                                                         \
     };                                                                                            \
@@ -97,13 +103,13 @@ EnumName##Enum::Type EnumName##Enum::Type::instance;                            
 EnumName##Enum::Type::Type() {                                                                    \
     zaf::internal::ReflectionManager::Instance().RegisterType(this);                              \
 }                                                                                                 \
-zaf::dynamic::ObjectType* EnumName##Enum::StaticType() { return Type::Instance(); }                        \
-zaf::dynamic::ObjectType* EnumName##Enum::DynamicType() const { return Type::Instance(); }                 \
-zaf::dynamic::ObjectType* EnumName##Enum::StaticBaseType() { return __super::StaticType(); }               \
+zaf::dynamic::ObjectType* EnumName##Enum::StaticType() { return Type::Instance(); }               \
+zaf::dynamic::ObjectType* EnumName##Enum::DynamicType() const { return Type::Instance(); }        \
+zaf::dynamic::ObjectType* EnumName##Enum::StaticBaseType() { return __super::StaticType(); }      \
 zaf::EnumType* EnumName##Enum::EnumType() {                                                       \
     return Type::Instance();                                                                      \
 }                                                                                                 \
-bool EnumName##Enum::IsEqual(const zaf::Object& other) const {                                    \
+bool EnumName##Enum::IsEqual(const zaf::dynamic::Object& other) const {                           \
     return zaf::internal::BoxedRepresentEqual<EnumName##Enum>(*this, other);                      \
 }                                                                                                 \
 std::size_t EnumName##Enum::Hash() const {                                                        \

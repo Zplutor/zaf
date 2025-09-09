@@ -26,24 +26,24 @@ private:                                                                        
         template<typename T>                                                                      \
         static constexpr bool InnerCanSet(...) { return false; }                                  \
         template<typename T>                                                                      \
-        static std::shared_ptr<zaf::Object> InnerGet(const T& object, GetterDeclaredType<T>*) {   \
+        static std::shared_ptr<zaf::dynamic::Object> InnerGet(const T& object, GetterDeclaredType<T>*) {   \
             return zaf::internal::BoxPropertyValue(object.PropertyName());                        \
         }                                                                                         \
         template<typename T>                                                                      \
-        static std::shared_ptr<zaf::Object> InnerGet(const T& object, ...) {                      \
+        static std::shared_ptr<zaf::dynamic::Object> InnerGet(const T& object, ...) {                      \
             throw zaf::InvalidOperationError{ ZAF_SOURCE_LOCATION() };                            \
         }                                                                                         \
         template<typename T>                                                                      \
         static void InnerSet(                                                                     \
             T& object,                                                                            \
-            const std::shared_ptr<zaf::Object>& value,                                            \
+            const std::shared_ptr<zaf::dynamic::Object>& value,                                            \
             SetterDeclaredType<T>* value_type) {                                                  \
             using ValueDeclaredType = std::decay_t<decltype(*value_type)>;                        \
             using Traits = zaf::PropertyValueTraits<ValueDeclaredType>;                           \
             object.Set##PropertyName(Traits::FromBoxedObject(value));                             \
         }                                                                                         \
         template<typename T>                                                                      \
-        static void InnerSet(T& object, const std::shared_ptr<zaf::Object>& value, ...) {         \
+        static void InnerSet(T& object, const std::shared_ptr<zaf::dynamic::Object>& value, ...) {         \
             throw zaf::InvalidOperationError{ ZAF_SOURCE_LOCATION() };                            \
         }                                                                                         \
         template<typename T>                                                                      \
@@ -67,10 +67,10 @@ private:                                                                        
         }                                                                                         \
         static constexpr bool CanGet = InnerCanGet<Class>(nullptr);                               \
         static constexpr bool CanSet = InnerCanSet<Class>(nullptr);                               \
-        static std::shared_ptr<zaf::Object> Get(const zaf::Object& object) {                      \
+        static std::shared_ptr<zaf::dynamic::Object> Get(const zaf::dynamic::Object& object) {                      \
             return InnerGet(zaf::As<Class>(object), nullptr);                                     \
         }                                                                                         \
-        static void Set(zaf::Object& object, const std::shared_ptr<zaf::Object>& value) {         \
+        static void Set(zaf::dynamic::Object& object, const std::shared_ptr<zaf::dynamic::Object>& value) {         \
             InnerSet(zaf::As<Class>(object), value, nullptr);                                     \
         }                                                                                         \
     };                                                                                            \
@@ -91,12 +91,12 @@ private:                                                                        
         bool CanSet() const noexcept override {                                                   \
             return PropertyName##Traits::CanSet;                                                  \
         }                                                                                         \
-        std::shared_ptr<zaf::Object> GetValue(const zaf::Object& object) const override {         \
+        std::shared_ptr<zaf::dynamic::Object> GetValue(const zaf::dynamic::Object& object) const override {         \
             return PropertyName##Traits::Get(object);                                             \
         }                                                                                         \
         void SetValue(                                                                            \
-            zaf::Object& object,                                                                  \
-            const std::shared_ptr<zaf::Object>& value) const override {                           \
+            zaf::dynamic::Object& object,                                                                  \
+            const std::shared_ptr<zaf::dynamic::Object>& value) const override {                           \
             return PropertyName##Traits::Set(object, value);                                      \
         }                                                                                         \
     };                                                                                            \

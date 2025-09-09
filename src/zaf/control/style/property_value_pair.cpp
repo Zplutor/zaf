@@ -3,7 +3,7 @@
 
 namespace zaf {
 
-PropertyValuePair::PropertyValuePair(ObjectProperty* property, std::shared_ptr<Object> value) :
+PropertyValuePair::PropertyValuePair(ObjectProperty* property, std::shared_ptr<dynamic::Object> value) :
     data_(ParsedData{ property, std::move(value) }) {
 
 }
@@ -27,7 +27,7 @@ std::wstring_view PropertyValuePair::PropertyName() const noexcept {
 }
 
 
-void PropertyValuePair::SetTo(Object& object) const {
+void PropertyValuePair::SetTo(dynamic::Object& object) const {
 
     std::visit([&object](const auto& data) {
 
@@ -44,12 +44,12 @@ void PropertyValuePair::SetTo(Object& object) const {
 }
 
 
-void PropertyValuePair::SetWithParsedData(const ParsedData& data, Object& object) {
+void PropertyValuePair::SetWithParsedData(const ParsedData& data, dynamic::Object& object) {
     data.property->SetValue(object, data.value);
 }
 
 
-void PropertyValuePair::SetWithNotParsedData(const NotParsedData& data, Object& object) {
+void PropertyValuePair::SetWithNotParsedData(const NotParsedData& data, dynamic::Object& object) {
     auto parsed_data = ConvertToParsedData(data, object);
     if (parsed_data) {
         SetWithParsedData(*parsed_data, object);
@@ -57,7 +57,7 @@ void PropertyValuePair::SetWithNotParsedData(const NotParsedData& data, Object& 
 }
 
 
-bool PropertyValuePair::IsSetIn(const Object& object) const {
+bool PropertyValuePair::IsSetIn(const dynamic::Object& object) const {
 
     bool result{};
     std::visit([&object, &result](const auto& data) {
@@ -79,7 +79,7 @@ bool PropertyValuePair::IsSetIn(const Object& object) const {
 
 bool PropertyValuePair::IsSetWithParsedData(
     const ParsedData& data,
-    const Object& object) {
+    const dynamic::Object& object) {
 
     auto value = data.property->GetValue(object);
     if (!value) {
@@ -92,7 +92,7 @@ bool PropertyValuePair::IsSetWithParsedData(
 
 bool PropertyValuePair::IsSetWithNotParsedData(
     const NotParsedData& data, 
-    const Object& object) {
+    const dynamic::Object& object) {
 
     auto parsed_data = ConvertToParsedData(data, object);
     if (parsed_data) {
@@ -104,7 +104,7 @@ bool PropertyValuePair::IsSetWithNotParsedData(
 
 std::optional<PropertyValuePair::ParsedData> PropertyValuePair::ConvertToParsedData(
     const NotParsedData& data,
-    const Object& object) {
+    const dynamic::Object& object) {
 
     auto type = object.DynamicType();
 

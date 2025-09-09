@@ -22,7 +22,7 @@ void BoolEditor::SetAccessMethod(AccessMethod access_method) {
 }
 
 
-void BoolEditor::SetValue(const std::shared_ptr<Object>& object) {
+void BoolEditor::SetValue(const std::shared_ptr<dynamic::Object>& object) {
 
     check_box_->SetIsChecked(Unbox<bool>(*object));
 

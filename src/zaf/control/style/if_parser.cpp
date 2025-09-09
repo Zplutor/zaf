@@ -7,7 +7,7 @@
 
 namespace zaf {
 
-void IfParser::ParseFromNode(const XamlNode& node, Object& object) {
+void IfParser::ParseFromNode(const XamlNode& node, dynamic::Object& object) {
 
     auto& if_statement = As<If>(object);
 
@@ -24,7 +24,7 @@ void IfParser::ParseFromNode(const XamlNode& node, Object& object) {
         throw ParseError{ ZAF_SOURCE_LOCATION() };
     }
 
-    auto result = internal::CreateObjectFromNode<Object>(content_nodes.front());
+    auto result = internal::CreateObjectFromNode<dynamic::Object>(content_nodes.front());
     if (!result) {
         throw ParseError{ ZAF_SOURCE_LOCATION() };
     }

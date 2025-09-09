@@ -10,7 +10,7 @@ PropertyGridDataManager::PropertyGridDataManager(std::shared_ptr<PropertyGridDel
 }
 
 
-void PropertyGridDataManager::SetTargetObject(const std::shared_ptr<Object>& target_object) {
+void PropertyGridDataManager::SetTargetObject(const std::shared_ptr<dynamic::Object>& target_object) {
 
     ZAF_EXPECT(target_object);
 
@@ -22,7 +22,7 @@ void PropertyGridDataManager::SetTargetObject(const std::shared_ptr<Object>& tar
 }
 
 
-bool PropertyGridDataManager::DoesDataHasChildren(const std::shared_ptr<Object>& data) {
+bool PropertyGridDataManager::DoesDataHasChildren(const std::shared_ptr<dynamic::Object>& data) {
 
     auto target_data = data ? As<PropertyData>(data) : root_data_;
     return !target_data->Children().empty();
@@ -30,15 +30,15 @@ bool PropertyGridDataManager::DoesDataHasChildren(const std::shared_ptr<Object>&
 
 
 std::size_t PropertyGridDataManager::GetChildDataCount(
-    const std::shared_ptr<Object>& parent_data) {
+    const std::shared_ptr<dynamic::Object>& parent_data) {
 
     auto target_data = parent_data ? As<PropertyData>(parent_data) : root_data_;
     return target_data->Children().size();
 }
 
 
-std::shared_ptr<Object> PropertyGridDataManager::GetChildDataAtIndex(
-    const std::shared_ptr<Object>& parent_data,
+std::shared_ptr<dynamic::Object> PropertyGridDataManager::GetChildDataAtIndex(
+    const std::shared_ptr<dynamic::Object>& parent_data,
     std::size_t index) {
 
     auto target_data = parent_data ? As<PropertyData>(parent_data) : root_data_;

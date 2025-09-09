@@ -3,7 +3,7 @@
 
 namespace zaf::internal {
 
-void ObjectInitializer::Initialize(Object* object) {
+void ObjectInitializer::Initialize(dynamic::Object* object) {
     object->InitializeObject();
 }
 

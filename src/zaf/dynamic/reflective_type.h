@@ -17,7 +17,7 @@ A type trait that checks whether the specified type is a reflective type.
     The type to be checked. Its decayed type will be used to check.
 
 @details
-    A reflective type is either zaf::Object or a derived type of zaf::Object.
+    A reflective type is either zaf::dynamic::Object or a derived type of zaf::dynamic::Object.
 */
 template<typename T>
 struct IsReflectiveType {
@@ -29,8 +29,8 @@ public:
     Indicates whether T is a reflective type.
     */
     static constexpr bool value =
-        std::is_same_v<Object, DecayedT> ||
-        std::is_base_of_v<Object, DecayedT>;
+        std::is_same_v<dynamic::Object, DecayedT> ||
+        std::is_base_of_v<dynamic::Object, DecayedT>;
 };
 
 

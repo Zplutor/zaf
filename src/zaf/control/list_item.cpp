@@ -50,7 +50,7 @@ void ListItem::RepaintOnFocusChanged() {
 }
 
 
-void ListItem::SetItemData(std::shared_ptr<Object> data) {
+void ListItem::SetItemData(std::shared_ptr<dynamic::Object> data) {
 
     ZAF_EXPECT(data);
 

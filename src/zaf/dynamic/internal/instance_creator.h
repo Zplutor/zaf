@@ -17,7 +17,7 @@ public:
 
 class UnsupportedInstanceCreator {
 public:
-    static std::shared_ptr<Object> Create() {
+    static std::shared_ptr<dynamic::Object> Create() {
         throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
     }
 };

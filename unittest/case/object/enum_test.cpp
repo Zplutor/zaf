@@ -194,7 +194,7 @@ TEST(EnumTest, Parse) {
 TEST(EnumTest, ParseToInvalidObject) {
 
     auto parser = TestTypeEnum::EnumType()->Parser();
-    zaf::Object object;
+    zaf::dynamic::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"First", object), zaf::InvalidTypeError);
 
@@ -208,13 +208,13 @@ TEST(EnumTest, SetValue) {
     auto type = TestTypeEnum::Type::Instance();
 
     {
-        zaf::Object object;
+        zaf::dynamic::Object object;
         ASSERT_THROW(type->SetValue(object, *type->FirstConstant->Value()), zaf::InvalidTypeError);
         ASSERT_THROW(type->SetValue(*type->CreateInstance(), object), zaf::InvalidTypeError);
     }
 
     {
-        auto result = As<TestTypeEnum>(type->CreateInstance());
+        auto result = zaf::As<TestTypeEnum>(type->CreateInstance());
         type->SetValue(*result, *type->FirstConstant->Value());
         ASSERT_EQ(result->Value(), TestType::First);
 
@@ -238,7 +238,7 @@ TEST(EnumTest, CombineFlagValue) {
 
     //Invalid types
     {
-        zaf::Object object;
+        zaf::dynamic::Object object;
         ASSERT_THROW(
             type->CombineFlagValue(object, *type->Flag1Constant->Value()),
             zaf::InvalidTypeError);
@@ -249,7 +249,7 @@ TEST(EnumTest, CombineFlagValue) {
     }
 
     {
-        auto result = As<FlagsTypeEnum>(type->CreateInstance());
+        auto result = zaf::As<FlagsTypeEnum>(type->CreateInstance());
         type->CombineFlagValue(*result, *type->Flag1Constant->Value());
         ASSERT_EQ(result->Value(), FlagsType::Flag1);
 

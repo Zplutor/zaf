@@ -31,7 +31,7 @@ class InlineObjectStore;
 constexpr wchar_t ObjectReplacementChar = L'\uFFFC';
 
 class InlineObject : 
-    public Object, 
+    public dynamic::Object, 
     public rx::DisposableHost,
     public XMLSerializable,
     public std::enable_shared_from_this<InlineObject>,

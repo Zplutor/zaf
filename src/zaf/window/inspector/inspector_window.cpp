@@ -147,18 +147,18 @@ void InspectorWindow::InitializePropertyGrid() {
 
 
 float InspectorWindow::EstimateItemHeight(
-    const std::shared_ptr<Object>& parent_item_data,
+    const std::shared_ptr<dynamic::Object>& parent_item_data,
     std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<dynamic::Object>& item_data) {
 
     return 30;
 }
 
 
 std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
-    const std::shared_ptr<Object>& parent_item_data,
+    const std::shared_ptr<dynamic::Object>& parent_item_data,
     std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<dynamic::Object>& item_data) {
 
     std::shared_ptr<internal::InspectItem> item;
     auto control = std::dynamic_pointer_cast<Control>(item_data);
@@ -199,7 +199,7 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
 
 void InspectorWindow::HighlightControl(const std::shared_ptr<Control>& control) {
 
-    std::vector<std::shared_ptr<Object>> parent_chain;
+    std::vector<std::shared_ptr<dynamic::Object>> parent_chain;
     auto parent = control->Parent();
     while (parent) {
         parent_chain.push_back(parent);
@@ -220,7 +220,7 @@ void InspectorWindow::HighlightControl(const std::shared_ptr<Control>& control) 
 }
 
 
-void InspectorWindow::ChangeHighlightObject(const std::shared_ptr<Object>& object) {
+void InspectorWindow::ChangeHighlightObject(const std::shared_ptr<dynamic::Object>& object) {
 
     if (highlight_object_ == object) {
         return;

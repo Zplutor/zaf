@@ -135,42 +135,42 @@ void TreeControl::SetSelectionMode(ListSelectionMode selection_mode) {
 }
 
 
-std::vector<std::shared_ptr<Object>> TreeControl::GetAllSelectedItems() const {
+std::vector<std::shared_ptr<dynamic::Object>> TreeControl::GetAllSelectedItems() const {
     return core_->GetAllSelectedItems();
 }
 
 
-std::shared_ptr<Object> TreeControl::GetFirstSelectedItem() const {
+std::shared_ptr<dynamic::Object> TreeControl::GetFirstSelectedItem() const {
     return core_->GetFirstSelectedItem();
 }
 
 
-void TreeControl::SelectItem(const std::shared_ptr<Object>& data) {
+void TreeControl::SelectItem(const std::shared_ptr<dynamic::Object>& data) {
     core_->SelectItem(data);
 }
 
 
-void TreeControl::UnselectItem(const std::shared_ptr<Object>& data) {
+void TreeControl::UnselectItem(const std::shared_ptr<dynamic::Object>& data) {
     core_->UnselectItem(data);
 }
 
 
-void TreeControl::ExpandItem(const std::shared_ptr<Object>& data) {
+void TreeControl::ExpandItem(const std::shared_ptr<dynamic::Object>& data) {
     core_->ExpandItem(data);
 }
 
 
-void TreeControl::CollapseItem(const std::shared_ptr<Object>& data) {
+void TreeControl::CollapseItem(const std::shared_ptr<dynamic::Object>& data) {
     core_->CollapseItem(data);
 }
 
 
-void TreeControl::ScrollToItem(const std::shared_ptr<Object>& data) {
+void TreeControl::ScrollToItem(const std::shared_ptr<dynamic::Object>& data) {
     core_->ScrollToItem(data);
 }
 
 
-void TreeControl::ReloadItem(const std::shared_ptr<Object>& data) {
+void TreeControl::ReloadItem(const std::shared_ptr<dynamic::Object>& data) {
     core_->ReloadItem(data);
 }
 
@@ -189,7 +189,7 @@ rx::Observable<TreeControlSelectionChangeInfo> TreeControl::SelectionChangeEvent
 }
 
 
-void TreeControl::ItemExpand(const std::shared_ptr<Object>& data) {
+void TreeControl::ItemExpand(const std::shared_ptr<dynamic::Object>& data) {
 
     TreeControlItemExpandInfo event_info(
         std::dynamic_pointer_cast<TreeControl>(shared_from_this()),
@@ -204,7 +204,7 @@ rx::Observable<TreeControlItemExpandInfo> TreeControl::ItemExpandEvent() const {
 }
 
 
-void TreeControl::ItemCollapse(const std::shared_ptr<Object>& data) {
+void TreeControl::ItemCollapse(const std::shared_ptr<dynamic::Object>& data) {
 
     TreeControlItemCollapseInfo event_info(
         std::dynamic_pointer_cast<TreeControl>(shared_from_this()), 

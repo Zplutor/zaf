@@ -16,7 +16,7 @@ public:
     TreeNodeExpander(const TreeNodeExpander&) = delete;
     TreeNodeExpander& operator=(const TreeNodeExpander&) = delete;
 
-    const std::shared_ptr<Object>& GetNodeData() const {
+    const std::shared_ptr<dynamic::Object>& GetNodeData() const {
         return tree_node_->data;
     }
 
@@ -27,7 +27,7 @@ public:
 
     std::shared_ptr<TreeNodeExpander> GetCurrentChildExpander();
 
-    void SetDataToCurrentChild(const std::shared_ptr<Object>& data);
+    void SetDataToCurrentChild(const std::shared_ptr<dynamic::Object>& data);
 
 private:
     TreeDataManager& tree_data_manager_;

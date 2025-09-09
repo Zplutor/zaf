@@ -9,7 +9,7 @@ namespace zaf {
 
 class Canvas;
 
-class Caret : public Object, NonCopyableNonMovable {
+class Caret : public dynamic::Object, NonCopyableNonMovable {
 public:
     ZAF_OBJECT;
 

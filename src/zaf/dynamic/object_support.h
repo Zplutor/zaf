@@ -25,7 +25,7 @@ public:                                                                         
     std::wstring_view Name() const noexcept override {                                            \
         return std::wstring_view{ L#ClassName };                                                  \
     }                                                                                             \
-    std::shared_ptr<zaf::Object> CreateInstance() const override {                                \
+    std::shared_ptr<zaf::dynamic::Object> CreateInstance() const override {                                \
         return zaf::internal::InstanceCreatorSelector<ClassName>::Type::Create();                 \
     }
 

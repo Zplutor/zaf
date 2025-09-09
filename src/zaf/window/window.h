@@ -53,7 +53,7 @@ enum class HitTestResult;
  You should always use Create method to create a window.
  */
 class Window : 
-    public Object, 
+    public dynamic::Object, 
     public rx::DisposableHost,
     public std::enable_shared_from_this<Window>,
     NonCopyableNonMovable {

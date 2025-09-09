@@ -6,7 +6,7 @@ namespace zaf {
 ZAF_OBJECT_IMPL(Boolean);
 
 
-bool Boolean::IsEqual(const Object& other) const {
+bool Boolean::IsEqual(const dynamic::Object& other) const {
     return internal::BoxedRepresentEqual(*this, other);
 }    
 

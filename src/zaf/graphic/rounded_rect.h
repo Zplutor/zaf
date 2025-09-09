@@ -6,7 +6,7 @@
 
 namespace zaf {
 
-class RoundedRect : public Object {
+class RoundedRect : public dynamic::Object {
 public:
     ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY;

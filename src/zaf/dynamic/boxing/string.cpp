@@ -5,7 +5,7 @@ namespace zaf {
 
 #define ZAF_INTERNAL_IMPLEMENT_STRING_BOXED_TYPE(BoxedTypeName)                                   \
 ZAF_OBJECT_IMPL(BoxedTypeName);                                                                   \
-bool BoxedTypeName::IsEqual(const Object& other) const {                                          \
+bool BoxedTypeName::IsEqual(const dynamic::Object& other) const {                                          \
     return internal::BoxedRepresentEqual<BoxedTypeName>(*this, other);                            \
 }                                                                                                 \
 std::size_t BoxedTypeName::Hash() const  {                                                        \

@@ -11,7 +11,7 @@ public:
     TreeNode(const TreeNode&) = delete;
     TreeNode& operator=(const TreeNode&) = delete;
 
-    std::shared_ptr<Object> data;
+    std::shared_ptr<dynamic::Object> data;
 
     std::weak_ptr<TreeNode> parent;
     std::size_t index_in_parent{};

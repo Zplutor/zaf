@@ -7,7 +7,7 @@
 
 namespace zaf {
     
-class Ellipse : public Object {
+class Ellipse : public dynamic::Object {
 public:
     ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY;

@@ -7,7 +7,7 @@ namespace zaf {
 
 void PointParser::ParseFromAttribute(
     const std::wstring& attribute_value,
-    Object& object) {
+    dynamic::Object& object) {
 
     auto& point = As<Point>(object);
 

@@ -9,13 +9,13 @@ namespace zaf {
 
 void FontWeightParser::ParseFromAttribute(
     const std::wstring& attribute_value,
-    Object& object) {
+    dynamic::Object& object) {
 
     Parse(attribute_value, object);
 }
 
 
-void FontWeightParser::ParseFromNode(const XamlNode& node, Object& object) {
+void FontWeightParser::ParseFromNode(const XamlNode& node, dynamic::Object& object) {
 
     __super::ParseFromNode(node, object);
 
@@ -29,7 +29,7 @@ void FontWeightParser::ParseFromNode(const XamlNode& node, Object& object) {
 }
 
 
-void FontWeightParser::Parse(const std::wstring& string_value, Object& object) {
+void FontWeightParser::Parse(const std::wstring& string_value, dynamic::Object& object) {
 
     int value = ParseValue(string_value);
     As<FontWeight>(object) = value;

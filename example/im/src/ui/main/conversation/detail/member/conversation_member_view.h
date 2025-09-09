@@ -14,11 +14,11 @@ public:
     void Initialize() override;
 
     std::size_t GetDataCount() const override;
-    float EstimateItemHeight(std::size_t index, const std::shared_ptr<zaf::Object>& data) override;
+    float EstimateItemHeight(std::size_t index, const std::shared_ptr<zaf::dynamic::Object>& data) override;
 
     std::shared_ptr<zaf::ListItem> CreateItem(
         std::size_t index, 
-        const std::shared_ptr<zaf::Object>& data) override;
+        const std::shared_ptr<zaf::dynamic::Object>& data) override;
 
     void SetConversation(const std::shared_ptr<Conversation>& conversation);
 

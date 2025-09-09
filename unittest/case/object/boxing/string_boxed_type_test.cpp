@@ -106,7 +106,7 @@ TEST(StringBoxedTypeTest, WideStringParse) {
 TEST(StringBoxedTypeTest, ParseStringToInvalidObject) {
 
     auto parser = zaf::String::StaticType()->Parser();
-    zaf::Object object;
+    zaf::dynamic::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"abc", object), zaf::InvalidTypeError);
 
@@ -118,7 +118,7 @@ TEST(StringBoxedTypeTest, ParseStringToInvalidObject) {
 TEST(StringBoxedTypeTest, ParseWideStringToInvalidObject) {
 
     auto parser = zaf::WideString::StaticType()->Parser();
-    zaf::Object object;
+    zaf::dynamic::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"abc", object), zaf::InvalidTypeError);
 

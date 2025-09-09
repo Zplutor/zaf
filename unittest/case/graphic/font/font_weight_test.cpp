@@ -57,7 +57,7 @@ TEST(FontWeightTest, ParseInvalidPropertyNodeValue) {
 TEST(FontWeightTest, ParseToInvalidObject) {
 
     auto parser = zaf::FontWeight::StaticType()->Parser();
-    zaf::Object object;
+    zaf::dynamic::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"100", object), zaf::InvalidTypeError);
 

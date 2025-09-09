@@ -33,8 +33,8 @@ public:
     /**
     Gets data at the specified index.
     */
-    virtual std::shared_ptr<Object> GetDataAtIndex(std::size_t index) const {
-        return Create<Object>();
+    virtual std::shared_ptr<dynamic::Object> GetDataAtIndex(std::size_t index) const {
+        return Create<dynamic::Object>();
     }
 
     /**

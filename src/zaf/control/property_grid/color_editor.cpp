@@ -88,7 +88,7 @@ void ColorEditor::SetAccessMethod(AccessMethod access_method) {
 }
 
 
-void ColorEditor::SetValue(const std::shared_ptr<Object>& object) {
+void ColorEditor::SetValue(const std::shared_ptr<dynamic::Object>& object) {
 
     if (!object) {
         color_square_->SetIsVisible(false);

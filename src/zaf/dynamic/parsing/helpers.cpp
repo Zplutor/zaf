@@ -8,7 +8,7 @@
 namespace zaf {
 namespace internal {
 
-std::shared_ptr<Object> CreateReflectionObjectFromXaml(const std::string& xaml) {
+std::shared_ptr<dynamic::Object> CreateReflectionObjectFromXaml(const std::string& xaml) {
 
     auto xaml_reader = XamlReader::FromString(xaml);
     auto xaml_node = xaml_reader->Read();

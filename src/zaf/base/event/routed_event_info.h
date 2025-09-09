@@ -6,13 +6,13 @@ namespace zaf {
 
 class RoutedEventSharedState {
 public:
-    explicit RoutedEventSharedState(const std::shared_ptr<Object>& source) : source_(source) {
+    explicit RoutedEventSharedState(const std::shared_ptr<dynamic::Object>& source) : source_(source) {
 
     }
 
     virtual ~RoutedEventSharedState() = default;
 
-    const std::shared_ptr<Object>& Source() const {
+    const std::shared_ptr<dynamic::Object>& Source() const {
         return source_;
     }
 
@@ -25,7 +25,7 @@ public:
     }
 
 private:
-    std::shared_ptr<Object> source_;
+    std::shared_ptr<dynamic::Object> source_;
     bool is_handled_{};
 };
 
@@ -34,7 +34,7 @@ class RoutedEventInfo : public EventInfo {
 public:
     RoutedEventInfo(
         const std::shared_ptr<RoutedEventSharedState>& state,
-        const std::shared_ptr<Object>& sender) 
+        const std::shared_ptr<dynamic::Object>& sender) 
         :
         EventInfo(state->Source()),
         state_(state),
@@ -42,7 +42,7 @@ public:
 
     }
 
-    const std::shared_ptr<Object>& Sender() const {
+    const std::shared_ptr<dynamic::Object>& Sender() const {
         return sender_;
     }
 
@@ -56,7 +56,7 @@ public:
 
 private:
     std::shared_ptr<RoutedEventSharedState> state_;
-    std::shared_ptr<Object> sender_;
+    std::shared_ptr<dynamic::Object> sender_;
 };
 
 }

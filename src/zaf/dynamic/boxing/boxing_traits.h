@@ -84,7 +84,7 @@ the specified non-boxed type.
       of the method is:
 
       @code
-      const UnboxedType* Unbox(const Object& object) noexcept;
+      const UnboxedType* Unbox(const dynamic::Object& object) noexcept;
       @endcode
 
       Note that the returned pointer points to the inner member of the boxed object. If unboxing 
@@ -107,7 +107,7 @@ struct BoxingTraits<T, std::enable_if_t<IsReflectiveTypeV<T>>> {
         return std::make_shared<BoxedType>(std::forward<T>(value));
     }
 
-    static const UnboxedType* Unbox(const Object& object) noexcept {
+    static const UnboxedType* Unbox(const dynamic::Object& object) noexcept {
         return As<BoxedType>(&object);
     }
 };
@@ -123,7 +123,7 @@ struct BoxingTraits<T, std::enable_if_t<HasCustomBoxingTraitsV<std::decay_t<T>>>
         return zaf__CustomBoxingTraits<UnboxedType>::Box(std::forward<T>(value));
     }
 
-    static const UnboxedType* Unbox(const Object& object) noexcept {
+    static const UnboxedType* Unbox(const dynamic::Object& object) noexcept {
         auto boxed_object = As<BoxedType>(&object);
         if (boxed_object) {
             return zaf__CustomBoxingTraits<UnboxedType>::Unbox(*boxed_object);

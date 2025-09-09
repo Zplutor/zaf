@@ -3,7 +3,7 @@
 
 namespace zaf {
 
-void FontParser::ParseFromNode(const XamlNode& node, Object& object) {
+void FontParser::ParseFromNode(const XamlNode& node, dynamic::Object& object) {
 
     //We want the fonts used in XAML have the same properties as the default font,
     //so we assign the default font to the object before parsing.

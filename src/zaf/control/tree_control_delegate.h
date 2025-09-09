@@ -19,9 +19,9 @@ public:
     }
 
     virtual float EstimateItemHeight(
-        const std::shared_ptr<Object>& parent_item_data,
+        const std::shared_ptr<dynamic::Object>& parent_item_data,
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) {
+        const std::shared_ptr<dynamic::Object>& item_data) {
 
         return 0;
     }
@@ -31,25 +31,25 @@ public:
     }
 
     virtual std::shared_ptr<TreeItem> CreateItem(
-        const std::shared_ptr<Object>& parent_item_data,
+        const std::shared_ptr<dynamic::Object>& parent_item_data,
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) {
+        const std::shared_ptr<dynamic::Object>& item_data) {
 
         return Create<TreeItem>();
     }
 
     virtual bool CanExpandItem(
-        const std::shared_ptr<Object>& parent_item_data,
+        const std::shared_ptr<dynamic::Object>& parent_item_data,
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) {
+        const std::shared_ptr<dynamic::Object>& item_data) {
 
         return true;
     }
 
     virtual bool CanCollapseItem(
-        const std::shared_ptr<Object>& parent_item_data,
+        const std::shared_ptr<dynamic::Object>& parent_item_data,
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) {
+        const std::shared_ptr<dynamic::Object>& item_data) {
 
         return true;
     }

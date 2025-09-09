@@ -9,7 +9,7 @@ namespace zaf {
 
 class Control;
 
-class ColorPicker : public Object {
+class ColorPicker : public dynamic::Object {
 public:
     ZAF_OBJECT;
 

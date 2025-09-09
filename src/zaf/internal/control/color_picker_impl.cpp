@@ -5,7 +5,7 @@
 
 namespace zaf::internal {
 
-void ColorPickerImpl::AddPickObject(std::shared_ptr<Object> object) {
+void ColorPickerImpl::AddPickObject(std::shared_ptr<dynamic::Object> object) {
     pick_objects_.push_back(std::move(object));
 }
 

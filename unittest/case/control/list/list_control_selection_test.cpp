@@ -30,7 +30,7 @@ public:
         return data_list_.size();
     }
 
-    std::shared_ptr<Object> GetDataAtIndex(std::size_t index) const override {
+    std::shared_ptr<dynamic::Object> GetDataAtIndex(std::size_t index) const override {
         return data_list_[index];
     }
 
@@ -43,7 +43,7 @@ class TestDelegate : public ListControlDelegate {
 public:
     float EstimateItemHeight(
         std::size_t item_index, 
-        const std::shared_ptr<Object>& item_data) override {
+        const std::shared_ptr<dynamic::Object>& item_data) override {
 
         return 10;
     }

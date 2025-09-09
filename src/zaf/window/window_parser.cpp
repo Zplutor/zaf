@@ -5,7 +5,7 @@
 
 namespace zaf {
 
-void WindowParser::ParseFromNode(const XamlNode& node, Object& reflection_object) {
+void WindowParser::ParseFromNode(const XamlNode& node, dynamic::Object& reflection_object) {
 
     __super::ParseFromNode(node, reflection_object);
 

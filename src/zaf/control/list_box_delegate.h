@@ -12,7 +12,7 @@ public:
 
     float EstimateItemHeight(
         std::size_t item_index, 
-        const std::shared_ptr<Object>& item_data) override;
+        const std::shared_ptr<dynamic::Object>& item_data) override;
 
 private:
     friend class ListBox;

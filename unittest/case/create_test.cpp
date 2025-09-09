@@ -4,7 +4,7 @@
 
 namespace {
 
-class Object : public zaf::Object {
+class Object : public zaf::dynamic::Object {
 public:
     Object() = default;
 

@@ -42,7 +42,7 @@ public:
 };
 
 
-class URIImage : public Image, public Object {
+class URIImage : public Image, public dynamic::Object {
 public:
     ZAF_OBJECT;
 

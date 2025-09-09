@@ -182,9 +182,9 @@ void TreeCore::ReloadRootNode() {
 }
 
 
-std::vector<std::shared_ptr<Object>> TreeCore::GetAllSelectedItems() const {
+std::vector<std::shared_ptr<dynamic::Object>> TreeCore::GetAllSelectedItems() const {
 
-    std::vector<std::pair<std::shared_ptr<Object>, IndexPath>> selected_data_index_path;
+    std::vector<std::pair<std::shared_ptr<dynamic::Object>, IndexPath>> selected_data_index_path;
 
     for (const auto& each_data : tree_data_manager_.GetAllSelectedNodes()) {
 
@@ -200,7 +200,7 @@ std::vector<std::shared_ptr<Object>> TreeCore::GetAllSelectedItems() const {
         return pair1.second < pair2.second;
     });
 
-    std::vector<std::shared_ptr<Object>> result;
+    std::vector<std::shared_ptr<dynamic::Object>> result;
     for (const auto& each_pair : selected_data_index_path) {
         result.push_back(each_pair.first);
     }
@@ -208,7 +208,7 @@ std::vector<std::shared_ptr<Object>> TreeCore::GetAllSelectedItems() const {
 }
 
 
-std::shared_ptr<Object> TreeCore::GetFirstSelectedItem() const {
+std::shared_ptr<dynamic::Object> TreeCore::GetFirstSelectedItem() const {
 
     auto all_selected_data = GetAllSelectedItems();
     if (!all_selected_data.empty()) {
@@ -243,7 +243,7 @@ void TreeCore::VisitExpandedTreeNode(
 }
 
 
-void TreeCore::SelectItem(const std::shared_ptr<Object>& data) {
+void TreeCore::SelectItem(const std::shared_ptr<dynamic::Object>& data) {
 
     auto list_index = GetDataListIndex(data);
     if (!list_index) {
@@ -254,7 +254,7 @@ void TreeCore::SelectItem(const std::shared_ptr<Object>& data) {
 }
 
 
-void TreeCore::UnselectItem(const std::shared_ptr<Object>& data) {
+void TreeCore::UnselectItem(const std::shared_ptr<dynamic::Object>& data) {
 
     auto list_index = GetDataListIndex(data);
     if (!list_index) {
@@ -265,7 +265,7 @@ void TreeCore::UnselectItem(const std::shared_ptr<Object>& data) {
 }
 
 
-void TreeCore::ExpandItem(const std::shared_ptr<Object>& data) {
+void TreeCore::ExpandItem(const std::shared_ptr<dynamic::Object>& data) {
 
     //Don't expand if it is already expanded.
     if (tree_data_manager_.IsNodeExpanded(data)) {
@@ -282,7 +282,7 @@ void TreeCore::ExpandItem(const std::shared_ptr<Object>& data) {
 }
 
 
-void TreeCore::CollapseItem(const std::shared_ptr<Object>& data) {
+void TreeCore::CollapseItem(const std::shared_ptr<dynamic::Object>& data) {
 
     //Don't collapse if it is already collapsed.
     if (!tree_data_manager_.IsNodeExpanded(data)) {
@@ -299,7 +299,7 @@ void TreeCore::CollapseItem(const std::shared_ptr<Object>& data) {
 }
 
 
-void TreeCore::ScrollToItem(const std::shared_ptr<Object>& data) {
+void TreeCore::ScrollToItem(const std::shared_ptr<dynamic::Object>& data) {
 
     auto list_index = GetDataListIndex(data);
     if (!list_index) {
@@ -310,7 +310,7 @@ void TreeCore::ScrollToItem(const std::shared_ptr<Object>& data) {
 }
 
 
-void TreeCore::ReloadItem(const std::shared_ptr<Object>& data) {
+void TreeCore::ReloadItem(const std::shared_ptr<dynamic::Object>& data) {
 
     auto index_path = tree_data_manager_.GetIndexPathOfData(data);
     if (!index_path) {
@@ -326,7 +326,7 @@ std::size_t TreeCore::GetDataCount() const {
 }
 
 
-std::shared_ptr<Object> TreeCore::GetDataAtIndex(std::size_t index) const {
+std::shared_ptr<dynamic::Object> TreeCore::GetDataAtIndex(std::size_t index) const {
 
     auto index_path = tree_index_mapping_.GetIndexPathAtIndex(index);
     auto tree_node = tree_data_manager_.GetNodeAtIndexPath(index_path);
@@ -347,7 +347,7 @@ bool TreeCore::HasVariableItemHeight() {
 
 float TreeCore::EstimateItemHeight(
     std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<dynamic::Object>& item_data) {
 
     auto result = InnerEstimateItemHeight(item_index, item_data);
     if (result) {
@@ -369,9 +369,9 @@ float TreeCore::GetItemSpacing() {
 
 std::optional<float> TreeCore::InnerEstimateItemHeight(
     std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<dynamic::Object>& item_data) {
 
-    std::shared_ptr<Object> parent_data;
+    std::shared_ptr<dynamic::Object> parent_data;
     std::size_t child_index{};
     if (!GetParentDataAndChildIndex(item_index, parent_data, child_index)) {
         return std::nullopt;
@@ -388,7 +388,7 @@ std::optional<float> TreeCore::InnerEstimateItemHeight(
 
 std::shared_ptr<ListItem> TreeCore::CreateItem(
     std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<dynamic::Object>& item_data) {
 
     auto list_item = InnerCreateListItem(item_index, item_data);
     if (list_item) {
@@ -400,9 +400,9 @@ std::shared_ptr<ListItem> TreeCore::CreateItem(
 
 std::shared_ptr<ListItem> TreeCore::InnerCreateListItem(
     std::size_t item_index,
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<dynamic::Object>& item_data) {
 
-    std::shared_ptr<Object> parent_data;
+    std::shared_ptr<dynamic::Object> parent_data;
     std::size_t child_index{};
     if (!GetParentDataAndChildIndex(item_index, parent_data, child_index)) {
         return nullptr;
@@ -430,7 +430,7 @@ std::shared_ptr<ListItem> TreeCore::InnerCreateListItem(
 
 void TreeCore::SetItemExpandState(
     const std::shared_ptr<TreeItem>& item,
-    const std::shared_ptr<Object>& item_data,
+    const std::shared_ptr<dynamic::Object>& item_data,
     const IndexPath& index_path) {
 
     auto data_source = data_source_.lock();
@@ -466,7 +466,7 @@ bool TreeCore::ExpandItemUI(
     const std::optional<std::size_t>& list_index,
     bool update_item) {
 
-    std::shared_ptr<Object> expanded_data;
+    std::shared_ptr<dynamic::Object> expanded_data;
     std::size_t expanded_count{};
     if (!ExpandItemData(index_path, expanded_data, expanded_count)) {
         return false;
@@ -490,7 +490,7 @@ bool TreeCore::ExpandItemUI(
 
 bool TreeCore::ExpandItemData(
     const IndexPath& index_path,
-    std::shared_ptr<Object>& expanded_data,
+    std::shared_ptr<dynamic::Object>& expanded_data,
     std::size_t& expanded_count) {
 
     auto data_source = data_source_.lock();
@@ -511,7 +511,7 @@ bool TreeCore::ExpandItemData(
             return false;
         }
 
-        std::shared_ptr<Object> parent_data;
+        std::shared_ptr<dynamic::Object> parent_data;
         std::size_t index_in_parent{};
         if (!GetParentDataAndChildIndex(index_path, parent_data, index_in_parent)) {
             return false;
@@ -587,7 +587,7 @@ bool TreeCore::CollapseItemUI(
         return false;
     }
 
-    std::shared_ptr<Object> parent_data;
+    std::shared_ptr<dynamic::Object> parent_data;
     std::size_t index_in_parent{};
     if (!GetParentDataAndChildIndex(index_path, parent_data, index_in_parent)) {
         return false;
@@ -994,7 +994,7 @@ void TreeCore::OnDataUpdate(const TreeDataSourceDataUpdateInfo& event_info) {
 
 
 std::vector<std::size_t> TreeCore::UpdateChildItem(
-    const std::shared_ptr<Object>& parent_data,
+    const std::shared_ptr<dynamic::Object>& parent_data,
     std::size_t index,
     std::size_t count) {
 
@@ -1026,7 +1026,7 @@ std::vector<std::size_t> TreeCore::UpdateChildItem(
 
 
 std::optional<std::size_t> TreeCore::GetDataListIndex(
-    const std::shared_ptr<Object>& data) const {
+    const std::shared_ptr<dynamic::Object>& data) const {
 
     auto index_path = tree_data_manager_.GetIndexPathOfData(data);
     if (!index_path) {
@@ -1039,7 +1039,7 @@ std::optional<std::size_t> TreeCore::GetDataListIndex(
 
 bool TreeCore::GetParentDataAndChildIndex(
     std::size_t list_index,
-    std::shared_ptr<Object>& parent_data,
+    std::shared_ptr<dynamic::Object>& parent_data,
     std::size_t& child_index) {
 
     auto index_path = tree_index_mapping_.GetIndexPathAtIndex(list_index);
@@ -1053,7 +1053,7 @@ bool TreeCore::GetParentDataAndChildIndex(
 
 bool TreeCore::GetParentDataAndChildIndex(
     const IndexPath& index_path,
-    std::shared_ptr<Object>& parent_data,
+    std::shared_ptr<dynamic::Object>& parent_data,
     std::size_t& child_index) {
 
     auto data_source = data_source_.lock();

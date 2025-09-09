@@ -39,7 +39,7 @@ TEST(BooleanTest, ParseNode) {
 TEST(BooleanTest, ParseToInvalidObject) {
 
     auto parser = zaf::Boolean::StaticType()->Parser();
-    zaf::Object object;
+    zaf::dynamic::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"true", object), zaf::InvalidTypeError);
 

@@ -8,7 +8,7 @@ namespace zaf::property_grid {
 class ViewOnlyEditor : public ValueEditor {
 public:
     void SetAccessMethod(AccessMethod) override;
-    void SetValue(const std::shared_ptr<Object>& value) override;
+    void SetValue(const std::shared_ptr<dynamic::Object>& value) override;
 
 protected:
     void Initialize() override;

@@ -15,7 +15,7 @@ namespace zaf {
 /**
  Describes the position and size of a rectangle area.
  */
-class Rect : public Object {
+class Rect : public dynamic::Object {
 public:
     ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY

@@ -23,19 +23,19 @@ public:
     TreeDataSource() = default;
     virtual ~TreeDataSource() = default;
 
-    virtual bool DoesDataHasChildren(const std::shared_ptr<Object>& data) {
+    virtual bool DoesDataHasChildren(const std::shared_ptr<dynamic::Object>& data) {
         return false;
     }
 
-    virtual std::size_t GetChildDataCount(const std::shared_ptr<Object>& parent_data) {
+    virtual std::size_t GetChildDataCount(const std::shared_ptr<dynamic::Object>& parent_data) {
         return 0;
     }
 
-    virtual std::shared_ptr<Object> GetChildDataAtIndex(
-        const std::shared_ptr<Object>& parent_data,
+    virtual std::shared_ptr<dynamic::Object> GetChildDataAtIndex(
+        const std::shared_ptr<dynamic::Object>& parent_data,
         std::size_t index) {
 
-        return Create<Object>();
+        return Create<dynamic::Object>();
     }
 
     rx::Observable<TreeDataSourceDataAddInfo> DataAddEvent() {
@@ -52,17 +52,17 @@ public:
 
 protected:
     void NotifyDataAdd(
-        const std::shared_ptr<Object>& parent_data, 
+        const std::shared_ptr<dynamic::Object>& parent_data, 
         std::size_t index, 
         std::size_t count);
 
     void NotifyDataRemove(
-        const std::shared_ptr<Object>& parent_data,
+        const std::shared_ptr<dynamic::Object>& parent_data,
         std::size_t index,
         std::size_t count);
 
     void NotifyDataUpdate(
-        const std::shared_ptr<Object>& parent_data,
+        const std::shared_ptr<dynamic::Object>& parent_data,
         std::size_t index,
         std::size_t count);
 
@@ -75,7 +75,7 @@ private:
 
 class TreeDataSourceDataAddInfo {
 public:
-    std::shared_ptr<Object> parent_data;
+    std::shared_ptr<dynamic::Object> parent_data;
     std::size_t index{};
     std::size_t count{};
 };
@@ -83,7 +83,7 @@ public:
 
 class TreeDataSourceDataRemoveInfo {
 public:
-    std::shared_ptr<Object> parent_data;
+    std::shared_ptr<dynamic::Object> parent_data;
     std::size_t index{};
     std::size_t count{};
 };
@@ -91,7 +91,7 @@ public:
 
 class TreeDataSourceDataUpdateInfo {
 public:
-    std::shared_ptr<Object> parent_data;
+    std::shared_ptr<dynamic::Object> parent_data;
     std::size_t index{};
     std::size_t count{};
 };

@@ -11,7 +11,7 @@ class TestDelegate : public ListControlDelegate {
 public:
     float EstimateItemHeight(
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override {
+        const std::shared_ptr<dynamic::Object>& item_data) override {
 
         return 10;
     }
@@ -74,7 +74,7 @@ std::size_t TestListDataSource::GetDataCount() const {
 }
 
 
-std::shared_ptr<zaf::Object> TestListDataSource::GetDataAtIndex(std::size_t index) const {
+std::shared_ptr<zaf::dynamic::Object> TestListDataSource::GetDataAtIndex(std::size_t index) const {
     return data_list_[index];
 }
 

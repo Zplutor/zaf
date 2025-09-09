@@ -60,7 +60,7 @@ TEST(FrameParserTest, ParseFromNodeWithValue) {
 TEST(FrameParserTest, ParseToInvalidObject) {
 
     auto parser = zaf::Frame::StaticType()->Parser();
-    zaf::Object object;
+    zaf::dynamic::Object object;
 
     ASSERT_THROW(parser->ParseFromAttribute(L"1,1,1,1", object), zaf::InvalidTypeError);
 

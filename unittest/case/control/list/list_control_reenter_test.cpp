@@ -22,7 +22,7 @@ public:
         return 1;
     }
 
-    std::shared_ptr<zaf::Object> GetDataAtIndex(std::size_t index) const override {
+    std::shared_ptr<zaf::dynamic::Object> GetDataAtIndex(std::size_t index) const override {
         return zaf::Box(value_);
     }
 
@@ -66,14 +66,14 @@ public:
 
     float EstimateItemHeight(
         std::size_t item_index,
-        const std::shared_ptr<zaf::Object>& item_data) override {
+        const std::shared_ptr<zaf::dynamic::Object>& item_data) override {
 
         return 10;
     }
 
     std::shared_ptr<zaf::ListItem> CreateItem(
         std::size_t item_index,
-        const std::shared_ptr<zaf::Object>& item_data) override {
+        const std::shared_ptr<zaf::dynamic::Object>& item_data) override {
 
         return zaf::Create<Item>(data_source_);
     }

@@ -6,7 +6,7 @@
 
 namespace zaf {
 
-void SizeParser::ParseFromAttribute(const std::wstring& attribute_value, Object& object) {
+void SizeParser::ParseFromAttribute(const std::wstring& attribute_value, dynamic::Object& object) {
 
     auto& size = As<Size>(object);
 

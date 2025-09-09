@@ -64,7 +64,7 @@ Unboxes the specified object to a non-boxed value.
     This function uses zaf::BoxingTraits to perform the unboxing.
 */
 template<typename T>
-const T& Unbox(const Object& object) {
+const T& Unbox(const dynamic::Object& object) {
     auto unboxed_value = BoxingTraits<T>::Unbox(object);
     if (unboxed_value) {
         return *unboxed_value;
@@ -94,7 +94,7 @@ Unboxes the specified object to a non-boxed value.
     This function uses zaf::BoxingTraits to perform the unboxing.
 */
 template<typename T>
-T& Unbox(Object& object) {
+T& Unbox(dynamic::Object& object) {
     auto unboxed_value = BoxingTraits<T>::Unbox(object);
     if (unboxed_value) {
         return const_cast<T&>(*unboxed_value);
@@ -124,7 +124,7 @@ Unboxes the specified object to a non-boxed value.
     This function uses zaf::BoxingTraits to perform the unboxing.
 */
 template<typename T>
-const T* Unbox(const Object* object) noexcept {
+const T* Unbox(const dynamic::Object* object) noexcept {
     if (object) {
         return BoxingTraits<T>::Unbox(*object);
     }
@@ -153,7 +153,7 @@ Unboxes the specified object to a non-boxed value.
     This function uses zaf::BoxingTraits to perform the unboxing.
 */
 template<typename T>
-T* Unbox(Object* object) noexcept {
+T* Unbox(dynamic::Object* object) noexcept {
     if (object) {
         return const_cast<T*>(BoxingTraits<T>::Unbox(*object));
     }
@@ -182,7 +182,7 @@ Unboxes the specified object to a non-boxed value.
     This function uses zaf::BoxingTraits to perform the unboxing.
 */
 template<typename T>
-T* Unbox(const std::shared_ptr<Object>& object) noexcept {
+T* Unbox(const std::shared_ptr<dynamic::Object>& object) noexcept {
     return Unbox<T>(object.get());
 }
 

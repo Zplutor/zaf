@@ -6,12 +6,12 @@
 
 namespace zaf {
 
-void BooleanParser::ParseFromAttribute(const std::wstring& value, Object& object) {
+void BooleanParser::ParseFromAttribute(const std::wstring& value, dynamic::Object& object) {
     Parse(value, object);
 }
 
 
-void BooleanParser::ParseFromNode(const XamlNode& node, Object& object) {
+void BooleanParser::ParseFromNode(const XamlNode& node, dynamic::Object& object) {
 
     __super::ParseFromNode(node, object);
 
@@ -24,7 +24,7 @@ void BooleanParser::ParseFromNode(const XamlNode& node, Object& object) {
 }
 
 
-void BooleanParser::Parse(const std::wstring& string, Object& object) {
+void BooleanParser::Parse(const std::wstring& string, dynamic::Object& object) {
 
     auto& boolean = As<Boolean>(object);
 

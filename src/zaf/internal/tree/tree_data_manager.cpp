@@ -49,7 +49,7 @@ std::shared_ptr<TreeNode> TreeDataManager::InnerGetNodeAtIndexPath(
 
 
 std::optional<IndexPath> TreeDataManager::GetIndexPathOfData(
-    const std::shared_ptr<Object>& data) const {
+    const std::shared_ptr<dynamic::Object>& data) const {
 
     auto node = Find(data_map_, data);
     if (!node) {
@@ -73,7 +73,7 @@ std::optional<IndexPath> TreeDataManager::GetIndexPathOfData(
 }
 
 
-bool TreeDataManager::IsNodeExpanded(const std::shared_ptr<Object>& data) const {
+bool TreeDataManager::IsNodeExpanded(const std::shared_ptr<dynamic::Object>& data) const {
 
     auto node = Find(data_map_, data);
     if (!node) {
@@ -117,7 +117,7 @@ void TreeDataManager::ExpandNodeWithChildCount(TreeNode& node, std::size_t child
 void TreeDataManager::SetChildDataToNode(
     const std::shared_ptr<TreeNode>& parent_node,
     std::size_t index_in_parent,
-    const std::shared_ptr<Object>& data) {
+    const std::shared_ptr<dynamic::Object>& data) {
 
     ZAF_EXPECT(parent_node->is_expanded);
     ZAF_EXPECT(index_in_parent < parent_node->children.size());
@@ -204,7 +204,7 @@ void TreeDataManager::AddChildrenToCollapsedNode(
 
 
 TreeNodeOperationResult TreeDataManager::RemoveChildren(
-    const std::shared_ptr<Object>& parent_data,
+    const std::shared_ptr<dynamic::Object>& parent_data,
     std::size_t child_index,
     std::size_t count) {
 
@@ -295,7 +295,7 @@ void TreeDataManager::RemoveChildrenFromCollapsedNode(
 
 
 void TreeDataManager::RemoveDataFromMapRecursively(
-    const std::shared_ptr<Object>& data,
+    const std::shared_ptr<dynamic::Object>& data,
     bool& selection_changed) {
 
     auto iterator = data_map_.find(data);
@@ -315,7 +315,7 @@ void TreeDataManager::RemoveDataFromMapRecursively(
 }
 
 
-TreeNodeOperationResult TreeDataManager::CollapseNode(const std::shared_ptr<Object>& data) {
+TreeNodeOperationResult TreeDataManager::CollapseNode(const std::shared_ptr<dynamic::Object>& data) {
 
     auto node = Find(data_map_, data);
     if (!node) {
@@ -364,7 +364,7 @@ void TreeDataManager::CollapseNodeRecursively(TreeNode& node, bool& selection_ch
 
 
 TreeNodeOperationResult TreeDataManager::CollapseNodeWithoutReserveExpandState(
-    const std::shared_ptr<Object>& data) {
+    const std::shared_ptr<dynamic::Object>& data) {
 
     auto node = Find(data_map_, data);
     if (!node) {
@@ -402,12 +402,12 @@ void TreeDataManager::CollapseNodeWithoutReserveExpandStateRecursively(
 }
 
 
-void TreeDataManager::SelectNode(const std::shared_ptr<Object>& data) {
+void TreeDataManager::SelectNode(const std::shared_ptr<dynamic::Object>& data) {
     selected_data_set_.insert(data);
 }
 
 
-void TreeDataManager::UnselectNode(const std::shared_ptr<Object>& data) {
+void TreeDataManager::UnselectNode(const std::shared_ptr<dynamic::Object>& data) {
     selected_data_set_.erase(data);
 }
 
@@ -417,7 +417,7 @@ void TreeDataManager::UnselectAllNodes() {
 }
 
 
-bool TreeDataManager::IsNodeSelected(const std::shared_ptr<Object>& data) const {
+bool TreeDataManager::IsNodeSelected(const std::shared_ptr<dynamic::Object>& data) const {
     return Contain(selected_data_set_, data);
 }
 

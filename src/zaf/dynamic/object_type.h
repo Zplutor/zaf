@@ -9,15 +9,13 @@
 #include <zaf/dynamic/object_property.h>
 #include <zaf/dynamic/parsing/object_parser.h>
 
-namespace zaf {
-class Object;
-}
-
 namespace zaf::internal {
 class PropertyRegistrar;
 }
 
 namespace zaf::dynamic {
+
+class Object;
 
 class ObjectType : NonCopyableNonMovable {
 public:

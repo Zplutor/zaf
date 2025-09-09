@@ -19,7 +19,7 @@ public:
 
 class TreeDataManager {
 public:
-    using TreeDataSet = std::unordered_set<std::shared_ptr<Object>, TreeDataHash, TreeDataEqual>;
+    using TreeDataSet = std::unordered_set<std::shared_ptr<dynamic::Object>, TreeDataHash, TreeDataEqual>;
 
 public:
     TreeDataManager();
@@ -28,27 +28,27 @@ public:
     TreeDataManager& operator=(const TreeDataManager&) = delete;
 
     std::shared_ptr<const TreeNode> GetNodeAtIndexPath(const IndexPath& index_path) const;
-    std::optional<IndexPath> GetIndexPathOfData(const std::shared_ptr<Object>& data) const;
+    std::optional<IndexPath> GetIndexPathOfData(const std::shared_ptr<dynamic::Object>& data) const;
 
-    bool IsNodeExpanded(const std::shared_ptr<Object>& data) const;
+    bool IsNodeExpanded(const std::shared_ptr<dynamic::Object>& data) const;
 
     std::shared_ptr<TreeNodeExpander> ExpandNodeAtIndexPath(const IndexPath& index_path);
 
     std::shared_ptr<TreeNodeChildrenAdder> AddChildrenAtIndexPath(const IndexPath& index_path);
 
     TreeNodeOperationResult RemoveChildren(
-        const std::shared_ptr<Object>& parent_data,
+        const std::shared_ptr<dynamic::Object>& parent_data,
         std::size_t child_index, 
         std::size_t count);
 
-    TreeNodeOperationResult CollapseNode(const std::shared_ptr<Object>& data);
+    TreeNodeOperationResult CollapseNode(const std::shared_ptr<dynamic::Object>& data);
     TreeNodeOperationResult CollapseNodeWithoutReserveExpandState(
-        const std::shared_ptr<Object>& data);
+        const std::shared_ptr<dynamic::Object>& data);
 
-    void SelectNode(const std::shared_ptr<Object>& data);
-    void UnselectNode(const std::shared_ptr<Object>& data);
+    void SelectNode(const std::shared_ptr<dynamic::Object>& data);
+    void UnselectNode(const std::shared_ptr<dynamic::Object>& data);
     void UnselectAllNodes();
-    bool IsNodeSelected(const std::shared_ptr<Object>& data) const;
+    bool IsNodeSelected(const std::shared_ptr<dynamic::Object>& data) const;
     const TreeDataSet& GetAllSelectedNodes() const;
 
     void Clear();
@@ -61,7 +61,7 @@ private:
     void SetChildDataToNode(
         const std::shared_ptr<TreeNode>& parent_node, 
         std::size_t index_in_parent, 
-        const std::shared_ptr<Object>& data);
+        const std::shared_ptr<dynamic::Object>& data);
     void AddChildrenToNode(
         const std::shared_ptr<TreeNode>& parent_node, 
         std::size_t index, 
@@ -69,7 +69,7 @@ private:
 
 private:
     using TreeDataMap = std::unordered_map<
-        std::shared_ptr<Object>,
+        std::shared_ptr<dynamic::Object>,
         std::shared_ptr<TreeNode>,
         TreeDataHash,
         TreeDataEqual
@@ -99,7 +99,7 @@ private:
         std::size_t child_index,
         std::size_t count,
         bool& selection_changed);
-    void RemoveDataFromMapRecursively(const std::shared_ptr<Object>& data, bool& selection_changed);
+    void RemoveDataFromMapRecursively(const std::shared_ptr<dynamic::Object>& data, bool& selection_changed);
 
     void CollapseNodeRecursively(TreeNode& node, bool& selection_changed);
     void CollapseNodeWithoutReserveExpandStateRecursively(TreeNode& node, bool& selection_changed);

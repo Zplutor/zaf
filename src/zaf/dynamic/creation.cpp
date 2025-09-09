@@ -5,7 +5,7 @@
 namespace zaf {
 namespace internal {
 
-std::shared_ptr<Object> CreateReflectionObjectByName(const std::wstring& name) {
+std::shared_ptr<dynamic::Object> CreateReflectionObjectByName(const std::wstring& name) {
 
     auto type = zaf::internal::ReflectionManager::Instance().GetType(name);
     if (type) {

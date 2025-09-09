@@ -9,11 +9,11 @@
 namespace zaf {
 
 #define __ZAF_INTERNAL_DEFINE_NUMERIC_BOXED_TYPE(NumericType, BoxTypeName)                        \
-class BoxTypeName : public Object, public internal::BoxedRepresent<NumericType> {                 \
+class BoxTypeName : public dynamic::Object, public internal::BoxedRepresent<NumericType> {                 \
 public:                                                                                           \
     ZAF_OBJECT;                                                                                   \
     using BoxedRepresent<NumericType>::BoxedRepresent;                                            \
-    bool IsEqual(const Object& other) const override;                                             \
+    bool IsEqual(const dynamic::Object& other) const override;                                             \
     std::size_t Hash() const override;                                                            \
     std::wstring ToString() const override;                                                       \
 };                                                                                                \

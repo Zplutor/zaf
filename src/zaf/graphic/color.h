@@ -15,7 +15,7 @@ namespace zaf {
 /**
  Describes the red, green, blue, and alpha components of a color.
  */
-class Color : public Object, public XMLSerializable {
+class Color : public dynamic::Object, public XMLSerializable {
 public:
     ZAF_OBJECT;
     ZAF_DECLARE_EQUALITY;

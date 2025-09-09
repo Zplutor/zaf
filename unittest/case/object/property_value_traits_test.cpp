@@ -83,7 +83,7 @@ struct CustomPropertyValue {
     int value{};
 };
 
-struct CustomPropertyObject : zaf::Object {
+struct CustomPropertyObject : zaf::dynamic::Object {
     int value{};
 };
 
@@ -136,7 +136,7 @@ TEST(PropertyValueTraitsTest, ReflectiveTypeBoxing) {
 
     using Traits = PropertyValueTraits<Size>;
 
-    std::shared_ptr<Object> boxed_object = Traits::ToBoxedObject(Size{ 10, 20 });
+    std::shared_ptr<dynamic::Object> boxed_object = Traits::ToBoxedObject(Size{ 10, 20 });
     std::shared_ptr<Size> boxed_size = As<Size>(boxed_object);
     ASSERT_NE(boxed_size, nullptr);
     ASSERT_EQ(boxed_size->width, 10);
@@ -152,7 +152,7 @@ TEST(PropertyValueTraitsTest, CustomBoxingTypeBoxing) {
 
     using Traits = PropertyValueTraits<bool>;
 
-    std::shared_ptr<Object> boxed_object = Traits::ToBoxedObject(true);
+    std::shared_ptr<dynamic::Object> boxed_object = Traits::ToBoxedObject(true);
     std::shared_ptr<Boolean> boxed_bool = As<Boolean>(boxed_object);
     ASSERT_NE(boxed_bool, nullptr);
     ASSERT_EQ(boxed_bool->Value(), true);
@@ -167,7 +167,7 @@ TEST(PropertyValueTraitsTest, BoxedInstanceBoxing) {
     using Traits = PropertyValueTraits<std::shared_ptr<Size>>;
 
     auto size = std::make_shared<Size>(30.f, 40.f);
-    std::shared_ptr<Object> boxed_object = Traits::ToBoxedObject(std::shared_ptr<Size>(size));
+    std::shared_ptr<dynamic::Object> boxed_object = Traits::ToBoxedObject(std::shared_ptr<Size>(size));
     std::shared_ptr<Size> boxed_size = As<Size>(boxed_object);
     ASSERT_EQ(boxed_size, size);
 

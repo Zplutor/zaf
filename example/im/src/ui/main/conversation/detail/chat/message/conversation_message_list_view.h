@@ -22,11 +22,11 @@ public:
 
     float EstimateItemHeight(
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override;
+        const std::shared_ptr<zaf::dynamic::Object>& item_data) override;
 
     std::shared_ptr<zaf::ListItem> CreateItem(
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override;
+        const std::shared_ptr<zaf::dynamic::Object>& item_data) override;
 
     void SetConversation(const std::shared_ptr<Conversation>& conversation);
 

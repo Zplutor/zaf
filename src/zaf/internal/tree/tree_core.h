@@ -23,8 +23,8 @@ public:
     using DataSourceChangeEvent = std::function<void(const std::shared_ptr<TreeDataSource>&)>;
     using DelegateChangeEvent = std::function<void(const std::shared_ptr<TreeControlDelegate>&)>;
     using SelectionChangeEvent = std::function<void()>;
-    using ItemExpandEvent = std::function<void(const std::shared_ptr<Object>&)>;
-    using ItemCollapseEvent = std::function<void(const std::shared_ptr<Object>&)>;
+    using ItemExpandEvent = std::function<void(const std::shared_ptr<dynamic::Object>&)>;
+    using ItemCollapseEvent = std::function<void(const std::shared_ptr<dynamic::Object>&)>;
 
     class InitializeParameters {
     public:
@@ -53,35 +53,35 @@ public:
 
     void Reload();
 
-    std::vector<std::shared_ptr<Object>> GetAllSelectedItems() const;
-    std::shared_ptr<Object> GetFirstSelectedItem() const;
+    std::vector<std::shared_ptr<dynamic::Object>> GetAllSelectedItems() const;
+    std::shared_ptr<dynamic::Object> GetFirstSelectedItem() const;
 
     void VisitExpandedTree(TreeVisitor& visitor) const;
 
-    void SelectItem(const std::shared_ptr<Object>& data);
-    void UnselectItem(const std::shared_ptr<Object>& data);
+    void SelectItem(const std::shared_ptr<dynamic::Object>& data);
+    void UnselectItem(const std::shared_ptr<dynamic::Object>& data);
 
-    void ExpandItem(const std::shared_ptr<Object>& data);
-    void CollapseItem(const std::shared_ptr<Object>& data);
+    void ExpandItem(const std::shared_ptr<dynamic::Object>& data);
+    void CollapseItem(const std::shared_ptr<dynamic::Object>& data);
 
-    void ScrollToItem(const std::shared_ptr<Object>& data);
+    void ScrollToItem(const std::shared_ptr<dynamic::Object>& data);
 
-    void ReloadItem(const std::shared_ptr<Object>& data);
+    void ReloadItem(const std::shared_ptr<dynamic::Object>& data);
 
     std::size_t GetDataCount() const override;
-    std::shared_ptr<Object> GetDataAtIndex(std::size_t index) const override;
+    std::shared_ptr<dynamic::Object> GetDataAtIndex(std::size_t index) const override;
     
     bool HasVariableItemHeight() override;
 
     float EstimateItemHeight(
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override;
+        const std::shared_ptr<dynamic::Object>& item_data) override;
 
     float GetItemSpacing() override;
 
     std::shared_ptr<ListItem> CreateItem(
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data) override;
+        const std::shared_ptr<dynamic::Object>& item_data) override;
 
     bool ChangeItemExpandState(const std::shared_ptr<TreeItem>& item, bool new_is_expanded);
 
@@ -96,15 +96,15 @@ private:
 
     std::optional<float> InnerEstimateItemHeight(
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data);
+        const std::shared_ptr<dynamic::Object>& item_data);
 
     std::shared_ptr<ListItem> InnerCreateListItem(
         std::size_t item_index,
-        const std::shared_ptr<Object>& item_data);
+        const std::shared_ptr<dynamic::Object>& item_data);
 
     void SetItemExpandState(
         const std::shared_ptr<TreeItem>& item,
-        const std::shared_ptr<Object>& item_data,
+        const std::shared_ptr<dynamic::Object>& item_data,
         const IndexPath& index_path);
 
     bool IsIndexPathExpanded(const IndexPath& index_path) const;
@@ -117,7 +117,7 @@ private:
         bool update_item);
     bool ExpandItemData(
         const IndexPath& index_path, 
-        std::shared_ptr<Object>& expanded_data, 
+        std::shared_ptr<dynamic::Object>& expanded_data, 
         std::size_t& expanded_count);
     std::size_t ExpandItemRecursively(
         TreeDataSource& data_source,
@@ -148,20 +148,20 @@ private:
     void OnDataRemove(const TreeDataSourceDataRemoveInfo& event_info);
     void OnDataUpdate(const TreeDataSourceDataUpdateInfo& event_info);
     std::vector<std::size_t> UpdateChildItem(
-        const std::shared_ptr<Object>& parent_data, 
+        const std::shared_ptr<dynamic::Object>& parent_data, 
         std::size_t index, 
         std::size_t count);
 
-    std::optional<std::size_t> GetDataListIndex(const std::shared_ptr<Object>& data) const;
+    std::optional<std::size_t> GetDataListIndex(const std::shared_ptr<dynamic::Object>& data) const;
 
     bool GetParentDataAndChildIndex(
         std::size_t list_index,
-        std::shared_ptr<Object>& parent_data,
+        std::shared_ptr<dynamic::Object>& parent_data,
         std::size_t& child_index);
 
     bool GetParentDataAndChildIndex(
         const IndexPath& index_path,
-        std::shared_ptr<Object>& parent_data,
+        std::shared_ptr<dynamic::Object>& parent_data,
         std::size_t& child_index);
 
 private:

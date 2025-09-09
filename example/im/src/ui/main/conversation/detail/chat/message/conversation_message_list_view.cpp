@@ -132,7 +132,7 @@ bool ConversationMessageListView::HasVariableItemHeight() {
 
 float ConversationMessageListView::EstimateItemHeight(
     std::size_t index, 
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<zaf::dynamic::Object>& item_data) {
 
     if (index >= message_item_infos_.size()) {
         return 0;
@@ -144,7 +144,7 @@ float ConversationMessageListView::EstimateItemHeight(
 
 std::shared_ptr<zaf::ListItem> ConversationMessageListView::CreateItem(
     std::size_t index,
-    const std::shared_ptr<Object>& item_data) {
+    const std::shared_ptr<zaf::dynamic::Object>& item_data) {
 
     if (index >= message_item_infos_.size()) {
         return nullptr;

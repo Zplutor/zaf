@@ -14,7 +14,7 @@ public:
         return std::move(root_node_);
     }
 
-    void VisitNode(const std::shared_ptr<Object>& node_data) override;
+    void VisitNode(const std::shared_ptr<dynamic::Object>& node_data) override;
     void EnterNode() override;
     void ExitNode() override;
 

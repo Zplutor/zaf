@@ -72,12 +72,12 @@ void ListBox::SetDefaultItemHeight(float item_height) {
 }
 
 
-void ListBox::AddItem(const std::shared_ptr<Object>& data) {
+void ListBox::AddItem(const std::shared_ptr<dynamic::Object>& data) {
     AddItemAtIndex(ItemCount(), data);
 }
 
 
-void ListBox::AddItemAtIndex(std::size_t index, const std::shared_ptr<Object>& data) {
+void ListBox::AddItemAtIndex(std::size_t index, const std::shared_ptr<dynamic::Object>& data) {
     data_source_->AddDataAtIndex(index, data);
 }
 

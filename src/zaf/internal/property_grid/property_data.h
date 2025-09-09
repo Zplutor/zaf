@@ -13,7 +13,7 @@
 namespace zaf::internal {
 
 class PropertyData : 
-    public Object, 
+    public dynamic::Object, 
     public std::enable_shared_from_this<PropertyData>, 
     rx::DisposableHost,
     NonCopyableNonMovable {
@@ -22,14 +22,14 @@ public:
     PropertyData(
         std::shared_ptr<PropertyData> parent,
         zaf::ObjectProperty* property,
-        const std::shared_ptr<Object>& value,
+        const std::shared_ptr<dynamic::Object>& value,
         const std::shared_ptr<PropertyGridDelegate>& delegate);
 
     zaf::ObjectProperty* Property() const {
         return property_;
     }
 
-    const std::shared_ptr<Object>& Value() const {
+    const std::shared_ptr<dynamic::Object>& Value() const {
         return value_;
     }
 
@@ -37,32 +37,32 @@ public:
 
     const std::vector<std::shared_ptr<PropertyData>>& Children();
 
-    void ChangeValue(std::shared_ptr<Object> value);
+    void ChangeValue(std::shared_ptr<dynamic::Object> value);
 
     rx::Observable<std::shared_ptr<PropertyData>> ValueChangedEvent() {
         return value_changed_event_.AsObservable();
     }
 
 private:
-    static std::vector<dynamic::ObjectType*> GetObjectTypeChain(const Object& object);
+    static std::vector<dynamic::ObjectType*> GetObjectTypeChain(const dynamic::Object& object);
     static property_grid::PropertyTable CreatePropertyTable(
         const std::vector<dynamic::ObjectType*>& types);
 
 private:
     std::vector<std::shared_ptr<PropertyData>> LoadChildren();
 
-    void SetValue(std::shared_ptr<Object> new_value);
+    void SetValue(std::shared_ptr<dynamic::Object> new_value);
     void PropagateValueChangedToParent();
     void ChangeValueFromChild(const PropertyData& child);
 
     void PropagateValueChangedToChildren();
-    void ChangeValueFromParent(std::shared_ptr<Object> new_value);
+    void ChangeValueFromParent(std::shared_ptr<dynamic::Object> new_value);
 
 private:
     std::weak_ptr<PropertyData> parent_;
 
     zaf::ObjectProperty* property_{};
-    std::shared_ptr<Object> value_{};
+    std::shared_ptr<dynamic::Object> value_{};
 
     std::shared_ptr<PropertyGridDelegate> delegate_;
 
