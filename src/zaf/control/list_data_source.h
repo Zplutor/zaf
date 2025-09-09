@@ -3,7 +3,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/event/list_data_event_infos.h>
 #include <zaf/creation.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/object.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/subject/subject.h>
 

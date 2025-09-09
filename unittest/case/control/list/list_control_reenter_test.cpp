@@ -3,7 +3,7 @@
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/list_item_container.h>
-#include <zaf/object/boxing/boxing.h>
+#include <zaf/dynamic/boxing/boxing.h>
 
 /*
 In this test case, we raise an item update event first. When handling this event, the item control 

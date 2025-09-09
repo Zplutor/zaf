@@ -3,8 +3,8 @@
 #include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
 #include <zaf/graphic/font_weight_parser.h>
-#include <zaf/object/equality.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/equality.h>
+#include <zaf/dynamic/object.h>
 
 namespace zaf {
 

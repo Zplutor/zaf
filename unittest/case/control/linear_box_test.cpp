@@ -2,7 +2,7 @@
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/linear_box.h>
 #include <zaf/creation.h>
-#include <zaf/object/parsing/helpers.h>
+#include <zaf/dynamic/parsing/helpers.h>
 
 TEST(LinearBoxTest, Normal) {
 

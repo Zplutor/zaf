@@ -7,7 +7,7 @@
 #include <zaf/clipboard/drop_files_data.h>
 #include <zaf/clipboard/text_data.h>
 #include <zaf/creation.h>
-#include <zaf/object/boxing/string.h>
+#include <zaf/dynamic/boxing/string.h>
 #include <zaf/window/window.h>
 
 using namespace zaf::clipboard;

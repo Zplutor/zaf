@@ -1,8 +1,8 @@
 #include <zaf/control/control_parser.h>
 #include <zaf/base/as.h>
-#include <zaf/object/parsing/parse_error.h>
+#include <zaf/dynamic/parsing/parse_error.h>
 #include <zaf/control/control.h>
-#include <zaf/object/parsing/xaml_node_parse_helper.h>
+#include <zaf/dynamic/parsing/xaml_node_parse_helper.h>
 
 namespace zaf {
 

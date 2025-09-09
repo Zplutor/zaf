@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/object.h>
 
 namespace zaf::internal {
 

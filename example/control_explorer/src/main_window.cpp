@@ -1,7 +1,7 @@
 #include "main_window.h"
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
-#include <zaf/object/boxing/boxing.h>
+#include <zaf/dynamic/boxing/boxing.h>
 #include "control_property_panel.h"
 #include "control_view_panel.h"
 #include "manager/button_explore_manager.h"

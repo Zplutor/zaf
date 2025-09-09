@@ -3,7 +3,7 @@
 #include <zaf/control/textual_control.h>
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/creation.h>
-#include <zaf/object/object_type.h>
+#include <zaf/dynamic/object_type.h>
 
 using namespace zaf;
 using namespace zaf::textual;

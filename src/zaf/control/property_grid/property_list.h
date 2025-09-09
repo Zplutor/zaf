@@ -1,7 +1,7 @@
 #pragma once
 
 #include <set>
-#include <zaf/object/object_property.h>
+#include <zaf/dynamic/object_property.h>
 
 namespace zaf::property_grid {
 

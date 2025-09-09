@@ -3,7 +3,7 @@
 #include <zaf/base/as.h>
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/base/flags_enum.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/object.h>
 
 namespace zaf::internal {
 

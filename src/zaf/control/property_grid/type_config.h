@@ -4,7 +4,7 @@
 #include <zaf/control/control.h>
 #include <zaf/control/property_grid/property_table.h>
 #include <zaf/control/property_grid/value_editor.h>
-#include <zaf/object/object_property.h>
+#include <zaf/dynamic/object_property.h>
 
 namespace zaf::property_grid {
 

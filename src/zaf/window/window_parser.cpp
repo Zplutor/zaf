@@ -1,6 +1,6 @@
 #include <zaf/window/window_parser.h>
-#include <zaf/object/parsing/xaml_node.h>
-#include <zaf/object/parsing/xaml_node_parse_helper.h>
+#include <zaf/dynamic/parsing/xaml_node.h>
+#include <zaf/dynamic/parsing/xaml_node_parse_helper.h>
 #include <zaf/window/window.h>
 
 namespace zaf {

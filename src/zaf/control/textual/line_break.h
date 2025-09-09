@@ -5,7 +5,7 @@
     Defines the zaf::textual::LineBreak enum.
 */
 
-#include <zaf/object/enum_support.h>
+#include <zaf/dynamic/enum_support.h>
 
 namespace zaf::textual {
 

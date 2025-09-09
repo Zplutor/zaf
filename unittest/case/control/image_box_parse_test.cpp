@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/control/image_box.h>
-#include <zaf/object/parsing/helpers.h>
+#include <zaf/dynamic/parsing/helpers.h>
 
 namespace {
 

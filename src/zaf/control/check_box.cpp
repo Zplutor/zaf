@@ -8,7 +8,7 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
-#include <zaf/object/object_type.h>
+#include <zaf/dynamic/object_type.h>
 #include <zaf/rx/subject/subject.h>
 
 namespace zaf {

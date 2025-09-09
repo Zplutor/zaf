@@ -3,8 +3,8 @@
 #include <filesystem>
 #include <zaf/graphic/d2d/render_bitmap.h>
 #include <zaf/graphic/uri_image_parser.h>
-#include <zaf/object/custom_property_value_traits.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/custom_property_value_traits.h>
+#include <zaf/dynamic/object.h>
 
 namespace zaf {
 namespace wic {

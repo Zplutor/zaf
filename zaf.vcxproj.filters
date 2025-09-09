@@ -58,12 +58,6 @@
     <Filter Include="zaf\base\error">
       <UniqueIdentifier>{62ec9b22-b712-4e9f-a54b-d635e891774a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\object">
-      <UniqueIdentifier>{02ef127b-fbe7-4c74-a9e3-545477c89135}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\object\internal">
-      <UniqueIdentifier>{e9dd3b55-91ef-4199-a0db-c321364db7b4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\rx">
       <UniqueIdentifier>{d12ecaff-7f5d-4ebc-ab47-74e894015d2a}</UniqueIdentifier>
     </Filter>
@@ -90,18 +84,6 @@
     </Filter>
     <Filter Include="zaf\window\internal">
       <UniqueIdentifier>{9753c9aa-251c-4966-b76e-70c7d7f08694}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\object\boxing">
-      <UniqueIdentifier>{0dff3f08-a273-48b0-9ecb-a65c90a1093c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\object\boxing\internal">
-      <UniqueIdentifier>{3eeb11b4-6471-445d-a2bd-d334fe968cdb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\object\parsing">
-      <UniqueIdentifier>{668ce856-de97-4b3d-9dff-b0cfd3fdace0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="zaf\object\parsing\internal">
-      <UniqueIdentifier>{3bc59b42-1eb6-4c6b-b276-9e2ec11d3233}</UniqueIdentifier>
     </Filter>
     <Filter Include="zaf\control\property_grid">
       <UniqueIdentifier>{911b72c6-c587-4dca-a2fe-3c49df6ad566}</UniqueIdentifier>
@@ -204,6 +186,24 @@
     </Filter>
     <Filter Include="zaf\rx\internal\insider">
       <UniqueIdentifier>{06afa947-c3ff-44ff-bc36-30540c74a0ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\dynamic">
+      <UniqueIdentifier>{02ef127b-fbe7-4c74-a9e3-545477c89135}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\dynamic\internal">
+      <UniqueIdentifier>{e9dd3b55-91ef-4199-a0db-c321364db7b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\dynamic\boxing">
+      <UniqueIdentifier>{0dff3f08-a273-48b0-9ecb-a65c90a1093c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\dynamic\boxing\internal">
+      <UniqueIdentifier>{3eeb11b4-6471-445d-a2bd-d334fe968cdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\dynamic\parsing">
+      <UniqueIdentifier>{668ce856-de97-4b3d-9dff-b0cfd3fdace0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\dynamic\parsing\internal">
+      <UniqueIdentifier>{3bc59b42-1eb6-4c6b-b276-9e2ec11d3233}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -367,8 +367,8 @@
     <ClCompile Include="src\zaf\control\list_box_data_source.cpp">
       <Filter>zaf\control</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\object.cpp">
-      <Filter>zaf\object</Filter>
+    <ClCompile Include="src\zaf\dynamic\object.cpp">
+      <Filter>zaf\dynamic</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\list_box_delegate.cpp">
       <Filter>zaf\control</Filter>
@@ -466,35 +466,35 @@
     <ClCompile Include="src\zaf\window\internal\inner_message_only_window.cpp">
       <Filter>zaf\window\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\object_type.cpp">
-      <Filter>zaf\object</Filter>
+    <ClCompile Include="src\zaf\dynamic\object_type.cpp">
+      <Filter>zaf\dynamic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\internal\object_initializer.cpp">
-      <Filter>zaf\object\internal</Filter>
+    <ClCompile Include="src\zaf\dynamic\internal\object_initializer.cpp">
+      <Filter>zaf\dynamic\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\boxing\string.cpp">
-      <Filter>zaf\object\boxing</Filter>
+    <ClCompile Include="src\zaf\dynamic\boxing\string.cpp">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\boxing\numeric.cpp">
-      <Filter>zaf\object\boxing</Filter>
+    <ClCompile Include="src\zaf\dynamic\boxing\numeric.cpp">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\parsing\helpers.cpp">
-      <Filter>zaf\object\parsing</Filter>
+    <ClCompile Include="src\zaf\dynamic\parsing\helpers.cpp">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\parsing\xaml_node.cpp">
-      <Filter>zaf\object\parsing</Filter>
+    <ClCompile Include="src\zaf\dynamic\parsing\xaml_node.cpp">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\parsing\xaml_node_parse_helper.cpp">
-      <Filter>zaf\object\parsing</Filter>
+    <ClCompile Include="src\zaf\dynamic\parsing\xaml_node_parse_helper.cpp">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\parsing\xaml_reader.cpp">
-      <Filter>zaf\object\parsing</Filter>
+    <ClCompile Include="src\zaf\dynamic\parsing\xaml_reader.cpp">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\boxing\boolean.cpp">
-      <Filter>zaf\object\boxing</Filter>
+    <ClCompile Include="src\zaf\dynamic\boxing\boolean.cpp">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\parsing\xaml_utility.cpp">
-      <Filter>zaf\object\parsing</Filter>
+    <ClCompile Include="src\zaf\dynamic\parsing\xaml_utility.cpp">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\image_layout.cpp">
       <Filter>zaf\control</Filter>
@@ -514,14 +514,14 @@
     <ClCompile Include="src\zaf\control\layout\axis_alignment.cpp">
       <Filter>zaf\control\layout</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\parsing\internal\utility.cpp">
-      <Filter>zaf\object\parsing\internal</Filter>
+    <ClCompile Include="src\zaf\dynamic\parsing\internal\utility.cpp">
+      <Filter>zaf\dynamic\parsing\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\internal\reflection_manager.cpp">
-      <Filter>zaf\object\internal</Filter>
+    <ClCompile Include="src\zaf\dynamic\internal\reflection_manager.cpp">
+      <Filter>zaf\dynamic\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\creation.cpp">
-      <Filter>zaf\object</Filter>
+    <ClCompile Include="src\zaf\dynamic\creation.cpp">
+      <Filter>zaf\dynamic</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\window\tooltip_window.cpp">
       <Filter>zaf\window</Filter>
@@ -865,8 +865,8 @@
     <ClCompile Include="src\zaf\rx\internal\operator\do_on_terminate_operator.cpp">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\parsing\object_parser.cpp">
-      <Filter>zaf\object\parsing</Filter>
+    <ClCompile Include="src\zaf\dynamic\parsing\object_parser.cpp">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\control_parser.cpp">
       <Filter>zaf\control</Filter>
@@ -1030,11 +1030,11 @@
     <ClCompile Include="src\zaf\graphic\size_parser.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\boxing\boolean_parser.cpp">
-      <Filter>zaf\object\boxing</Filter>
+    <ClCompile Include="src\zaf\dynamic\boxing\boolean_parser.cpp">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\enum_type.cpp">
-      <Filter>zaf\object</Filter>
+    <ClCompile Include="src\zaf\dynamic\enum_type.cpp">
+      <Filter>zaf\dynamic</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\object\enum_parser.cpp">
       <Filter>zaf\internal\object</Filter>
@@ -1642,8 +1642,8 @@
     <ClInclude Include="src\zaf\control\list_box_data_source.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\object.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\object.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\list_box_delegate.h">
       <Filter>zaf\control</Filter>
@@ -1696,14 +1696,14 @@
     <ClInclude Include="src\zaf\rx\disposable_host.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\is_equal_comparable.h">
-      <Filter>zaf\object\internal</Filter>
+    <ClInclude Include="src\zaf\dynamic\internal\is_equal_comparable.h">
+      <Filter>zaf\dynamic\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\hash.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\equality.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\equality.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\inspector\inspector_window.h">
       <Filter>zaf\window\inspector</Filter>
@@ -1795,62 +1795,62 @@
     <ClInclude Include="src\zaf\control\internal\control_updating.h">
       <Filter>zaf\control\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\object_type.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\object_type.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\object_property.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\object_property.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\object_initializer.h">
-      <Filter>zaf\object\internal</Filter>
+    <ClInclude Include="src\zaf\dynamic\internal\object_initializer.h">
+      <Filter>zaf\dynamic\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\property_registrar.h">
-      <Filter>zaf\object\internal</Filter>
+    <ClInclude Include="src\zaf\dynamic\internal\property_registrar.h">
+      <Filter>zaf\dynamic\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\boxing.h">
-      <Filter>zaf\object\boxing</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\boxing.h">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\numeric.h">
-      <Filter>zaf\object\boxing</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\numeric.h">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\string.h">
-      <Filter>zaf\object\boxing</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\string.h">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent.h">
-      <Filter>zaf\object\boxing\internal</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\internal\boxed_represent.h">
+      <Filter>zaf\dynamic\boxing\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\internal\boxed_represent_equal.h">
-      <Filter>zaf\object\boxing\internal</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\internal\boxed_represent_equal.h">
+      <Filter>zaf\dynamic\boxing\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\internal\unboxer.h">
-      <Filter>zaf\object\boxing\internal</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\internal\unboxer.h">
+      <Filter>zaf\dynamic\boxing\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\internal\string_conversion_shim.h">
-      <Filter>zaf\object\boxing\internal</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\internal\string_conversion_shim.h">
+      <Filter>zaf\dynamic\boxing\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\parsing\helpers.h">
-      <Filter>zaf\object\parsing</Filter>
+    <ClInclude Include="src\zaf\dynamic\parsing\helpers.h">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\parsing\object_parser.h">
-      <Filter>zaf\object\parsing</Filter>
+    <ClInclude Include="src\zaf\dynamic\parsing\object_parser.h">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\parsing\xaml_node.h">
-      <Filter>zaf\object\parsing</Filter>
+    <ClInclude Include="src\zaf\dynamic\parsing\xaml_node.h">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\parsing\xaml_node_parse_helper.h">
-      <Filter>zaf\object\parsing</Filter>
+    <ClInclude Include="src\zaf\dynamic\parsing\xaml_node_parse_helper.h">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\parsing\xaml_reader.h">
-      <Filter>zaf\object\parsing</Filter>
+    <ClInclude Include="src\zaf\dynamic\parsing\xaml_reader.h">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\enum_type.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\enum_type.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\boolean.h">
-      <Filter>zaf\object\boxing</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\boolean.h">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\parsing\xaml_utility.h">
-      <Filter>zaf\object\parsing</Filter>
+    <ClInclude Include="src\zaf\dynamic\parsing\xaml_utility.h">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\initial_rect_style.h">
       <Filter>zaf\window</Filter>
@@ -1858,17 +1858,17 @@
     <ClInclude Include="src\zaf\window\activate_option.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\parsing\internal\utility.h">
-      <Filter>zaf\object\parsing\internal</Filter>
+    <ClInclude Include="src\zaf\dynamic\parsing\internal\utility.h">
+      <Filter>zaf\dynamic\parsing\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\reflection_manager.h">
-      <Filter>zaf\object\internal</Filter>
+    <ClInclude Include="src\zaf\dynamic\internal\reflection_manager.h">
+      <Filter>zaf\dynamic\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\as.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\creation.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\creation.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\message\activate_message.h">
       <Filter>zaf\window\message</Filter>
@@ -1882,8 +1882,8 @@
     <ClInclude Include="src\zaf\graphic\dpi.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\parsing\xaml_node_builder.h">
-      <Filter>zaf\object\parsing</Filter>
+    <ClInclude Include="src\zaf\dynamic\parsing\xaml_node_builder.h">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\resource\internal\default_uri_loader.h">
       <Filter>zaf\resource\internal</Filter>
@@ -1900,8 +1900,8 @@
     <ClInclude Include="src\zaf\base\none.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\internal\instance_creator.h">
-      <Filter>zaf\object\internal</Filter>
+    <ClInclude Include="src\zaf\dynamic\internal\instance_creator.h">
+      <Filter>zaf\dynamic\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\string\join.h">
       <Filter>zaf\base\string</Filter>
@@ -2479,8 +2479,8 @@
     <ClInclude Include="src\zaf\base\error\not_found_error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\parsing\parse_error.h">
-      <Filter>zaf\object\parsing</Filter>
+    <ClInclude Include="src\zaf\dynamic\parsing\parse_error.h">
+      <Filter>zaf\dynamic\parsing</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\invalid_type_error.h">
       <Filter>zaf\base\error</Filter>
@@ -2557,14 +2557,14 @@
     <ClInclude Include="src\zaf\control\event\style_update_info.h">
       <Filter>zaf\control\event</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\property_support.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\property_support.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\control_object.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\object_support.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\object_support.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\window_parser.h">
       <Filter>zaf\window</Filter>
@@ -2581,47 +2581,47 @@
     <ClInclude Include="src\zaf\graphic\size_parser.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\numeric_parser.h">
-      <Filter>zaf\object\boxing</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\numeric_parser.h">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\string_parser.h">
-      <Filter>zaf\object\boxing</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\string_parser.h">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\enum_support.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\enum_support.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\boolean_parser.h">
-      <Filter>zaf\object\boxing</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\boolean_parser.h">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\object\property_helper.h">
       <Filter>zaf\internal\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\reflective_type.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\reflective_type.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\custom_boxing_traits.h">
-      <Filter>zaf\object\boxing</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\custom_boxing_traits.h">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\custom_property_value_traits.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\custom_property_value_traits.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\property_value_traits.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\property_value_traits.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\object\shared_ptr_utility.h">
       <Filter>zaf\internal\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\boxing\boxing_traits.h">
-      <Filter>zaf\object\boxing</Filter>
+    <ClInclude Include="src\zaf\dynamic\boxing\boxing_traits.h">
+      <Filter>zaf\dynamic\boxing</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\enum_constant.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\enum_constant.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\object\enum_constant_registrar.h">
       <Filter>zaf\internal\object</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\object\object_map.h">
-      <Filter>zaf\object</Filter>
+    <ClInclude Include="src\zaf\dynamic\object_map.h">
+      <Filter>zaf\dynamic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\object\enum_parser.h">
       <Filter>zaf\internal\object</Filter>

@@ -1,7 +1,7 @@
 #include <zaf/control/textual/ranged_text_style.h>
 #include <zaf/base/as.h>
 #include <zaf/control/textual/ranged_text_style.h>
-#include <zaf/object/creation.h>
+#include <zaf/dynamic/creation.h>
 #include <zaf/xml/xml_error.h>
 #include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>

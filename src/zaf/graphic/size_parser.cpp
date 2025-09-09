@@ -1,8 +1,8 @@
 #include <zaf/graphic/size_parser.h>
 #include <zaf/base/as.h>
 #include <zaf/graphic/size.h>
-#include <zaf/object/parsing/internal/utility.h>
-#include <zaf/object/parsing/parse_error.h>
+#include <zaf/dynamic/parsing/internal/utility.h>
+#include <zaf/dynamic/parsing/parse_error.h>
 
 namespace zaf {
 

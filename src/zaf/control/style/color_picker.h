@@ -3,7 +3,7 @@
 #include <functional>
 #include <zaf/control/style/color_picker_parser.h>
 #include <zaf/graphic/color.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/object.h>
 
 namespace zaf {
 

@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_type_error.h>
-#include <zaf/object/parsing/parse_error.h>
+#include <zaf/dynamic/parsing/parse_error.h>
 #include <zaf/graphic/size.h>
-#include <zaf/object/object_type.h>
-#include <zaf/object/parsing/object_parser.h>
-#include <zaf/object/parsing/xaml_node.h>
-#include <zaf/object/parsing/xaml_reader.h>
+#include <zaf/dynamic/object_type.h>
+#include <zaf/dynamic/parsing/object_parser.h>
+#include <zaf/dynamic/parsing/xaml_node.h>
+#include <zaf/dynamic/parsing/xaml_reader.h>
 
 TEST(SizeParserTest, ParseFromAttribute) {
 

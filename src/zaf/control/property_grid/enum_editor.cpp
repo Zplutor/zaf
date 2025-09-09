@@ -2,7 +2,7 @@
 #include <zaf/base/container/utility/sort.h>
 #include <zaf/base/container/utility/unique.h>
 #include <zaf/base/range.h>
-#include <zaf/object/enum_type.h>
+#include <zaf/dynamic/enum_type.h>
 #include <zaf/creation.h>
 
 namespace zaf::property_grid {

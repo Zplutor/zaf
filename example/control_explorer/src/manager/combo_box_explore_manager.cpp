@@ -1,5 +1,5 @@
 #include "manager/combo_box_explore_manager.h"
-#include <zaf/object/boxing/boxing.h>
+#include <zaf/dynamic/boxing/boxing.h>
 
 std::shared_ptr<zaf::Control> ComboBoxExploreManager::CreateExploredControl() {
 

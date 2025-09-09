@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/object/parsing/xaml_reader.h>
+#include <zaf/dynamic/parsing/xaml_reader.h>
 
 TEST(XamlReader, ReadFromWideString) {
 

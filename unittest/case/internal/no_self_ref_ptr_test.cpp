@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/base/range.h>
 #include <zaf/internal/no_self_ref_ptr.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/object.h>
 
 using namespace zaf;
 using namespace zaf::internal;

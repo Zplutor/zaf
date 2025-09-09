@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_type_error.h>
-#include <zaf/object/parsing/parse_error.h>
+#include <zaf/dynamic/parsing/parse_error.h>
 #include <zaf/graphic/color.h>
-#include <zaf/object/parsing/xaml_node.h>
-#include <zaf/object/parsing/xaml_reader.h>
+#include <zaf/dynamic/parsing/xaml_node.h>
+#include <zaf/dynamic/parsing/xaml_reader.h>
 #include "utility.h"
 
 TEST(ColorParser, ParseFromAttribute) {

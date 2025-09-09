@@ -35,7 +35,7 @@
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/internal/control/color_field.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/object.h>
 #include <zaf/rx/observable.h>
 #include <zaf/rx/disposable_host.h>
 

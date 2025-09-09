@@ -3,8 +3,8 @@
 #include <dwrite.h>
 #include <cstdint>
 #include <zaf/graphic/dwrite/text_inline_object.h>
-#include <zaf/object/enum_support.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/enum_support.h>
+#include <zaf/dynamic/object.h>
 
 namespace zaf::dwrite {
 

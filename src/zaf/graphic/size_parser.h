@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/object/parsing/object_parser.h>
+#include <zaf/dynamic/parsing/object_parser.h>
 
 namespace zaf {
 

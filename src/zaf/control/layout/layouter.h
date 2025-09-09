@@ -3,7 +3,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/object.h>
 
 namespace zaf {
 

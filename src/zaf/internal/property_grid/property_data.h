@@ -5,8 +5,8 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/property_grid/property_table.h>
 #include <zaf/control/property_grid_delegate.h>
-#include <zaf/object/object.h>
-#include <zaf/object/object_property.h>
+#include <zaf/dynamic/object.h>
+#include <zaf/dynamic/object_property.h>
 #include <zaf/rx/subject/subject.h>
 #include <zaf/rx/disposable_host.h>
 

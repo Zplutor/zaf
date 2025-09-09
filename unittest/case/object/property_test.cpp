@@ -4,8 +4,8 @@
 #include <zaf/graphic/image.h>
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
-#include <zaf/object/object.h>
-#include <zaf/object/property_support.h>
+#include <zaf/dynamic/object.h>
+#include <zaf/dynamic/property_support.h>
 
 namespace {
 

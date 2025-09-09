@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <zaf/control/property_grid/property_list.h>
-#include <zaf/object/object_type.h>
+#include <zaf/dynamic/object_type.h>
 
 namespace zaf::property_grid {
 

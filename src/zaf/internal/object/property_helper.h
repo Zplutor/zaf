@@ -1,7 +1,7 @@
 #pragma once
 
 #include <type_traits>
-#include <zaf/object/property_value_traits.h>
+#include <zaf/dynamic/property_value_traits.h>
 
 namespace zaf::internal {
 

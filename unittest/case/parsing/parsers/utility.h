@@ -5,10 +5,10 @@
 #include <zaf/base/string/encoding_conversion.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/frame.h>
-#include <zaf/object/parsing/helpers.h>
-#include <zaf/object/parsing/object_parser.h>
-#include <zaf/object/parsing/xaml_reader.h>
-#include <zaf/object/object_type.h>
+#include <zaf/dynamic/parsing/helpers.h>
+#include <zaf/dynamic/parsing/object_parser.h>
+#include <zaf/dynamic/parsing/xaml_reader.h>
+#include <zaf/dynamic/object_type.h>
 
 inline std::string BuildAttributeXaml(
     const std::string& type_name, 

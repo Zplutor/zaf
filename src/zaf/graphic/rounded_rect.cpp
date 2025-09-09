@@ -1,6 +1,6 @@
 #include <zaf/graphic/rounded_rect.h>
 #include <zaf/base/string/to_string.h>
-#include <zaf/object/equality.h>
+#include <zaf/dynamic/equality.h>
 
 namespace zaf {
 

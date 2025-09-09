@@ -2,7 +2,7 @@
 
 #include <zaf/control/event/click_info.h>
 #include <zaf/control/textual_control.h>
-#include <zaf/object/property_support.h>
+#include <zaf/dynamic/property_support.h>
 #include <zaf/rx/observable.h>
 
 namespace zaf {

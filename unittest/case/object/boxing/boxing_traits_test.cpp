@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/object/boxing/boxing_traits.h>
+#include <zaf/dynamic/boxing/boxing_traits.h>
 #include <zaf/graphic/point.h>
 
 using namespace zaf;

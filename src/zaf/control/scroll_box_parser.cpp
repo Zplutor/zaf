@@ -1,8 +1,8 @@
 #include <zaf/control/scroll_box_parser.h>
 #include <zaf/base/as.h>
-#include <zaf/object/parsing/parse_error.h>
+#include <zaf/dynamic/parsing/parse_error.h>
 #include <zaf/control/scroll_box.h>
-#include <zaf/object/parsing/internal/utility.h>
+#include <zaf/dynamic/parsing/internal/utility.h>
 
 namespace zaf {
 

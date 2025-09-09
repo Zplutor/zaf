@@ -3,7 +3,7 @@
 #include <zaf/control/control.h>
 #include <zaf/control/control_object.h>
 #include <zaf/control/label.h>
-#include <zaf/object/parsing/helpers.h>
+#include <zaf/dynamic/parsing/helpers.h>
 
 using namespace zaf;
 

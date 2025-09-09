@@ -1,5 +1,5 @@
-#include <zaf/object/boxing/custom_boxing_traits.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/boxing/custom_boxing_traits.h>
+#include <zaf/dynamic/object.h>
 
 using namespace zaf;
 

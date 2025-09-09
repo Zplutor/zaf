@@ -1,7 +1,7 @@
 #include <zaf/control/clickable_control.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/object/object_type.h>
+#include <zaf/dynamic/object_type.h>
 #include <zaf/rx/subject/subject.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/mouse_message.h>

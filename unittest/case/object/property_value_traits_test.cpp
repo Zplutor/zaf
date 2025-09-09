@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/object/property_value_traits.h>
+#include <zaf/dynamic/property_value_traits.h>
 #include <zaf/graphic/size.h>
 
 using namespace zaf;

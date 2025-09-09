@@ -1,8 +1,8 @@
 #include <zaf/internal/object/enum_parser.h>
 #include <zaf/base/string/split.h>
 #include <zaf/base/string/trim.h>
-#include <zaf/object/parsing/parse_error.h>
-#include <zaf/object/parsing/xaml_utility.h>
+#include <zaf/dynamic/parsing/parse_error.h>
+#include <zaf/dynamic/parsing/xaml_utility.h>
 
 namespace zaf::internal {
 

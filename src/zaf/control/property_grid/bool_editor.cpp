@@ -1,6 +1,6 @@
 #include <zaf/control/property_grid/bool_editor.h>
 #include <zaf/creation.h>
-#include <zaf/object/boxing/boxing.h>
+#include <zaf/dynamic/boxing/boxing.h>
 
 namespace zaf::property_grid {
 

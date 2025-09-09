@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/object/reflective_type.h>
+#include <zaf/dynamic/reflective_type.h>
 #include <zaf/control/control.h>
 #include <zaf/window/window.h>
 

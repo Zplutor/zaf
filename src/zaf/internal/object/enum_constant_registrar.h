@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/object/enum_type.h>
+#include <zaf/dynamic/enum_type.h>
 
 namespace zaf::internal {
 

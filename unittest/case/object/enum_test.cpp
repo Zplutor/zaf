@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_type_error.h>
-#include <zaf/object/boxing/boxing.h>
-#include <zaf/object/enum_support.h>
-#include <zaf/object/parsing/xaml_reader.h>
+#include <zaf/dynamic/boxing/boxing.h>
+#include <zaf/dynamic/enum_support.h>
+#include <zaf/dynamic/parsing/xaml_reader.h>
 
 namespace {
 

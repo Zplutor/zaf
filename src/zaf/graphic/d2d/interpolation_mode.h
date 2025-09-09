@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/direct2d.h>
-#include <zaf/object/enum_support.h>
+#include <zaf/dynamic/enum_support.h>
 
 namespace zaf::d2d {
 

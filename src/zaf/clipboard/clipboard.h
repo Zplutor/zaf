@@ -8,7 +8,7 @@
 #include <string_view>
 #include <zaf/clipboard/data_object.h>
 #include <zaf/clipboard/format_type.h>
-#include <zaf/object/object_type.h>
+#include <zaf/dynamic/object_type.h>
 
 namespace zaf::clipboard {
 

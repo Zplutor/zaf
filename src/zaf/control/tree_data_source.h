@@ -3,7 +3,7 @@
 #include <zaf/base/define.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/creation.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/object.h>
 #include <zaf/rx/subject/subject.h>
 
 namespace zaf {

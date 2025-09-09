@@ -3,7 +3,7 @@
 #include <zaf/control/check_state.h>
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/event/check_state_changed_info.h>
-#include <zaf/object/property_support.h>
+#include <zaf/dynamic/property_support.h>
 #include <zaf/rx/observable.h>
 
 namespace zaf {

@@ -2,8 +2,8 @@
 #include <zaf/base/error/invalid_type_error.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/object/boxing/boxing.h>
-#include <zaf/object/boxing/string.h>
+#include <zaf/dynamic/boxing/boxing.h>
+#include <zaf/dynamic/boxing/string.h>
 
 using namespace zaf;
 

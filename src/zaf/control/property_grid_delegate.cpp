@@ -18,10 +18,10 @@
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
-#include <zaf/object/boxing/boolean.h>
-#include <zaf/object/boxing/numeric.h>
-#include <zaf/object/boxing/string.h>
-#include <zaf/object/enum_type.h>
+#include <zaf/dynamic/boxing/boolean.h>
+#include <zaf/dynamic/boxing/numeric.h>
+#include <zaf/dynamic/boxing/string.h>
+#include <zaf/dynamic/enum_type.h>
 
 using namespace zaf::property_grid;
 

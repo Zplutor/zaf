@@ -3,7 +3,7 @@
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/creation.h>
-#include <zaf/object/boxing/numeric.h>
+#include <zaf/dynamic/boxing/numeric.h>
 
 using namespace zaf;
 

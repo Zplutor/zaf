@@ -4,7 +4,7 @@
 #include <zaf/control/layout/axis_alignment.h>
 #include <zaf/control/layout/layout_direction.h>
 #include <zaf/control/layout/linear_layouter.h>
-#include <zaf/object/property_support.h>
+#include <zaf/dynamic/property_support.h>
 
 namespace zaf {
 

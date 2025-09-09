@@ -7,7 +7,7 @@
 #include <zaf/control/textual/inline_object_events.h>
 #include <zaf/graphic/size.h>
 #include <zaf/graphic/dwrite/inline_object_metrics.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/object.h>
 #include <zaf/rx/disposable_host.h>
 #include <zaf/xml/xml_serializable.h>
 

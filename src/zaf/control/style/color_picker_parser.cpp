@@ -1,7 +1,7 @@
 #include <zaf/control/style/color_picker_parser.h>
 #include <zaf/control/style/color_picker.h>
 #include <zaf/control/style/if.h>
-#include <zaf/object/parsing/internal/utility.h>
+#include <zaf/dynamic/parsing/internal/utility.h>
 #include <zaf/internal/control/color_picker_impl.h>
 
 namespace zaf {

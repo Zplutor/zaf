@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_type_error.h>
-#include <zaf/object/parsing/parse_error.h>
+#include <zaf/dynamic/parsing/parse_error.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/font_weight.h>
-#include <zaf/object/parsing/helpers.h>
-#include <zaf/object/object_type.h>
-#include <zaf/object/parsing/object_parser.h>
-#include <zaf/object/parsing/xaml_reader.h>
+#include <zaf/dynamic/parsing/helpers.h>
+#include <zaf/dynamic/object_type.h>
+#include <zaf/dynamic/parsing/object_parser.h>
+#include <zaf/dynamic/parsing/xaml_reader.h>
 
 TEST(FontWeightTest, Hash) {
 

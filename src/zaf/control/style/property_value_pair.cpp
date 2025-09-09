@@ -1,5 +1,5 @@
 #include <zaf/control/style/property_value_pair.h>
-#include <zaf/object/object.h>
+#include <zaf/dynamic/object.h>
 
 namespace zaf {
 

@@ -4,9 +4,9 @@
 #include <Richedit.h>
 #include <zaf/base/error/contract_error.h>
 #include <zaf/base/hash.h>
-#include <zaf/object/equality.h>
-#include <zaf/object/object.h>
-#include <zaf/object/property_support.h>
+#include <zaf/dynamic/equality.h>
+#include <zaf/dynamic/object.h>
+#include <zaf/dynamic/property_support.h>
 #include <zaf/xml/xml_serializable.h>
 
 namespace zaf {

@@ -8,7 +8,7 @@
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
-#include <zaf/object/property_support.h>
+#include <zaf/dynamic/property_support.h>
 
 namespace zaf {
 
