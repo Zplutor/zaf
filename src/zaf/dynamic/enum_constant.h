@@ -13,7 +13,7 @@ public:
 
     virtual const std::wstring& Name() const = 0;
     
-    virtual ObjectType* ValueType() const = 0;
+    virtual dynamic::ObjectType* ValueType() const = 0;
     virtual std::shared_ptr<Object> Value() const = 0;
 };
 

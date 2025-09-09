@@ -10,7 +10,7 @@ class PropertyGridDelegate : NonCopyableNonMovable {
 public:
     virtual ~PropertyGridDelegate() = default;
 
-    virtual std::shared_ptr<property_grid::TypeConfig> GetTypeConfig(ObjectType* type);
+    virtual std::shared_ptr<property_grid::TypeConfig> GetTypeConfig(dynamic::ObjectType* type);
 };
 
 }

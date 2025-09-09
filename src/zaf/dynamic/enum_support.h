@@ -41,7 +41,7 @@ private:                                                                        
     Type();                                                                                       \
 public:                                                                                           \
     static Type* Instance() { return &instance; }                                                 \
-    zaf::ObjectType* BaseType() const noexcept override {                                         \
+    zaf::dynamic::ObjectType* BaseType() const noexcept override {                                         \
         return Class::StaticBaseType();                                                           \
     }                                                                                             \
     std::wstring_view Name() const noexcept override {                                            \
@@ -73,7 +73,7 @@ private:                                                                        
             static const std::wstring name{ L#ConstantName };                                     \
             return name;                                                                          \
         }                                                                                         \
-        zaf::ObjectType* ValueType() const override {                                             \
+        zaf::dynamic::ObjectType* ValueType() const override {                                             \
             return Class::StaticType();                                                           \
         }                                                                                         \
         std::shared_ptr<Object> Value() const override {                                          \
@@ -97,9 +97,9 @@ EnumName##Enum::Type EnumName##Enum::Type::instance;                            
 EnumName##Enum::Type::Type() {                                                                    \
     zaf::internal::ReflectionManager::Instance().RegisterType(this);                              \
 }                                                                                                 \
-zaf::ObjectType* EnumName##Enum::StaticType() { return Type::Instance(); }                        \
-zaf::ObjectType* EnumName##Enum::DynamicType() const { return Type::Instance(); }                 \
-zaf::ObjectType* EnumName##Enum::StaticBaseType() { return __super::StaticType(); }               \
+zaf::dynamic::ObjectType* EnumName##Enum::StaticType() { return Type::Instance(); }                        \
+zaf::dynamic::ObjectType* EnumName##Enum::DynamicType() const { return Type::Instance(); }                 \
+zaf::dynamic::ObjectType* EnumName##Enum::StaticBaseType() { return __super::StaticType(); }               \
 zaf::EnumType* EnumName##Enum::EnumType() {                                                       \
     return Type::Instance();                                                                      \
 }                                                                                                 \

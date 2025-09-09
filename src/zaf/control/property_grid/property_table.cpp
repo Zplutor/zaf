@@ -2,13 +2,13 @@
 
 namespace zaf::property_grid {
 
-PropertyTable::PropertyTable(std::vector<std::pair<ObjectType*, PropertyList>> inner) :
+PropertyTable::PropertyTable(std::vector<std::pair<dynamic::ObjectType*, PropertyList>> inner) :
     inner_(std::move(inner)) {
 
 }
 
 
-PropertyList* PropertyTable::GetList(ObjectType* type) {
+PropertyList* PropertyTable::GetList(dynamic::ObjectType* type) {
 
     for (auto& each_pair : inner_) {
 

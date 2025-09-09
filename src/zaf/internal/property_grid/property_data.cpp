@@ -48,7 +48,7 @@ std::vector<std::shared_ptr<PropertyData>> PropertyData::LoadChildren() {
         return {};
     }
 
-    std::vector<ObjectType*> value_type_chain = GetObjectTypeChain(*value_);
+    std::vector<dynamic::ObjectType*> value_type_chain = GetObjectTypeChain(*value_);
     property_grid::PropertyTable property_table = CreatePropertyTable(value_type_chain);
 
     auto type_config = delegate_->GetTypeConfig(value_->DynamicType());
@@ -71,9 +71,9 @@ std::vector<std::shared_ptr<PropertyData>> PropertyData::LoadChildren() {
 }
 
 
-std::vector<ObjectType*> PropertyData::GetObjectTypeChain(const Object& object) {
+std::vector<dynamic::ObjectType*> PropertyData::GetObjectTypeChain(const Object& object) {
 
-    std::vector<ObjectType*> type_chain;
+    std::vector<dynamic::ObjectType*> type_chain;
 
     auto type = object.DynamicType();
     type_chain.push_back(type);
@@ -88,9 +88,9 @@ std::vector<ObjectType*> PropertyData::GetObjectTypeChain(const Object& object) 
 
 
 property_grid::PropertyTable PropertyData::CreatePropertyTable(
-    const std::vector<ObjectType*>& types) {
+    const std::vector<dynamic::ObjectType*>& types) {
 
-    std::vector<std::pair<ObjectType*, property_grid::PropertyList>> property_table_inner;
+    std::vector<std::pair<dynamic::ObjectType*, property_grid::PropertyList>> property_table_inner;
     for (auto each_type : types) {
 
         std::vector<ObjectProperty*> property_list_inner;

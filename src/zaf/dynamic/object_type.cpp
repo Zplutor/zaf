@@ -2,7 +2,7 @@
 #include <zaf/base/container/utility/append.h>
 #include <zaf/dynamic/object_property.h>
 
-namespace zaf {
+namespace zaf::dynamic {
 namespace {
 
 std::vector<ObjectProperty*> GetPropertiesInInheritanceChain(const ObjectType* type) {
@@ -21,7 +21,7 @@ std::vector<ObjectProperty*> GetPropertiesInInheritanceChain(const ObjectType* t
 
 
 ObjectProperty* GetPropertyInInheritanceChain(
-    const ObjectType* type, 
+    const ObjectType* type,
     std::wstring_view name) noexcept {
 
     auto current_type = type;

@@ -8,18 +8,18 @@ namespace zaf::property_grid {
 
 class PropertyTable {
 public:
-    explicit PropertyTable(std::vector<std::pair<ObjectType*, PropertyList>> inner);
+    explicit PropertyTable(std::vector<std::pair<dynamic::ObjectType*, PropertyList>> inner);
 
-    PropertyList* GetList(ObjectType* type);
+    PropertyList* GetList(dynamic::ObjectType* type);
 
     void Clear();
 
-    std::vector<std::pair<ObjectType*, PropertyList>>& Inner() {
+    std::vector<std::pair<dynamic::ObjectType*, PropertyList>>& Inner() {
         return inner_;
     }
 
 private:
-    std::vector<std::pair<ObjectType*, PropertyList>> inner_;
+    std::vector<std::pair<dynamic::ObjectType*, PropertyList>> inner_;
 };
 
 }

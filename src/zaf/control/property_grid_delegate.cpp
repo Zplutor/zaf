@@ -35,9 +35,9 @@ std::shared_ptr<TypeConfig> MakeConfig() {
 }
 
 
-std::shared_ptr<TypeConfig> GetObjectTypeConfig(ObjectType* type) {
+std::shared_ptr<TypeConfig> GetObjectTypeConfig(dynamic::ObjectType* type) {
 
-    static const std::map<ObjectType*, std::shared_ptr<TypeConfig>(*)()> config_map{
+    static const std::map<dynamic::ObjectType*, std::shared_ptr<TypeConfig>(*)()> config_map{
         { Boolean::StaticType(), MakeConfig<BoolConfig> },
         { Color::StaticType(), MakeConfig<ColorConfig> },
         { Control::StaticType(), MakeConfig<ControlConfig> },
@@ -75,7 +75,7 @@ std::shared_ptr<TypeConfig> GetObjectTypeConfig(ObjectType* type) {
 }
 
 
-std::shared_ptr<TypeConfig> GetEnumTypeConfig(ObjectType* type) {
+std::shared_ptr<TypeConfig> GetEnumTypeConfig(dynamic::ObjectType* type) {
 
     auto enum_type = dynamic_cast<EnumType*>(type);
     if (!enum_type) {
@@ -94,7 +94,8 @@ std::shared_ptr<TypeConfig> GetDefaultConfig() {
 
 }
 
-std::shared_ptr<property_grid::TypeConfig> PropertyGridDelegate::GetTypeConfig(ObjectType* type) {
+std::shared_ptr<property_grid::TypeConfig> PropertyGridDelegate::GetTypeConfig(
+    dynamic::ObjectType* type) {
 
     auto result = GetObjectTypeConfig(type);
     if (result) {

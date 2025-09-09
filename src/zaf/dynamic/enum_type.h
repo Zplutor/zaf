@@ -9,7 +9,7 @@ namespace internal {
 class EnumConstantRegistrar;
 }
 
-class EnumType : public ObjectType {
+class EnumType : public dynamic::ObjectType {
 public:
     const std::vector<EnumConstant*>& Constants() const noexcept {
         return constants_;

@@ -44,8 +44,9 @@ public:
     }
 
 private:
-    static std::vector<ObjectType*> GetObjectTypeChain(const Object& object);
-    static property_grid::PropertyTable CreatePropertyTable(const std::vector<ObjectType*>& types);
+    static std::vector<dynamic::ObjectType*> GetObjectTypeChain(const Object& object);
+    static property_grid::PropertyTable CreatePropertyTable(
+        const std::vector<dynamic::ObjectType*>& types);
 
 private:
     std::vector<std::shared_ptr<PropertyData>> LoadChildren();

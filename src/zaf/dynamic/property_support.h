@@ -56,12 +56,12 @@ private:                                                                        
         }                                                                                         \
         /* A workaround to solve the mis-reported intellisense error */                           \
         template<typename T>                                                                      \
-        static zaf::ObjectType* GetObjectType() {                                                 \
+        static zaf::dynamic::ObjectType* GetObjectType() {                                        \
             return T::StaticType();                                                               \
         }                                                                                         \
     public:                                                                                       \
         using DeclaredType = std::remove_pointer_t<decltype(DeduceDeclaredType<Class>(nullptr))>; \
-        static zaf::ObjectType* GetValueType() {                                                  \
+        static zaf::dynamic::ObjectType* GetValueType() {                                         \
             using BoxedType = typename zaf::PropertyValueTraits<DeclaredType>::BoxedType;         \
             return GetObjectType<BoxedType>();                                                    \
         }                                                                                         \
@@ -79,7 +79,7 @@ private:                                                                        
         std::wstring_view Name() const noexcept override {                                        \
             return std::wstring_view{ L#PropertyName };                                           \
         }                                                                                         \
-        zaf::ObjectType* ValueType() const noexcept override {                                    \
+        zaf::dynamic::ObjectType* ValueType() const noexcept override {                           \
             return PropertyName##Traits::GetValueType();                                          \
         }                                                                                         \
         bool IsValueDynamic() const noexcept override {                                           \

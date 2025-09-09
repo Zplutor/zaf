@@ -10,7 +10,7 @@ ReflectionManager& ReflectionManager::Instance() {
 }
 
 
-void ReflectionManager::RegisterType(ObjectType* type) {
+void ReflectionManager::RegisterType(dynamic::ObjectType* type) {
 
     auto iterator = std::lower_bound(
         types_.begin(), 
@@ -25,7 +25,7 @@ void ReflectionManager::RegisterType(ObjectType* type) {
 }
 
 
-ObjectType* ReflectionManager::GetType(std::wstring_view name) const {
+dynamic::ObjectType* ReflectionManager::GetType(std::wstring_view name) const {
 
     auto iterator = std::lower_bound(
         types_.begin(),

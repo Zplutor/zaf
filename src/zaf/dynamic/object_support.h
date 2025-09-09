@@ -6,20 +6,20 @@
 
 #define ZAF_OBJECT                                                                                \
 class Type;                                                                                       \
-static zaf::ObjectType* StaticType();                                                             \
-zaf::ObjectType* DynamicType() const override;                                                    \
-static zaf::ObjectType* StaticBaseType();
+static zaf::dynamic::ObjectType* StaticType();                                                    \
+zaf::dynamic::ObjectType* DynamicType() const override;                                           \
+static zaf::dynamic::ObjectType* StaticBaseType();
 
 
 #define ZAF_OBJECT_BEGIN(ClassName)                                                               \
-class ClassName::Type : public zaf::ObjectType {                                                  \
+class ClassName::Type : public zaf::dynamic::ObjectType {                                         \
 private:                                                                                          \
     using Class = ClassName;                                                                      \
     static Type instance;                                                                         \
     Type();                                                                                       \
 public:                                                                                           \
     static Type* Instance() { return &instance; }                                                 \
-    zaf::ObjectType* BaseType() const noexcept override {                                         \
+    zaf::dynamic::ObjectType* BaseType() const noexcept override {                                \
         return ClassName::StaticBaseType();                                                       \
     }                                                                                             \
     std::wstring_view Name() const noexcept override {                                            \
@@ -51,6 +51,6 @@ ClassName::Type ClassName::Type::instance;                                      
 ClassName::Type::Type() {                                                                         \
     zaf::internal::ReflectionManager::Instance().RegisterType(this);                              \
 }                                                                                                 \
-zaf::ObjectType* ClassName::StaticType() { return Type::Instance(); }                             \
-zaf::ObjectType* ClassName::DynamicType() const { return Type::Instance(); }                      \
-zaf::ObjectType* ClassName::StaticBaseType() { return __super::StaticType(); }
+zaf::dynamic::ObjectType* ClassName::StaticType() { return Type::Instance(); }                    \
+zaf::dynamic::ObjectType* ClassName::DynamicType() const { return Type::Instance(); }             \
+zaf::dynamic::ObjectType* ClassName::StaticBaseType() { return __super::StaticType(); }

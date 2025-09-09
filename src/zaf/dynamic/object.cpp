@@ -12,7 +12,7 @@
 namespace zaf {
 namespace {
 
-void ParseObject(ObjectType& type, Object& object) {
+void ParseObject(dynamic::ObjectType& type, Object& object) {
 
     auto base_type = type.BaseType();
     if (base_type) {
@@ -48,7 +48,7 @@ Object::Type::Type() {
     zaf::internal::ReflectionManager::Instance().RegisterType(this);
 }
 
-ObjectType* Object::Type::BaseType() const noexcept {
+dynamic::ObjectType* Object::Type::BaseType() const noexcept {
     return nullptr;
 }
 
@@ -66,7 +66,7 @@ ObjectParser* Object::Type::Parser() const {
 }
 
 
-ObjectType* Object::StaticType() {
+dynamic::ObjectType* Object::StaticType() {
     return Type::Instance();
 }
 
@@ -99,7 +99,7 @@ void Object::AfterParse() {
 }
 
 
-ObjectType* Object::DynamicType() const {
+dynamic::ObjectType* Object::DynamicType() const {
     return StaticType();
 }
 

@@ -46,7 +46,7 @@ void ParseAttributes(const XamlNode& node, Object& object) {
 }
 
 
-bool IsTypeNameMatched(const std::wstring& type_name, ObjectType* type) {
+bool IsTypeNameMatched(const std::wstring& type_name, dynamic::ObjectType* type) {
 
     auto current_type = type;
     while (current_type) {

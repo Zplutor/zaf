@@ -12,12 +12,12 @@ class ObjectInitializer;
 
 class Object {
 public:
-    class Type : public ObjectType {
+    class Type : public dynamic::ObjectType {
     public:
         static Type* Instance();
 
     public:
-        ObjectType* BaseType() const noexcept override;
+        dynamic::ObjectType* BaseType() const noexcept override;
         std::wstring_view Name() const noexcept override;
         std::shared_ptr<Object> CreateInstance() const override;
         ObjectParser* Parser() const;
@@ -28,13 +28,13 @@ public:
     };
 
 public:
-    static ObjectType* StaticType();
+    static dynamic::ObjectType* StaticType();
 
 public:
     Object() = default;
     virtual ~Object() = default;
 
-    virtual ObjectType* DynamicType() const;
+    virtual dynamic::ObjectType* DynamicType() const;
     virtual bool IsEqual(const Object& other) const;
     virtual std::size_t Hash() const;
 
