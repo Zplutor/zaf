@@ -1,5 +1,5 @@
 #include <zaf/internal/control/control_event_invoker.h>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/unreachable_error.h>
 #include <zaf/control/control.h>
 
 namespace zaf::internal {
@@ -115,7 +115,7 @@ const ControlEventInvokerBinder::MouseEventBinding&
         }
 
         default: 
-            ZAF_NOT_REACHED();
+            ZAF_UNREACHABLE();
     }
 }
 
@@ -173,7 +173,7 @@ const ControlEventInvokerBinder::KeyboardEventBinding&
         }
 
         default:
-            ZAF_NOT_REACHED();
+            ZAF_UNREACHABLE();
     }
 }
 

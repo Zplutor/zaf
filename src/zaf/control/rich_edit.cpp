@@ -2,7 +2,7 @@
 #include <atlwin.h>
 #include <tom.h>
 #include <cassert>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/unreachable_error.h>
 #include <zaf/base/error/unknown_runtime_error.h>
 #include <zaf/base/error/win32_error.h>
 #include <zaf/base/log.h>
@@ -616,8 +616,7 @@ void RichEdit::SetTextAlignment(zaf::dwrite::TextAlignment alignment) {
         paragraph_format_.wAlignment = PFA_RIGHT;
         break;
     default:
-        ZAF_ALERT();
-        break;
+        ZAF_UNREACHABLE();
     }
 
     if (text_service_) {

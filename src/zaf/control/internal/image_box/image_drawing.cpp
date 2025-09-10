@@ -1,5 +1,5 @@
 #include <zaf/control/internal/image_box/image_drawing.h>
-#include <zaf/base/error/check.h>
+#include <zaf/base/error/unreachable_error.h>
 
 namespace zaf::internal {
 namespace {
@@ -100,7 +100,7 @@ void DrawImage(
         DrawImageWithTileLayout(canvas, draw_rect, bitmap, interpolation_mode);
     }
     else {
-        ZAF_ALERT();
+        ZAF_UNREACHABLE();
     }
 }
 

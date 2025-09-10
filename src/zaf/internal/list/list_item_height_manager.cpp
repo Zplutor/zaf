@@ -1,5 +1,4 @@
 #include <zaf/internal/list/list_item_height_manager.h>
-#include <zaf/base/error/check.h>
 #include <zaf/internal/list/list_fixed_item_height_strategy.h>
 #include <zaf/internal/list/list_variable_item_height_strategy.h>
 

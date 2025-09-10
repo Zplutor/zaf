@@ -1618,9 +1618,6 @@
     <ClInclude Include="src\zaf\base\source_location.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\error\check.h">
-      <Filter>zaf\base\error</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\linear_box.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
@@ -3119,6 +3116,9 @@
       <Filter>zaf\rx</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\precondition_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\error\unreachable_error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
   </ItemGroup>
