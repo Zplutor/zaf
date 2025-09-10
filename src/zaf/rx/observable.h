@@ -382,6 +382,7 @@ public:
     @throw std::bad_alloc
     */
     Observable DoOnCompleted(OnCompleted on_completed) {
+        ZAF_EXPECT(on_completed);
         return Do(nullptr, nullptr, std::move(on_completed));
     }
 
