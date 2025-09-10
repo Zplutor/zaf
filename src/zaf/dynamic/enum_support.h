@@ -19,7 +19,7 @@ class EnumName##Enum : \
     public zaf::internal::BoxedRepresent<EnumName> {       \
 public:                                                                                           \
     ZAF_OBJECT;                                                                                   \
-    static zaf::EnumType* EnumType();                                                             \
+    static zaf::dynamic::EnumType* EnumType();                                                             \
     using BoxedRepresent<EnumName>::BoxedRepresent;                                               \
     bool IsEqual(const zaf::dynamic::Object& other) const override;                               \
     std::size_t Hash() const override;                                                            \
@@ -35,7 +35,7 @@ struct zaf__CustomBoxingTraits<EnumName> {                                      
         return &object.Value();                                                                   \
     }                                                                                             \
 };                                                                                                \
-class EnumName##Enum::Type : public zaf::EnumType {                                               \
+class EnumName##Enum::Type : public zaf::dynamic::EnumType {                                               \
 private:                                                                                          \
     using DeclaredType = EnumName;                                                                \
     using Class = EnumName##Enum;                                                                 \
@@ -106,7 +106,7 @@ EnumName##Enum::Type::Type() {                                                  
 zaf::dynamic::ObjectType* EnumName##Enum::StaticType() { return Type::Instance(); }               \
 zaf::dynamic::ObjectType* EnumName##Enum::DynamicType() const { return Type::Instance(); }        \
 zaf::dynamic::ObjectType* EnumName##Enum::StaticBaseType() { return __super::StaticType(); }      \
-zaf::EnumType* EnumName##Enum::EnumType() {                                                       \
+zaf::dynamic::EnumType* EnumName##Enum::EnumType() {                                                       \
     return Type::Instance();                                                                      \
 }                                                                                                 \
 bool EnumName##Enum::IsEqual(const zaf::dynamic::Object& other) const {                           \

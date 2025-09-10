@@ -6,7 +6,7 @@ namespace zaf::internal {
 
 class EnumConstantRegistrar {
 public:
-    static void Register(EnumType* type, EnumConstant* constant) {
+    static void Register(dynamic::EnumType* type, EnumConstant* constant) {
         type->RegisterConstant(constant);
     }
 

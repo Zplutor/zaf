@@ -29,7 +29,7 @@ void EnumEditor::SetAccessMethod(AccessMethod access_method) {
 
 void EnumEditor::SetValue(const std::shared_ptr<dynamic::Object>& value) {
 
-    auto enum_type = dynamic_cast<EnumType*>(value->DynamicType());
+    auto enum_type = dynamic_cast<dynamic::EnumType*>(value->DynamicType());
     ZAF_EXPECT(enum_type);
 
     auto all_enum_values = enum_type->Values();

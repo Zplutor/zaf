@@ -77,7 +77,7 @@ std::shared_ptr<TypeConfig> GetObjectTypeConfig(dynamic::ObjectType* type) {
 
 std::shared_ptr<TypeConfig> GetEnumTypeConfig(dynamic::ObjectType* type) {
 
-    auto enum_type = dynamic_cast<EnumType*>(type);
+    auto enum_type = dynamic_cast<dynamic::EnumType*>(type);
     if (!enum_type) {
         return nullptr;
     }

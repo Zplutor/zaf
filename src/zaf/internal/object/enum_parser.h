@@ -7,7 +7,7 @@ namespace zaf::internal {
 
 class EnumParser : public ObjectParser {
 public:
-    explicit EnumParser(const EnumType* type);
+    explicit EnumParser(const dynamic::EnumType* type);
 
     void ParseFromAttribute(const std::wstring& attribute_value, dynamic::Object& object) override;
     void ParseFromNode(const XamlNode& node, dynamic::Object& object) override;
@@ -18,7 +18,7 @@ private:
     std::shared_ptr<dynamic::Object> ParseSingleValue(const std::wstring& text);
 
 private:
-    const EnumType* enum_type_{};
+    const dynamic::EnumType* enum_type_{};
 };
 
 }

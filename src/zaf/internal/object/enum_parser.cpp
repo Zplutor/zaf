@@ -6,7 +6,7 @@
 
 namespace zaf::internal {
 
-EnumParser::EnumParser(const EnumType* type) : enum_type_(type) {
+EnumParser::EnumParser(const dynamic::EnumType* type) : enum_type_(type) {
 
 }
 
