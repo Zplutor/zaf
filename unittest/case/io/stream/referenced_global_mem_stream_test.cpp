@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/base/global_mem.h>
 #include <zaf/io/stream/stream.h>
 

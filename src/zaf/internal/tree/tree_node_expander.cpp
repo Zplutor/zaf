@@ -1,5 +1,5 @@
 #include <zaf/internal/tree/tree_node_expander.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/internal/tree/tree_data_manager.h>
 
 namespace zaf::internal {

@@ -1,7 +1,7 @@
 #include <mutex>
 #include <optional>
 #include <gtest/gtest.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/rx/scheduler/single_thread_scheduler.h>
 #include <zaf/rx/subject/subject.h>
 

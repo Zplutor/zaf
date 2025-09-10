@@ -1,5 +1,5 @@
 #include <zaf/rx/internal/observable/throw_observable.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/rx/disposable.h>
 #include <zaf/rx/internal/observer_core.h>
 

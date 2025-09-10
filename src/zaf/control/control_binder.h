@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/base/error/error.h>
 #include <zaf/base/error/not_found_error.h>
 #include <zaf/base/non_copyable.h>

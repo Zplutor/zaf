@@ -1,5 +1,5 @@
 #include <zaf/internal/tree/tree_index_mapping.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/base/range.h>
 #include <zaf/internal/tree/utility.h>
 

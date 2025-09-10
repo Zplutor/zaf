@@ -1,6 +1,6 @@
 #include <zaf/xml/xml_reader.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 
 #include <zaf/xml/xml_error.h>
 

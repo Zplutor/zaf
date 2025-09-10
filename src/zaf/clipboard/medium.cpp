@@ -1,5 +1,5 @@
 #include <zaf/clipboard/medium.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/clipboard/internal/medium_wrapping.h>
 
 namespace zaf::clipboard {

@@ -2,7 +2,7 @@
 #include "xml_writer.h"
 #include <zaf/xml/xml_writer.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 
 namespace zaf {
 namespace {

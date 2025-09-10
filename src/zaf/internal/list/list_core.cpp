@@ -1,7 +1,7 @@
 #include <zaf/internal/list/list_core.h>
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/base/range.h>
 #include <zaf/internal/list/list_control_parts_context.h>
 #include <zaf/rx/disposable.h>

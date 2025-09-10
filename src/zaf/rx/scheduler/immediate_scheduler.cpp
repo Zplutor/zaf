@@ -1,5 +1,5 @@
 #include <zaf/rx/scheduler/immediate_scheduler.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/rx/disposable.h>
 
 namespace zaf::rx {

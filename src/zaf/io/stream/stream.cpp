@@ -1,7 +1,7 @@
 #include <zaf/io/stream/stream.h>
 #include <Shlwapi.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/internal/stream/byte_array_stream_core.h>
 #include <zaf/internal/stream/memory_stream_impl.h>

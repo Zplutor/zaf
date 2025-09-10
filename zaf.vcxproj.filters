@@ -3118,5 +3118,8 @@
     <ClInclude Include="src\zaf\rx\execution_stopped_error.h">
       <Filter>zaf\rx</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\base\error\precondition_error.h">
+      <Filter>zaf\base\error</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 #include <zaf/rx/disposable.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 
 namespace zaf::rx {
 namespace {

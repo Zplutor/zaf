@@ -1,5 +1,5 @@
 #include <zaf/window/inspector/inspector_window.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/control/button.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/tree_control.h>

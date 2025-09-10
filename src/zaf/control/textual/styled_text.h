@@ -6,7 +6,7 @@
 */
 
 #include <string>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
 #include <zaf/control/textual/default_text_style.h>

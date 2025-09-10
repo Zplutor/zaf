@@ -1,5 +1,5 @@
 #include <zaf/internal/textual/text_model.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/internal/textual/line_utility.h>
 
 namespace zaf::internal {

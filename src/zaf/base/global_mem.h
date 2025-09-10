@@ -6,7 +6,7 @@
 */
 
 #include <Windows.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/base/flags_enum.h>
 #include <zaf/base/non_copyable.h>
 

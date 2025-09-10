@@ -5,7 +5,7 @@
     Defines the `zaf::rx::ObservableBase` class template.
 */
 
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/rx/internal/observable/custom_observable.h>
 #include <zaf/rx/internal/observable/just_observable.h>
 #include <zaf/rx/internal/observable/never_observable.h>

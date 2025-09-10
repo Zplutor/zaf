@@ -2,7 +2,7 @@
 #include <deque>
 #include <optional>
 #include <zaf/base/auto_reset.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/rx/internal/thread/thread_work_item_base.h>
 
 namespace zaf::rx {

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/as.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/base/none.h>
 #include <zaf/control/list_control.h>
 #include <zaf/control/list_control_delegate.h>

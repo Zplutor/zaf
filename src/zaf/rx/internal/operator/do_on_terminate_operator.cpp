@@ -1,6 +1,6 @@
 #include <zaf/rx/internal/operator/do_on_terminate_operator.h>
 #include <zaf/base/as.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>

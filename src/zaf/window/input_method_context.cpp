@@ -1,5 +1,5 @@
 #include <zaf/window/input_method_context.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/window/window.h>
 

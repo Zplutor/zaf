@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/io/stream/memory_stream_core.h>
 
 namespace zaf::internal {

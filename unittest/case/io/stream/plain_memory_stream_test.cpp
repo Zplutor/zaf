@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/io/stream/stream.h>
 
 using namespace zaf;

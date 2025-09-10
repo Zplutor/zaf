@@ -6,7 +6,7 @@
 */
 
 #include <memory>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/rx/internal/observer_core.h>
 
 namespace zaf::rx::internal {

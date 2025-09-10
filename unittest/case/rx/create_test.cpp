@@ -1,7 +1,7 @@
 #include <mutex>
 #include <thread>
 #include <gtest/gtest.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/base/error/invalid_data_error.h>
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/rx/observable.h>

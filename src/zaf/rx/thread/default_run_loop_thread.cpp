@@ -1,5 +1,5 @@
 #include <zaf/rx/thread/default_run_loop_thread.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/rx/execution_stopped_error.h>
 
 namespace zaf::rx {

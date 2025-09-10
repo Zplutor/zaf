@@ -1,6 +1,6 @@
 #include <zaf/rx/internal/operator/subscribe_on_operator.h>
 #include <zaf/base/as.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/rx/internal/producer.h>
 
 namespace zaf::rx::internal {

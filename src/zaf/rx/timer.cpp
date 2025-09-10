@@ -1,5 +1,5 @@
 #include <zaf/rx/timer.h>
-#include <zaf/base/error/contract_error.h>
+#include <zaf/base/error/precondition_error.h>
 #include <zaf/rx/internal/insider/observable_insider.h>
 #include <zaf/rx/internal/insider/single_insider.h>
 #include <zaf/rx/internal/observable/timer_observable.h>
