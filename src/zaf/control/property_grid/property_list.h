@@ -7,18 +7,18 @@ namespace zaf::property_grid {
 
 class PropertyList {
 public:
-    PropertyList(std::vector<ObjectProperty*> inner);
+    PropertyList(std::vector<dynamic::ObjectProperty*> inner);
 
-    void Erase(const std::set<ObjectProperty*>& properties);
+    void Erase(const std::set<dynamic::ObjectProperty*>& properties);
 
-    void Sort(const std::vector<ObjectProperty*>& priority_properties);
+    void Sort(const std::vector<dynamic::ObjectProperty*>& priority_properties);
 
-    std::vector<ObjectProperty*>& Inner() {
+    std::vector<dynamic::ObjectProperty*>& Inner() {
         return inner_;
     }
 
 private:
-    std::vector<ObjectProperty*> inner_;
+    std::vector<dynamic::ObjectProperty*> inner_;
 };
 
 }

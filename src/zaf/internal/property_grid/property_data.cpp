@@ -5,7 +5,7 @@ namespace zaf::internal {
 
 PropertyData::PropertyData(
     std::shared_ptr<PropertyData> parent,
-    zaf::ObjectProperty* property,
+    zaf::dynamic::ObjectProperty* property,
     const std::shared_ptr<zaf::dynamic::Object>& value,
     const std::shared_ptr<PropertyGridDelegate>& delegate)
     :
@@ -93,7 +93,7 @@ property_grid::PropertyTable PropertyData::CreatePropertyTable(
     std::vector<std::pair<dynamic::ObjectType*, property_grid::PropertyList>> property_table_inner;
     for (auto each_type : types) {
 
-        std::vector<ObjectProperty*> property_list_inner;
+        std::vector<dynamic::ObjectProperty*> property_list_inner;
         for (auto each_property : each_type->NonInheritedProperties()) {
             //Write only properties are not supported.
             if (each_property->CanGet()) {

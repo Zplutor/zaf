@@ -21,11 +21,11 @@ class PropertyData :
 public:
     PropertyData(
         std::shared_ptr<PropertyData> parent,
-        zaf::ObjectProperty* property,
+        zaf::dynamic::ObjectProperty* property,
         const std::shared_ptr<dynamic::Object>& value,
         const std::shared_ptr<PropertyGridDelegate>& delegate);
 
-    zaf::ObjectProperty* Property() const {
+    zaf::dynamic::ObjectProperty* Property() const {
         return property_;
     }
 
@@ -61,7 +61,7 @@ private:
 private:
     std::weak_ptr<PropertyData> parent_;
 
-    zaf::ObjectProperty* property_{};
+    zaf::dynamic::ObjectProperty* property_{};
     std::shared_ptr<dynamic::Object> value_{};
 
     std::shared_ptr<PropertyGridDelegate> delegate_;

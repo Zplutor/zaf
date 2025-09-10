@@ -6,12 +6,15 @@
 
 namespace zaf::property_grid {
 
-PropertyList::PropertyList(std::vector<ObjectProperty*> inner) : inner_(std::move(inner)) {
+PropertyList::PropertyList(
+    std::vector<dynamic::ObjectProperty*> inner) 
+    : 
+    inner_(std::move(inner)) {
 
 }
 
 
-void PropertyList::Erase(const std::set<ObjectProperty*>& properties) {
+void PropertyList::Erase(const std::set<dynamic::ObjectProperty*>& properties) {
 
     EraseIf(inner_, [&properties](auto property) {
         return properties.contains(property);
@@ -19,9 +22,9 @@ void PropertyList::Erase(const std::set<ObjectProperty*>& properties) {
 }
 
 
-void PropertyList::Sort(const std::vector<ObjectProperty*>& priority_properties) {
+void PropertyList::Sort(const std::vector<dynamic::ObjectProperty*>& priority_properties) {
 
-    std::map<ObjectProperty*, std::size_t> prioritized_orders;
+    std::map<dynamic::ObjectProperty*, std::size_t> prioritized_orders;
     for (auto index : Range(0, priority_properties.size())) {
         prioritized_orders[priority_properties[index]] = index;
     }

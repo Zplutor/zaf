@@ -10,7 +10,7 @@ If::If() : result_(Create<dynamic::Object>()) {
 }
 
 
-void If::AddCondition(ObjectProperty* property, std::shared_ptr<dynamic::Object> value) {
+void If::AddCondition(dynamic::ObjectProperty* property, std::shared_ptr<dynamic::Object> value) {
     conditions_.emplace(property, std::move(value));
 }
 

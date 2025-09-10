@@ -6,7 +6,7 @@ namespace zaf::internal {
 
 class PropertyRegistrar {
 public:
-    static void Register(dynamic::ObjectType* type, ObjectProperty* property) {
+    static void Register(dynamic::ObjectType* type, dynamic::ObjectProperty* property) {
         type->RegisterProperty(property);
     }
 

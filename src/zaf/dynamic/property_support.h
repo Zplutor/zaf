@@ -74,7 +74,7 @@ private:                                                                        
             InnerSet(zaf::As<Class>(object), value, nullptr);                                     \
         }                                                                                         \
     };                                                                                            \
-    class PropertyName##PropertyType : public zaf::ObjectProperty {                               \
+    class PropertyName##PropertyType : public zaf::dynamic::ObjectProperty { \
     public:                                                                                       \
         std::wstring_view Name() const noexcept override {                                        \
             return std::wstring_view{ L#PropertyName };                                           \
@@ -101,7 +101,7 @@ private:                                                                        
         }                                                                                         \
     };                                                                                            \
 public:                                                                                           \
-    zaf::ObjectProperty* const PropertyName##Property = []() {                                    \
+    zaf::dynamic::ObjectProperty* const PropertyName##Property = []() { \
         static PropertyName##PropertyType property;                                               \
         zaf::internal::PropertyRegistrar::Register(Class::StaticType(), &property);               \
         return &property;                                                                         \

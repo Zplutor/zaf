@@ -163,7 +163,7 @@ void PropertyGrid::ExpandChildNodes(
     const PropertyGridNode& parent_node, 
     const std::shared_ptr<dynamic::Object>& parent_data) {
 
-    std::map<ObjectProperty*, const PropertyGridNode*> child_node_map;
+    std::map<dynamic::ObjectProperty*, const PropertyGridNode*> child_node_map;
     for (const auto& each_child : parent_node.Children()) {
         child_node_map[each_child.Property()] = &each_child;
     }

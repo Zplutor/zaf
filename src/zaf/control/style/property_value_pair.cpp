@@ -3,7 +3,10 @@
 
 namespace zaf {
 
-PropertyValuePair::PropertyValuePair(ObjectProperty* property, std::shared_ptr<dynamic::Object> value) :
+PropertyValuePair::PropertyValuePair(
+    dynamic::ObjectProperty* property, 
+    std::shared_ptr<dynamic::Object> value) 
+    :
     data_(ParsedData{ property, std::move(value) }) {
 
 }

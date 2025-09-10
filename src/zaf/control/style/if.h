@@ -13,7 +13,7 @@ public:
 public:
     If();
 
-    void AddCondition(ObjectProperty* property, std::shared_ptr<dynamic::Object> value);
+    void AddCondition(dynamic::ObjectProperty* property, std::shared_ptr<dynamic::Object> value);
     void AddCondition(std::wstring property_name, std::wstring value);
 
     const PropertyValuePairSet& Conditions() const noexcept {

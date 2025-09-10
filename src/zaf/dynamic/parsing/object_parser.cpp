@@ -12,7 +12,7 @@ namespace zaf {
 namespace {
 
 std::shared_ptr<dynamic::Object> ParsePropertyValueFromAttribute(
-    const ObjectProperty& property,
+    const dynamic::ObjectProperty& property,
     const std::wstring& attribute_value) {
 
     if (property.IsValueDynamic()) {
@@ -62,7 +62,7 @@ bool IsTypeNameMatched(const std::wstring& type_name, dynamic::ObjectType* type)
 
 
 std::shared_ptr<dynamic::Object> ParsePropertyValueFromNode(
-    const ObjectProperty& property,
+    const dynamic::ObjectProperty& property,
     const XamlNode& node) {
 
     if (property.IsValueDynamic()) {

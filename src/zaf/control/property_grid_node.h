@@ -7,9 +7,9 @@ namespace zaf {
 
 class PropertyGridNode {
 public:
-    explicit PropertyGridNode(ObjectProperty* property) : property_(property) { }
+    explicit PropertyGridNode(dynamic::ObjectProperty* property) : property_(property) { }
 
-    ObjectProperty* Property() const {
+    dynamic::ObjectProperty* Property() const {
         return property_;
     }
 
@@ -17,12 +17,12 @@ public:
         return children_;
     }
 
-    PropertyGridNode* AddChild(ObjectProperty* property) {
+    PropertyGridNode* AddChild(dynamic::ObjectProperty* property) {
         return &children_.emplace_back(property);
     }
 
 private:
-    ObjectProperty* property_{};
+    dynamic::ObjectProperty* property_{};
     std::vector<PropertyGridNode> children_;
 };
 

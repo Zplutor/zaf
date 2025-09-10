@@ -22,7 +22,7 @@ public:
     };
 
 public:
-    PropertyValuePair(ObjectProperty* property, std::shared_ptr<dynamic::Object> value);
+    PropertyValuePair(dynamic::ObjectProperty* property, std::shared_ptr<dynamic::Object> value);
     PropertyValuePair(std::wstring property_name, std::wstring value);
 
     std::wstring_view PropertyName() const noexcept;
@@ -32,7 +32,7 @@ public:
 
 private:
     struct ParsedData {
-        ObjectProperty* property{};
+        dynamic::ObjectProperty* property{};
         std::shared_ptr<dynamic::Object> value;
     };
 
