@@ -527,6 +527,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug-MT|x64'">$(IntDir)rx_create_test.obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)rx_create_test.obj</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="unittest\case\rx\debounce_test.cpp" />
     <ClCompile Include="unittest\case\rx\default_run_loop_thread_test.cpp" />
     <ClCompile Include="unittest\case\rx\do_after_terminate_test.cpp" />
     <ClCompile Include="unittest\case\rx\do_on_error_test.cpp" />

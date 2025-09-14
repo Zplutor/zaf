@@ -367,6 +367,7 @@
     <ClCompile Include="src\zaf\rx\internal\observable\throw_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\observable\timer_observable.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\catch_operator.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\operator\debounce_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\do_after_terminate_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\do_on_terminate_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\do_operator.cpp" />
@@ -913,6 +914,7 @@
     <ClInclude Include="src\zaf\rx\internal\insider\single_insider.h" />
     <ClInclude Include="src\zaf\rx\internal\insider\single_observer_insider.h" />
     <ClInclude Include="src\zaf\rx\internal\observer_shim.h" />
+    <ClInclude Include="src\zaf\rx\internal\operator\debounce_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\thread\thread_work_item_base.h" />
     <ClInclude Include="src\zaf\rx\observable_base.h" />
     <ClInclude Include="src\zaf\rx\scheduler\immediate_scheduler.h" />

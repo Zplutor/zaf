@@ -1,6 +1,7 @@
 #include <zaf/rx/internal/observable/observable_core.h>
 #include <zaf/rx/internal/observable/connectable_observable_core.h>
 #include <zaf/rx/internal/operator/catch_operator.h>
+#include <zaf/rx/internal/operator/debounce_operator.h>
 #include <zaf/rx/internal/operator/do_after_terminate_operator.h>
 #include <zaf/rx/internal/operator/do_on_terminate_operator.h>
 #include <zaf/rx/internal/operator/do_operator.h>
@@ -57,6 +58,14 @@ std::shared_ptr<ObservableCore> ObservableCore::Map(Mapper mapper) {
 
 std::shared_ptr<ObservableCore> ObservableCore::FlatMap(FlatMapper mapper) {
     return std::make_shared<FlatMapOperator>(shared_from_this(), std::move(mapper));
+}
+
+
+std::shared_ptr<ObservableCore> ObservableCore::Debounce(
+    std::chrono::steady_clock::duration duration,
+    std::shared_ptr<Scheduler> scheduler) {
+
+    return std::make_shared<DebounceOperator>(shared_from_this(), duration, std::move(scheduler));
 }
 
 

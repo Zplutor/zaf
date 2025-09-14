@@ -387,6 +387,44 @@ public:
     }
 
     /**
+    Creates a new observable that emits items only after a specified duration has passed without 
+    any new items being emitted.
+
+    @param duration
+        The duration to wait before emitting the item.
+
+    @param scheduler
+        The scheduler to use for the debounce timer. Items will be emitted on this scheduler.
+
+    @pre
+        The scheduler is not null.
+
+    @return
+        An observable that emits items only after the specified duration has passed without any new
+        items being emitted.
+
+    @throw zaf::PreconditionError
+    @throw std::bad_alloc
+
+    @details
+        Emissions of the returned observable may be sent on different contexts, as described below:
+        - Item emissions after debouncing are sent on the specified scheduler.
+        - Error and completion emissions are sent immediately.
+        - If the observable completes while there is a pending item to be emitted after debouncing,
+          the pending item will be emitted immediately before the completion emission.
+        
+        To ensure that all emissions are sent on the same context, consider using the `ObserveOn`
+        operator after this operator.
+    */
+    Observable<T> Debounce(
+        std::chrono::steady_clock::duration duration,
+        std::shared_ptr<Scheduler> scheduler) {
+
+        auto new_core = this->Core()->Debounce(duration, std::move(scheduler));
+        return Observable<T>{ std::move(new_core) };
+    }
+
+    /**
     Creates a connectable observable that shares a single subscription to the current observable.
 
     @return

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <any>
+#include <chrono>
 #include <memory>
 #include <optional>
 #include <zaf/base/closure.h>
@@ -40,6 +41,10 @@ public:
 
     std::shared_ptr<ObservableCore> Map(Mapper mapper);
     std::shared_ptr<ObservableCore> FlatMap(FlatMapper mapper);
+
+    std::shared_ptr<ObservableCore> Debounce(
+        std::chrono::steady_clock::duration duration,
+        std::shared_ptr<Scheduler> scheduler);
 
     std::shared_ptr<ConnectableObservableCore> Publish();
     std::shared_ptr<ConnectableObservableCore> Replay(std::optional<std::size_t> replay_size);

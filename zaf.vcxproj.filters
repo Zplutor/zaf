@@ -1336,6 +1336,9 @@
     <ClCompile Include="src\zaf\rx\scheduler\thread_pool_scheduler.cpp">
       <Filter>zaf\rx\scheduler</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\operator\debounce_operator.cpp">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3120,6 +3123,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\unreachable_error.h">
       <Filter>zaf\base\error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\operator\debounce_operator.h">
+      <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

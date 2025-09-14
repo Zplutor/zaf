@@ -328,4 +328,24 @@ TEST_F(DefaultRunLoopThreadTest, Destruct) {
     ASSERT_EQ(execute_values, (std::vector<int>{ 1, 2 }));
 }
 
+
+TEST_F(DefaultRunLoopThreadTest, DestroyThreadInWork) {
+
+    std::optional<zaf::rx::DefaultRunLoopThread> thread;
+    thread.emplace();
+
+    std::condition_variable cv;
+    std::mutex mutex;
+    std::unique_lock lock{ mutex };
+
+    std::shared_ptr<int> test_value{ new int() };
+    thread->PostWork([&, test_value = std::move(test_value)]() mutable {
+        thread.reset();
+        test_value.reset();
+        cv.notify_one();
+    });
+
+    cv.wait(lock);
+}
+
 }
