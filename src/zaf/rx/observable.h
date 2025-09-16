@@ -466,6 +466,30 @@ public:
     }
 
     /**
+    Creates a new observable that emits only the first item emitted by the current observable 
+    during periods of a specified duration.
+
+    @param duration
+        The duration to throttle emissions.
+
+    @return
+        An observable that emits only the first item emitted by the current observable during 
+        periods of the specified duration.
+
+    @throw std::bad_alloc
+
+    @details
+        When the first item is emitted, a period of the specified duration begins. During this
+        period, any subsequent items emitted by the current observable are ignored. The next item
+        is emitted only after the current period ends and a new item is emitted by the current
+        observable, which starts a new period.
+    */
+    Observable<T> ThrottleFirst(std::chrono::steady_clock::duration duration) {
+        auto new_core = this->Core()->ThrottleFirst(duration);
+        return Observable<T>{ std::move(new_core) };
+    }
+
+    /**
     Creates a connectable observable that shares a single subscription to the current observable.
 
     @return
