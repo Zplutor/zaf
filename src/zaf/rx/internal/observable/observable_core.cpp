@@ -9,6 +9,7 @@
 #include <zaf/rx/internal/operator/flat_map_operator.h>
 #include <zaf/rx/internal/operator/map_operator.h>
 #include <zaf/rx/internal/operator/observe_on_operator.h>
+#include <zaf/rx/internal/operator/sample_operator.h>
 #include <zaf/rx/internal/operator/subscribe_on_operator.h>
 #include <zaf/rx/internal/subject/subject_core_indirect.h>
 
@@ -66,6 +67,14 @@ std::shared_ptr<ObservableCore> ObservableCore::Debounce(
     std::shared_ptr<Scheduler> scheduler) {
 
     return std::make_shared<DebounceOperator>(shared_from_this(), duration, std::move(scheduler));
+}
+
+
+std::shared_ptr<ObservableCore> ObservableCore::Sample(
+    std::chrono::steady_clock::duration interval,
+    std::shared_ptr<Scheduler> scheduler) {
+
+    return std::make_shared<SampleOperator>(shared_from_this(), interval, std::move(scheduler));
 }
 
 

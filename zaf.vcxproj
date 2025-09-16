@@ -376,6 +376,7 @@
     <ClCompile Include="src\zaf\rx\internal\operator\map_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\observe_on_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\ref_count_operator.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\operator\sample_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\subscribe_on_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\producer.cpp" />
     <ClCompile Include="src\zaf\rx\internal\rx_runtime.cpp" />
@@ -915,6 +916,7 @@
     <ClInclude Include="src\zaf\rx\internal\insider\single_observer_insider.h" />
     <ClInclude Include="src\zaf\rx\internal\observer_shim.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\debounce_operator.h" />
+    <ClInclude Include="src\zaf\rx\internal\operator\sample_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\thread\thread_work_item_base.h" />
     <ClInclude Include="src\zaf\rx\observable_base.h" />
     <ClInclude Include="src\zaf\rx\scheduler\immediate_scheduler.h" />

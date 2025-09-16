@@ -425,6 +425,47 @@ public:
     }
 
     /**
+    Creates a new observable that emits the most recent item emitted by the current observable at
+    periodic time intervals.
+
+    @param interval
+        The interval at which to emit the most recent item.
+
+    @param scheduler
+        The scheduler to use for the sampling timer. Items will be emitted on this scheduler.
+
+    @pre
+        The scheduler is not null.
+
+    @return
+        An observable that emits the most recent item emitted by the current observable at periodic
+        time intervals. When subscribing to the returned observable, any exception may be thrown by
+        the underlying scheduler implementation if it fails to start the initial sampling timer. 
+        Subsequent failure of the scheduler to start a sampling timer will be emitted as an error
+        by the returned observable.
+
+    @throw zaf::PreconditionError
+    @throw std::bad_alloc
+
+    @details
+        Emissions of the returned observable may be sent on different contexts, as described below:
+        - Item emissions after sampling are sent on the specified scheduler.
+        - Error emission is sent immediately.
+        - Completion emission is sent on the specified scheduler, after the last sampled item
+          (if any) is emitted.
+
+        To ensure that all emissions are sent on the same context, consider using the `ObserveOn`
+        operator after this operator.
+    */
+    Observable<T> Sample(
+        std::chrono::steady_clock::duration interval,
+        std::shared_ptr<Scheduler> scheduler) {
+
+        auto new_core = this->Core()->Sample(interval, std::move(scheduler));
+        return Observable<T>{ std::move(new_core) };
+    }
+
+    /**
     Creates a connectable observable that shares a single subscription to the current observable.
 
     @return

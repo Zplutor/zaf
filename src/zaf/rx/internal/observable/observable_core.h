@@ -46,6 +46,10 @@ public:
         std::chrono::steady_clock::duration duration,
         std::shared_ptr<Scheduler> scheduler);
 
+    std::shared_ptr<ObservableCore> Sample(
+        std::chrono::steady_clock::duration interval,
+        std::shared_ptr<Scheduler> scheduler);
+
     std::shared_ptr<ConnectableObservableCore> Publish();
     std::shared_ptr<ConnectableObservableCore> Replay(std::optional<std::size_t> replay_size);
 };
