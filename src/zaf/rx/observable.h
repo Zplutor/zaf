@@ -432,7 +432,8 @@ public:
         The interval at which to emit the most recent item.
 
     @param scheduler
-        The scheduler to use for the sampling timer. Items will be emitted on this scheduler.
+        The scheduler to use for the sampling timer. Items and completion will be emitted on this
+        scheduler.
 
     @pre
         The scheduler is not null.
@@ -479,13 +480,58 @@ public:
     @throw std::bad_alloc
 
     @details
-        When the first item is emitted, a period of the specified duration begins. During this
-        period, any subsequent items emitted by the current observable are ignored. The next item
-        is emitted only after the current period ends and a new item is emitted by the current
-        observable, which starts a new period.
+        When the current observable emits the first item, the returned observable emits it and a 
+        period of the specified duration begins. During this period, any subsequent items emitted 
+        by the current observable are ignored. The next item is emitted only after the current
+        period ends and a new item is emitted by the current observable, which starts a new period.
     */
     Observable<T> ThrottleFirst(std::chrono::steady_clock::duration duration) {
         auto new_core = this->Core()->ThrottleFirst(duration);
+        return Observable<T>{ std::move(new_core) };
+    }
+
+    /**
+    Creates a new observable that emits only the last item emitted by the current observable
+    during periods of a specified duration.
+
+    @param duration
+        The duration to throttle emissions.
+
+    @param scheduler
+        The scheduler to use for the throttling timer. Items will be emitted on this scheduler.
+
+    @pre
+        The scheduler is not null.
+
+    @return
+        An observable that emits only the last item emitted by the current observable during
+        periods of the specified duration.
+    
+    @throw zaf::PreconditionError
+    @throw std::bad_alloc
+
+    @details
+        When the current observable emits the first item, the returned observable saved it as the 
+        last item and won't emit it immediately. At the same time, a period of the specified 
+        duration begins. During this period, any subsequent items emitted by the current observable
+        are saved as the last item and they won't reset the period. The last item is emitted only 
+        when the period ends. Then the next period begins when a new item is emitted by the current 
+        observable.
+
+        Emissions of the returned observable may be sent on different contexts, as described below:
+        - Item emissions after throttling are sent on the specified scheduler.
+        - Error and completion emissions are sent immediately.
+        - If the observable completes while there is a pending item to be emitted after throttling,
+          the pending item will be emitted immediately before the completion emission.
+
+        To ensure that all emissions are sent on the same context, consider using the `ObserveOn`
+        operator after this operator.
+    */
+    Observable<T> ThrottleLast(
+        std::chrono::steady_clock::duration duration,
+        std::shared_ptr<Scheduler> scheduler) {
+
+        auto new_core = this->Core()->ThrottleLast(duration, std::move(scheduler));
         return Observable<T>{ std::move(new_core) };
     }
 
