@@ -25,7 +25,7 @@ void ReflectionManager::RegisterType(ObjectType* type) {
 }
 
 
-ObjectType* ReflectionManager::GetType(std::wstring_view name) const {
+ObjectType* ReflectionManager::GetType(std::wstring_view name) const noexcept {
 
     auto iterator = std::lower_bound(
         types_.begin(),

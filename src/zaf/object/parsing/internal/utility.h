@@ -3,7 +3,7 @@
 #include <string>
 #include <zaf/object/parsing/object_parser.h>
 #include <zaf/object/parsing/xaml_node.h>
-#include <zaf/object/creation.h>
+#include <zaf/object/reflection.h>
 
 namespace zaf {
 
@@ -29,7 +29,7 @@ std::shared_ptr<T> CreateObjectFromNode(const std::shared_ptr<XamlNode>& node) {
         return {};
     }
 
-    auto object = CreateObjectByName<T>(node->Value());
+    auto object = Reflection::CreateObject<T>(node->Value());
     if (!object) {
         return {};
     }

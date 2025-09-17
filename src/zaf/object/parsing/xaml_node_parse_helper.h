@@ -58,7 +58,7 @@ public:
             return {};
         }
 
-        return CreateObjectByName<T>(attribute->Value());
+        return Reflection::CreateObject<T>(attribute->Value());
     }
 
 private:

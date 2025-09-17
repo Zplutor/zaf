@@ -335,7 +335,6 @@
     <ClCompile Include="src\zaf\object\boxing\boolean_parser.cpp" />
     <ClCompile Include="src\zaf\object\boxing\numeric.cpp" />
     <ClCompile Include="src\zaf\object\boxing\string.cpp" />
-    <ClCompile Include="src\zaf\object\creation.cpp" />
     <ClCompile Include="src\zaf\object\enum_type.cpp" />
     <ClCompile Include="src\zaf\object\internal\object_initializer.cpp" />
     <ClCompile Include="src\zaf\object\internal\reflection_manager.cpp" />
@@ -348,6 +347,7 @@
     <ClCompile Include="src\zaf\object\parsing\xaml_node_parse_helper.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_reader.cpp" />
     <ClCompile Include="src\zaf\object\parsing\xaml_utility.cpp" />
+    <ClCompile Include="src\zaf\object\reflection.cpp" />
     <ClCompile Include="src\zaf\resource\internal\default_uri_loader.cpp" />
     <ClCompile Include="src\zaf\resource\internal\resource_loader.cpp" />
     <ClCompile Include="src\zaf\resource\internal\resource_location_parsing.cpp" />
@@ -874,7 +874,6 @@
     <ClInclude Include="src\zaf\object\boxing\numeric_parser.h" />
     <ClInclude Include="src\zaf\object\boxing\string.h" />
     <ClInclude Include="src\zaf\object\boxing\string_parser.h" />
-    <ClInclude Include="src\zaf\object\creation.h" />
     <ClInclude Include="src\zaf\object\custom_property_value_traits.h" />
     <ClInclude Include="src\zaf\object\enum_support.h" />
     <ClInclude Include="src\zaf\object\enum_type.h" />
@@ -901,6 +900,7 @@
     <ClInclude Include="src\zaf\object\parsing\xaml_utility.h" />
     <ClInclude Include="src\zaf\object\property_support.h" />
     <ClInclude Include="src\zaf\object\property_value_traits.h" />
+    <ClInclude Include="src\zaf\object\reflection.h" />
     <ClInclude Include="src\zaf\object\reflective_type.h" />
     <ClInclude Include="src\zaf\resource\internal\default_uri_loader.h" />
     <ClInclude Include="src\zaf\resource\internal\resource_loader.h" />

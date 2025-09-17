@@ -520,9 +520,6 @@
     <ClCompile Include="src\zaf\object\internal\reflection_manager.cpp">
       <Filter>zaf\object\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\object\creation.cpp">
-      <Filter>zaf\object</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\window\tooltip_window.cpp">
       <Filter>zaf\window</Filter>
     </ClCompile>
@@ -1348,6 +1345,9 @@
     <ClCompile Include="src\zaf\rx\internal\operator\throttle_last_operator.cpp">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\object\reflection.cpp">
+      <Filter>zaf\object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1875,9 +1875,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\as.h">
       <Filter>zaf\base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\object\creation.h">
-      <Filter>zaf\object</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\message\activate_message.h">
       <Filter>zaf\window\message</Filter>
@@ -3144,6 +3141,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\rx\internal\operator\throttle_last_operator.h">
       <Filter>zaf\rx\internal\operator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\object\reflection.h">
+      <Filter>zaf\object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

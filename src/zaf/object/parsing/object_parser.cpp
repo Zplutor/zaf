@@ -6,7 +6,7 @@
 #include <zaf/object/object_type.h>
 #include <zaf/object/parsing/xaml_node.h>
 #include <zaf/object/parsing/internal/utility.h>
-#include <zaf/object/creation.h>
+#include <zaf/object/reflection.h>
 
 namespace zaf {
 namespace {
@@ -17,7 +17,7 @@ std::shared_ptr<Object> ParsePropertyValueFromAttribute(
 
     if (property.IsValueDynamic()) {
 
-        return CreateObjectByName(attribute_value);
+        return Reflection::CreateObject(attribute_value);
     }
     else {
 
