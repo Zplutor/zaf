@@ -5,6 +5,7 @@
 #include <zaf/rx/internal/operator/do_after_terminate_operator.h>
 #include <zaf/rx/internal/operator/do_on_terminate_operator.h>
 #include <zaf/rx/internal/operator/do_operator.h>
+#include <zaf/rx/internal/operator/filter_operator.h>
 #include <zaf/rx/internal/operator/finally_operator.h>
 #include <zaf/rx/internal/operator/flat_map_operator.h>
 #include <zaf/rx/internal/operator/map_operator.h>
@@ -95,6 +96,11 @@ std::shared_ptr<ObservableCore> ObservableCore::ThrottleLast(
         shared_from_this(), 
         duration, 
         std::move(scheduler));
+}
+
+
+std::shared_ptr<ObservableCore> ObservableCore::Filter(FilterPredicate predicate) {
+    return std::make_shared<FilterOperator>(shared_from_this(), std::move(predicate));
 }
 
 

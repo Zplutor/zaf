@@ -536,6 +536,31 @@ public:
     }
 
     /**
+    Creates a new observable that emits only the items that satisfy the specified predicate.
+
+    @param predicate
+        The predicate function to test each item emitted by the current observable. If it throws an
+        exception, the new observable will terminate with the thrown exception as an error.
+
+    @pre
+        The predicate function is not null.
+
+    @return
+        An observable that emits only the items that satisfy the specified predicate.
+
+    @throw zaf::PreconditionError
+    @throw std::bad_alloc
+    */
+    Observable<T> Filter(std::function<bool(const T&)> predicate) {
+        ZAF_EXPECT(predicate);
+        auto new_core = this->Core()->Filter(
+            [predicate = std::move(predicate)](const std::any& value) {
+                return predicate(std::any_cast<const T&>(value));
+            });
+        return Observable<T>{ std::move(new_core) };
+    }
+
+    /**
     Creates a connectable observable that shares a single subscription to the current observable.
 
     @return

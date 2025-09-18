@@ -1348,6 +1348,9 @@
     <ClCompile Include="src\zaf\object\reflection.cpp">
       <Filter>zaf\object</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\rx\internal\operator\filter_operator.cpp">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3144,6 +3147,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\object\reflection.h">
       <Filter>zaf\object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\operator\filter_operator.h">
+      <Filter>zaf\rx\internal\operator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\rx\internal\operator\filter_predicate.h">
+      <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

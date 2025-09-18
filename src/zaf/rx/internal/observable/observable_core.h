@@ -7,6 +7,7 @@
 #include <zaf/base/closure.h>
 #include <zaf/rx/internal/observer_shim.h>
 #include <zaf/rx/internal/operator/catch_handler.h>
+#include <zaf/rx/internal/operator/filter_predicate.h>
 #include <zaf/rx/internal/operator/flat_mapper.h>
 #include <zaf/rx/internal/operator/mapper.h>
 
@@ -54,6 +55,8 @@ public:
     std::shared_ptr<ObservableCore> ThrottleLast(
         std::chrono::steady_clock::duration duration,
         std::shared_ptr<Scheduler> scheduler);
+
+    std::shared_ptr<ObservableCore> Filter(FilterPredicate predicate);
 
     std::shared_ptr<ConnectableObservableCore> Publish();
     std::shared_ptr<ConnectableObservableCore> Replay(std::optional<std::size_t> replay_size);

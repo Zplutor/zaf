@@ -371,6 +371,7 @@
     <ClCompile Include="src\zaf\rx\internal\operator\do_after_terminate_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\do_on_terminate_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\do_operator.cpp" />
+    <ClCompile Include="src\zaf\rx\internal\operator\filter_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\finally_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\flat_map_operator.cpp" />
     <ClCompile Include="src\zaf\rx\internal\operator\map_operator.cpp" />
@@ -918,6 +919,8 @@
     <ClInclude Include="src\zaf\rx\internal\insider\single_observer_insider.h" />
     <ClInclude Include="src\zaf\rx\internal\observer_shim.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\debounce_operator.h" />
+    <ClInclude Include="src\zaf\rx\internal\operator\filter_operator.h" />
+    <ClInclude Include="src\zaf\rx\internal\operator\filter_predicate.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\sample_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\throttle_first_operator.h" />
     <ClInclude Include="src\zaf\rx\internal\operator\throttle_last_operator.h" />
