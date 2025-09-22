@@ -5,6 +5,7 @@
     Defines the `zaf::rx::Single<>` class template.
 */
 
+#include <coroutine>
 #include <zaf/rx/internal/insider/observable_insider.h>
 #include <zaf/rx/internal/insider/single_observer_insider.h>
 #include <zaf/rx/observable_base.h>
@@ -168,5 +169,55 @@ private:
 
     }
 };
+
+
+/**
+An adapter that transforms a `zaf::rx::Single<>` into a coroutine awaitable object.
+*/
+template<typename T>
+class SingleAwaiter {
+public:
+    explicit SingleAwaiter(Single<T> single) : single_(std::move(single)) {
+
+    }
+
+    bool await_ready() const noexcept {
+        return false;
+    }
+
+    void await_suspend(std::coroutine_handle<> handle) {
+        sub_ = single_.Subscribe([this, handle](const T& value) {
+            value_ = &value;
+            handle.resume();
+        },
+        [this, handle](const std::exception_ptr& error) {
+            error_ = error;
+            handle.resume();
+        });
+    }
+
+    const T& await_resume() {
+        if (error_) {
+            std::rethrow_exception(error_);
+        }
+        return *value_;
+    }
+
+private:
+    Single<T> single_;
+    const T* value_{};
+    std::exception_ptr error_;
+    std::shared_ptr<Disposable> sub_;
+};
+
+
+/**
+Transforms a `zaf::rx::Single<>` into a coroutine awaitable object so that it can be awaited in a
+coroutine.
+*/
+template<typename T>
+inline auto operator co_await(const Single<T>& single) {
+    return SingleAwaiter<T>(single);
+}
 
 }
