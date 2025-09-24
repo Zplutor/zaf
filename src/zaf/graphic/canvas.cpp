@@ -1,7 +1,7 @@
 #include <zaf/graphic/canvas.h>
 #include <dwrite.h>
 #include <zaf/base/error/com_error.h>
-#include <zaf/graphic/alignment.h>
+#include <zaf/graphic/pixel_snapping.h>
 #include <zaf/graphic/d2d/path_geometry.h>
 #include <zaf/graphic/d2d/rectangle_geometry.h>
 #include <zaf/graphic/d2d/rounded_rectangle_geometry.h>
@@ -56,7 +56,7 @@ internal::CanvasRegion Canvas::CreateNewRegion(
     if (current_region) {
         new_region.rect.AddOffset(current_region->rect.position);
     }
-    new_region.aligned_rect = ToPixelAligned(new_region.rect, renderer_.GetDPI());
+    new_region.aligned_rect = SnapToPixels(new_region.rect, renderer_.GetDPI());
 
     new_region.paintable_rect = paintable_rect;
     if (current_region) {
@@ -64,7 +64,7 @@ internal::CanvasRegion Canvas::CreateNewRegion(
         new_region.paintable_rect.Intersect(current_region->paintable_rect);
     }
     new_region.paintable_rect.Intersect(new_region.rect);
-    new_region.aligned_paintable_rect = ToPixelAligned(new_region.paintable_rect, renderer_.GetDPI());
+    new_region.aligned_paintable_rect = SnapToPixels(new_region.paintable_rect, renderer_.GetDPI());
     return new_region;
 }
 
@@ -355,7 +355,7 @@ void Canvas::DrawGeometryFrame(
     Geometry drew_geometry;
 
     //The geometry is not aligned for line, we need to do it by setting a new transform here.
-    float offset = AlignmentOffsetForLine(stroke_width, 96.f);
+    float offset = SnappingPixelOffsetForLine(stroke_width, 96.f);
     if (offset != 0) {
         drew_geometry = GraphicFactory::Instance().CreateTransformedGeometry(
             geometry,

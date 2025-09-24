@@ -220,7 +220,7 @@
     <ClCompile Include="src\zaf\crypto\internal\crypto_manager.cpp" />
     <ClCompile Include="src\zaf\crypto\md5.cpp" />
     <ClCompile Include="src\zaf\crypto\sha.cpp" />
-    <ClCompile Include="src\zaf\graphic\alignment.cpp" />
+    <ClCompile Include="src\zaf\graphic\pixel_snapping.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas_clipping_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas_region_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas_state_guard.cpp" />
@@ -691,7 +691,7 @@
     <ClInclude Include="src\zaf\crypto\internal\crypto_manager.h" />
     <ClInclude Include="src\zaf\crypto\md5.h" />
     <ClInclude Include="src\zaf\crypto\sha.h" />
-    <ClInclude Include="src\zaf\graphic\alignment.h" />
+    <ClInclude Include="src\zaf\graphic\pixel_snapping.h" />
     <ClInclude Include="src\zaf\graphic\canvas_clipping_guard.h" />
     <ClInclude Include="src\zaf\graphic\canvas_region_guard.h" />
     <ClInclude Include="src\zaf\graphic\canvas_state_guard.h" />

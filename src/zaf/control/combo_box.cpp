@@ -8,7 +8,7 @@
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/rich_edit.h>
-#include <zaf/graphic/alignment.h>
+#include <zaf/graphic/pixel_snapping.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/d2d/path_geometry.h>
@@ -359,7 +359,7 @@ void ComboBox::PopupDropDownWindow() {
     window_rect.size.height =
         CalculateDropDownListHeight(visible_item_count) + drop_down_list_box_border.top + drop_down_list_box_border.bottom;
 
-    window_rect = ToPixelAligned(window_rect, window->GetDPI());
+    window_rect = SnapToPixels(window_rect, window->GetDPI());
 
     POINT screen_position = FromDIPs(window_rect.position, window->GetDPI()).ToPOINT();
     ClientToScreen(window->Handle(), &screen_position);

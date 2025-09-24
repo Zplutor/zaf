@@ -111,7 +111,7 @@ void TextBoxCaretManager::SetCaretRectToCharRect(const Rect& char_rect_at_caret)
         }
     }
 
-    caret_->SetRect(ToPixelAligned(caret_rect, owner.GetDPI()));
+    caret_->SetRect(SnapToPixels(caret_rect, owner.GetDPI()));
 }
 
 

@@ -1,7 +1,7 @@
 #include "ui/main/conversation/conversation_avatar_manager.h"
 #include <algorithm>
 #include <zaf/application.h>
-#include <zaf/graphic/alignment.h>
+#include <zaf/graphic/pixel_snapping.h>
 #include <zaf/graphic/wic/imaging_factory.h>
 #include <zaf/graphic/graphic_factory.h>
 #include "logic/service.h"
@@ -185,7 +185,7 @@ static void DrawMemberAvatarImagesToConversationAvatarRenderer(
         }
 
         auto avatar_rect = member_avatar_rects[index];
-        avatar_rect = zaf::ToPixelAligned(avatar_rect, renderer.GetDPI());
+        avatar_rect = zaf::SnapToPixels(avatar_rect, renderer.GetDPI());
 
         auto bitmap_scaler = zaf::wic::ImagingFactory::Instance().CreateBitmapScaler();
         bitmap_scaler.Initialize(

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/graphic/alignment.h>
+#include <zaf/graphic/pixel_snapping.h>
 
 namespace zaf {
 namespace internal {
@@ -15,7 +15,7 @@ T AlignInRelatedCoordinateSystem(
 
     auto result = object;
     result.AddOffset(coordinate_origin);
-    result = ToPixelAligned(result, stroke_width, dpi);
+    result = SnapToPixels(result, stroke_width, dpi);
     result.SubtractOffset(aligned_coordinate_origin);
     return result;
 }

@@ -4,7 +4,7 @@
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/error/win32_error.h>
 #include <zaf/creation.h>
-#include <zaf/graphic/alignment.h>
+#include <zaf/graphic/pixel_snapping.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/graphic_factory.h>
@@ -157,7 +157,7 @@ LRESULT Window::HandleWMCREATE(const Message& message) {
 
     auto dpi = static_cast<float>(GetDpiForWindow(message.WindowHandle()));
     auto initial_rect = GetInitialRect(dpi);
-    auto rect_in_pixels = ToPixelAlignedInPixels(initial_rect, dpi);
+    auto rect_in_pixels = SnapAndTransformToPixels(initial_rect, dpi);
 
     SetWindowPos(
         message.WindowHandle(),
@@ -672,7 +672,7 @@ void Window::PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect) 
 void Window::NeedRepaintRect(const zaf::Rect& rect) {
 
     if (handle_ != nullptr) {
-        RECT win32_rect = ToPixelAlignedInPixels(rect, GetDPI()).ToRECT();
+        RECT win32_rect = SnapAndTransformToPixels(rect, GetDPI()).ToRECT();
         InvalidateRect(handle_, &win32_rect, FALSE);
     }
 }
@@ -1502,7 +1502,7 @@ void Window::SetRect(const zaf::Rect& rect) {
     }
     else {
 
-        auto new_rect = ToPixelAlignedInPixels(rect, GetDPI());
+        auto new_rect = SnapAndTransformToPixels(rect, GetDPI());
 
         SetWindowPos(
             handle_,
@@ -1556,7 +1556,7 @@ zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) c
     auto dpi = GetDPI();
 
     zaf::Rect rect{ zaf::Point{}, content_size };
-    auto rounded_rect = ToPixelAlignedInPixels(rect, dpi);
+    auto rounded_rect = SnapAndTransformToPixels(rect, dpi);
     auto adjusted_rect = rounded_rect.ToRECT();
 
     DWORD style{};

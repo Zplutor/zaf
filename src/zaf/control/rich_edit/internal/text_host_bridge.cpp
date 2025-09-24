@@ -1,7 +1,7 @@
 #include <zaf/control/rich_edit/internal/text_host_bridge.h>
 #include <zaf/control/caret.h>
 #include <zaf/creation.h>
-#include <zaf/graphic/alignment.h>
+#include <zaf/graphic/pixel_snapping.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/rx/scheduler/main_thread_scheduler.h>
 #include <zaf/rx/timer.h>
@@ -301,7 +301,7 @@ HRESULT TextHostBridge::TxGetClientRect(LPRECT prc) {
 
     absolute_content_rect->position.y += rich_edit->GetContentVerticalOffset();
 
-    auto aligned_rect = ToPixelAlignedInPixels(*absolute_content_rect, rich_edit->GetDPI());
+    auto aligned_rect = SnapAndTransformToPixels(*absolute_content_rect, rich_edit->GetDPI());
     *prc = aligned_rect.ToRECT();
     return S_OK;
 }

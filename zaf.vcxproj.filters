@@ -319,7 +319,7 @@
     <ClCompile Include="src\zaf\window\message\internal\mouse_position_conversion.cpp">
       <Filter>zaf\window\message\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\alignment.cpp">
+    <ClCompile Include="src\zaf\graphic\pixel_snapping.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp">
@@ -1573,7 +1573,7 @@
     <ClInclude Include="src\zaf\window\message\hit_test_result.h">
       <Filter>zaf\window\message</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\alignment.h">
+    <ClInclude Include="src\zaf\graphic\pixel_snapping.h">
       <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\string\split.h">

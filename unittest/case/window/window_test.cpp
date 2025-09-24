@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/control/label.h>
 #include <zaf/creation.h>
-#include <zaf/graphic/alignment.h>
+#include <zaf/graphic/pixel_snapping.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/window/window.h>
 #include <zaf/window/window_class.h>
@@ -41,7 +41,7 @@ TEST(WindowTest, SetRectBeforeCreate) {
 
     auto holder = window->CreateHandle();
     //After creating the window, Rect() should use the actual window rect.
-    auto rect_after_create = zaf::ToPixelAligned(initial_rect, window->GetDPI());
+    auto rect_after_create = zaf::SnapToPixels(initial_rect, window->GetDPI());
     ASSERT_EQ(window->Rect(), rect_after_create);
 
     window->Destroy();
@@ -59,7 +59,7 @@ TEST(WindowTest, SetRectAfterCreate) {
     window->SetRect(rect);
 
     //After calling SetRect(), the rect should be adjusted to the actual window rect.
-    auto rect_after_set = zaf::ToPixelAligned(rect, window->GetDPI());
+    auto rect_after_set = zaf::SnapToPixels(rect, window->GetDPI());
     ASSERT_EQ(window->Rect(), rect_after_set);
 
     window->Destroy();
