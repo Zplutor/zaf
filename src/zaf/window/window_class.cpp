@@ -1,5 +1,4 @@
 #include <zaf/window/window_class.h>
-#include <zaf/application.h>
 #include <zaf/base/error/win32_error.h>
 #include <zaf/window/window_class_registry.h>
 
@@ -16,11 +15,16 @@ WindowClass::~WindowClass() {
         UnregisterClass(reinterpret_cast<LPCWSTR>(atom_), nullptr);
     }
 
-    destroyed_event_.AsObserver().OnNext(properties_.Name());
+    try {
+        destroyed_event_.AsObserver().OnSuccess(properties_.Name());
+    }
+    catch (...) {
+
+    }
 }
 
 
-ATOM WindowClass::GetAtom() {
+ATOM WindowClass::GetAtom() const {
 
     if (!atom_) {
 
