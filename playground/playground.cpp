@@ -20,36 +20,6 @@ private:
 };
 
 
-class Task {
-public:
-    class promise_type {
-    public:
-        Task get_return_object() { return {}; }
-        std::suspend_never initial_suspend() { return {}; }
-        std::suspend_never final_suspend() noexcept { return {}; }
-        void unhandled_exception() {
-            throw;
-        }
-        void return_void() {}
-    };
-};
-
-Task TestCoroutine() {
-
-    zaf::rx::SingleSubject<int> subject;
-
-    auto timer = zaf::rx::Timer::Once(
-        std::chrono::seconds(1),
-        zaf::rx::NewThreadScheduler::Default());
-
-    auto sub = timer.Subscribe([&](std::size_t) {
-        subject.AsObserver().OnError(zaf::InvalidOperationError{});
-    });
-
-    auto i = co_await subject.AsSingle();
-    ZAF_LOG() << "Coroutine resumed: " << i;
-}
-
 int WINAPI WinMain(
     HINSTANCE /* hInstance */,
     HINSTANCE /* hPrevInstance */,
@@ -61,8 +31,6 @@ int WINAPI WinMain(
     application.Disposables() += application.BeginRunEvent().Subscribe(BeginRun);
 
     application.Initialize({});
-
-    TestCoroutine();
 
     application.Run();
 }

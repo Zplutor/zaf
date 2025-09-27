@@ -93,7 +93,7 @@ public:
 
 protected:
     bool PreprocessMessage(const KeyMessage& message) override;
-    void OnDestroyed(const DestroyedInfo& event_info) override;
+    void OnDestroyed(const DestroyedInfo& event_info) noexcept override;
     void OnShow(const ShowInfo& event_info) override;
     void OnFocusedControlChanged(const FocusedControlChangedInfo& event_info) override;
 

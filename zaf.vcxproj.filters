@@ -3154,5 +3154,11 @@
     <ClInclude Include="src\zaf\rx\internal\operator\filter_predicate.h">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\window\invalid_handle_state_error.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\window_handle_state.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

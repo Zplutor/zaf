@@ -250,7 +250,7 @@ void PopupMenu::OnMessageReceived(const MessageReceivedInfo& event_info) {
 }
 
 
-void PopupMenu::OnDestroyed(const DestroyedInfo& event_info) {
+void PopupMenu::OnDestroyed(const DestroyedInfo& event_info) noexcept {
 
     __super::OnDestroyed(event_info);
 

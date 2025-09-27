@@ -25,7 +25,7 @@ public:
 private:
     friend class Window;
 
-    void Detach() {
+    void Detach() noexcept {
         window_.reset();
     }
 

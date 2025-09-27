@@ -4,11 +4,13 @@
 namespace zaf {
 
 DestroyedInfo::DestroyedInfo(
-    const std::shared_ptr<Window>& source,
-    HWND original_window_handle) 
+    std::shared_ptr<Window> source,
+    HWND original_window_handle,
+    DestroyReason reason)
     :
-    EventInfo(source),
-    original_window_handle_(original_window_handle) {
+    EventInfo(std::move(source)),
+    original_window_handle_(original_window_handle),
+    reason_(reason) {
 
 }
 

@@ -89,7 +89,7 @@ bool Dialog::PreprocessMessage(const KeyMessage& message) {
 }
 
 
-void Dialog::OnDestroyed(const DestroyedInfo& event_info) {
+void Dialog::OnDestroyed(const DestroyedInfo& event_info) noexcept {
 
     __super::OnDestroyed(event_info);
 

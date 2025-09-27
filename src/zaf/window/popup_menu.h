@@ -94,7 +94,7 @@ public:
 protected:
     void Initialize() override;
     void OnMessageReceived(const MessageReceivedInfo& event_info) override;
-    void OnDestroyed(const DestroyedInfo& event_info) override;
+    void OnDestroyed(const DestroyedInfo& event_info) noexcept override;
 
 private:
     class MenuItemInfo : zaf::NonCopyableNonMovable {

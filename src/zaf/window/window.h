@@ -28,6 +28,7 @@
 #include <zaf/window/event/window_size_changed_info.h>
 #include <zaf/window/initial_rect_style.h>
 #include <zaf/window/message/message.h>
+#include <zaf/window/window_handle_state.h>
 #include <zaf/window/window_messager.h>
 #include <zaf/window/window_parser.h>
 
@@ -79,9 +80,90 @@ public:
     }
 
     /**
+    Gets the window handle.
+    */
+    HWND Handle() const noexcept {
+        return handle_;
+    }
+
+    /**
+    Gets the state of the window handle.
+    */
+    WindowHandleState HandleState() const noexcept {
+        return handle_state_;
+    }
+
+    /**
+    Creates the window handle explicitly.
+
+    @return
+        A `zaf::WindowHolder` instance that keeps the handle alive. The window handle will be 
+        destroyed when the holder is destructed.
+
+    @post
+        The return value is not null.
+
+    @throw std::bad_alloc
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state isn't `NotCreated` nor `Created`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to create the window handle.
+
+    @throw ...
+        Any exception that may be thrown during the window handle creation.
+
+    @details
+        There are three steps during the creation of the window handle:
+        1. Create the window handle via Win32 API.
+        2. Initialize resources related to the window handle, such as the renderer.
+        3. Call the `OnHandleCreated()` method to raise the `HandleCreatedEvent()`, notify derived 
+           classes and observers to do their initialization.
+
+        These three steps are regarded as a single atomic operation. If any exception is thrown 
+        during the operation, anything that has been done will be rolled back, including the 
+        following:
+        1. Destroy the window handle if it has been created.
+        2. Release resources that have been initialized.
+        3. Call the `OnDestroyed()` method to raise the `DestroyedEvent()` if the window handle has 
+           been created.
+
+        The window handle state will be reset to `NotCreated` if the operation fails, so that this
+        method can be called again.
+
+        If the window handle has been created, the existing holder will be returned. Users must
+        keep the holder during the usage of the window handle.
+        
+        If the window handle is destroyed before the holder destructed, the existing holder will be
+        detached.
+
+    @see zaf::WindowHandleState
+    @see zaf::WindowHolder
+    @see zaf::Window::Show()
+    */
+    [[nodiscard]]
+    std::shared_ptr<WindowHolder> CreateHandle();
+
+    /**
+    Gets the event that is raised when the window handle is created.
+    */
+    rx::Observable<HandleCreatedInfo> HandleCreatedEvent() const;
+
+    /**
+    Destroys the window handle.
+    */
+    void Destroy() noexcept;
+
+    /**
+    Gets the event that is raised when the window handle is destroyed.
+    */
+    rx::Observable<DestroyedInfo> DestroyedEvent() const;
+
+    /**
      Get the owner window.
      */
-    std::shared_ptr<Window> Owner() const;
+    std::shared_ptr<Window> Owner() const noexcept;
 
     /**
      Set the owner window.
@@ -483,15 +565,6 @@ public:
     }
 
     /**
-     Get the window's handle.
-     */
-    HWND Handle() const {
-        return handle_;
-    }
-
-    rx::Observable<HandleCreatedInfo> HandleCreatedEvent() const;
-
-    /**
     Window show event. This event is raised when the window receives WM_SHOWWINDOW message, whose
     wParam is TRUE.
     */
@@ -526,11 +599,6 @@ public:
     rx::Observable<WindowFocusLostInfo> FocusLostEvent() const;
 
     rx::Observable<ClosingInfo> ClosingEvent() const;
-
-    /**
-     Get window destroyed event.
-     */
-    rx::Observable<DestroyedInfo> DestroyedEvent() const;
 
     rx::Observable<MessageReceivedInfo> MessageReceivedEvent() const;
     rx::Observable<MessageHandledInfo> MessageHandledEvent() const;
@@ -619,25 +687,6 @@ public:
      */
     void Close();
 
-    void Destroy();
-
-    /**
-    Creates the handle of window explicit.
-
-    @return
-        Returns a WindowHolder instance. The handle will be auto destroyed if the holder is 
-        destructed. In order to use the handle, you must keep the holder alive during usage.
-
-    The same holder will be returned for the same handle. If the handle is destroyed before the 
-    the holder destructed, the holder will be detached. A new holder will be returned the next time
-    calling this method.
-
-    If Show() method is called to show the window, the holder will be registered to application to 
-    keep the window alive.
-    */
-    [[nodiscard]]
-    std::shared_ptr<WindowHolder> CreateHandle();
-
     void ShowInspectorWindow();
 
 protected:
@@ -697,7 +746,7 @@ protected:
     @param event_info
         Information of the event.
 
-    The default implementation of this method raises HandleCreatedEvent. Dervied classes should 
+    The default implementation of this method raises HandleCreatedEvent. Derived classes should
     call the same method of base class.
      */
     virtual void OnHandleCreated(const HandleCreatedInfo& event_info);
@@ -799,16 +848,16 @@ protected:
     virtual void OnClosing(const ClosingInfo& event_info);
 
     /**
-    Handles window destoryed event. This method is called after the window handles WM_DESTROY 
+    Handles window destroyed event. This method is called after the window handles WM_DESTROY 
     message.
 
     @param event_info
         Information of the event.
 
     The default implementation of this method raises DestroyedEvent. Derived classes should
-    call the same method of base calss.
+    call the same method of base class.
     */
-    virtual void OnDestroyed(const DestroyedInfo& event_info);
+    virtual void OnDestroyed(const DestroyedInfo& event_info) noexcept;
 
     virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
 
@@ -868,13 +917,12 @@ private:
     static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 private:
-    void CreateWindowHandle();
+    void InnerCreateHandle();
     LRESULT HandleWMCREATE(const Message& message);
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
     zaf::Rect GetInitialRect(float dpi) const;
     void CreateRenderer();
     void RecreateRenderer();
-    std::shared_ptr<WindowHolder> CreateWindowHandleIfNeeded();
     void GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const;
     zaf::Size AdjustContentSizeToWindowSize(const zaf::Size& content_size) const;
 
@@ -911,8 +959,8 @@ private:
     void HideTooltipWindow();
     bool HandleWMSETCURSOR(const Message& message);
     void HandleIMEMessage(const Message& message);
-    bool HandleWMCLOSE();
-    void HandleWMDESTROY();
+    void HandleWMCLOSE();
+    void HandleWMDESTROY() noexcept;
     void HandleWMNCDESTROY();
     
     void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
@@ -934,6 +982,8 @@ private:
 private:
     std::shared_ptr<WindowClass> class_;
     HWND handle_{};
+    WindowHandleState handle_state_{ WindowHandleState::NotCreated };
+    DestroyReason destroy_reason_{ DestroyReason::Unspecified };
     std::weak_ptr<WindowHolder> holder_;
     zaf::Rect rect_{ 0, 0, 640, 480 };
     d2d::WindowRenderer renderer_;
@@ -942,11 +992,6 @@ private:
         bool is_sizing_or_moving{};
         mutable std::optional<rx::SingleSubject<zaf::None>> exit_sizing_or_moving_subject;
     } handle_specific_state_;
-
-    //A flag to avoid reentering.
-    //It might be better to define a enum to indicate different states of window handle, rather 
-    //than a single bool flag. It will be done later once it becomes necessary.
-    bool is_being_destroyed_{ false };
 
     std::weak_ptr<Window> owner_;
     std::wstring title_;

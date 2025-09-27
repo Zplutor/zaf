@@ -15,6 +15,7 @@
 #include <zaf/internal/window/window_focused_control_manager.h>
 #include <zaf/window/inspector/inspector_window.h>
 #include <zaf/window/tooltip_window.h>
+#include <zaf/window/invalid_handle_state_error.h>
 #include <zaf/window/message/hit_test_message.h>
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
@@ -102,7 +103,39 @@ void Window::Initialize() {
 }
 
 
-void Window::CreateWindowHandle() {
+std::shared_ptr<WindowHolder> Window::CreateHandle() {
+
+    if (handle_state_ == WindowHandleState::NotCreated) {
+
+        auto holder = std::make_shared<WindowHolder>(shared_from_this());
+        try {
+            handle_state_ = WindowHandleState::Creating;
+            InnerCreateHandle();
+            handle_state_ = WindowHandleState::Created;
+            holder_ = holder;
+            return holder;
+        }
+        catch (...) {
+            // If fails to create the window handle, destroy the holder so that it destroys the
+            // window handle too.
+            {
+                auto auto_reset = MakeAutoReset(destroy_reason_, DestroyReason::CreationFailed);
+                holder.reset();
+            }
+            handle_state_ = WindowHandleState::NotCreated;
+            throw;
+        }
+    }
+    else if (handle_state_ == WindowHandleState::Created) {
+        return holder_.lock();
+    }
+    else {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+}
+
+
+void Window::InnerCreateHandle() {
 
     //Revise HasTitleBar property first.
     ReviseHasTitleBar();
@@ -127,6 +160,10 @@ void Window::CreateWindowHandle() {
         nullptr,
         this);
 
+    if (!handle_) {
+        ZAF_THROW_WIN32_ERROR(GetLastError());
+    }
+
     auto dpi = static_cast<float>(GetDpiForWindow(handle_));
 
     RECT window_rect{};
@@ -150,6 +187,17 @@ void Window::OnHandleCreated(const HandleCreatedInfo& event_info) {
 
 rx::Observable<HandleCreatedInfo> Window::HandleCreatedEvent() const {
     return handle_created_event_.GetObservable();
+}
+
+
+void Window::Destroy() noexcept {
+
+    // Destroy the window handle it it has been created.
+    // Handle related resources would be released in the WM_DESTROY message handler.
+    // OnDestroy method would be called in the WM_DESTROY message handler as well.
+    if (handle_) {
+        DestroyWindow(handle_);
+    }
 }
 
 
@@ -213,31 +261,6 @@ void Window::RecreateRenderer() {
 
     root_control_->ReleaseRendererResources();
     CreateRenderer();
-}
-
-
-std::shared_ptr<WindowHolder> Window::CreateHandle() {
-    return CreateWindowHandleIfNeeded();
-}
-
-
-std::shared_ptr<WindowHolder> Window::CreateWindowHandleIfNeeded() {
-
-    if (Handle()) {
-
-        auto holder = holder_.lock();
-        ZAF_EXPECT(holder);
-        return holder;
-    }
-
-    CreateWindowHandle();
-
-    auto holder = holder_.lock();
-    ZAF_EXPECT(!holder);
-
-    holder = std::make_shared<WindowHolder>(shared_from_this());
-    holder_ = holder;
-    return holder;
 }
 
 
@@ -531,10 +554,8 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return std::nullopt;
 
     case WM_CLOSE:
-        if (!HandleWMCLOSE()) {
-            return 0;
-        }
-        return std::nullopt;
+        HandleWMCLOSE();
+        return 0;
 
     case WM_DESTROY:
         HandleWMDESTROY();
@@ -1219,11 +1240,15 @@ void Window::HandleIMEMessage(const Message& message) {
 }
 
 
-bool Window::HandleWMCLOSE() {
+void Window::HandleWMCLOSE() {
 
     ClosingInfo event_info{ shared_from_this() };
     OnClosing(event_info);
-    return event_info.CanClose();
+
+    if (event_info.CanClose()) {
+        auto auto_reset = MakeAutoReset(destroy_reason_, DestroyReason::Closed);
+        Destroy();
+    }
 }
 
 
@@ -1237,14 +1262,14 @@ rx::Observable<ClosingInfo> Window::ClosingEvent() const {
 }
 
 
-void Window::HandleWMDESTROY() {
+void Window::HandleWMDESTROY() noexcept {
 
     //Avoid reentering.
-    if (is_being_destroyed_) {
+    if (handle_state_ == WindowHandleState::Destroying) {
         return;
     }
 
-    auto auto_reset = MakeAutoReset(is_being_destroyed_, true);
+    handle_state_ = WindowHandleState::Destroying;
 
     CancelMouseCapture();
 
@@ -1253,17 +1278,18 @@ void Window::HandleWMDESTROY() {
     root_control_->ReleaseRendererResources();
 
     HWND old_handle = handle_;
-
     handle_ = nullptr;
     handle_specific_state_ = {};
     renderer_ = {};
     tooltip_window_.reset();
 
-    OnDestroyed(DestroyedInfo{ shared_from_this(), old_handle });
+    OnDestroyed(DestroyedInfo{ shared_from_this(), old_handle, destroy_reason_ });
+
+    handle_state_ = WindowHandleState::Destroyed;
 }
 
 
-void Window::OnDestroyed(const DestroyedInfo& event_info) {
+void Window::OnDestroyed(const DestroyedInfo& event_info) noexcept {
     destroyed_event_.Raise(event_info);
 }
 
@@ -1458,7 +1484,7 @@ void Window::OnFocusedControlChanged(const FocusedControlChangedInfo& event_info
 }
 
 
-std::shared_ptr<Window> Window::Owner() const {
+std::shared_ptr<Window> Window::Owner() const noexcept {
     return owner_.lock();
 }
 
@@ -1979,7 +2005,7 @@ float Window::GetDPI() const {
 
 void Window::Show() {
 
-    auto holder = CreateWindowHandleIfNeeded();
+    auto holder = CreateHandle();
     Application::Instance().RegisterShownWindow(holder);
 
     auto activate_option = ActivateOption();
@@ -2032,18 +2058,11 @@ bool Window::IsFocused() const {
 void Window::Close() {
 
     //Do nothing if the window is being destroyed.
-    if (is_being_destroyed_) {
+    if (handle_state_ == WindowHandleState::Destroying) {
         return;
     }
 
     SendMessage(Handle(), WM_CLOSE, 0, 0);
-}
-
-
-void Window::Destroy() {
-    if (handle_) {
-        DestroyWindow(handle_);
-    }
 }
 
 

@@ -1026,6 +1026,8 @@
     <ClInclude Include="src\zaf\window\window_class.h" />
     <ClInclude Include="src\zaf\window\window_class_properties.h" />
     <ClInclude Include="src\zaf\window\window_class_registry.h" />
+    <ClInclude Include="src\zaf\window\invalid_handle_state_error.h" />
+    <ClInclude Include="src\zaf\window\window_handle_state.h" />
     <ClInclude Include="src\zaf\window\window_holder.h" />
     <ClInclude Include="src\zaf\window\window_messager.h" />
     <ClInclude Include="src\zaf\window\window_parser.h" />
