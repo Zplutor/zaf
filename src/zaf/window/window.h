@@ -961,7 +961,7 @@ private:
     void HandleIMEMessage(const Message& message);
     void HandleWMCLOSE();
     void HandleWMDESTROY() noexcept;
-    void HandleWMNCDESTROY();
+    void HandleWMNCDESTROY() noexcept;
     
     void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
     void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);

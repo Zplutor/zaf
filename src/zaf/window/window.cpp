@@ -1299,7 +1299,7 @@ rx::Observable<DestroyedInfo> Window::DestroyedEvent() const {
 }
 
 
-void Window::HandleWMNCDESTROY() {
+void Window::HandleWMNCDESTROY() noexcept {
 
     auto holder = holder_.lock();
     if (holder) {

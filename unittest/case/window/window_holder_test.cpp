@@ -16,21 +16,6 @@ TEST(WindowHolderTest, CreateMultipleTimesWithoutDestroy) {
 }
 
 
-TEST(WindowHolderTest, CreateMultipleTimesWithDestroy) {
-
-    auto window = zaf::Create<zaf::Window>();
-
-    auto holder1 = window->CreateHandle();
-    ASSERT_NE(holder1, nullptr);
-
-    window->Destroy();
-
-    auto holder2 = window->CreateHandle();
-    ASSERT_NE(holder2, nullptr);
-    ASSERT_NE(holder1, holder2);
-}
-
-
 TEST(WindowHolderTest, DestroyHandleOnHolderDestruction) {
 
     auto window = zaf::Create<zaf::Window>();

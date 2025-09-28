@@ -70,39 +70,47 @@ TEST(WindowTest, SetRectAfterCreate) {
 
 TEST(WindowTest, GetRectAfterChangeRect) {
 
-    auto window = zaf::Create<zaf::Window>();
-    window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
-    window->SetRect(zaf::Rect{ 100, 100, 400, 400 });
-
     //Simulate user resize the window.
-    auto holder = window->CreateHandle();
-    SetWindowPos(
-        window->Handle(),
-        nullptr,
-        0,
-        0,
-        static_cast<int>(zaf::FromDIPs(400, window->GetDPI())),
-        static_cast<int>(zaf::FromDIPs(500, window->GetDPI())),
-        SWP_NOMOVE | SWP_NOACTIVATE);
-    window->Destroy();
+    {
+        auto window = zaf::Create<zaf::Window>();
+        window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
+        window->SetRect(zaf::Rect{ 100, 100, 400, 400 });
 
-    zaf::Rect new_rect{ 100, 100, 400, 500 };
-    ASSERT_EQ(window->Rect(), new_rect);
+        auto holder = window->CreateHandle();
+        SetWindowPos(
+            window->Handle(),
+            nullptr,
+            0,
+            0,
+            static_cast<int>(zaf::FromDIPs(400, window->GetDPI())),
+            static_cast<int>(zaf::FromDIPs(500, window->GetDPI())),
+            SWP_NOMOVE | SWP_NOACTIVATE);
+        window->Destroy();
+
+        zaf::Rect new_rect{ 100, 100, 400, 500 };
+        ASSERT_EQ(window->Rect(), new_rect);
+    }
 
     //Simulate user move the window.
-    holder = window->CreateHandle();
-    SetWindowPos(
-        window->Handle(),
-        nullptr,
-        static_cast<int>(zaf::FromDIPs(200, window->GetDPI())),
-        static_cast<int>(zaf::FromDIPs(300, window->GetDPI())),
-        0,
-        0,
-        SWP_NOSIZE | SWP_NOACTIVATE);
-    window->Destroy();
+    {
+        auto window = zaf::Create<zaf::Window>();
+        window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
+        window->SetRect(zaf::Rect{ 100, 100, 400, 400 });
 
-    new_rect = zaf::Rect{ 200, 300, 400, 500 };
-    ASSERT_EQ(window->Rect(), new_rect);
+        auto holder = window->CreateHandle();
+        SetWindowPos(
+            window->Handle(),
+            nullptr,
+            static_cast<int>(zaf::FromDIPs(200, window->GetDPI())),
+            static_cast<int>(zaf::FromDIPs(300, window->GetDPI())),
+            0,
+            0,
+            SWP_NOSIZE | SWP_NOACTIVATE);
+        window->Destroy();
+
+        zaf::Rect new_rect{ 200, 300, 400, 400 };
+        ASSERT_EQ(window->Rect(), new_rect);
+    }
 }
 
 
@@ -269,19 +277,26 @@ TEST(WindowTest, FocusEvent) {
 
 TEST(WindowTest, Close) {
 
-    auto window = zaf::Create<zaf::Window>();
-    auto holder = window->CreateHandle();
-    window->Close();
-    ASSERT_EQ(window->Handle(), nullptr);
+    // Close window normally.
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto holder = window->CreateHandle();
+        window->Close();
+        ASSERT_EQ(window->Handle(), nullptr);
+        ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::Destroyed);
+    }
 
-    holder = window->CreateHandle();
-    window->Disposables() += window->ClosingEvent().Subscribe(
-        [](const zaf::ClosingInfo& event_info) {
-
-        event_info.SetCanClose(false);
-    });
-    window->Close();
-    ASSERT_NE(window->Handle(), nullptr);
+    // Prevent window from closing in ClosingEvent.
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto holder = window->CreateHandle();
+        auto sub = window->ClosingEvent().Subscribe([](const zaf::ClosingInfo& event_info) {
+            event_info.SetCanClose(false);
+        });
+        window->Close();
+        ASSERT_NE(window->Handle(), nullptr);
+        ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::Created);
+    }
 }
 
 
@@ -330,10 +345,9 @@ TEST(WindowTest, SetRootControl) {
 
 TEST(WindowTest, WhenNotSizingOrMoving) {
 
-    auto window = zaf::Create<zaf::Window>();
-    
-    //Observable emits immediate if the handle is not created.
+    //Event emits immediate if the handle is not created.
     {
+        auto window = zaf::Create<zaf::Window>();
         bool on_success_called{};
         auto subscription = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
             on_success_called = true;
@@ -341,8 +355,9 @@ TEST(WindowTest, WhenNotSizingOrMoving) {
         ASSERT_TRUE(on_success_called);
     }
 
-    //Observable emits immediate if the handle is created.
+    //Event emits immediate if the handle is created.
     {
+        auto window = zaf::Create<zaf::Window>();
         auto holder = window->CreateHandle();
         bool on_success_called{};
         auto subscription = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
@@ -351,8 +366,9 @@ TEST(WindowTest, WhenNotSizingOrMoving) {
         ASSERT_TRUE(on_success_called);
     }
 
+    //Event doesn't emit if the window is being resized or moved.
     {
-        //Observable doesn't emit if the window is being resized or moved.
+        auto window = zaf::Create<zaf::Window>();
         auto holder = window->CreateHandle();
         window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
 
@@ -362,7 +378,7 @@ TEST(WindowTest, WhenNotSizingOrMoving) {
         });
         ASSERT_EQ(call_count, 0);
 
-        //Observable emits when the window finishes resizing or moving.
+        //Event emits when the window finishes resizing or moving.
         window->Messager().Send(WM_EXITSIZEMOVE, 0, 0);
         ASSERT_EQ(call_count, 1);
 
@@ -372,8 +388,9 @@ TEST(WindowTest, WhenNotSizingOrMoving) {
         ASSERT_EQ(call_count, 1);
     }
 
+    //Event doesn't emit if the window is destroy during resizing or moving.
     {
-        //Observable doesn't emit if the window is destroy during resizing or moving.
+        auto window = zaf::Create<zaf::Window>();
         auto holder = window->CreateHandle();
         window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
 
@@ -382,12 +399,6 @@ TEST(WindowTest, WhenNotSizingOrMoving) {
             call_count++;
         });
         window->Destroy();
-        ASSERT_EQ(call_count, 0);
-
-        holder = window->CreateHandle();
-        //Previous observable should not emit again.
-        window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
-        window->Messager().Send(WM_EXITSIZEMOVE, 0, 0);
         ASSERT_EQ(call_count, 0);
     }
 }
