@@ -214,6 +214,17 @@ void Application::UnregisterShownWindow(const std::shared_ptr<WindowHolder>& win
 }
 
 
+bool Application::IsWindowRegistered(const std::shared_ptr<Window>& window) const noexcept {
+
+    for (const auto& each_holder : window_holders_) {
+        if (each_holder->Window() == window) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 void Application::SetMainWindow(std::shared_ptr<Window> window) noexcept {
     main_window_ = std::move(window);
 }

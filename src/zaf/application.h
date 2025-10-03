@@ -15,6 +15,10 @@ namespace zaf::rx::internal {
 class RxRuntime;
 }
 
+namespace zaf::testing {
+class WindowTest;
+}
+
 namespace zaf {
 namespace crypto::internal {
 class CryptoManager;
@@ -215,9 +219,11 @@ public:
     
 private:
     friend class Window;
+    friend class zaf::testing::WindowTest;
 
     void RegisterShownWindow(const std::shared_ptr<WindowHolder>& window_holder);
     void UnregisterShownWindow(const std::shared_ptr<WindowHolder>& window_holder);
+    bool IsWindowRegistered(const std::shared_ptr<Window>& window) const noexcept;
 
 private:
     friend class rx::internal::RxRuntime;

@@ -108,11 +108,11 @@ std::shared_ptr<WindowHolder> Window::CreateHandle() {
     if (handle_state_ == WindowHandleState::NotCreated) {
 
         auto holder = std::make_shared<WindowHolder>(shared_from_this());
+        holder_ = holder;
         try {
             handle_state_ = WindowHandleState::Creating;
             InnerCreateHandle();
             handle_state_ = WindowHandleState::Created;
-            holder_ = holder;
             return holder;
         }
         catch (...) {
@@ -121,6 +121,7 @@ std::shared_ptr<WindowHolder> Window::CreateHandle() {
             {
                 auto auto_reset = MakeAutoReset(destroy_reason_, DestroyReason::CreationFailed);
                 holder.reset();
+                holder_.reset();
             }
             handle_state_ = WindowHandleState::NotCreated;
             throw;
@@ -192,7 +193,7 @@ rx::Observable<HandleCreatedInfo> Window::HandleCreatedEvent() const {
 
 void Window::Destroy() noexcept {
 
-    // Destroy the window handle it it has been created.
+    // Destroy the window handle if it has been created.
     // Handle related resources would be released in the WM_DESTROY message handler.
     // OnDestroy method would be called in the WM_DESTROY message handler as well.
     if (handle_) {
@@ -304,6 +305,37 @@ void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) con
     auto activate_option = ActivateOption();
     if ((activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate) {
         handle_extra_style |= WS_EX_NOACTIVATE;
+    }
+}
+
+
+void Window::Show() {
+
+    std::shared_ptr<WindowHolder> holder;
+    if (handle_state_ == WindowHandleState::NotCreated) {
+        holder = CreateHandle();
+    }
+    else if (handle_state_ == WindowHandleState::Creating ||
+             handle_state_ == WindowHandleState::Created) {
+        holder = holder_.lock();
+    }
+    else {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
+    Application::Instance().RegisterShownWindow(holder);
+
+    auto activate_option = ActivateOption();
+    bool no_activate = 
+        (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
+    ShowWindow(handle_, no_activate ? SW_SHOWNA : SW_SHOW);
+}
+
+
+void Window::Hide() {
+
+    if (handle_state_ == WindowHandleState::Created) {
+        ShowWindow(handle_, SW_HIDE);
     }
 }
 
@@ -2003,22 +2035,6 @@ float Window::GetDPI() const {
 }
 
 
-void Window::Show() {
-
-    auto holder = CreateHandle();
-    Application::Instance().RegisterShownWindow(holder);
-
-    auto activate_option = ActivateOption();
-    bool no_activate = (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
-    ShowWindow(handle_, no_activate ? SW_SHOWNA : SW_SHOW);
-}
-
-
-void Window::Hide() {
-    ShowWindow(handle_, SW_HIDE);
-}
-
-
 bool Window::Activate() {
     ZAF_EXPECT(Handle());
     return !!SetForegroundWindow(Handle());
@@ -2040,7 +2056,7 @@ void Window::Restore() {
 }
 
 
-bool Window::IsVisible() const {
+bool Window::IsVisible() const noexcept {
     return !!IsWindowVisible(handle_);
 }
 

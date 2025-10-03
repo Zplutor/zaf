@@ -612,6 +612,7 @@
     <ClCompile Include="unittest\case\control\layout\layout_case_test.cpp" />
     <ClInclude Include="unittest\case\control\list\list_control_test_fixture.h" />
     <ClInclude Include="unittest\case\parsing\parsers\utility.h" />
+    <ClInclude Include="unittest\case\window\window_test.h" />
     <ClInclude Include="unittest\precompiled.h" />
     <ClInclude Include="unittest\utility\test_window.h" />
   </ItemGroup>

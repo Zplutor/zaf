@@ -146,7 +146,13 @@ public:
     std::shared_ptr<WindowHolder> CreateHandle();
 
     /**
-    Gets the event that is raised when the window handle is created.
+    Gets the event that is raised after the window handle is created.
+
+    @details
+        If any exception is thrown from observers of the event, the window handle will be
+        destroyed.
+
+    @see zaf::Window::CreateHandle()
     */
     rx::Observable<HandleCreatedInfo> HandleCreatedEvent() const;
 
@@ -159,6 +165,33 @@ public:
     Gets the event that is raised when the window handle is destroyed.
     */
     rx::Observable<DestroyedInfo> DestroyedEvent() const;
+
+    /**
+    Shows the window, creates the window handle is it has not been created.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state isn't `NotCreated`, `Creating` nor `Created`.
+
+    @throw ...
+        Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
+
+    @details
+        This method will call the `CreateHandle()` method implicitly to create the window handle.
+        The returned holder of the `CreateHandle()` method is registered to the application, so 
+        users don't need to keep the window or the holder by themselves. When the window handle is 
+        destroyed, its holder will be unregistered from the application, so that the window 
+        instance will be destructed as well.
+    */
+    void Show();
+
+    /**
+    Hides the window.
+
+    @details
+        This method takes effect only when the window handle state is `Created`, otherwise it does 
+        nothing. The window is remained registered in the application after it is hidden.
+    */
+    void Hide();
 
     /**
      Get the owner window.
@@ -650,16 +683,6 @@ public:
     float GetDPI() const;
 
     /**
-     Show the window.
-     */
-    void Show();
-
-    /**
-     Hide the window.
-     */
-    void Hide();
-
-    /**
     Attempts to bring the window to the foreground and activates it.
 
     @pre
@@ -679,7 +702,7 @@ public:
     void Minimize();
     void Restore();
 
-    bool IsVisible() const;
+    bool IsVisible() const noexcept;
     bool IsFocused() const;
 
     /**
@@ -691,6 +714,22 @@ public:
 
 protected:
     void Initialize() override;
+
+    /**
+    Called after the window handle is created.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        The default implementation of this method raises the `HandleCreatedEvent()`. Derived 
+        classes should call the same method of the base class if they override this method.
+
+        If any exception is thrown from this method, the window handle will be destroyed.
+
+    @see zaf::Window::CreateHandle()
+     */
+    virtual void OnHandleCreated(const HandleCreatedInfo& event_info);
 
     /**
      Preprocess a key message.
@@ -739,17 +778,6 @@ protected:
     virtual void OnMessageHandled(const MessageHandledInfo& event_info);
 
     virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
-
-    /**
-    Handles handle created event. This method is called after the window handle is created.
-
-    @param event_info
-        Information of the event.
-
-    The default implementation of this method raises HandleCreatedEvent. Derived classes should
-    call the same method of base class.
-     */
-    virtual void OnHandleCreated(const HandleCreatedInfo& event_info);
 
     /**
     Handles window show event. This method is called when the window receives WM_SHOWWINDOW 

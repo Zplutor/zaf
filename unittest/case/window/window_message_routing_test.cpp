@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
+#include "window_test.h"
 
+namespace zaf::testing {
 namespace {
 
 constexpr UINT TestMessage = WM_USER + 1;
@@ -68,10 +70,10 @@ private:
     std::size_t current_sequence_{};
 };
 
-}
+} // namespace
 
 
-TEST(WindowTest, MessageRoutingSequence) {
+TEST_F(WindowTest, MessageRoutingSequence) {
 
     auto window = zaf::Create<TestWindow>();
     auto holder = window->CreateHandle();
@@ -84,4 +86,6 @@ TEST(WindowTest, MessageRoutingSequence) {
     ASSERT_EQ(window->on_message_handled1_sequence, 4);
     ASSERT_EQ(window->message_handled_event_sequence, 5);
     ASSERT_EQ(window->on_message_handled2_sequence, 6);
+}
+
 }

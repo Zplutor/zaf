@@ -1,14 +1,19 @@
 #include <gtest/gtest.h>
+#include <zaf/application.h>
 #include <zaf/base/as.h>
 #include <zaf/control/label.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/pixel_snapping.h>
 #include <zaf/graphic/dpi.h>
+#include <zaf/window/invalid_handle_state_error.h>
 #include <zaf/window/window.h>
 #include <zaf/window/window_class.h>
 #include <zaf/window/window_class_registry.h>
+#include "window_test.h"
 
-TEST(WindowTest, ClassName) {
+namespace zaf::testing {
+
+TEST_F(WindowTest, ClassName) {
 
     //Default class name
     auto window = zaf::Create<zaf::Window>();
@@ -30,7 +35,114 @@ TEST(WindowTest, ClassName) {
 }
 
 
-TEST(WindowTest, SetRectBeforeCreate) {
+TEST_F(WindowTest, CreateHandleInNotCreatedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+
+    auto holder = window->CreateHandle();
+    ASSERT_NE(holder, nullptr);
+    ASSERT_NE(window->Handle(), nullptr);
+}
+
+
+TEST_F(WindowTest, CreateHandleInCreatedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder1 = window->CreateHandle();
+    auto holder2 = window->CreateHandle();
+    ASSERT_NE(holder2, nullptr);
+    ASSERT_EQ(holder1, holder2);
+}
+
+
+TEST_F(WindowTest, CreateHandleInCreatingState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto sub = window->HandleCreatedEvent().Subscribe(
+        [&window](const zaf::HandleCreatedInfo& event_info) {
+            // When this event is raised, the window is in Creating state.
+            // Calling CreateHandle() in this state will throw exception.
+            auto holder = window->CreateHandle();
+        });
+
+    ASSERT_THROW(auto holder = window->CreateHandle(), zaf::InvalidHandleStateError);
+}
+
+
+TEST_F(WindowTest, CreateHandle_ThrowInHandleCreatedEvent) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto sub = window->HandleCreatedEvent().Subscribe(
+        [](const zaf::HandleCreatedInfo& event_info) {
+            throw zaf::InvalidOperationError{};
+        });
+
+    ASSERT_THROW(auto holder = window->CreateHandle(), zaf::InvalidOperationError);
+    ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::NotCreated);
+    ASSERT_EQ(window->Handle(), nullptr);
+}
+
+
+TEST_F(WindowTest, Show_InNotCreatedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->Show();
+    ASSERT_TRUE(window->IsVisible());
+    ASSERT_TRUE(IsWindowRegistered(window));
+}
+
+
+TEST_F(WindowTest, Show_InCreatingState) {
+
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto sub = window->HandleCreatedEvent().Subscribe(
+            [&window](const zaf::HandleCreatedInfo& event_info) {
+                window->Show();
+            });
+        auto holder = window->CreateHandle();
+        ASSERT_TRUE(window->IsVisible());
+        ASSERT_TRUE(IsWindowRegistered(window));
+    }
+
+    // Re-enter
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto sub = window->HandleCreatedEvent().Subscribe(
+            [&window](const zaf::HandleCreatedInfo& event_info) {
+                window->Show();
+            });
+        window->Show();
+        ASSERT_TRUE(window->IsVisible());
+        ASSERT_TRUE(IsWindowRegistered(window));
+    }
+}
+
+
+TEST_F(WindowTest, Show_InCreatedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+
+    window->Show();
+    ASSERT_TRUE(window->IsVisible());
+    ASSERT_TRUE(IsWindowRegistered(window));
+}
+
+
+TEST_F(WindowTest, Show_InInvalidState) {
+
+    //Destroyed state
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto holder = window->CreateHandle();
+        holder.reset();
+        ASSERT_THROW(window->Show(), zaf::InvalidHandleStateError);
+    }
+}
+
+
+TEST_F(WindowTest, SetRectBeforeCreate) {
 
     auto window = zaf::Create<zaf::Window>();
     window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
@@ -50,7 +162,7 @@ TEST(WindowTest, SetRectBeforeCreate) {
 }
 
 
-TEST(WindowTest, SetRectAfterCreate) {
+TEST_F(WindowTest, SetRectAfterCreate) {
 
     auto window = zaf::Create<zaf::Window>();
     auto holder = window->CreateHandle();
@@ -68,7 +180,7 @@ TEST(WindowTest, SetRectAfterCreate) {
 }
 
 
-TEST(WindowTest, GetRectAfterChangeRect) {
+TEST_F(WindowTest, GetRectAfterChangeRect) {
 
     //Simulate user resize the window.
     {
@@ -114,7 +226,7 @@ TEST(WindowTest, GetRectAfterChangeRect) {
 }
 
 
-TEST(WindowTest, SetContentSize) {
+TEST_F(WindowTest, SetContentSize) {
 
     auto window = zaf::Create<zaf::Window>();
 
@@ -144,7 +256,7 @@ TEST(WindowTest, SetContentSize) {
 }
 
 
-TEST(WindowTest, RemoveFocusedControl) {
+TEST_F(WindowTest, RemoveFocusedControl) {
 
     auto control = zaf::Create<zaf::Control>();
     auto window = zaf::Create<zaf::Window>();
@@ -172,7 +284,7 @@ TEST(WindowTest, RemoveFocusedControl) {
 }
 
 
-TEST(WindowTest, RemoveFocusedControlIndirectly) {
+TEST_F(WindowTest, RemoveFocusedControlIndirectly) {
 
     auto focused_control = zaf::Create<zaf::Control>();
     focused_control->SetCanFocus(true);
@@ -204,7 +316,7 @@ TEST(WindowTest, RemoveFocusedControlIndirectly) {
 }
 
 
-TEST(WindowTest, CreateHandle) {
+TEST_F(WindowTest, CreateHandle) {
 
     auto window = zaf::Create<zaf::Window>();
 
@@ -220,7 +332,7 @@ TEST(WindowTest, CreateHandle) {
 }
 
 
-TEST(WindowTest, ShowWindowEvent) {
+TEST_F(WindowTest, ShowWindowEvent) {
 
     bool is_show_event_called{};
     bool is_hide_event_called{};
@@ -247,7 +359,7 @@ TEST(WindowTest, ShowWindowEvent) {
 }
 
 
-TEST(WindowTest, FocusEvent) {
+TEST_F(WindowTest, FocusEvent) {
 
     auto window = zaf::Create<zaf::Window>();
     window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
@@ -275,7 +387,7 @@ TEST(WindowTest, FocusEvent) {
 }
 
 
-TEST(WindowTest, Close) {
+TEST_F(WindowTest, Close) {
 
     // Close window normally.
     {
@@ -300,7 +412,7 @@ TEST(WindowTest, Close) {
 }
 
 
-TEST(WindowTest, SetRootControl) {
+TEST_F(WindowTest, SetRootControl) {
 
     //Set root control with invalid argument.
     {
@@ -343,7 +455,7 @@ TEST(WindowTest, SetRootControl) {
 }
 
 
-TEST(WindowTest, WhenNotSizingOrMoving) {
+TEST_F(WindowTest, WhenNotSizingOrMoving) {
 
     //Event emits immediate if the handle is not created.
     {
@@ -401,4 +513,6 @@ TEST(WindowTest, WhenNotSizingOrMoving) {
         window->Destroy();
         ASSERT_EQ(call_count, 0);
     }
+}
+
 }

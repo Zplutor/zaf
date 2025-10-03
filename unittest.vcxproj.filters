@@ -725,6 +725,9 @@
     <ClInclude Include="unittest\case\control\list\list_control_test_fixture.h">
       <Filter>case\control\list</Filter>
     </ClInclude>
+    <ClInclude Include="unittest\case\window\window_test.h">
+      <Filter>case\window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="unittest\res.rc" />
