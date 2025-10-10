@@ -35,6 +35,7 @@ int WINAPI WinMain(
     application.Run();
 }
 
+std::shared_ptr<zaf::WindowHolder> holder;
 
 void BeginRun(const zaf::BeginRunInfo& event_info) {
 
@@ -42,11 +43,9 @@ void BeginRun(const zaf::BeginRunInfo& event_info) {
 
     window->SetIsSizable(true);
     window->SetHasTitleBar(true);
-    window->Show();
 
-    zaf::Point window_position{ 10.25, 10.25 };
-    zaf::Size content_size{ 200.25, 300.25 };
-    window->SetRect(zaf::Rect{ window_position, content_size });
+    holder = window->CreateHandle();
+    ShowWindow(window->Handle(), SW_SHOWNORMAL);
 
     zaf::Application::Instance().SetMainWindow(window);
 }

@@ -116,13 +116,11 @@ std::shared_ptr<WindowHolder> Window::CreateHandle() {
             return holder;
         }
         catch (...) {
-            // If fails to create the window handle, destroy the holder so that it destroys the
-            // window handle too.
             {
                 auto auto_reset = MakeAutoReset(destroy_reason_, DestroyReason::CreationFailed);
-                holder.reset();
-                holder_.reset();
+                this->Destroy();
             }
+            holder_.reset();
             handle_state_ = WindowHandleState::NotCreated;
             throw;
         }
@@ -311,6 +309,15 @@ void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) con
 
 void Window::Show() {
 
+    auto activate_option = ActivateOption();
+    bool no_activate = 
+        (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
+    InnerShowWindow(no_activate ? SW_SHOWNA : SW_SHOW);
+}
+
+
+void Window::InnerShowWindow(int show_command) {
+
     std::shared_ptr<WindowHolder> holder;
     if (handle_state_ == WindowHandleState::NotCreated) {
         holder = CreateHandle();
@@ -324,11 +331,55 @@ void Window::Show() {
     }
 
     Application::Instance().RegisterShownWindow(holder);
+    ShowWindow(handle_, show_command);
+}
 
-    auto activate_option = ActivateOption();
-    bool no_activate = 
-        (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
-    ShowWindow(handle_, no_activate ? SW_SHOWNA : SW_SHOW);
+
+void Window::Maximize() {
+    InnerShowWindow(SW_SHOWMAXIMIZED);
+}
+
+
+bool Window::IsWindowMaximized() const noexcept {
+    if (handle_) {
+        return IsMaximized(handle_);
+    }
+    return false;
+}
+
+
+bool Window::CanMaximize() const noexcept {
+    return can_maximize_;
+}
+
+
+void Window::SetCanMaximize(bool has_maximize_button) {
+
+    if (handle_state_ != WindowHandleState::NotCreated &&
+        handle_state_ != WindowHandleState::Creating &&
+        handle_state_ != WindowHandleState::Created) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
+    SetStyleProperty(can_maximize_, WS_MAXIMIZEBOX, has_maximize_button, false);
+}
+
+
+void Window::Minimize() {
+    InnerShowWindow(SW_SHOWMINIMIZED);
+}
+
+
+bool Window::IsWindowMinimized() const noexcept {
+    if (handle_) {
+        return IsMinimized(handle_);
+    }
+    return false;
+}
+
+
+void Window::Restore() {
+    InnerShowWindow(SW_RESTORE);
 }
 
 
@@ -1843,15 +1894,6 @@ void Window::SetCanMinimize(bool can_minimize) {
 }
 
 
-bool Window::CanMaximize() const {
-    return can_maximize_;
-}
-
-void Window::SetCanMaximize(bool has_maximize_button) {
-    SetStyleProperty(can_maximize_, WS_MAXIMIZEBOX, has_maximize_button, false);
-}
-
-
 bool Window::IsToolWindow() const {
     return is_tool_window_;
 }
@@ -2038,21 +2080,6 @@ float Window::GetDPI() const {
 bool Window::Activate() {
     ZAF_EXPECT(Handle());
     return !!SetForegroundWindow(Handle());
-}
-
-
-void Window::Maximize() {
-    ShowWindow(handle_, SW_MAXIMIZE);
-}
-
-
-void Window::Minimize() {
-    ShowWindow(handle_, SW_MINIMIZE);
-}
-
-
-void Window::Restore() {
-    ShowWindow(handle_, SW_RESTORE);
 }
 
 

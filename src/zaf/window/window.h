@@ -81,6 +81,10 @@ public:
 
     /**
     Gets the window handle.
+
+    @return
+        A valid handle if the window handle state is `Created` or `Destroying`. Otherwise, 
+        returns null.
     */
     HWND Handle() const noexcept {
         return handle_;
@@ -167,7 +171,7 @@ public:
     rx::Observable<DestroyedInfo> DestroyedEvent() const;
 
     /**
-    Shows the window, creates the window handle is it has not been created.
+    Shows the window, creates the window handle if it has not been created.
 
     @throw zaf::InvalidHandleStateError
         Thrown if the window handle state isn't `NotCreated`, `Creating` nor `Created`.
@@ -185,10 +189,85 @@ public:
     void Show();
 
     /**
+    Shows and maximizes the window, creates the window handle if it has not been created.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state isn't `NotCreated`, `Creating` nor `Created`.
+
+    @throw ...
+        Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
+
+    @see zaf::Window::Show()
+    */
+    void Maximize();
+
+    /**
+    Indicates whether the window is maximized.
+    */
+    bool IsWindowMaximized() const noexcept;
+
+    /**
+    Indicates whether the window can maximize.
+
+    @details
+        The default value is `true`.
+     */
+    bool CanMaximize() const noexcept;
+
+    /**
+    Sets whether the window can maximize.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state isn't `NotCreated`, `Creating` nor `Created`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window style.
+
+    @details
+        In order to display the maximize button in title bar, HasSystemMenu needs to be set to true
+        as well. If HasBorder is false, setting this property takes no visual effects. However, 
+        setting this property to true is useful in some cases. For example, it enables maximizing a
+        custom painted window when double clicking on a area that returns title bar on hit test.
+    */
+    void SetCanMaximize(bool can_maximize);
+
+    /**
+    Shows and minimizes the window, creates the window handle if it has not been created.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state isn't `NotCreated`, `Creating` nor `Created`.
+
+    @throw ...
+        Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
+
+    @see zaf::Window::Show()
+    */
+    void Minimize();
+
+    /**
+    Indicates whether the window is minimized.
+    */
+    bool IsWindowMinimized() const noexcept;
+
+    /**
+    Shows and restores the window to its original size and position, creates the window handle if
+    it has not been created.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state isn't `NotCreated`, `Creating` nor `Created`.
+
+    @throw ...
+        Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
+
+    @see zaf::Window::Show()
+    */
+    void Restore();
+
+    /**
     Hides the window.
 
     @details
-        This method takes effect only when the window handle state is `Created`, otherwise it does 
+        This method takes effect only when the window handle state is `Created`, otherwise it does
         nothing. The window is remained registered in the application after it is hidden.
     */
     void Hide();
@@ -499,23 +578,6 @@ public:
     void SetCanMinimize(bool can_minimize);
 
     /**
-     Get a value indicating that whether the window can be maximized.
-
-     The default value is true.
-     */
-    bool CanMaximize() const;
-
-    /**
-     Set a value indicating that whether the window can be maximized.
-
-     In order to display the maximize button in title bar, HasSystemMenu needs to be set to true 
-     as well. If HasBorder is false, setting this property takes no visual effects. However, setting
-     this property to true is useful in some cases. For example, it enables maximizing a custom 
-     painted window when double clicking on a area that returns title bar on hit test.
-     */
-    void SetCanMaximize(bool can_maximize);
-
-    /**
      Get a value indicating that whether the window is a tool window.
 
      The default value is false.
@@ -697,10 +759,6 @@ public:
         This method calls `SetForegroundWindow` to activate the window.
     */
     bool Activate();
-
-    void Maximize();
-    void Minimize();
-    void Restore();
 
     bool IsVisible() const noexcept;
     bool IsFocused() const;
@@ -946,6 +1004,7 @@ private:
 
 private:
     void InnerCreateHandle();
+    void InnerShowWindow(int show_command);
     LRESULT HandleWMCREATE(const Message& message);
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
     zaf::Rect GetInitialRect(float dpi) const;
