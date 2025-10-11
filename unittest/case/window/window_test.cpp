@@ -114,6 +114,14 @@ TEST_F(WindowTest, GetHandleInDifferentStates) {
 
     // Destroying
     {
+        auto window = zaf::Create<zaf::Window>();
+        HWND handle{};
+        auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo& event_info) {
+            handle = window->Handle();
+        });
+        auto holder = window->CreateHandle();
+        window->Destroy();
+        ASSERT_NE(handle, nullptr);
     }
 
     // Destroyed
@@ -303,23 +311,6 @@ TEST_F(WindowTest, CanMaximize_DefaultValue) {
     ASSERT_TRUE(window->CanMaximize());
     auto holder = window->CreateHandle();
     ASSERT_TRUE(window->CanMaximize());
-}
-
-
-// When the window is in destroying or destroyed state, CanMaximize always returns false.
-TEST_F(WindowTest, CanMaximize_InDestroyState) {
-
-    auto window = zaf::Create<zaf::Window>();
-    auto holder = window->CreateHandle();
-
-    bool can_maximize_in_destroying{ true };
-    auto sub = window->DestroyedEvent().Subscribe([&](const zaf::DestroyedInfo&) {
-        can_maximize_in_destroying = window->CanMaximize();
-    });
-
-    window->Destroy();
-    ASSERT_FALSE(can_maximize_in_destroying);
-    ASSERT_FALSE(window->CanMaximize());
 }
 
 

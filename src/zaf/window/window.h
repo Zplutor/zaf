@@ -16,7 +16,7 @@
 #include <zaf/window/activate_option.h>
 #include <zaf/window/event/activate_event_info.h>
 #include <zaf/window/event/closing_info.h>
-#include <zaf/window/event/destroyed_info.h>
+#include <zaf/window/event/destroy_infos.h>
 #include <zaf/window/event/focused_control_changed_info.h>
 #include <zaf/window/event/handle_create_infos.h>
 #include <zaf/window/event/message_handled_info.h>
@@ -172,7 +172,28 @@ public:
     void Destroy() noexcept;
 
     /**
-    Gets the event that is raised when the window handle is destroyed.
+    Gets the event that is raised after the window handle state is transited to `Destroying`.
+
+    @details
+        @warning
+            Observers of this event must not throw, otherwise the behavior is undefined.
+
+    @see zaf::Window::CreateHandle()
+    @see zaf::Window::Destroy();
+    @see zaf::Window::OnDestroying()
+    */
+    rx::Observable<DestroyingInfo> DestroyingEvent() const;
+
+    /**
+    Gets the event that is raised after the window handle state is transited to `Destroyed`.
+
+    @details
+        @warning
+            Observers of this event must not throw, otherwise the behavior is undefined.
+
+    @see zaf::Window::CreateHandle()
+    @see zaf::Window::Destroy();
+    @see zaf::Window::OnDestroyed()
     */
     rx::Observable<DestroyedInfo> DestroyedEvent() const;
 
@@ -816,6 +837,44 @@ protected:
     virtual void OnHandleCreated(const HandleCreatedInfo& event_info);
 
     /**
+    Called after the window handle state is transited to `Destroying`.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        This method is called right after the window receives `WM_DESTROY` message, before any
+        internal cleanup related to the window handle is done. During the execution of this method,
+        the window handle is still valid.
+
+        The default implementation of this method raises the `DestroyingEvent()`. Derived classes
+        should call the same method of the base class if they override this method.
+
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
+    */
+    virtual void OnDestroying(const DestroyingInfo& event_info);
+
+    /**
+    Called after the window handle state is transited to `Destroyed`.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        This method is called after the internal cleanup related to the window handle is done. The
+        window handle has been detached from the window, and is about to be destroyed. It is still
+        valid and can be retrieved via the `WindowHandle()` method of the event info.
+
+        The default implementation of this method raises the `DestroyedEvent()`. Derived classes 
+        should call the same method of the base class if they override this method.
+
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
+    */
+    virtual void OnDestroyed(const DestroyedInfo& event_info);
+
+    /**
      Preprocess a key message.
 
      @param message
@@ -959,18 +1018,6 @@ protected:
     */
     virtual void OnClosing(const ClosingInfo& event_info);
 
-    /**
-    Handles window destroyed event. This method is called after the window handles WM_DESTROY 
-    message.
-
-    @param event_info
-        Information of the event.
-
-    The default implementation of this method raises DestroyedEvent. Derived classes should
-    call the same method of base class.
-    */
-    virtual void OnDestroyed(const DestroyedInfo& event_info) noexcept;
-
     virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
 
     /**
@@ -1073,7 +1120,7 @@ private:
     bool HandleWMSETCURSOR(const Message& message);
     void HandleIMEMessage(const Message& message);
     void HandleWMCLOSE();
-    void HandleWMDESTROY() noexcept;
+    void HandleWMDESTROY();
     void HandleWMNCDESTROY() noexcept;
     
     void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
@@ -1140,6 +1187,7 @@ private:
 
     Event<HandleCreatingInfo> handle_creating_event_;
     Event<HandleCreatedInfo> handle_created_event_;
+    Event<DestroyingInfo> destroying_event_;
     Event<DestroyedInfo> destroyed_event_;
     Event<MessageReceivedInfo> message_received_event_;
     Event<MessageHandledInfo> message_handled_event_;

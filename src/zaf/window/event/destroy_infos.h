@@ -28,15 +28,28 @@ enum class DestroyReason {
 };
 
 
+class DestroyingInfo : public EventInfo {
+public:
+    DestroyingInfo(std::shared_ptr<Window> source, DestroyReason reason) noexcept;
+
+    DestroyReason Reason() const noexcept {
+        return reason_;
+    }
+
+private:
+    DestroyReason reason_{ DestroyReason::Unspecified };
+};
+
+
 class DestroyedInfo : public EventInfo {
 public:
     DestroyedInfo(
         std::shared_ptr<Window> source, 
-        HWND original_window_handle,
-        DestroyReason reason);
+        HWND window_handle,
+        DestroyReason reason) noexcept;
 
-    HWND OriginalWindowHandle() const noexcept {
-        return original_window_handle_;
+    HWND WindowHandle() const noexcept {
+        return window_handle_;
     }
 
     DestroyReason Reason() const noexcept {
@@ -44,7 +57,7 @@ public:
     }
 
 private:
-    HWND original_window_handle_{};
+    HWND window_handle_{};
     DestroyReason reason_{ DestroyReason::Unspecified };
 };
 

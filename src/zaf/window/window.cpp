@@ -212,6 +212,26 @@ void Window::Destroy() noexcept {
 }
 
 
+void Window::OnDestroying(const DestroyingInfo& event_info) {
+    destroying_event_.Raise(event_info);
+}
+
+
+rx::Observable<DestroyingInfo> Window::DestroyingEvent() const {
+    return destroying_event_.GetObservable();
+}
+
+
+void Window::OnDestroyed(const DestroyedInfo& event_info) {
+    destroyed_event_.Raise(event_info);
+}
+
+
+rx::Observable<DestroyedInfo> Window::DestroyedEvent() const {
+    return destroyed_event_.GetObservable();
+}
+
+
 LRESULT Window::HandleWMCREATE(const Message& message) {
 
     OnHandleCreating(HandleCreatingInfo{ shared_from_this(), message.WindowHandle() });
@@ -1359,7 +1379,7 @@ rx::Observable<ClosingInfo> Window::ClosingEvent() const {
 }
 
 
-void Window::HandleWMDESTROY() noexcept {
+void Window::HandleWMDESTROY() {
 
     //Avoid reentering.
     if (handle_state_ == WindowHandleState::Destroying) {
@@ -1367,11 +1387,10 @@ void Window::HandleWMDESTROY() noexcept {
     }
 
     handle_state_ = WindowHandleState::Destroying;
+    OnDestroying(DestroyingInfo{ shared_from_this(), destroy_reason_ });
 
     CancelMouseCapture();
-
     focused_control_manager_->HandleWindowDestroy();
-
     root_control_->ReleaseRendererResources();
 
     HWND old_handle = handle_;
@@ -1380,19 +1399,8 @@ void Window::HandleWMDESTROY() noexcept {
     renderer_ = {};
     tooltip_window_.reset();
 
-    OnDestroyed(DestroyedInfo{ shared_from_this(), old_handle, destroy_reason_ });
-
     handle_state_ = WindowHandleState::Destroyed;
-}
-
-
-void Window::OnDestroyed(const DestroyedInfo& event_info) noexcept {
-    destroyed_event_.Raise(event_info);
-}
-
-
-rx::Observable<DestroyedInfo> Window::DestroyedEvent() const {
-    return destroyed_event_.GetObservable();
+    OnDestroyed(DestroyedInfo{ shared_from_this(), old_handle, destroy_reason_ });
 }
 
 
