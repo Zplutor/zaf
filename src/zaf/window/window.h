@@ -18,7 +18,7 @@
 #include <zaf/window/event/closing_info.h>
 #include <zaf/window/event/destroyed_info.h>
 #include <zaf/window/event/focused_control_changed_info.h>
-#include <zaf/window/event/handle_created_info.h>
+#include <zaf/window/event/handle_create_infos.h>
 #include <zaf/window/event/message_handled_info.h>
 #include <zaf/window/event/message_received_info.h>
 #include <zaf/window/event/mouse_capture_control_changed_info.h>
@@ -119,22 +119,19 @@ public:
         Any exception that may be thrown during the window handle creation.
 
     @details
-        There are three steps during the creation of the window handle:
-        1. Create the window handle via Win32 API.
-        2. Initialize resources related to the window handle, such as the renderer.
-        3. Call the `OnHandleCreated()` method to raise the `HandleCreatedEvent()`, notify derived 
-           classes and observers to do their initialization.
+        There are following steps during the creation of the window handle:
+        1. Set the window handle state to `Creating`.
+        2. Create the window handle via Win32 API.
+        3. Call the `OnHandleCreating()` method to raise the `HandleCreatingEvent()` when the
+           WM_CREATE message is received.
+        4. Set the window handle state to `Created`.
+        5. Initialize resources related to the window handle, such as the renderer.
+        6. Call the `OnHandleCreated()` method to raise the `HandleCreatedEvent()`.
 
-        These three steps are regarded as a single atomic operation. If any exception is thrown 
-        during the operation, anything that has been done will be rolled back, including the 
-        following:
-        1. Destroy the window handle if it has been created.
-        2. Release resources that have been initialized.
-        3. Call the `OnDestroyed()` method to raise the `DestroyedEvent()` if the window handle has 
-           been created.
-
-        The window handle state will be reset to `NotCreated` if the operation fails, so that this
-        method can be called again.
+        These steps are regarded as a single atomic operation. If any exception is thrown during 
+        the operation, anything that has been done will be rolled back by calling the `Destroy()`
+        method. And the window handle state will be reset to `NotCreated`, so that this method can
+        be called again.
 
         If the window handle has been created, the existing holder will be returned. Users must
         keep the holder during the usage of the window handle.
@@ -150,13 +147,22 @@ public:
     std::shared_ptr<WindowHolder> CreateHandle();
 
     /**
-    Gets the event that is raised after the window handle is created.
+    Gets the event that is raised after the window handle state is transited to `Creating`.
 
     @details
-        If any exception is thrown from observers of the event, the window handle will be
-        destroyed.
+        @warning
+            Observers of this event must not throw, otherwise the behavior is undefined.
 
     @see zaf::Window::CreateHandle()
+    @see zaf::Window::OnHandleCreating()
+    */
+    rx::Observable<HandleCreatingInfo> HandleCreatingEvent() const;
+
+    /**
+    Gets the event that is raised after the window handle state is transited to `Created`.
+
+    @see zaf::Window::CreateHandle()
+    @see zaf::Window::OnHandleCreated()
     */
     rx::Observable<HandleCreatedInfo> HandleCreatedEvent() const;
 
@@ -774,7 +780,27 @@ protected:
     void Initialize() override;
 
     /**
-    Called after the window handle is created.
+    Called after the window handle state is transited to `Creating`.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        This method is called right after the window receives `WM_CREATE` message, before any
+        internal initialization related to the window handle is done.
+
+        The default implementation of this method raises the `HandleCreatingEvent()`. Derived
+        classes should call the same method of the base class if they override this method.
+
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
+
+    @see zaf::Window::CreateHandle()
+    */
+    virtual void OnHandleCreating(const HandleCreatingInfo& event_info);
+
+    /**
+    Called after the window handle state is transited to `Created`.
 
     @param event_info
         Information of the event.
@@ -1112,6 +1138,7 @@ private:
     std::shared_ptr<Control> highlight_control_;
     bool is_selecting_inspector_control_{};
 
+    Event<HandleCreatingInfo> handle_creating_event_;
     Event<HandleCreatedInfo> handle_created_event_;
     Event<DestroyedInfo> destroyed_event_;
     Event<MessageReceivedInfo> message_received_event_;

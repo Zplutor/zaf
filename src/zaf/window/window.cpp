@@ -110,9 +110,7 @@ std::shared_ptr<WindowHolder> Window::CreateHandle() {
         auto holder = std::make_shared<WindowHolder>(shared_from_this());
         holder_ = holder;
         try {
-            handle_state_ = WindowHandleState::Creating;
             InnerCreateHandle();
-            handle_state_ = WindowHandleState::Created;
             return holder;
         }
         catch (...) {
@@ -135,6 +133,8 @@ std::shared_ptr<WindowHolder> Window::CreateHandle() {
 
 
 void Window::InnerCreateHandle() {
+
+    handle_state_ = WindowHandleState::Creating;
 
     //Revise HasTitleBar property first.
     ReviseHasTitleBar();
@@ -163,6 +163,8 @@ void Window::InnerCreateHandle() {
         ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
+    handle_state_ = WindowHandleState::Created;
+
     auto dpi = static_cast<float>(GetDpiForWindow(handle_));
 
     RECT window_rect{};
@@ -176,6 +178,16 @@ void Window::InnerCreateHandle() {
     CreateRenderer();
 
     OnHandleCreated(HandleCreatedInfo{ shared_from_this() });
+}
+
+
+void Window::OnHandleCreating(const HandleCreatingInfo& event_info) {
+    handle_creating_event_.Raise(event_info);
+}
+
+
+rx::Observable<HandleCreatingInfo> Window::HandleCreatingEvent() const {
+    return handle_creating_event_.GetObservable();
 }
 
 
@@ -201,6 +213,8 @@ void Window::Destroy() noexcept {
 
 
 LRESULT Window::HandleWMCREATE(const Message& message) {
+
+    OnHandleCreating(HandleCreatingInfo{ shared_from_this(), message.WindowHandle() });
 
     auto dpi = static_cast<float>(GetDpiForWindow(message.WindowHandle()));
     auto initial_rect = GetInitialRect(dpi);

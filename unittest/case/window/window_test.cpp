@@ -35,7 +35,7 @@ TEST_F(WindowTest, ClassName) {
 }
 
 
-TEST_F(WindowTest, CreateHandleInNotCreatedState) {
+TEST_F(WindowTest, CreateHandle_NotCreatedState) {
 
     auto window = zaf::Create<zaf::Window>();
 
@@ -45,7 +45,7 @@ TEST_F(WindowTest, CreateHandleInNotCreatedState) {
 }
 
 
-TEST_F(WindowTest, CreateHandleInCreatedState) {
+TEST_F(WindowTest, CreateHandle_CreatedState) {
 
     auto window = zaf::Create<zaf::Window>();
     auto holder1 = window->CreateHandle();
@@ -55,17 +55,17 @@ TEST_F(WindowTest, CreateHandleInCreatedState) {
 }
 
 
-TEST_F(WindowTest, CreateHandleInCreatingState) {
+TEST_F(WindowTest, CreateHandle_CreatingState) {
 
     auto window = zaf::Create<zaf::Window>();
-    auto sub = window->HandleCreatedEvent().Subscribe(
-        [&window](const zaf::HandleCreatedInfo& event_info) {
-            // When this event is raised, the window is in Creating state.
-            // Calling CreateHandle() in this state will throw exception.
-            auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo& event_info) {
+            ASSERT_THROW(auto holder = window->CreateHandle(), zaf::InvalidHandleStateError);
+            has_asserted = true;
         });
-
-    ASSERT_THROW(auto holder = window->CreateHandle(), zaf::InvalidHandleStateError);
+    auto holder = window->CreateHandle();
+    ASSERT_TRUE(has_asserted);
 }
 
 
@@ -93,7 +93,15 @@ TEST_F(WindowTest, GetHandleInDifferentStates) {
 
     // Creating
     {
-        
+        auto window = zaf::Create<zaf::Window>();
+        HWND handle{};
+        auto sub = window->HandleCreatingEvent().Subscribe(
+            [&](const zaf::HandleCreatingInfo& event_info) {
+                handle = window->Handle();
+            });
+        auto holder = window->CreateHandle();
+        ASSERT_EQ(handle, nullptr);
+        window->Destroy();
     }
 
     // Created
