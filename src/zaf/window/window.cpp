@@ -41,20 +41,21 @@ Point TranslateAbsolutePositionToControlPosition(
     return result;
 }
 
-}
-
+} // namespace
 
 ZAF_OBJECT_IMPL(Window);
 
-
-LRESULT CALLBACK Window::WindowProcedure(HWND hwnd, UINT message_id, WPARAM wparam, LPARAM lparam) {
+LRESULT CALLBACK Window::WindowProcedure(
+    HWND hwnd, 
+    UINT message_id, 
+    WPARAM wparam, 
+    LPARAM lparam) {
 
     if (message_id == WM_NCCREATE) {
         auto create_struct = reinterpret_cast<const CREATESTRUCTA*>(lparam);
-        SetWindowLongPtr(
-            hwnd, 
-            GWLP_USERDATA, 
-            reinterpret_cast<ULONG_PTR>(create_struct->lpCreateParams));
+        auto window = reinterpret_cast<Window*>(create_struct->lpCreateParams);
+        SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<ULONG_PTR>(window));
+        window->AttachHandle(hwnd);
     }
 
     auto window = GetWindowFromHandle(hwnd);
@@ -145,7 +146,9 @@ void Window::InnerCreateHandle() {
     DWORD extra_style = 0;
     GetHandleStyles(style, extra_style);
 
-    handle_ = CreateWindowEx(
+    // During the execution of CreateWindowEx, the window handle will be set to handle_ member
+    // when the WM_NCCREATE message is received.
+    auto handle = CreateWindowEx(
         extra_style,
         reinterpret_cast<LPCWSTR>(class_->GetAtom()),
         Title().c_str(),
@@ -159,7 +162,10 @@ void Window::InnerCreateHandle() {
         nullptr,
         this);
 
-    if (!handle_) {
+    // If CreateWindowEx returns a null handle, it means the handle has been destroyed, handle_ 
+    // member should be reset to null.
+    if (!handle) {
+        handle_ = nullptr;
         ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 
@@ -178,6 +184,11 @@ void Window::InnerCreateHandle() {
     CreateRenderer();
 
     OnHandleCreated(HandleCreatedInfo{ shared_from_this() });
+}
+
+
+void Window::AttachHandle(HWND handle) noexcept {
+    handle_ = handle;
 }
 
 

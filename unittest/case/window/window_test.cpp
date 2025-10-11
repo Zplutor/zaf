@@ -100,7 +100,7 @@ TEST_F(WindowTest, GetHandleInDifferentStates) {
                 handle = window->Handle();
             });
         auto holder = window->CreateHandle();
-        ASSERT_EQ(handle, nullptr);
+        ASSERT_NE(handle, nullptr);
         window->Destroy();
     }
 
@@ -148,8 +148,8 @@ TEST_F(WindowTest, Show_InCreatingState) {
 
     {
         auto window = zaf::Create<zaf::Window>();
-        auto sub = window->HandleCreatedEvent().Subscribe(
-            [&window](const zaf::HandleCreatedInfo& event_info) {
+        auto sub = window->HandleCreatingEvent().Subscribe(
+            [&window](const zaf::HandleCreatingInfo& event_info) {
                 window->Show();
             });
         auto holder = window->CreateHandle();
@@ -161,10 +161,24 @@ TEST_F(WindowTest, Show_InCreatingState) {
     // Re-enter
     {
         auto window = zaf::Create<zaf::Window>();
-        auto sub = window->HandleCreatedEvent().Subscribe(
-            [&window](const zaf::HandleCreatedInfo& event_info) {
+        auto sub = window->HandleCreatingEvent().Subscribe(
+            [&window](const zaf::HandleCreatingInfo& event_info) {
                 window->Show();
             });
+        window->Show();
+        ASSERT_TRUE(window->IsVisible());
+        ASSERT_TRUE(IsWindowRegistered(window));
+        window->Destroy();
+    }
+}
+
+
+TEST_F(WindowTest, Show_InCreatedState) {
+
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto holder = window->CreateHandle();
+
         window->Show();
         ASSERT_TRUE(window->IsVisible());
         ASSERT_TRUE(IsWindowRegistered(window));
@@ -187,18 +201,6 @@ TEST_F(WindowTest, Show_InCreatingState) {
         ASSERT_FALSE(window->IsVisible());
         ASSERT_FALSE(IsWindowRegistered(window));
     }
-}
-
-
-TEST_F(WindowTest, Show_InCreatedState) {
-
-    auto window = zaf::Create<zaf::Window>();
-    auto holder = window->CreateHandle();
-
-    window->Show();
-    ASSERT_TRUE(window->IsVisible());
-    ASSERT_TRUE(IsWindowRegistered(window));
-    window->Destroy();
 }
 
 

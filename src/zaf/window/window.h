@@ -83,8 +83,8 @@ public:
     Gets the window handle.
 
     @return
-        A valid handle if the window handle state is `Created` or `Destroying`. Otherwise, 
-        returns null.
+        A valid handle if the window handle state is `Creating`, `Created` or `Destroying`. 
+        Otherwise, returns null.
     */
     HWND Handle() const noexcept {
         return handle_;
@@ -1002,7 +1002,7 @@ protected:
         Information of the event.
 
     The default implementation raises FocusLostEvent. Derived classes should call the same method
-    of base calss.
+    of base class.
     */
     virtual void OnFocusLost(const WindowFocusLostInfo& event_info);
 
@@ -1077,6 +1077,7 @@ private:
 
 private:
     void InnerCreateHandle();
+    void AttachHandle(HWND handle) noexcept;
     void InnerShowWindow(int show_command);
     LRESULT HandleWMCREATE(const Message& message);
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
@@ -1094,7 +1095,6 @@ private:
 
     void HandleWMPAINT();
     void PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect);
-    void Resize(UINT width, UINT height);
     void HandleWMSHOWWINDOW(const ShowWindowMessage& message);
     void HandleWMACTIVATE(const ActivateMessage& message);
     void HandleWMSETFOCUS(const SetFocusMessage& message);
