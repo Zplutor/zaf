@@ -83,6 +83,36 @@ TEST_F(WindowTest, CreateHandle_ThrowInHandleCreatedEvent) {
 }
 
 
+TEST_F(WindowTest, HandleCreatingEvent_HandleState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    zaf::WindowHandleState state_in_event{};
+    auto sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo& event_info) {
+            // When this event is raised, the handle state should be Creating.
+            state_in_event = window->HandleState();
+        });
+    auto holder = window->CreateHandle();
+    ASSERT_EQ(state_in_event, zaf::WindowHandleState::Creating);
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, HandleCreatedEvent_HandleState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    zaf::WindowHandleState state_in_event{};
+    auto sub = window->HandleCreatedEvent().Subscribe(
+        [&](const zaf::HandleCreatedInfo& event_info) {
+            // When this event is raised, the handle state should be Created.
+            state_in_event = window->HandleState();
+        });
+    auto holder = window->CreateHandle();
+    ASSERT_EQ(state_in_event, zaf::WindowHandleState::Created);
+    window->Destroy();
+}
+
+
 TEST_F(WindowTest, GetHandleInDifferentStates) {
 
     // NotCreated

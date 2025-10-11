@@ -8,20 +8,13 @@ class Window;
 
 class HandleCreatingInfo : public EventInfo {
 public:
-    HandleCreatingInfo(std::shared_ptr<Window> source, HWND window_handle);
-
-    HWND WindowHandle() const noexcept {
-        return window_handle_;
-    }
-
-private:
-    HWND window_handle_{};
+    explicit HandleCreatingInfo(std::shared_ptr<Window> source) noexcept;
 };
 
 
 class HandleCreatedInfo : public EventInfo {
 public:
-    explicit HandleCreatedInfo(const std::shared_ptr<Window>& source);
+    explicit HandleCreatedInfo(std::shared_ptr<Window> source) noexcept;
 };
 
 }

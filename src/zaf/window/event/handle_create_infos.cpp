@@ -3,14 +3,14 @@
 
 namespace zaf {
 
-HandleCreatingInfo::HandleCreatingInfo(std::shared_ptr<Window> source, HWND window_handle) :
-    EventInfo(std::move(source)),
-    window_handle_(window_handle) {
+HandleCreatingInfo::HandleCreatingInfo(std::shared_ptr<Window> source) noexcept :
+    EventInfo(std::move(source)) {
 
 }
 
 
-HandleCreatedInfo::HandleCreatedInfo(const std::shared_ptr<Window>& source) : EventInfo(source) {
+HandleCreatedInfo::HandleCreatedInfo(std::shared_ptr<Window> source) noexcept : 
+    EventInfo(std::move(source)) {
 
 }
 

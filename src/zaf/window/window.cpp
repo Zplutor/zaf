@@ -245,7 +245,7 @@ rx::Observable<DestroyedInfo> Window::DestroyedEvent() const {
 
 LRESULT Window::HandleWMCREATE(const Message& message) {
 
-    OnHandleCreating(HandleCreatingInfo{ shared_from_this(), message.WindowHandle() });
+    OnHandleCreating(HandleCreatingInfo{ shared_from_this() });
 
     auto dpi = static_cast<float>(GetDpiForWindow(message.WindowHandle()));
     auto initial_rect = GetInitialRect(dpi);
