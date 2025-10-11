@@ -75,7 +75,7 @@ public:
      */
     virtual ~Window();
 
-    const std::shared_ptr<WindowClass>& Class() const {
+    const std::shared_ptr<WindowClass>& Class() const noexcept {
         return class_;
     }
 
@@ -110,7 +110,9 @@ public:
     @throw std::bad_alloc
 
     @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state isn't `NotCreated` nor `Created`.
+        Thrown on the following conditions:
+        - Current window's handle state is `Creating`, `Destroying` or `Destroyed`.
+        - If an owner is set, its handle state is `NotCreated`, `Destroying` or `Destroyed`.
 
     @throw zaf::Win32Error
         Thrown if fails to create the window handle.

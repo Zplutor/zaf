@@ -135,12 +135,21 @@ std::shared_ptr<WindowHolder> Window::CreateHandle() {
 
 void Window::InnerCreateHandle() {
 
+    // Check if the owner's handle state is valid.
+    auto owner = Owner();
+    if (owner) {
+        auto owner_handle_state = owner->HandleState();
+        if (owner_handle_state == WindowHandleState::NotCreated ||
+            owner_handle_state == WindowHandleState::Destroying ||
+            owner_handle_state == WindowHandleState::Destroyed) {
+            throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+        }
+    }
+
     handle_state_ = WindowHandleState::Creating;
 
     //Revise HasTitleBar property first.
     ReviseHasTitleBar();
-
-    auto owner = Owner();
 
     DWORD style = 0;
     DWORD extra_style = 0;
@@ -157,7 +166,7 @@ void Window::InnerCreateHandle() {
         0,
         0,
         0,
-        owner == nullptr ? nullptr : owner->Handle(),
+        owner ? owner->Handle() : nullptr,
         nullptr,
         nullptr,
         this);
