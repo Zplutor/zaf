@@ -14,6 +14,14 @@ protected:
     void Initialize() override {
 
         __super::Initialize();
+
+        auto button = zaf::Create<zaf::Button>();
+        Disposables() += button->ClickEvent().Subscribe([this](const zaf::ClickInfo& info) {
+            this->SetCanMaximize(false);
+        });
+
+        RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
+        RootControl()->AddChild(button);
     }
 
 private:

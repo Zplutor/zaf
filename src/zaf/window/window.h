@@ -202,9 +202,6 @@ public:
     /**
     Shows the window, creates the window handle if it has not been created.
 
-    @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state isn't `NotCreated`, `Creating` nor `Created`.
-
     @throw ...
         Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
 
@@ -220,11 +217,11 @@ public:
     /**
     Shows and maximizes the window, creates the window handle if it has not been created.
 
-    @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state isn't `NotCreated`, `Creating` nor `Created`.
-
     @throw ...
         Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
+
+    @details
+        This method is similar to the `Show()` method, except that it maximizes the window.
 
     @see zaf::Window::Show()
     */
@@ -238,6 +235,10 @@ public:
     /**
     Indicates whether the window can maximize.
 
+    @return
+        A bool value indicates whether the window can maximize if the window handle state is
+        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
+
     @details
         The default value is `true`.
      */
@@ -247,7 +248,7 @@ public:
     Sets whether the window can maximize.
 
     @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state isn't `NotCreated`, `Creating` nor `Created`.
+        Thrown if the window handle state is `Destroyed`.
 
     @throw zaf::Win32Error
         Thrown if fails to change the window style.
@@ -263,11 +264,11 @@ public:
     /**
     Shows and minimizes the window, creates the window handle if it has not been created.
 
-    @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state isn't `NotCreated`, `Creating` nor `Created`.
-
     @throw ...
         Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
+
+    @details
+        This method is similar to the `Show()` method, except that it minimizes the window.
 
     @see zaf::Window::Show()
     */
@@ -279,14 +280,41 @@ public:
     bool IsWindowMinimized() const noexcept;
 
     /**
+    Indicates whether the window can minimize.
+
+    @return
+        A bool value indicates whether the window can minimize if the window handle state is
+        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
+
+    @details
+        The default value is `true`.
+    */
+    bool CanMinimize() const noexcept;
+
+    /**
+    Sets whether the window can minimize.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window style.
+
+    @details
+        In order to display the minimize button in title bar, HasSystemMenu needs to be set to true
+        as well. If HasBorder is false, setting this property takes no visual effects.
+    */
+    void SetCanMinimize(bool can_minimize);
+
+    /**
     Shows and restores the window to its original size and position, creates the window handle if
     it has not been created.
 
-    @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state isn't `NotCreated`, `Creating` nor `Created`.
-
     @throw ...
         Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
+
+    @details
+        This method is similar to the `Show()` method, except that it restores the window.
 
     @see zaf::Window::Show()
     */
@@ -590,21 +618,6 @@ public:
      If HasBorder is false, setting this property takes no visual effects.
      */
     void SetHasSystemMenu(bool has_system_menu);
-
-    /**
-     Get a value indicating that whether the window can be minimized.
-
-     The default value is true.
-     */
-    bool CanMinimize() const;
-
-    /**
-     Set a value indicating that whether the window can be minimized.
-
-     In order to display the minimize button in title bar, HasSystemMenu needs to be set to true 
-     as well. If HasBorder is false, setting this property takes no visual effects. 
-     */
-    void SetCanMinimize(bool can_minimize);
 
     /**
      Get a value indicating that whether the window is a tool window.

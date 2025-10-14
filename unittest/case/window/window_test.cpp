@@ -342,6 +342,117 @@ TEST_F(WindowTest, Maximize_InCreatedState) {
 }
 
 
+TEST_F(WindowTest, CanMaximize_DefaultValue) {
+    auto window = zaf::Create<zaf::Window>();
+    ASSERT_TRUE(window->CanMaximize());
+}
+
+
+TEST_F(WindowTest, CanMaximize_InVariantStates) {
+
+    auto test = [](bool expected) {
+
+        auto window = zaf::Create<zaf::Window>();
+        window->SetCanMaximize(expected);
+
+        // NotCreated
+        ASSERT_EQ(window->CanMaximize(), expected);
+
+        // Creating
+        bool creating_value{};
+        auto sub1 = window->HandleCreatingEvent().Subscribe(
+            [&](const zaf::HandleCreatingInfo& event_info) {
+                creating_value = window->CanMaximize();
+            });
+        auto holder = window->CreateHandle();
+        ASSERT_EQ(creating_value, expected);
+
+        // Created
+        ASSERT_EQ(window->CanMaximize(), expected);
+
+        // Destroying
+        bool destroying_value{};
+        auto sub2 = window->DestroyingEvent().Subscribe(
+            [&](const zaf::DestroyingInfo& event_info) {
+                destroying_value = window->CanMaximize();
+            });
+        window->Destroy();
+        ASSERT_EQ(destroying_value, expected);
+
+        // Destroyed
+        ASSERT_EQ(window->CanMaximize(), false);
+    };
+
+    test(true);
+    test(false);
+}
+
+
+TEST_F(WindowTest, SetCanMaximize_InVariantStates) {
+
+    auto test = [](bool expected) {
+        
+        // NotCreated
+        {
+            auto window = zaf::Create<zaf::Window>();
+            window->SetCanMaximize(expected);
+            ASSERT_EQ(window->CanMaximize(), expected);
+        }
+
+        // Creating
+        {
+            auto window = zaf::Create<zaf::Window>();
+            bool creating_value{};
+            auto sub = window->HandleCreatingEvent().Subscribe(
+                [&](const zaf::HandleCreatingInfo& event_info) {
+                    window->SetCanMaximize(expected);
+                    creating_value = window->CanMaximize();
+                });
+            auto holder = window->CreateHandle();
+            ASSERT_EQ(creating_value, expected);
+            ASSERT_EQ(window->CanMaximize(), expected);
+            window->Destroy();
+        }
+
+        // Created
+        {
+            auto window = zaf::Create<zaf::Window>();
+            auto holder = window->CreateHandle();
+            window->SetCanMaximize(expected);
+            ASSERT_EQ(window->CanMaximize(), expected);
+            window->Destroy();
+        }
+
+        // Destroying
+        {
+            auto window = zaf::Create<zaf::Window>();
+            auto holder = window->CreateHandle();
+            bool destroying_value{};
+            auto sub = window->DestroyingEvent().Subscribe(
+                [&](const zaf::DestroyingInfo& event_info) {
+                    window->SetCanMaximize(expected);
+                    destroying_value = window->CanMaximize();
+                });
+            window->Destroy();
+            ASSERT_EQ(destroying_value, expected);
+            ASSERT_EQ(window->CanMaximize(), false);
+        }
+
+        // Destroyed
+        {
+            auto window = zaf::Create<zaf::Window>();
+            auto holder = window->CreateHandle();
+            window->Destroy();
+            ASSERT_THROW(window->SetCanMaximize(expected), zaf::InvalidHandleStateError);
+            ASSERT_EQ(window->CanMaximize(), false);
+        }
+    };
+
+    test(true);
+    test(false);
+}
+
+
 TEST_F(WindowTest, Minimize_InNotCreatedState) {
 
     auto window = zaf::Create<zaf::Window>();
@@ -362,6 +473,117 @@ TEST_F(WindowTest, Minimize_InCreatedState) {
     ASSERT_TRUE(window->IsWindowMinimized());
     ASSERT_TRUE(IsWindowRegistered(window));
     window->Destroy();
+}
+
+
+TEST_F(WindowTest, CanMinimize_DefaultValue) {
+    auto window = zaf::Create<zaf::Window>();
+    ASSERT_TRUE(window->CanMinimize());
+}
+
+
+TEST_F(WindowTest, CanMinimize_InVariantStates) {
+
+    auto test = [](bool expected) {
+
+        auto window = zaf::Create<zaf::Window>();
+        window->SetCanMinimize(expected);
+
+        // NotCreated
+        ASSERT_EQ(window->CanMinimize(), expected);
+
+        // Creating
+        bool creating_value{};
+        auto sub1 = window->HandleCreatingEvent().Subscribe(
+            [&](const zaf::HandleCreatingInfo& event_info) {
+                creating_value = window->CanMinimize();
+            });
+        auto holder = window->CreateHandle();
+        ASSERT_EQ(creating_value, expected);
+
+        // Created
+        ASSERT_EQ(window->CanMinimize(), expected);
+
+        // Destroying
+        bool destroying_value{};
+        auto sub2 = window->DestroyingEvent().Subscribe(
+            [&](const zaf::DestroyingInfo& event_info) {
+                destroying_value = window->CanMinimize();
+            });
+        window->Destroy();
+        ASSERT_EQ(destroying_value, expected);
+
+        // Destroyed
+        ASSERT_EQ(window->CanMinimize(), false);
+    };
+
+    test(true);
+    test(false);
+}
+
+
+TEST_F(WindowTest, SetCanMinimize_InVariantStates) {
+
+    auto test = [](bool expected) {
+        
+        // NotCreated
+        {
+            auto window = zaf::Create<zaf::Window>();
+            window->SetCanMinimize(expected);
+            ASSERT_EQ(window->CanMinimize(), expected);
+        }
+
+        // Creating
+        {
+            auto window = zaf::Create<zaf::Window>();
+            bool creating_value{};
+            auto sub = window->HandleCreatingEvent().Subscribe(
+                [&](const zaf::HandleCreatingInfo& event_info) {
+                    window->SetCanMinimize(expected);
+                    creating_value = window->CanMinimize();
+                });
+            auto holder = window->CreateHandle();
+            ASSERT_EQ(creating_value, expected);
+            ASSERT_EQ(window->CanMinimize(), expected);
+            window->Destroy();
+        }
+
+        // Created
+        {
+            auto window = zaf::Create<zaf::Window>();
+            auto holder = window->CreateHandle();
+            window->SetCanMinimize(expected);
+            ASSERT_EQ(window->CanMinimize(), expected);
+            window->Destroy();
+        }
+
+        // Destroying
+        {
+            auto window = zaf::Create<zaf::Window>();
+            auto holder = window->CreateHandle();
+            bool destroying_value{};
+            auto sub = window->DestroyingEvent().Subscribe(
+                [&](const zaf::DestroyingInfo& event_info) {
+                    window->SetCanMinimize(expected);
+                    destroying_value = window->CanMinimize();
+                });
+            window->Destroy();
+            ASSERT_EQ(destroying_value, expected);
+            ASSERT_EQ(window->CanMinimize(), false);
+        }
+
+        // Destroyed
+        {
+            auto window = zaf::Create<zaf::Window>();
+            auto holder = window->CreateHandle();
+            window->Destroy();
+            ASSERT_THROW(window->SetCanMinimize(expected), zaf::InvalidHandleStateError);
+            ASSERT_EQ(window->CanMinimize(), false);
+        }
+    };
+
+    test(true);
+    test(false);
 }
 
 
@@ -406,43 +628,6 @@ TEST_F(WindowTest, Restore_WhenMinimized) {
     window->Restore();
     ASSERT_FALSE(window->IsWindowMinimized());
     window->Destroy();
-}
-
-
-TEST_F(WindowTest, CanMaximize_DefaultValue) {
-
-    auto window = zaf::Create<zaf::Window>();
-    ASSERT_TRUE(window->CanMaximize());
-    auto holder = window->CreateHandle();
-    ASSERT_TRUE(window->CanMaximize());
-}
-
-
-TEST_F(WindowTest, SetCanMaximize_InvalidHandleState) {
-
-    // Destroying
-    {
-        auto window = zaf::Create<zaf::Window>();
-        bool has_asserted{};
-        auto sub = window->DestroyedEvent().Subscribe(
-            [&window, &has_asserted](const zaf::DestroyedInfo& info) {
-                // When this event is raised, the window is in Destroying state.
-                // Calling SetCanMaximize() in this state will throw exception.
-                ASSERT_THROW(window->SetCanMaximize(true), zaf::InvalidHandleStateError);
-                has_asserted = true;
-        });
-        auto holder = window->CreateHandle();
-        window->Destroy();
-        ASSERT_TRUE(has_asserted);
-    }
-
-    // Destroyed
-    {
-        auto window = zaf::Create<zaf::Window>();
-        auto holder = window->CreateHandle();
-        window->Destroy();
-        ASSERT_THROW(window->SetCanMaximize(true), zaf::InvalidHandleStateError);
-    }
 }
 
 

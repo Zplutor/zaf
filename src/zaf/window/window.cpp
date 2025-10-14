@@ -403,15 +403,16 @@ bool Window::IsWindowMaximized() const noexcept {
 
 
 bool Window::CanMaximize() const noexcept {
+    if (handle_state_ == WindowHandleState::Destroyed) {
+        return false;
+    }
     return can_maximize_;
 }
 
 
 void Window::SetCanMaximize(bool has_maximize_button) {
 
-    if (handle_state_ != WindowHandleState::NotCreated &&
-        handle_state_ != WindowHandleState::Creating &&
-        handle_state_ != WindowHandleState::Created) {
+    if (handle_state_ == WindowHandleState::Destroyed) {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
     }
 
@@ -429,6 +430,22 @@ bool Window::IsWindowMinimized() const noexcept {
         return IsMinimized(handle_);
     }
     return false;
+}
+
+
+bool Window::CanMinimize() const noexcept {
+    if (handle_state_ == WindowHandleState::Destroyed) {
+        return false;
+    }
+    return can_minimize_;
+}
+
+
+void Window::SetCanMinimize(bool can_minimize) {
+    if (handle_state_ == WindowHandleState::Destroyed) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+    SetStyleProperty(can_minimize_, WS_MINIMIZEBOX, can_minimize, false);
 }
 
 
@@ -1924,15 +1941,6 @@ bool Window::HasSystemMenu() const {
 
 void Window::SetHasSystemMenu(bool has_system_menu) {
     SetStyleProperty(has_system_menu_, WS_SYSMENU, has_system_menu, false);
-}
-
-
-bool Window::CanMinimize() const {
-    return can_minimize_;
-}
-
-void Window::SetCanMinimize(bool can_minimize) {
-    SetStyleProperty(can_minimize_, WS_MINIMIZEBOX, can_minimize, false);
 }
 
 
