@@ -631,6 +631,118 @@ TEST_F(WindowTest, Restore_WhenMinimized) {
 }
 
 
+TEST_F(WindowTest, Hide_NotCreatedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->Hide();
+    ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::NotCreated);
+    ASSERT_FALSE(window->IsVisible());
+    ASSERT_FALSE(IsWindowRegistered(window));
+}
+
+
+TEST_F(WindowTest, Hide_CreatingState) {
+
+    // Triggered by CreateHandle()
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto sub = window->HandleCreatingEvent().Subscribe(
+            [&window](const zaf::HandleCreatingInfo& event_info) {
+                window->Hide();
+            });
+
+        auto holder = window->CreateHandle();
+        ASSERT_FALSE(window->IsVisible());
+        ASSERT_FALSE(IsWindowRegistered(window));
+        window->Destroy();
+    }
+
+    // Triggered by Show().
+    // The window is visible after created, because the window is shown after the handle is 
+    // created.
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto sub = window->HandleCreatingEvent().Subscribe(
+            [&window](const zaf::HandleCreatingInfo& event_info) {
+                window->Hide();
+            });
+        window->Show();
+        ASSERT_TRUE(window->IsVisible());
+        ASSERT_TRUE(IsWindowRegistered(window));
+        window->Destroy();
+    }
+}
+
+
+TEST_F(WindowTest, Hide_CreatedState) {
+
+    // Hide after create handle.
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto holder = window->CreateHandle();
+        window->Hide();
+        ASSERT_FALSE(window->IsVisible());
+        ASSERT_FALSE(IsWindowRegistered(window));
+        window->Destroy();
+    }
+
+    // Hide after show.
+    {
+        auto window = zaf::Create<zaf::Window>();
+        window->Show();
+        window->Hide();
+        ASSERT_FALSE(window->IsVisible());
+        ASSERT_TRUE(IsWindowRegistered(window));
+        window->Destroy();
+    }
+}
+
+
+TEST_F(WindowTest, Hide_DestroyingState) {
+
+    // Window is not visible.
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto holder = window->CreateHandle();
+        bool has_asserted{};
+        auto sub = window->DestroyingEvent().Subscribe(
+            [&](const zaf::DestroyingInfo& event_info) {
+                window->Hide();
+                ASSERT_FALSE(window->IsVisible());
+                ASSERT_FALSE(IsWindowRegistered(window));
+                has_asserted = true;
+            });
+        window->Destroy();
+        ASSERT_TRUE(has_asserted);
+    }
+
+    // Window is visible
+    {
+        auto window = zaf::Create<zaf::Window>();
+        window->Show();
+        bool has_asserted{};
+        auto sub = window->DestroyingEvent().Subscribe(
+            [&](const zaf::DestroyingInfo& event_info) {
+                window->Hide();
+                ASSERT_FALSE(window->IsVisible());
+                ASSERT_TRUE(IsWindowRegistered(window));
+                has_asserted = true;
+            });
+        window->Destroy();
+        ASSERT_TRUE(has_asserted);
+    }
+}
+
+
+TEST_F(WindowTest, Hide_DestroyedState) {
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    // Hiding a destroyed window is no-op.
+    window->Hide();
+}
+
+
 TEST_F(WindowTest, SetRectBeforeCreate) {
 
     auto window = zaf::Create<zaf::Window>();

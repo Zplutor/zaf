@@ -324,10 +324,11 @@ public:
     Hides the window.
 
     @details
-        This method takes effect only when the window handle state is `Created`, otherwise it does
-        nothing. The window is remained registered in the application after it is hidden.
+        This method takes effect only when the window handle state is `Created`, `Creating` or 
+        `Destroying`, otherwise it does nothing. The window is remained registered in the 
+        application after it is hidden.
     */
-    void Hide();
+    void Hide() noexcept;
 
     /**
      Get the owner window.

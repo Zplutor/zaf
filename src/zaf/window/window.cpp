@@ -454,9 +454,11 @@ void Window::Restore() {
 }
 
 
-void Window::Hide() {
+void Window::Hide() noexcept {
 
-    if (handle_state_ == WindowHandleState::Created) {
+    if (handle_state_ == WindowHandleState::Created ||
+        handle_state_ == WindowHandleState::Creating ||
+        handle_state_ == WindowHandleState::Destroying) {
         ShowWindow(handle_, SW_HIDE);
     }
 }
