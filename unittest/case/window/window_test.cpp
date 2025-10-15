@@ -839,6 +839,102 @@ TEST_F(WindowTest, Hide_DestroyedState) {
 }
 
 
+TEST_F(WindowTest, GetOwner_DefaultValue) {
+    auto window = zaf::Create<zaf::Window>();
+    ASSERT_EQ(window->Owner(), nullptr);
+}
+
+
+TEST_F(WindowTest, GetOwner_AfterSet) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto owner = zaf::Create<zaf::Window>();
+    window->SetOwner(owner);
+    ASSERT_EQ(window->Owner(), owner);
+
+    window->SetOwner({});
+    ASSERT_EQ(window->Owner(), nullptr);
+}
+
+
+TEST_F(WindowTest, GetOwner_AfterDestroy) {
+
+    auto owner = zaf::Create<zaf::Window>();
+    auto owner_holder = owner->CreateHandle();
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetOwner(owner);
+    auto window_holder = window->CreateHandle();
+
+    owner->Destroy();
+    ASSERT_EQ(window->Owner(), nullptr);
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, SetOwner) {
+
+    auto owner = zaf::Create<zaf::Window>();
+    auto owner_holder = owner->CreateHandle();
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetOwner(owner);
+    auto holder = window->CreateHandle();
+
+    ASSERT_EQ(GetWindow(window->Handle(), GW_OWNER), owner->Handle());
+    owner->Destroy();
+}
+
+
+TEST_F(WindowTest, SetOwner_SetSelf) {
+    auto window = zaf::Create<zaf::Window>();
+    ASSERT_THROW(window->SetOwner(window), zaf::InvalidOperationError);
+}
+
+
+TEST_F(WindowTest, SetOwner_InvalidStates) {
+
+    auto owner = zaf::Create<zaf::Window>();
+    auto owner_holder = owner->CreateHandle();
+
+    // Creating
+    {
+        auto window = zaf::Create<zaf::Window>();
+        bool has_asserted{};
+        auto sub = window->HandleCreatingEvent().Subscribe(
+            [&](const zaf::HandleCreatingInfo& event_info) {
+                has_asserted = true;
+                ASSERT_THROW(window->SetOwner(owner), zaf::InvalidHandleStateError);
+            });
+        auto holder = window->CreateHandle();
+        ASSERT_TRUE(has_asserted);
+    }
+
+    // Created
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto holder = window->CreateHandle();
+        ASSERT_THROW(window->SetOwner(owner), zaf::InvalidHandleStateError);
+        window->Destroy();
+    }
+
+    // Destroying/Destroyed
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto holder = window->CreateHandle();
+        bool has_asserted{};
+        auto sub = window->DestroyingEvent().Subscribe(
+            [&](const zaf::DestroyingInfo& event_info) {
+                has_asserted = true;
+                ASSERT_THROW(window->SetOwner(owner), zaf::InvalidHandleStateError);
+            });
+        window->Destroy();
+        ASSERT_TRUE(has_asserted);
+        ASSERT_THROW(window->SetOwner(owner), zaf::InvalidHandleStateError);
+    }
+}
+
+
 TEST_F(WindowTest, SetRectBeforeCreate) {
 
     auto window = zaf::Create<zaf::Window>();

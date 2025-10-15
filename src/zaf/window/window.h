@@ -347,17 +347,34 @@ public:
     void Hide() noexcept;
 
     /**
-     Get the owner window.
-     */
+    Gets the window's owner.
+
+    @return
+        The owner of the window. It is null if the window has no owner, or the window handle state
+        is `Destroyed`.
+    */
     std::shared_ptr<Window> Owner() const noexcept;
 
     /**
-     Set the owner window.
+    Sets the window's owner.
 
-     This method takes effect only when the window is closed, otherwise the owner
-     window is not changed.
-     */
-    void SetOwner(const std::shared_ptr<Window>& owner);
+    @param owner
+        The owner window. It can be null to remove the owner. The owner will be stored as a weak
+        pointer to avoid circular reference.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Creating`, `Created`, `Destroying` or `Destroyed`.
+
+    @throw zaf::InvalidOperationError
+        Thrown if trying to set the window itself as its owner.
+
+    @details
+        If a window has an owner, the owner's handle must be created before the window's handle is
+        created, otherwise an exception will be thrown when creating the window's handle.
+
+    @see zaf::Window::CreateHandle()
+    */
+    void SetOwner(std::shared_ptr<Window> owner);
 
     /**
      Get the window's initial rect style.

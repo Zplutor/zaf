@@ -477,6 +477,25 @@ void Window::Hide() noexcept {
 }
 
 
+std::shared_ptr<Window> Window::Owner() const noexcept {
+    return owner_.lock();
+}
+
+
+void Window::SetOwner(std::shared_ptr<Window> owner) {
+
+    if (handle_state_ != WindowHandleState::NotCreated) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
+    if (this == owner.get()) {
+        throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+    }
+
+    owner_ = std::move(owner);
+}
+
+
 bool Window::PreprocessMessage(const KeyMessage& message) {
 
     if (focused_control_manager_->TryToPreprocessTabKeyMessage(message)) {
@@ -1450,6 +1469,7 @@ void Window::HandleWMDESTROY() {
     handle_specific_state_ = {};
     renderer_ = {};
     tooltip_window_.reset();
+    owner_.reset();
 
     handle_state_ = WindowHandleState::Destroyed;
     OnDestroyed(DestroyedInfo{ shared_from_this(), old_handle, destroy_reason_ });
@@ -1638,19 +1658,6 @@ rx::Observable<FocusedControlChangedInfo> Window::FocusedControlChangedEvent() c
 
 void Window::OnFocusedControlChanged(const FocusedControlChangedInfo& event_info) {
     focused_control_changed_event_.Raise(event_info);
-}
-
-
-std::shared_ptr<Window> Window::Owner() const noexcept {
-    return owner_.lock();
-}
-
-
-void Window::SetOwner(const std::shared_ptr<Window>& owner) {
-
-    if (!Handle()) {
-        owner_ = owner;
-    }
 }
 
 
