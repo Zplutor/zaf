@@ -132,8 +132,10 @@ public:
 
         These steps are regarded as a single atomic operation. If any exception is thrown during 
         the operation, anything that has been done will be rolled back by calling the `Destroy()`
-        method. And the window handle state will be reset to `NotCreated`, so that this method can
-        be called again.
+        method. In most cases, the window handle state will be reset to `NotCreated`, so that this 
+        method can be called again. One exception is that if `Destroy()` method is called when the
+        window handle state is `Creating`, the state will be transited to `Destroying`, and then 
+        `Destroyed`.
 
         If the window handle has been created, the existing holder will be returned. Users must
         keep the holder during the usage of the window handle.
@@ -170,6 +172,20 @@ public:
 
     /**
     Destroys the window handle.
+
+    @details
+        This method behaves differently according to the current window handle state:
+        - If the state is `NotCreated`, it will be transited to `Destroyed` directly.
+        - If the state is `Creating`, the creation is aborted. The state will be transited to 
+          `Destroying` first, and then `Destroyed`. At last, `CreateHandle()` will fail with
+          `zaf::Win32Error` exception.
+        - If the state is `Created`, the state will be transited to `Destroying` first, and then
+          `Destroyed`.
+        - If the state is `Destroying` or `Destroyed`, nothing will be done.
+
+        After the window handle state is transited to `Destroying`, the `OnDestroying()` method 
+        will be called to raise the `DestroyingEvent()`. After the window handle state is transited
+        to `Destroyed`, the `OnDestroyed()` method will be called to raise the `DestroyedEvent()`.
     */
     void Destroy() noexcept;
 
@@ -881,6 +897,10 @@ protected:
         This method is called after the internal cleanup related to the window handle is done. The
         window handle has been detached from the window, and is about to be destroyed. It is still
         valid and can be retrieved via the `WindowHandle()` method of the event info.
+
+        @note
+            `WindowHandle()` may return null if `Destroy()` method is called when the window handle
+            state is `NotCreated`.
 
         The default implementation of this method raises the `DestroyedEvent()`. Derived classes 
         should call the same method of the base class if they override this method.

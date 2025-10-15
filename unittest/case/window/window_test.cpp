@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/application.h>
 #include <zaf/base/as.h>
+#include <zaf/base/error/win32_error.h>
 #include <zaf/control/label.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/pixel_snapping.h>
@@ -233,6 +234,101 @@ TEST_F(WindowTest, GetHandleInDifferentStates) {
         window->Destroy();
         ASSERT_EQ(window->Handle(), nullptr);
     }
+}
+
+
+TEST_F(WindowTest, Destroy_NotCreatedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+
+    bool destroyed_called{};
+    auto sub = window->DestroyedEvent().Subscribe([&](const zaf::DestroyedInfo& event_info) {
+        destroyed_called = true;
+        ASSERT_EQ(event_info.WindowHandle(), nullptr);
+        ASSERT_EQ(event_info.Reason(), zaf::DestroyReason::Unspecified);
+    });
+
+    window->Destroy();
+    ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::Destroyed);
+    ASSERT_TRUE(destroyed_called);
+}
+
+
+TEST_F(WindowTest, Destroy_CreatingState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo& event_info) {
+            window->Destroy();
+            ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::Destroyed);
+        });
+
+    ASSERT_THROW(auto holder = window->CreateHandle(), zaf::Win32Error);
+    ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::Destroyed);
+}
+
+
+TEST_F(WindowTest, Destroy_HandleCreatedEvent) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto sub = window->HandleCreatedEvent().Subscribe(
+        [&](const zaf::HandleCreatedInfo& event_info) {
+            window->Destroy();
+            ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::Destroyed);
+        });
+
+    auto holder = window->CreateHandle();
+    ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::Destroyed);
+}
+
+
+TEST_F(WindowTest, Destroy_CreatedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+
+    bool destroying_called{};
+    bool destroyed_called{};
+    auto sub1 = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo& event_info) {
+        destroying_called = true;
+        ASSERT_EQ(event_info.Reason(), zaf::DestroyReason::Unspecified);
+        ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::Destroying);
+    });
+    auto sub2 = window->DestroyedEvent().Subscribe([&](const zaf::DestroyedInfo& event_info) {
+        destroyed_called = true;
+        ASSERT_NE(event_info.WindowHandle(), nullptr);
+        ASSERT_EQ(event_info.Reason(), zaf::DestroyReason::Unspecified);
+        ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::Destroyed);
+    });
+    window->Destroy();
+    ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::Destroyed);
+    ASSERT_TRUE(destroying_called);
+    ASSERT_TRUE(destroyed_called);
+}
+
+
+TEST_F(WindowTest, Destroy_DestroyState) {
+
+    auto window = zaf::Create<zaf::Window>();
+
+    int destroying_called_count{};
+    auto sub1 = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo& event_info) {
+        destroying_called_count++;
+        window->Destroy();
+        ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::Destroying);
+    });
+
+    int destroyed_called_count{};
+    auto sub2 = window->DestroyedEvent().Subscribe([&](const zaf::DestroyedInfo& event_info) {
+        destroyed_called_count++;
+    });
+
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    window->Destroy();
+    ASSERT_EQ(window->HandleState(), zaf::WindowHandleState::Destroyed);
+    ASSERT_EQ(destroying_called_count, 1);
+    ASSERT_EQ(destroyed_called_count, 1);
 }
 
 

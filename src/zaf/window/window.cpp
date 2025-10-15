@@ -83,7 +83,8 @@ Window::Window(const std::shared_ptr<WindowClass>& window_class) : class_(window
 
 
 Window::~Window() {
-    Destroy();
+    // The window handle won't be destroyed in the destructor, as it is destroyed by the 
+    // WindowHolder.
 }
 
 
@@ -115,12 +116,18 @@ std::shared_ptr<WindowHolder> Window::CreateHandle() {
             return holder;
         }
         catch (...) {
-            {
+
+            // If the state is Destroyed, it means Destroy method has been called during the 
+            // creation, so don't reset the state to NotCreated.
+            if (handle_state_ != WindowHandleState::Destroyed) {
                 auto auto_reset = MakeAutoReset(destroy_reason_, DestroyReason::CreationFailed);
                 this->Destroy();
+                handle_state_ = WindowHandleState::NotCreated;
             }
+
+            // The holder member should be reset last, as it is used in the Destroy() method to 
+            // detach the window.
             holder_.reset();
-            handle_state_ = WindowHandleState::NotCreated;
             throw;
         }
     }
@@ -223,10 +230,16 @@ rx::Observable<HandleCreatedInfo> Window::HandleCreatedEvent() const {
 
 void Window::Destroy() noexcept {
 
-    // Destroy the window handle if it has been created.
-    // Handle related resources would be released in the WM_DESTROY message handler.
-    // OnDestroy method would be called in the WM_DESTROY message handler as well.
-    if (handle_) {
+    if (handle_state_ == WindowHandleState::NotCreated) {
+
+        handle_state_ = WindowHandleState::Destroyed;
+        OnDestroyed(DestroyedInfo{ shared_from_this(), nullptr, DestroyReason::Unspecified });
+    }
+    else if (handle_state_ == WindowHandleState::Creating ||
+             handle_state_ == WindowHandleState::Created) {
+
+        // Handle related resources would be released in the WM_DESTROY message handler.
+        // OnDestroy method would be called in the WM_DESTROY message handler as well.
         DestroyWindow(handle_);
     }
 }
