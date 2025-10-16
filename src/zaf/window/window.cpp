@@ -88,6 +88,24 @@ Window::~Window() {
 }
 
 
+internal::WindowNotCreatedStateData& Window::NotCreatedStateData() noexcept {
+    return std::get<internal::WindowNotCreatedStateData>(state_data_);
+}
+
+const internal::WindowNotCreatedStateData& Window::NotCreatedStateData() const noexcept {
+    return std::get<internal::WindowNotCreatedStateData>(state_data_);
+}
+
+
+internal::WindowHandleStateData& Window::HandleStateData() noexcept {
+    return std::get<internal::WindowHandleStateData>(state_data_);
+}
+
+const internal::WindowHandleStateData& Window::HandleStateData() const noexcept {
+    return std::get<internal::WindowHandleStateData>(state_data_);
+}
+
+
 void Window::Initialize() {
 
     __super::Initialize();
@@ -108,28 +126,7 @@ void Window::Initialize() {
 std::shared_ptr<WindowHolder> Window::CreateHandle() {
 
     if (handle_state_ == WindowHandleState::NotCreated) {
-
-        auto holder = std::make_shared<WindowHolder>(shared_from_this());
-        holder_ = holder;
-        try {
-            InnerCreateHandle();
-            return holder;
-        }
-        catch (...) {
-
-            // If the state is Destroyed, it means Destroy method has been called during the 
-            // creation, so don't reset the state to NotCreated.
-            if (handle_state_ != WindowHandleState::Destroyed) {
-                auto auto_reset = MakeAutoReset(destroy_reason_, DestroyReason::CreationFailed);
-                this->Destroy();
-                handle_state_ = WindowHandleState::NotCreated;
-            }
-
-            // The holder member should be reset last, as it is used in the Destroy() method to 
-            // detach the window.
-            holder_.reset();
-            throw;
-        }
+        return CreateHandleInNotCreatedState();
     }
     else if (handle_state_ == WindowHandleState::Created) {
         return holder_.lock();
@@ -140,7 +137,7 @@ std::shared_ptr<WindowHolder> Window::CreateHandle() {
 }
 
 
-void Window::InnerCreateHandle() {
+std::shared_ptr<WindowHolder> Window::CreateHandleInNotCreatedState() {
 
     // Check if the owner's handle state is valid.
     auto owner = Owner();
@@ -153,7 +150,47 @@ void Window::InnerCreateHandle() {
         }
     }
 
+    auto holder = std::make_shared<WindowHolder>(shared_from_this());
+    holder_ = holder;
+
     handle_state_ = WindowHandleState::Creating;
+
+    auto not_created_state_data = std::move(NotCreatedStateData());
+    state_data_.emplace<internal::WindowHandleStateData>();
+
+    try {
+
+        ProcessCreatingState(not_created_state_data);
+
+        handle_state_ = WindowHandleState::Created;
+        ProcessCreatedState();
+
+        return holder;
+    }
+    catch (...) {
+
+        // If the state is Destroyed, it means Destroy method has been called during the 
+        // creation, so don't reset the state to NotCreated.
+        if (handle_state_ != WindowHandleState::Destroyed) {
+
+            auto auto_reset = MakeAutoReset(destroy_reason_, DestroyReason::CreationFailed);
+            this->Destroy();
+
+            handle_state_ = WindowHandleState::NotCreated;
+            state_data_ = std::move(not_created_state_data);
+        }
+
+        // The holder member should be reset last, as it is used in the Destroy() method to 
+        // detach the window.
+        holder_.reset();
+        throw;
+    }
+}
+
+
+void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& state_data) {
+
+    auto owner = Owner();
 
     //Revise HasTitleBar property first.
     ReviseHasTitleBar();
@@ -167,7 +204,7 @@ void Window::InnerCreateHandle() {
     auto handle = CreateWindowEx(
         extra_style,
         reinterpret_cast<LPCWSTR>(class_->GetAtom()),
-        Title().c_str(),
+        state_data.title.c_str(),
         style,
         0,
         0,
@@ -184,8 +221,10 @@ void Window::InnerCreateHandle() {
         handle_ = nullptr;
         ZAF_THROW_WIN32_ERROR(GetLastError());
     }
+}
 
-    handle_state_ = WindowHandleState::Created;
+
+void Window::ProcessCreatedState() {
 
     auto dpi = static_cast<float>(GetDpiForWindow(handle_));
 
@@ -204,6 +243,7 @@ void Window::InnerCreateHandle() {
 
 
 void Window::AttachHandle(HWND handle) noexcept {
+    HandleStateData().handle = handle;
     handle_ = handle;
 }
 
@@ -493,6 +533,67 @@ void Window::SetOwner(std::shared_ptr<Window> owner) {
     }
 
     owner_ = std::move(owner);
+}
+
+
+std::wstring Window::Title() const {
+
+    if (handle_state_ == WindowHandleState::NotCreated) {
+        return NotCreatedStateData().title;
+    }
+    else if (handle_state_ == WindowHandleState::Creating ||
+             handle_state_ == WindowHandleState::Created ||
+             handle_state_ == WindowHandleState::Destroying) {
+
+        const auto& handle_state = HandleStateData();
+
+        SetLastError(0);
+        int title_length = GetWindowTextLength(handle_state.handle);
+        if (title_length == 0) {
+            auto last_error = GetLastError();
+            if (last_error) {
+                ZAF_THROW_WIN32_ERROR(last_error);
+            }
+            return {};
+        }
+
+        std::wstring title;
+        title.resize(title_length + 1);
+
+        int actual_length = GetWindowText(
+            handle_state.handle, 
+            title.data(), 
+            static_cast<int>(title.size()));
+
+        if (actual_length == 0) {
+            ZAF_THROW_WIN32_ERROR(GetLastError());
+        }
+        title.resize(actual_length);
+        return title;
+    }
+    else {
+        return {};
+    }
+}
+
+
+void Window::SetTitle(const std::wstring& title) {
+
+    if (handle_state_ == WindowHandleState::NotCreated) {
+        NotCreatedStateData().title = title;
+    }
+    else if (handle_state_ == WindowHandleState::Creating ||
+             handle_state_ == WindowHandleState::Created ||
+             handle_state_ == WindowHandleState::Destroying) {
+
+        BOOL is_succeeded = SetWindowText(HandleStateData().handle, title.c_str());
+        if (!is_succeeded) {
+            ZAF_THROW_WIN32_ERROR(GetLastError());
+        }
+    }
+    else {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
 }
 
 
@@ -1471,6 +1572,7 @@ void Window::HandleWMDESTROY() {
     tooltip_window_.reset();
     owner_.reset();
 
+    state_data_.emplace<std::monostate>();
     handle_state_ = WindowHandleState::Destroyed;
     OnDestroyed(DestroyedInfo{ shared_from_this(), old_handle, destroy_reason_ });
 }
@@ -2011,31 +2113,6 @@ void Window::SetStyleToHandle(DWORD style_value, bool is_set, bool is_extra_styl
         style &= ~style_value;
     }
     SetWindowLong(Handle(), category, style);
-}
-
-
-std::wstring Window::Title() const {
-
-    if (!Handle()) {
-        return title_;
-    }
-    else {
-
-        int title_length = GetWindowTextLength(handle_);
-        std::vector<wchar_t> buffer(title_length + 1);
-        GetWindowText(handle_, buffer.data(), static_cast<int>(buffer.size()));
-        return buffer.data();
-    }
-}
-
-
-void Window::SetTitle(const std::wstring& title) {
-
-    title_ = title;
-
-    if (Handle()) {
-        SetWindowText(handle_, title_.c_str());
-    }
 }
 
 

@@ -935,6 +935,123 @@ TEST_F(WindowTest, SetOwner_InvalidStates) {
 }
 
 
+TEST_F(WindowTest, GetTitle_NotCreatedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    ASSERT_EQ(window->Title(), L"");
+
+    window->SetTitle(L"Title");
+    ASSERT_EQ(window->Title(), L"Title");
+}
+
+
+TEST_F(WindowTest, GetTitle_CreatingState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetTitle(L"Title");
+
+    std::wstring title_in_event;
+    auto sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo& event_info) {
+            title_in_event = window->Title();
+        });
+
+    auto holder = window->CreateHandle();
+    ASSERT_EQ(title_in_event, L"Title");
+    ASSERT_EQ(window->Title(), L"Title");
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, GetTitle_CreatedState) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetTitle(L"Title");
+    auto holder = window->CreateHandle();
+    ASSERT_EQ(window->Title(), L"Title");
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, GetTitle_DestroyingState) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetTitle(L"Title");
+    auto holder = window->CreateHandle();
+    std::wstring title_in_event;
+    auto sub = window->DestroyingEvent().Subscribe(
+        [&](const zaf::DestroyingInfo& event_info) {
+            title_in_event = window->Title();
+        });
+    window->Destroy();
+    ASSERT_EQ(title_in_event, L"Title");
+}
+
+
+TEST_F(WindowTest, GetTitle_DestroyedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetTitle(L"Title");
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    ASSERT_EQ(window->Title(), L"");
+}
+
+
+TEST_F(WindowTest, SetTitle_NotCreatedState) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetTitle(L"Title");
+    ASSERT_EQ(window->Title(), L"Title");
+}
+
+
+TEST_F(WindowTest, SetTitle_CreatingState) {
+    auto window = zaf::Create<zaf::Window>();
+    bool has_asserted{};
+    auto sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo& event_info) {
+            window->SetTitle(L"Title");
+            ASSERT_EQ(window->Title(), L"Title");
+            has_asserted = true;
+        });
+    auto holder = window->CreateHandle();
+    ASSERT_TRUE(has_asserted);
+    ASSERT_EQ(window->Title(), L"Title");
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, SetTitle_CreatedState) {
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->SetTitle(L"Title");
+    ASSERT_EQ(window->Title(), L"Title");
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, SetTitle_DestroyingState) {
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe(
+        [&](const zaf::DestroyingInfo& event_info) {
+            window->SetTitle(L"Title");
+            ASSERT_EQ(window->Title(), L"Title");
+            has_asserted = true;
+        });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+}
+
+
+TEST_F(WindowTest, SetTitle_DestroyedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    ASSERT_THROW(window->SetTitle(L"Title"), zaf::InvalidHandleStateError);
+}
+
+
 TEST_F(WindowTest, SetRectBeforeCreate) {
 
     auto window = zaf::Create<zaf::Window>();

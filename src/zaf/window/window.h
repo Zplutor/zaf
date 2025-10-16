@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <optional>
+#include <variant>
 #include <zaf/base/event/event.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/none.h>
@@ -27,6 +28,8 @@
 #include <zaf/window/event/window_focus_event_info.h>
 #include <zaf/window/event/window_size_changed_info.h>
 #include <zaf/window/initial_rect_style.h>
+#include <zaf/window/internal/window_handle_state_data.h>
+#include <zaf/window/internal/window_not_created_state_data.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/window_handle_state.h>
 #include <zaf/window/window_messager.h>
@@ -377,6 +380,37 @@ public:
     void SetOwner(std::shared_ptr<Window> owner);
 
     /**
+    Gets the window's title.
+
+    @throw std::bad_alloc
+    @throw zaf::Win32Error
+        Thrown if fails to get the title.
+
+    @return
+        The title of the window if the window handle state is `NotCreated`, `Creating`, `Created`
+        or `Destroying`. Otherwise, returns an empty string.
+
+    @details
+        The default title is an empty string.
+    */
+    std::wstring Title() const;
+
+    /**
+    Sets the window's title.
+
+    @param title
+        The new title of the window.
+
+    @throw std::bad_alloc
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to set the title.
+    */
+    void SetTitle(const std::wstring& title);
+
+    /**
      Get the window's initial rect style.
 
      The default value is CenterInScreen.
@@ -667,18 +701,6 @@ public:
 
     bool IsTopmost() const;
     void SetIsTopmost(bool is_topmost);
-
-    /**
-     Get window's title.
-
-     The default title is empty.
-     */
-    std::wstring Title() const;
-
-    /**
-     Set window's title.
-     */
-    void SetTitle(const std::wstring& title);
 
     /**
      Get window's root control.
@@ -1129,7 +1151,14 @@ private:
     static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 private:
-    void InnerCreateHandle();
+    internal::WindowNotCreatedStateData& NotCreatedStateData() noexcept;
+    const internal::WindowNotCreatedStateData& NotCreatedStateData() const noexcept;
+    internal::WindowHandleStateData& HandleStateData() noexcept;
+    const internal::WindowHandleStateData& HandleStateData() const noexcept;
+
+    std::shared_ptr<WindowHolder> CreateHandleInNotCreatedState();
+    void ProcessCreatingState(const internal::WindowNotCreatedStateData& state_data);
+    void ProcessCreatedState();
     void AttachHandle(HWND handle) noexcept;
     void InnerShowWindow(int show_command);
     LRESULT HandleWMCREATE(const Message& message);
@@ -1196,8 +1225,22 @@ private:
     std::shared_ptr<WindowClass> class_;
     HWND handle_{};
     WindowHandleState handle_state_{ WindowHandleState::NotCreated };
+
+    /*
+    State data type for different window handle states:
+    - NotCreated: WindowNotCreatedStateData
+    - Creating, Created, Destroying: WindowHandleStateData
+    - Destroyed: std::monostate
+    */
+    std::variant<
+        internal::WindowNotCreatedStateData,
+        internal::WindowHandleStateData,
+        std::monostate
+    > state_data_;
+
     DestroyReason destroy_reason_{ DestroyReason::Unspecified };
     std::weak_ptr<WindowHolder> holder_;
+
     zaf::Rect rect_{ 0, 0, 640, 480 };
     d2d::WindowRenderer renderer_;
 
@@ -1207,7 +1250,6 @@ private:
     } handle_specific_state_;
 
     std::weak_ptr<Window> owner_;
-    std::wstring title_;
 
     zaf::InitialRectStyle initial_rect_style_{ zaf::InitialRectStyle::CenterInOwner };
     zaf::ActivateOption activate_option_{ zaf::ActivateOption::Normal };

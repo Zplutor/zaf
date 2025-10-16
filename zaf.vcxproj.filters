@@ -3160,5 +3160,11 @@
     <ClInclude Include="src\zaf\window\window_handle_state.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\window\internal\window_not_created_state_data.h">
+      <Filter>zaf\window\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\internal\window_handle_state_data.h">
+      <Filter>zaf\window\internal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

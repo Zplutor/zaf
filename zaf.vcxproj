@@ -991,6 +991,8 @@
     <ClInclude Include="src\zaf\window\event\window_size_changed_info.h" />
     <ClInclude Include="src\zaf\window\input_method_context.h" />
     <ClInclude Include="src\zaf\window\internal\popup_menu_controller.h" />
+    <ClInclude Include="src\zaf\window\internal\window_handle_state_data.h" />
+    <ClInclude Include="src\zaf\window\internal\window_not_created_state_data.h" />
     <ClInclude Include="src\zaf\window\message\ime_message.h" />
     <ClInclude Include="src\zaf\window\message\set_cursor_message.h" />
     <ClInclude Include="src\zaf\window\popup_menu.h" />
