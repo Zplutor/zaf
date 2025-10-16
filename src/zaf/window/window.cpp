@@ -88,6 +88,16 @@ Window::~Window() {
 }
 
 
+HWND Window::Handle() const noexcept {
+    if (handle_state_ == WindowHandleState::Creating ||
+        handle_state_ == WindowHandleState::Created ||
+        handle_state_ == WindowHandleState::Destroying) {
+        return HandleStateData().handle;
+    }
+    return nullptr;
+}
+
+
 internal::WindowNotCreatedStateData& Window::NotCreatedStateData() noexcept {
     return std::get<internal::WindowNotCreatedStateData>(state_data_);
 }
@@ -215,10 +225,7 @@ void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& sta
         nullptr,
         this);
 
-    // If CreateWindowEx returns a null handle, it means the handle has been destroyed, handle_ 
-    // member should be reset to null.
     if (!handle) {
-        handle_ = nullptr;
         ZAF_THROW_WIN32_ERROR(GetLastError());
     }
 }
@@ -226,14 +233,15 @@ void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& sta
 
 void Window::ProcessCreatedState() {
 
-    auto dpi = static_cast<float>(GetDpiForWindow(handle_));
+    auto handle = Handle();
+    auto dpi = static_cast<float>(GetDpiForWindow(handle));
 
     RECT window_rect{};
-    GetWindowRect(handle_, &window_rect);
+    GetWindowRect(handle, &window_rect);
     rect_ = ToDIPs(Rect::FromRECT(window_rect), dpi);
 
     RECT client_rect{};
-    GetClientRect(handle_, &client_rect);
+    GetClientRect(handle, &client_rect);
     root_control_->SetRect(ToDIPs(Rect::FromRECT(client_rect), dpi));
 
     CreateRenderer();
@@ -244,7 +252,6 @@ void Window::ProcessCreatedState() {
 
 void Window::AttachHandle(HWND handle) noexcept {
     HandleStateData().handle = handle;
-    handle_ = handle;
 }
 
 
@@ -280,7 +287,7 @@ void Window::Destroy() noexcept {
 
         // Handle related resources would be released in the WM_DESTROY message handler.
         // OnDestroy method would be called in the WM_DESTROY message handler as well.
-        DestroyWindow(handle_);
+        DestroyWindow(Handle());
     }
 }
 
@@ -359,7 +366,7 @@ Rect Window::GetInitialRect(float dpi) const {
 
 void Window::CreateRenderer() {
 
-    renderer_ = GraphicFactory::Instance().CreateWindowRenderer(handle_);
+    renderer_ = GraphicFactory::Instance().CreateWindowRenderer(Handle());
 }
 
 
@@ -438,7 +445,7 @@ void Window::InnerShowWindow(int show_command) {
     }
 
     Application::Instance().RegisterShownWindow(holder);
-    ShowWindow(handle_, show_command);
+    ShowWindow(Handle(), show_command);
 }
 
 
@@ -448,8 +455,9 @@ void Window::Maximize() {
 
 
 bool Window::IsWindowMaximized() const noexcept {
-    if (handle_) {
-        return IsMaximized(handle_);
+    auto handle = Handle();
+    if (handle) {
+        return IsMaximized(handle);
     }
     return false;
 }
@@ -479,8 +487,9 @@ void Window::Minimize() {
 
 
 bool Window::IsWindowMinimized() const noexcept {
-    if (handle_) {
-        return IsMinimized(handle_);
+    auto handle = Handle();
+    if (handle) {
+        return IsMinimized(handle);
     }
     return false;
 }
@@ -512,7 +521,7 @@ void Window::Hide() noexcept {
     if (handle_state_ == WindowHandleState::Created ||
         handle_state_ == WindowHandleState::Creating ||
         handle_state_ == WindowHandleState::Destroying) {
-        ShowWindow(handle_, SW_HIDE);
+        ShowWindow(Handle(), SW_HIDE);
     }
 }
 
@@ -872,10 +881,11 @@ rx::Observable<MessageHandledInfo> Window::MessageHandledEvent() const {
 
 void Window::HandleWMPAINT() {
 
-    zaf::Rect dirty_rect;
+    auto handle = Handle();
 
+    zaf::Rect dirty_rect;
     RECT win32_rect{};
-    if (GetUpdateRect(handle_, &win32_rect, TRUE)) {
+    if (GetUpdateRect(handle, &win32_rect, TRUE)) {
         dirty_rect = ToDIPs(Rect::FromRECT(win32_rect), GetDPI());
     }
     else {
@@ -885,7 +895,7 @@ void Window::HandleWMPAINT() {
     //The update rect must be validated before painting.
     //Because some controls may call NeedRepaint while it is painting,
     //and this may fails if there is an invalidated update rect.
-    ValidateRect(handle_, nullptr);
+    ValidateRect(handle, nullptr);
 
     renderer_.BeginDraw();
     Canvas canvas(renderer_);
@@ -981,9 +991,10 @@ void Window::PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect) 
 
 void Window::NeedRepaintRect(const zaf::Rect& rect) {
 
-    if (handle_ != nullptr) {
+    auto handle = Handle();
+    if (handle != nullptr) {
         RECT win32_rect = SnapAndTransformToPixels(rect, GetDPI()).ToRECT();
-        InvalidateRect(handle_, &win32_rect, FALSE);
+        InvalidateRect(handle, &win32_rect, FALSE);
     }
 }
 
@@ -1146,7 +1157,7 @@ void Window::HandleMoveMessage() {
 void Window::UpdateWindowRect() {
 
     RECT rect{};
-    GetWindowRect(handle_, &rect);
+    GetWindowRect(Handle(), &rect);
     rect_ = ToDIPs(Rect::FromRECT(rect), GetDPI());
 }
 
@@ -1396,7 +1407,7 @@ void Window::TrackMouse(bool is_non_client) {
     if (is_non_client) {
         track_mouse_event_param.dwFlags |= TME_NONCLIENT;
     }
-    track_mouse_event_param.hwndTrack = handle_;
+    track_mouse_event_param.hwndTrack = Handle();
 
     if (TrackMouseEvent(&track_mouse_event_param)) {
 
@@ -1565,8 +1576,7 @@ void Window::HandleWMDESTROY() {
     focused_control_manager_->HandleWindowDestroy();
     root_control_->ReleaseRendererResources();
 
-    HWND old_handle = handle_;
-    handle_ = nullptr;
+    HWND old_handle = Handle();
     handle_specific_state_ = {};
     renderer_ = {};
     tooltip_window_.reset();
@@ -1781,7 +1791,7 @@ Rect Window::Rect() const {
     else {
 
         RECT rect{};
-        GetWindowRect(handle_, &rect);
+        GetWindowRect(Handle(), &rect);
         return ToDIPs(Rect::FromRECT(rect), GetDPI());
     }
 }
@@ -1797,7 +1807,7 @@ void Window::SetRect(const zaf::Rect& rect) {
         auto new_rect = SnapAndTransformToPixels(rect, GetDPI());
 
         SetWindowPos(
-            handle_,
+            Handle(),
             nullptr,
             static_cast<int>(new_rect.position.x),
             static_cast<int>(new_rect.position.y),
@@ -1818,7 +1828,7 @@ zaf::Size Window::ContentSize() const {
     if (Handle()) {
 
         RECT client_rect{};
-        ::GetClientRect(handle_, &client_rect);
+        ::GetClientRect(Handle(), &client_rect);
         return ToDIPs(Rect::FromRECT(client_rect).size, GetDPI());
     }
     else {
@@ -2148,9 +2158,9 @@ void Window::SetRootControl(const std::shared_ptr<Control>& control) {
     root_control_->SetWindow(shared_from_this());
     root_control_->RaiseWindowChangedEvent(old_window);
 
-    if (!!Handle()) {
+    if (auto handle = Handle()) {
         RECT client_rect{};
-        ::GetClientRect(handle_, &client_rect);
+        ::GetClientRect(handle, &client_rect);
         root_control_->SetRect(Rect::FromRECT(client_rect));
     }
 
@@ -2172,7 +2182,7 @@ Point Window::GetMousePosition() const {
 
     POINT cursor_point = { 0 };
     GetCursorPos(&cursor_point);
-    ScreenToClient(handle_, &cursor_point);
+    ScreenToClient(Handle(), &cursor_point);
 
     Point point_in_pixels{ 
         static_cast<float>(cursor_point.x), 
@@ -2233,17 +2243,18 @@ bool Window::Activate() {
 
 
 bool Window::IsVisible() const noexcept {
-    return !!IsWindowVisible(handle_);
+    return !!IsWindowVisible(Handle());
 }
 
 
 bool Window::IsFocused() const {
 
-    if (!handle_) {
+    auto handle = Handle();
+    if (!handle) {
         return false;
     }
 
-    return GetFocus() == handle_;
+    return GetFocus() == handle;
 }
 
 
@@ -2259,8 +2270,8 @@ void Window::Close() {
 
 
 WindowMessager Window::Messager() {
-    ZAF_EXPECT(handle_);
-    return WindowMessager{ handle_ };
+    ZAF_EXPECT(Handle());
+    return WindowMessager{ Handle() };
 }
 
 

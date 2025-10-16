@@ -89,9 +89,7 @@ public:
         A valid handle if the window handle state is `Creating`, `Created` or `Destroying`. 
         Otherwise, returns null.
     */
-    HWND Handle() const noexcept {
-        return handle_;
-    }
+    HWND Handle() const noexcept;
 
     /**
     Gets the state of the window handle.
@@ -1223,7 +1221,6 @@ private:
 
 private:
     std::shared_ptr<WindowClass> class_;
-    HWND handle_{};
     WindowHandleState handle_state_{ WindowHandleState::NotCreated };
 
     /*
