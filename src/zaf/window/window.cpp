@@ -207,7 +207,7 @@ void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& sta
 
     DWORD style = 0;
     DWORD extra_style = 0;
-    GetHandleStyles(style, extra_style);
+    GetHandleStyles(state_data.style, style, extra_style);
 
     // During the execution of CreateWindowEx, the window handle will be set to handle_ member
     // when the WM_NCCREATE message is received.
@@ -377,9 +377,12 @@ void Window::RecreateRenderer() {
 }
 
 
-void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const {
+void Window::GetHandleStyles(
+    const internal::WindowStyle& style,
+    DWORD& handle_style, 
+    DWORD& handle_extra_style) const {
 
-    handle_style |= IsPopup() ? WS_POPUP : WS_OVERLAPPED;
+    handle_style |= style.IsPopup() ? WS_POPUP : WS_OVERLAPPED;
 
     if (HasBorder()) {
         
@@ -602,6 +605,36 @@ void Window::SetTitle(const std::wstring& title) {
     }
     else {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+}
+
+
+bool Window::IsPopup() const noexcept {
+
+    if (handle_state_ == WindowHandleState::NotCreated) {
+        return NotCreatedStateData().style.IsPopup();
+    }
+    else if (handle_state_ == WindowHandleState::Creating ||
+             handle_state_ == WindowHandleState::Created ||
+             handle_state_ == WindowHandleState::Destroying) {
+
+        return internal::WindowStyle::FromHandle(HandleStateData().handle).IsPopup();
+    }
+    else {
+        return false;
+    }
+}
+
+void Window::SetIsPopup(bool is_popup) {
+
+    if (handle_state_ != WindowHandleState::NotCreated) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
+    NotCreatedStateData().style.SetIsPopup(is_popup);
+
+    if (!is_popup) {
+        SetHasTitleBar(true);
     }
 }
 
@@ -1863,7 +1896,7 @@ zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) c
 
     DWORD style{};
     DWORD extra_style{};
-    GetHandleStyles(style, extra_style);
+    GetHandleStyles(internal::WindowStyle::FromHandle(Handle()), style, extra_style);
 
     BOOL is_succeeded = AdjustWindowRectExForDpi(
         &adjusted_rect, 
@@ -1993,19 +2026,6 @@ ActivateOption Window::ActivateOption() const {
 void Window::SetActivateOption(zaf::ActivateOption option) {
     if (!Handle()) {
         activate_option_ = option;
-    }
-}
-
-
-bool Window::IsPopup() const {
-    return is_popup_;
-}
-
-void Window::SetIsPopup(bool is_popup) {
-
-    if (!Handle()) {
-        is_popup_ = is_popup;
-        ReviseHasTitleBar();
     }
 }
 

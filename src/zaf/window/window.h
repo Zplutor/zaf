@@ -409,6 +409,32 @@ public:
     void SetTitle(const std::wstring& title);
 
     /**
+    Indicates whether the window is a popup window.
+
+    @return
+        A bool value indicates whether the window is a popup window. If the window handle state is
+        `Destroyed`, always returns false.
+
+    @details
+        The default value is false, means that the window is an overlapped window.
+    */
+    bool IsPopup() const noexcept;
+
+    /**
+    Sets whether the window is a popup window.
+
+    @param is_popup
+        A bool value indicates whether the window is a popup window.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Creating`, `Created`, `Destroying` or `Destroyed`.
+
+        Setting this property to false will also sets `HasBorder()` and `HasTitleBar()` to true, as
+        an overlapped window must have border and title bar.
+    */
+    void SetIsPopup(bool is_popup);
+
+    /**
      Get the window's initial rect style.
 
      The default value is CenterInScreen.
@@ -613,20 +639,6 @@ public:
      the option would not be changed.
      */
     void SetActivateOption(zaf::ActivateOption option);
-
-    /**
-     Get a value indicating that whether the window is a popup window.
-
-     The default value is false, means that the window is an overlapped window.
-     */
-    bool IsPopup() const;
-
-    /**
-     Set a value indicating that whether the window is a popup window.
-
-     This method takes effect only when the window is closed, otherwise the style would not change.
-     */
-    void SetIsPopup(bool is_popup);
 
     /**
      Get a value indicating that whether the window has border.
@@ -1164,7 +1176,10 @@ private:
     zaf::Rect GetInitialRect(float dpi) const;
     void CreateRenderer();
     void RecreateRenderer();
-    void GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const;
+    void GetHandleStyles(
+        const internal::WindowStyle& style,
+        DWORD& handle_style,
+        DWORD& handle_extra_style) const;
     zaf::Size AdjustContentSizeToWindowSize(const zaf::Size& content_size) const;
 
     bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);
@@ -1250,7 +1265,6 @@ private:
 
     zaf::InitialRectStyle initial_rect_style_{ zaf::InitialRectStyle::CenterInOwner };
     zaf::ActivateOption activate_option_{ zaf::ActivateOption::Normal };
-    bool is_popup_{ false };
     bool has_border_{ true };
     bool has_title_bar_{ true };
     bool has_system_menu_{ true };
