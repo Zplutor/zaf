@@ -70,7 +70,7 @@ public:
      Construct the instance.
      */
     Window();
-    explicit Window(const std::wstring& window_class_name);
+    explicit Window(std::wstring_view window_class_name);
     explicit Window(const std::shared_ptr<WindowClass>& window_class);
 
     /**
@@ -435,6 +435,67 @@ public:
     void SetIsPopup(bool is_popup);
 
     /**
+    Indicates whether the window has border.
+
+    @return
+        A bool value indicates whether the window has border. If the window handle state is
+        `Destroyed`, always returns false.
+
+    @details
+        The default value is true.
+    */
+    bool HasBorder() const noexcept;
+
+    /**
+    Sets whether the window has border.
+
+    @param has_border
+        A bool value indicates whether the window has border.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Creating`, `Created`, `Destroying` or `Destroyed`.
+
+    @throw zaf::InvalidOperationError
+        Thrown if trying to set this property to false when `IsPopup()` is false.
+
+    @details
+        Setting this property to false will also sets `HasTitleBar()`, `HasSystemMenu()` and 
+        `IsSizable()` to false.
+    */
+    void SetHasBorder(bool has_border);
+
+    /**
+    Indicates whether the window has title bar.
+
+    @return
+        A bool value indicates whether the window has title bar. If the window handle state is
+        `Destroyed`, always returns false.
+
+    @details
+        The default value is true.
+    */
+    bool HasTitleBar() const noexcept;
+
+    /**
+    Sets whether the window has title bar.
+
+    @param has_title_bar
+        A bool value indicates whether the window has title bar.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Creating`, `Created`, `Destroying` or `Destroyed`.
+
+    @throw zaf::InvalidOperationError
+        Thrown if:
+        - trying to set this property to false when `IsPopup()` is false.
+        - trying to set this property to true when `HasBorder()` is false.
+
+    @details
+        Setting this property to false will also sets `HasSystemMenu()` to false.
+    */
+    void SetHasTitleBar(bool has_title_bar);
+
+    /**
      Get the window's initial rect style.
 
      The default value is CenterInScreen.
@@ -639,35 +700,6 @@ public:
      the option would not be changed.
      */
     void SetActivateOption(zaf::ActivateOption option);
-
-    /**
-     Get a value indicating that whether the window has border.
-
-     The default value is true.
-     */
-    bool HasBorder() const;
-
-    /**
-     Set a value indicating that whether the window has border.
-
-     This method takes effect only when the window is closed, otherwise the border would not change.
-    */
-    void SetHasBorder(bool has_border);
-
-    /**
-     Get a value indicating that whether the window has title bar.
-
-     The default value is true. For overlapped window that has border, this property is always true. 
-     */
-    bool HasTitleBar() const;
-
-    /**
-     Set a value indicating that whether the window has title bar.
-
-     For overlapped window that has border, setting this property takes no effects. If HasBorder() 
-     is false, setting this property takes no visual effects.
-     */
-    void SetHasTitleBar(bool has_title_bar);
 
     /**
      Get a value indicating that whether the window is sizable.
@@ -1170,7 +1202,11 @@ private:
     void ProcessCreatingState(const internal::WindowNotCreatedStateData& state_data);
     void ProcessCreatedState();
     void AttachHandle(HWND handle) noexcept;
+
     void InnerShowWindow(int show_command);
+
+    internal::WindowStyle GetWindowStyleFromStateData() const noexcept;
+
     LRESULT HandleWMCREATE(const Message& message);
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
     zaf::Rect GetInitialRect(float dpi) const;
@@ -1265,8 +1301,6 @@ private:
 
     zaf::InitialRectStyle initial_rect_style_{ zaf::InitialRectStyle::CenterInOwner };
     zaf::ActivateOption activate_option_{ zaf::ActivateOption::Normal };
-    bool has_border_{ true };
-    bool has_title_bar_{ true };
     bool has_system_menu_{ true };
     bool is_sizable_{ true };
     bool can_maximize_{ true };

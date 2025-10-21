@@ -72,7 +72,7 @@ Window::Window() : class_(WindowClassRegistry::Instance().GetDefaultWindowClass(
 }
 
 
-Window::Window(const std::wstring& window_class_name) {
+Window::Window(std::wstring_view window_class_name) {
     class_ = WindowClassRegistry::Instance().GetOrRegisterWindowClass(window_class_name, nullptr);
 }
 
@@ -610,19 +610,7 @@ void Window::SetTitle(const std::wstring& title) {
 
 
 bool Window::IsPopup() const noexcept {
-
-    if (handle_state_ == WindowHandleState::NotCreated) {
-        return NotCreatedStateData().style.IsPopup();
-    }
-    else if (handle_state_ == WindowHandleState::Creating ||
-             handle_state_ == WindowHandleState::Created ||
-             handle_state_ == WindowHandleState::Destroying) {
-
-        return internal::WindowStyle::FromHandle(HandleStateData().handle).IsPopup();
-    }
-    else {
-        return false;
-    }
+    return GetWindowStyleFromStateData().IsPopup();
 }
 
 void Window::SetIsPopup(bool is_popup) {
@@ -632,10 +620,63 @@ void Window::SetIsPopup(bool is_popup) {
     }
 
     NotCreatedStateData().style.SetIsPopup(is_popup);
+}
 
-    if (!is_popup) {
-        SetHasTitleBar(true);
+
+bool Window::HasBorder() const noexcept {
+    return GetWindowStyleFromStateData().HasBorder();
+}
+
+void Window::SetHasBorder(bool has_border) {
+
+    if (handle_state_ != WindowHandleState::NotCreated) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
     }
+
+    if (!has_border && !IsPopup()) {
+        throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+    }
+
+    NotCreatedStateData().style.SetHasBorder(has_border);
+}
+
+
+bool Window::HasTitleBar() const noexcept {
+    return GetWindowStyleFromStateData().HasTitleBar();
+}
+
+void Window::SetHasTitleBar(bool has_title_bar) {
+    
+    if (handle_state_ != WindowHandleState::NotCreated) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
+    if (has_title_bar && !HasBorder()) {
+        throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+    }
+
+    if (!has_title_bar && !IsPopup()) {
+        throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+    }
+
+    NotCreatedStateData().style.SetHasTitleBar(has_title_bar);
+}
+
+
+internal::WindowStyle Window::GetWindowStyleFromStateData() const noexcept {
+
+    if (handle_state_ == WindowHandleState::NotCreated) {
+        return NotCreatedStateData().style;
+    }
+
+    if (handle_state_ == WindowHandleState::Creating ||
+        handle_state_ == WindowHandleState::Created ||
+        handle_state_ == WindowHandleState::Destroying) {
+
+        return internal::WindowStyle::FromHandle(HandleStateData().handle);
+    }
+
+    return {};
 }
 
 
@@ -2026,44 +2067,6 @@ ActivateOption Window::ActivateOption() const {
 void Window::SetActivateOption(zaf::ActivateOption option) {
     if (!Handle()) {
         activate_option_ = option;
-    }
-}
-
-
-bool Window::HasBorder() const {
-    return has_border_;
-}
-
-void Window::SetHasBorder(bool has_border) {
-
-    if (!Handle()) {
-        has_border_ = has_border;
-        ReviseHasTitleBar();
-    }
-}
-
-
-bool Window::HasTitleBar() const {
-    return has_title_bar_;
-}
-
-
-void Window::SetHasTitleBar(bool has_title_bar) {
-
-    //If the handle has been created, and it is an overlapped window and has border,
-    //not allow to change this property.
-    //If the handle is not created yet, allow to change this property, but it will be
-    //revised when creating handle.
-    if (!!Handle()) {
-        if (!IsPopup() && HasBorder()) {
-            return;
-        }
-    }
-
-    has_title_bar_ = has_title_bar;
-
-    if (HasBorder()) {
-        SetStyleToHandle(WS_CAPTION, has_title_bar, false);
     }
 }
 

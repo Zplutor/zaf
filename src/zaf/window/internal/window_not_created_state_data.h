@@ -13,7 +13,7 @@ public:
     WindowNotCreatedStateData& operator=(WindowNotCreatedStateData&&) noexcept = default;
 
     std::wstring title;
-    WindowStyle style;
+    WindowStyle style = WindowStyle::Default();
 };
 
 }
