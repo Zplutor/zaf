@@ -471,4 +471,264 @@ TEST_F(WindowTest, SetHasTitleBar_InvalidStates) {
     }
 }
 
+
+TEST_F(WindowTest, HasSystemMenu_NotCreatedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    ASSERT_TRUE(window->HasSystemMenu());
+
+    window->SetHasSystemMenu(false);
+    ASSERT_FALSE(window->HasSystemMenu());
+
+    window->SetHasSystemMenu(true);
+    ASSERT_TRUE(window->HasSystemMenu());
+}
+
+
+TEST_F(WindowTest, HasSystemMenu_CreatingState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetHasSystemMenu(false);
+
+    bool has_system_menu_in_event{};
+    auto sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo& event_info) {
+            has_system_menu_in_event = window->HasSystemMenu();
+        });
+    auto holder = window->CreateHandle();
+    ASSERT_FALSE(has_system_menu_in_event);
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, HasSystemMenu_CreatedState) {
+
+    {
+        auto window = zaf::Create<zaf::Window>();
+        window->SetHasSystemMenu(true);
+        auto holder = window->CreateHandle();
+        ASSERT_TRUE(window->HasSystemMenu());
+        window->Destroy();
+    }
+
+    {
+        auto window = zaf::Create<zaf::Window>();
+        window->SetHasSystemMenu(false);
+        auto holder = window->CreateHandle();
+        ASSERT_FALSE(window->HasSystemMenu());
+        window->Destroy();
+    }
+}
+
+
+TEST_F(WindowTest, HasSystemMenu_DestroyingState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetHasSystemMenu(false);
+    bool has_system_menu_in_event{};
+    auto sub = window->DestroyingEvent().Subscribe(
+        [&](const zaf::DestroyingInfo& event_info) {
+            has_system_menu_in_event = window->HasSystemMenu();
+        });
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    ASSERT_FALSE(has_system_menu_in_event);
+}
+
+
+TEST_F(WindowTest, HasSystemMenu_DestroyedState) {
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    ASSERT_FALSE(window->HasSystemMenu());
+}
+
+
+TEST_F(WindowTest, SetHasSystemMenu_InvalidOperation) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetIsPopup(true);
+    window->SetHasTitleBar(false);
+    ASSERT_THROW(window->SetHasSystemMenu(true), zaf::InvalidOperationError);
+}
+
+
+TEST_F(WindowTest, SetHasSystemMenu_InvalidStates) {
+
+    // Creating
+    {
+        auto window = zaf::Create<zaf::Window>();
+        bool has_asserted{};
+        auto sub = window->HandleCreatingEvent().Subscribe(
+            [&](const zaf::HandleCreatingInfo& event_info) {
+                has_asserted = true;
+                ASSERT_THROW(window->SetHasSystemMenu(true), zaf::InvalidHandleStateError);
+            });
+        auto holder = window->CreateHandle();
+        ASSERT_TRUE(has_asserted);
+    }
+
+    // Created
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto holder = window->CreateHandle();
+        ASSERT_THROW(window->SetHasSystemMenu(true), zaf::InvalidHandleStateError);
+        window->Destroy();
+    }
+
+    // Destroying/Destroyed
+    {
+        auto window = zaf::Create<zaf::Window>();
+        auto holder = window->CreateHandle();
+        bool has_asserted{};
+        auto sub = window->DestroyingEvent().Subscribe(
+            [&](const zaf::DestroyingInfo& event_info) {
+                has_asserted = true;
+                ASSERT_THROW(window->SetHasSystemMenu(true), zaf::InvalidHandleStateError);
+            });
+        window->Destroy();
+        ASSERT_TRUE(has_asserted);
+        ASSERT_THROW(window->SetHasSystemMenu(true), zaf::InvalidHandleStateError);
+    }
+}
+
+
+TEST_F(WindowTest, IsSizable_NotCreatedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    ASSERT_TRUE(window->IsSizable());
+
+    window->SetIsSizable(false);
+    ASSERT_FALSE(window->IsSizable());
+
+    window->SetIsSizable(true);
+    ASSERT_TRUE(window->IsSizable());
+}
+
+
+TEST_F(WindowTest, IsSizable_CreatingState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetIsSizable(false);
+    bool is_sizable_in_event{};
+    auto sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo& event_info) {
+            is_sizable_in_event = window->IsSizable();
+        });
+    auto holder = window->CreateHandle();
+    ASSERT_FALSE(is_sizable_in_event);
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, IsSizable_CreatedState) {
+
+    {
+        auto window = zaf::Create<zaf::Window>();
+        window->SetIsSizable(true);
+        auto holder = window->CreateHandle();
+        ASSERT_TRUE(window->IsSizable());
+        window->Destroy();
+    }
+
+    {
+        auto window = zaf::Create<zaf::Window>();
+        window->SetIsSizable(false);
+        auto holder = window->CreateHandle();
+        ASSERT_FALSE(window->IsSizable());
+        window->Destroy();
+    }
+}
+
+
+TEST_F(WindowTest, IsSizable_DestroyingState) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetIsSizable(false);
+    bool is_sizable_in_event{};
+    auto sub = window->DestroyingEvent().Subscribe(
+        [&](const zaf::DestroyingInfo& event_info) {
+            is_sizable_in_event = window->IsSizable();
+        });
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    ASSERT_FALSE(is_sizable_in_event);
+}
+
+
+TEST_F(WindowTest, IsSizable_DestroyedState) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetIsSizable(true);
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    ASSERT_FALSE(window->IsSizable());
+}
+
+
+TEST_F(WindowTest, SetIsSizable_CreatingState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetIsSizable(true);
+
+    auto sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo& event_info) {
+            window->SetIsSizable(false);
+        });
+
+    auto holder = window->CreateHandle();
+    ASSERT_FALSE(window->IsSizable());
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, SetIsSizable_CreatedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetIsSizable(true);
+    auto holder = window->CreateHandle();
+
+    window->SetIsSizable(false);
+    ASSERT_FALSE(window->IsSizable());
+
+    window->SetIsSizable(true);
+    ASSERT_TRUE(window->IsSizable());
+
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, SetIsSizable_DestroyingState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetIsSizable(true);
+
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe(
+        [&](const zaf::DestroyingInfo& event_info) {
+            ASSERT_NO_THROW(window->SetIsSizable(false));
+            ASSERT_FALSE(window->IsSizable());
+            has_asserted = true;
+        });
+    
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+}
+
+
+TEST_F(WindowTest, SetIsSizable_DestroyedState) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    ASSERT_THROW(window->SetIsSizable(true), zaf::InvalidHandleStateError);
+}
+
+
+TEST_F(WindowTest, SetIsSizable_InvalidOperation) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetIsPopup(true);
+    window->SetHasBorder(false);
+    ASSERT_THROW(window->SetIsSizable(true), zaf::InvalidOperationError);
+}
+
 }

@@ -382,24 +382,7 @@ void Window::GetHandleStyles(
     DWORD& handle_style, 
     DWORD& handle_extra_style) const {
 
-    handle_style |= style.IsPopup() ? WS_POPUP : WS_OVERLAPPED;
-
-    if (HasBorder()) {
-        
-        handle_style |= WS_BORDER;
-
-        if (HasTitleBar()) {
-            handle_style |= WS_CAPTION;
-        }
-
-        if (IsSizable()) {
-            handle_style |= WS_SIZEBOX;
-        }
-    }
-
-    if (HasSystemMenu()) {
-        handle_style |= WS_SYSMENU;
-    }
+    handle_style = style.Value();
 
     if (CanMinimize()) {
         handle_style |= WS_MINIMIZEBOX;
@@ -610,73 +593,96 @@ void Window::SetTitle(const std::wstring& title) {
 
 
 bool Window::IsPopup() const noexcept {
-    return GetWindowStyleFromStateData().IsPopup();
+    return HasWindowStyleProperty(internal::WindowStyleProperty::IsPopup);
 }
 
 void Window::SetIsPopup(bool is_popup) {
-
-    if (handle_state_ != WindowHandleState::NotCreated) {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-
-    NotCreatedStateData().style.SetIsPopup(is_popup);
+    SetWindowStyleProperty(internal::WindowStyleProperty::IsPopup, is_popup, false);
 }
 
 
 bool Window::HasBorder() const noexcept {
-    return GetWindowStyleFromStateData().HasBorder();
+    return HasWindowStyleProperty(internal::WindowStyleProperty::HasBorder);
 }
 
 void Window::SetHasBorder(bool has_border) {
-
-    if (handle_state_ != WindowHandleState::NotCreated) {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-
-    if (!has_border && !IsPopup()) {
-        throw InvalidOperationError(ZAF_SOURCE_LOCATION());
-    }
-
-    NotCreatedStateData().style.SetHasBorder(has_border);
+    SetWindowStyleProperty(internal::WindowStyleProperty::HasBorder, has_border, false);
 }
 
 
 bool Window::HasTitleBar() const noexcept {
-    return GetWindowStyleFromStateData().HasTitleBar();
+    return HasWindowStyleProperty(internal::WindowStyleProperty::HasTitleBar);
 }
 
 void Window::SetHasTitleBar(bool has_title_bar) {
-    
-    if (handle_state_ != WindowHandleState::NotCreated) {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-
-    if (has_title_bar && !HasBorder()) {
-        throw InvalidOperationError(ZAF_SOURCE_LOCATION());
-    }
-
-    if (!has_title_bar && !IsPopup()) {
-        throw InvalidOperationError(ZAF_SOURCE_LOCATION());
-    }
-
-    NotCreatedStateData().style.SetHasTitleBar(has_title_bar);
+    SetWindowStyleProperty(internal::WindowStyleProperty::HasTitleBar, has_title_bar, false);
 }
 
 
-internal::WindowStyle Window::GetWindowStyleFromStateData() const noexcept {
+bool Window::HasSystemMenu() const noexcept {
+    return HasWindowStyleProperty(internal::WindowStyleProperty::HasSystemMenu);
+}
 
+void Window::SetHasSystemMenu(bool has_system_menu) {
+    SetWindowStyleProperty(internal::WindowStyleProperty::HasSystemMenu, has_system_menu, false);
+}
+
+
+bool Window::IsSizable() const noexcept {
+    return HasWindowStyleProperty(internal::WindowStyleProperty::IsSizable);
+}
+
+void Window::SetIsSizable(bool is_sizable) {
+    SetWindowStyleProperty(internal::WindowStyleProperty::IsSizable, is_sizable, true);
+}
+
+
+bool Window::HasWindowStyleProperty(internal::WindowStyleProperty property) const noexcept {
+    
+    const internal::WindowStyle* window_style{};
     if (handle_state_ == WindowHandleState::NotCreated) {
-        return NotCreatedStateData().style;
+        return NotCreatedStateData().style.Has(property);
     }
 
     if (handle_state_ == WindowHandleState::Creating ||
         handle_state_ == WindowHandleState::Created ||
         handle_state_ == WindowHandleState::Destroying) {
 
-        return internal::WindowStyle::FromHandle(HandleStateData().handle);
+        return internal::WindowStyle::FromHandle(HandleStateData().handle).Has(property);
     }
 
-    return {};
+    return false;
+}
+
+
+void Window::SetWindowStyleProperty(
+    internal::WindowStyleProperty property, 
+    bool enable,
+    bool can_set_if_has_handle) {
+
+    if (handle_state_ == WindowHandleState::NotCreated) {
+        NotCreatedStateData().style.Set(property, enable);
+    }
+    else if (handle_state_ == WindowHandleState::Creating ||
+             handle_state_ == WindowHandleState::Created ||
+             handle_state_ == WindowHandleState::Destroying) {
+
+        if (!can_set_if_has_handle) {
+            throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+        }
+
+        auto window_style = internal::WindowStyle::FromHandle(HandleStateData().handle);
+        window_style.Set(property, enable);
+
+        SetLastError(0);
+        auto previous = SetWindowLong(HandleStateData().handle, GWL_STYLE, window_style.Value());
+        if (previous == 0) {
+            ZAF_THROW_IF_WIN32_ERROR(GetLastError());
+        }
+    }
+    else {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
 }
 
 
@@ -2075,29 +2081,6 @@ void Window::ReviseHasTitleBar() {
     if (!IsPopup() && HasBorder()) {
         SetHasTitleBar(true);
     }
-}
-
-
-bool Window::IsSizable() const {
-    return is_sizable_;
-}
-
-void Window::SetIsSizable(bool is_sizable) {
-
-    is_sizable_ = is_sizable;
-
-    if (HasBorder()) {
-        SetStyleToHandle(WS_SIZEBOX, is_sizable, false);
-    }
-}
-
-
-bool Window::HasSystemMenu() const {
-    return has_system_menu_;
-}
-
-void Window::SetHasSystemMenu(bool has_system_menu) {
-    SetStyleProperty(has_system_menu_, WS_SYSMENU, has_system_menu, false);
 }
 
 

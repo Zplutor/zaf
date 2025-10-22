@@ -1,6 +1,19 @@
 #pragma once
 
+#include <Windows.h>
+
 namespace zaf::internal {
+
+enum class WindowStyleProperty : DWORD {
+    IsPopup = WS_POPUP,
+    HasBorder = WS_BORDER,
+    HasTitleBar = WS_CAPTION,
+    HasSystemMenu = WS_SYSMENU,
+    IsSizable = WS_SIZEBOX,
+    CanMaximize = WS_MAXIMIZEBOX,
+    CanMinimize = WS_MINIMIZEBOX,
+};
+
 
 class WindowStyle {
 public:
@@ -9,24 +22,19 @@ public:
 
 public:
     WindowStyle() noexcept = default;
-    explicit WindowStyle(DWORD style) noexcept;
+    explicit WindowStyle(DWORD value) noexcept;
+
+    bool Has(WindowStyleProperty property) const noexcept;
+    void Set(WindowStyleProperty property, bool enable);
 
     DWORD Value() const noexcept;
 
-    bool IsPopup() const noexcept;
+private:
     void SetIsPopup(bool is_popup) noexcept;
-
-    bool HasBorder() const noexcept;
-    void SetHasBorder(bool has_border) noexcept;
-
-    bool HasTitleBar() const noexcept;
-    void SetHasTitleBar(bool has_title_bar) noexcept;
-
-    bool HasSystemMenu() const noexcept;
-    void SetHasSystemMenu(bool has_system_menu) noexcept;
-
-    bool IsSizable() const noexcept;
-    void SetIsSizable(bool is_sizable) noexcept;
+    void SetHasBorder(bool has_border);
+    void SetHasTitleBar(bool has_title_bar);
+    void SetHasSystemMenu(bool has_system_menu);
+    void SetIsSizable(bool is_sizable);
 
 private:
     DWORD value_{};

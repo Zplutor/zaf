@@ -496,6 +496,61 @@ public:
     void SetHasTitleBar(bool has_title_bar);
 
     /**
+    Indicates whether the window has system menu.
+
+    @return
+        A bool value indicates whether the window has system menu. If the window handle state is
+        `Destroyed`, always return false.
+
+    @details
+        The default value is true.
+    */
+    bool HasSystemMenu() const noexcept;
+
+    /**
+    Sets whether the window has system menu.
+
+    @param has_system_menu
+        A bool value indicates whether the window has system menu.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Creating`, `Created`, `Destroying` or `Destroyed`.
+
+    @throw zaf::InvalidOperationError
+        Thrown if trying to set this property to true when `HasTitleBar()` is false.
+    */
+    void SetHasSystemMenu(bool has_system_menu);
+
+    /**
+    Indicates whether the window is sizable.
+
+    @return
+        A bool value indicates whether the window is sizable. If the window handle state is
+        `Destroyed`, always returns false.
+
+    @details
+        The default value is true.
+    */
+    bool IsSizable() const noexcept;
+
+    /**
+    Sets whether the window is sizable.
+
+    @param is_sizable
+        A bool value indicates whether the window is sizable.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroyed`.
+
+    @throw zaf::InvalidOperationError
+        Thrown if trying to set this property to true when `HasBorder()` is false.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window style.
+    */
+    void SetIsSizable(bool is_sizable);
+
+    /**
      Get the window's initial rect style.
 
      The default value is CenterInScreen.
@@ -700,34 +755,6 @@ public:
      the option would not be changed.
      */
     void SetActivateOption(zaf::ActivateOption option);
-
-    /**
-     Get a value indicating that whether the window is sizable.
-
-     The default value is true.
-     */
-    bool IsSizable() const;
-
-    /**
-     Set a value indicating that whether the window is sizable.
-
-     If HasBorder() is false, setting this property takes no visual effects.
-     */
-    void SetIsSizable(bool is_sizable);
-
-    /**
-     Get a value indicating that whether the window has the system menu.
-
-     The default value is true.
-     */
-    bool HasSystemMenu() const;
-
-    /**
-     Set a value indicating that whether the window has the system menu.
-
-     If HasBorder is false, setting this property takes no visual effects.
-     */
-    void SetHasSystemMenu(bool has_system_menu);
 
     /**
      Get a value indicating that whether the window is a tool window.
@@ -1205,7 +1232,11 @@ private:
 
     void InnerShowWindow(int show_command);
 
-    internal::WindowStyle GetWindowStyleFromStateData() const noexcept;
+    bool HasWindowStyleProperty(internal::WindowStyleProperty property) const noexcept;
+    void SetWindowStyleProperty(
+        internal::WindowStyleProperty property, 
+        bool enable, 
+        bool can_set_if_has_handle);
 
     LRESULT HandleWMCREATE(const Message& message);
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
@@ -1301,8 +1332,6 @@ private:
 
     zaf::InitialRectStyle initial_rect_style_{ zaf::InitialRectStyle::CenterInOwner };
     zaf::ActivateOption activate_option_{ zaf::ActivateOption::Normal };
-    bool has_system_menu_{ true };
-    bool is_sizable_{ true };
     bool can_maximize_{ true };
     bool can_minimize_{ true };
     bool is_tool_window_{ false };

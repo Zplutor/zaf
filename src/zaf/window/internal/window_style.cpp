@@ -1,9 +1,10 @@
 #include <zaf/window/internal/window_style.h>
+#include <zaf/base/error/invalid_operation_error.h>
 
 namespace zaf::internal {
 
 WindowStyle WindowStyle::Default() noexcept {
-    return WindowStyle{ WS_OVERLAPPED | WS_CAPTION };
+    return WindowStyle{ WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX };
 }
 
 
@@ -13,19 +14,40 @@ WindowStyle WindowStyle::FromHandle(HWND handle) noexcept {
 }
 
 
-WindowStyle::WindowStyle(DWORD style) noexcept : value_(style) {
+WindowStyle::WindowStyle(DWORD value) noexcept : value_(value) {
 
 }
 
 
-DWORD WindowStyle::Value() const noexcept {
-    return value_;
+bool WindowStyle::Has(WindowStyleProperty property) const noexcept {
+    auto property_value = static_cast<DWORD>(property);
+    return (value_ & property_value) == property_value;
 }
 
 
-bool WindowStyle::IsPopup() const noexcept {
-    return (value_ & WS_POPUP) != 0;
+void WindowStyle::Set(WindowStyleProperty property, bool enable) {
+
+    switch (property) {
+    case WindowStyleProperty::IsPopup:
+        SetIsPopup(enable);
+        break;
+    case WindowStyleProperty::HasBorder:
+        SetHasBorder(enable);
+        break;
+    case WindowStyleProperty::HasTitleBar:
+        SetHasTitleBar(enable);
+        break;
+    case WindowStyleProperty::HasSystemMenu:
+        SetHasSystemMenu(enable);
+        break;
+    case WindowStyleProperty::IsSizable:
+        SetIsSizable(enable);
+        break;
+    default:
+        break;
+    }
 }
+
 
 void WindowStyle::SetIsPopup(bool is_popup) noexcept {
     if (is_popup) {
@@ -38,15 +60,17 @@ void WindowStyle::SetIsPopup(bool is_popup) noexcept {
 }
 
 
-bool WindowStyle::HasBorder() const noexcept {
-    return (value_ & WS_BORDER) != 0;
-}
+void WindowStyle::SetHasBorder(bool has_border) {
 
-void WindowStyle::SetHasBorder(bool has_border) noexcept {
     if (has_border) {
         value_ |= WS_BORDER;
     }
     else {
+
+        if (!Has(WindowStyleProperty::IsPopup)) {
+            throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+        }
+
         value_ &= ~WS_CAPTION;
         value_ &= ~WS_SYSMENU;
         value_ &= ~WS_SIZEBOX;
@@ -54,17 +78,23 @@ void WindowStyle::SetHasBorder(bool has_border) noexcept {
 }
 
 
-bool WindowStyle::HasTitleBar() const noexcept {
-    return (value_ & WS_CAPTION) != 0;
-}
+void WindowStyle::SetHasTitleBar(bool has_title_bar) {
 
-void WindowStyle::SetHasTitleBar(bool has_title_bar) noexcept {
     if (has_title_bar) {
+
+        if (!Has(WindowStyleProperty::HasBorder)) {
+            throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+        }
+
         value_ |= WS_CAPTION;
     }
     else {
 
-        bool has_border = HasBorder();
+        if (!Has(WindowStyleProperty::IsPopup)) {
+            throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+        }
+
+        bool has_border = Has(WindowStyleProperty::HasBorder);
 
         value_ &= ~WS_CAPTION;
         value_ &= ~WS_SYSMENU;
@@ -77,12 +107,14 @@ void WindowStyle::SetHasTitleBar(bool has_title_bar) noexcept {
 }
 
 
-bool WindowStyle::HasSystemMenu() const noexcept {
-    return (value_ & WS_SYSMENU) != 0;
-}
+void WindowStyle::SetHasSystemMenu(bool has_system_menu) {
 
-void WindowStyle::SetHasSystemMenu(bool has_system_menu) noexcept {
     if (has_system_menu) {
+
+        if (!Has(WindowStyleProperty::HasTitleBar)) {
+            throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+        }
+
         value_ |= WS_SYSMENU;
     }
     else {
@@ -91,17 +123,24 @@ void WindowStyle::SetHasSystemMenu(bool has_system_menu) noexcept {
 }
 
 
-bool WindowStyle::IsSizable() const noexcept {
-    return (value_ & WS_SIZEBOX) != 0;
-}
+void WindowStyle::SetIsSizable(bool is_sizable) {
 
-void WindowStyle::SetIsSizable(bool is_sizable) noexcept {
     if (is_sizable) {
+
+        if (!Has(WindowStyleProperty::HasBorder)) {
+            throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+        }
+
         value_ |= WS_SIZEBOX;
     }
     else {
         value_ &= ~WS_SIZEBOX;
     }
+}
+
+
+DWORD WindowStyle::Value() const noexcept {
+    return value_;
 }
 
 }
