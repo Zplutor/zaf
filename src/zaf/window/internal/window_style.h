@@ -35,6 +35,7 @@ private:
     void SetHasTitleBar(bool has_title_bar);
     void SetHasSystemMenu(bool has_system_menu);
     void SetIsSizable(bool is_sizable);
+    void SetSolo(WindowStyleProperty property, bool enable);
 
 private:
     DWORD value_{};

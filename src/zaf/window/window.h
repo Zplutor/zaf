@@ -250,35 +250,6 @@ public:
     bool IsWindowMaximized() const noexcept;
 
     /**
-    Indicates whether the window can maximize.
-
-    @return
-        A bool value indicates whether the window can maximize if the window handle state is
-        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
-
-    @details
-        The default value is `true`.
-     */
-    bool CanMaximize() const noexcept;
-
-    /**
-    Sets whether the window can maximize.
-
-    @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroyed`.
-
-    @throw zaf::Win32Error
-        Thrown if fails to change the window style.
-
-    @details
-        In order to display the maximize button in title bar, HasSystemMenu needs to be set to true
-        as well. If HasBorder is false, setting this property takes no visual effects. However, 
-        setting this property to true is useful in some cases. For example, it enables maximizing a
-        custom painted window when double clicking on a area that returns title bar on hit test.
-    */
-    void SetCanMaximize(bool can_maximize);
-
-    /**
     Shows and minimizes the window, creates the window handle if it has not been created.
 
     @throw ...
@@ -295,33 +266,6 @@ public:
     Indicates whether the window is minimized.
     */
     bool IsWindowMinimized() const noexcept;
-
-    /**
-    Indicates whether the window can minimize.
-
-    @return
-        A bool value indicates whether the window can minimize if the window handle state is
-        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
-
-    @details
-        The default value is `true`.
-    */
-    bool CanMinimize() const noexcept;
-
-    /**
-    Sets whether the window can minimize.
-
-    @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroyed`.
-
-    @throw zaf::Win32Error
-        Thrown if fails to change the window style.
-
-    @details
-        In order to display the minimize button in title bar, HasSystemMenu needs to be set to true
-        as well. If HasBorder is false, setting this property takes no visual effects.
-    */
-    void SetCanMinimize(bool can_minimize);
 
     /**
     Shows and restores the window to its original size and position, creates the window handle if
@@ -412,8 +356,8 @@ public:
     Indicates whether the window is a popup window.
 
     @return
-        A bool value indicates whether the window is a popup window. If the window handle state is
-        `Destroyed`, always returns false.
+        A bool value indicates whether the window is a popup window if the window handle state is
+        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
 
     @details
         The default value is false, means that the window is an overlapped window.
@@ -438,8 +382,8 @@ public:
     Indicates whether the window has border.
 
     @return
-        A bool value indicates whether the window has border. If the window handle state is
-        `Destroyed`, always returns false.
+        A bool value indicates whether the window has border if the window handle state is
+        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
 
     @details
         The default value is true.
@@ -468,8 +412,8 @@ public:
     Indicates whether the window has title bar.
 
     @return
-        A bool value indicates whether the window has title bar. If the window handle state is
-        `Destroyed`, always returns false.
+        A bool value indicates whether the window has title bar if the window handle state is
+        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
 
     @details
         The default value is true.
@@ -499,8 +443,8 @@ public:
     Indicates whether the window has system menu.
 
     @return
-        A bool value indicates whether the window has system menu. If the window handle state is
-        `Destroyed`, always return false.
+        A bool value indicates whether the window has system menu if the window handle state is
+        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
 
     @details
         The default value is true.
@@ -525,8 +469,8 @@ public:
     Indicates whether the window is sizable.
 
     @return
-        A bool value indicates whether the window is sizable. If the window handle state is
-        `Destroyed`, always returns false.
+        A bool value indicates whether the window is sizable if the window handle state is
+        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
 
     @details
         The default value is true.
@@ -549,6 +493,64 @@ public:
         Thrown if fails to change the window style.
     */
     void SetIsSizable(bool is_sizable);
+
+    /**
+    Indicates whether the window can maximize.
+
+    @return
+        A bool value indicates whether the window can maximize if the window handle state is
+        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
+
+    @details
+        The default value is `true`.
+     */
+    bool CanMaximize() const noexcept;
+
+    /**
+    Sets whether the window can maximize.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window style.
+
+    @details
+        This property can be set to true even if `HasBorder()`, `HasTitleBar()` or 
+        `HasSystemMenu()` is false. However, in this case, the maximize button would not be 
+        displayed, but it still enables maximizing the window programmatically or when double
+        clicking on an area that returns title bar on hit test.
+    */
+    void SetCanMaximize(bool can_maximize);
+
+    /**
+    Indicates whether the window can minimize.
+
+    @return
+        A bool value indicates whether the window can minimize if the window handle state is
+        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
+
+    @details
+        The default value is `true`.
+    */
+    bool CanMinimize() const noexcept;
+
+    /**
+    Sets whether the window can minimize.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window style.
+
+    @details
+        This property can be set to true even if `HasBorder()`, `HasTitleBar()` or 
+        `HasSystemMenu()` is false. However, in this case, the minimize button would not be 
+        displayed, but it still enables minimizing the window programmatically or when clicking the
+        window on the task bar.
+    */
+    void SetCanMinimize(bool can_minimize);
 
     /**
      Get the window's initial rect style.
@@ -1332,8 +1334,6 @@ private:
 
     zaf::InitialRectStyle initial_rect_style_{ zaf::InitialRectStyle::CenterInOwner };
     zaf::ActivateOption activate_option_{ zaf::ActivateOption::Normal };
-    bool can_maximize_{ true };
-    bool can_minimize_{ true };
     bool is_tool_window_{ false };
     bool is_topmost_{ false };
     std::optional<float> min_width_;

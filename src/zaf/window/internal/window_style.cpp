@@ -4,7 +4,9 @@
 namespace zaf::internal {
 
 WindowStyle WindowStyle::Default() noexcept {
-    return WindowStyle{ WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX };
+    return WindowStyle{ 
+        WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_MAXIMIZEBOX | WS_MINIMIZEBOX
+    };
 }
 
 
@@ -44,6 +46,7 @@ void WindowStyle::Set(WindowStyleProperty property, bool enable) {
         SetIsSizable(enable);
         break;
     default:
+        SetSolo(property, enable);
         break;
     }
 }
@@ -135,6 +138,17 @@ void WindowStyle::SetIsSizable(bool is_sizable) {
     }
     else {
         value_ &= ~WS_SIZEBOX;
+    }
+}
+
+
+void WindowStyle::SetSolo(WindowStyleProperty property, bool enable) {
+    auto property_value = static_cast<DWORD>(property);
+    if (enable) {
+        value_ |= property_value;
+    }
+    else {
+        value_ &= ~property_value;
     }
 }
 

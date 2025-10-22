@@ -384,14 +384,6 @@ void Window::GetHandleStyles(
 
     handle_style = style.Value();
 
-    if (CanMinimize()) {
-        handle_style |= WS_MINIMIZEBOX;
-    }
-
-    if (CanMaximize()) {
-        handle_style |= WS_MAXIMIZEBOX;
-    }
-
     if (IsToolWindow()) {
         handle_extra_style |= WS_EX_TOOLWINDOW;
     }
@@ -449,24 +441,6 @@ bool Window::IsWindowMaximized() const noexcept {
 }
 
 
-bool Window::CanMaximize() const noexcept {
-    if (handle_state_ == WindowHandleState::Destroyed) {
-        return false;
-    }
-    return can_maximize_;
-}
-
-
-void Window::SetCanMaximize(bool has_maximize_button) {
-
-    if (handle_state_ == WindowHandleState::Destroyed) {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-
-    SetStyleProperty(can_maximize_, WS_MAXIMIZEBOX, has_maximize_button, false);
-}
-
-
 void Window::Minimize() {
     InnerShowWindow(SW_SHOWMINIMIZED);
 }
@@ -478,22 +452,6 @@ bool Window::IsWindowMinimized() const noexcept {
         return IsMinimized(handle);
     }
     return false;
-}
-
-
-bool Window::CanMinimize() const noexcept {
-    if (handle_state_ == WindowHandleState::Destroyed) {
-        return false;
-    }
-    return can_minimize_;
-}
-
-
-void Window::SetCanMinimize(bool can_minimize) {
-    if (handle_state_ == WindowHandleState::Destroyed) {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-    SetStyleProperty(can_minimize_, WS_MINIMIZEBOX, can_minimize, false);
 }
 
 
@@ -634,6 +592,31 @@ bool Window::IsSizable() const noexcept {
 
 void Window::SetIsSizable(bool is_sizable) {
     SetWindowStyleProperty(internal::WindowStyleProperty::IsSizable, is_sizable, true);
+}
+
+
+bool Window::CanMaximize() const noexcept {
+    return HasWindowStyleProperty(internal::WindowStyleProperty::CanMaximize);
+}
+
+void Window::SetCanMaximize(bool has_maximize_button) {
+    return SetWindowStyleProperty(
+        internal::WindowStyleProperty::CanMaximize, 
+        has_maximize_button, 
+        true);
+}
+
+
+bool Window::CanMinimize() const noexcept {
+    return HasWindowStyleProperty(internal::WindowStyleProperty::CanMinimize);
+}
+
+
+void Window::SetCanMinimize(bool can_minimize) {
+    return SetWindowStyleProperty(
+        internal::WindowStyleProperty::CanMinimize,
+        can_minimize,
+        true);
 }
 
 
