@@ -553,6 +553,32 @@ public:
     void SetCanMinimize(bool can_minimize);
 
     /**
+    Indicates whether the window is a tool window.
+
+    @return
+        A bool value indicates whether the window is a tool window if the window handle state is
+        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
+
+    @details
+        The default value is false.
+    */
+    bool IsToolWindow() const noexcept;
+
+    /**
+    Sets whether the window is a tool window.
+
+    @param is_tool_window
+        A bool value indicates whether the window is a tool window.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window style.
+    */
+    void SetIsToolWindow(bool is_tool_window);
+
+    /**
      Get the window's initial rect style.
 
      The default value is CenterInScreen.
@@ -757,18 +783,6 @@ public:
      the option would not be changed.
      */
     void SetActivateOption(zaf::ActivateOption option);
-
-    /**
-     Get a value indicating that whether the window is a tool window.
-
-     The default value is false.
-     */
-    bool IsToolWindow() const;
-
-    /**
-     Set a value indicating that whether the window is a tool window.
-     */
-    void SetIsToolWindow(bool is_tool_window);
 
     bool IsTopmost() const;
     void SetIsTopmost(bool is_topmost);
@@ -1334,7 +1348,6 @@ private:
 
     zaf::InitialRectStyle initial_rect_style_{ zaf::InitialRectStyle::CenterInOwner };
     zaf::ActivateOption activate_option_{ zaf::ActivateOption::Normal };
-    bool is_tool_window_{ false };
     bool is_topmost_{ false };
     std::optional<float> min_width_;
     std::optional<float> max_width_;

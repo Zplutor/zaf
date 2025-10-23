@@ -382,11 +382,8 @@ void Window::GetHandleStyles(
     DWORD& handle_style, 
     DWORD& handle_extra_style) const {
 
-    handle_style = style.Value();
-
-    if (IsToolWindow()) {
-        handle_extra_style |= WS_EX_TOOLWINDOW;
-    }
+    handle_style = style.BasicValue();
+    handle_extra_style = style.ExtraValue();
 
     if (IsTopmost()) {
         handle_extra_style |= WS_EX_TOPMOST;
@@ -600,10 +597,7 @@ bool Window::CanMaximize() const noexcept {
 }
 
 void Window::SetCanMaximize(bool has_maximize_button) {
-    return SetWindowStyleProperty(
-        internal::WindowStyleProperty::CanMaximize, 
-        has_maximize_button, 
-        true);
+    SetWindowStyleProperty(internal::WindowStyleProperty::CanMaximize, has_maximize_button, true);
 }
 
 
@@ -613,10 +607,16 @@ bool Window::CanMinimize() const noexcept {
 
 
 void Window::SetCanMinimize(bool can_minimize) {
-    return SetWindowStyleProperty(
-        internal::WindowStyleProperty::CanMinimize,
-        can_minimize,
-        true);
+    SetWindowStyleProperty(internal::WindowStyleProperty::CanMinimize, can_minimize, true);
+}
+
+
+bool Window::IsToolWindow() const noexcept {
+    return HasWindowStyleProperty(internal::WindowStyleProperty::IsToolWindow);
+}
+
+void Window::SetIsToolWindow(bool is_tool_window) {
+    SetWindowStyleProperty(internal::WindowStyleProperty::IsToolWindow, is_tool_window, true);
 }
 
 
@@ -658,7 +658,12 @@ void Window::SetWindowStyleProperty(
         window_style.Set(property, enable);
 
         SetLastError(0);
-        auto previous = SetWindowLong(HandleStateData().handle, GWL_STYLE, window_style.Value());
+
+        auto previous = SetWindowLong(
+            HandleStateData().handle, 
+            GWL_STYLE, 
+            window_style.BasicValue());
+
         if (previous == 0) {
             ZAF_THROW_IF_WIN32_ERROR(GetLastError());
         }
@@ -2064,15 +2069,6 @@ void Window::ReviseHasTitleBar() {
     if (!IsPopup() && HasBorder()) {
         SetHasTitleBar(true);
     }
-}
-
-
-bool Window::IsToolWindow() const {
-    return is_tool_window_;
-}
-
-void Window::SetIsToolWindow(bool is_tool_window) {
-    SetStyleProperty(is_tool_window_, WS_EX_TOOLWINDOW, is_tool_window, true);
 }
 
 

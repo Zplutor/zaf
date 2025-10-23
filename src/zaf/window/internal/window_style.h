@@ -4,14 +4,21 @@
 
 namespace zaf::internal {
 
-enum class WindowStyleProperty : DWORD {
-    IsPopup = WS_POPUP,
-    HasBorder = WS_BORDER,
-    HasTitleBar = WS_CAPTION,
-    HasSystemMenu = WS_SYSMENU,
-    IsSizable = WS_SIZEBOX,
-    CanMaximize = WS_MAXIMIZEBOX,
-    CanMinimize = WS_MINIMIZEBOX,
+/*
+The order of enum values is significant, do not change it.
+*/
+enum class WindowStyleProperty {
+
+    IsPopup = 0,
+    HasBorder,
+    HasTitleBar,
+    HasSystemMenu,
+    IsSizable,
+    CanMaximize,
+    CanMinimize,
+
+    IsToolWindow,
+    IsTopMost,
 };
 
 
@@ -22,12 +29,18 @@ public:
 
 public:
     WindowStyle() noexcept = default;
-    explicit WindowStyle(DWORD value) noexcept;
+    WindowStyle(DWORD basic_value, DWORD extra_value) noexcept;
 
     bool Has(WindowStyleProperty property) const noexcept;
     void Set(WindowStyleProperty property, bool enable);
 
-    DWORD Value() const noexcept;
+    DWORD BasicValue() const noexcept {
+        return basic_value_;
+    }
+
+    DWORD ExtraValue() const noexcept {
+        return extra_value_;
+    }
 
 private:
     void SetIsPopup(bool is_popup) noexcept;
@@ -36,6 +49,23 @@ private:
     void SetHasSystemMenu(bool has_system_menu);
     void SetIsSizable(bool is_sizable);
     void SetSolo(WindowStyleProperty property, bool enable);
+
+private:
+    DWORD basic_value_{};
+    DWORD extra_value_{};
+};
+
+
+class WindowExtraStyle {
+public:
+    WindowExtraStyle() = default;
+    explicit WindowExtraStyle(DWORD value);
+
+
+
+    DWORD Value() const noexcept {
+        return value_;
+    }
 
 private:
     DWORD value_{};

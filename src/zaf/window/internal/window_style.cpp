@@ -2,28 +2,67 @@
 #include <zaf/base/error/invalid_operation_error.h>
 
 namespace zaf::internal {
+namespace {
+
+constexpr DWORD BasicStyleValues[] = {
+    WS_POPUP,
+    WS_BORDER,
+    WS_CAPTION,
+    WS_SYSMENU,
+    WS_SIZEBOX,
+    WS_MAXIMIZEBOX,
+    WS_MINIMIZEBOX,
+};
+
+constexpr std::size_t BasicStyleCount = std::size(BasicStyleValues);
+
+constexpr DWORD ExtraStyleValues[] = {
+    WS_EX_TOOLWINDOW,
+    WS_EX_TOPMOST,
+};
+
+struct StyleValue {
+    DWORD value{};
+    bool is_extra{};
+};
+
+StyleValue ToStyleValue(WindowStyleProperty property) {
+    auto index = static_cast<std::size_t>(property);
+    if (index < BasicStyleCount) {
+        return { BasicStyleValues[index], false };
+    }
+    index -= BasicStyleCount;
+    return { ExtraStyleValues[index], true };
+}
+
+} // namespace
 
 WindowStyle WindowStyle::Default() noexcept {
     return WindowStyle{ 
-        WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_MAXIMIZEBOX | WS_MINIMIZEBOX
+        WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_MAXIMIZEBOX | WS_MINIMIZEBOX,
+        0
     };
 }
 
 
 WindowStyle WindowStyle::FromHandle(HWND handle) noexcept {
-    DWORD value = GetWindowLong(handle, GWL_STYLE);
-    return WindowStyle{ value };
+    DWORD basic_value = GetWindowLong(handle, GWL_STYLE);
+    DWORD extra_value = GetWindowLong(handle, GWL_EXSTYLE);
+    return WindowStyle{ basic_value, extra_value };
 }
 
 
-WindowStyle::WindowStyle(DWORD value) noexcept : value_(value) {
+WindowStyle::WindowStyle(DWORD basic_value, DWORD extra_value) noexcept :
+    basic_value_(basic_value),
+    extra_value_(extra_value) {
 
 }
 
 
 bool WindowStyle::Has(WindowStyleProperty property) const noexcept {
-    auto property_value = static_cast<DWORD>(property);
-    return (value_ & property_value) == property_value;
+    auto style_value = ToStyleValue(property);
+    auto current_value = style_value.is_extra ? extra_value_ : basic_value_;
+    return (current_value & style_value.value) == style_value.value;
 }
 
 
@@ -54,11 +93,11 @@ void WindowStyle::Set(WindowStyleProperty property, bool enable) {
 
 void WindowStyle::SetIsPopup(bool is_popup) noexcept {
     if (is_popup) {
-        value_ |= WS_POPUP;
+        basic_value_ |= WS_POPUP;
     }
     else {
-        value_ &= ~WS_POPUP;
-        value_ |= WS_CAPTION;
+        basic_value_ &= ~WS_POPUP;
+        basic_value_ |= WS_CAPTION;
     }
 }
 
@@ -66,7 +105,7 @@ void WindowStyle::SetIsPopup(bool is_popup) noexcept {
 void WindowStyle::SetHasBorder(bool has_border) {
 
     if (has_border) {
-        value_ |= WS_BORDER;
+        basic_value_ |= WS_BORDER;
     }
     else {
 
@@ -74,9 +113,9 @@ void WindowStyle::SetHasBorder(bool has_border) {
             throw InvalidOperationError(ZAF_SOURCE_LOCATION());
         }
 
-        value_ &= ~WS_CAPTION;
-        value_ &= ~WS_SYSMENU;
-        value_ &= ~WS_SIZEBOX;
+        basic_value_ &= ~WS_CAPTION;
+        basic_value_ &= ~WS_SYSMENU;
+        basic_value_ &= ~WS_SIZEBOX;
     }
 }
 
@@ -89,7 +128,7 @@ void WindowStyle::SetHasTitleBar(bool has_title_bar) {
             throw InvalidOperationError(ZAF_SOURCE_LOCATION());
         }
 
-        value_ |= WS_CAPTION;
+        basic_value_ |= WS_CAPTION;
     }
     else {
 
@@ -99,12 +138,12 @@ void WindowStyle::SetHasTitleBar(bool has_title_bar) {
 
         bool has_border = Has(WindowStyleProperty::HasBorder);
 
-        value_ &= ~WS_CAPTION;
-        value_ &= ~WS_SYSMENU;
+        basic_value_ &= ~WS_CAPTION;
+        basic_value_ &= ~WS_SYSMENU;
 
         // The border style is kept when title bar is removed.
         if (has_border) {
-            value_ |= WS_BORDER;
+            basic_value_ |= WS_BORDER;
         }
     }
 }
@@ -118,10 +157,10 @@ void WindowStyle::SetHasSystemMenu(bool has_system_menu) {
             throw InvalidOperationError(ZAF_SOURCE_LOCATION());
         }
 
-        value_ |= WS_SYSMENU;
+        basic_value_ |= WS_SYSMENU;
     }
     else {
-        value_ &= ~WS_SYSMENU;
+        basic_value_ &= ~WS_SYSMENU;
     }
 }
 
@@ -134,27 +173,24 @@ void WindowStyle::SetIsSizable(bool is_sizable) {
             throw InvalidOperationError(ZAF_SOURCE_LOCATION());
         }
 
-        value_ |= WS_SIZEBOX;
+        basic_value_ |= WS_SIZEBOX;
     }
     else {
-        value_ &= ~WS_SIZEBOX;
+        basic_value_ &= ~WS_SIZEBOX;
     }
 }
 
 
 void WindowStyle::SetSolo(WindowStyleProperty property, bool enable) {
-    auto property_value = static_cast<DWORD>(property);
+
+    auto style_value = ToStyleValue(property);
+    auto& current_value = style_value.is_extra ? extra_value_ : basic_value_;
     if (enable) {
-        value_ |= property_value;
+        current_value |= style_value.value;
     }
     else {
-        value_ &= ~property_value;
+        current_value &= ~style_value.value;
     }
-}
-
-
-DWORD WindowStyle::Value() const noexcept {
-    return value_;
 }
 
 }

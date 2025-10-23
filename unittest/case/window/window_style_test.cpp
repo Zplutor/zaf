@@ -930,4 +930,113 @@ TEST_F(WindowTest, SetCanMinimize_InVariantStates) {
     test(false);
 }
 
+
+TEST_F(WindowTest, IsToolWindow_DefaultValue) {
+    auto window = zaf::Create<zaf::Window>();
+    ASSERT_FALSE(window->IsToolWindow());
+}
+
+
+TEST_F(WindowTest, IsToolWindow_InVariantStates) {
+
+    auto test = [](bool expected) {
+
+        auto window = zaf::Create<zaf::Window>();
+        window->SetIsToolWindow(expected);
+
+        // NotCreated
+        ASSERT_EQ(window->IsToolWindow(), expected);
+
+        // Creating
+        bool creating_value{};
+        auto sub1 = window->HandleCreatingEvent().Subscribe(
+            [&](const zaf::HandleCreatingInfo& event_info) {
+                creating_value = window->IsToolWindow();
+            });
+        auto holder = window->CreateHandle();
+        ASSERT_EQ(creating_value, expected);
+
+        // Created
+        ASSERT_EQ(window->IsToolWindow(), expected);
+
+        // Destroying
+        bool destroying_value{};
+        auto sub2 = window->DestroyingEvent().Subscribe(
+            [&](const zaf::DestroyingInfo& event_info) {
+                destroying_value = window->IsToolWindow();
+            });
+
+        window->Destroy();
+        ASSERT_EQ(destroying_value, expected);
+
+        // Destroyed
+        ASSERT_EQ(window->IsToolWindow(), false);
+    };
+    test(true);
+    test(false);
+}
+
+
+TEST_F(WindowTest, SetIsToolWindow_InVariantStates) {
+
+    auto test = [](bool expected) {
+        
+        // NotCreated
+        {
+            auto window = zaf::Create<zaf::Window>();
+            window->SetIsToolWindow(expected);
+            ASSERT_EQ(window->IsToolWindow(), expected);
+        }
+
+        // Creating
+        {
+            auto window = zaf::Create<zaf::Window>();
+            bool creating_value{};
+            auto sub = window->HandleCreatingEvent().Subscribe(
+                [&](const zaf::HandleCreatingInfo& event_info) {
+                    window->SetIsToolWindow(expected);
+                    creating_value = window->IsToolWindow();
+                });
+            auto holder = window->CreateHandle();
+            ASSERT_EQ(creating_value, expected);
+            ASSERT_EQ(window->IsToolWindow(), expected);
+            window->Destroy();
+        }
+
+        // Created
+        {
+            auto window = zaf::Create<zaf::Window>();
+            auto holder = window->CreateHandle();
+            window->SetIsToolWindow(expected);
+            ASSERT_EQ(window->IsToolWindow(), expected);
+            window->Destroy();
+        }
+
+        // Destroying
+        {
+            auto window = zaf::Create<zaf::Window>();
+            auto holder = window->CreateHandle();
+            bool destroying_value{};
+            auto sub = window->DestroyingEvent().Subscribe(
+                [&](const zaf::DestroyingInfo& event_info) {
+                    window->SetIsToolWindow(expected);
+                    destroying_value = window->IsToolWindow();
+                });
+            window->Destroy();
+            ASSERT_EQ(destroying_value, expected);
+        }
+
+        // Destroyed
+        {
+            auto window = zaf::Create<zaf::Window>();
+            auto holder = window->CreateHandle();
+            window->Destroy();
+            ASSERT_THROW(window->SetIsToolWindow(expected), zaf::InvalidHandleStateError);
+            ASSERT_EQ(window->IsToolWindow(), false);
+        }
+    };
+    test(true);
+    test(false);
+}
+
 }
