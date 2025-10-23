@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/window/internal/window_style.h>
+#include <zaf/window/internal/window_styles.h>
 
 namespace zaf::internal {
 
@@ -13,7 +13,8 @@ public:
     WindowNotCreatedStateData& operator=(WindowNotCreatedStateData&&) noexcept = default;
 
     std::wstring title;
-    WindowStyle style = WindowStyle::Default();
+    WindowBasicStyle basic_style = WindowBasicStyle::Default();
+    WindowExtraStyle extra_style;
 };
 
 }

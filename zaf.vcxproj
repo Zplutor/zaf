@@ -407,7 +407,7 @@
     <ClCompile Include="src\zaf\window\event\window_size_changed_info.cpp" />
     <ClCompile Include="src\zaf\window\input_method_context.cpp" />
     <ClCompile Include="src\zaf\window\internal\popup_menu_controller.cpp" />
-    <ClCompile Include="src\zaf\window\internal\window_style.cpp" />
+    <ClCompile Include="src\zaf\window\internal\window_styles.cpp" />
     <ClCompile Include="src\zaf\window\popup_menu.cpp" />
     <ClCompile Include="src\zaf\window\dialog.cpp" />
     <ClCompile Include="src\zaf\window\event\closing_info.cpp" />
@@ -994,7 +994,8 @@
     <ClInclude Include="src\zaf\window\internal\popup_menu_controller.h" />
     <ClInclude Include="src\zaf\window\internal\window_handle_state_data.h" />
     <ClInclude Include="src\zaf\window\internal\window_not_created_state_data.h" />
-    <ClInclude Include="src\zaf\window\internal\window_style.h" />
+    <ClInclude Include="src\zaf\window\internal\window_styles.h" />
+    <ClInclude Include="src\zaf\window\internal\window_style_shim.h" />
     <ClInclude Include="src\zaf\window\message\ime_message.h" />
     <ClInclude Include="src\zaf\window\message\set_cursor_message.h" />
     <ClInclude Include="src\zaf\window\popup_menu.h" />

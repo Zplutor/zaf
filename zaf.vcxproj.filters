@@ -1351,7 +1351,7 @@
     <ClCompile Include="src\zaf\rx\internal\operator\filter_operator.cpp">
       <Filter>zaf\rx\internal\operator</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\window\internal\window_style.cpp">
+    <ClCompile Include="src\zaf\window\internal\window_styles.cpp">
       <Filter>zaf\window\internal</Filter>
     </ClCompile>
   </ItemGroup>
@@ -3169,7 +3169,10 @@
     <ClInclude Include="src\zaf\window\internal\window_handle_state_data.h">
       <Filter>zaf\window\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\window\internal\window_style.h">
+    <ClInclude Include="src\zaf\window\internal\window_styles.h">
+      <Filter>zaf\window\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\internal\window_style_shim.h">
       <Filter>zaf\window\internal</Filter>
     </ClInclude>
   </ItemGroup>

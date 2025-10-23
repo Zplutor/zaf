@@ -1039,4 +1039,113 @@ TEST_F(WindowTest, SetIsToolWindow_InVariantStates) {
     test(false);
 }
 
+
+TEST_F(WindowTest, IsTopmost_DefaultValue) {
+    auto window = zaf::Create<zaf::Window>();
+    ASSERT_FALSE(window->IsTopmost());
+}
+
+
+TEST_F(WindowTest, IsTopmost_InVariantStates) {
+
+    auto test = [](bool expected) {
+
+        auto window = zaf::Create<zaf::Window>();
+        window->SetIsTopmost(expected);
+
+        // NotCreated
+        ASSERT_EQ(window->IsTopmost(), expected);
+
+        // Creating
+        bool creating_value{};
+        auto sub1 = window->HandleCreatingEvent().Subscribe(
+            [&](const zaf::HandleCreatingInfo& event_info) {
+                creating_value = window->IsTopmost();
+            });
+        auto holder = window->CreateHandle();
+        ASSERT_EQ(creating_value, expected);
+
+        // Created
+        ASSERT_EQ(window->IsTopmost(), expected);
+
+        // Destroying
+        bool destroying_value{};
+        auto sub2 = window->DestroyingEvent().Subscribe(
+            [&](const zaf::DestroyingInfo& event_info) {
+                destroying_value = window->IsTopmost();
+            });
+
+        window->Destroy();
+        ASSERT_EQ(destroying_value, expected);
+
+        // Destroyed
+        ASSERT_EQ(window->IsTopmost(), false);
+    };
+    test(true);
+    test(false);
+}
+
+
+TEST_F(WindowTest, SetIsTopmost_InVariantState) {
+
+    auto test = [](bool expected) {
+        
+        // NotCreated
+        {
+            auto window = zaf::Create<zaf::Window>();
+            window->SetIsTopmost(expected);
+            ASSERT_EQ(window->IsTopmost(), expected);
+        }
+
+        // Creating
+        {
+            auto window = zaf::Create<zaf::Window>();
+            bool creating_value{};
+            auto sub = window->HandleCreatingEvent().Subscribe(
+                [&](const zaf::HandleCreatingInfo& event_info) {
+                    window->SetIsTopmost(expected);
+                    creating_value = window->IsTopmost();
+                });
+            auto holder = window->CreateHandle();
+            ASSERT_EQ(creating_value, expected);
+            ASSERT_EQ(window->IsTopmost(), expected);
+            window->Destroy();
+        }
+
+        // Created
+        {
+            auto window = zaf::Create<zaf::Window>();
+            auto holder = window->CreateHandle();
+            window->SetIsTopmost(expected);
+            ASSERT_EQ(window->IsTopmost(), expected);
+            window->Destroy();
+        }
+
+        // Destroying
+        {
+            auto window = zaf::Create<zaf::Window>();
+            auto holder = window->CreateHandle();
+            bool has_asserted{};
+            auto sub = window->DestroyingEvent().Subscribe(
+                [&](const zaf::DestroyingInfo& event_info) {
+                    ASSERT_THROW(window->SetIsTopmost(expected), zaf::InvalidHandleStateError);
+                    has_asserted = true;
+                });
+            window->Destroy();
+            ASSERT_TRUE(has_asserted);
+        }
+
+        // Destroyed
+        {
+            auto window = zaf::Create<zaf::Window>();
+            auto holder = window->CreateHandle();
+            window->Destroy();
+            ASSERT_THROW(window->SetIsTopmost(expected), zaf::InvalidHandleStateError);
+            ASSERT_EQ(window->IsTopmost(), false);
+        }
+    };
+    test(true);
+    test(false);
+}
+
 }

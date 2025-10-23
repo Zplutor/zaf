@@ -579,6 +579,32 @@ public:
     void SetIsToolWindow(bool is_tool_window);
 
     /**
+    Indicates whether the window is topmost.
+
+    @return
+        A bool value indicates whether the window is topmost if the window handle state is
+        `NotCreated`, `Creating`, `Created` or `Destroying`. Otherwise, returns false.
+
+    @details
+        The default value is false.
+    */
+    bool IsTopmost() const noexcept;
+
+    /**
+    Sets whether the window is topmost.
+
+    @param is_topmost
+        A bool value indicates whether the window is topmost.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window style.
+    */
+    void SetIsTopmost(bool is_topmost);
+
+    /**
      Get the window's initial rect style.
 
      The default value is CenterInScreen.
@@ -783,9 +809,6 @@ public:
      the option would not be changed.
      */
     void SetActivateOption(zaf::ActivateOption option);
-
-    bool IsTopmost() const;
-    void SetIsTopmost(bool is_topmost);
 
     /**
      Get window's root control.
@@ -1248,21 +1271,17 @@ private:
 
     void InnerShowWindow(int show_command);
 
-    bool HasWindowStyleProperty(internal::WindowStyleProperty property) const noexcept;
-    void SetWindowStyleProperty(
-        internal::WindowStyleProperty property, 
-        bool enable, 
-        bool can_set_if_has_handle);
+    template<typename PROPERTY>
+    bool HasStyleProperty(PROPERTY property) const noexcept;
+    template<typename PROPERTY>
+    void SetStyleProperty(PROPERTY property, bool enable, bool can_set_if_has_handle);
 
     LRESULT HandleWMCREATE(const Message& message);
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
     zaf::Rect GetInitialRect(float dpi) const;
     void CreateRenderer();
     void RecreateRenderer();
-    void GetHandleStyles(
-        const internal::WindowStyle& style,
-        DWORD& handle_style,
-        DWORD& handle_extra_style) const;
+    void GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const;
     zaf::Size AdjustContentSizeToWindowSize(const zaf::Size& content_size) const;
 
     bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);
@@ -1304,19 +1323,6 @@ private:
     void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
     void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
 
-    void ReviseHasTitleBar();
-
-    void SetStyleProperty(
-        bool& property_value,
-        DWORD style_value,
-        bool is_set,
-        bool is_extra_style);
-
-    void SetStyleToHandle(
-        DWORD style_value, 
-        bool is_set,
-        bool is_extra_style);
-
 private:
     std::shared_ptr<WindowClass> class_;
     WindowHandleState handle_state_{ WindowHandleState::NotCreated };
@@ -1348,7 +1354,6 @@ private:
 
     zaf::InitialRectStyle initial_rect_style_{ zaf::InitialRectStyle::CenterInOwner };
     zaf::ActivateOption activate_option_{ zaf::ActivateOption::Normal };
-    bool is_topmost_{ false };
     std::optional<float> min_width_;
     std::optional<float> max_width_;
     std::optional<float> min_height_;

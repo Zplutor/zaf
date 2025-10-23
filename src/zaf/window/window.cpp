@@ -14,6 +14,7 @@
 #include <zaf/internal/theme.h>
 #include <zaf/internal/window/window_focused_control_manager.h>
 #include <zaf/window/inspector/inspector_window.h>
+#include <zaf/window/internal/window_style_shim.h>
 #include <zaf/window/tooltip_window.h>
 #include <zaf/window/invalid_handle_state_error.h>
 #include <zaf/window/message/hit_test_message.h>
@@ -202,12 +203,9 @@ void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& sta
 
     auto owner = Owner();
 
-    //Revise HasTitleBar property first.
-    ReviseHasTitleBar();
-
-    DWORD style = 0;
-    DWORD extra_style = 0;
-    GetHandleStyles(state_data.style, style, extra_style);
+    DWORD style = state_data.basic_style.Value();
+    DWORD extra_style = state_data.extra_style.Value();
+    GetHandleStyles(style, extra_style);
 
     // During the execution of CreateWindowEx, the window handle will be set to handle_ member
     // when the WM_NCCREATE message is received.
@@ -377,17 +375,7 @@ void Window::RecreateRenderer() {
 }
 
 
-void Window::GetHandleStyles(
-    const internal::WindowStyle& style,
-    DWORD& handle_style, 
-    DWORD& handle_extra_style) const {
-
-    handle_style = style.BasicValue();
-    handle_extra_style = style.ExtraValue();
-
-    if (IsTopmost()) {
-        handle_extra_style |= WS_EX_TOPMOST;
-    }
+void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const {
 
     auto activate_option = ActivateOption();
     if ((activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate) {
@@ -547,104 +535,29 @@ void Window::SetTitle(const std::wstring& title) {
 }
 
 
-bool Window::IsPopup() const noexcept {
-    return HasWindowStyleProperty(internal::WindowStyleProperty::IsPopup);
-}
+template<typename PROPERTY>
+bool Window::HasStyleProperty(PROPERTY property) const noexcept {
 
-void Window::SetIsPopup(bool is_popup) {
-    SetWindowStyleProperty(internal::WindowStyleProperty::IsPopup, is_popup, false);
-}
-
-
-bool Window::HasBorder() const noexcept {
-    return HasWindowStyleProperty(internal::WindowStyleProperty::HasBorder);
-}
-
-void Window::SetHasBorder(bool has_border) {
-    SetWindowStyleProperty(internal::WindowStyleProperty::HasBorder, has_border, false);
-}
-
-
-bool Window::HasTitleBar() const noexcept {
-    return HasWindowStyleProperty(internal::WindowStyleProperty::HasTitleBar);
-}
-
-void Window::SetHasTitleBar(bool has_title_bar) {
-    SetWindowStyleProperty(internal::WindowStyleProperty::HasTitleBar, has_title_bar, false);
-}
-
-
-bool Window::HasSystemMenu() const noexcept {
-    return HasWindowStyleProperty(internal::WindowStyleProperty::HasSystemMenu);
-}
-
-void Window::SetHasSystemMenu(bool has_system_menu) {
-    SetWindowStyleProperty(internal::WindowStyleProperty::HasSystemMenu, has_system_menu, false);
-}
-
-
-bool Window::IsSizable() const noexcept {
-    return HasWindowStyleProperty(internal::WindowStyleProperty::IsSizable);
-}
-
-void Window::SetIsSizable(bool is_sizable) {
-    SetWindowStyleProperty(internal::WindowStyleProperty::IsSizable, is_sizable, true);
-}
-
-
-bool Window::CanMaximize() const noexcept {
-    return HasWindowStyleProperty(internal::WindowStyleProperty::CanMaximize);
-}
-
-void Window::SetCanMaximize(bool has_maximize_button) {
-    SetWindowStyleProperty(internal::WindowStyleProperty::CanMaximize, has_maximize_button, true);
-}
-
-
-bool Window::CanMinimize() const noexcept {
-    return HasWindowStyleProperty(internal::WindowStyleProperty::CanMinimize);
-}
-
-
-void Window::SetCanMinimize(bool can_minimize) {
-    SetWindowStyleProperty(internal::WindowStyleProperty::CanMinimize, can_minimize, true);
-}
-
-
-bool Window::IsToolWindow() const noexcept {
-    return HasWindowStyleProperty(internal::WindowStyleProperty::IsToolWindow);
-}
-
-void Window::SetIsToolWindow(bool is_tool_window) {
-    SetWindowStyleProperty(internal::WindowStyleProperty::IsToolWindow, is_tool_window, true);
-}
-
-
-bool Window::HasWindowStyleProperty(internal::WindowStyleProperty property) const noexcept {
-    
-    const internal::WindowStyle* window_style{};
     if (handle_state_ == WindowHandleState::NotCreated) {
-        return NotCreatedStateData().style.Has(property);
+        return internal::WindowStyleShim<PROPERTY>::Has(NotCreatedStateData(), property);
     }
 
     if (handle_state_ == WindowHandleState::Creating ||
         handle_state_ == WindowHandleState::Created ||
         handle_state_ == WindowHandleState::Destroying) {
 
-        return internal::WindowStyle::FromHandle(HandleStateData().handle).Has(property);
+        return internal::WindowStyleShim<PROPERTY>::Has(HandleStateData(), property);
     }
 
     return false;
 }
 
 
-void Window::SetWindowStyleProperty(
-    internal::WindowStyleProperty property, 
-    bool enable,
-    bool can_set_if_has_handle) {
+template<typename PROPERTY>
+void Window::SetStyleProperty(PROPERTY property, bool enable, bool can_set_if_has_handle) {
 
     if (handle_state_ == WindowHandleState::NotCreated) {
-        NotCreatedStateData().style.Set(property, enable);
+        internal::WindowStyleShim<PROPERTY>::Set(NotCreatedStateData(), property, enable);
     }
     else if (handle_state_ == WindowHandleState::Creating ||
              handle_state_ == WindowHandleState::Created ||
@@ -654,18 +567,113 @@ void Window::SetWindowStyleProperty(
             throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
         }
 
-        auto window_style = internal::WindowStyle::FromHandle(HandleStateData().handle);
-        window_style.Set(property, enable);
+        internal::WindowStyleShim<PROPERTY>::Set(HandleStateData(), property, enable);
+    }
+    else {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+}
 
-        SetLastError(0);
 
-        auto previous = SetWindowLong(
-            HandleStateData().handle, 
-            GWL_STYLE, 
-            window_style.BasicValue());
+bool Window::IsPopup() const noexcept {
+    return HasStyleProperty(internal::WindowBasicStyleProperty::IsPopup);
+}
 
-        if (previous == 0) {
-            ZAF_THROW_IF_WIN32_ERROR(GetLastError());
+void Window::SetIsPopup(bool is_popup) {
+    SetStyleProperty(internal::WindowBasicStyleProperty::IsPopup, is_popup, false);
+}
+
+
+bool Window::HasBorder() const noexcept {
+    return HasStyleProperty(internal::WindowBasicStyleProperty::HasBorder);
+}
+
+void Window::SetHasBorder(bool has_border) {
+    SetStyleProperty(internal::WindowBasicStyleProperty::HasBorder, has_border, false);
+}
+
+
+bool Window::HasTitleBar() const noexcept {
+    return HasStyleProperty(internal::WindowBasicStyleProperty::HasTitleBar);
+}
+
+void Window::SetHasTitleBar(bool has_title_bar) {
+    SetStyleProperty(internal::WindowBasicStyleProperty::HasTitleBar, has_title_bar, false);
+}
+
+
+bool Window::HasSystemMenu() const noexcept {
+    return HasStyleProperty(internal::WindowBasicStyleProperty::HasSystemMenu);
+}
+
+void Window::SetHasSystemMenu(bool has_system_menu) {
+    SetStyleProperty(internal::WindowBasicStyleProperty::HasSystemMenu, has_system_menu, false);
+}
+
+
+bool Window::IsSizable() const noexcept {
+    return HasStyleProperty(internal::WindowBasicStyleProperty::IsSizable);
+}
+
+void Window::SetIsSizable(bool is_sizable) {
+    SetStyleProperty(internal::WindowBasicStyleProperty::IsSizable, is_sizable, true);
+}
+
+
+bool Window::CanMaximize() const noexcept {
+    return HasStyleProperty(internal::WindowBasicStyleProperty::CanMaximize);
+}
+
+void Window::SetCanMaximize(bool has_maximize_button) {
+    SetStyleProperty(internal::WindowBasicStyleProperty::CanMaximize, has_maximize_button, true);
+}
+
+
+bool Window::CanMinimize() const noexcept {
+    return HasStyleProperty(internal::WindowBasicStyleProperty::CanMinimize);
+}
+
+
+void Window::SetCanMinimize(bool can_minimize) {
+    SetStyleProperty(internal::WindowBasicStyleProperty::CanMinimize, can_minimize, true);
+}
+
+
+bool Window::IsToolWindow() const noexcept {
+    return HasStyleProperty(internal::WindowExtraStyleProperty::IsToolWindow);
+}
+
+void Window::SetIsToolWindow(bool is_tool_window) {
+    SetStyleProperty(internal::WindowExtraStyleProperty::IsToolWindow, is_tool_window, true);
+}
+
+
+bool Window::IsTopmost() const noexcept {
+    return HasStyleProperty(internal::WindowExtraStyleProperty::IsTopMost);
+}
+
+void Window::SetIsTopmost(bool is_topmost) {
+
+    if (handle_state_ == WindowHandleState::NotCreated) {
+
+        NotCreatedStateData().extra_style.Set(
+            internal::WindowExtraStyleProperty::IsTopMost, 
+            is_topmost);
+    }
+    else if (handle_state_ == WindowHandleState::Creating ||
+             handle_state_ == WindowHandleState::Created) {
+
+        BOOL is_succeeded = SetWindowPos(
+            HandleStateData().handle,
+            is_topmost ? HWND_TOPMOST : HWND_NOTOPMOST,
+            0,
+            0,
+            0,
+            0,
+            SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+
+        if (!is_succeeded) {
+            ZAF_THROW_WIN32_ERROR(GetLastError());
         }
     }
     else {
@@ -1929,9 +1937,9 @@ zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) c
     auto rounded_rect = SnapAndTransformToPixels(rect, dpi);
     auto adjusted_rect = rounded_rect.ToRECT();
 
-    DWORD style{};
-    DWORD extra_style{};
-    GetHandleStyles(internal::WindowStyle::FromHandle(Handle()), style, extra_style);
+    DWORD style = internal::WindowBasicStyle::FromHandle(Handle()).Value();
+    DWORD extra_style = internal::WindowExtraStyle::FromHandle(Handle()).Value();
+    GetHandleStyles(style, extra_style);
 
     BOOL is_succeeded = AdjustWindowRectExForDpi(
         &adjusted_rect, 
@@ -2062,52 +2070,6 @@ void Window::SetActivateOption(zaf::ActivateOption option) {
     if (!Handle()) {
         activate_option_ = option;
     }
-}
-
-
-void Window::ReviseHasTitleBar() {
-    if (!IsPopup() && HasBorder()) {
-        SetHasTitleBar(true);
-    }
-}
-
-
-bool Window::IsTopmost() const {
-    return is_topmost_;
-}
-
-
-void Window::SetIsTopmost(bool is_topmost) {
-    SetStyleProperty(is_topmost_, WS_EX_TOPMOST, is_topmost, true);
-}
-
-
-void Window::SetStyleProperty(
-    bool& property_value,
-    DWORD style_value,
-    bool is_set,
-    bool is_extra_style) {
-
-    property_value = is_set;
-
-    if (Handle()) {
-        SetStyleToHandle(style_value, is_set, is_extra_style);
-    }
-}
-
-
-void Window::SetStyleToHandle(DWORD style_value, bool is_set, bool is_extra_style) {
-
-    DWORD category = is_extra_style ? GWL_EXSTYLE : GWL_STYLE;
-
-    DWORD style = GetWindowLong(Handle(), category);
-    if (is_set) {
-        style |= style_value;
-    }
-    else {
-        style &= ~style_value;
-    }
-    SetWindowLong(Handle(), category, style);
 }
 
 
