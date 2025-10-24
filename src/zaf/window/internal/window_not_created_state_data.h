@@ -14,7 +14,7 @@ public:
 
     std::wstring title;
     WindowBasicStyle basic_style = WindowBasicStyle::Default();
-    WindowExtraStyle extra_style;
+    WindowExtendedStyle extended_style;
 };
 
 }

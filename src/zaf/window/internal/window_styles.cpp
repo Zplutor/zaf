@@ -162,23 +162,23 @@ void WindowBasicStyle::SetSolo(WindowBasicStyleProperty property, bool enable) {
 }
 
 
-WindowExtraStyle WindowExtraStyle::FromHandle(HWND handle) noexcept {
+WindowExtendedStyle WindowExtendedStyle::FromHandle(HWND handle) noexcept {
     DWORD value = GetWindowLong(handle, GWL_EXSTYLE);
-    return WindowExtraStyle{ value };
+    return WindowExtendedStyle{ value };
 }
 
 
-WindowExtraStyle::WindowExtraStyle(DWORD value) noexcept : value_(value) {
+WindowExtendedStyle::WindowExtendedStyle(DWORD value) noexcept : value_(value) {
 
 }
 
 
-bool WindowExtraStyle::Has(WindowExtraStyleProperty property) const noexcept {
+bool WindowExtendedStyle::Has(WindowExtendedStyleProperty property) const noexcept {
     return HasFlag(value_, static_cast<DWORD>(property));
 }
 
 
-void WindowExtraStyle::Set(WindowExtraStyleProperty property, bool enable) noexcept {
+void WindowExtendedStyle::Set(WindowExtendedStyleProperty property, bool enable) noexcept {
     SetFlag(value_, static_cast<DWORD>(property), enable);
 }
 

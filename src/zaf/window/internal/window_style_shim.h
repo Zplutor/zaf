@@ -53,36 +53,36 @@ public:
 
 
 template<>
-class WindowStyleShim<WindowExtraStyleProperty> {
+class WindowStyleShim<WindowExtendedStyleProperty> {
 public:
     static bool Has(
         const WindowNotCreatedStateData& state_data,
-        WindowExtraStyleProperty property) noexcept {
+        WindowExtendedStyleProperty property) noexcept {
 
-        return state_data.extra_style.Has(property);
+        return state_data.extended_style.Has(property);
     }
 
     static bool Has(
         const WindowHandleStateData& state_data,
-        WindowExtraStyleProperty property) noexcept {
+        WindowExtendedStyleProperty property) noexcept {
 
-        return WindowExtraStyle::FromHandle(state_data.handle).Has(property);
+        return WindowExtendedStyle::FromHandle(state_data.handle).Has(property);
     }
 
     static void Set(
         WindowNotCreatedStateData& state_data,
-        WindowExtraStyleProperty property,
+        WindowExtendedStyleProperty property,
         bool enable) {
 
-        state_data.extra_style.Set(property, enable);
+        state_data.extended_style.Set(property, enable);
     }
 
     static void Set(
         const WindowHandleStateData& state_data,
-        WindowExtraStyleProperty property,
+        WindowExtendedStyleProperty property,
         bool enable) {
 
-        auto window_style = WindowExtraStyle::FromHandle(state_data.handle);
+        auto window_style = WindowExtendedStyle::FromHandle(state_data.handle);
         window_style.Set(property, enable);
 
         SetLastError(0);

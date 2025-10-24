@@ -1281,7 +1281,7 @@ private:
     zaf::Rect GetInitialRect(float dpi) const;
     void CreateRenderer();
     void RecreateRenderer();
-    void GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const;
+    void GetHandleStyles(DWORD& handle_style, DWORD& handle_extended_style) const;
     zaf::Size AdjustContentSizeToWindowSize(const zaf::Size& content_size) const;
 
     bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);

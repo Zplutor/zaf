@@ -204,13 +204,13 @@ void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& sta
     auto owner = Owner();
 
     DWORD style = state_data.basic_style.Value();
-    DWORD extra_style = state_data.extra_style.Value();
-    GetHandleStyles(style, extra_style);
+    DWORD extended_style = state_data.extended_style.Value();
+    GetHandleStyles(style, extended_style);
 
     // During the execution of CreateWindowEx, the window handle will be set to handle_ member
     // when the WM_NCCREATE message is received.
     auto handle = CreateWindowEx(
-        extra_style,
+        extended_style,
         reinterpret_cast<LPCWSTR>(class_->GetAtom()),
         state_data.title.c_str(),
         style,
@@ -375,11 +375,11 @@ void Window::RecreateRenderer() {
 }
 
 
-void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extra_style) const {
+void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extended_style) const {
 
     auto activate_option = ActivateOption();
     if ((activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate) {
-        handle_extra_style |= WS_EX_NOACTIVATE;
+        handle_extended_style |= WS_EX_NOACTIVATE;
     }
 }
 
@@ -640,24 +640,24 @@ void Window::SetCanMinimize(bool can_minimize) {
 
 
 bool Window::IsToolWindow() const noexcept {
-    return HasStyleProperty(internal::WindowExtraStyleProperty::IsToolWindow);
+    return HasStyleProperty(internal::WindowExtendedStyleProperty::IsToolWindow);
 }
 
 void Window::SetIsToolWindow(bool is_tool_window) {
-    SetStyleProperty(internal::WindowExtraStyleProperty::IsToolWindow, is_tool_window, true);
+    SetStyleProperty(internal::WindowExtendedStyleProperty::IsToolWindow, is_tool_window, true);
 }
 
 
 bool Window::IsTopmost() const noexcept {
-    return HasStyleProperty(internal::WindowExtraStyleProperty::IsTopMost);
+    return HasStyleProperty(internal::WindowExtendedStyleProperty::IsTopMost);
 }
 
 void Window::SetIsTopmost(bool is_topmost) {
 
     if (handle_state_ == WindowHandleState::NotCreated) {
 
-        NotCreatedStateData().extra_style.Set(
-            internal::WindowExtraStyleProperty::IsTopMost, 
+        NotCreatedStateData().extended_style.Set(
+            internal::WindowExtendedStyleProperty::IsTopMost, 
             is_topmost);
     }
     else if (handle_state_ == WindowHandleState::Creating ||
@@ -1938,14 +1938,14 @@ zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) c
     auto adjusted_rect = rounded_rect.ToRECT();
 
     DWORD style = internal::WindowBasicStyle::FromHandle(Handle()).Value();
-    DWORD extra_style = internal::WindowExtraStyle::FromHandle(Handle()).Value();
-    GetHandleStyles(style, extra_style);
+    DWORD extended_style = internal::WindowExtendedStyle::FromHandle(Handle()).Value();
+    GetHandleStyles(style, extended_style);
 
     BOOL is_succeeded = AdjustWindowRectExForDpi(
         &adjusted_rect, 
         style, 
         FALSE, 
-        extra_style,
+        extended_style,
         static_cast<UINT>(dpi));
 
     if (!is_succeeded) {

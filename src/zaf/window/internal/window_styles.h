@@ -44,21 +44,21 @@ private:
 };
 
 
-enum class WindowExtraStyleProperty : DWORD {
+enum class WindowExtendedStyleProperty : DWORD {
     IsToolWindow = WS_EX_TOOLWINDOW,
     IsTopMost = WS_EX_TOPMOST,
 };
 
-class WindowExtraStyle {
+class WindowExtendedStyle {
 public:
-    static WindowExtraStyle FromHandle(HWND handle) noexcept;
+    static WindowExtendedStyle FromHandle(HWND handle) noexcept;
 
 public:
-    WindowExtraStyle() = default;
-    explicit WindowExtraStyle(DWORD value) noexcept;
+    WindowExtendedStyle() = default;
+    explicit WindowExtendedStyle(DWORD value) noexcept;
 
-    bool Has(WindowExtraStyleProperty property) const noexcept;
-    void Set(WindowExtraStyleProperty property, bool enable) noexcept;
+    bool Has(WindowExtendedStyleProperty property) const noexcept;
+    void Set(WindowExtendedStyleProperty property, bool enable) noexcept;
 
     DWORD Value() const noexcept {
         return value_;
