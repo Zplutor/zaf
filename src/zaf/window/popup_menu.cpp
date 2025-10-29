@@ -24,7 +24,7 @@ void PopupMenu::Initialize() {
     this->SetHasSystemMenu(false);
     this->SetIsSizable(false);
     this->SetInitialRectStyle(InitialRectStyle::Custom);
-    this->SetActivateOption(ActivateOption::NoActivate);
+    this->SetActivateOptions(ActivateOptions::NoActivate);
     this->SetIsTopmost(true);
 
     auto root_control = this->RootControl();

@@ -32,7 +32,7 @@ std::shared_ptr<Window> PopupMenuController::InitializeOwner(
         owner->SetRect(Rect{});
         owner->SetInitialRectStyle(InitialRectStyle::Custom);
         owner->SetIsToolWindow(true);
-        owner->SetActivateOption(ActivateOption::NoActivate);
+        owner->SetActivateOptions(ActivateOptions::NoActivate);
         menu->SetOwner(owner);
     }
 

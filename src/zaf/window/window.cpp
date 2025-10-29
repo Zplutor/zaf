@@ -205,7 +205,6 @@ void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& sta
 
     DWORD style = state_data.basic_style.Value();
     DWORD extended_style = state_data.extended_style.Value();
-    GetHandleStyles(style, extended_style);
 
     // During the execution of CreateWindowEx, the window handle will be set to handle_ member
     // when the WM_NCCREATE message is received.
@@ -375,20 +374,8 @@ void Window::RecreateRenderer() {
 }
 
 
-void Window::GetHandleStyles(DWORD& handle_style, DWORD& handle_extended_style) const {
-
-    auto activate_option = ActivateOption();
-    if ((activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate) {
-        handle_extended_style |= WS_EX_NOACTIVATE;
-    }
-}
-
-
 void Window::Show() {
-
-    auto activate_option = ActivateOption();
-    bool no_activate = 
-        (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
+    bool no_activate = HasFlag(ActivateOptions(), zaf::ActivateOptions::NoAutoActivate);
     InnerShowWindow(no_activate ? SW_SHOWNA : SW_SHOW);
 }
 
@@ -682,6 +669,25 @@ void Window::SetIsTopmost(bool is_topmost) {
 }
 
 
+ActivateOptions Window::ActivateOptions() const noexcept {
+    return activate_options_;
+}
+
+void Window::SetActivateOptions(zaf::ActivateOptions options) {
+
+    if (handle_state_ == WindowHandleState::Destroyed) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
+    SetStyleProperty(
+        internal::WindowExtendedStyleProperty::NoActivate, 
+        HasFlag(options, ActivateOptions::NoAutoActivate),
+        true);
+
+    activate_options_ = options;
+}
+
+
 bool Window::PreprocessMessage(const KeyMessage& message) {
 
     if (focused_control_manager_->TryToPreprocessTabKeyMessage(message)) {
@@ -832,9 +838,9 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_MOUSEACTIVATE: {
-        auto activate_option = ActivateOption();
-        bool no_activate = (activate_option & ActivateOption::NoActivate) == ActivateOption::NoActivate;
-        bool discard_message = (activate_option & ActivateOption::DiscardMouseMessage) == ActivateOption::DiscardMouseMessage;
+        auto activate_option = ActivateOptions();
+        bool no_activate = HasFlag(activate_option, ActivateOptions::NoMouseActivate);
+        bool discard_message = HasFlag(activate_option, ActivateOptions::DiscardMouseMessage);
         if (no_activate) {
             return discard_message ? MA_NOACTIVATEANDEAT : MA_NOACTIVATE;
         }
@@ -1939,7 +1945,6 @@ zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) c
 
     DWORD style = internal::WindowBasicStyle::FromHandle(Handle()).Value();
     DWORD extended_style = internal::WindowExtendedStyle::FromHandle(Handle()).Value();
-    GetHandleStyles(style, extended_style);
 
     BOOL is_succeeded = AdjustWindowRectExForDpi(
         &adjusted_rect, 
@@ -2058,17 +2063,6 @@ void Window::SetMaxHeight(float max_height) {
 
     if (Height() > max_height) {
         SetHeight(max_height);
-    }
-}
-
-
-ActivateOption Window::ActivateOption() const {
-    return activate_option_;
-}
-
-void Window::SetActivateOption(zaf::ActivateOption option) {
-    if (!Handle()) {
-        activate_option_ = option;
     }
 }
 

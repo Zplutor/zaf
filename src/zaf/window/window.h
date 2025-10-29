@@ -14,7 +14,7 @@
 #include <zaf/object/property_support.h>
 #include <zaf/rx/subject/single_subject.h>
 #include <zaf/rx/disposable_host.h>
-#include <zaf/window/activate_option.h>
+#include <zaf/window/activate_options.h>
 #include <zaf/window/event/activate_event_info.h>
 #include <zaf/window/event/closing_info.h>
 #include <zaf/window/event/destroy_infos.h>
@@ -605,6 +605,31 @@ public:
     void SetIsTopmost(bool is_topmost);
 
     /**
+    Gets the window's activate options.
+
+    @return
+        The last activate options being set, regardless of the window handle state.
+
+    @details
+        The default value is `Normal`.
+    */
+    ActivateOptions ActivateOptions() const noexcept;
+
+    /**
+    Sets the window's activate options.
+    
+    @param option
+        The activate options to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window style.
+    */
+    void SetActivateOptions(zaf::ActivateOptions options);
+
+    /**
      Get the window's initial rect style.
 
      The default value is CenterInScreen.
@@ -794,21 +819,6 @@ public:
     @throw std::bad_alloc
     */
     rx::Single<None> WhenNotSizingOrMoving() const;
-
-    /**
-     Get window's activate option.
-
-     The default option is None.
-     */
-    ActivateOption ActivateOption() const;
-
-    /**
-     Set window's activate option.
-
-     This method takes effect only when the window is closed, otherwise
-     the option would not be changed.
-     */
-    void SetActivateOption(zaf::ActivateOption option);
 
     /**
      Get window's root control.
@@ -1281,7 +1291,6 @@ private:
     zaf::Rect GetInitialRect(float dpi) const;
     void CreateRenderer();
     void RecreateRenderer();
-    void GetHandleStyles(DWORD& handle_style, DWORD& handle_extended_style) const;
     zaf::Size AdjustContentSizeToWindowSize(const zaf::Size& content_size) const;
 
     bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);
@@ -1353,7 +1362,7 @@ private:
     std::weak_ptr<Window> owner_;
 
     zaf::InitialRectStyle initial_rect_style_{ zaf::InitialRectStyle::CenterInOwner };
-    zaf::ActivateOption activate_option_{ zaf::ActivateOption::Normal };
+    zaf::ActivateOptions activate_options_{ zaf::ActivateOptions::Normal };
     std::optional<float> min_width_;
     std::optional<float> max_width_;
     std::optional<float> min_height_;
@@ -1409,7 +1418,7 @@ ZAF_OBJECT_PROPERTY(MaxWidth)
 ZAF_OBJECT_PROPERTY(Height)
 ZAF_OBJECT_PROPERTY(MinHeight)
 ZAF_OBJECT_PROPERTY(MaxHeight)
-ZAF_OBJECT_PROPERTY(ActivateOption)
+ZAF_OBJECT_PROPERTY(ActivateOptions)
 ZAF_OBJECT_PROPERTY(IsPopup)
 ZAF_OBJECT_PROPERTY(HasBorder)
 ZAF_OBJECT_PROPERTY(HasTitleBar)

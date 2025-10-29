@@ -56,23 +56,23 @@ TEST(WindowParser, ParseHasTitleBar) {
 TEST(WindowParser, ParseActivateOption) {
 
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(R"(
-        <Window ActivateOption="NoActivate DiscardMouseMessage" />
+        <Window ActivateOptions="NoActivate DiscardMouseMessage" />
     )");
-    ASSERT_EQ(window->ActivateOption(), 
-        zaf::ActivateOption::NoActivate | 
-        zaf::ActivateOption::DiscardMouseMessage);
+    ASSERT_EQ(window->ActivateOptions(), 
+        zaf::ActivateOptions::NoActivate | 
+        zaf::ActivateOptions::DiscardMouseMessage);
 
     window = zaf::CreateObjectFromXaml<zaf::Window>(R"(
         <Window>
-            <Window.ActivateOption>
+            <Window.ActivateOptions>
                 NoActivate 
                 DiscardMouseMessage
-            </Window.ActivateOption>
+            </Window.ActivateOptions>
         </Window>
     )");
-    ASSERT_EQ(window->ActivateOption(),
-        zaf::ActivateOption::NoActivate |
-        zaf::ActivateOption::DiscardMouseMessage);
+    ASSERT_EQ(window->ActivateOptions(),
+        zaf::ActivateOptions::NoActivate |
+        zaf::ActivateOptions::DiscardMouseMessage);
 }
 
 

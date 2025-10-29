@@ -47,6 +47,7 @@ private:
 enum class WindowExtendedStyleProperty : DWORD {
     IsToolWindow = WS_EX_TOOLWINDOW,
     IsTopMost = WS_EX_TOPMOST,
+    NoActivate = WS_EX_NOACTIVATE,
 };
 
 class WindowExtendedStyle {
