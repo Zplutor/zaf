@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/window/invalid_handle_state_error.h>
 #include <zaf/window/window.h>
+#include <zaf/internal/message_loop.h>
 #include "window_test.h"
 
 namespace zaf::testing {

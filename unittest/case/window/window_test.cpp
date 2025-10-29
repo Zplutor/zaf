@@ -414,6 +414,25 @@ TEST_F(WindowTest, Show_InInvalidState) {
 }
 
 
+TEST_F(WindowTest, Show_NoActivateOption) {
+
+    auto test = [](bool no_activate) {
+        auto window = zaf::Create<zaf::Window>();
+        window->Show(no_activate ? zaf::ShowOptions::NoActivate : zaf::ShowOptions::Normal);
+        HWND foreground_window = GetForegroundWindow();
+        if (no_activate) {
+            ASSERT_NE(foreground_window, window->Handle());
+        }
+        else {
+            ASSERT_EQ(foreground_window, window->Handle());
+        }
+        window->Destroy();
+    };
+    test(true);
+    test(false);
+}
+
+
 TEST_F(WindowTest, Maximize_InNotCreatedState) {
 
     auto window = zaf::Create<zaf::Window>();

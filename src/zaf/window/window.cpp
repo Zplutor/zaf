@@ -374,8 +374,12 @@ void Window::RecreateRenderer() {
 }
 
 
-void Window::Show() {
-    bool no_activate = HasFlag(ActivateOptions(), zaf::ActivateOptions::NoAutoActivate);
+void Window::Show(ShowOptions options) {
+
+    bool no_activate = 
+        HasFlag(options, ShowOptions::NoActivate) || 
+        HasFlag(ActivateOptions(), zaf::ActivateOptions::NoAutoActivate);
+
     InnerShowWindow(no_activate ? SW_SHOWNA : SW_SHOW);
 }
 

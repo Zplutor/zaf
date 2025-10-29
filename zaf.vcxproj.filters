@@ -3175,5 +3175,8 @@
     <ClInclude Include="src\zaf\window\internal\window_style_shim.h">
       <Filter>zaf\window\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\window\show_options.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

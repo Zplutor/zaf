@@ -31,6 +31,7 @@
 #include <zaf/window/internal/window_handle_state_data.h>
 #include <zaf/window/internal/window_not_created_state_data.h>
 #include <zaf/window/message/message.h>
+#include <zaf/window/show_options.h>
 #include <zaf/window/window_handle_state.h>
 #include <zaf/window/window_messager.h>
 #include <zaf/window/window_parser.h>
@@ -219,6 +220,9 @@ public:
     /**
     Shows the window, creates the window handle if it has not been created.
 
+    @param options
+        The show options.
+
     @throw ...
         Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
 
@@ -229,7 +233,7 @@ public:
         destroyed, its holder will be unregistered from the application, so that the window 
         instance will be destructed as well.
     */
-    void Show();
+    void Show(ShowOptions options = ShowOptions::Normal);
 
     /**
     Shows and maximizes the window, creates the window handle if it has not been created.
