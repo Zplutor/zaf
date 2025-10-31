@@ -646,48 +646,79 @@ public:
     void SetInitialRectStyle(zaf::InitialRectStyle initial_rect_style);
 
     /**
-     Get window's rect.
+    Gets the window's rectangle in screen coordinate.
 
-     This method returns the actual rect if the window has been created. Otherwise, 
-     it returns the rect set by SetRect method. If SetRect has not been called, the 
-     default rect (0, 0, 640, 480) is returned.
-     */
-    Rect Rect() const;
+    @details
+        The default size of a window is 640*480. The initial position of a window is centered in 
+        the owner if there is one, or centered in the screen, and it can be overridden by calling 
+        `SetRect()` or `SetPosition()` before creating the window handle.
+
+        After creating the window handle, this method returns the actual rectangle of the window.
+
+        If the window handle state is `Destroyed`, this method always returns an empty rectangle.
+    */
+    zaf::Rect Rect() const noexcept;
 
     /**
-     Set window's rect.
+    Sets the window's rectangle in screen coordinate.
 
-     If the window has been created, this method would change the rect immediately.
-     Otherwise, it just records the rect. When the window is being creatd, an appropriate
-     rect would be set according to the initial rect style property.
-     */
+    @param rect
+        The new rectangle to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to set the rectangle.
+    */
     void SetRect(const zaf::Rect& rect);
 
-    Point Position() const {
-        return Rect().position;
-    }
+    /**
+    Gets the window's position in screen coordinate.
 
-    void SetPosition(const Point& position) {
-        SetRect(zaf::Rect{ position, Rect().size });
-    }
+    @details
+        This is a shortcut method for `Rect().position`.
+    */
+    Point Position() const noexcept;
 
     /**
-     Get window's size.
-     */
-    Size Size() const {
-        return Rect().size;
-    }
+    Sets the window's position in screen coordinate.
+
+    @param position
+        The new position to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to set the position.
+
+    @details
+        This is a shortcut method for `SetRect()`.
+    */
+    void SetPosition(const Point& position);
 
     /**
-     Set window's size.
+    Gets the window's size.
 
-     This is a shortcut method for SetRect.
+    @details
+        This is a shortcut method for `Rect().size`.
+    */
+    zaf::Size Size() const noexcept;
 
-     See also SetRect.
-     */
-    void SetSize(const zaf::Size& size) {
-        SetRect(zaf::Rect(Rect().position, size));
-    }
+    /**
+    Sets the window's size.
+
+    @param size
+        The new size to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to set the size.
+    */
+    void SetSize(const zaf::Size& size);
 
     zaf::Rect ContentRect() const;
 
@@ -1292,7 +1323,9 @@ private:
 
     LRESULT HandleWMCREATE(const Message& message);
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
-    zaf::Rect GetInitialRect(float dpi) const;
+    zaf::Rect GetInitialRect(
+        float dpi, 
+        const internal::WindowNotCreatedStateData& state_data) const;
     void CreateRenderer();
     void RecreateRenderer();
     zaf::Size AdjustContentSizeToWindowSize(const zaf::Size& content_size) const;
@@ -1311,7 +1344,6 @@ private:
     void HandleWMKILLFOCUS(const KillFocusMessage& message);
     void HandleWMSIZEMessage(const Message& message);
     void HandleMoveMessage();
-    void UpdateWindowRect();
     bool RedirectMouseWheelMessage(const Message& message);
     bool HandleMouseMessage(const MouseMessage& message);
     bool RouteMouseEvent(const MouseMessage& message);
@@ -1355,7 +1387,6 @@ private:
     DestroyReason destroy_reason_{ DestroyReason::Unspecified };
     std::weak_ptr<WindowHolder> holder_;
 
-    zaf::Rect rect_{ 0, 0, 640, 480 };
     d2d::WindowRenderer renderer_;
 
     struct {

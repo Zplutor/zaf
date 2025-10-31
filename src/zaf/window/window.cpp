@@ -27,6 +27,11 @@
 namespace zaf {
 namespace {
 
+struct CreateWindowParams {
+    Window* instance{};
+    const internal::WindowNotCreatedStateData* not_created_state_data{};
+};
+
 Point TranslateAbsolutePositionToControlPosition(
     const Point& absolute_position, 
     const Control& control ) {
@@ -53,8 +58,12 @@ LRESULT CALLBACK Window::WindowProcedure(
     LPARAM lparam) {
 
     if (message_id == WM_NCCREATE) {
+
         auto create_struct = reinterpret_cast<const CREATESTRUCTA*>(lparam);
-        auto window = reinterpret_cast<Window*>(create_struct->lpCreateParams);
+        auto create_params =
+            reinterpret_cast<const CreateWindowParams*>(create_struct->lpCreateParams);
+
+        auto window = create_params->instance;
         SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<ULONG_PTR>(window));
         window->AttachHandle(hwnd);
     }
@@ -206,6 +215,10 @@ void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& sta
     DWORD style = state_data.basic_style.Value();
     DWORD extended_style = state_data.extended_style.Value();
 
+    CreateWindowParams params;
+    params.instance = this;
+    params.not_created_state_data = &state_data;
+
     // During the execution of CreateWindowEx, the window handle will be set to handle_ member
     // when the WM_NCCREATE message is received.
     auto handle = CreateWindowEx(
@@ -220,7 +233,7 @@ void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& sta
         owner ? owner->Handle() : nullptr,
         nullptr,
         nullptr,
-        this);
+        &params);
 
     if (!handle) {
         ZAF_THROW_WIN32_ERROR(GetLastError());
@@ -232,10 +245,6 @@ void Window::ProcessCreatedState() {
 
     auto handle = Handle();
     auto dpi = static_cast<float>(GetDpiForWindow(handle));
-
-    RECT window_rect{};
-    GetWindowRect(handle, &window_rect);
-    rect_ = ToDIPs(Rect::FromRECT(window_rect), dpi);
 
     RECT client_rect{};
     GetClientRect(handle, &client_rect);
@@ -313,8 +322,12 @@ LRESULT Window::HandleWMCREATE(const Message& message) {
 
     OnHandleCreating(HandleCreatingInfo{ shared_from_this() });
 
+    auto create_struct = reinterpret_cast<const CREATESTRUCTA*>(message.LParam());
+    auto create_params = 
+        reinterpret_cast<const CreateWindowParams*>(create_struct->lpCreateParams);
+
     auto dpi = static_cast<float>(GetDpiForWindow(message.WindowHandle()));
-    auto initial_rect = GetInitialRect(dpi);
+    auto initial_rect = GetInitialRect(dpi, *create_params->not_created_state_data);
     auto rect_in_pixels = SnapAndTransformToPixels(initial_rect, dpi);
 
     SetWindowPos(
@@ -330,34 +343,38 @@ LRESULT Window::HandleWMCREATE(const Message& message) {
 }
 
 
-Rect Window::GetInitialRect(float dpi) const {
+Rect Window::GetInitialRect(
+    float dpi, 
+    const internal::WindowNotCreatedStateData& state_data) const {
 
-    auto initial_rect_style = InitialRectStyle();
-    if (initial_rect_style == InitialRectStyle::Custom) {
-        return rect_;
+    // The window has a specified initial position, use it.
+    if (state_data.initial_position) {
+        return zaf::Rect{
+            *state_data.initial_position,
+            state_data.size
+        };
     }
 
+    // The window doesn't have a specified initial position, use the center position of its owner 
+    // if there is one.
     auto owner = Owner();
-
-    if ((initial_rect_style == InitialRectStyle::CenterInOwner) && 
-        (owner != nullptr)) {
-
+    if (owner) {
         auto owner_rect = owner->Rect();
-        Point position(
-            owner_rect.position.x + (owner_rect.size.width - rect_.size.width) / 2,
-            owner_rect.position.y + (owner_rect.size.height - rect_.size.height) / 2);
-
-        return zaf::Rect(position, rect_.size);
+        Point position{
+            owner_rect.position.x + (owner_rect.size.width - state_data.size.width) / 2,
+            owner_rect.position.y + (owner_rect.size.height - state_data.size.height) / 2
+        };
+        return zaf::Rect{ position, state_data.size };
     }
 
-    //TODO: Get current monitor's size.
+    // Use the center position of the screen.
     float screen_width = ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXSCREEN)), dpi);
     float screen_height = ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYSCREEN)), dpi);
-    Point position(
-        (screen_width - rect_.size.width) / 2,
-        (screen_height - rect_.size.height) / 2);
-
-    return zaf::Rect(position, rect_.size);
+    Point position{
+        (screen_width - state_data.size.width) / 2,
+        (screen_height - state_data.size.height) / 2
+    };
+    return zaf::Rect{ position, state_data.size };
 }
 
 
@@ -1205,7 +1222,6 @@ void Window::HandleWMSIZEMessage(const Message& message) {
     zaf::Rect root_control_rect{ Point(), ToDIPs(size, GetDPI()) };
     root_control_->SetRect(root_control_rect);
 
-    UpdateWindowRect();
     OnSizeChanged(WindowSizeChangedInfo{ shared_from_this() });
 }
 
@@ -1236,15 +1252,6 @@ rx::Single<None> Window::WhenNotSizingOrMoving() const {
 
 void Window::HandleMoveMessage() {
 
-    UpdateWindowRect();
-}
-
-
-void Window::UpdateWindowRect() {
-
-    RECT rect{};
-    GetWindowRect(Handle(), &rect);
-    rect_ = ToDIPs(Rect::FromRECT(rect), GetDPI());
 }
 
 
@@ -1869,30 +1876,38 @@ void Window::SetInitialRectStyle(zaf::InitialRectStyle initial_rect_style) {
 }
 
 
-Rect Window::Rect() const {
+Rect Window::Rect() const noexcept {
 
-    if (!Handle()) {
-        return rect_;
+    if (handle_state_ == WindowHandleState::NotCreated) {
+        return GetInitialRect(this->GetDPI(), NotCreatedStateData());
     }
-    else {
+
+    if (handle_state_ == WindowHandleState::Creating || 
+        handle_state_ == WindowHandleState::Created ||
+        handle_state_ == WindowHandleState::Destroying) {
 
         RECT rect{};
         GetWindowRect(Handle(), &rect);
         return ToDIPs(Rect::FromRECT(rect), GetDPI());
     }
+
+    return {};
 }
 
 
 void Window::SetRect(const zaf::Rect& rect) {
 
-    if (!Handle()) {
-        rect_ = rect;
+    if (handle_state_ == WindowHandleState::NotCreated) {
+        auto& not_created_state_data = NotCreatedStateData();
+        not_created_state_data.initial_position = rect.position;
+        not_created_state_data.size = rect.size;
     }
-    else {
+    else if (handle_state_ == WindowHandleState::Creating || 
+             handle_state_ == WindowHandleState::Created ||
+             handle_state_ == WindowHandleState::Destroying) {
 
         auto new_rect = SnapAndTransformToPixels(rect, GetDPI());
-
-        SetWindowPos(
+        BOOL is_succeeded = SetWindowPos(
             Handle(),
             nullptr,
             static_cast<int>(new_rect.position.x),
@@ -1900,6 +1915,40 @@ void Window::SetRect(const zaf::Rect& rect) {
             static_cast<int>(new_rect.size.width),
             static_cast<int>(new_rect.size.height),
             SWP_NOZORDER | SWP_NOACTIVATE);
+
+        if (!is_succeeded) {
+            ZAF_THROW_WIN32_ERROR(GetLastError());
+        }
+    }
+    else {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+}
+
+
+Point Window::Position() const noexcept {
+    return Rect().position;
+}
+
+void Window::SetPosition(const Point& position) {
+    zaf::Rect new_rect = Rect();
+    new_rect.position = position;
+    SetRect(new_rect);
+}
+
+
+zaf::Size Window::Size() const noexcept {
+    return Rect().size;
+}
+
+void Window::SetSize(const zaf::Size& size) {
+    if (handle_state_ == WindowHandleState::NotCreated) {
+        NotCreatedStateData().size = size;
+    }
+    else {
+        zaf::Rect new_rect = Rect();
+        new_rect.size = size;
+        SetRect(new_rect);
     }
 }
 

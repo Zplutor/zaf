@@ -864,8 +864,7 @@ TEST_F(WindowTest, SetRectBeforeCreate) {
     ASSERT_EQ(window->Rect(), rect_after_create);
 
     window->Destroy();
-    //The rect should be reserved after window is destroyed.
-    ASSERT_EQ(window->Rect(), rect_after_create);
+    ASSERT_EQ(window->Rect(), zaf::Rect{});
 }
 
 
@@ -882,8 +881,7 @@ TEST_F(WindowTest, SetRectAfterCreate) {
     ASSERT_EQ(window->Rect(), rect_after_set);
 
     window->Destroy();
-    //The rect should be reserved after window is destroyed.
-    ASSERT_EQ(window->Rect(), rect_after_set);
+    ASSERT_EQ(window->Rect(), zaf::Rect{});
 }
 
 
@@ -904,10 +902,11 @@ TEST_F(WindowTest, GetRectAfterChangeRect) {
             static_cast<int>(zaf::FromDIPs(400, window->GetDPI())),
             static_cast<int>(zaf::FromDIPs(500, window->GetDPI())),
             SWP_NOMOVE | SWP_NOACTIVATE);
-        window->Destroy();
 
         zaf::Rect new_rect{ 100, 100, 400, 500 };
         ASSERT_EQ(window->Rect(), new_rect);
+
+        window->Destroy();
     }
 
     //Simulate user move the window.
@@ -925,10 +924,11 @@ TEST_F(WindowTest, GetRectAfterChangeRect) {
             0,
             0,
             SWP_NOSIZE | SWP_NOACTIVATE);
-        window->Destroy();
 
         zaf::Rect new_rect{ 200, 300, 400, 400 };
         ASSERT_EQ(window->Rect(), new_rect);
+
+        window->Destroy();
     }
 }
 
