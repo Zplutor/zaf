@@ -720,6 +720,56 @@ public:
     */
     void SetSize(const zaf::Size& size);
 
+    /**
+    Gets the window's width.
+
+    @details
+        This is a shortcut method for `Rect().size.width`.
+    */
+    float Width() const noexcept;
+
+    /**
+    Sets the window's width.
+
+    @param width
+        The new width to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to set the width.
+
+    @details
+        This is a shortcut method for `SetRect()`.
+    */
+    void SetWidth(float width);
+
+    /**
+    Gets the window's height.
+
+    @details
+        This is a shortcut method for `Rect().size.height`.
+    */
+    float Height() const noexcept;
+
+    /**
+    Sets the window's height.
+
+    @param height
+        The new height to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to set the height.
+
+    @details
+        This is a shortcut method for `SetRect()`.
+    */
+    void SetHeight(float height);
+
     zaf::Rect ContentRect() const;
 
     zaf::Size ContentSize() const;
@@ -772,20 +822,6 @@ public:
     }
 
     /**
-     Get window's width.
-     */
-    float Width() const {
-        return Size().width;
-    }
-
-    /**
-     Set window's width.
-     */
-    void SetWidth(float width) {
-        SetSize(zaf::Size(width, Height()));
-    }
-
-    /**
      Get window's minimum width.
      */
     float MinWidth() const;
@@ -804,20 +840,6 @@ public:
      Set window's maximum width.
      */
     void SetMaxWidth(float max_width);
-
-    /**
-     Get window's height.
-     */
-    float Height() const {
-        return Size().height;
-    }
-
-    /**
-     Set window's height.
-     */
-    void SetHeight(float height) {
-        SetSize(zaf::Size(Width(), height));
-    }
 
     /**
      Get window's minimum height.

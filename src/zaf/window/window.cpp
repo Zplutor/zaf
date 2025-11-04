@@ -1952,6 +1952,28 @@ void Window::SetSize(const zaf::Size& size) {
 }
 
 
+float Window::Width() const noexcept {
+    return Size().width;
+}
+
+void Window::SetWidth(float width) {
+    zaf::Size new_size = Size();
+    new_size.width = width;
+    SetSize(new_size);
+}
+
+
+float Window::Height() const noexcept {
+    return Size().height;
+}
+
+void Window::SetHeight(float height) {
+    zaf::Size new_size = Size();
+    new_size.height = height;
+    SetSize(new_size);
+}
+
+
 zaf::Rect Window::ContentRect() const {
     return zaf::Rect{ Point{}, ContentSize() };
 }

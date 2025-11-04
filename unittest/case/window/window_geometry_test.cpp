@@ -417,4 +417,88 @@ TEST_F(WindowTest, SetSize_Destroyed) {
     ASSERT_THROW(window->SetSize(zaf::Size{ 300, 400 }), zaf::InvalidHandleStateError);
 }
 
+
+TEST_F(WindowTest, SetWidth_NotCreated) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetWidth(300);
+    ASSERT_EQ(window->Size(), (zaf::Size{ 300, DefaultWindowSize.height }));
+}
+
+
+TEST_F(WindowTest, SetWidth_Creating) {
+    //TODO
+}
+
+
+TEST_F(WindowTest, SetWidth_Created) {
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->SetWidth(300);
+    ASSERT_EQ(window->Size(), (zaf::Size{ 300, DefaultWindowSize.height }));
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, SetWidth_Destroying) {
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        ASSERT_THROW(window->SetWidth(300), zaf::InvalidHandleStateError);
+        has_asserted = true;
+    });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+}
+
+
+TEST_F(WindowTest, SetWidth_Destroyed) {
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    ASSERT_THROW(window->SetWidth(300), zaf::InvalidHandleStateError);
+}
+
+
+TEST_F(WindowTest, SetHeight_NotCreated) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetHeight(400);
+    ASSERT_EQ(window->Size(), (zaf::Size{ DefaultWindowSize.width, 400 }));
+}
+
+
+TEST_F(WindowTest, SetHeight_Creating) {
+    //TODO
+}
+
+
+TEST_F(WindowTest, SetHeight_Created) {
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->SetHeight(400);
+    ASSERT_EQ(window->Size(), (zaf::Size{ DefaultWindowSize.width, 400 }));
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, SetHeight_Destroying) {
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        ASSERT_THROW(window->SetHeight(400), zaf::InvalidHandleStateError);
+        has_asserted = true;
+        });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+}
+
+
+TEST_F(WindowTest, SetHeight_Destroyed) {
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    ASSERT_THROW(window->SetHeight(400), zaf::InvalidHandleStateError);
+}
+
 }
