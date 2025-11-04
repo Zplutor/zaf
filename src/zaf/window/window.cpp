@@ -1903,8 +1903,7 @@ void Window::SetRect(const zaf::Rect& rect) {
         not_created_state_data.size = rect.size;
     }
     else if (handle_state_ == WindowHandleState::Creating || 
-             handle_state_ == WindowHandleState::Created ||
-             handle_state_ == WindowHandleState::Destroying) {
+             handle_state_ == WindowHandleState::Created) {
 
         auto new_rect = SnapAndTransformToPixels(rect, GetDPI());
         BOOL is_succeeded = SetWindowPos(

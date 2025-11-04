@@ -74,7 +74,11 @@ public:
 Throws a `zaf::Win32Error` with the specified Win32 error value and the source location where this 
 macro is invoked.
 */
-#define ZAF_THROW_WIN32_ERROR(value) throw zaf::Win32Error{ value, ZAF_SOURCE_LOCATION() }
+#define ZAF_THROW_WIN32_ERROR(error_value) \
+{ \
+    auto copied_error_value = static_cast<DWORD>(error_value); \
+    throw zaf::Win32Error{ copied_error_value, ZAF_SOURCE_LOCATION() }; \
+}
 
 /**
 Checks if the specified Win32 error value is failed and if it is, throws a `zaf::Win32Error` with 

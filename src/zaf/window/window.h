@@ -666,7 +666,7 @@ public:
         The new rectangle to be set.
 
     @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroyed`.
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
 
     @throw zaf::Win32Error
         Thrown if fails to set the rectangle.
@@ -688,7 +688,7 @@ public:
         The new position to be set.
 
     @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroyed`.
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
 
     @throw zaf::Win32Error
         Thrown if fails to set the position.
@@ -713,7 +713,7 @@ public:
         The new size to be set.
 
     @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroyed`.
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
 
     @throw zaf::Win32Error
         Thrown if fails to set the size.
