@@ -301,4 +301,120 @@ TEST_F(WindowTest, SetRect_Snaping_AfterCreate) {
     window->Destroy();
 }
 
+
+TEST_F(WindowTest, SetPosition_NotCreated) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetPosition(zaf::Point{ 10, 20 });
+    ASSERT_EQ(
+        window->Rect(), 
+        (zaf::Rect{ 10, 20, DefaultWindowSize.width, DefaultWindowSize.height }));
+}
+
+
+TEST_F(WindowTest, SetPosition_Creating) {
+    //TODO
+}
+
+
+TEST_F(WindowTest, SetPosition_Created) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->SetPosition(zaf::Point{ 10, 20 });
+    ASSERT_EQ(
+        window->Rect(),
+        (zaf::Rect{ 10, 20, DefaultWindowSize.width, DefaultWindowSize.height }));
+
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, SetPosition_Destroying) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        ASSERT_THROW(window->SetPosition(zaf::Point{ 10, 20 }), zaf::InvalidHandleStateError);
+        has_asserted = true;
+    });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+}
+
+
+TEST_F(WindowTest, SetPosition_Destroyed) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    ASSERT_THROW(window->SetPosition(zaf::Point{ 10, 20 }), zaf::InvalidHandleStateError);
+}
+
+
+TEST_F(WindowTest, SetSize_NotCreated) {
+
+    auto window = zaf::Create<zaf::Window>();
+    zaf::Size new_size{ 300, 400 };
+    window->SetSize(new_size);
+
+    auto dpi = window->GetDPI();
+    float screen_width = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXSCREEN)), dpi);
+    float screen_height = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYSCREEN)), dpi);
+    zaf::Point position{
+        (screen_width - new_size.width) / 2,
+        (screen_height - new_size.height) / 2
+    };
+    ASSERT_EQ(window->Rect(), (zaf::Rect{ position, new_size }));
+}
+
+
+TEST_F(WindowTest, SetSize_Creating) {
+    //TODO
+}
+
+
+TEST_F(WindowTest, SetSize_Created) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    zaf::Size new_size{ 300, 400 };
+    window->SetSize(new_size);
+
+    auto dpi = window->GetDPI();
+    float screen_width = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXSCREEN)), dpi);
+    float screen_height = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYSCREEN)), dpi);
+    // Position should not changed after setting size, so we calculate the position based on the 
+    // default size.
+    zaf::Point position{
+        (screen_width - DefaultWindowSize.width) / 2,
+        (screen_height - DefaultWindowSize.height) / 2
+    };
+    ASSERT_EQ(window->Rect(), (zaf::Rect{ position, new_size }));
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, SetSize_Destroying) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        ASSERT_THROW(window->SetSize(zaf::Size{ 300, 400 }), zaf::InvalidHandleStateError);
+        has_asserted = true;
+    });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+}
+
+
+TEST_F(WindowTest, SetSize_Destroyed) {
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->Destroy();
+    ASSERT_THROW(window->SetSize(zaf::Size{ 300, 400 }), zaf::InvalidHandleStateError);
+}
+
 }
