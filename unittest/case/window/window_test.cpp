@@ -961,7 +961,6 @@ TEST_F(WindowTest, ShowWindowEvent) {
     bool is_hide_event_called{};
 
     auto window = zaf::Create<zaf::Window>();
-    window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
     window->SetRect(zaf::Rect{ 0, 0, 1, 1 });
 
     window->Disposables() += window->ShowEvent().Subscribe(
@@ -985,7 +984,6 @@ TEST_F(WindowTest, ShowWindowEvent) {
 TEST_F(WindowTest, FocusEvent) {
 
     auto window = zaf::Create<zaf::Window>();
-    window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
     window->SetRect(zaf::Rect{ 0, 0, 1, 1 });
     window->Show();
 

@@ -30,7 +30,6 @@ std::shared_ptr<Window> PopupMenuController::InitializeOwner(
         //Create an invisible window to be the owner of the menu if there is no owner specified.
         owner = Create<Window>();
         owner->SetRect(Rect{});
-        owner->SetInitialRectStyle(InitialRectStyle::Custom);
         owner->SetIsToolWindow(true);
         owner->SetActivateOptions(ActivateOptions::NoActivate);
         menu->SetOwner(owner);

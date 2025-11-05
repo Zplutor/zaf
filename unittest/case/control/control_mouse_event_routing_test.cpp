@@ -10,7 +10,6 @@ namespace {
 std::shared_ptr<zaf::Window> CreateTestWindow() {
 
     auto window = zaf::Create<zaf::Window>();
-    window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
     window->SetPosition({});
     window->SetContentSize(zaf::Size{ 200, 200 });
     return window;

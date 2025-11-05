@@ -1866,16 +1866,6 @@ void Window::OnFocusedControlChanged(const FocusedControlChangedInfo& event_info
 }
 
 
-InitialRectStyle Window::InitialRectStyle() const {
-    return initial_rect_style_;
-}
-
-
-void Window::SetInitialRectStyle(zaf::InitialRectStyle initial_rect_style) {
-    initial_rect_style_ = initial_rect_style;
-}
-
-
 Rect Window::Rect() const noexcept {
 
     if (handle_state_ == WindowHandleState::NotCreated) {

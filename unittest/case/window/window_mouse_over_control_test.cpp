@@ -12,7 +12,6 @@ public:
     static void SetUpTestCase() {
     
         s_window = zaf::Create<zaf::Window>();
-        s_window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
         s_window->SetPosition({});
         s_window->SetContentSize(zaf::Size{ 200, 200 });
         s_window->Show();

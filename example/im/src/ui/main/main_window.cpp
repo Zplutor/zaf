@@ -6,7 +6,6 @@ void MainWindow::Initialize() {
 
     __super::Initialize();
 
-    SetInitialRectStyle(zaf::InitialRectStyle::CenterInScreen);
     SetSize(zaf::Size(800, 600));
 
     auto conversation_panel = zaf::Create<ConversationPanel>();

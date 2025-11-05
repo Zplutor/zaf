@@ -14,7 +14,6 @@ class ControlFocusTest : public testing::Test, rx::DisposableHost {
 public:
     static void SetUpTestCase() {
         test_window_ = zaf::Create<zaf::Window>();
-        test_window_->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
         test_window_->SetRect(zaf::Rect{ 0, 0, 100, 100 });
         test_window_->RootControl()->SetName(L"Root");
         test_window_->Show();
@@ -155,7 +154,6 @@ TEST(ControlTest, IsFocused) {
     ASSERT_FALSE(control->IsFocused());
 
     auto window = zaf::Create<zaf::Window>();
-    window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
     window->SetRect(zaf::Rect{ 0, 0, 100, 100 });
 
     window->RootControl()->AddChild(control);
@@ -188,7 +186,6 @@ TEST(ControlTest, IsInFocusedContext) {
     ASSERT_FALSE(parent->IsInFocusedContext());
 
     auto window = zaf::Create<zaf::Window>();
-    window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
     window->SetRect(zaf::Rect{ 0, 0, 100, 100 });
     window->RootControl()->AddChild(parent);
 

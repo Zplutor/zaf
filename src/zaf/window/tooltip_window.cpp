@@ -119,7 +119,6 @@ void TooltipWindow::Initialize() {
     this->SetIsToolWindow(true);
     this->SetIsTopmost(true);
     this->SetActivateOptions(ActivateOptions::NoActivate);
-    this->SetInitialRectStyle(InitialRectStyle::Custom);
 
     label_ = zaf::Create<zaf::Label>();
     label_->SetPadding(Frame{ 5, 5, 5, 5});

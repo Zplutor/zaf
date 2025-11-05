@@ -27,7 +27,6 @@
 #include <zaf/window/event/show_window_event_info.h>
 #include <zaf/window/event/window_focus_event_info.h>
 #include <zaf/window/event/window_size_changed_info.h>
-#include <zaf/window/initial_rect_style.h>
 #include <zaf/window/internal/window_handle_state_data.h>
 #include <zaf/window/internal/window_not_created_state_data.h>
 #include <zaf/window/message/message.h>
@@ -632,18 +631,6 @@ public:
         Thrown if fails to change the window style.
     */
     void SetActivateOptions(zaf::ActivateOptions options);
-
-    /**
-     Get the window's initial rect style.
-
-     The default value is CenterInScreen.
-     */
-    InitialRectStyle InitialRectStyle() const;
-
-    /**
-     Set the window's initial rect style.
-     */
-    void SetInitialRectStyle(zaf::InitialRectStyle initial_rect_style);
 
     /**
     Gets the window's rectangle in screen coordinate.
@@ -1418,7 +1405,6 @@ private:
 
     std::weak_ptr<Window> owner_;
 
-    zaf::InitialRectStyle initial_rect_style_{ zaf::InitialRectStyle::CenterInOwner };
     zaf::ActivateOptions activate_options_{ zaf::ActivateOptions::Normal };
     std::optional<float> min_width_;
     std::optional<float> max_width_;
@@ -1459,7 +1445,6 @@ private:
 ZAF_OBJECT_BEGIN(Window)
 ZAF_OBJECT_PARSER(WindowParser)
 ZAF_OBJECT_PROPERTY(Owner)
-ZAF_OBJECT_PROPERTY(InitialRectStyle)
 ZAF_OBJECT_PROPERTY(Rect)
 ZAF_OBJECT_PROPERTY(Position)
 ZAF_OBJECT_PROPERTY(Size)

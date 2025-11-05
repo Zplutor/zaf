@@ -12,7 +12,6 @@ class ControlStyleTest : public testing::Test, public rx::DisposableHost {
 public:
     static void SetUpTestCase() {
         test_window_ = zaf::Create<zaf::Window>();
-        test_window_->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
         test_window_->SetRect(zaf::Rect{ 0, 0, 100, 100 });
         test_window_->Show();
     }

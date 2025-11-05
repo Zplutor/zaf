@@ -113,7 +113,6 @@ TEST(ScrollBoxTest, ReserveScrollContentPositionAfterLayout) {
 TEST(ScrollBoxTest, MouseWheelEvent) {
 
     auto window = Create<Window>();
-    window->SetInitialRectStyle(InitialRectStyle::Custom);
     window->SetPosition({});
     window->SetContentSize(Size{ 200, 200 });
 

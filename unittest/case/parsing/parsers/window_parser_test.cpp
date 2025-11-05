@@ -12,23 +12,6 @@ TEST(WindowParser, ParseIsPopup) {
 }
 
 
-TEST(WindowParser, ParseInitialRectStyle) {
-
-    bool result = TestEnumProperty<zaf::Window, zaf::InitialRectStyle>(
-        "InitialRectStyle",
-        {
-            { zaf::InitialRectStyle::CenterInScreen, "CenterInScreen" },
-            { zaf::InitialRectStyle::CenterInOwner, "CenterInOwner" },
-            { zaf::InitialRectStyle::Custom, "Custom" },
-        },
-        [](zaf::Window& window) {
-            return window.InitialRectStyle();
-        }
-    );
-    ASSERT_TRUE(result);
-}
-
-
 TEST(WindowParser, ParseHasBorder) {
 
     ASSERT_TRUE(TestBooleanProperty<zaf::Window>("HasBorder", [](zaf::Window& window) {

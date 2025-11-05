@@ -35,7 +35,6 @@ ListControlTestFixture::~ListControlTestFixture() {
 void ListControlTestFixture::InitializeWindow() {
 
     window_ = Create<zaf::Window>();
-    window_->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
     window_->SetRect(zaf::Rect{ 0, 0, 100, 200 });
     window_->Show();
 }

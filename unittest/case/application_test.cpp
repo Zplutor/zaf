@@ -21,7 +21,6 @@ TEST(ApplicationTest, MainWindowDestroyed) {
     //In this test case, check if there is runtime exception on main window destroyed.
 
     auto window = zaf::Create<zaf::Window>();
-    window->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
     window->SetRect(zaf::Rect{ -100, -100, 100, 100 });
     window->Show();
 

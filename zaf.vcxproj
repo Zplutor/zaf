@@ -417,7 +417,6 @@
     <ClCompile Include="src\zaf\window\event\destroy_infos.cpp" />
     <ClCompile Include="src\zaf\window\event\show_window_event_info.cpp" />
     <ClCompile Include="src\zaf\window\event\window_focus_event_info.cpp" />
-    <ClCompile Include="src\zaf\window\initial_rect_style.cpp" />
     <ClCompile Include="src\zaf\window\inspector\inspector_window.cpp" />
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_control_item.cpp" />
     <ClCompile Include="src\zaf\window\inspector\internal\inspect_data_source.cpp" />
@@ -1008,7 +1007,6 @@
     <ClInclude Include="src\zaf\window\event\destroy_infos.h" />
     <ClInclude Include="src\zaf\window\event\show_window_event_info.h" />
     <ClInclude Include="src\zaf\window\event\window_focus_event_info.h" />
-    <ClInclude Include="src\zaf\window\initial_rect_style.h" />
     <ClInclude Include="src\zaf\window\inspector\inspector_window.h" />
     <ClInclude Include="src\zaf\window\inspector\internal\inspector_port.h" />
     <ClInclude Include="src\zaf\window\inspector\internal\inspect_control_item.h" />

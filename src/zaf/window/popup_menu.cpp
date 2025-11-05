@@ -23,7 +23,6 @@ void PopupMenu::Initialize() {
     this->SetHasTitleBar(false);
     this->SetHasSystemMenu(false);
     this->SetIsSizable(false);
-    this->SetInitialRectStyle(InitialRectStyle::Custom);
     this->SetActivateOptions(ActivateOptions::NoActivate);
     this->SetIsTopmost(true);
 

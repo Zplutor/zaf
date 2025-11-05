@@ -35,7 +35,6 @@ protected:
     void SetUp() override {
 
         window_ = zaf::Create<zaf::Window>();
-        window_->SetInitialRectStyle(zaf::InitialRectStyle::Custom);
         window_->SetRect(zaf::Rect{ 0, 0, 100, 100 });
         window_->SetHasBorder(false);
         window_->SetIsPopup(true);

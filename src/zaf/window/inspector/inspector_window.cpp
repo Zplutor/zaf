@@ -43,7 +43,6 @@ void InspectorWindow::Initialize() {
     rect.position.y = target_window_rect.position.y;
 
     SetRect(rect);
-    SetInitialRectStyle(InitialRectStyle::Custom);
 
     RootControl()->SetLayouter(Create<VerticalLayouter>());
 

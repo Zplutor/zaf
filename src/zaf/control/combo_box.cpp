@@ -81,7 +81,6 @@ void ComboBox::Initialize() {
     drop_down_window_->SetIsPopup(true);
     drop_down_window_->SetHasBorder(false);
     drop_down_window_->SetActivateOptions(ActivateOptions::NoActivate);
-    drop_down_window_->SetInitialRectStyle(InitialRectStyle::Custom);
 
     Disposables() += drop_down_window_->DestroyedEvent().Subscribe(
         std::bind(&ComboBox::DropDownWindowDestroy, this));
