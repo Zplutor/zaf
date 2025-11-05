@@ -1978,14 +1978,24 @@ void Window::SetMinWidth(float min_width) {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
     }
 
+    auto backup_min_width = min_width_;
+    auto backup_max_width = max_width_;
+
     min_width_ = min_width;
 
     if (MaxWidth() < min_width) {
-        SetMaxWidth(min_width);
+        max_width_ = min_width;
     }
 
-    if (Width() < min_width) {
-        SetWidth(min_width);
+    try {
+        if (Width() < min_width) {
+            SetWidth(min_width);
+        }
+    }
+    catch (...) {
+        min_width_ = backup_min_width;
+        max_width_ = backup_max_width;
+        throw;
     }
 }
 
@@ -2004,14 +2014,24 @@ void Window::SetMaxWidth(float max_width) {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
     }
 
+    auto backup_min_width = min_width_;
+    auto backup_max_width = max_width_;
+
     max_width_ = max_width;
 
     if (MinWidth() > max_width) {
-        SetMinWidth(max_width);
+        min_width_ = max_width;
     }
 
-    if (Width() > max_width) {
-        SetWidth(max_width);
+    try {
+        if (Width() > max_width) {
+            SetWidth(max_width);
+        }
+    }
+    catch (...) {
+        min_width_ = backup_min_width;
+        max_width_ = backup_max_width;
+        throw;
     }
 }
 
@@ -2030,14 +2050,24 @@ void Window::SetMinHeight(float min_height) {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
     }
 
+    auto backup_min_height = min_height_;
+    auto backup_max_height = max_height_;
+
     min_height_ = min_height;
 
     if (MaxHeight() < min_height) {
-        SetMaxHeight(min_height);
+        max_height_ = min_height;
     }
 
-    if (Height() < min_height) {
-        SetHeight(min_height);
+    try {
+        if (Height() < min_height) {
+            SetHeight(min_height);
+        }
+    }
+    catch (...) {
+        min_height_ = backup_min_height;
+        max_height_ = backup_max_height;
+        throw;
     }
 }
 
@@ -2056,14 +2086,24 @@ void Window::SetMaxHeight(float max_height) {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
     }
 
+    auto backup_min_height = min_height_;
+    auto backup_max_height = max_height_;
+
     max_height_ = max_height;
 
     if (MinHeight() > max_height) {
-        SetMinHeight(max_height);
+        min_height_ = max_height;
     }
 
-    if (Height() > max_height) {
-        SetHeight(max_height);
+    try {
+        if (Height() > max_height) {
+            SetHeight(max_height);
+        }
+    }
+    catch (...) {
+        min_height_ = backup_min_height;
+        max_height_ = backup_max_height;
+        throw;
     }
 }
 
