@@ -757,6 +757,160 @@ public:
     */
     void SetHeight(float height);
 
+    /**
+    Gets the window's minimum width.
+
+    @details
+        The default value is retrieved from `GetSystemMetrics(SM_CXMINTRACK)`.
+    */
+    float MinWidth() const noexcept;
+
+    /**
+    Sets the window's minimum width.
+
+    @param min_width
+        The new minimum width to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window's width if it is less than the new minimum width.
+
+    @details
+        Setting this property may change the maximum width and the current width of the window if
+        they are less than the new minimum width.
+    */
+    void SetMinWidth(float min_width);
+
+    /**
+    Gets the window's maximum width.
+
+    @details
+        The default value is retrieved from `GetSystemMetrics(SM_CXMAXTRACK)`.
+    */
+    float MaxWidth() const noexcept;
+
+    /**
+    Sets the window's maximum width.
+
+    @param max_width
+        The new maximum width to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window's width if it is greater than the new maximum width.
+
+    @details
+        Setting this property may change the minimum width and the current width of the window if
+        they are greater than the new maximum width.
+    */
+    void SetMaxWidth(float max_width);
+
+    /**
+    Gets the window's minimum height.
+
+    @details
+        The default value is retrieved from `GetSystemMetrics(SM_CYMINTRACK)`.
+    */
+    float MinHeight() const noexcept;
+
+    /**
+    Sets the window's minimum height.
+
+    @param min_height
+        The new minimum height to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window's height if it is less than the new minimum height.
+
+    @details
+        Setting this property may change the maximum height and the current height of the window if
+        they are less than the new minimum height.
+    */
+    void SetMinHeight(float min_height);
+
+    /**
+    Gets the window's maximum height.
+
+    @details
+        The default value is retrieved from `GetSystemMetrics(SM_CYMAXTRACK)`.
+    */
+    float MaxHeight() const noexcept;
+
+    /**
+    Sets the window's maximum height.
+
+    @param max_height
+        The new maximum height to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window's height if it is greater than the new maximum height.
+
+    @details
+        Setting this property may change the minimum height and the current height of the window if
+        they are greater than the new maximum height.
+    */
+    void SetMaxHeight(float max_height);
+
+    /**
+    Gets the window's minimum size.
+
+    @details
+        This is a shortcut method for `zaf::Size{ MinWidth(), MinHeight() }`.
+    */
+    zaf::Size MinSize() const noexcept;
+
+    /**
+    Sets the windows's minimum size.
+
+    @param size
+        The new minimum size to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window's size if it is less than the new minimum size.
+
+    @details
+        This is a shortcut method for calling both `SetMinWidth()` and `SetMinHeight()`.
+    */
+    void SetMinSize(const zaf::Size& size);
+
+    /**
+    Gets the windows's maximum size.
+
+    @details
+        This is a shortcut method for `zaf::Size{ MaxWidth(), MaxHeight() }`.
+    */
+    zaf::Size MaxSize() const noexcept;
+
+    /**
+    Sets the window's maximum size.
+
+    @param size
+        The new maximum size to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to change the window's size if it is greater than the new maximum size.
+
+    @details
+        This is a shortcut method for calling both `SetMaxWidth()` and `SetMaxHeight()`.
+    */
+    void SetMaxSize(const zaf::Size& size);
+
     zaf::Rect ContentRect() const;
 
     zaf::Size ContentSize() const;
@@ -777,76 +931,6 @@ public:
     void SetContentHeight(float height) {
         SetContentSize(zaf::Size{ ContentSize().width, height });
     }
-
-    /**
-     Get window's minimum size.
-     */
-    zaf::Size MinSize() const {
-        return zaf::Size(MinWidth(), MinHeight());
-    }
-
-    /**
-     Set windows's minimum size.
-     */
-    void SetMinSize(const zaf::Size& size) {
-        SetMinWidth(size.width);
-        SetMinHeight(size.height);
-    }
-
-    /**
-     Get windows's maximum size.
-     */
-    zaf::Size MaxSize() const {
-        return zaf::Size(MaxWidth(), MaxHeight());
-    }
-
-    /**
-     Set window's maximum size.
-     */
-    void SetMaxSize(const zaf::Size& size) {
-        SetMaxWidth(size.width);
-        SetMaxHeight(size.height);
-    }
-
-    /**
-     Get window's minimum width.
-     */
-    float MinWidth() const;
-
-    /**
-     Set window's minimum width.
-     */
-    void SetMinWidth(float min_width);
-
-    /**
-     Get window's maximum width.
-     */
-    float MaxWidth() const;
-
-    /**
-     Set window's maximum width.
-     */
-    void SetMaxWidth(float max_width);
-
-    /**
-     Get window's minimum height.
-     */
-    float MinHeight() const;
-
-    /**
-     Set window's minimum height.
-     */
-    void SetMinHeight(float min_height);
-
-    /**
-     Get window's maximum height.
-     */
-    float MaxHeight() const;
-
-    /**
-     Set window's maximum height.
-     */
-    void SetMaxHeight(float max_height);
 
     rx::Observable<WindowSizeChangedInfo> SizeChangedEvent() const;
 

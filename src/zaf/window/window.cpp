@@ -1964,6 +1964,130 @@ void Window::SetHeight(float height) {
 }
 
 
+float Window::MinWidth() const noexcept {
+    if (min_width_) {
+        return *min_width_;
+    }
+    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)), GetDPI());
+}
+
+void Window::SetMinWidth(float min_width) {
+
+    if (handle_state_ == WindowHandleState::Destroying ||
+        handle_state_ == WindowHandleState::Destroyed) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
+    min_width_ = min_width;
+
+    if (MaxWidth() < min_width) {
+        SetMaxWidth(min_width);
+    }
+
+    if (Width() < min_width) {
+        SetWidth(min_width);
+    }
+}
+
+
+float Window::MaxWidth() const noexcept {
+    if (max_width_) {
+        return *max_width_;
+    }
+    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMAXTRACK)), GetDPI());
+}
+
+void Window::SetMaxWidth(float max_width) {
+
+    if (handle_state_ == WindowHandleState::Destroying ||
+        handle_state_ == WindowHandleState::Destroyed) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
+    max_width_ = max_width;
+
+    if (MinWidth() > max_width) {
+        SetMinWidth(max_width);
+    }
+
+    if (Width() > max_width) {
+        SetWidth(max_width);
+    }
+}
+
+
+float Window::MinHeight() const noexcept {
+    if (min_height_) {
+        return *min_height_;
+    }
+    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)), GetDPI());
+}
+
+void Window::SetMinHeight(float min_height) {
+
+    if (handle_state_ == WindowHandleState::Destroying ||
+        handle_state_ == WindowHandleState::Destroyed) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
+    min_height_ = min_height;
+
+    if (MaxHeight() < min_height) {
+        SetMaxHeight(min_height);
+    }
+
+    if (Height() < min_height) {
+        SetHeight(min_height);
+    }
+}
+
+
+float Window::MaxHeight() const noexcept {
+    if (max_height_) {
+        return *max_height_;
+    }
+    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMAXTRACK)), GetDPI());
+}
+
+void Window::SetMaxHeight(float max_height) {
+
+    if (handle_state_ == WindowHandleState::Destroying ||
+        handle_state_ == WindowHandleState::Destroyed) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
+    max_height_ = max_height;
+
+    if (MinHeight() > max_height) {
+        SetMinHeight(max_height);
+    }
+
+    if (Height() > max_height) {
+        SetHeight(max_height);
+    }
+}
+
+
+zaf::Size Window::MinSize() const noexcept {
+    return zaf::Size{ MinWidth(), MinHeight() };
+}
+
+void Window::SetMinSize(const zaf::Size& size) {
+    SetMinWidth(size.width);
+    SetMinHeight(size.height);
+}
+
+
+zaf::Size Window::MaxSize() const noexcept {
+    return zaf::Size{ MaxWidth(), MaxHeight() };
+}
+
+void Window::SetMaxSize(const zaf::Size& size) {
+    SetMaxWidth(size.width);
+    SetMaxHeight(size.height);
+}
+
+
 zaf::Rect Window::ContentRect() const {
     return zaf::Rect{ Point{}, ContentSize() };
 }
@@ -2028,106 +2152,6 @@ zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) c
 
     result = ToDIPs(result, dpi);
     return result;
-}
-
-
-float Window::MinWidth() const {
-
-    if (min_width_) {
-        return *min_width_;
-    }
-    return static_cast<float>(ToDIPs(
-        static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)),
-        GetDPI()));
-}
-
-
-void Window::SetMinWidth(float min_width) {
-
-    min_width_ = min_width;
-
-    if (MaxWidth() < min_width) {
-        SetMaxWidth(min_width);
-    }
-
-    if (Width() < min_width) {
-        SetWidth(min_width);
-    }
-}
-
-
-float Window::MaxWidth() const {
-
-    if (max_width_) {
-        return *max_width_;
-    }
-    return static_cast<float>(ToDIPs(
-        static_cast<float>(GetSystemMetrics(SM_CXMAXTRACK)),
-        GetDPI()));
-}
-
-
-void Window::SetMaxWidth(float max_width) {
-
-    max_width_ = max_width;
-
-    if (MinWidth() > max_width) {
-        SetMinWidth(max_width);
-    }
-
-    if (Width() > max_width) {
-        SetWidth(max_width);
-    }
-}
-
-
-float Window::MinHeight() const {
-
-    if (min_height_) {
-        return *min_height_;
-    }
-    return static_cast<float>(ToDIPs(
-        static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)),
-        GetDPI()));
-}
-
-
-void Window::SetMinHeight(float min_height) {
-
-    min_height_ = min_height;
-
-    if (MaxHeight() < min_height) {
-        SetMaxHeight(min_height);
-    }
-
-    if (Height() < min_height) {
-        SetHeight(min_height);
-    }
-}
-
-
-float Window::MaxHeight() const {
-
-    if (max_height_) {
-        return *max_height_;
-    }
-    return static_cast<float>(ToDIPs(
-        static_cast<float>(GetSystemMetrics(SM_CYMAXTRACK)), 
-        GetDPI()));
-}
-
-
-void Window::SetMaxHeight(float max_height) {
-
-    max_height_ = max_height;
-
-    if (MinHeight() > max_height) {
-        SetMinHeight(max_height);
-    }
-
-    if (Height() > max_height) {
-        SetHeight(max_height);
-    }
 }
 
 

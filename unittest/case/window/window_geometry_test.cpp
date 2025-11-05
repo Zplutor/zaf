@@ -501,4 +501,219 @@ TEST_F(WindowTest, SetHeight_Destroyed) {
     ASSERT_THROW(window->SetHeight(400), zaf::InvalidHandleStateError);
 }
 
+
+TEST_F(WindowTest, MinWidth_DefaultValue) {
+    auto window = zaf::Create<zaf::Window>();
+    auto dpi = static_cast<float>(GetDpiForSystem());
+    auto default_value = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)), dpi);
+    ASSERT_EQ(window->MinWidth(), default_value);
+}
+
+
+TEST_F(WindowTest, SetMinWidth) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMaxWidth(400);
+    window->SetWidth(300);
+    window->SetMinWidth(500);
+    ASSERT_EQ(window->MinWidth(), 500);
+    ASSERT_EQ(window->MaxWidth(), 500);
+    ASSERT_EQ(window->Width(), 500);
+}
+
+
+TEST_F(WindowTest, SetMinWidth_InvalidStates) {
+
+    auto window = zaf::Create<zaf::Window>();
+    //Destroying state
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        ASSERT_THROW(window->SetMinWidth(200), zaf::InvalidHandleStateError);
+        has_asserted = true;
+    });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+    //Destroyed state
+    ASSERT_THROW(window->SetMinWidth(200), zaf::InvalidHandleStateError);
+}
+
+
+TEST_F(WindowTest, MaxWidth_DefaultValue) {
+    auto window = zaf::Create<zaf::Window>();
+    auto dpi = static_cast<float>(GetDpiForSystem());
+    auto default_value = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMAXTRACK)), dpi);
+    ASSERT_EQ(window->MaxWidth(), default_value);
+}
+
+
+TEST_F(WindowTest, SetMaxWidth) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMinWidth(400);
+    window->SetWidth(500);
+    window->SetMaxWidth(300);
+    ASSERT_EQ(window->MaxWidth(), 300);
+    ASSERT_EQ(window->MinWidth(), 300);
+}
+
+
+TEST_F(WindowTest, SetMaxWidth_InvalidStates) {
+
+    auto window = zaf::Create<zaf::Window>();
+    //Destroying state
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        ASSERT_THROW(window->SetMaxWidth(800), zaf::InvalidHandleStateError);
+        has_asserted = true;
+    });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+    //Destroyed state
+    ASSERT_THROW(window->SetMaxWidth(800), zaf::InvalidHandleStateError);
+}
+
+
+TEST_F(WindowTest, MinHeight_DefaultValue) {
+    auto window = zaf::Create<zaf::Window>();
+    auto dpi = static_cast<float>(GetDpiForSystem());
+    auto default_value = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)), dpi);
+    ASSERT_EQ(window->MinHeight(), default_value);
+}
+
+
+TEST_F(WindowTest, SetMinHeight) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMaxHeight(400);
+    window->SetHeight(300);
+    window->SetMinHeight(500);
+    ASSERT_EQ(window->MinHeight(), 500);
+    ASSERT_EQ(window->MaxHeight(), 500);
+    ASSERT_EQ(window->Height(), 500);
+}
+
+
+TEST_F(WindowTest, SetMinHeight_InvalidStates) {
+
+    auto window = zaf::Create<zaf::Window>();
+    //Destroying state
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        ASSERT_THROW(window->SetMinHeight(200), zaf::InvalidHandleStateError);
+        has_asserted = true;
+    });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+    //Destroyed state
+    ASSERT_THROW(window->SetMinHeight(200), zaf::InvalidHandleStateError);
+}
+
+
+TEST_F(WindowTest, MaxHeight_DefaultValue) {
+    auto window = zaf::Create<zaf::Window>();
+    auto dpi = static_cast<float>(GetDpiForSystem());
+    auto default_value = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMAXTRACK)), dpi);
+    ASSERT_EQ(window->MaxHeight(), default_value);
+}
+
+
+TEST_F(WindowTest, SetMaxHeight) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMinHeight(400);
+    window->SetHeight(500);
+    window->SetMaxHeight(300);
+    ASSERT_EQ(window->MaxHeight(), 300);
+    ASSERT_EQ(window->MinHeight(), 300);
+    ASSERT_EQ(window->Height(), 300);
+}
+
+
+TEST_F(WindowTest, SetMaxHeight_InvalidStates) {
+
+    auto window = zaf::Create<zaf::Window>();
+    //Destroying state
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        ASSERT_THROW(window->SetMaxHeight(800), zaf::InvalidHandleStateError);
+        has_asserted = true;
+    });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+    //Destroyed state
+    ASSERT_THROW(window->SetMaxHeight(800), zaf::InvalidHandleStateError);
+}
+
+
+TEST_F(WindowTest, MinSize_DefaultValue) {
+    auto window = zaf::Create<zaf::Window>();
+    auto dpi = static_cast<float>(GetDpiForSystem());
+    auto default_width = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)), dpi);
+    auto default_height = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)), dpi);
+    ASSERT_EQ(window->MinSize(), (zaf::Size{ default_width, default_height }));
+}
+
+
+TEST_F(WindowTest, SetMinSize) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMaxSize(zaf::Size{ 400, 500 });
+    window->SetSize(zaf::Size{ 300, 400 });
+    window->SetMinSize(zaf::Size{ 500, 600 });
+    ASSERT_EQ(window->MinSize(), (zaf::Size{ 500, 600 }));
+    ASSERT_EQ(window->MaxSize(), (zaf::Size{ 500, 600 }));
+    ASSERT_EQ(window->Size(), (zaf::Size{ 500, 600 }));
+}
+
+
+TEST_F(WindowTest, SetMinSize_InvalidStates) {
+    auto window = zaf::Create<zaf::Window>();
+    //Destroying state
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        ASSERT_THROW(window->SetMinSize(zaf::Size{ 200, 300 }), zaf::InvalidHandleStateError);
+        has_asserted = true;
+    });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+    //Destroyed state
+    ASSERT_THROW(window->SetMinSize(zaf::Size{ 200, 300 }), zaf::InvalidHandleStateError);
+}
+
+
+TEST_F(WindowTest, MaxSize_DefaultValue) {
+    auto window = zaf::Create<zaf::Window>();
+    auto dpi = static_cast<float>(GetDpiForSystem());
+    auto default_width = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMAXTRACK)), dpi);
+    auto default_height = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMAXTRACK)), dpi);
+    ASSERT_EQ(window->MaxSize(), (zaf::Size{ default_width, default_height }));
+}
+
+
+TEST_F(WindowTest, SetMaxSize) {
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMinSize(zaf::Size{ 400, 500 });
+    window->SetSize(zaf::Size{ 500, 600 });
+    window->SetMaxSize(zaf::Size{ 300, 400 });
+    ASSERT_EQ(window->MaxSize(), (zaf::Size{ 300, 400 }));
+    ASSERT_EQ(window->MinSize(), (zaf::Size{ 300, 400 }));
+    ASSERT_EQ(window->Size(), (zaf::Size{ 300, 400 }));
+}
+
+
+TEST_F(WindowTest, SetMaxSize_InvalidStates) {
+    auto window = zaf::Create<zaf::Window>();
+    //Destroying state
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        ASSERT_THROW(window->SetMaxSize(zaf::Size{ 800, 900 }), zaf::InvalidHandleStateError);
+        has_asserted = true;
+    });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+    //Destroyed state
+    ASSERT_THROW(window->SetMaxSize(zaf::Size{ 800, 900 }), zaf::InvalidHandleStateError);
+}
+
 }
