@@ -650,7 +650,8 @@ public:
     Sets the window's rectangle in screen coordinate.
 
     @param rect
-        The new rectangle to be set.
+        The new rectangle to be set. It will be clamped to the minimum and maximum size of the 
+        window.
 
     @throw zaf::InvalidHandleStateError
         Thrown if the window handle state is `Destroying` or `Destroyed`.
@@ -1419,6 +1420,7 @@ private:
     zaf::Rect GetInitialRect(
         float dpi, 
         const internal::WindowNotCreatedStateData& state_data) const;
+    zaf::Size ClampSize(const zaf::Size& size) const noexcept;
     void CreateRenderer();
     void RecreateRenderer();
     zaf::Size AdjustContentSizeToWindowSize(const zaf::Size& content_size) const;

@@ -716,4 +716,132 @@ TEST_F(WindowTest, SetMaxSize_InvalidStates) {
     ASSERT_THROW(window->SetMaxSize(zaf::Size{ 800, 900 }), zaf::InvalidHandleStateError);
 }
 
+
+TEST_F(WindowTest, SetRect_MinSize) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMinSize({ 300, 300 });
+
+    // Not created
+    window->SetRect({ 0, 0, 200, 200 });
+    ASSERT_EQ(window->Size(), (zaf::Size{ 300, 300 }));
+
+    // Created
+    auto holder = window->CreateHandle();
+    window->SetRect({ 0, 0, 200, 200 });
+    ASSERT_EQ(window->Size(), (zaf::Size{ 300, 300 }));
+}
+
+
+TEST_F(WindowTest, SetRect_MaxSize) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMaxSize({ 400, 400 });
+
+    // Not created
+    window->SetRect({ 0, 0, 500, 500 });
+    ASSERT_EQ(window->Size(), (zaf::Size{ 400, 400 }));
+
+    // Created
+    auto holder = window->CreateHandle();
+    window->SetRect({ 0, 0, 500, 500 });
+    ASSERT_EQ(window->Size(), (zaf::Size{ 400, 400 }));
+}
+
+
+TEST_F(WindowTest, SetSize_MinSize) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMinSize({ 300, 300 });
+
+    // Not created
+    window->SetSize({ 200, 200 });
+    ASSERT_EQ(window->Size(), (zaf::Size{ 300, 300 }));
+
+    // Created
+    auto holder = window->CreateHandle();
+    window->SetSize({ 200, 200 });
+    ASSERT_EQ(window->Size(), (zaf::Size{ 300, 300 }));
+}
+
+
+TEST_F(WindowTest, SetSize_MaxSize) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMaxSize({ 400, 400 });
+
+    // Not created
+    window->SetSize({ 500, 500 });
+    ASSERT_EQ(window->Size(), (zaf::Size{ 400, 400 }));
+
+    // Created
+    auto holder = window->CreateHandle();
+    window->SetSize({ 500, 500 });
+    ASSERT_EQ(window->Size(), (zaf::Size{ 400, 400 }));
+}
+
+
+TEST_F(WindowTest, SetWidth_MinWidth) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMinWidth(500);
+
+    // Not created
+    window->SetWidth(400);
+    ASSERT_EQ(window->Width(), 500);
+
+    // Created
+    auto holder = window->CreateHandle();
+    window->SetWidth(400);
+    ASSERT_EQ(window->Width(), 500);
+}
+
+
+TEST_F(WindowTest, SetWidth_MaxWidth) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMaxWidth(500);
+
+    // Not created
+    window->SetWidth(600);
+    ASSERT_EQ(window->Width(), 500);
+
+    // Created
+    auto holder = window->CreateHandle();
+    window->SetWidth(600);
+    ASSERT_EQ(window->Width(), 500);
+}
+
+
+TEST_F(WindowTest, SetHeight_MinHeight) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMinHeight(500);
+
+    // Not created
+    window->SetHeight(400);
+    ASSERT_EQ(window->Height(), 500);
+
+    // Created
+    auto holder = window->CreateHandle();
+    window->SetHeight(400);
+    ASSERT_EQ(window->Height(), 500);
+}
+
+
+TEST_F(WindowTest, SetHeight_MaxHeight) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetMaxHeight(500);
+
+    // Not created
+    window->SetHeight(600);
+    ASSERT_EQ(window->Height(), 500);
+
+    // Created
+    auto holder = window->CreateHandle();
+    window->SetHeight(600);
+    ASSERT_EQ(window->Height(), 500);
+}
+
 }

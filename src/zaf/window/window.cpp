@@ -1890,12 +1890,15 @@ void Window::SetRect(const zaf::Rect& rect) {
     if (handle_state_ == WindowHandleState::NotCreated) {
         auto& not_created_state_data = NotCreatedStateData();
         not_created_state_data.initial_position = rect.position;
-        not_created_state_data.size = rect.size;
+        not_created_state_data.size = ClampSize(rect.size);
     }
     else if (handle_state_ == WindowHandleState::Creating || 
              handle_state_ == WindowHandleState::Created) {
 
-        auto new_rect = SnapAndTransformToPixels(rect, GetDPI());
+        auto new_rect = rect;
+        new_rect.size = ClampSize(new_rect.size);
+        new_rect = SnapAndTransformToPixels(new_rect, GetDPI());
+        
         BOOL is_succeeded = SetWindowPos(
             Handle(),
             nullptr,
@@ -1912,6 +1915,14 @@ void Window::SetRect(const zaf::Rect& rect) {
     else {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
     }
+}
+
+
+zaf::Size Window::ClampSize(const zaf::Size& size) const noexcept {
+    zaf::Size result;
+    result.width = std::clamp(size.width, MinWidth(), MaxWidth());
+    result.height = std::clamp(size.height, MinHeight(), MaxHeight());
+    return result;
 }
 
 
@@ -1932,7 +1943,7 @@ zaf::Size Window::Size() const noexcept {
 
 void Window::SetSize(const zaf::Size& size) {
     if (handle_state_ == WindowHandleState::NotCreated) {
-        NotCreatedStateData().size = size;
+        NotCreatedStateData().size = ClampSize(size);
     }
     else {
         zaf::Rect new_rect = Rect();
