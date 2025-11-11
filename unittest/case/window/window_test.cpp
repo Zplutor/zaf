@@ -849,36 +849,6 @@ TEST_F(WindowTest, SetTitle_DestroyedState) {
 }
 
 
-TEST_F(WindowTest, SetContentSize) {
-
-    auto window = zaf::Create<zaf::Window>();
-
-    zaf::Point window_position{ 10.25, 10.25 };
-    zaf::Size content_size{ 200.25, 300.25 };
-    window->SetRect(zaf::Rect{ window_position, content_size });
-    window->SetContentSize(content_size);
-
-    //Position should not changed after setting content size.
-    ASSERT_EQ(window->Position(), window_position);
-
-    //Window size should be enlarged.
-    auto window_size = window->Size();
-    ASSERT_GT(window_size.width, content_size.width);
-    ASSERT_GT(window_size.height, content_size.height);
-    
-    //Even if window handle is not created yet, content size would be adjusted.
-    zaf::Size adjusted_content_size;
-    adjusted_content_size.width = std::floor(content_size.width);
-    adjusted_content_size.height = std::floor(content_size.height);
-    ASSERT_EQ(window->ContentSize(), adjusted_content_size);
-
-    auto holder = window->CreateHandle();
-
-    //After creating handle, content size should not changed.
-    ASSERT_EQ(window->ContentSize(), adjusted_content_size);
-}
-
-
 TEST_F(WindowTest, RemoveFocusedControl) {
 
     auto control = zaf::Create<zaf::Control>();

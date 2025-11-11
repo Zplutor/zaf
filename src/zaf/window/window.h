@@ -912,27 +912,119 @@ public:
     */
     void SetMaxSize(const zaf::Size& size);
 
-    zaf::Rect ContentRect() const;
+    /**
+    Gets the rectangle of the window's content area in its content coordinate.
 
-    zaf::Size ContentSize() const;
+    @return
+        The content rectangle, whose position is always (0,0).
+
+    @details
+        The content area is the client area of the window, excluding the non-client area such as 
+        borders and title bar.
+
+        This is a shortcut method for `zaf::Rect{ Point{0, 0}, ContentSize() }`.
+    */
+    zaf::Rect ContentRect() const noexcept;
+
+    /**
+    Gets the size of the window's content area.
+
+    @return
+        The size of the content area.
+
+    @details
+        If the window handle state is `NotCreated`, the content size is calculated based on the
+        window size and the window styles.
+
+        If the window handle state is `Creating`, `Created` or `Destroying`, this method returns 
+        the actual content size.
+
+        If the window handle state is `Destroyed`, this method returns a zero size.
+    */
+    zaf::Size ContentSize() const noexcept;
+
+    /**
+    Sets the size of the window's content area.
+
+    @param size
+        The new content size to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to resize the window.
+
+    @details
+        This method adjusts the window's size to make the content area match the specified size.
+    */
     void SetContentSize(const zaf::Size& size);
 
-    float ContentWidth() const {
-        return ContentSize().width;
-    }
+    /**
+    Gets the width of the window's content area.
 
-    void SetContentWidth(float width) {
-        SetContentSize(zaf::Size{ width, ContentSize().height });
-    }
+    @return
+        The width of the content area.
 
-    float ContentHeight() const {
-        return ContentSize().height;
-    }
+    @details
+        This is a shortcut method for `ContentSize().width`.
+    */
+    float ContentWidth() const noexcept;
 
-    void SetContentHeight(float height) {
-        SetContentSize(zaf::Size{ ContentSize().width, height });
-    }
+    /**
+    Sets the width of the window's content area.
 
+    @param width
+        The new content width to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to resize the window.
+
+    @details
+        This is a shortcut method for calling `SetContentSize()`.
+    */
+    void SetContentWidth(float width);
+
+    /**
+    Gets the height of the window's content area.
+
+    @return
+        The height of the content area.
+
+    @details
+        This is a shortcut method for `ContentSize().height`.
+    */
+    float ContentHeight() const noexcept;
+
+    /**
+    Sets the height of the window's content area.
+
+    @param height
+        The new content height to be set.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to resize the window.
+
+    @details
+        This is a shortcut method for calling `SetContentSize()`.
+    */
+    void SetContentHeight(float height);
+
+    /**
+    Gets the event that is raised after the window's size is changed.
+
+    @details
+        @warning
+            Observers of this event must not throw, otherwise the behavior is undefined.
+
+    @see zaf::Window::OnSizeChanged()
+    */
     rx::Observable<WindowSizeChangedInfo> SizeChangedEvent() const;
 
     /**
@@ -1269,14 +1361,20 @@ protected:
     virtual void OnHide(const HideInfo& event_info);
 
     /**
-    Handles window size changed event. This method is called when the window receives WM_SIZE
-    message.
+    Called after the window's size is changed.
 
     @param event_info
         Information of the event.
 
-    The default implementation raises SizeChangedEvent. Derived classes should call the same method
-    of base class.
+    @details
+        This method is called when the window receives WM_SIZE message, after the root control is
+        resized.
+
+        The default implementation of this method raises the `SizeChangedEvent()`. Derived classes
+        should call the same method of the base class if they override this method.
+
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
     */
     virtual void OnSizeChanged(const WindowSizeChangedInfo& event_info);
 
@@ -1423,7 +1521,10 @@ private:
     zaf::Size ClampSize(const zaf::Size& size) const noexcept;
     void CreateRenderer();
     void RecreateRenderer();
-    zaf::Size AdjustContentSizeToWindowSize(const zaf::Size& content_size) const;
+    zaf::Size AdjustContentSizeToWindowSize(
+        const zaf::Size& content_size,
+        const internal::WindowBasicStyle& basic_style,
+        const internal::WindowExtendedStyle& extend_style) const noexcept;
 
     bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);
 

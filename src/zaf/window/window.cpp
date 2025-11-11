@@ -2139,62 +2139,82 @@ void Window::SetMaxSize(const zaf::Size& size) {
 }
 
 
-zaf::Rect Window::ContentRect() const {
+zaf::Rect Window::ContentRect() const noexcept {
     return zaf::Rect{ Point{}, ContentSize() };
 }
 
 
-zaf::Size Window::ContentSize() const {
+zaf::Size Window::ContentSize() const noexcept {
 
-    if (Handle()) {
+    if (handle_state_ == WindowHandleState::NotCreated) {
+
+        auto& not_created_state_data = NotCreatedStateData();
+        auto adjusted_size = AdjustContentSizeToWindowSize(
+            zaf::Size{}, 
+            not_created_state_data.basic_style,
+            not_created_state_data.extended_style);
+        
+        auto result = not_created_state_data.size;
+        result.width = (std::max)(result.width - adjusted_size.width, 0.f);
+        result.height = (std::max)(result.height - adjusted_size.height, 0.f);
+        return result;
+    }
+
+    if (handle_state_ == WindowHandleState::Creating ||
+        handle_state_ == WindowHandleState::Created ||
+        handle_state_ == WindowHandleState::Destroying) {
 
         RECT client_rect{};
         ::GetClientRect(Handle(), &client_rect);
         return ToDIPs(Rect::FromRECT(client_rect).size, GetDPI());
     }
-    else {
 
-        auto adjusted_size = AdjustContentSizeToWindowSize(zaf::Size{});
-
-        auto result = Size();
-        result.width = (std::max)(result.width - adjusted_size.width, 0.f);
-        result.height = (std::max)(result.height - adjusted_size.height, 0.f);
-        return result;
-    }
+    return {};
 }
-
 
 void Window::SetContentSize(const zaf::Size& size) {
 
-    zaf::Rect new_rect;
-    new_rect.position = Position();
-    new_rect.size = AdjustContentSizeToWindowSize(size);
+    zaf::Size window_size;
+    if (handle_state_ == WindowHandleState::NotCreated) {
 
-    SetRect(new_rect);
+        auto& not_created_state_data = NotCreatedStateData();
+        window_size = AdjustContentSizeToWindowSize(
+            size,
+            not_created_state_data.basic_style,
+            not_created_state_data.extended_style);
+    }
+    else if (handle_state_ == WindowHandleState::Creating ||
+             handle_state_ == WindowHandleState::Created) {
+
+        window_size = AdjustContentSizeToWindowSize(
+            size,
+            internal::WindowBasicStyle::FromHandle(Handle()),
+            internal::WindowExtendedStyle::FromHandle(Handle()));
+    }
+    else {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+    SetSize(window_size);
 }
 
 
-zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) const {
+zaf::Size Window::AdjustContentSizeToWindowSize(
+    const zaf::Size& content_size,
+    const internal::WindowBasicStyle& basic_style,
+    const internal::WindowExtendedStyle& extend_style) const noexcept {
 
     auto dpi = GetDPI();
 
     zaf::Rect rect{ zaf::Point{}, content_size };
-    auto rounded_rect = SnapAndTransformToPixels(rect, dpi);
-    auto adjusted_rect = rounded_rect.ToRECT();
+    auto snapped_rect = SnapAndTransformToPixels(rect, dpi);
+    auto adjusted_rect = snapped_rect.ToRECT();
 
-    DWORD style = internal::WindowBasicStyle::FromHandle(Handle()).Value();
-    DWORD extended_style = internal::WindowExtendedStyle::FromHandle(Handle()).Value();
-
-    BOOL is_succeeded = AdjustWindowRectExForDpi(
+    AdjustWindowRectExForDpi(
         &adjusted_rect, 
-        style, 
+        basic_style.Value(),
         FALSE, 
-        extended_style,
+        extend_style.Value(),
         static_cast<UINT>(dpi));
-
-    if (!is_succeeded) {
-        ZAF_THROW_WIN32_ERROR(GetLastError());
-    }
 
     auto result = zaf::Size{
         static_cast<float>(adjusted_rect.right - adjusted_rect.left),
@@ -2203,6 +2223,28 @@ zaf::Size Window::AdjustContentSizeToWindowSize(const zaf::Size& content_size) c
 
     result = ToDIPs(result, dpi);
     return result;
+}
+
+
+float Window::ContentWidth() const noexcept {
+    return ContentSize().width;
+}
+
+void Window::SetContentWidth(float width) {
+    zaf::Size new_size = ContentSize();
+    new_size.width = width;
+    SetContentSize(new_size);
+}
+
+
+float Window::ContentHeight() const noexcept {
+    return ContentSize().height;
+}
+
+void Window::SetContentHeight(float height) {
+    zaf::Size new_size = ContentSize();
+    new_size.height = height;
+    SetContentSize(new_size);
 }
 
 

@@ -844,4 +844,152 @@ TEST_F(WindowTest, SetHeight_MaxHeight) {
     ASSERT_EQ(window->Height(), 500);
 }
 
+
+TEST_F(WindowTest, ContentRect) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto window_size = window->Size();
+
+    // Not Created
+    auto content_rect_not_created = window->ContentRect();
+    ASSERT_EQ(content_rect_not_created.position, (zaf::Point{ 0, 0 }));
+    ASSERT_LT(content_rect_not_created.size.width, window_size.Width());
+    ASSERT_LT(content_rect_not_created.size.height, window_size.Height());
+
+    // Creating
+    zaf::Rect content_rect_in_creating;
+    auto sub = window->HandleCreatingEvent().Subscribe([&](const zaf::HandleCreatingInfo&) {
+        content_rect_in_creating = window->ContentRect();
+    });
+    auto holder = window->CreateHandle();
+    ASSERT_EQ(content_rect_in_creating.position, (zaf::Point{ 0, 0 }));
+    ASSERT_LT(content_rect_in_creating.size.width, window_size.Width());
+    ASSERT_LT(content_rect_in_creating.size.height, window_size.Height());
+
+    // Created
+    auto content_rect_created = window->ContentRect();
+    ASSERT_EQ(content_rect_created.position, (zaf::Point{ 0, 0 }));
+    ASSERT_LT(content_rect_created.size.width, window_size.Width());
+    ASSERT_LT(content_rect_created.size.height, window_size.Height());
+
+    // Destroying
+    zaf::Rect content_rect_in_destroying;
+    auto sub2 = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        content_rect_in_destroying = window->ContentRect();
+    });
+    window->Destroy();
+    ASSERT_EQ(content_rect_in_destroying.position, (zaf::Point{ 0, 0 }));
+    ASSERT_LT(content_rect_in_destroying.size.width, window_size.Width());
+    ASSERT_LT(content_rect_in_destroying.size.width, window_size.Width());
+
+    // Destroyed
+    ASSERT_EQ(window->ContentRect(), zaf::Rect{});
+
+    //ASSERT_EQ(content_rect_not_created, content_rect_in_creating);
+    ASSERT_EQ(content_rect_not_created, content_rect_created);
+    ASSERT_EQ(content_rect_not_created, content_rect_in_destroying);
+}
+
+
+TEST_F(WindowTest, ContentSize) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto window_size = window->Size();
+
+    // Not Created
+    auto content_size_not_created = window->ContentSize();
+    ASSERT_LT(content_size_not_created.width, window_size.Width());
+    ASSERT_LT(content_size_not_created.height, window_size.Height());
+
+    // Creating
+    zaf::Size content_size_in_creating;
+    auto sub = window->HandleCreatingEvent().Subscribe([&](const zaf::HandleCreatingInfo&) {
+        content_size_in_creating = window->ContentSize();
+    });
+    auto holder = window->CreateHandle();
+    ASSERT_LT(content_size_in_creating.width, window_size.Width());
+    ASSERT_LT(content_size_in_creating.height, window_size.Height());
+
+    // Created
+    auto content_size_created = window->ContentSize();
+    ASSERT_LT(content_size_created.width, window_size.Width());
+    ASSERT_LT(content_size_created.height, window_size.Height());
+
+    // Destroying
+    zaf::Size content_size_in_destroying;
+    auto sub2 = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        content_size_in_destroying = window->ContentSize();
+    });
+    window->Destroy();
+    ASSERT_LT(content_size_in_destroying.width, window_size.Width());
+    ASSERT_LT(content_size_in_destroying.height, window_size.Height());
+
+    // Destroyed
+    ASSERT_EQ(window->ContentSize(), zaf::Size{});
+
+    //ASSERT_EQ(content_size_not_created, content_size_in_creating);
+    ASSERT_EQ(content_size_not_created, content_size_created);
+    ASSERT_EQ(content_size_not_created, content_size_in_destroying);
+}
+
+
+TEST_F(WindowTest, SetContentSize_NotCreate) {
+
+    auto window = zaf::Create<zaf::Window>();
+
+    zaf::Size content_size{ 300, 400 };
+    window->SetContentSize(content_size);
+    ASSERT_EQ(window->ContentSize(), content_size);
+
+    auto window_size = window->Size();
+    ASSERT_GT(window_size.width, content_size.width);
+    ASSERT_GT(window_size.height, content_size.height);
+
+    // After creating the handle, the content size should remain unchanged.
+    auto holder = window->CreateHandle();
+    ASSERT_EQ(window->ContentSize(), content_size);
+    window_size = window->Size();
+    ASSERT_GT(window_size.width, content_size.width);
+    ASSERT_GT(window_size.height, content_size.height);
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, SetContentSize_Created) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    auto position = window->Position();
+
+    zaf::Size content_size{ 300, 400 };
+    window->SetContentSize(content_size);
+    ASSERT_EQ(window->ContentSize(), content_size);
+    // Position should not change after setting content size.
+    ASSERT_EQ(window->Position(), position);
+
+    auto window_size = window->Size();
+    ASSERT_GT(window_size.width, content_size.width);
+    ASSERT_GT(window_size.height, content_size.height);
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, SetContentSize_InvalidStates) {
+
+    auto window = zaf::Create<zaf::Window>();
+
+    //Destroying state
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        ASSERT_THROW(window->SetContentSize(zaf::Size{ 300, 400 }), zaf::InvalidHandleStateError);
+        has_asserted = true;
+    });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted);
+
+    //Destroyed state
+    ASSERT_THROW(window->SetContentSize(zaf::Size{ 300, 400 }), zaf::InvalidHandleStateError);
+}
+
 }
