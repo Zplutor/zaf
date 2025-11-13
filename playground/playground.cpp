@@ -1,5 +1,6 @@
 #include <zaf/application.h>
 #include <zaf/base/log.h>
+#include <zaf/graphic/dpi.h>
 #include <zaf/control/button.h>
 #include <zaf/window/window.h>
 #include <zaf/rx/scheduler/main_thread_scheduler.h>
@@ -15,12 +16,14 @@ protected:
 
         __super::Initialize();
 
-        auto button = zaf::Create<zaf::Button>();
-        Disposables() += button->ClickEvent().Subscribe([this](const zaf::ClickInfo& info) {
-            this->SetCanMaximize(false);
+        Disposables() += this->MessageHandledEvent().Subscribe([this](const zaf::MessageHandledInfo& info) {
+            if (info.Message().ID() == WM_WINDOWPOSCHANGED) {
+                auto pos = (WINDOWPOS*)info.Message().LParam();
+                zaf::Rect new_rect{ (float)pos->x, (float)pos->y, (float)pos->cx, (float)pos->cy };
+                new_rect = zaf::ToDIPs(new_rect, this->GetDPI());
+                ZAF_LOG() << "WindowPosChanged: " << new_rect.ToString();
+            }
         });
-
-        RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
     }
 
 private:
@@ -47,12 +50,14 @@ std::shared_ptr<zaf::WindowHolder> holder;
 void BeginRun(const zaf::BeginRunInfo& event_info) {
 
     auto window = zaf::Create<Window>();
-
     window->SetIsSizable(true);
     window->SetHasTitleBar(true);
 
-    holder = window->CreateHandle();
-    ShowWindow(window->Handle(), SW_SHOWNORMAL);
+    window->SetRect({ 100.25, 100.25, 200.25, 200.25 });
+    window->Show();
+
+    auto rect = window->Rect();
+    ZAF_LOG() << "WindowRect: " << rect.ToString();
 
     zaf::Application::Instance().SetMainWindow(window);
 }

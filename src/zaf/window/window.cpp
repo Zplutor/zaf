@@ -1888,9 +1888,13 @@ Rect Window::Rect() const noexcept {
 void Window::SetRect(const zaf::Rect& rect) {
 
     if (handle_state_ == WindowHandleState::NotCreated) {
+
+        zaf::Rect new_rect{ rect.position, ClampSize(rect.size) };
+        new_rect = SnapToPixels(new_rect, GetDPI());
+
         auto& not_created_state_data = NotCreatedStateData();
-        not_created_state_data.initial_position = rect.position;
-        not_created_state_data.size = ClampSize(rect.size);
+        not_created_state_data.initial_position = new_rect.position;
+        not_created_state_data.size = new_rect.size;
     }
     else if (handle_state_ == WindowHandleState::Creating || 
              handle_state_ == WindowHandleState::Created) {

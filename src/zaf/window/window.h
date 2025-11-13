@@ -651,7 +651,7 @@ public:
 
     @param rect
         The new rectangle to be set. It will be clamped to the minimum and maximum size of the 
-        window.
+        window, and will be snapped to pixels according to the current screen's DPI.
 
     @throw zaf::InvalidHandleStateError
         Thrown if the window handle state is `Destroying` or `Destroyed`.

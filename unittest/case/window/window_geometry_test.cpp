@@ -274,14 +274,15 @@ TEST_F(WindowTest, SetRect_Snaping_BeforeCreate) {
 
     auto window = zaf::Create<zaf::Window>();
 
+    // Before creating the window, the new rect should be snapped to pixels.
     zaf::Rect initial_rect{ 10.25, 20.25, 400.25, 500.25 };
     window->SetRect(initial_rect);
-    ASSERT_EQ(window->Rect(), initial_rect);
+    auto snapped_rect = zaf::SnapToPixels(initial_rect, window->GetDPI());
+    ASSERT_EQ(window->Rect(), snapped_rect);
 
     auto holder = window->CreateHandle();
     //After creating the window, Rect() should use the actual window rect.
-    auto rect_after_create = zaf::SnapToPixels(initial_rect, window->GetDPI());
-    ASSERT_EQ(window->Rect(), rect_after_create);
+    ASSERT_EQ(window->Rect(), snapped_rect);
     window->Destroy();
 }
 
