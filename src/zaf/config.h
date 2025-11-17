@@ -5,6 +5,7 @@
 #pragma comment(lib, "dwrite.lib")
 #pragma comment(lib, "Imm32.lib")
 #pragma comment(lib, "propsys.lib")
+#pragma comment(lib, "Shcore.lib")
 #pragma comment(lib, "Shlwapi.lib")
 #pragma comment(lib, "windowscodecs.lib")
 #pragma comment(lib, "xmllite.lib")

@@ -12,6 +12,7 @@
 #include <zaf/internal/system_message_window.h>
 #include <zaf/resource/resource_factory.h>
 #include <zaf/rx/internal/rx_runtime.h>
+#include <zaf/window/screen_manager.h>
 #include <zaf/window/window.h>
 #include <zaf/window/window_class_registry.h>
 #include <zaf/window/window_holder.h>
@@ -81,6 +82,8 @@ void Application::Initialize(const InitializationOptions& parameters) {
     window_class_registry_.reset(new WindowClassRegistry(
         parameters.window_icon, 
         parameters.window_small_icon));
+
+    screen_manager_.reset(new ScreenManager());
 
     InitializeSystemMessageWindow();
     delegate_ = parameters.delegate;

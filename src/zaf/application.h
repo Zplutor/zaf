@@ -35,6 +35,7 @@ class ImagingFactory;
 class ApplicationDelegate;
 class GraphicFactory;
 class ResourceFactory;
+class ScreenManager;
 class URILoader;
 class Window;
 class WindowClassRegistry;
@@ -162,6 +163,10 @@ public:
         return *window_class_registry_;
     }
 
+    ScreenManager& GetScreenManager() const noexcept {
+        return *screen_manager_;
+    }
+
     /**
      Get the system DPI.
      */
@@ -254,6 +259,7 @@ private:
     std::unique_ptr<wic::ImagingFactory> imaging_factory_;
     std::unique_ptr<WindowClassRegistry> window_class_registry_;
     std::shared_ptr<internal::SystemMessageWindow> system_message_window_;
+    std::unique_ptr<ScreenManager> screen_manager_;
     std::weak_ptr<Window> main_window_;
     std::set<std::shared_ptr<WindowHolder>> window_holders_;
 

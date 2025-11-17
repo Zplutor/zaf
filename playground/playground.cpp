@@ -1,3 +1,4 @@
+#include <format>
 #include <zaf/application.h>
 #include <zaf/base/log.h>
 #include <zaf/graphic/dpi.h>
@@ -7,6 +8,7 @@
 #include <zaf/rx/scheduler/new_thread_scheduler.h>
 #include <zaf/rx/timer.h>
 #include <zaf/control/layout/linear_layouter.h>
+#include <zaf/window/screen_manager.h>
 
 void BeginRun(const zaf::BeginRunInfo& event_info);
 
@@ -56,8 +58,12 @@ void BeginRun(const zaf::BeginRunInfo& event_info) {
     window->SetRect({ 100.25, 100.25, 200.25, 200.25 });
     window->Show();
 
-    auto rect = window->Rect();
-    ZAF_LOG() << "WindowRect: " << rect.ToString();
+    auto screens = zaf::ScreenManager::Instance().AllScreens();
+    for (const auto& each_screen : screens) {
+
+        ZAF_LOG() << std::format(L"{}, {}", each_screen->Name(), each_screen->Size().ToString());
+    }
+
 
     zaf::Application::Instance().SetMainWindow(window);
 }

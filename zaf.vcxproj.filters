@@ -1351,6 +1351,12 @@
     <ClCompile Include="src\zaf\window\internal\window_styles.cpp">
       <Filter>zaf\window\internal</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\screen_manager.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\screen.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3170,6 +3176,12 @@
       <Filter>zaf\window\internal</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\show_options.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\screen.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\screen_manager.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
   </ItemGroup>

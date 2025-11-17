@@ -424,6 +424,8 @@
     <ClCompile Include="src\zaf\window\internal\inner_message_only_window.cpp" />
     <ClCompile Include="src\zaf\window\message\internal\mouse_position_conversion.cpp" />
     <ClCompile Include="src\zaf\window\message\mouse_message.cpp" />
+    <ClCompile Include="src\zaf\window\screen.cpp" />
+    <ClCompile Include="src\zaf\window\screen_manager.cpp" />
     <ClCompile Include="src\zaf\window\tooltip_window.cpp" />
     <ClCompile Include="src\zaf\window\window.cpp" />
     <ClCompile Include="src\zaf\window\window_class.cpp" />
@@ -1024,6 +1026,8 @@
     <ClInclude Include="src\zaf\window\message\focus_message.h" />
     <ClInclude Include="src\zaf\window\message\show_window_message.h" />
     <ClInclude Include="src\zaf\window\message_only_window.h" />
+    <ClInclude Include="src\zaf\window\screen.h" />
+    <ClInclude Include="src\zaf\window\screen_manager.h" />
     <ClInclude Include="src\zaf\window\show_options.h" />
     <ClInclude Include="src\zaf\window\tooltip_window.h" />
     <ClInclude Include="src\zaf\window\window.h" />
