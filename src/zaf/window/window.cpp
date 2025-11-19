@@ -21,6 +21,7 @@
 #include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
+#include <zaf/window/screen_manager.h>
 #include <zaf/window/window_class_registry.h>
 #include <zaf/window/window_holder.h>
 
@@ -215,6 +216,10 @@ void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& sta
     DWORD style = state_data.basic_style.Value();
     DWORD extended_style = state_data.extended_style.Value();
 
+    auto screen = this->Screen();
+    auto initial_rect = GetInitialRect(*screen, owner, state_data);
+    auto initial_rect_in_global = screen->TransformToGlobal(initial_rect);
+
     CreateWindowParams params;
     params.instance = this;
     params.not_created_state_data = &state_data;
@@ -226,10 +231,10 @@ void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& sta
         reinterpret_cast<LPCWSTR>(class_->GetAtom()),
         state_data.title.c_str(),
         style,
-        0,
-        0,
-        0,
-        0,
+        static_cast<int>(initial_rect_in_global.position.x),
+        static_cast<int>(initial_rect_in_global.position.y),
+        static_cast<int>(initial_rect_in_global.size.width),
+        static_cast<int>(initial_rect_in_global.size.height),
         owner ? owner->Handle() : nullptr,
         nullptr,
         nullptr,
@@ -319,33 +324,15 @@ rx::Observable<DestroyedInfo> Window::DestroyedEvent() const {
 
 
 LRESULT Window::HandleWMCREATE(const Message& message) {
-
     OnHandleCreating(HandleCreatingInfo{ shared_from_this() });
-
-    auto create_struct = reinterpret_cast<const CREATESTRUCTA*>(message.LParam());
-    auto create_params = 
-        reinterpret_cast<const CreateWindowParams*>(create_struct->lpCreateParams);
-
-    auto dpi = static_cast<float>(GetDpiForWindow(message.WindowHandle()));
-    auto initial_rect = GetInitialRect(dpi, *create_params->not_created_state_data);
-    auto rect_in_pixels = SnapAndTransformToPixels(initial_rect, dpi);
-
-    SetWindowPos(
-        message.WindowHandle(),
-        nullptr,
-        static_cast<int>(rect_in_pixels.position.x),
-        static_cast<int>(rect_in_pixels.position.y),
-        static_cast<int>(rect_in_pixels.size.width),
-        static_cast<int>(rect_in_pixels.size.height),
-        SWP_NOZORDER | SWP_NOACTIVATE);
-
     return 0;
 }
 
 
-Rect Window::GetInitialRect(
-    float dpi, 
-    const internal::WindowNotCreatedStateData& state_data) const {
+zaf::Rect Window::GetInitialRect(
+    const zaf::Screen& screen,
+    const std::shared_ptr<Window>& owner,
+    const internal::WindowNotCreatedStateData& state_data) {
 
     // The window has a specified initial position, use it.
     if (state_data.initial_position) {
@@ -357,24 +344,24 @@ Rect Window::GetInitialRect(
 
     // The window doesn't have a specified initial position, use the center position of its owner 
     // if there is one.
-    auto owner = Owner();
     if (owner) {
         auto owner_rect = owner->Rect();
         Point position{
             owner_rect.position.x + (owner_rect.size.width - state_data.size.width) / 2,
             owner_rect.position.y + (owner_rect.size.height - state_data.size.height) / 2
         };
-        return zaf::Rect{ position, state_data.size };
+        auto result = zaf::Rect{ position, state_data.size };
+        return SnapToPixels(result, screen.DPI());
     }
 
     // Use the center position of the screen.
-    float screen_width = ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXSCREEN)), dpi);
-    float screen_height = ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYSCREEN)), dpi);
+    auto screen_rect = screen.RectInSelf();
     Point position{
-        (screen_width - state_data.size.width) / 2,
-        (screen_height - state_data.size.height) / 2
+        (screen_rect.size.width - state_data.size.width) / 2,
+        (screen_rect.size.height - state_data.size.height) / 2
     };
-    return zaf::Rect{ position, state_data.size };
+    auto result = zaf::Rect{ position, state_data.size };
+    return SnapToPixels(result, screen.DPI());
 }
 
 
@@ -1866,10 +1853,37 @@ void Window::OnFocusedControlChanged(const FocusedControlChangedInfo& event_info
 }
 
 
+std::shared_ptr<zaf::Screen> Window::Screen() const noexcept {
+
+    if (specified_screen_) {
+        return specified_screen_;
+    }
+
+    auto owner = this->Owner();
+    if (owner) {
+        return owner->Screen();
+    }
+
+    return ScreenManager::Instance().PrimaryScreen();
+}
+
+
+void Window::SetScreen(std::shared_ptr<zaf::Screen> screen) {
+
+    ZAF_EXPECT(screen);
+
+    if (handle_state_ != WindowHandleState::NotCreated) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
+    specified_screen_ = screen;
+}
+
+
 Rect Window::Rect() const noexcept {
 
     if (handle_state_ == WindowHandleState::NotCreated) {
-        return GetInitialRect(this->GetDPI(), NotCreatedStateData());
+        return GetInitialRect(*this->Screen(), this->Owner(), NotCreatedStateData());
     }
 
     if (handle_state_ == WindowHandleState::Creating || 
@@ -1901,15 +1915,16 @@ void Window::SetRect(const zaf::Rect& rect) {
 
         auto new_rect = rect;
         new_rect.size = ClampSize(new_rect.size);
-        new_rect = SnapAndTransformToPixels(new_rect, GetDPI());
+        new_rect = SnapToPixels(new_rect, GetDPI());
+        auto new_rect_in_global = this->Screen()->TransformToGlobal(new_rect);
         
         BOOL is_succeeded = SetWindowPos(
             Handle(),
             nullptr,
-            static_cast<int>(new_rect.position.x),
-            static_cast<int>(new_rect.position.y),
-            static_cast<int>(new_rect.size.width),
-            static_cast<int>(new_rect.size.height),
+            static_cast<int>(new_rect_in_global.position.x),
+            static_cast<int>(new_rect_in_global.position.y),
+            static_cast<int>(new_rect_in_global.size.width),
+            static_cast<int>(new_rect_in_global.size.height),
             SWP_NOZORDER | SWP_NOACTIVATE);
 
         if (!is_succeeded) {
@@ -2352,13 +2367,12 @@ Point Window::TranslateFromScreen(const Point& position_in_screen) const {
 
 
 float Window::GetDPI() const {
-
-    if (Handle()) {
+    if (handle_state_ == WindowHandleState::Creating ||
+        handle_state_ == WindowHandleState::Created ||
+        handle_state_ == WindowHandleState::Destroying) {
         return static_cast<float>(GetDpiForWindow(Handle()));
     }
-    else {
-        return Application::Instance().GetSystemDPI();
-    }
+    return this->Screen()->DPI();
 }
 
 

@@ -76,4 +76,32 @@ zaf::Size Screen::WorkAreaSize() const noexcept {
     return ToDIPs(result, dpi_);
 }
 
+
+zaf::Point Screen::TransformToGlobal(const zaf::Point& point_in_screen) const noexcept {
+    auto result = FromDIPs(point_in_screen, dpi_);
+    result.AddOffset(this->RectInGlobal().position);
+    return result;
+}
+
+
+zaf::Rect Screen::TransformToGlobal(const zaf::Rect& rect_in_screen) const noexcept {
+    auto result = FromDIPs(rect_in_screen, dpi_);
+    result.AddOffset(this->RectInGlobal().position);
+    return result;
+}
+
+
+zaf::Point Screen::TransformFromGlobal(const zaf::Point& point_in_global) const noexcept {
+    auto result = point_in_global;
+    result.SubtractOffset(this->RectInGlobal().position);
+    return ToDIPs(result, dpi_);
+}
+
+
+zaf::Rect Screen::TransformFromGlobal(const zaf::Rect& rect_in_global) const noexcept {
+    auto result = rect_in_global;
+    result.SubtractOffset(this->RectInGlobal().position);
+    return ToDIPs(result, dpi_);
+}
+
 }

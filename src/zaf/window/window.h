@@ -30,6 +30,7 @@
 #include <zaf/window/internal/window_handle_state_data.h>
 #include <zaf/window/internal/window_not_created_state_data.h>
 #include <zaf/window/message/message.h>
+#include <zaf/window/screen.h>
 #include <zaf/window/show_options.h>
 #include <zaf/window/window_handle_state.h>
 #include <zaf/window/window_messager.h>
@@ -631,6 +632,9 @@ public:
         Thrown if fails to change the window style.
     */
     void SetActivateOptions(zaf::ActivateOptions options);
+
+    std::shared_ptr<zaf::Screen> Screen() const noexcept;
+    void SetScreen(std::shared_ptr<zaf::Screen> screen);
 
     /**
     Gets the window's rectangle in screen coordinate.
@@ -1515,9 +1519,10 @@ private:
 
     LRESULT HandleWMCREATE(const Message& message);
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
-    zaf::Rect GetInitialRect(
-        float dpi, 
-        const internal::WindowNotCreatedStateData& state_data) const;
+    static zaf::Rect GetInitialRect(
+        const zaf::Screen& screen, 
+        const std::shared_ptr<Window>& owner,
+        const internal::WindowNotCreatedStateData& state_data);
     zaf::Size ClampSize(const zaf::Size& size) const noexcept;
     void CreateRenderer();
     void RecreateRenderer();
@@ -1590,6 +1595,7 @@ private:
         mutable std::optional<rx::SingleSubject<zaf::None>> exit_sizing_or_moving_subject;
     } handle_specific_state_;
 
+    std::shared_ptr<zaf::Screen> specified_screen_;
     std::weak_ptr<Window> owner_;
 
     zaf::ActivateOptions activate_options_{ zaf::ActivateOptions::Normal };
