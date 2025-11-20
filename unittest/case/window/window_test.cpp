@@ -404,13 +404,18 @@ TEST_F(WindowTest, Show_InCreatedState) {
 
 TEST_F(WindowTest, Show_InInvalidState) {
 
-    //Destroyed state
-    {
-        auto window = zaf::Create<zaf::Window>();
-        auto holder = window->CreateHandle();
-        holder.reset();
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+
+    bool has_asserted_destroying{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo& event_info) {
         ASSERT_THROW(window->Show(), zaf::InvalidHandleStateError);
-    }
+        has_asserted_destroying = true;
+    });
+
+    holder.reset();
+    ASSERT_THROW(window->Show(), zaf::InvalidHandleStateError);
+    ASSERT_TRUE(has_asserted_destroying);
 }
 
 
@@ -591,48 +596,19 @@ TEST_F(WindowTest, Hide_CreatedState) {
 }
 
 
-TEST_F(WindowTest, Hide_DestroyingState) {
+TEST_F(WindowTest, Hide_DestroyStates) {
 
-    // Window is not visible.
-    {
-        auto window = zaf::Create<zaf::Window>();
-        auto holder = window->CreateHandle();
-        bool has_asserted{};
-        auto sub = window->DestroyingEvent().Subscribe(
-            [&](const zaf::DestroyingInfo& event_info) {
-                window->Hide();
-                ASSERT_FALSE(window->IsVisible());
-                ASSERT_FALSE(IsWindowRegistered(window));
-                has_asserted = true;
-            });
-        window->Destroy();
-        ASSERT_TRUE(has_asserted);
-    }
-
-    // Window is visible
-    {
-        auto window = zaf::Create<zaf::Window>();
-        window->Show();
-        bool has_asserted{};
-        auto sub = window->DestroyingEvent().Subscribe(
-            [&](const zaf::DestroyingInfo& event_info) {
-                window->Hide();
-                ASSERT_FALSE(window->IsVisible());
-                ASSERT_TRUE(IsWindowRegistered(window));
-                has_asserted = true;
-            });
-        window->Destroy();
-        ASSERT_TRUE(has_asserted);
-    }
-}
-
-
-TEST_F(WindowTest, Hide_DestroyedState) {
     auto window = zaf::Create<zaf::Window>();
     auto holder = window->CreateHandle();
+
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo& event_info) {
+        // Hiding a destroying window is no-op.
+        ASSERT_NO_THROW(window->Hide());
+    });
+
     window->Destroy();
     // Hiding a destroyed window is no-op.
-    window->Hide();
+    ASSERT_NO_THROW(window->Hide());
 }
 
 
@@ -654,7 +630,7 @@ TEST_F(WindowTest, GetOwner_AfterSet) {
 }
 
 
-TEST_F(WindowTest, GetOwner_AfterDestroy) {
+TEST_F(WindowTest, GetOwner_OwnerDestroy) {
 
     auto owner = zaf::Create<zaf::Window>();
     auto owner_holder = owner->CreateHandle();
@@ -664,8 +640,23 @@ TEST_F(WindowTest, GetOwner_AfterDestroy) {
     auto window_holder = window->CreateHandle();
 
     owner->Destroy();
-    ASSERT_EQ(window->Owner(), nullptr);
+    ASSERT_EQ(window->Owner(), owner);
     window->Destroy();
+}
+
+
+TEST_F(WindowTest, GetOwner_SelfDestroy) {
+
+    auto owner = zaf::Create<zaf::Window>();
+    auto owner_holder = owner->CreateHandle();
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetOwner(owner);
+    auto window_holder = window->CreateHandle();
+
+    window->Destroy();
+    ASSERT_EQ(window->Owner(), owner);
+    owner->Destroy();
 }
 
 
@@ -825,27 +816,20 @@ TEST_F(WindowTest, SetTitle_CreatedState) {
 }
 
 
-TEST_F(WindowTest, SetTitle_DestroyingState) {
-    auto window = zaf::Create<zaf::Window>();
-    auto holder = window->CreateHandle();
-    bool has_asserted{};
-    auto sub = window->DestroyingEvent().Subscribe(
-        [&](const zaf::DestroyingInfo& event_info) {
-            window->SetTitle(L"Title");
-            ASSERT_EQ(window->Title(), L"Title");
-            has_asserted = true;
-        });
-    window->Destroy();
-    ASSERT_TRUE(has_asserted);
-}
-
-
-TEST_F(WindowTest, SetTitle_DestroyedState) {
+TEST_F(WindowTest, SetTitle_InvalidStates) {
 
     auto window = zaf::Create<zaf::Window>();
     auto holder = window->CreateHandle();
+
+    bool has_asserted_destroying{};
+    auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo& event_info) {
+        ASSERT_THROW(window->SetTitle(L"Title"), zaf::InvalidHandleStateError);
+        has_asserted_destroying = true;
+    });
+
     window->Destroy();
     ASSERT_THROW(window->SetTitle(L"Title"), zaf::InvalidHandleStateError);
+    ASSERT_TRUE(has_asserted_destroying);
 }
 
 

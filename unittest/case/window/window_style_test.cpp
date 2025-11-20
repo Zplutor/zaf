@@ -677,14 +677,15 @@ TEST_F(WindowTest, SetIsSizable_InVariantState) {
         {
             auto window = zaf::Create<zaf::Window>();
             auto holder = window->CreateHandle();
-            bool destroying_value{};
+            bool is_sizable = window->IsSizable();
+            bool is_sizable_after_set{};
             auto sub = window->DestroyingEvent().Subscribe(
                 [&](const zaf::DestroyingInfo& event_info) {
-                    window->SetIsSizable(expected);
-                    destroying_value = window->IsSizable();
+                    ASSERT_THROW(window->SetIsSizable(expected), zaf::InvalidHandleStateError);
+                    is_sizable_after_set = window->IsSizable();
                 });
             window->Destroy();
-            ASSERT_EQ(destroying_value, expected);
+            ASSERT_EQ(is_sizable, is_sizable_after_set);
         }
 
         // Destroyed
@@ -794,15 +795,15 @@ TEST_F(WindowTest, SetCanMaximize_InVariantStates) {
         {
             auto window = zaf::Create<zaf::Window>();
             auto holder = window->CreateHandle();
-            bool destroying_value{};
+            bool value_before_set = window->CanMaximize();
+            bool value_after_set{};
             auto sub = window->DestroyingEvent().Subscribe(
                 [&](const zaf::DestroyingInfo& event_info) {
-                    window->SetCanMaximize(expected);
-                    destroying_value = window->CanMaximize();
+                    ASSERT_THROW(window->SetCanMaximize(expected), zaf::InvalidHandleStateError);
+                    value_after_set = window->CanMaximize();
                 });
             window->Destroy();
-            ASSERT_EQ(destroying_value, expected);
-            ASSERT_EQ(window->CanMaximize(), false);
+            ASSERT_EQ(value_before_set, value_after_set);
         }
 
         // Destroyed
@@ -905,15 +906,15 @@ TEST_F(WindowTest, SetCanMinimize_InVariantStates) {
         {
             auto window = zaf::Create<zaf::Window>();
             auto holder = window->CreateHandle();
-            bool destroying_value{};
+            bool value_before_set = window->CanMinimize();
+            bool value_after_set{};
             auto sub = window->DestroyingEvent().Subscribe(
                 [&](const zaf::DestroyingInfo& event_info) {
-                    window->SetCanMinimize(expected);
-                    destroying_value = window->CanMinimize();
+                    ASSERT_THROW(window->SetCanMinimize(expected), zaf::InvalidHandleStateError);
+                    value_after_set = window->CanMinimize();
                 });
             window->Destroy();
-            ASSERT_EQ(destroying_value, expected);
-            ASSERT_EQ(window->CanMinimize(), false);
+            ASSERT_EQ(value_before_set, value_after_set);
         }
 
         // Destroyed
@@ -1016,14 +1017,15 @@ TEST_F(WindowTest, SetIsToolWindow_InVariantStates) {
         {
             auto window = zaf::Create<zaf::Window>();
             auto holder = window->CreateHandle();
-            bool destroying_value{};
+            bool value_before_set = window->IsToolWindow();
+            bool value_after_set{};
             auto sub = window->DestroyingEvent().Subscribe(
                 [&](const zaf::DestroyingInfo& event_info) {
-                    window->SetIsToolWindow(expected);
-                    destroying_value = window->IsToolWindow();
+                    ASSERT_THROW(window->SetIsToolWindow(expected), zaf::InvalidHandleStateError);
+                    value_after_set = window->IsToolWindow();
                 });
             window->Destroy();
-            ASSERT_EQ(destroying_value, expected);
+            ASSERT_EQ(value_before_set, value_after_set);
         }
 
         // Destroyed

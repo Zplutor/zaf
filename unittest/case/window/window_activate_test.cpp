@@ -86,8 +86,9 @@ TEST_F(WindowTest, SetActivateOptions_InVariantStates) {
         bool has_asserted{};
         auto sub = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
             has_asserted = true;
-            window->SetActivateOptions(zaf::ActivateOptions::NoActivate);
-            ASSERT_EQ(window->ActivateOptions(), zaf::ActivateOptions::NoActivate);
+            ASSERT_THROW(
+                window->SetActivateOptions(zaf::ActivateOptions::NoActivate),
+                zaf::InvalidHandleStateError);
         });
         window->Destroy();
         ASSERT_TRUE(has_asserted);

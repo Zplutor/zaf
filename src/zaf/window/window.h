@@ -223,6 +223,9 @@ public:
     @param options
         The show options.
 
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
     @throw ...
         Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
 
@@ -237,6 +240,9 @@ public:
 
     /**
     Shows and maximizes the window, creates the window handle if it has not been created.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
 
     @throw ...
         Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
@@ -255,6 +261,9 @@ public:
 
     /**
     Shows and minimizes the window, creates the window handle if it has not been created.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
 
     @throw ...
         Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
@@ -275,6 +284,9 @@ public:
     Shows and restores the window to its original size and position, creates the window handle if
     it has not been created.
 
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
     @throw ...
         Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
 
@@ -289,9 +301,9 @@ public:
     Hides the window.
 
     @details
-        This method takes effect only when the window handle state is `Created`, `Creating` or 
-        `Destroying`, otherwise it does nothing. The window is remained registered in the 
-        application after it is hidden.
+        This method takes effect only when the window handle state is `Creating` or `Created`, 
+        otherwise it does nothing. The window is remained registered in the application after it is
+        hidden.
     */
     void Hide() noexcept;
 
@@ -299,8 +311,7 @@ public:
     Gets the window's owner.
 
     @return
-        The owner of the window. It is null if the window has no owner, or the window handle state
-        is `Destroyed`.
+        The owner of the window. It is null if the window has no owner.
     */
     std::shared_ptr<Window> Owner() const noexcept;
 
@@ -349,7 +360,7 @@ public:
 
     @throw std::bad_alloc
     @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroyed`.
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
 
     @throw zaf::Win32Error
         Thrown if fails to set the title.
@@ -488,7 +499,7 @@ public:
         A bool value indicates whether the window is sizable.
 
     @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroyed`.
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
 
     @throw zaf::InvalidOperationError
         Thrown if trying to set this property to true when `HasBorder()` is false.
@@ -514,7 +525,7 @@ public:
     Sets whether the window can maximize.
 
     @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroyed`.
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
 
     @throw zaf::Win32Error
         Thrown if fails to change the window style.
@@ -543,7 +554,7 @@ public:
     Sets whether the window can minimize.
 
     @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroyed`.
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
 
     @throw zaf::Win32Error
         Thrown if fails to change the window style.
@@ -575,7 +586,7 @@ public:
         A bool value indicates whether the window is a tool window.
 
     @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroyed`.
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
 
     @throw zaf::Win32Error
         Thrown if fails to change the window style.
@@ -626,7 +637,7 @@ public:
         The activate options to be set.
 
     @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroyed`.
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
 
     @throw zaf::Win32Error
         Thrown if fails to change the window style.

@@ -443,8 +443,7 @@ void Window::Restore() {
 void Window::Hide() noexcept {
 
     if (handle_state_ == WindowHandleState::Created ||
-        handle_state_ == WindowHandleState::Creating ||
-        handle_state_ == WindowHandleState::Destroying) {
+        handle_state_ == WindowHandleState::Creating) {
         ShowWindow(Handle(), SW_HIDE);
     }
 }
@@ -516,8 +515,7 @@ void Window::SetTitle(const std::wstring& title) {
         NotCreatedStateData().title = title;
     }
     else if (handle_state_ == WindowHandleState::Creating ||
-             handle_state_ == WindowHandleState::Created ||
-             handle_state_ == WindowHandleState::Destroying) {
+             handle_state_ == WindowHandleState::Created) {
 
         BOOL is_succeeded = SetWindowText(HandleStateData().handle, title.c_str());
         if (!is_succeeded) {
@@ -555,8 +553,7 @@ void Window::SetStyleProperty(PROPERTY property, bool enable, bool can_set_if_ha
         internal::WindowStyleShim<PROPERTY>::Set(NotCreatedStateData(), property, enable);
     }
     else if (handle_state_ == WindowHandleState::Creating ||
-             handle_state_ == WindowHandleState::Created ||
-             handle_state_ == WindowHandleState::Destroying) {
+             handle_state_ == WindowHandleState::Created) {
 
         if (!can_set_if_has_handle) {
             throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
@@ -1660,7 +1657,6 @@ void Window::HandleWMDESTROY() {
     handle_specific_state_ = {};
     renderer_ = {};
     tooltip_window_.reset();
-    owner_.reset();
 
     state_data_.emplace<std::monostate>();
     handle_state_ = WindowHandleState::Destroyed;
