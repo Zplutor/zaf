@@ -18,7 +18,7 @@ TEST_F(WindowTest, DefaultRect_NotCreated_NoOwner) {
     auto rect = window->Rect();
     ASSERT_EQ(rect.size, DefaultWindowSize);
     
-    auto dpi = window->GetDPI();
+    auto dpi = window->DPI();
     float screen_width = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXSCREEN)), dpi);
     float screen_height = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYSCREEN)), dpi);
 
@@ -67,7 +67,7 @@ TEST_F(WindowTest, DefaultRect_Created_NoOwner) {
     auto rect = window->Rect();
     ASSERT_EQ(rect.size, DefaultWindowSize);
 
-    auto dpi = window->GetDPI();
+    auto dpi = window->DPI();
     float screen_width = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXSCREEN)), dpi);
     float screen_height = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYSCREEN)), dpi);
     zaf::Point expected_position{
@@ -112,7 +112,7 @@ TEST_F(WindowTest, DefaultRect_Destroying_NoOwner) {
     window->Destroy();
 
     ASSERT_EQ(rect.size, DefaultWindowSize);
-    auto dpi = window->GetDPI();
+    auto dpi = window->DPI();
     float screen_width = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXSCREEN)), dpi);
     float screen_height = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYSCREEN)), dpi);
     zaf::Point expected_position{
@@ -170,8 +170,8 @@ TEST_F(WindowTest, GetRectAfterChanging) {
             nullptr,
             0,
             0,
-            static_cast<int>(zaf::FromDIPs(400, window->GetDPI())),
-            static_cast<int>(zaf::FromDIPs(500, window->GetDPI())),
+            static_cast<int>(zaf::FromDIPs(400, window->DPI())),
+            static_cast<int>(zaf::FromDIPs(500, window->DPI())),
             SWP_NOMOVE | SWP_NOACTIVATE);
 
         zaf::Rect new_rect{ 100, 100, 400, 500 };
@@ -189,8 +189,8 @@ TEST_F(WindowTest, GetRectAfterChanging) {
         SetWindowPos(
             window->Handle(),
             nullptr,
-            static_cast<int>(zaf::FromDIPs(200, window->GetDPI())),
-            static_cast<int>(zaf::FromDIPs(300, window->GetDPI())),
+            static_cast<int>(zaf::FromDIPs(200, window->DPI())),
+            static_cast<int>(zaf::FromDIPs(300, window->DPI())),
             0,
             0,
             SWP_NOSIZE | SWP_NOACTIVATE);
@@ -277,7 +277,7 @@ TEST_F(WindowTest, SetRect_Snaping_BeforeCreate) {
     // Before creating the window, the new rect should be snapped to pixels.
     zaf::Rect initial_rect{ 10.25, 20.25, 400.25, 500.25 };
     window->SetRect(initial_rect);
-    auto snapped_rect = zaf::SnapToPixels(initial_rect, window->GetDPI());
+    auto snapped_rect = zaf::SnapToPixels(initial_rect, window->DPI());
     ASSERT_EQ(window->Rect(), snapped_rect);
 
     auto holder = window->CreateHandle();
@@ -296,7 +296,7 @@ TEST_F(WindowTest, SetRect_Snaping_AfterCreate) {
     window->SetRect(rect);
 
     //After calling SetRect(), the rect should be adjusted to the actual window rect.
-    auto rect_after_set = zaf::SnapToPixels(rect, window->GetDPI());
+    auto rect_after_set = zaf::SnapToPixels(rect, window->DPI());
     ASSERT_EQ(window->Rect(), rect_after_set);
 
     window->Destroy();
@@ -360,7 +360,7 @@ TEST_F(WindowTest, SetSize_NotCreated) {
     zaf::Size new_size{ 300, 400 };
     window->SetSize(new_size);
 
-    auto dpi = window->GetDPI();
+    auto dpi = window->DPI();
     float screen_width = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXSCREEN)), dpi);
     float screen_height = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYSCREEN)), dpi);
     zaf::Point position{
@@ -383,7 +383,7 @@ TEST_F(WindowTest, SetSize_Created) {
     zaf::Size new_size{ 300, 400 };
     window->SetSize(new_size);
 
-    auto dpi = window->GetDPI();
+    auto dpi = window->DPI();
     float screen_width = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXSCREEN)), dpi);
     float screen_height = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYSCREEN)), dpi);
     // Position should not changed after setting size, so we calculate the position based on the 

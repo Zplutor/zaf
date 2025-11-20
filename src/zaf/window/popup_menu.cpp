@@ -161,7 +161,7 @@ Point PopupMenu::CalculateMenuPosition(
 
     RECT work_area_in_pixels{};
     SystemParametersInfo(SPI_GETWORKAREA, 0, &work_area_in_pixels, 0);
-    auto work_area_in_dips = ToDIPs(zaf::Rect::FromRECT(work_area_in_pixels), owner.GetDPI());
+    auto work_area_in_dips = ToDIPs(zaf::Rect::FromRECT(work_area_in_pixels), owner.DPI());
 
     float x = CalculateMenuPositionAtSingleAxis(
         expected_position.x,

@@ -22,7 +22,7 @@ protected:
             if (info.Message().ID() == WM_WINDOWPOSCHANGED) {
                 auto pos = (WINDOWPOS*)info.Message().LParam();
                 zaf::Rect new_rect{ (float)pos->x, (float)pos->y, (float)pos->cx, (float)pos->cy };
-                new_rect = zaf::ToDIPs(new_rect, this->GetDPI());
+                new_rect = zaf::ToDIPs(new_rect, this->DPI());
                 ZAF_LOG() << "WindowPosChanged: " << new_rect.ToString();
             }
         });

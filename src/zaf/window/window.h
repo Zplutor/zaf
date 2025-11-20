@@ -647,6 +647,8 @@ public:
     std::shared_ptr<zaf::Screen> Screen() const noexcept;
     void SetScreen(std::shared_ptr<zaf::Screen> screen);
 
+    float DPI() const noexcept;
+
     /**
     Gets the window's rectangle in screen coordinate.
 
@@ -1194,8 +1196,6 @@ public:
     */
     Point TranslateFromScreen(const Point& position) const;
 
-    float GetDPI() const;
-
     /**
     Attempts to bring the window to the foreground and activates it.
 
@@ -1606,7 +1606,7 @@ private:
         mutable std::optional<rx::SingleSubject<zaf::None>> exit_sizing_or_moving_subject;
     } handle_specific_state_;
 
-    std::shared_ptr<zaf::Screen> specified_screen_;
+    std::shared_ptr<zaf::Screen> screen_;
     std::weak_ptr<Window> owner_;
 
     zaf::ActivateOptions activate_options_{ zaf::ActivateOptions::Normal };

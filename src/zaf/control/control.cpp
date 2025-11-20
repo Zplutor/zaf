@@ -31,7 +31,7 @@ namespace {
 
 float GetDPIFromWindow(const std::shared_ptr<Window>& window) {
     if (window) {
-        return window->GetDPI();
+        return window->DPI();
     }
     return Application::Instance().GetSystemDPI();
 }

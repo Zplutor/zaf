@@ -156,7 +156,7 @@ void TooltipWindow::ShowBelowMouseCursor() {
     Point window_position_in_pixels;
     window_position_in_pixels.x = static_cast<float>(cursor_position.x);
     window_position_in_pixels.y = static_cast<float>(cursor_position.y + *cursor_height + y_margin);
-    this->SetPosition(ToDIPs(window_position_in_pixels, GetDPI()));
+    this->SetPosition(ToDIPs(window_position_in_pixels, DPI()));
     this->Show();
 }
 

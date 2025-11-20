@@ -61,8 +61,8 @@ protected:
     }
 
     void SendMouseMoveMessage(float x, float y) {
-        int x_in_pixels = static_cast<int>(zaf::FromDIPs(x, s_window->GetDPI()));
-        int y_in_pixels = static_cast<int>(zaf::FromDIPs(y, s_window->GetDPI()));
+        int x_in_pixels = static_cast<int>(zaf::FromDIPs(x, s_window->DPI()));
+        int y_in_pixels = static_cast<int>(zaf::FromDIPs(y, s_window->DPI()));
         SendMessage(s_window->Handle(), WM_MOUSEMOVE, 0, MAKELPARAM(x_in_pixels, y_in_pixels));
     }
 

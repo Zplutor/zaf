@@ -109,7 +109,7 @@ BOOL TextHostBridge::TxCreateCaret(HBITMAP hbmp, INT xWidth, INT yHeight) {
         return FALSE;
     }
 
-    float dpi = window->GetDPI();
+    float dpi = window->DPI();
 
     zaf::Size caret_size{
         ToDIPs(static_cast<float>(xWidth), dpi),
@@ -321,7 +321,7 @@ HRESULT TextHostBridge::TxGetViewInset(LPRECT prc) {
         return S_OK;
     }
 
-    *prc = FromDIPs(rich_edit->GetInset(), window->GetDPI()).ToRECT();
+    *prc = FromDIPs(rich_edit->GetInset(), window->DPI()).ToRECT();
     return S_OK;
 }
 

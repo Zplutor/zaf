@@ -796,7 +796,7 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_GETMINMAXINFO: {
-        auto dpi = this->GetDPI();
+        auto dpi = this->DPI();
         auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.LParam());
         min_max_info->ptMinTrackSize.x = static_cast<LONG>(FromDIPs(MinWidth(), dpi));
         min_max_info->ptMinTrackSize.y = static_cast<LONG>(FromDIPs(MinHeight(), dpi));
@@ -973,7 +973,7 @@ void Window::HandleWMPAINT() {
     zaf::Rect dirty_rect;
     RECT win32_rect{};
     if (GetUpdateRect(handle, &win32_rect, TRUE)) {
-        dirty_rect = ToDIPs(Rect::FromRECT(win32_rect), GetDPI());
+        dirty_rect = ToDIPs(Rect::FromRECT(win32_rect), DPI());
     }
     else {
         dirty_rect = root_control_->Rect();
@@ -1080,7 +1080,7 @@ void Window::NeedRepaintRect(const zaf::Rect& rect) {
 
     auto handle = Handle();
     if (handle != nullptr) {
-        RECT win32_rect = SnapAndTransformToPixels(rect, GetDPI()).ToRECT();
+        RECT win32_rect = SnapAndTransformToPixels(rect, DPI()).ToRECT();
         InvalidateRect(handle, &win32_rect, FALSE);
     }
 }
@@ -1203,7 +1203,7 @@ void Window::HandleWMSIZEMessage(const Message& message) {
         renderer_.Resize(size);
     }
 
-    zaf::Rect root_control_rect{ Point(), ToDIPs(size, GetDPI()) };
+    zaf::Rect root_control_rect{ Point(), ToDIPs(size, DPI()) };
     root_control_->SetRect(root_control_rect);
 
     OnSizeChanged(WindowSizeChangedInfo{ shared_from_this() });
@@ -1851,8 +1851,8 @@ void Window::OnFocusedControlChanged(const FocusedControlChangedInfo& event_info
 
 std::shared_ptr<zaf::Screen> Window::Screen() const noexcept {
 
-    if (specified_screen_) {
-        return specified_screen_;
+    if (screen_) {
+        return screen_;
     }
 
     auto owner = this->Owner();
@@ -1872,7 +1872,17 @@ void Window::SetScreen(std::shared_ptr<zaf::Screen> screen) {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
     }
 
-    specified_screen_ = screen;
+    screen_ = screen;
+}
+
+
+float Window::DPI() const noexcept {
+    if (handle_state_ == WindowHandleState::Creating ||
+        handle_state_ == WindowHandleState::Created ||
+        handle_state_ == WindowHandleState::Destroying) {
+        return static_cast<float>(GetDpiForWindow(Handle()));
+    }
+    return this->Screen()->DPI();
 }
 
 
@@ -1888,7 +1898,7 @@ Rect Window::Rect() const noexcept {
 
         RECT rect{};
         GetWindowRect(Handle(), &rect);
-        return ToDIPs(Rect::FromRECT(rect), GetDPI());
+        return ToDIPs(Rect::FromRECT(rect), DPI());
     }
 
     return {};
@@ -1900,7 +1910,7 @@ void Window::SetRect(const zaf::Rect& rect) {
     if (handle_state_ == WindowHandleState::NotCreated) {
 
         zaf::Rect new_rect{ rect.position, ClampSize(rect.size) };
-        new_rect = SnapToPixels(new_rect, GetDPI());
+        new_rect = SnapToPixels(new_rect, DPI());
 
         auto& not_created_state_data = NotCreatedStateData();
         not_created_state_data.initial_position = new_rect.position;
@@ -1911,7 +1921,7 @@ void Window::SetRect(const zaf::Rect& rect) {
 
         auto new_rect = rect;
         new_rect.size = ClampSize(new_rect.size);
-        new_rect = SnapToPixels(new_rect, GetDPI());
+        new_rect = SnapToPixels(new_rect, DPI());
         auto new_rect_in_global = this->Screen()->TransformToGlobal(new_rect);
         
         BOOL is_succeeded = SetWindowPos(
@@ -1994,7 +2004,7 @@ float Window::MinWidth() const noexcept {
     if (min_width_) {
         return *min_width_;
     }
-    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)), GetDPI());
+    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)), DPI());
 }
 
 void Window::SetMinWidth(float min_width) {
@@ -2030,7 +2040,7 @@ float Window::MaxWidth() const noexcept {
     if (max_width_) {
         return *max_width_;
     }
-    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMAXTRACK)), GetDPI());
+    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMAXTRACK)), DPI());
 }
 
 void Window::SetMaxWidth(float max_width) {
@@ -2066,7 +2076,7 @@ float Window::MinHeight() const noexcept {
     if (min_height_) {
         return *min_height_;
     }
-    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)), GetDPI());
+    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)), DPI());
 }
 
 void Window::SetMinHeight(float min_height) {
@@ -2102,7 +2112,7 @@ float Window::MaxHeight() const noexcept {
     if (max_height_) {
         return *max_height_;
     }
-    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMAXTRACK)), GetDPI());
+    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMAXTRACK)), DPI());
 }
 
 void Window::SetMaxHeight(float max_height) {
@@ -2181,7 +2191,7 @@ zaf::Size Window::ContentSize() const noexcept {
 
         RECT client_rect{};
         ::GetClientRect(Handle(), &client_rect);
-        return ToDIPs(Rect::FromRECT(client_rect).size, GetDPI());
+        return ToDIPs(Rect::FromRECT(client_rect).size, DPI());
     }
 
     return {};
@@ -2218,7 +2228,7 @@ zaf::Size Window::AdjustContentSizeToWindowSize(
     const internal::WindowBasicStyle& basic_style,
     const internal::WindowExtendedStyle& extend_style) const noexcept {
 
-    auto dpi = GetDPI();
+    auto dpi = DPI();
 
     zaf::Rect rect{ zaf::Point{}, content_size };
     auto snapped_rect = SnapAndTransformToPixels(rect, dpi);
@@ -2326,7 +2336,7 @@ Point Window::GetMousePosition() const {
         static_cast<float>(cursor_point.y) 
     };
 
-    return ToDIPs(point_in_pixels, GetDPI());
+    return ToDIPs(point_in_pixels, DPI());
 }
 
 
@@ -2335,7 +2345,7 @@ Point Window::TranslateToScreen(const Point& position) const {
     auto handle = Handle();
     ZAF_EXPECT(handle);
 
-    auto dpi = GetDPI();
+    auto dpi = DPI();
     auto position_in_pixel = FromDIPs(position, dpi);
 
     auto point = position_in_pixel.ToPOINT();
@@ -2351,7 +2361,7 @@ Point Window::TranslateFromScreen(const Point& position_in_screen) const {
     auto handle = Handle();
     ZAF_EXPECT(handle);
 
-    auto dpi = GetDPI();
+    auto dpi = DPI();
     auto position_in_pixel = FromDIPs(position_in_screen, dpi);
 
     auto point = position_in_pixel.ToPOINT();
@@ -2359,16 +2369,6 @@ Point Window::TranslateFromScreen(const Point& position_in_screen) const {
 
     auto result = Point::FromPOINT(point);
     return ToDIPs(result, dpi);
-}
-
-
-float Window::GetDPI() const {
-    if (handle_state_ == WindowHandleState::Creating ||
-        handle_state_ == WindowHandleState::Created ||
-        handle_state_ == WindowHandleState::Destroying) {
-        return static_cast<float>(GetDpiForWindow(Handle()));
-    }
-    return this->Screen()->DPI();
 }
 
 

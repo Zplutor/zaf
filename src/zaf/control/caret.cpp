@@ -124,7 +124,7 @@ void Caret::CreateSystemCaret() {
 
     auto caret_absolute_rect = Rect();
     caret_absolute_rect.AddOffset(owner_absolute_content_rect.position);
-    caret_absolute_rect = FromDIPs(caret_absolute_rect, window->GetDPI());
+    caret_absolute_rect = FromDIPs(caret_absolute_rect, window->DPI());
 
     CreateCaret(
         window->Handle(),
