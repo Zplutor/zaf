@@ -20,6 +20,8 @@ public:
         return primary_screen_;
     }
 
+    std::shared_ptr<Screen> ScreenFromHandle(HMONITOR handle) const noexcept;
+
 private:
     friend class Application;
 

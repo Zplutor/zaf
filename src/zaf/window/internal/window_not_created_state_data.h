@@ -5,6 +5,7 @@
 #include <zaf/graphic/point.h>
 #include <zaf/graphic/size.h>
 #include <zaf/window/internal/window_styles.h>
+#include <zaf/window/screen.h>
 
 namespace zaf::internal {
 
@@ -18,6 +19,7 @@ public:
     std::wstring title;
     WindowBasicStyle basic_style = WindowBasicStyle::Default();
     WindowExtendedStyle extended_style;
+    std::weak_ptr<Screen> screen;
     std::optional<Point> initial_position;
     Size size{ 640, 480 };
 };

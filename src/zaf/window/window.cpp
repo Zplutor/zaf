@@ -181,7 +181,7 @@ std::shared_ptr<WindowHolder> Window::CreateHandleInNotCreatedState() {
 
     try {
 
-        ProcessCreatingState(not_created_state_data);
+        ProcessCreatingState(this, not_created_state_data, *class_, owner);
 
         handle_state_ = WindowHandleState::Created;
         ProcessCreatedState();
@@ -209,26 +209,29 @@ std::shared_ptr<WindowHolder> Window::CreateHandleInNotCreatedState() {
 }
 
 
-void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& state_data) {
-
-    auto owner = Owner();
+// Do not access any member of instance, as it is in a middle state of creation.
+void Window::ProcessCreatingState(
+    Window* instance,
+    const internal::WindowNotCreatedStateData& state_data,
+    const WindowClass& window_class,
+    const std::shared_ptr<Window>& owner) {
 
     DWORD style = state_data.basic_style.Value();
     DWORD extended_style = state_data.extended_style.Value();
 
-    auto screen = this->Screen();
+    auto screen = GetInitialScreen(state_data, owner);
     auto initial_rect = GetInitialRect(*screen, owner, state_data);
     auto initial_rect_in_global = screen->TransformToGlobal(initial_rect);
 
     CreateWindowParams params;
-    params.instance = this;
+    params.instance = instance;
     params.not_created_state_data = &state_data;
 
     // During the execution of CreateWindowEx, the window handle will be set to handle_ member
     // when the WM_NCCREATE message is received.
     auto handle = CreateWindowEx(
         extended_style,
-        reinterpret_cast<LPCWSTR>(class_->GetAtom()),
+        reinterpret_cast<LPCWSTR>(window_class.GetAtom()),
         state_data.title.c_str(),
         style,
         static_cast<int>(initial_rect_in_global.position.x),
@@ -243,6 +246,23 @@ void Window::ProcessCreatingState(const internal::WindowNotCreatedStateData& sta
     if (!handle) {
         ZAF_THROW_WIN32_ERROR(GetLastError());
     }
+}
+
+
+std::shared_ptr<zaf::Screen> Window::GetInitialScreen(
+    const internal::WindowNotCreatedStateData& state_data,
+    const std::shared_ptr<Window>& owner) {
+
+    auto screen = state_data.screen.lock();
+    if (screen) {
+        return screen;
+    }
+
+    if (owner) {
+        return owner->Screen();
+    }
+
+    return ScreenManager::Instance().PrimaryScreen();
 }
 
 
@@ -1851,16 +1871,19 @@ void Window::OnFocusedControlChanged(const FocusedControlChangedInfo& event_info
 
 std::shared_ptr<zaf::Screen> Window::Screen() const noexcept {
 
-    if (screen_) {
-        return screen_;
+    if (handle_state_ == WindowHandleState::NotCreated) {
+        return GetInitialScreen(NotCreatedStateData(), Owner());
     }
+    else if (handle_state_ == WindowHandleState::Creating ||
+             handle_state_ == WindowHandleState::Created ||
+             handle_state_ == WindowHandleState::Destroying) {
 
-    auto owner = this->Owner();
-    if (owner) {
-        return owner->Screen();
+        HMONITOR screen_handle = MonitorFromWindow(Handle(), MONITOR_DEFAULTTOPRIMARY);
+        return ScreenManager::Instance().ScreenFromHandle(screen_handle);
     }
-
-    return ScreenManager::Instance().PrimaryScreen();
+    else {
+        return ScreenManager::Instance().PrimaryScreen();
+    }
 }
 
 
@@ -1872,7 +1895,7 @@ void Window::SetScreen(std::shared_ptr<zaf::Screen> screen) {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
     }
 
-    screen_ = screen;
+    NotCreatedStateData().screen = std::move(screen);
 }
 
 
@@ -1898,7 +1921,7 @@ Rect Window::Rect() const noexcept {
 
         RECT rect{};
         GetWindowRect(Handle(), &rect);
-        return ToDIPs(Rect::FromRECT(rect), DPI());
+        return this->Screen()->TransformFromGlobal(Rect::FromRECT(rect));
     }
 
     return {};

@@ -1517,7 +1517,14 @@ private:
     const internal::WindowHandleStateData& HandleStateData() const noexcept;
 
     std::shared_ptr<WindowHolder> CreateHandleInNotCreatedState();
-    void ProcessCreatingState(const internal::WindowNotCreatedStateData& state_data);
+    static void ProcessCreatingState(
+        Window* instance,
+        const internal::WindowNotCreatedStateData& state_data,
+        const WindowClass& window_class,
+        const std::shared_ptr<Window>& owner);
+    static std::shared_ptr<zaf::Screen> GetInitialScreen(
+        const internal::WindowNotCreatedStateData& state_data,
+        const std::shared_ptr<Window>& owner);
     void ProcessCreatedState();
     void AttachHandle(HWND handle) noexcept;
 
@@ -1606,7 +1613,6 @@ private:
         mutable std::optional<rx::SingleSubject<zaf::None>> exit_sizing_or_moving_subject;
     } handle_specific_state_;
 
-    std::shared_ptr<zaf::Screen> screen_;
     std::weak_ptr<Window> owner_;
 
     zaf::ActivateOptions activate_options_{ zaf::ActivateOptions::Normal };

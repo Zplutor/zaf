@@ -79,4 +79,14 @@ std::shared_ptr<Screen> ScreenManager::FindPrimaryScreen(
     return nullptr;
 }
 
+
+std::shared_ptr<Screen> ScreenManager::ScreenFromHandle(HMONITOR handle) const noexcept {
+    for (const auto& each_screen : screens_) {
+        if (each_screen->Handle() == handle) {
+            return each_screen;
+        }
+    }
+    return nullptr;
+}
+
 }
