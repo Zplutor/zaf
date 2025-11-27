@@ -2363,7 +2363,7 @@ Point Window::GetMousePosition() const {
 }
 
 
-Point Window::TranslateToScreen(const Point& position) const {
+Point Window::TransformToScreen(const Point& position) const {
 
     auto handle = Handle();
     ZAF_EXPECT(handle);
@@ -2402,7 +2402,12 @@ bool Window::Activate() {
 
 
 bool Window::IsVisible() const noexcept {
-    return !!IsWindowVisible(Handle());
+    if (handle_state_ == WindowHandleState::Creating ||
+        handle_state_ == WindowHandleState::Created ||
+        handle_state_ == WindowHandleState::Destroying) {
+        return !!IsWindowVisible(Handle());
+    }
+    return false;
 }
 
 

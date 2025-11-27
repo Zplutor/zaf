@@ -79,262 +79,14 @@ public:
      */
     virtual ~Window();
 
+    /**
+    @name Public Style Management
+    @{
+    */
+#pragma region
     const std::shared_ptr<WindowClass>& Class() const noexcept {
         return class_;
     }
-
-    /**
-    Gets the window handle.
-
-    @return
-        A valid handle if the window handle state is `Creating`, `Created` or `Destroying`. 
-        Otherwise, returns null.
-    */
-    HWND Handle() const noexcept;
-
-    /**
-    Gets the state of the window handle.
-    */
-    WindowHandleState HandleState() const noexcept {
-        return handle_state_;
-    }
-
-    /**
-    Creates the window handle explicitly.
-
-    @return
-        A `zaf::WindowHolder` instance that keeps the handle alive. The window handle will be 
-        destroyed when the holder is destructed.
-
-    @post
-        The return value is not null.
-
-    @throw std::bad_alloc
-
-    @throw zaf::InvalidHandleStateError
-        Thrown on the following conditions:
-        - Current window's handle state is `Creating`, `Destroying` or `Destroyed`.
-        - If an owner is set, its handle state is `NotCreated`, `Destroying` or `Destroyed`.
-
-    @throw zaf::Win32Error
-        Thrown if fails to create the window handle.
-
-    @throw ...
-        Any exception that may be thrown during the window handle creation.
-
-    @details
-        There are following steps during the creation of the window handle:
-        1. Set the window handle state to `Creating`.
-        2. Create the window handle via Win32 API.
-        3. Call the `OnHandleCreating()` method to raise the `HandleCreatingEvent()` when the
-           WM_CREATE message is received.
-        4. Set the window handle state to `Created`.
-        5. Initialize resources related to the window handle, such as the renderer.
-        6. Call the `OnHandleCreated()` method to raise the `HandleCreatedEvent()`.
-
-        These steps are regarded as a single atomic operation. If any exception is thrown during 
-        the operation, anything that has been done will be rolled back by calling the `Destroy()`
-        method. In most cases, the window handle state will be reset to `NotCreated`, so that this 
-        method can be called again. One exception is that if `Destroy()` method is called when the
-        window handle state is `Creating`, the state will be transited to `Destroying`, and then 
-        `Destroyed`.
-
-        If the window handle has been created, the existing holder will be returned. Users must
-        keep the holder during the usage of the window handle.
-        
-        If the window handle is destroyed before the holder destructed, the existing holder will be
-        detached.
-
-    @see zaf::WindowHandleState
-    @see zaf::WindowHolder
-    @see zaf::Window::Show()
-    */
-    [[nodiscard]]
-    std::shared_ptr<WindowHolder> CreateHandle();
-
-    /**
-    Gets the event that is raised after the window handle state is transited to `Creating`.
-
-    @details
-        @warning
-            Observers of this event must not throw, otherwise the behavior is undefined.
-
-    @see zaf::Window::CreateHandle()
-    @see zaf::Window::OnHandleCreating()
-    */
-    rx::Observable<HandleCreatingInfo> HandleCreatingEvent() const;
-
-    /**
-    Gets the event that is raised after the window handle state is transited to `Created`.
-
-    @see zaf::Window::CreateHandle()
-    @see zaf::Window::OnHandleCreated()
-    */
-    rx::Observable<HandleCreatedInfo> HandleCreatedEvent() const;
-
-    /**
-    Destroys the window handle.
-
-    @details
-        This method behaves differently according to the current window handle state:
-        - If the state is `NotCreated`, it will be transited to `Destroyed` directly.
-        - If the state is `Creating`, the creation is aborted. The state will be transited to 
-          `Destroying` first, and then `Destroyed`. At last, `CreateHandle()` will fail with
-          `zaf::Win32Error` exception.
-        - If the state is `Created`, the state will be transited to `Destroying` first, and then
-          `Destroyed`.
-        - If the state is `Destroying` or `Destroyed`, nothing will be done.
-
-        After the window handle state is transited to `Destroying`, the `OnDestroying()` method 
-        will be called to raise the `DestroyingEvent()`. After the window handle state is transited
-        to `Destroyed`, the `OnDestroyed()` method will be called to raise the `DestroyedEvent()`.
-    */
-    void Destroy() noexcept;
-
-    /**
-    Gets the event that is raised after the window handle state is transited to `Destroying`.
-
-    @details
-        @warning
-            Observers of this event must not throw, otherwise the behavior is undefined.
-
-    @see zaf::Window::CreateHandle()
-    @see zaf::Window::Destroy();
-    @see zaf::Window::OnDestroying()
-    */
-    rx::Observable<DestroyingInfo> DestroyingEvent() const;
-
-    /**
-    Gets the event that is raised after the window handle state is transited to `Destroyed`.
-
-    @details
-        @warning
-            Observers of this event must not throw, otherwise the behavior is undefined.
-
-    @see zaf::Window::CreateHandle()
-    @see zaf::Window::Destroy();
-    @see zaf::Window::OnDestroyed()
-    */
-    rx::Observable<DestroyedInfo> DestroyedEvent() const;
-
-    /**
-    Shows the window, creates the window handle if it has not been created.
-
-    @param options
-        The show options.
-
-    @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroying` or `Destroyed`.
-
-    @throw ...
-        Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
-
-    @details
-        This method will call the `CreateHandle()` method implicitly to create the window handle.
-        The returned holder of the `CreateHandle()` method is registered to the application, so 
-        users don't need to keep the window or the holder by themselves. When the window handle is 
-        destroyed, its holder will be unregistered from the application, so that the window 
-        instance will be destructed as well.
-    */
-    void Show(ShowOptions options = ShowOptions::Normal);
-
-    /**
-    Shows and maximizes the window, creates the window handle if it has not been created.
-
-    @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroying` or `Destroyed`.
-
-    @throw ...
-        Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
-
-    @details
-        This method is similar to the `Show()` method, except that it maximizes the window.
-
-    @see zaf::Window::Show()
-    */
-    void Maximize();
-
-    /**
-    Indicates whether the window is maximized.
-    */
-    bool IsWindowMaximized() const noexcept;
-
-    /**
-    Shows and minimizes the window, creates the window handle if it has not been created.
-
-    @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroying` or `Destroyed`.
-
-    @throw ...
-        Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
-
-    @details
-        This method is similar to the `Show()` method, except that it minimizes the window.
-
-    @see zaf::Window::Show()
-    */
-    void Minimize();
-
-    /**
-    Indicates whether the window is minimized.
-    */
-    bool IsWindowMinimized() const noexcept;
-
-    /**
-    Shows and restores the window to its original size and position, creates the window handle if
-    it has not been created.
-
-    @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Destroying` or `Destroyed`.
-
-    @throw ...
-        Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
-
-    @details
-        This method is similar to the `Show()` method, except that it restores the window.
-
-    @see zaf::Window::Show()
-    */
-    void Restore();
-
-    /**
-    Hides the window.
-
-    @details
-        This method takes effect only when the window handle state is `Creating` or `Created`, 
-        otherwise it does nothing. The window is remained registered in the application after it is
-        hidden.
-    */
-    void Hide() noexcept;
-
-    /**
-    Gets the window's owner.
-
-    @return
-        The owner of the window. It is null if the window has no owner.
-    */
-    std::shared_ptr<Window> Owner() const noexcept;
-
-    /**
-    Sets the window's owner.
-
-    @param owner
-        The owner window. It can be null to remove the owner. The owner will be stored as a weak
-        pointer to avoid circular reference.
-
-    @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Creating`, `Created`, `Destroying` or `Destroyed`.
-
-    @throw zaf::InvalidOperationError
-        Thrown if trying to set the window itself as its owner.
-
-    @details
-        If a window has an owner, the owner's handle must be created before the window's handle is
-        created, otherwise an exception will be thrown when creating the window's handle.
-
-    @see zaf::Window::CreateHandle()
-    */
-    void SetOwner(std::shared_ptr<Window> owner);
 
     /**
     Gets the window's title.
@@ -418,7 +170,7 @@ public:
         Thrown if trying to set this property to false when `IsPopup()` is false.
 
     @details
-        Setting this property to false will also sets `HasTitleBar()`, `HasSystemMenu()` and 
+        Setting this property to false will also sets `HasTitleBar()`, `HasSystemMenu()` and
         `IsSizable()` to false.
     */
     void SetHasBorder(bool has_border);
@@ -531,8 +283,8 @@ public:
         Thrown if fails to change the window style.
 
     @details
-        This property can be set to true even if `HasBorder()`, `HasTitleBar()` or 
-        `HasSystemMenu()` is false. However, in this case, the maximize button would not be 
+        This property can be set to true even if `HasBorder()`, `HasTitleBar()` or
+        `HasSystemMenu()` is false. However, in this case, the maximize button would not be
         displayed, but it still enables maximizing the window programmatically or when double
         clicking on an area that returns title bar on hit test.
     */
@@ -560,8 +312,8 @@ public:
         Thrown if fails to change the window style.
 
     @details
-        This property can be set to true even if `HasBorder()`, `HasTitleBar()` or 
-        `HasSystemMenu()` is false. However, in this case, the minimize button would not be 
+        This property can be set to true even if `HasBorder()`, `HasTitleBar()` or
+        `HasSystemMenu()` is false. However, in this case, the minimize button would not be
         displayed, but it still enables minimizing the window programmatically or when clicking the
         window on the task bar.
     */
@@ -632,7 +384,7 @@ public:
 
     /**
     Sets the window's activate options.
-    
+
     @param option
         The activate options to be set.
 
@@ -643,18 +395,24 @@ public:
         Thrown if fails to change the window style.
     */
     void SetActivateOptions(zaf::ActivateOptions options);
+#pragma endregion
+    /**@}*/
 
+    /**
+    @name Public Geometry Management
+    @{
+    */
+#pragma region
     std::shared_ptr<zaf::Screen> Screen() const noexcept;
     void SetScreen(std::shared_ptr<zaf::Screen> screen);
-
     float DPI() const noexcept;
 
     /**
     Gets the window's rectangle in screen coordinate.
 
     @details
-        The default size of a window is 640*480. The initial position of a window is centered in 
-        the owner if there is one, or centered in the screen, and it can be overridden by calling 
+        The default size of a window is 640*480. The initial position of a window is centered in
+        the owner if there is one, or centered in the screen, and it can be overridden by calling
         `SetRect()` or `SetPosition()` before creating the window handle.
 
         After creating the window handle, this method returns the actual rectangle of the window.
@@ -667,7 +425,7 @@ public:
     Sets the window's rectangle in screen coordinate.
 
     @param rect
-        The new rectangle to be set. It will be clamped to the minimum and maximum size of the 
+        The new rectangle to be set. It will be clamped to the minimum and maximum size of the
         window, and will be snapped to pixels according to the current screen's DPI.
 
     @throw zaf::InvalidHandleStateError
@@ -936,7 +694,7 @@ public:
         The content rectangle, whose position is always (0,0).
 
     @details
-        The content area is the client area of the window, excluding the non-client area such as 
+        The content area is the client area of the window, excluding the non-client area such as
         borders and title bar.
 
         This is a shortcut method for `zaf::Rect{ Point{0, 0}, ContentSize() }`.
@@ -953,7 +711,7 @@ public:
         If the window handle state is `NotCreated`, the content size is calculated based on the
         window size and the window styles.
 
-        If the window handle state is `Creating`, `Created` or `Destroying`, this method returns 
+        If the window handle state is `Creating`, `Created` or `Destroying`, this method returns
         the actual content size.
 
         If the window handle state is `Destroyed`, this method returns a zero size.
@@ -1059,6 +817,309 @@ public:
     rx::Single<None> WhenNotSizingOrMoving() const;
 
     /**
+    Transforms a position from the window's content area to its screen coordinates.
+
+    @position_in_window
+        The position in the window's content area coordinates.
+
+    @return
+        The transformed position in the window's screen coordinates.
+    */
+    Point TransformToScreen(const Point& position_in_window) const;
+
+    /**
+    Transforms a position from screen coordinates to the window's content area coordinates.
+
+    @position_in_screen
+        The position in the window's screen coordinates.
+
+    @return
+        The transformed position in the window's content area coordinates.
+    */
+    Point TranslateFromScreen(const Point& position_in_screen) const;
+#pragma endregion
+    /**@}*/
+
+    /**
+    @name Public Lifecycle Management
+    @{
+    */
+#pragma region
+    /**
+    Gets the state of the window handle.
+    */
+    WindowHandleState HandleState() const noexcept {
+        return handle_state_;
+    }
+
+    /**
+    Gets the window handle.
+
+    @return
+        A valid handle if the window handle state is `Creating`, `Created` or `Destroying`. 
+        Otherwise, returns null.
+    */
+    HWND Handle() const noexcept;
+
+    /**
+    Creates the window handle explicitly.
+
+    @return
+        A `zaf::WindowHolder` instance that keeps the handle alive. The window handle will be
+        destroyed when the holder is destructed.
+
+    @post
+        The return value is not null.
+
+    @throw std::bad_alloc
+
+    @throw zaf::InvalidHandleStateError
+        Thrown on the following conditions:
+        - Current window's handle state is `Creating`, `Destroying` or `Destroyed`.
+        - If an owner is set, its handle state is `NotCreated`, `Destroying` or `Destroyed`.
+
+    @throw zaf::Win32Error
+        Thrown if fails to create the window handle.
+
+    @throw ...
+        Any exception that may be thrown during the window handle creation.
+
+    @details
+        There are following steps during the creation of the window handle:
+        1. Set the window handle state to `Creating`.
+        2. Create the window handle via Win32 API.
+        3. Call the `OnHandleCreating()` method to raise the `HandleCreatingEvent()` when the
+           WM_CREATE message is received.
+        4. Set the window handle state to `Created`.
+        5. Initialize resources related to the window handle, such as the renderer.
+        6. Call the `OnHandleCreated()` method to raise the `HandleCreatedEvent()`.
+
+        These steps are regarded as a single atomic operation. If any exception is thrown during
+        the operation, anything that has been done will be rolled back by calling the `Destroy()`
+        method. In most cases, the window handle state will be reset to `NotCreated`, so that this
+        method can be called again. One exception is that if `Destroy()` method is called when the
+        window handle state is `Creating`, the state will be transited to `Destroying`, and then
+        `Destroyed`.
+
+        If the window handle has been created, the existing holder will be returned. Users must
+        keep the holder during the usage of the window handle.
+
+        If the window handle is destroyed before the holder destructed, the existing holder will be
+        detached.
+
+    @see zaf::WindowHandleState
+    @see zaf::WindowHolder
+    @see zaf::Window::Show()
+    */
+    [[nodiscard]]
+    std::shared_ptr<WindowHolder> CreateHandle();
+
+    /**
+    Gets the event that is raised after the window handle state is transited to `Creating`.
+
+    @details
+        @warning
+            Observers of this event must not throw, otherwise the behavior is undefined.
+
+    @see zaf::Window::CreateHandle()
+    @see zaf::Window::OnHandleCreating()
+    */
+    rx::Observable<HandleCreatingInfo> HandleCreatingEvent() const;
+
+    /**
+    Gets the event that is raised after the window handle state is transited to `Created`.
+
+    @see zaf::Window::CreateHandle()
+    @see zaf::Window::OnHandleCreated()
+    */
+    rx::Observable<HandleCreatedInfo> HandleCreatedEvent() const;
+
+    /**
+    Destroys the window handle.
+
+    @details
+        This method behaves differently according to the current window handle state:
+        - If the state is `NotCreated`, it will be transited to `Destroyed` directly.
+        - If the state is `Creating`, the creation is aborted. The state will be transited to
+          `Destroying` first, and then `Destroyed`. At last, `CreateHandle()` will fail with
+          `zaf::Win32Error` exception.
+        - If the state is `Created`, the state will be transited to `Destroying` first, and then
+          `Destroyed`.
+        - If the state is `Destroying` or `Destroyed`, nothing will be done.
+
+        After the window handle state is transited to `Destroying`, the `OnDestroying()` method
+        will be called to raise the `DestroyingEvent()`. After the window handle state is transited
+        to `Destroyed`, the `OnDestroyed()` method will be called to raise the `DestroyedEvent()`.
+    */
+    void Destroy() noexcept;
+
+    /**
+    Gets the event that is raised after the window handle state is transited to `Destroying`.
+
+    @details
+        @warning
+            Observers of this event must not throw, otherwise the behavior is undefined.
+
+    @see zaf::Window::CreateHandle()
+    @see zaf::Window::Destroy();
+    @see zaf::Window::OnDestroying()
+    */
+    rx::Observable<DestroyingInfo> DestroyingEvent() const;
+
+    /**
+    Gets the event that is raised after the window handle state is transited to `Destroyed`.
+
+    @details
+        @warning
+            Observers of this event must not throw, otherwise the behavior is undefined.
+
+    @see zaf::Window::CreateHandle()
+    @see zaf::Window::Destroy();
+    @see zaf::Window::OnDestroyed()
+    */
+    rx::Observable<DestroyedInfo> DestroyedEvent() const;
+
+    /**
+    Close the window.
+    */
+    void Close();
+
+    rx::Observable<ClosingInfo> ClosingEvent() const;
+#pragma endregion
+    /**@}*/
+
+    /**
+    @name Public Visibility Management
+    @{
+    */
+#pragma region
+    /**
+    Shows the window, creates the window handle if it has not been created.
+
+    @param options
+        The show options.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw ...
+        Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
+
+    @details
+        This method will call the `CreateHandle()` method implicitly to create the window handle.
+        The returned holder of the `CreateHandle()` method is registered to the application, so 
+        users don't need to keep the window or the holder by themselves. When the window handle is 
+        destroyed, its holder will be unregistered from the application, so that the window 
+        instance will be destructed as well.
+    */
+    void Show(ShowOptions options = ShowOptions::Normal);
+
+    /**
+    Shows and maximizes the window, creates the window handle if it has not been created.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw ...
+        Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
+
+    @details
+        This method is similar to the `Show()` method, except that it maximizes the window.
+
+    @see zaf::Window::Show()
+    */
+    void Maximize();
+
+    /**
+    Indicates whether the window is maximized.
+    */
+    bool IsWindowMaximized() const noexcept;
+
+    /**
+    Shows and minimizes the window, creates the window handle if it has not been created.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw ...
+        Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
+
+    @details
+        This method is similar to the `Show()` method, except that it minimizes the window.
+
+    @see zaf::Window::Show()
+    */
+    void Minimize();
+
+    /**
+    Indicates whether the window is minimized.
+    */
+    bool IsWindowMinimized() const noexcept;
+
+    /**
+    Shows and restores the window to its original size and position, creates the window handle if
+    it has not been created.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Destroying` or `Destroyed`.
+
+    @throw ...
+        Any exception thrown by the `CreateHandle()` method if fails to create the window handle.
+
+    @details
+        This method is similar to the `Show()` method, except that it restores the window.
+
+    @see zaf::Window::Show()
+    */
+    void Restore();
+
+    /**
+    Hides the window.
+
+    @details
+        This method takes effect only when the window handle state is `Creating` or `Created`, 
+        otherwise it does nothing. The window is remained registered in the application after it is
+        hidden.
+    */
+    void Hide() noexcept;
+
+    /**
+    Indicates whether the window is visible.
+    */
+    bool IsVisible() const noexcept;
+#pragma endregion
+    /**@}*/
+
+    /**
+    Gets the window's owner.
+
+    @return
+        The owner of the window. It is null if the window has no owner.
+    */
+    std::shared_ptr<Window> Owner() const noexcept;
+
+    /**
+    Sets the window's owner.
+
+    @param owner
+        The owner window. It can be null to remove the owner. The owner will be stored as a weak
+        pointer to avoid circular reference.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Creating`, `Created`, `Destroying` or `Destroyed`.
+
+    @throw zaf::InvalidOperationError
+        Thrown if trying to set the window itself as its owner.
+
+    @details
+        If a window has an owner, the owner's handle must be created before the window's handle is
+        created, otherwise an exception will be thrown when creating the window's handle.
+
+    @see zaf::Window::CreateHandle()
+    */
+    void SetOwner(std::shared_ptr<Window> owner);
+
+    /**
      Get window's root control.
      */
     const std::shared_ptr<Control>& RootControl() const {
@@ -1147,8 +1208,6 @@ public:
     */
     rx::Observable<WindowFocusLostInfo> FocusLostEvent() const;
 
-    rx::Observable<ClosingInfo> ClosingEvent() const;
-
     rx::Observable<MessageReceivedInfo> MessageReceivedEvent() const;
     rx::Observable<MessageHandledInfo> MessageHandledEvent() const;
 
@@ -1169,34 +1228,6 @@ public:
     Point GetMousePosition() const;
 
     /**
-    Translates a position from the window's client area to screen coordinates.
-
-    @position
-        The position in the window's client area coordinates.
-
-    @return
-        The translated position in screen coordinates.
-
-    @throw std::logic_error
-        Thrown if the window handle hasn't been created yet.
-    */
-    Point TranslateToScreen(const Point& position) const;
-
-    /**
-    Translates a position from the screen coordinates to the window's client area coordinates.
-
-    @position
-        The position in the screen coordinates.
-
-    @return 
-        The translated position in window's client area coordinates.
-
-    @throw std::logic_error
-        Thrown if the window handle hasn't been created yet.
-    */
-    Point TranslateFromScreen(const Point& position) const;
-
-    /**
     Attempts to bring the window to the foreground and activates it.
 
     @pre
@@ -1212,19 +1243,18 @@ public:
     */
     bool Activate();
 
-    bool IsVisible() const noexcept;
     bool IsFocused() const;
-
-    /**
-     Close the window.
-     */
-    void Close();
 
     void ShowInspectorWindow();
 
 protected:
     void Initialize() override;
 
+    /**
+    @name Protected Lifecycle Management
+    @{
+    */
+#pragma region
     /**
     Called after the window handle state is transited to `Creating`.
 
@@ -1302,6 +1332,8 @@ protected:
             This method must not throw, otherwise the behavior is undefined.
     */
     virtual void OnDestroyed(const DestroyedInfo& event_info);
+    /**@}*/
+#pragma endregion
 
     /**
      Preprocess a key message.
