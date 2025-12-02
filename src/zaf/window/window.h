@@ -1541,8 +1541,6 @@ private:
     static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 private:
-    void InnerShowWindow(int show_command);
-
     LRESULT HandleWMCREATE(const Message& message);
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
     void CreateRenderer();

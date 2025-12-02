@@ -28,11 +28,6 @@
 namespace zaf {
 namespace {
 
-struct CreateWindowParams {
-    Window* instance{};
-    const internal::WindowNotCreatedStateData* not_created_state_data{};
-};
-
 Point TranslateAbsolutePositionToControlPosition(
     const Point& absolute_position, 
     const Control& control ) {
@@ -199,73 +194,37 @@ void Window::RecreateRenderer() {
 
 
 void Window::Show(ShowOptions options) {
-
-    bool no_activate = 
-        HasFlag(options, ShowOptions::NoActivate) || 
-        HasFlag(ActivateOptions(), zaf::ActivateOptions::NoAutoActivate);
-
-    InnerShowWindow(no_activate ? SW_SHOWNA : SW_SHOW);
-}
-
-
-void Window::InnerShowWindow(int show_command) {
-
-    std::shared_ptr<WindowHolder> holder;
-    if (HandleState() == WindowHandleState::NotCreated) {
-        holder = CreateHandle();
-    }
-    else if (HandleState() == WindowHandleState::Creating ||
-             HandleState() == WindowHandleState::Created) {
-        holder = lifecycle_facet_.Holder();
-    }
-    else {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-
-    Application::Instance().RegisterShownWindow(holder);
-    ShowWindow(Handle(), show_command);
+    visibility_facet_.Show(options);
 }
 
 
 void Window::Maximize() {
-    InnerShowWindow(SW_SHOWMAXIMIZED);
+    visibility_facet_.Maximize();
 }
 
 
 bool Window::IsWindowMaximized() const noexcept {
-    auto handle = Handle();
-    if (handle) {
-        return IsMaximized(handle);
-    }
-    return false;
+    return visibility_facet_.IsWindowMaximized();
 }
 
 
 void Window::Minimize() {
-    InnerShowWindow(SW_SHOWMINIMIZED);
+    visibility_facet_.Minimize();
 }
 
 
 bool Window::IsWindowMinimized() const noexcept {
-    auto handle = Handle();
-    if (handle) {
-        return IsMinimized(handle);
-    }
-    return false;
+    return visibility_facet_.IsWindowMinimized();
 }
 
 
 void Window::Restore() {
-    InnerShowWindow(SW_RESTORE);
+    visibility_facet_.Restore();
 }
 
 
 void Window::Hide() noexcept {
-
-    if (HandleState() == WindowHandleState::Created ||
-        HandleState() == WindowHandleState::Creating) {
-        ShowWindow(Handle(), SW_HIDE);
-    }
+    visibility_facet_.Hide();
 }
 
 
@@ -1748,12 +1707,7 @@ bool Window::Activate() {
 
 
 bool Window::IsVisible() const noexcept {
-    if (HandleState() == WindowHandleState::Creating ||
-        HandleState() == WindowHandleState::Created ||
-        HandleState() == WindowHandleState::Destroying) {
-        return !!IsWindowVisible(Handle());
-    }
-    return false;
+    return visibility_facet_.IsVisible();
 }
 
 

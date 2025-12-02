@@ -27,6 +27,7 @@ class CryptoManager;
 namespace internal {
 class SystemMessageWindow;
 class WindowLifecycleFacet;
+class WindowVisibilityFacet;
 }
 
 namespace wic {
@@ -226,6 +227,7 @@ public:
 private:
     friend class Window;
     friend class internal::WindowLifecycleFacet;
+    friend class internal::WindowVisibilityFacet;
     friend class zaf::testing::WindowTest;
 
     void RegisterShownWindow(const std::shared_ptr<WindowHolder>& window_holder);
