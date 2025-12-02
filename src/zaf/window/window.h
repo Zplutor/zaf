@@ -27,10 +27,10 @@
 #include <zaf/window/event/show_window_event_info.h>
 #include <zaf/window/event/window_focus_event_info.h>
 #include <zaf/window/event/window_size_changed_info.h>
-#include <zaf/window/internal/window_handle_state_data.h>
-#include <zaf/window/internal/window_not_created_state_data.h>
 #include <zaf/window/internal/window_facets/window_geometry_facet.h>
+#include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
 #include <zaf/window/internal/window_facets/window_style_facet.h>
+#include <zaf/window/internal/window_facets/window_visibility_facet.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/screen.h>
 #include <zaf/window/show_options.h>
@@ -848,9 +848,7 @@ public:
     /**
     Gets the state of the window handle.
     */
-    WindowHandleState HandleState() const noexcept {
-        return handle_state_;
-    }
+    WindowHandleState HandleState() const noexcept;
 
     /**
     Gets the window handle.
@@ -1543,20 +1541,6 @@ private:
     static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 private:
-    internal::WindowNotCreatedStateData& NotCreatedStateData() noexcept;
-    const internal::WindowNotCreatedStateData& NotCreatedStateData() const noexcept;
-    internal::WindowHandleStateData& HandleStateData() noexcept;
-    const internal::WindowHandleStateData& HandleStateData() const noexcept;
-
-    std::shared_ptr<WindowHolder> CreateHandleInNotCreatedState();
-    static void ProcessCreatingState(
-        Window* instance,
-        const internal::WindowNotCreatedStateData& state_data,
-        const WindowClass& window_class,
-        const std::shared_ptr<Window>& owner);
-    void ProcessCreatedState();
-    void AttachHandle(HWND handle) noexcept;
-
     void InnerShowWindow(int show_command);
 
     LRESULT HandleWMCREATE(const Message& message);
@@ -1595,31 +1579,11 @@ private:
     void HideTooltipWindow();
     bool HandleWMSETCURSOR(const Message& message);
     void HandleIMEMessage(const Message& message);
-    void HandleWMCLOSE();
-    void HandleWMDESTROY();
-    void HandleWMNCDESTROY() noexcept;
     
     void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
     void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
 
 private:
-    WindowHandleState handle_state_{ WindowHandleState::NotCreated };
-
-    /*
-    State data type for different window handle states:
-    - NotCreated: WindowNotCreatedStateData
-    - Creating, Created, Destroying: WindowHandleStateData
-    - Destroyed: std::monostate
-    */
-    std::variant<
-        internal::WindowNotCreatedStateData,
-        internal::WindowHandleStateData,
-        std::monostate
-    > state_data_;
-
-    DestroyReason destroy_reason_{ DestroyReason::Unspecified };
-    std::weak_ptr<WindowHolder> holder_;
-
     d2d::WindowRenderer renderer_;
 
     struct {
@@ -1631,6 +1595,8 @@ private:
 
     internal::WindowStyleFacet style_facet_;
     internal::WindowGeometryFacet geometry_facet_;
+    internal::WindowLifecycleFacet lifecycle_facet_;
+    internal::WindowVisibilityFacet visibility_facet_;
 
     TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };
 
@@ -1663,7 +1629,9 @@ private:
     Event<MouseCaptureControlChangedInfo> mouse_capture_control_changed_event_;
 
     friend class internal::WindowGeometryFacet;
+    friend class internal::WindowLifecycleFacet;
     friend class internal::WindowStyleFacet;
+    friend class internal::WindowVisibilityFacet;
 };
 
 ZAF_OBJECT_BEGIN(Window)

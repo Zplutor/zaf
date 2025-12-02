@@ -408,7 +408,9 @@
     <ClCompile Include="src\zaf\window\input_method_context.cpp" />
     <ClCompile Include="src\zaf\window\internal\popup_menu_controller.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_facets\window_geometry_facet.cpp" />
+    <ClCompile Include="src\zaf\window\internal\window_facets\window_lifecycle_facet.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_facets\window_style_facet.cpp" />
+    <ClCompile Include="src\zaf\window\internal\window_facets\window_visibility_facet.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_styles.cpp" />
     <ClCompile Include="src\zaf\window\popup_menu.cpp" />
     <ClCompile Include="src\zaf\window\dialog.cpp" />
@@ -996,7 +998,9 @@
     <ClInclude Include="src\zaf\window\input_method_context.h" />
     <ClInclude Include="src\zaf\window\internal\popup_menu_controller.h" />
     <ClInclude Include="src\zaf\window\internal\window_facets\window_geometry_facet.h" />
+    <ClInclude Include="src\zaf\window\internal\window_facets\window_lifecycle_facet.h" />
     <ClInclude Include="src\zaf\window\internal\window_facets\window_style_facet.h" />
+    <ClInclude Include="src\zaf\window\internal\window_facets\window_visibility_facet.h" />
     <ClInclude Include="src\zaf\window\internal\window_handle_state_data.h" />
     <ClInclude Include="src\zaf\window\internal\window_not_created_state_data.h" />
     <ClInclude Include="src\zaf\window\internal\window_styles.h" />

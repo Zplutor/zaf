@@ -70,7 +70,9 @@ std::shared_ptr<zaf::Screen> WindowGeometryFacet::Screen() const noexcept {
 
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
-        return ResolveInitialScreen(window_.NotCreatedStateData(), window_.Owner());
+        return ResolveInitialScreen(
+            window_.lifecycle_facet_.NotCreatedStateData(), 
+            window_.Owner());
     }
     else if (handle_state == WindowHandleState::Creating ||
              handle_state == WindowHandleState::Created ||
@@ -93,7 +95,7 @@ void WindowGeometryFacet::SetScreen(std::shared_ptr<zaf::Screen> screen) {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
     }
 
-    window_.NotCreatedStateData().screen = std::move(screen);
+    window_.lifecycle_facet_.NotCreatedStateData().screen = std::move(screen);
 }
 
 
@@ -116,7 +118,7 @@ zaf::Rect WindowGeometryFacet::Rect() const noexcept {
         return ResolveInitialRect(
             *this->Screen(),
             window_.Owner(), 
-            window_.NotCreatedStateData());
+            window_.lifecycle_facet_.NotCreatedStateData());
     }
 
     if (handle_state == WindowHandleState::Creating ||
@@ -140,7 +142,7 @@ void WindowGeometryFacet::SetRect(const zaf::Rect& rect) {
         zaf::Rect new_rect{ rect.position, ClampSize(rect.size) };
         new_rect = SnapToPixels(new_rect, DPI());
 
-        auto& not_created_state_data = window_.NotCreatedStateData();
+        auto& not_created_state_data = window_.lifecycle_facet_.NotCreatedStateData();
         not_created_state_data.initial_position = new_rect.position;
         not_created_state_data.size = new_rect.size;
     }
@@ -198,7 +200,7 @@ zaf::Size WindowGeometryFacet::Size() const noexcept {
 
 void WindowGeometryFacet::SetSize(const zaf::Size& size) {
     if (window_.HandleState() == WindowHandleState::NotCreated) {
-        window_.NotCreatedStateData().size = ClampSize(size);
+        window_.lifecycle_facet_.NotCreatedStateData().size = ClampSize(size);
     }
     else {
         zaf::Rect new_rect = Rect();
@@ -416,7 +418,7 @@ zaf::Size WindowGeometryFacet::ContentSize() const noexcept {
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
 
-        auto& not_created_state_data = window_.NotCreatedStateData();
+        auto& not_created_state_data = window_.lifecycle_facet_.NotCreatedStateData();
         auto frame = GetWindowFrame(
             not_created_state_data.basic_style,
             not_created_state_data.extended_style);
@@ -447,7 +449,7 @@ void WindowGeometryFacet::SetContentSize(const zaf::Size& size) {
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
 
-        auto& not_created_state_data = window_.NotCreatedStateData();
+        auto& not_created_state_data = window_.lifecycle_facet_.NotCreatedStateData();
         window_size = AdjustContentSizeToWindowSize(
             size,
             not_created_state_data.basic_style,

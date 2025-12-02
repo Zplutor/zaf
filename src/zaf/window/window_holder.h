@@ -2,6 +2,10 @@
 
 #include <memory>
 
+namespace zaf::internal {
+class WindowLifecycleFacet;
+}
+
 namespace zaf {
 
 class Window;
@@ -23,7 +27,7 @@ public:
     }
 
 private:
-    friend class Window;
+    friend class internal::WindowLifecycleFacet;
 
     void Detach() noexcept {
         window_.reset();

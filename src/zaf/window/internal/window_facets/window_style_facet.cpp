@@ -19,13 +19,13 @@ std::wstring WindowStyleFacet::Title() const {
 
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
-        return window_.NotCreatedStateData().title;
+        return window_.lifecycle_facet_.NotCreatedStateData().title;
     }
     else if (handle_state == WindowHandleState::Creating ||
              handle_state == WindowHandleState::Created ||
              handle_state == WindowHandleState::Destroying) {
 
-        const auto& handle_state = window_.HandleStateData();
+        const auto& handle_state = window_.lifecycle_facet_.HandleStateData();
 
         SetLastError(0);
         int title_length = GetWindowTextLength(handle_state.handle);
@@ -61,12 +61,12 @@ void WindowStyleFacet::SetTitle(const std::wstring& title) {
 
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
-        window_.NotCreatedStateData().title = title;
+        window_.lifecycle_facet_.NotCreatedStateData().title = title;
     }
     else if (handle_state == WindowHandleState::Creating ||
              handle_state == WindowHandleState::Created) {
 
-        BOOL is_succeeded = SetWindowText(window_.HandleStateData().handle, title.c_str());
+        BOOL is_succeeded = SetWindowText(window_.Handle(), title.c_str());
         if (!is_succeeded) {
             ZAF_THROW_WIN32_ERROR(GetLastError());
         }
@@ -82,14 +82,19 @@ bool WindowStyleFacet::HasStyleProperty(PROPERTY property) const noexcept {
 
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
-        return internal::WindowStyleShim<PROPERTY>::Has(window_.NotCreatedStateData(), property);
+
+        return internal::WindowStyleShim<PROPERTY>::Has(
+            window_.lifecycle_facet_.NotCreatedStateData(),
+            property);
     }
 
     if (handle_state == WindowHandleState::Creating ||
         handle_state == WindowHandleState::Created ||
         handle_state == WindowHandleState::Destroying) {
 
-        return internal::WindowStyleShim<PROPERTY>::Has(window_.HandleStateData(), property);
+        return internal::WindowStyleShim<PROPERTY>::Has(
+            window_.lifecycle_facet_.HandleStateData(),
+            property);
     }
 
     return false;
@@ -104,7 +109,11 @@ void WindowStyleFacet::SetStyleProperty(
 
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
-        internal::WindowStyleShim<PROPERTY>::Set(window_.NotCreatedStateData(), property, enable);
+
+        internal::WindowStyleShim<PROPERTY>::Set(
+            window_.lifecycle_facet_.NotCreatedStateData(), 
+            property, 
+            enable);
     }
     else if (handle_state == WindowHandleState::Creating ||
              handle_state == WindowHandleState::Created) {
@@ -113,7 +122,10 @@ void WindowStyleFacet::SetStyleProperty(
             throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
         }
 
-        internal::WindowStyleShim<PROPERTY>::Set(window_.HandleStateData(), property, enable);
+        internal::WindowStyleShim<PROPERTY>::Set(
+            window_.lifecycle_facet_.HandleStateData(), 
+            property,
+            enable);
     }
     else {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
@@ -211,7 +223,7 @@ void WindowStyleFacet::SetIsTopmost(bool is_topmost) {
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
 
-        window_.NotCreatedStateData().extended_style.Set(
+        window_.lifecycle_facet_.NotCreatedStateData().extended_style.Set(
             internal::WindowExtendedStyleProperty::IsTopMost,
             is_topmost);
     }
@@ -219,7 +231,7 @@ void WindowStyleFacet::SetIsTopmost(bool is_topmost) {
              handle_state == WindowHandleState::Created) {
 
         BOOL is_succeeded = SetWindowPos(
-            window_.HandleStateData().handle,
+            window_.Handle(),
             is_topmost ? HWND_TOPMOST : HWND_NOTOPMOST,
             0,
             0,

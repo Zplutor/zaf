@@ -59,14 +59,7 @@ LRESULT CALLBACK Window::WindowProcedure(
     LPARAM lparam) {
 
     if (message_id == WM_NCCREATE) {
-
-        auto create_struct = reinterpret_cast<const CREATESTRUCTA*>(lparam);
-        auto create_params =
-            reinterpret_cast<const CreateWindowParams*>(create_struct->lpCreateParams);
-
-        auto window = create_params->instance;
-        SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<ULONG_PTR>(window));
-        window->AttachHandle(hwnd);
+        internal::WindowLifecycleFacet::HandleWMNCCREATE(hwnd, lparam);
     }
 
     auto window = GetWindowFromHandle(hwnd);
@@ -91,7 +84,9 @@ Window::Window(std::wstring_view window_class_name) :
 
 Window::Window(std::shared_ptr<WindowClass> window_class) :
     style_facet_(*this, std::move(window_class)),
-    geometry_facet_(*this) {
+    geometry_facet_(*this),
+    lifecycle_facet_(*this),
+    visibility_facet_(*this) {
 
 }
 
@@ -107,31 +102,13 @@ const std::shared_ptr<WindowClass>& Window::Class() const noexcept {
 }
 
 
+WindowHandleState Window::HandleState() const noexcept {
+    return lifecycle_facet_.HandleState();
+}
+
+
 HWND Window::Handle() const noexcept {
-    if (handle_state_ == WindowHandleState::Creating ||
-        handle_state_ == WindowHandleState::Created ||
-        handle_state_ == WindowHandleState::Destroying) {
-        return HandleStateData().handle;
-    }
-    return nullptr;
-}
-
-
-internal::WindowNotCreatedStateData& Window::NotCreatedStateData() noexcept {
-    return std::get<internal::WindowNotCreatedStateData>(state_data_);
-}
-
-const internal::WindowNotCreatedStateData& Window::NotCreatedStateData() const noexcept {
-    return std::get<internal::WindowNotCreatedStateData>(state_data_);
-}
-
-
-internal::WindowHandleStateData& Window::HandleStateData() noexcept {
-    return std::get<internal::WindowHandleStateData>(state_data_);
-}
-
-const internal::WindowHandleStateData& Window::HandleStateData() const noexcept {
-    return std::get<internal::WindowHandleStateData>(state_data_);
+    return lifecycle_facet_.Handle();
 }
 
 
@@ -153,131 +130,7 @@ void Window::Initialize() {
 
 
 std::shared_ptr<WindowHolder> Window::CreateHandle() {
-
-    if (handle_state_ == WindowHandleState::NotCreated) {
-        return CreateHandleInNotCreatedState();
-    }
-    else if (handle_state_ == WindowHandleState::Created) {
-        return holder_.lock();
-    }
-    else {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-}
-
-
-std::shared_ptr<WindowHolder> Window::CreateHandleInNotCreatedState() {
-
-    // Check if the owner's handle state is valid.
-    auto owner = Owner();
-    if (owner) {
-        auto owner_handle_state = owner->HandleState();
-        if (owner_handle_state == WindowHandleState::NotCreated ||
-            owner_handle_state == WindowHandleState::Destroying ||
-            owner_handle_state == WindowHandleState::Destroyed) {
-            throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-        }
-    }
-
-    auto holder = std::make_shared<WindowHolder>(shared_from_this());
-    holder_ = holder;
-
-    handle_state_ = WindowHandleState::Creating;
-
-    auto not_created_state_data = std::move(NotCreatedStateData());
-    state_data_.emplace<internal::WindowHandleStateData>();
-
-    try {
-
-        ProcessCreatingState(this, not_created_state_data, *style_facet_.Class(), owner);
-
-        handle_state_ = WindowHandleState::Created;
-        ProcessCreatedState();
-
-        return holder;
-    }
-    catch (...) {
-
-        // If the state is Destroyed, it means Destroy method has been called during the 
-        // creation, so don't reset the state to NotCreated.
-        if (handle_state_ != WindowHandleState::Destroyed) {
-
-            auto auto_reset = MakeAutoReset(destroy_reason_, DestroyReason::CreationFailed);
-            this->Destroy();
-
-            handle_state_ = WindowHandleState::NotCreated;
-            state_data_ = std::move(not_created_state_data);
-        }
-
-        // The holder member should be reset last, as it is used in the Destroy() method to 
-        // detach the window.
-        holder_.reset();
-        throw;
-    }
-}
-
-
-// Do not access any member of instance, as it is in a middle state of creation.
-void Window::ProcessCreatingState(
-    Window* instance,
-    const internal::WindowNotCreatedStateData& state_data,
-    const WindowClass& window_class,
-    const std::shared_ptr<Window>& owner) {
-
-    DWORD style = state_data.basic_style.Value();
-    DWORD extended_style = state_data.extended_style.Value();
-
-    auto screen = internal::WindowGeometryFacet::ResolveInitialScreen(state_data, owner);
-    auto initial_rect = internal::WindowGeometryFacet::ResolveInitialRect(
-        *screen, 
-        owner, 
-        state_data);
-    auto initial_rect_in_global = screen->TransformToGlobal(initial_rect);
-
-    CreateWindowParams params;
-    params.instance = instance;
-    params.not_created_state_data = &state_data;
-
-    // During the execution of CreateWindowEx, the window handle will be set to handle_ member
-    // when the WM_NCCREATE message is received.
-    auto handle = CreateWindowEx(
-        extended_style,
-        reinterpret_cast<LPCWSTR>(window_class.GetAtom()),
-        state_data.title.c_str(),
-        style,
-        static_cast<int>(initial_rect_in_global.position.x),
-        static_cast<int>(initial_rect_in_global.position.y),
-        static_cast<int>(initial_rect_in_global.size.width),
-        static_cast<int>(initial_rect_in_global.size.height),
-        owner ? owner->Handle() : nullptr,
-        nullptr,
-        nullptr,
-        &params);
-
-    if (!handle) {
-        ZAF_THROW_WIN32_ERROR(GetLastError());
-    }
-}
-
-
-
-void Window::ProcessCreatedState() {
-
-    auto handle = Handle();
-    auto dpi = static_cast<float>(GetDpiForWindow(handle));
-
-    RECT client_rect{};
-    GetClientRect(handle, &client_rect);
-    root_control_->SetRect(ToDIPs(Rect::FromRECT(client_rect), dpi));
-
-    CreateRenderer();
-
-    OnHandleCreated(HandleCreatedInfo{ shared_from_this() });
-}
-
-
-void Window::AttachHandle(HWND handle) noexcept {
-    HandleStateData().handle = handle;
+    return lifecycle_facet_.CreateHandle();
 }
 
 
@@ -302,19 +155,7 @@ rx::Observable<HandleCreatedInfo> Window::HandleCreatedEvent() const {
 
 
 void Window::Destroy() noexcept {
-
-    if (handle_state_ == WindowHandleState::NotCreated) {
-
-        handle_state_ = WindowHandleState::Destroyed;
-        OnDestroyed(DestroyedInfo{ shared_from_this(), nullptr, DestroyReason::Unspecified });
-    }
-    else if (handle_state_ == WindowHandleState::Creating ||
-             handle_state_ == WindowHandleState::Created) {
-
-        // Handle related resources would be released in the WM_DESTROY message handler.
-        // OnDestroy method would be called in the WM_DESTROY message handler as well.
-        DestroyWindow(Handle());
-    }
+    lifecycle_facet_.Destroy();
 }
 
 
@@ -370,12 +211,12 @@ void Window::Show(ShowOptions options) {
 void Window::InnerShowWindow(int show_command) {
 
     std::shared_ptr<WindowHolder> holder;
-    if (handle_state_ == WindowHandleState::NotCreated) {
+    if (HandleState() == WindowHandleState::NotCreated) {
         holder = CreateHandle();
     }
-    else if (handle_state_ == WindowHandleState::Creating ||
-             handle_state_ == WindowHandleState::Created) {
-        holder = holder_.lock();
+    else if (HandleState() == WindowHandleState::Creating ||
+             HandleState() == WindowHandleState::Created) {
+        holder = lifecycle_facet_.Holder();
     }
     else {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
@@ -421,8 +262,8 @@ void Window::Restore() {
 
 void Window::Hide() noexcept {
 
-    if (handle_state_ == WindowHandleState::Created ||
-        handle_state_ == WindowHandleState::Creating) {
+    if (HandleState() == WindowHandleState::Created ||
+        HandleState() == WindowHandleState::Creating) {
         ShowWindow(Handle(), SW_HIDE);
     }
 }
@@ -435,7 +276,7 @@ std::shared_ptr<Window> Window::Owner() const noexcept {
 
 void Window::SetOwner(std::shared_ptr<Window> owner) {
 
-    if (handle_state_ != WindowHandleState::NotCreated) {
+    if (HandleState() != WindowHandleState::NotCreated) {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
     }
 
@@ -794,15 +635,15 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return std::nullopt;
 
     case WM_CLOSE:
-        HandleWMCLOSE();
+        lifecycle_facet_.HandleWMCLOSE();
         return 0;
 
     case WM_DESTROY:
-        HandleWMDESTROY();
+        lifecycle_facet_.HandleWMDESTROY();
         return 0;
 
     case WM_NCDESTROY:
-        HandleWMNCDESTROY();
+        lifecycle_facet_.HandleWMNCDESTROY();
         return 0;
 
     default:
@@ -1472,18 +1313,6 @@ void Window::HandleIMEMessage(const Message& message) {
 }
 
 
-void Window::HandleWMCLOSE() {
-
-    ClosingInfo event_info{ shared_from_this() };
-    OnClosing(event_info);
-
-    if (event_info.CanClose()) {
-        auto auto_reset = MakeAutoReset(destroy_reason_, DestroyReason::Closed);
-        Destroy();
-    }
-}
-
-
 void Window::OnClosing(const ClosingInfo& event_info) {
     closing_event_.Raise(event_info);
 }
@@ -1491,44 +1320,6 @@ void Window::OnClosing(const ClosingInfo& event_info) {
 
 rx::Observable<ClosingInfo> Window::ClosingEvent() const {
     return closing_event_.GetObservable();
-}
-
-
-void Window::HandleWMDESTROY() {
-
-    //Avoid reentering.
-    if (handle_state_ == WindowHandleState::Destroying) {
-        return;
-    }
-
-    handle_state_ = WindowHandleState::Destroying;
-    OnDestroying(DestroyingInfo{ shared_from_this(), destroy_reason_ });
-
-    CancelMouseCapture();
-    focused_control_manager_->HandleWindowDestroy();
-    root_control_->ReleaseRendererResources();
-
-    HWND old_handle = Handle();
-    handle_specific_state_ = {};
-    renderer_ = {};
-    tooltip_window_.reset();
-
-    state_data_.emplace<std::monostate>();
-    handle_state_ = WindowHandleState::Destroyed;
-    OnDestroyed(DestroyedInfo{ shared_from_this(), old_handle, destroy_reason_ });
-}
-
-
-void Window::HandleWMNCDESTROY() noexcept {
-
-    auto holder = holder_.lock();
-    if (holder) {
-
-        Application::Instance().UnregisterShownWindow(holder);
-
-        holder->Detach();
-        holder_.reset();
-    }
 }
 
 
@@ -1957,9 +1748,9 @@ bool Window::Activate() {
 
 
 bool Window::IsVisible() const noexcept {
-    if (handle_state_ == WindowHandleState::Creating ||
-        handle_state_ == WindowHandleState::Created ||
-        handle_state_ == WindowHandleState::Destroying) {
+    if (HandleState() == WindowHandleState::Creating ||
+        HandleState() == WindowHandleState::Created ||
+        HandleState() == WindowHandleState::Destroying) {
         return !!IsWindowVisible(Handle());
     }
     return false;
@@ -1978,13 +1769,7 @@ bool Window::IsFocused() const {
 
 
 void Window::Close() {
-
-    //Do nothing if the window is being destroyed.
-    if (handle_state_ == WindowHandleState::Destroying) {
-        return;
-    }
-
-    SendMessage(Handle(), WM_CLOSE, 0, 0);
+    lifecycle_facet_.Close();
 }
 
 
