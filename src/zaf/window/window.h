@@ -30,6 +30,7 @@
 #include <zaf/window/internal/window_handle_state_data.h>
 #include <zaf/window/internal/window_not_created_state_data.h>
 #include <zaf/window/internal/window_facets/window_geometry_facet.h>
+#include <zaf/window/internal/window_facets/window_style_facet.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/screen.h>
 #include <zaf/window/show_options.h>
@@ -73,7 +74,7 @@ public:
      */
     Window();
     explicit Window(std::wstring_view window_class_name);
-    explicit Window(const std::shared_ptr<WindowClass>& window_class);
+    explicit Window(std::shared_ptr<WindowClass> window_class);
 
     /**
      Destruct the instance.
@@ -85,9 +86,7 @@ public:
     @{
     */
 #pragma region
-    const std::shared_ptr<WindowClass>& Class() const noexcept {
-        return class_;
-    }
+    const std::shared_ptr<WindowClass>& Class() const noexcept;
 
     /**
     Gets the window's title.
@@ -1560,11 +1559,6 @@ private:
 
     void InnerShowWindow(int show_command);
 
-    template<typename PROPERTY>
-    bool HasStyleProperty(PROPERTY property) const noexcept;
-    template<typename PROPERTY>
-    void SetStyleProperty(PROPERTY property, bool enable, bool can_set_if_has_handle);
-
     LRESULT HandleWMCREATE(const Message& message);
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
     void CreateRenderer();
@@ -1609,7 +1603,6 @@ private:
     void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
 
 private:
-    std::shared_ptr<WindowClass> class_;
     WindowHandleState handle_state_{ WindowHandleState::NotCreated };
 
     /*
@@ -1636,8 +1629,7 @@ private:
 
     std::weak_ptr<Window> owner_;
 
-    zaf::ActivateOptions activate_options_{ zaf::ActivateOptions::Normal };
-
+    internal::WindowStyleFacet style_facet_;
     internal::WindowGeometryFacet geometry_facet_;
 
     TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };
@@ -1671,6 +1663,7 @@ private:
     Event<MouseCaptureControlChangedInfo> mouse_capture_control_changed_event_;
 
     friend class internal::WindowGeometryFacet;
+    friend class internal::WindowStyleFacet;
 };
 
 ZAF_OBJECT_BEGIN(Window)

@@ -27,7 +27,7 @@ public:
         const internal::WindowNotCreatedStateData& state_data) noexcept;
 
 public:
-    explicit WindowGeometryFacet(Window& window);
+    explicit WindowGeometryFacet(Window& window) noexcept;
 
     std::shared_ptr<zaf::Screen> Screen() const noexcept;
     void SetScreen(std::shared_ptr<zaf::Screen> screen);

@@ -89,17 +89,21 @@ Window::Window(std::wstring_view window_class_name) :
 }
 
 
-Window::Window(const std::shared_ptr<WindowClass>& window_class) : 
-    class_(window_class), 
+Window::Window(std::shared_ptr<WindowClass> window_class) :
+    style_facet_(*this, std::move(window_class)),
     geometry_facet_(*this) {
 
-    ZAF_EXPECT(class_);
 }
 
 
 Window::~Window() {
     // The window handle won't be destroyed in the destructor, as it is destroyed by the 
     // WindowHolder.
+}
+
+
+const std::shared_ptr<WindowClass>& Window::Class() const noexcept {
+    return style_facet_.Class();
 }
 
 
@@ -185,7 +189,7 @@ std::shared_ptr<WindowHolder> Window::CreateHandleInNotCreatedState() {
 
     try {
 
-        ProcessCreatingState(this, not_created_state_data, *class_, owner);
+        ProcessCreatingState(this, not_created_state_data, *style_facet_.Class(), owner);
 
         handle_state_ = WindowHandleState::Created;
         ProcessCreatedState();
@@ -444,227 +448,103 @@ void Window::SetOwner(std::shared_ptr<Window> owner) {
 
 
 std::wstring Window::Title() const {
-
-    if (handle_state_ == WindowHandleState::NotCreated) {
-        return NotCreatedStateData().title;
-    }
-    else if (handle_state_ == WindowHandleState::Creating ||
-             handle_state_ == WindowHandleState::Created ||
-             handle_state_ == WindowHandleState::Destroying) {
-
-        const auto& handle_state = HandleStateData();
-
-        SetLastError(0);
-        int title_length = GetWindowTextLength(handle_state.handle);
-        if (title_length == 0) {
-            auto last_error = GetLastError();
-            if (last_error) {
-                ZAF_THROW_WIN32_ERROR(last_error);
-            }
-            return {};
-        }
-
-        std::wstring title;
-        title.resize(title_length + 1);
-
-        int actual_length = GetWindowText(
-            handle_state.handle, 
-            title.data(), 
-            static_cast<int>(title.size()));
-
-        if (actual_length == 0) {
-            ZAF_THROW_WIN32_ERROR(GetLastError());
-        }
-        title.resize(actual_length);
-        return title;
-    }
-    else {
-        return {};
-    }
+    return style_facet_.Title();
 }
 
 
 void Window::SetTitle(const std::wstring& title) {
-
-    if (handle_state_ == WindowHandleState::NotCreated) {
-        NotCreatedStateData().title = title;
-    }
-    else if (handle_state_ == WindowHandleState::Creating ||
-             handle_state_ == WindowHandleState::Created) {
-
-        BOOL is_succeeded = SetWindowText(HandleStateData().handle, title.c_str());
-        if (!is_succeeded) {
-            ZAF_THROW_WIN32_ERROR(GetLastError());
-        }
-    }
-    else {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-}
-
-
-template<typename PROPERTY>
-bool Window::HasStyleProperty(PROPERTY property) const noexcept {
-
-    if (handle_state_ == WindowHandleState::NotCreated) {
-        return internal::WindowStyleShim<PROPERTY>::Has(NotCreatedStateData(), property);
-    }
-
-    if (handle_state_ == WindowHandleState::Creating ||
-        handle_state_ == WindowHandleState::Created ||
-        handle_state_ == WindowHandleState::Destroying) {
-
-        return internal::WindowStyleShim<PROPERTY>::Has(HandleStateData(), property);
-    }
-
-    return false;
-}
-
-
-template<typename PROPERTY>
-void Window::SetStyleProperty(PROPERTY property, bool enable, bool can_set_if_has_handle) {
-
-    if (handle_state_ == WindowHandleState::NotCreated) {
-        internal::WindowStyleShim<PROPERTY>::Set(NotCreatedStateData(), property, enable);
-    }
-    else if (handle_state_ == WindowHandleState::Creating ||
-             handle_state_ == WindowHandleState::Created) {
-
-        if (!can_set_if_has_handle) {
-            throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-        }
-
-        internal::WindowStyleShim<PROPERTY>::Set(HandleStateData(), property, enable);
-    }
-    else {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
+    style_facet_.SetTitle(title);
 }
 
 
 bool Window::IsPopup() const noexcept {
-    return HasStyleProperty(internal::WindowBasicStyleProperty::IsPopup);
+    return style_facet_.IsPopup();
 }
 
 void Window::SetIsPopup(bool is_popup) {
-    SetStyleProperty(internal::WindowBasicStyleProperty::IsPopup, is_popup, false);
+    style_facet_.SetIsPopup(is_popup);
 }
 
 
 bool Window::HasBorder() const noexcept {
-    return HasStyleProperty(internal::WindowBasicStyleProperty::HasBorder);
+    return style_facet_.HasBorder();
 }
 
 void Window::SetHasBorder(bool has_border) {
-    SetStyleProperty(internal::WindowBasicStyleProperty::HasBorder, has_border, false);
+    style_facet_.SetHasBorder(has_border);
 }
 
 
 bool Window::HasTitleBar() const noexcept {
-    return HasStyleProperty(internal::WindowBasicStyleProperty::HasTitleBar);
+    return style_facet_.HasTitleBar();
 }
 
 void Window::SetHasTitleBar(bool has_title_bar) {
-    SetStyleProperty(internal::WindowBasicStyleProperty::HasTitleBar, has_title_bar, false);
+    style_facet_.SetHasTitleBar(has_title_bar);
 }
 
 
 bool Window::HasSystemMenu() const noexcept {
-    return HasStyleProperty(internal::WindowBasicStyleProperty::HasSystemMenu);
+    return style_facet_.HasSystemMenu();
 }
 
 void Window::SetHasSystemMenu(bool has_system_menu) {
-    SetStyleProperty(internal::WindowBasicStyleProperty::HasSystemMenu, has_system_menu, false);
+    style_facet_.SetHasSystemMenu(has_system_menu);
 }
 
 
 bool Window::IsSizable() const noexcept {
-    return HasStyleProperty(internal::WindowBasicStyleProperty::IsSizable);
+    return style_facet_.IsSizable();
 }
 
 void Window::SetIsSizable(bool is_sizable) {
-    SetStyleProperty(internal::WindowBasicStyleProperty::IsSizable, is_sizable, true);
+    style_facet_.SetIsSizable(is_sizable);
 }
 
 
 bool Window::CanMaximize() const noexcept {
-    return HasStyleProperty(internal::WindowBasicStyleProperty::CanMaximize);
+    return style_facet_.CanMaximize();
 }
 
 void Window::SetCanMaximize(bool has_maximize_button) {
-    SetStyleProperty(internal::WindowBasicStyleProperty::CanMaximize, has_maximize_button, true);
+    style_facet_.SetCanMaximize(has_maximize_button);
 }
 
 
 bool Window::CanMinimize() const noexcept {
-    return HasStyleProperty(internal::WindowBasicStyleProperty::CanMinimize);
+    return style_facet_.CanMinimize();
 }
 
 
 void Window::SetCanMinimize(bool can_minimize) {
-    SetStyleProperty(internal::WindowBasicStyleProperty::CanMinimize, can_minimize, true);
+    style_facet_.SetCanMinimize(can_minimize);
 }
 
 
 bool Window::IsToolWindow() const noexcept {
-    return HasStyleProperty(internal::WindowExtendedStyleProperty::IsToolWindow);
+    return style_facet_.IsToolWindow();
 }
 
 void Window::SetIsToolWindow(bool is_tool_window) {
-    SetStyleProperty(internal::WindowExtendedStyleProperty::IsToolWindow, is_tool_window, true);
+    style_facet_.SetIsToolWindow(is_tool_window);
 }
 
 
 bool Window::IsTopmost() const noexcept {
-    return HasStyleProperty(internal::WindowExtendedStyleProperty::IsTopMost);
+    return style_facet_.IsTopmost();
 }
 
 void Window::SetIsTopmost(bool is_topmost) {
-
-    if (handle_state_ == WindowHandleState::NotCreated) {
-
-        NotCreatedStateData().extended_style.Set(
-            internal::WindowExtendedStyleProperty::IsTopMost, 
-            is_topmost);
-    }
-    else if (handle_state_ == WindowHandleState::Creating ||
-             handle_state_ == WindowHandleState::Created) {
-
-        BOOL is_succeeded = SetWindowPos(
-            HandleStateData().handle,
-            is_topmost ? HWND_TOPMOST : HWND_NOTOPMOST,
-            0,
-            0,
-            0,
-            0,
-            SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-
-        if (!is_succeeded) {
-            ZAF_THROW_WIN32_ERROR(GetLastError());
-        }
-    }
-    else {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
+    style_facet_.SetIsTopmost(is_topmost);
 }
 
 
 ActivateOptions Window::ActivateOptions() const noexcept {
-    return activate_options_;
+    return style_facet_.ActivateOptions();
 }
 
 void Window::SetActivateOptions(zaf::ActivateOptions options) {
-
-    if (handle_state_ == WindowHandleState::Destroyed) {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-
-    SetStyleProperty(
-        internal::WindowExtendedStyleProperty::NoActivate, 
-        HasFlag(options, ActivateOptions::NoAutoActivate),
-        true);
-
-    activate_options_ = options;
+    style_facet_.SetActivateOptions(options);
 }
 
 

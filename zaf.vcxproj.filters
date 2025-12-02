@@ -1363,6 +1363,9 @@
     <ClCompile Include="src\zaf\window\internal\window_facets\window_geometry_facet.cpp">
       <Filter>zaf\window\internal\window_facets</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\internal\window_facets\window_style_facet.cpp">
+      <Filter>zaf\window\internal\window_facets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3191,6 +3194,9 @@
       <Filter>zaf\window</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\internal\window_facets\window_geometry_facet.h">
+      <Filter>zaf\window\internal\window_facets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\internal\window_facets\window_style_facet.h">
       <Filter>zaf\window\internal\window_facets</Filter>
     </ClInclude>
   </ItemGroup>

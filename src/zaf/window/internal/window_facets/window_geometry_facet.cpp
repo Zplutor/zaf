@@ -61,7 +61,7 @@ zaf::Rect WindowGeometryFacet::ResolveInitialRect(
 }
 
 
-WindowGeometryFacet::WindowGeometryFacet(Window& window) : window_(window) {
+WindowGeometryFacet::WindowGeometryFacet(Window& window) noexcept : window_(window) {
 
 }
 
