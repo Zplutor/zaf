@@ -78,17 +78,21 @@ LRESULT CALLBACK Window::WindowProcedure(
 }
 
 
-Window::Window() : class_(WindowClassRegistry::Instance().GetDefaultWindowClass()) {
+Window::Window() : Window(WindowClassRegistry::Instance().GetDefaultWindowClass()) {
 
 }
 
 
-Window::Window(std::wstring_view window_class_name) {
-    class_ = WindowClassRegistry::Instance().GetOrRegisterWindowClass(window_class_name, nullptr);
+Window::Window(std::wstring_view window_class_name) : 
+    Window(WindowClassRegistry::Instance().GetOrRegisterWindowClass(window_class_name, nullptr)) {
+
 }
 
 
-Window::Window(const std::shared_ptr<WindowClass>& window_class) : class_(window_class) {
+Window::Window(const std::shared_ptr<WindowClass>& window_class) : 
+    class_(window_class), 
+    geometry_facet_(*this) {
+
     ZAF_EXPECT(class_);
 }
 
@@ -219,8 +223,11 @@ void Window::ProcessCreatingState(
     DWORD style = state_data.basic_style.Value();
     DWORD extended_style = state_data.extended_style.Value();
 
-    auto screen = GetInitialScreen(state_data, owner);
-    auto initial_rect = GetInitialRect(*screen, owner, state_data);
+    auto screen = internal::WindowGeometryFacet::ResolveInitialScreen(state_data, owner);
+    auto initial_rect = internal::WindowGeometryFacet::ResolveInitialRect(
+        *screen, 
+        owner, 
+        state_data);
     auto initial_rect_in_global = screen->TransformToGlobal(initial_rect);
 
     CreateWindowParams params;
@@ -248,22 +255,6 @@ void Window::ProcessCreatingState(
     }
 }
 
-
-std::shared_ptr<zaf::Screen> Window::GetInitialScreen(
-    const internal::WindowNotCreatedStateData& state_data,
-    const std::shared_ptr<Window>& owner) {
-
-    auto screen = state_data.screen.lock();
-    if (screen) {
-        return screen;
-    }
-
-    if (owner) {
-        return owner->Screen();
-    }
-
-    return ScreenManager::Instance().PrimaryScreen();
-}
 
 
 void Window::ProcessCreatedState() {
@@ -346,42 +337,6 @@ rx::Observable<DestroyedInfo> Window::DestroyedEvent() const {
 LRESULT Window::HandleWMCREATE(const Message& message) {
     OnHandleCreating(HandleCreatingInfo{ shared_from_this() });
     return 0;
-}
-
-
-zaf::Rect Window::GetInitialRect(
-    const zaf::Screen& screen,
-    const std::shared_ptr<Window>& owner,
-    const internal::WindowNotCreatedStateData& state_data) {
-
-    // The window has a specified initial position, use it.
-    if (state_data.initial_position) {
-        return zaf::Rect{
-            *state_data.initial_position,
-            state_data.size
-        };
-    }
-
-    // The window doesn't have a specified initial position, use the center position of its owner 
-    // if there is one.
-    if (owner) {
-        auto owner_rect = owner->Rect();
-        Point position{
-            owner_rect.position.x + (owner_rect.size.width - state_data.size.width) / 2,
-            owner_rect.position.y + (owner_rect.size.height - state_data.size.height) / 2
-        };
-        auto result = zaf::Rect{ position, state_data.size };
-        return SnapToPixels(result, screen.DPI());
-    }
-
-    // Use the center position of the screen.
-    auto screen_rect = screen.RectInSelf();
-    Point position{
-        (screen_rect.size.width - state_data.size.width) / 2,
-        (screen_rect.size.height - state_data.size.height) / 2
-    };
-    auto result = zaf::Rect{ position, state_data.size };
-    return SnapToPixels(result, screen.DPI());
 }
 
 
@@ -1870,429 +1825,149 @@ void Window::OnFocusedControlChanged(const FocusedControlChangedInfo& event_info
 
 
 std::shared_ptr<zaf::Screen> Window::Screen() const noexcept {
-
-    if (handle_state_ == WindowHandleState::NotCreated) {
-        return GetInitialScreen(NotCreatedStateData(), Owner());
-    }
-    else if (handle_state_ == WindowHandleState::Creating ||
-             handle_state_ == WindowHandleState::Created ||
-             handle_state_ == WindowHandleState::Destroying) {
-
-        HMONITOR screen_handle = MonitorFromWindow(Handle(), MONITOR_DEFAULTTOPRIMARY);
-        return ScreenManager::Instance().ScreenFromHandle(screen_handle);
-    }
-    else {
-        return ScreenManager::Instance().PrimaryScreen();
-    }
+    return geometry_facet_.Screen();
 }
 
 
 void Window::SetScreen(std::shared_ptr<zaf::Screen> screen) {
-
-    ZAF_EXPECT(screen);
-
-    if (handle_state_ != WindowHandleState::NotCreated) {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-
-    NotCreatedStateData().screen = std::move(screen);
+    geometry_facet_.SetScreen(std::move(screen));
 }
 
 
 float Window::DPI() const noexcept {
-    if (handle_state_ == WindowHandleState::Creating ||
-        handle_state_ == WindowHandleState::Created ||
-        handle_state_ == WindowHandleState::Destroying) {
-        return static_cast<float>(GetDpiForWindow(Handle()));
-    }
-    return this->Screen()->DPI();
+    return geometry_facet_.DPI();
 }
 
 
-Rect Window::Rect() const noexcept {
-
-    if (handle_state_ == WindowHandleState::NotCreated) {
-        return GetInitialRect(*this->Screen(), this->Owner(), NotCreatedStateData());
-    }
-
-    if (handle_state_ == WindowHandleState::Creating || 
-        handle_state_ == WindowHandleState::Created ||
-        handle_state_ == WindowHandleState::Destroying) {
-
-        RECT rect{};
-        GetWindowRect(Handle(), &rect);
-        return this->Screen()->TransformFromGlobal(Rect::FromRECT(rect));
-    }
-
-    return {};
+zaf::Rect Window::Rect() const noexcept {
+    return geometry_facet_.Rect();
 }
 
 
 void Window::SetRect(const zaf::Rect& rect) {
-
-    if (handle_state_ == WindowHandleState::NotCreated) {
-
-        zaf::Rect new_rect{ rect.position, ClampSize(rect.size) };
-        new_rect = SnapToPixels(new_rect, DPI());
-
-        auto& not_created_state_data = NotCreatedStateData();
-        not_created_state_data.initial_position = new_rect.position;
-        not_created_state_data.size = new_rect.size;
-    }
-    else if (handle_state_ == WindowHandleState::Creating || 
-             handle_state_ == WindowHandleState::Created) {
-
-        auto new_rect = rect;
-        new_rect.size = ClampSize(new_rect.size);
-        new_rect = SnapToPixels(new_rect, DPI());
-        auto new_rect_in_global = this->Screen()->TransformToGlobal(new_rect);
-        
-        BOOL is_succeeded = SetWindowPos(
-            Handle(),
-            nullptr,
-            static_cast<int>(new_rect_in_global.position.x),
-            static_cast<int>(new_rect_in_global.position.y),
-            static_cast<int>(new_rect_in_global.size.width),
-            static_cast<int>(new_rect_in_global.size.height),
-            SWP_NOZORDER | SWP_NOACTIVATE);
-
-        if (!is_succeeded) {
-            ZAF_THROW_WIN32_ERROR(GetLastError());
-        }
-    }
-    else {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-}
-
-
-zaf::Size Window::ClampSize(const zaf::Size& size) const noexcept {
-    zaf::Size result;
-    result.width = std::clamp(size.width, MinWidth(), MaxWidth());
-    result.height = std::clamp(size.height, MinHeight(), MaxHeight());
-    return result;
+    geometry_facet_.SetRect(rect);
 }
 
 
 Point Window::Position() const noexcept {
-    return Rect().position;
+    return geometry_facet_.Position();
 }
 
 void Window::SetPosition(const Point& position) {
-    zaf::Rect new_rect = Rect();
-    new_rect.position = position;
-    SetRect(new_rect);
+    geometry_facet_.SetPosition(position);
 }
 
 
 zaf::Size Window::Size() const noexcept {
-    return Rect().size;
+    return geometry_facet_.Size();
 }
 
 void Window::SetSize(const zaf::Size& size) {
-    if (handle_state_ == WindowHandleState::NotCreated) {
-        NotCreatedStateData().size = ClampSize(size);
-    }
-    else {
-        zaf::Rect new_rect = Rect();
-        new_rect.size = size;
-        SetRect(new_rect);
-    }
+    geometry_facet_.SetSize(size);
 }
 
 
 float Window::Width() const noexcept {
-    return Size().width;
+    return geometry_facet_.Width();
 }
 
 void Window::SetWidth(float width) {
-    zaf::Size new_size = Size();
-    new_size.width = width;
-    SetSize(new_size);
+    geometry_facet_.SetWidth(width);
 }
 
 
 float Window::Height() const noexcept {
-    return Size().height;
+    return geometry_facet_.Height();
 }
 
 void Window::SetHeight(float height) {
-    zaf::Size new_size = Size();
-    new_size.height = height;
-    SetSize(new_size);
+    geometry_facet_.SetHeight(height);
 }
 
 
 float Window::MinWidth() const noexcept {
-    if (min_width_) {
-        return *min_width_;
-    }
-    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)), DPI());
+    return geometry_facet_.MinWidth();
 }
 
 void Window::SetMinWidth(float min_width) {
-
-    if (handle_state_ == WindowHandleState::Destroying ||
-        handle_state_ == WindowHandleState::Destroyed) {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-
-    auto backup_min_width = min_width_;
-    auto backup_max_width = max_width_;
-
-    min_width_ = min_width;
-
-    if (MaxWidth() < min_width) {
-        max_width_ = min_width;
-    }
-
-    try {
-        if (Width() < min_width) {
-            SetWidth(min_width);
-        }
-    }
-    catch (...) {
-        min_width_ = backup_min_width;
-        max_width_ = backup_max_width;
-        throw;
-    }
+    geometry_facet_.SetMinWidth(min_width);
 }
 
 
 float Window::MaxWidth() const noexcept {
-    if (max_width_) {
-        return *max_width_;
-    }
-    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMAXTRACK)), DPI());
+    return geometry_facet_.MaxWidth();
 }
 
 void Window::SetMaxWidth(float max_width) {
-
-    if (handle_state_ == WindowHandleState::Destroying ||
-        handle_state_ == WindowHandleState::Destroyed) {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-
-    auto backup_min_width = min_width_;
-    auto backup_max_width = max_width_;
-
-    max_width_ = max_width;
-
-    if (MinWidth() > max_width) {
-        min_width_ = max_width;
-    }
-
-    try {
-        if (Width() > max_width) {
-            SetWidth(max_width);
-        }
-    }
-    catch (...) {
-        min_width_ = backup_min_width;
-        max_width_ = backup_max_width;
-        throw;
-    }
+    geometry_facet_.SetMaxWidth(max_width);
 }
 
 
 float Window::MinHeight() const noexcept {
-    if (min_height_) {
-        return *min_height_;
-    }
-    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)), DPI());
+    return geometry_facet_.MinHeight();
 }
 
 void Window::SetMinHeight(float min_height) {
-
-    if (handle_state_ == WindowHandleState::Destroying ||
-        handle_state_ == WindowHandleState::Destroyed) {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-
-    auto backup_min_height = min_height_;
-    auto backup_max_height = max_height_;
-
-    min_height_ = min_height;
-
-    if (MaxHeight() < min_height) {
-        max_height_ = min_height;
-    }
-
-    try {
-        if (Height() < min_height) {
-            SetHeight(min_height);
-        }
-    }
-    catch (...) {
-        min_height_ = backup_min_height;
-        max_height_ = backup_max_height;
-        throw;
-    }
+    geometry_facet_.SetMinHeight(min_height);
 }
 
 
 float Window::MaxHeight() const noexcept {
-    if (max_height_) {
-        return *max_height_;
-    }
-    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMAXTRACK)), DPI());
+    return geometry_facet_.MaxHeight();
 }
 
 void Window::SetMaxHeight(float max_height) {
-
-    if (handle_state_ == WindowHandleState::Destroying ||
-        handle_state_ == WindowHandleState::Destroyed) {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-
-    auto backup_min_height = min_height_;
-    auto backup_max_height = max_height_;
-
-    max_height_ = max_height;
-
-    if (MinHeight() > max_height) {
-        min_height_ = max_height;
-    }
-
-    try {
-        if (Height() > max_height) {
-            SetHeight(max_height);
-        }
-    }
-    catch (...) {
-        min_height_ = backup_min_height;
-        max_height_ = backup_max_height;
-        throw;
-    }
+    geometry_facet_.SetMaxHeight(max_height);
 }
 
 
 zaf::Size Window::MinSize() const noexcept {
-    return zaf::Size{ MinWidth(), MinHeight() };
+    return geometry_facet_.MinSize();
 }
 
 void Window::SetMinSize(const zaf::Size& size) {
-    SetMinWidth(size.width);
-    SetMinHeight(size.height);
+    geometry_facet_.SetMinSize(size);
 }
 
 
 zaf::Size Window::MaxSize() const noexcept {
-    return zaf::Size{ MaxWidth(), MaxHeight() };
+    return geometry_facet_.MaxSize();
 }
 
 void Window::SetMaxSize(const zaf::Size& size) {
-    SetMaxWidth(size.width);
-    SetMaxHeight(size.height);
+    geometry_facet_.SetMaxSize(size);
 }
 
 
 zaf::Rect Window::ContentRect() const noexcept {
-    return zaf::Rect{ Point{}, ContentSize() };
+    return geometry_facet_.ContentRect();
 }
 
 
 zaf::Size Window::ContentSize() const noexcept {
-
-    if (handle_state_ == WindowHandleState::NotCreated) {
-
-        auto& not_created_state_data = NotCreatedStateData();
-        auto adjusted_size = AdjustContentSizeToWindowSize(
-            zaf::Size{}, 
-            not_created_state_data.basic_style,
-            not_created_state_data.extended_style);
-        
-        auto result = not_created_state_data.size;
-        result.width = (std::max)(result.width - adjusted_size.width, 0.f);
-        result.height = (std::max)(result.height - adjusted_size.height, 0.f);
-        return result;
-    }
-
-    if (handle_state_ == WindowHandleState::Creating ||
-        handle_state_ == WindowHandleState::Created ||
-        handle_state_ == WindowHandleState::Destroying) {
-
-        RECT client_rect{};
-        ::GetClientRect(Handle(), &client_rect);
-        return ToDIPs(Rect::FromRECT(client_rect).size, DPI());
-    }
-
-    return {};
+    return geometry_facet_.ContentSize();
 }
 
 void Window::SetContentSize(const zaf::Size& size) {
-
-    zaf::Size window_size;
-    if (handle_state_ == WindowHandleState::NotCreated) {
-
-        auto& not_created_state_data = NotCreatedStateData();
-        window_size = AdjustContentSizeToWindowSize(
-            size,
-            not_created_state_data.basic_style,
-            not_created_state_data.extended_style);
-    }
-    else if (handle_state_ == WindowHandleState::Creating ||
-             handle_state_ == WindowHandleState::Created) {
-
-        window_size = AdjustContentSizeToWindowSize(
-            size,
-            internal::WindowBasicStyle::FromHandle(Handle()),
-            internal::WindowExtendedStyle::FromHandle(Handle()));
-    }
-    else {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-    SetSize(window_size);
-}
-
-
-zaf::Size Window::AdjustContentSizeToWindowSize(
-    const zaf::Size& content_size,
-    const internal::WindowBasicStyle& basic_style,
-    const internal::WindowExtendedStyle& extend_style) const noexcept {
-
-    auto dpi = DPI();
-
-    zaf::Rect rect{ zaf::Point{}, content_size };
-    auto snapped_rect = SnapAndTransformToPixels(rect, dpi);
-    auto adjusted_rect = snapped_rect.ToRECT();
-
-    AdjustWindowRectExForDpi(
-        &adjusted_rect, 
-        basic_style.Value(),
-        FALSE, 
-        extend_style.Value(),
-        static_cast<UINT>(dpi));
-
-    auto result = zaf::Size{
-        static_cast<float>(adjusted_rect.right - adjusted_rect.left),
-        static_cast<float>(adjusted_rect.bottom - adjusted_rect.top)
-    };
-
-    result = ToDIPs(result, dpi);
-    return result;
+    geometry_facet_.SetContentSize(size);
 }
 
 
 float Window::ContentWidth() const noexcept {
-    return ContentSize().width;
+    return geometry_facet_.ContentWidth();
 }
 
 void Window::SetContentWidth(float width) {
-    zaf::Size new_size = ContentSize();
-    new_size.width = width;
-    SetContentSize(new_size);
+    geometry_facet_.SetContentWidth(width);
 }
 
 
 float Window::ContentHeight() const noexcept {
-    return ContentSize().height;
+    return geometry_facet_.ContentHeight();
 }
 
 void Window::SetContentHeight(float height) {
-    zaf::Size new_size = ContentSize();
-    new_size.height = height;
-    SetContentSize(new_size);
+    geometry_facet_.SetContentHeight(height);
 }
 
 

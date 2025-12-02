@@ -205,6 +205,9 @@
     <Filter Include="zaf\rx\internal\insider">
       <UniqueIdentifier>{06afa947-c3ff-44ff-bc36-30540c74a0ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\window\internal\window_facets">
+      <UniqueIdentifier>{6996c1ac-d9de-4271-846e-a9477e7b31f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1356,6 +1359,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\window\screen.cpp">
       <Filter>zaf\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\internal\window_facets\window_geometry_facet.cpp">
+      <Filter>zaf\window\internal\window_facets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3183,6 +3189,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\screen_manager.h">
       <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\internal\window_facets\window_geometry_facet.h">
+      <Filter>zaf\window\internal\window_facets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

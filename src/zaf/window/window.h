@@ -29,6 +29,7 @@
 #include <zaf/window/event/window_size_changed_info.h>
 #include <zaf/window/internal/window_handle_state_data.h>
 #include <zaf/window/internal/window_not_created_state_data.h>
+#include <zaf/window/internal/window_facets/window_geometry_facet.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/screen.h>
 #include <zaf/window/show_options.h>
@@ -819,7 +820,7 @@ public:
     /**
     Transforms a position from the window's content area to its screen coordinates.
 
-    @position_in_window
+    @param position_in_window
         The position in the window's content area coordinates.
 
     @return
@@ -830,7 +831,7 @@ public:
     /**
     Transforms a position from screen coordinates to the window's content area coordinates.
 
-    @position_in_screen
+    @param position_in_screen
         The position in the window's screen coordinates.
 
     @return
@@ -1554,9 +1555,6 @@ private:
         const internal::WindowNotCreatedStateData& state_data,
         const WindowClass& window_class,
         const std::shared_ptr<Window>& owner);
-    static std::shared_ptr<zaf::Screen> GetInitialScreen(
-        const internal::WindowNotCreatedStateData& state_data,
-        const std::shared_ptr<Window>& owner);
     void ProcessCreatedState();
     void AttachHandle(HWND handle) noexcept;
 
@@ -1569,17 +1567,8 @@ private:
 
     LRESULT HandleWMCREATE(const Message& message);
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
-    static zaf::Rect GetInitialRect(
-        const zaf::Screen& screen, 
-        const std::shared_ptr<Window>& owner,
-        const internal::WindowNotCreatedStateData& state_data);
-    zaf::Size ClampSize(const zaf::Size& size) const noexcept;
     void CreateRenderer();
     void RecreateRenderer();
-    zaf::Size AdjustContentSizeToWindowSize(
-        const zaf::Size& content_size,
-        const internal::WindowBasicStyle& basic_style,
-        const internal::WindowExtendedStyle& extend_style) const noexcept;
 
     bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);
 
@@ -1648,10 +1637,8 @@ private:
     std::weak_ptr<Window> owner_;
 
     zaf::ActivateOptions activate_options_{ zaf::ActivateOptions::Normal };
-    std::optional<float> min_width_;
-    std::optional<float> max_width_;
-    std::optional<float> min_height_;
-    std::optional<float> max_height_;
+
+    internal::WindowGeometryFacet geometry_facet_;
 
     TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };
 
@@ -1682,6 +1669,8 @@ private:
     Event<WindowSizeChangedInfo> size_changed_event_;
     Event<RootControlChangedInfo> root_control_changed_event_;
     Event<MouseCaptureControlChangedInfo> mouse_capture_control_changed_event_;
+
+    friend class internal::WindowGeometryFacet;
 };
 
 ZAF_OBJECT_BEGIN(Window)
