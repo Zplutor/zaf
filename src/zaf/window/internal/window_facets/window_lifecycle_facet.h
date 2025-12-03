@@ -33,6 +33,7 @@ public:
     const WindowHandleStateData& HandleStateData() const noexcept;
 
     std::shared_ptr<WindowHolder> CreateHandle();
+    void HandleWMCREATE();
     void Close();
     void HandleWMCLOSE();
     void Destroy() noexcept;

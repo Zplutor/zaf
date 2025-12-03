@@ -189,6 +189,11 @@ void WindowLifecycleFacet::ProcessCreatingState(
 }
 
 
+void WindowLifecycleFacet::HandleWMCREATE() {
+    window_.OnHandleCreating(HandleCreatingInfo{ window_.shared_from_this() });
+}
+
+
 void WindowLifecycleFacet::ProcessCreatedState() {
 
     auto handle = Handle();

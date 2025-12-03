@@ -92,21 +92,6 @@ Window::~Window() {
 }
 
 
-const std::shared_ptr<WindowClass>& Window::Class() const noexcept {
-    return style_facet_.Class();
-}
-
-
-WindowHandleState Window::HandleState() const noexcept {
-    return lifecycle_facet_.HandleState();
-}
-
-
-HWND Window::Handle() const noexcept {
-    return lifecycle_facet_.Handle();
-}
-
-
 void Window::Initialize() {
 
     __super::Initialize();
@@ -121,6 +106,300 @@ void Window::Initialize() {
         });
 
     SetRootControl(Create<Control>());
+}
+
+
+#pragma region Style Management
+
+const std::shared_ptr<WindowClass>& Window::Class() const noexcept {
+    return style_facet_.Class();
+}
+
+
+std::wstring Window::Title() const {
+    return style_facet_.Title();
+}
+
+
+void Window::SetTitle(const std::wstring& title) {
+    style_facet_.SetTitle(title);
+}
+
+
+bool Window::IsPopup() const noexcept {
+    return style_facet_.IsPopup();
+}
+
+
+void Window::SetIsPopup(bool is_popup) {
+    style_facet_.SetIsPopup(is_popup);
+}
+
+
+bool Window::HasBorder() const noexcept {
+    return style_facet_.HasBorder();
+}
+
+
+void Window::SetHasBorder(bool has_border) {
+    style_facet_.SetHasBorder(has_border);
+}
+
+
+bool Window::HasTitleBar() const noexcept {
+    return style_facet_.HasTitleBar();
+}
+
+
+void Window::SetHasTitleBar(bool has_title_bar) {
+    style_facet_.SetHasTitleBar(has_title_bar);
+}
+
+
+bool Window::HasSystemMenu() const noexcept {
+    return style_facet_.HasSystemMenu();
+}
+
+
+void Window::SetHasSystemMenu(bool has_system_menu) {
+    style_facet_.SetHasSystemMenu(has_system_menu);
+}
+
+
+bool Window::IsSizable() const noexcept {
+    return style_facet_.IsSizable();
+}
+
+
+void Window::SetIsSizable(bool is_sizable) {
+    style_facet_.SetIsSizable(is_sizable);
+}
+
+
+bool Window::CanMaximize() const noexcept {
+    return style_facet_.CanMaximize();
+}
+
+
+void Window::SetCanMaximize(bool has_maximize_button) {
+    style_facet_.SetCanMaximize(has_maximize_button);
+}
+
+
+bool Window::CanMinimize() const noexcept {
+    return style_facet_.CanMinimize();
+}
+
+
+void Window::SetCanMinimize(bool can_minimize) {
+    style_facet_.SetCanMinimize(can_minimize);
+}
+
+
+bool Window::IsToolWindow() const noexcept {
+    return style_facet_.IsToolWindow();
+}
+
+
+void Window::SetIsToolWindow(bool is_tool_window) {
+    style_facet_.SetIsToolWindow(is_tool_window);
+}
+
+
+bool Window::IsTopmost() const noexcept {
+    return style_facet_.IsTopmost();
+}
+
+
+void Window::SetIsTopmost(bool is_topmost) {
+    style_facet_.SetIsTopmost(is_topmost);
+}
+
+
+ActivateOptions Window::ActivateOptions() const noexcept {
+    return style_facet_.ActivateOptions();
+}
+
+
+void Window::SetActivateOptions(zaf::ActivateOptions options) {
+    style_facet_.SetActivateOptions(options);
+}
+
+#pragma endregion
+
+
+#pragma region Geometry Management
+
+std::shared_ptr<zaf::Screen> Window::Screen() const noexcept {
+    return geometry_facet_.Screen();
+}
+
+
+void Window::SetScreen(std::shared_ptr<zaf::Screen> screen) {
+    geometry_facet_.SetScreen(std::move(screen));
+}
+
+
+float Window::DPI() const noexcept {
+    return geometry_facet_.DPI();
+}
+
+
+zaf::Rect Window::Rect() const noexcept {
+    return geometry_facet_.Rect();
+}
+
+
+void Window::SetRect(const zaf::Rect& rect) {
+    geometry_facet_.SetRect(rect);
+}
+
+
+Point Window::Position() const noexcept {
+    return geometry_facet_.Position();
+}
+
+
+void Window::SetPosition(const Point& position) {
+    geometry_facet_.SetPosition(position);
+}
+
+
+zaf::Size Window::Size() const noexcept {
+    return geometry_facet_.Size();
+}
+
+void Window::SetSize(const zaf::Size& size) {
+    geometry_facet_.SetSize(size);
+}
+
+
+float Window::Width() const noexcept {
+    return geometry_facet_.Width();
+}
+
+
+void Window::SetWidth(float width) {
+    geometry_facet_.SetWidth(width);
+}
+
+
+float Window::Height() const noexcept {
+    return geometry_facet_.Height();
+}
+
+
+void Window::SetHeight(float height) {
+    geometry_facet_.SetHeight(height);
+}
+
+
+float Window::MinWidth() const noexcept {
+    return geometry_facet_.MinWidth();
+}
+
+
+void Window::SetMinWidth(float min_width) {
+    geometry_facet_.SetMinWidth(min_width);
+}
+
+
+float Window::MaxWidth() const noexcept {
+    return geometry_facet_.MaxWidth();
+}
+
+
+void Window::SetMaxWidth(float max_width) {
+    geometry_facet_.SetMaxWidth(max_width);
+}
+
+
+float Window::MinHeight() const noexcept {
+    return geometry_facet_.MinHeight();
+}
+
+
+void Window::SetMinHeight(float min_height) {
+    geometry_facet_.SetMinHeight(min_height);
+}
+
+
+float Window::MaxHeight() const noexcept {
+    return geometry_facet_.MaxHeight();
+}
+
+
+void Window::SetMaxHeight(float max_height) {
+    geometry_facet_.SetMaxHeight(max_height);
+}
+
+
+zaf::Size Window::MinSize() const noexcept {
+    return geometry_facet_.MinSize();
+}
+
+
+void Window::SetMinSize(const zaf::Size& size) {
+    geometry_facet_.SetMinSize(size);
+}
+
+
+zaf::Size Window::MaxSize() const noexcept {
+    return geometry_facet_.MaxSize();
+}
+
+
+void Window::SetMaxSize(const zaf::Size& size) {
+    geometry_facet_.SetMaxSize(size);
+}
+
+
+zaf::Rect Window::ContentRect() const noexcept {
+    return geometry_facet_.ContentRect();
+}
+
+
+zaf::Size Window::ContentSize() const noexcept {
+    return geometry_facet_.ContentSize();
+}
+
+
+void Window::SetContentSize(const zaf::Size& size) {
+    geometry_facet_.SetContentSize(size);
+}
+
+
+float Window::ContentWidth() const noexcept {
+    return geometry_facet_.ContentWidth();
+}
+
+
+void Window::SetContentWidth(float width) {
+    geometry_facet_.SetContentWidth(width);
+}
+
+
+float Window::ContentHeight() const noexcept {
+    return geometry_facet_.ContentHeight();
+}
+
+
+void Window::SetContentHeight(float height) {
+    geometry_facet_.SetContentHeight(height);
+}
+
+#pragma endregion
+
+
+#pragma region Lifecycle Management
+
+WindowHandleState Window::HandleState() const noexcept {
+    return lifecycle_facet_.HandleState();
+}
+
+
+HWND Window::Handle() const noexcept {
+    return lifecycle_facet_.Handle();
 }
 
 
@@ -173,25 +452,10 @@ rx::Observable<DestroyedInfo> Window::DestroyedEvent() const {
     return destroyed_event_.GetObservable();
 }
 
-
-LRESULT Window::HandleWMCREATE(const Message& message) {
-    OnHandleCreating(HandleCreatingInfo{ shared_from_this() });
-    return 0;
-}
+#pragma endregion
 
 
-void Window::CreateRenderer() {
-
-    renderer_ = GraphicFactory::Instance().CreateWindowRenderer(Handle());
-}
-
-
-void Window::RecreateRenderer() {
-
-    root_control_->ReleaseRendererResources();
-    CreateRenderer();
-}
-
+#pragma region Visibility Management
 
 void Window::Show(ShowOptions options) {
     visibility_facet_.Show(options);
@@ -228,6 +492,26 @@ void Window::Hide() noexcept {
 }
 
 
+bool Window::IsVisible() const noexcept {
+    return visibility_facet_.IsVisible();
+}
+
+#pragma endregion
+
+
+void Window::CreateRenderer() {
+
+    renderer_ = GraphicFactory::Instance().CreateWindowRenderer(Handle());
+}
+
+
+void Window::RecreateRenderer() {
+
+    root_control_->ReleaseRendererResources();
+    CreateRenderer();
+}
+
+
 std::shared_ptr<Window> Window::Owner() const noexcept {
     return owner_.lock();
 }
@@ -244,107 +528,6 @@ void Window::SetOwner(std::shared_ptr<Window> owner) {
     }
 
     owner_ = std::move(owner);
-}
-
-
-std::wstring Window::Title() const {
-    return style_facet_.Title();
-}
-
-
-void Window::SetTitle(const std::wstring& title) {
-    style_facet_.SetTitle(title);
-}
-
-
-bool Window::IsPopup() const noexcept {
-    return style_facet_.IsPopup();
-}
-
-void Window::SetIsPopup(bool is_popup) {
-    style_facet_.SetIsPopup(is_popup);
-}
-
-
-bool Window::HasBorder() const noexcept {
-    return style_facet_.HasBorder();
-}
-
-void Window::SetHasBorder(bool has_border) {
-    style_facet_.SetHasBorder(has_border);
-}
-
-
-bool Window::HasTitleBar() const noexcept {
-    return style_facet_.HasTitleBar();
-}
-
-void Window::SetHasTitleBar(bool has_title_bar) {
-    style_facet_.SetHasTitleBar(has_title_bar);
-}
-
-
-bool Window::HasSystemMenu() const noexcept {
-    return style_facet_.HasSystemMenu();
-}
-
-void Window::SetHasSystemMenu(bool has_system_menu) {
-    style_facet_.SetHasSystemMenu(has_system_menu);
-}
-
-
-bool Window::IsSizable() const noexcept {
-    return style_facet_.IsSizable();
-}
-
-void Window::SetIsSizable(bool is_sizable) {
-    style_facet_.SetIsSizable(is_sizable);
-}
-
-
-bool Window::CanMaximize() const noexcept {
-    return style_facet_.CanMaximize();
-}
-
-void Window::SetCanMaximize(bool has_maximize_button) {
-    style_facet_.SetCanMaximize(has_maximize_button);
-}
-
-
-bool Window::CanMinimize() const noexcept {
-    return style_facet_.CanMinimize();
-}
-
-
-void Window::SetCanMinimize(bool can_minimize) {
-    style_facet_.SetCanMinimize(can_minimize);
-}
-
-
-bool Window::IsToolWindow() const noexcept {
-    return style_facet_.IsToolWindow();
-}
-
-void Window::SetIsToolWindow(bool is_tool_window) {
-    style_facet_.SetIsToolWindow(is_tool_window);
-}
-
-
-bool Window::IsTopmost() const noexcept {
-    return style_facet_.IsTopmost();
-}
-
-void Window::SetIsTopmost(bool is_topmost) {
-    style_facet_.SetIsTopmost(is_topmost);
-}
-
-
-ActivateOptions Window::ActivateOptions() const noexcept {
-    return style_facet_.ActivateOptions();
-}
-
-void Window::SetActivateOptions(zaf::ActivateOptions options) {
-    style_facet_.SetActivateOptions(options);
 }
 
 
@@ -437,7 +620,8 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
 
     switch (message.ID()) {
     case WM_CREATE:
-        return HandleWMCREATE(message);
+        lifecycle_facet_.HandleWMCREATE();
+        return 0;
 
     case WM_NCCALCSIZE:
         return HandleWMNCCALCSIZE(message);
@@ -1454,153 +1638,6 @@ void Window::OnFocusedControlChanged(const FocusedControlChangedInfo& event_info
 }
 
 
-std::shared_ptr<zaf::Screen> Window::Screen() const noexcept {
-    return geometry_facet_.Screen();
-}
-
-
-void Window::SetScreen(std::shared_ptr<zaf::Screen> screen) {
-    geometry_facet_.SetScreen(std::move(screen));
-}
-
-
-float Window::DPI() const noexcept {
-    return geometry_facet_.DPI();
-}
-
-
-zaf::Rect Window::Rect() const noexcept {
-    return geometry_facet_.Rect();
-}
-
-
-void Window::SetRect(const zaf::Rect& rect) {
-    geometry_facet_.SetRect(rect);
-}
-
-
-Point Window::Position() const noexcept {
-    return geometry_facet_.Position();
-}
-
-void Window::SetPosition(const Point& position) {
-    geometry_facet_.SetPosition(position);
-}
-
-
-zaf::Size Window::Size() const noexcept {
-    return geometry_facet_.Size();
-}
-
-void Window::SetSize(const zaf::Size& size) {
-    geometry_facet_.SetSize(size);
-}
-
-
-float Window::Width() const noexcept {
-    return geometry_facet_.Width();
-}
-
-void Window::SetWidth(float width) {
-    geometry_facet_.SetWidth(width);
-}
-
-
-float Window::Height() const noexcept {
-    return geometry_facet_.Height();
-}
-
-void Window::SetHeight(float height) {
-    geometry_facet_.SetHeight(height);
-}
-
-
-float Window::MinWidth() const noexcept {
-    return geometry_facet_.MinWidth();
-}
-
-void Window::SetMinWidth(float min_width) {
-    geometry_facet_.SetMinWidth(min_width);
-}
-
-
-float Window::MaxWidth() const noexcept {
-    return geometry_facet_.MaxWidth();
-}
-
-void Window::SetMaxWidth(float max_width) {
-    geometry_facet_.SetMaxWidth(max_width);
-}
-
-
-float Window::MinHeight() const noexcept {
-    return geometry_facet_.MinHeight();
-}
-
-void Window::SetMinHeight(float min_height) {
-    geometry_facet_.SetMinHeight(min_height);
-}
-
-
-float Window::MaxHeight() const noexcept {
-    return geometry_facet_.MaxHeight();
-}
-
-void Window::SetMaxHeight(float max_height) {
-    geometry_facet_.SetMaxHeight(max_height);
-}
-
-
-zaf::Size Window::MinSize() const noexcept {
-    return geometry_facet_.MinSize();
-}
-
-void Window::SetMinSize(const zaf::Size& size) {
-    geometry_facet_.SetMinSize(size);
-}
-
-
-zaf::Size Window::MaxSize() const noexcept {
-    return geometry_facet_.MaxSize();
-}
-
-void Window::SetMaxSize(const zaf::Size& size) {
-    geometry_facet_.SetMaxSize(size);
-}
-
-
-zaf::Rect Window::ContentRect() const noexcept {
-    return geometry_facet_.ContentRect();
-}
-
-
-zaf::Size Window::ContentSize() const noexcept {
-    return geometry_facet_.ContentSize();
-}
-
-void Window::SetContentSize(const zaf::Size& size) {
-    geometry_facet_.SetContentSize(size);
-}
-
-
-float Window::ContentWidth() const noexcept {
-    return geometry_facet_.ContentWidth();
-}
-
-void Window::SetContentWidth(float width) {
-    geometry_facet_.SetContentWidth(width);
-}
-
-
-float Window::ContentHeight() const noexcept {
-    return geometry_facet_.ContentHeight();
-}
-
-void Window::SetContentHeight(float height) {
-    geometry_facet_.SetContentHeight(height);
-}
-
-
 void Window::SetRootControl(const std::shared_ptr<Control>& control) {
 
     ZAF_EXPECT(control);
@@ -1703,11 +1740,6 @@ Point Window::TranslateFromScreen(const Point& position_in_screen) const {
 bool Window::Activate() {
     ZAF_EXPECT(Handle());
     return !!SetForegroundWindow(Handle());
-}
-
-
-bool Window::IsVisible() const noexcept {
-    return visibility_facet_.IsVisible();
 }
 
 
