@@ -993,4 +993,92 @@ TEST_F(WindowTest, SetContentSize_InvalidStates) {
     ASSERT_THROW(window->SetContentSize(zaf::Size{ 300, 400 }), zaf::InvalidHandleStateError);
 }
 
+
+TEST_F(WindowTest, WhenNotSizingOrMoving_InVariantStates) {
+
+    auto window = zaf::Create<zaf::Window>();
+    zaf::rx::DisposeBag dispose_bag;
+
+    // NotCreated
+    bool not_created_called{};
+    dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+        not_created_called = true;
+    });
+    ASSERT_TRUE(not_created_called);
+
+    // Creating
+    bool creating_called{};
+    dispose_bag += window->HandleCreatingEvent().Subscribe([&](const zaf::HandleCreatingInfo&) {
+        dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+            creating_called = true;
+        });
+    });
+    auto holder = window->CreateHandle();
+    ASSERT_TRUE(creating_called);
+
+    // Created
+    bool created_called{};
+    dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+        created_called = true;
+    });
+    ASSERT_TRUE(created_called);
+
+    // Destroying
+    bool destroying_called{};
+    dispose_bag += window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+        dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+            destroying_called = true;
+        });
+    });
+    window->Destroy();
+    ASSERT_TRUE(destroying_called);
+
+    // Destroyed
+    bool destroyed_called{};
+    dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+        destroyed_called = true;
+    });
+    ASSERT_TRUE(destroyed_called);
+}
+
+
+TEST_F(WindowTest, WhenNotSizingOrMoving_BeingSizedOrMoved) {
+
+    //Event doesn't emit if the window is being resized or moved.
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
+
+    int call_count{};
+    auto sub = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+        call_count++;
+    });
+    ASSERT_EQ(call_count, 0);
+
+    //Event emits when the window finishes resizing or moving.
+    window->Messager().Send(WM_EXITSIZEMOVE, 0, 0);
+    ASSERT_EQ(call_count, 1);
+
+    //Previous observable should not emit again.
+    window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
+    window->Messager().Send(WM_EXITSIZEMOVE, 0, 0);
+    ASSERT_EQ(call_count, 1);
+}
+
+
+TEST_F(WindowTest, WhenNotSizingOrMoving_DestroyWhileBeingSizedOrMoved) {
+
+    //Event doesn't emit if the window is destroy during resizing or moving.
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
+
+    int call_count{};
+    auto subscription = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+        call_count++;
+    });
+    window->Destroy();
+    ASSERT_EQ(call_count, 0);
+}
+
 }

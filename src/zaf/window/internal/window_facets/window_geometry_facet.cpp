@@ -546,4 +546,45 @@ zaf::Rect WindowGeometryFacet::AdjustContentRectToWindowRect(
     return result;
 }
 
+
+rx::Single<None> WindowGeometryFacet::WhenNotSizingOrMoving() const {
+
+    auto handle_state = window_.HandleState();
+    if (handle_state == WindowHandleState::Creating ||
+        handle_state == WindowHandleState::Created ||
+        handle_state == WindowHandleState::Destroying) {
+
+        auto& state_data = window_.lifecycle_facet_.HandleStateData();
+        if (!state_data.is_sizing_or_moving) {
+            return rx::Single<None>::Just({});
+        }
+
+        if (!state_data.exit_sizing_or_moving_subject) {
+            state_data.exit_sizing_or_moving_subject.emplace();
+        }
+
+        return state_data.exit_sizing_or_moving_subject->AsSingle();
+    }
+
+    return rx::Single<None>::Just({});
+}
+
+
+void WindowGeometryFacet::HandleWMENTERSIZEMOVE() noexcept {
+    window_.lifecycle_facet_.HandleStateData().is_sizing_or_moving = true;
+}
+
+
+void WindowGeometryFacet::HandleWMEXITSIZEMOVE() {
+
+    auto& state_data = window_.lifecycle_facet_.HandleStateData();
+    state_data.is_sizing_or_moving = false;
+
+    if (state_data.exit_sizing_or_moving_subject) {
+        auto observer = state_data.exit_sizing_or_moving_subject->AsObserver();
+        observer.OnSuccess({});
+        state_data.exit_sizing_or_moving_subject.reset();
+    }
+}
+
 }

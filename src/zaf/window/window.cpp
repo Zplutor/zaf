@@ -388,6 +388,11 @@ void Window::SetContentHeight(float height) {
     geometry_facet_.SetContentHeight(height);
 }
 
+
+rx::Single<None> Window::WhenNotSizingOrMoving() const {
+    return geometry_facet_.WhenNotSizingOrMoving();
+}
+
 #pragma endregion
 
 
@@ -653,16 +658,11 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_ENTERSIZEMOVE:
-        handle_specific_state_.is_sizing_or_moving = true;
+        geometry_facet_.HandleWMENTERSIZEMOVE();
         return 0;
 
     case WM_EXITSIZEMOVE:
-        handle_specific_state_.is_sizing_or_moving = false;
-        if (handle_specific_state_.exit_sizing_or_moving_subject) {
-            auto observer = handle_specific_state_.exit_sizing_or_moving_subject->AsObserver();
-            observer.OnSuccess({});
-            handle_specific_state_.exit_sizing_or_moving_subject.reset();
-        }
+        geometry_facet_.HandleWMEXITSIZEMOVE();
         return 0;
 
     case WM_SIZE:
@@ -1056,20 +1056,6 @@ void Window::OnSizeChanged(const WindowSizeChangedInfo& event_info) {
 
 rx::Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() const {
     return size_changed_event_.GetObservable();
-}
-
-
-rx::Single<None> Window::WhenNotSizingOrMoving() const {
-
-    if (!handle_specific_state_.is_sizing_or_moving) {
-        return rx::Single<None>::Just({});
-    }
-
-    if (!handle_specific_state_.exit_sizing_or_moving_subject) {
-        handle_specific_state_.exit_sizing_or_moving_subject.emplace();
-    }
-
-    return handle_specific_state_.exit_sizing_or_moving_subject->AsSingle();
 }
 
 

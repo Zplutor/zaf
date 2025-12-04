@@ -18,13 +18,11 @@ protected:
 
         __super::Initialize();
 
-        Disposables() += this->MessageHandledEvent().Subscribe([this](const zaf::MessageHandledInfo& info) {
-            if (info.Message().ID() == WM_WINDOWPOSCHANGED) {
-                auto pos = (WINDOWPOS*)info.Message().LParam();
-                zaf::Rect new_rect{ (float)pos->x, (float)pos->y, (float)pos->cx, (float)pos->cy };
-                new_rect = zaf::ToDIPs(new_rect, this->DPI());
-                ZAF_LOG() << "WindowPosChanged: " << new_rect.ToString();
-            }
+        Disposables() += zaf::rx::Timer::Once(
+            std::chrono::seconds(3), 
+            zaf::rx::MainThreadScheduler::Instance()
+        ).Subscribe([this](std::size_t) {
+            this->Destroy();
         });
     }
 
@@ -57,13 +55,5 @@ void BeginRun(const zaf::BeginRunInfo& event_info) {
 
     window->SetRect({ 100.25, 100.25, 200.25, 200.25 });
     window->Show();
-
-    auto screens = zaf::ScreenManager::Instance().AllScreens();
-    for (const auto& each_screen : screens) {
-
-        ZAF_LOG() << std::format(L"{}, {}", each_screen->Name(), each_screen->Size().ToString());
-    }
-
-
     zaf::Application::Instance().SetMainWindow(window);
 }

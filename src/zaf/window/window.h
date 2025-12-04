@@ -805,14 +805,18 @@ public:
     /**
     Gets a single that emits when the window has exited both the sizing and moving states.
 
-    @details
-        The returned single emits immediately if the window is not in a sizing or moving state when
-        calling this method.
-
     @return
         A single that emits only `OnSuccess` and won't emit `OnError`.
 
     @throw std::bad_alloc
+
+    @details
+        The returned single emits immediately if:
+        - The window handle state is `NotCreated` or `Destroyed`.
+        - The window is not in a sizing or moving state when calling this method.
+
+        Otherwise, it emits when the window exits both the sizing and moving states. Note that if 
+        the window is destroyed before exiting these states, the single won't emit at all.
     */
     rx::Single<None> WhenNotSizingOrMoving() const;
 
@@ -1582,12 +1586,6 @@ private:
 
 private:
     d2d::WindowRenderer renderer_;
-
-    struct {
-        bool is_sizing_or_moving{};
-        mutable std::optional<rx::SingleSubject<zaf::None>> exit_sizing_or_moving_subject;
-    } handle_specific_state_;
-
     std::weak_ptr<Window> owner_;
 
     internal::WindowStyleFacet style_facet_;

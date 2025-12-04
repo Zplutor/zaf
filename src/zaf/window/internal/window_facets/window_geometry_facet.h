@@ -1,8 +1,10 @@
 #pragma once
 
+#include <zaf/base/none.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
+#include <zaf/rx/single.h>
 
 namespace zaf {
 class Screen;
@@ -73,6 +75,10 @@ public:
         const zaf::Size& content_size,
         const internal::WindowBasicStyle& basic_style,
         const internal::WindowExtendedStyle& extend_style) const noexcept;
+
+    rx::Single<None> WhenNotSizingOrMoving() const;
+    void HandleWMENTERSIZEMOVE() noexcept;
+    void HandleWMEXITSIZEMOVE();
 
 private:
     zaf::Size ClampSize(const zaf::Size& size) const noexcept;
