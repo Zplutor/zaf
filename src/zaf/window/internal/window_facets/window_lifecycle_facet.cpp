@@ -209,14 +209,15 @@ void WindowLifecycleFacet::ProcessCreatedState() {
 }
 
 
-void WindowLifecycleFacet::Close() {
+void WindowLifecycleFacet::Close() noexcept {
 
-    //Do nothing if the window is being destroyed.
-    if (handle_state_ == WindowHandleState::Destroying) {
-        return;
+    if (handle_state_ == WindowHandleState::NotCreated) {
+        this->Destroy();
     }
-
-    SendMessage(Handle(), WM_CLOSE, 0, 0);
+    else if (handle_state_ == WindowHandleState::Creating ||
+             handle_state_ == WindowHandleState::Created) {
+        SendMessage(Handle(), WM_CLOSE, 0, 0);
+    }
 }
 
 

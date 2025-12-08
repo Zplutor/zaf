@@ -1009,10 +1009,34 @@ public:
     rx::Observable<DestroyedInfo> DestroyedEvent() const;
 
     /**
-    Close the window.
-    */
-    void Close();
+    Closes the window.
 
+    @details
+        This method behaves differently according to the current window handle state:
+        - If the state is `NotCreated`, it will call the `Destroy()` method directly.
+        - If the state is `Creating` or `Created`, it will send a WM_CLOSE message to the window
+          handle.
+        - If the state is `Destroying` or `Destroyed`, nothing will be done.
+    
+    @see zaf::Window::ClosingEvent()
+    @see zaf::Window::Destroy()
+    */
+    void Close() noexcept;
+
+    /**
+    Gets the event that is raised when the window is about to be closed.
+
+    @details
+        This event is raised when the window receives a WM_CLOSE message. Observers of this event
+        can call `SetCanClose(false)` on the event info to prevent the window from being closed.
+        Otherwise, the `Destroy()` method will be called to destroy the window handle.
+
+        @warning
+            Observers of this event must not throw, otherwise the behavior is undefined.
+
+    @see zaf::Window::Close()
+    @see zaf::Window::Destroy()
+    */
     rx::Observable<ClosingInfo> ClosingEvent() const;
 #pragma endregion
     /**@}*/

@@ -1733,7 +1733,7 @@ bool Window::IsFocused() const {
 }
 
 
-void Window::Close() {
+void Window::Close() noexcept {
     lifecycle_facet_.Close();
 }
 

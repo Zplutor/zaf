@@ -34,7 +34,7 @@ public:
 
     std::shared_ptr<WindowHolder> CreateHandle();
     void HandleWMCREATE();
-    void Close();
+    void Close() noexcept;
     void HandleWMCLOSE();
     void Destroy() noexcept;
     void HandleWMDESTROY();
