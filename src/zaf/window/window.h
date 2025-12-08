@@ -1385,6 +1385,22 @@ protected:
             This method must not throw, otherwise the behavior is undefined.
     */
     virtual void OnDestroyed(const DestroyedInfo& event_info);
+
+    /**
+    Called when the window is about to be closed.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        This method is called when the window receives a WM_CLOSE message. The default 
+        implementation of this method raises the `ClosingEvent()`. Derived classes should call the 
+        same method of the base class if they override this method.
+
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
+    */
+    virtual void OnClosing(const ClosingInfo& event_info);
     /**@}*/
 #pragma endregion
 
@@ -1525,18 +1541,6 @@ protected:
     of base class.
     */
     virtual void OnFocusLost(const WindowFocusLostInfo& event_info);
-
-    /**
-    Handles window closing event. This method is called when the window receives WM_CLOSE message.
-
-    @param event_info
-        Information of the event. Call event_info.SetCanClose() to indicate that whether the window
-        is allowed to close.
-
-    The default implementation of this method raises ClosingEvent. Derived classes should call the
-    same method of base class.
-    */
-    virtual void OnClosing(const ClosingInfo& event_info);
 
     virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
 

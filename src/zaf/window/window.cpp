@@ -482,6 +482,21 @@ rx::Observable<DestroyedInfo> Window::DestroyedEvent() const {
     return destroyed_event_.GetObservable();
 }
 
+
+void Window::Close() noexcept {
+    lifecycle_facet_.Close();
+}
+
+
+void Window::OnClosing(const ClosingInfo& event_info) {
+    closing_event_.Raise(event_info);
+}
+
+
+rx::Observable<ClosingInfo> Window::ClosingEvent() const {
+    return closing_event_.GetObservable();
+}
+
 #pragma endregion
 
 
@@ -1467,16 +1482,6 @@ void Window::HandleIMEMessage(const Message& message) {
 }
 
 
-void Window::OnClosing(const ClosingInfo& event_info) {
-    closing_event_.Raise(event_info);
-}
-
-
-rx::Observable<ClosingInfo> Window::ClosingEvent() const {
-    return closing_event_.GetObservable();
-}
-
-
 void Window::SetMouseOverControl(
     const std::shared_ptr<Control>& mouse_over_control, 
     const MouseMessage& message) {
@@ -1730,11 +1735,6 @@ bool Window::IsFocused() const {
     }
 
     return GetFocus() == handle;
-}
-
-
-void Window::Close() noexcept {
-    lifecycle_facet_.Close();
 }
 
 
