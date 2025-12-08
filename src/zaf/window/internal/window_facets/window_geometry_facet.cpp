@@ -420,6 +420,7 @@ zaf::Size WindowGeometryFacet::ContentSize() const noexcept {
 
         auto& not_created_state_data = window_.lifecycle_facet_.NotCreatedStateData();
         auto frame = GetWindowFrame(
+            this->DPI(),
             not_created_state_data.basic_style,
             not_created_state_data.extended_style);
 
@@ -452,6 +453,7 @@ void WindowGeometryFacet::SetContentSize(const zaf::Size& size) {
         auto& not_created_state_data = window_.lifecycle_facet_.NotCreatedStateData();
         window_size = AdjustContentSizeToWindowSize(
             size,
+            this->DPI(),
             not_created_state_data.basic_style,
             not_created_state_data.extended_style);
     }
@@ -460,6 +462,7 @@ void WindowGeometryFacet::SetContentSize(const zaf::Size& size) {
 
         window_size = AdjustContentSizeToWindowSize(
             size,
+            this->DPI(),
             internal::WindowBasicStyle::FromHandle(window_.Handle()),
             internal::WindowExtendedStyle::FromHandle(window_.Handle()));
     }
@@ -496,10 +499,11 @@ void WindowGeometryFacet::SetContentHeight(float height) {
 
 
 Frame WindowGeometryFacet::GetWindowFrame(
+    float dpi,
     const internal::WindowBasicStyle& basic_style,
-    const internal::WindowExtendedStyle& extend_style) const noexcept {
+    const internal::WindowExtendedStyle& extend_style) noexcept {
 
-    auto window_rect = AdjustContentRectToWindowRect(zaf::Rect{}, basic_style, extend_style);
+    auto window_rect = AdjustContentRectToWindowRect(zaf::Rect{}, dpi, basic_style, extend_style);
     return Frame{
         std::abs(window_rect.Left()),
         std::abs(window_rect.Top()),
@@ -511,12 +515,14 @@ Frame WindowGeometryFacet::GetWindowFrame(
 
 zaf::Size WindowGeometryFacet::AdjustContentSizeToWindowSize(
     const zaf::Size& content_size,
+    float dpi,
     const internal::WindowBasicStyle& basic_style,
-    const internal::WindowExtendedStyle& extend_style) const noexcept {
+    const internal::WindowExtendedStyle& extend_style) noexcept {
 
     zaf::Rect content_rect{ Point{}, content_size };
     auto window_rect = AdjustContentRectToWindowRect(
         content_rect,
+        dpi,
         basic_style,
         extend_style);
 
@@ -526,10 +532,9 @@ zaf::Size WindowGeometryFacet::AdjustContentSizeToWindowSize(
 
 zaf::Rect WindowGeometryFacet::AdjustContentRectToWindowRect(
     const zaf::Rect& content_rect, 
+    float dpi,
     const internal::WindowBasicStyle& basic_style, 
-    const internal::WindowExtendedStyle& extend_style) const noexcept {
-
-    auto dpi = DPI();
+    const internal::WindowExtendedStyle& extend_style) noexcept {
 
     auto snapped_content_rect = SnapAndTransformToPixels(content_rect, dpi);
     auto adjusted_rect = snapped_content_rect.ToRECT();
@@ -544,6 +549,11 @@ zaf::Rect WindowGeometryFacet::AdjustContentRectToWindowRect(
     auto result = zaf::Rect::FromRECT(adjusted_rect);
     result = ToDIPs(result, dpi);
     return result;
+}
+
+
+bool WindowGeometryFacet::IsSizingOrMoving() const noexcept {
+    return window_.lifecycle_facet_.HandleStateData().is_sizing_or_moving;
 }
 
 
@@ -584,6 +594,66 @@ void WindowGeometryFacet::HandleWMEXITSIZEMOVE() {
         auto observer = state_data.exit_sizing_or_moving_subject->AsObserver();
         observer.OnSuccess({});
         state_data.exit_sizing_or_moving_subject.reset();
+    }
+}
+
+
+Point WindowGeometryFacet::TransformToScreen(const Point& position) const noexcept {
+    auto result = GetContentOriginInScreen();
+    result.AddOffset(position);
+    return result;
+}
+
+
+Point WindowGeometryFacet::TransformFromScreen(const Point& position) const noexcept {
+    auto result = position;
+    auto content_origin = GetContentOriginInScreen();
+    result.SubtractOffset(content_origin);
+    return result;
+}
+
+
+zaf::Rect WindowGeometryFacet::TransformToScreen(const zaf::Rect& rect) const noexcept {
+    return zaf::Rect{ TransformToScreen(rect.position), rect.size };
+}
+
+
+zaf::Rect WindowGeometryFacet::TransformFromScreen(const zaf::Rect& rect) const noexcept {
+    return zaf::Rect{ TransformFromScreen(rect.position), rect.size };
+}
+
+
+Point WindowGeometryFacet::GetContentOriginInScreen() const noexcept {
+
+    auto handle_state = window_.HandleState();
+    if (handle_state == WindowHandleState::NotCreated) {
+
+        auto& not_create_state_data = window_.lifecycle_facet_.NotCreatedStateData();
+
+        auto screen = this->Screen();
+        auto initial_rect = ResolveInitialRect(*screen, window_.Owner(), not_create_state_data);
+
+        auto window_frame = GetWindowFrame(
+            screen->DPI(),
+            not_create_state_data.basic_style,
+            not_create_state_data.extended_style);
+
+        auto result = initial_rect.position;
+        result.AddOffset(Point{ window_frame.left, window_frame.top });
+        return result;
+    }
+    else if (handle_state == WindowHandleState::Creating ||
+             handle_state == WindowHandleState::Created ||
+             handle_state == WindowHandleState::Destroying) {
+
+        POINT point{};
+        ClientToScreen(window_.Handle(), &point);
+
+        auto result = this->Screen()->TransformFromGlobal(Point::FromPOINT(point));
+        return result;
+    }
+    else {
+        return {};
     }
 }
 

@@ -1081,4 +1081,220 @@ TEST_F(WindowTest, WhenNotSizingOrMoving_DestroyWhileBeingSizedOrMoved) {
     ASSERT_EQ(call_count, 0);
 }
 
+
+namespace {
+
+zaf::Point GetWindowContentOffset() {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+
+    RECT window_rect{};
+    GetWindowRect(window->Handle(), &window_rect);
+
+    RECT client_rect{};
+    GetClientRect(window->Handle(), &client_rect);
+
+    POINT client_origin{ client_rect.left, client_rect.top };
+    ClientToScreen(window->Handle(), &client_origin);
+
+    zaf::Point result{ 
+        static_cast<float>(client_origin.x - window_rect.left),
+        static_cast<float>(client_origin.y - window_rect.top) 
+    };
+    return zaf::ToDIPs(result, window->DPI());
+}
+
+}
+
+
+TEST_F(WindowTest, TransformPointFromScreen_InVariantStates) {
+
+    auto test = [&](const zaf::Point& screen_point) {
+
+        auto window = zaf::Create<zaf::Window>();
+        window->SetPosition(zaf::Point{ 100, 100 });
+
+        auto content_offset = GetWindowContentOffset();
+        zaf::Point expected{
+            screen_point.x - 100.f - content_offset.x,
+            screen_point.y - 100.f - content_offset.y
+        };
+
+        // Not created
+        auto point_in_not_created = window->TransformFromScreen(screen_point);
+        ASSERT_EQ(point_in_not_created, expected);
+
+        // Creating
+        zaf::Point point_in_creating;
+        auto sub1 = window->HandleCreatingEvent().Subscribe([&](const zaf::HandleCreatingInfo&) {
+            point_in_creating = window->TransformFromScreen(screen_point);
+        });
+        auto holder = window->CreateHandle();
+        ASSERT_EQ(point_in_creating, expected);
+
+        // Created
+        auto point_in_created = window->TransformFromScreen(screen_point);
+        ASSERT_EQ(point_in_created, expected);
+
+        // Destroying
+        zaf::Point point_in_destroying;
+        auto sub2 = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+            point_in_destroying = window->TransformFromScreen(screen_point);
+        });
+        window->Destroy();
+        ASSERT_EQ(point_in_destroying, expected);
+
+        // Destroyed
+        auto point_in_destroyed = window->TransformFromScreen(screen_point);
+        ASSERT_EQ(point_in_destroyed, screen_point);
+    };
+
+    test(zaf::Point{ 40.25f, 50.25f });
+    test(zaf::Point{ 100.15f, 100.81f });
+}
+
+
+TEST_F(WindowTest, TransformPointToScreen_InVariantStates) {
+
+    auto test = [&](const zaf::Point& window_point) {
+
+        auto window = zaf::Create<zaf::Window>();
+        window->SetPosition(zaf::Point{ 100, 100 });
+
+        auto content_offset = GetWindowContentOffset();
+        zaf::Point expected{
+            window_point.x + 100.f + content_offset.x,
+            window_point.y + 100.f + content_offset.y
+        };
+
+        // Not created
+        auto point_in_not_created = window->TransformToScreen(window_point);
+        ASSERT_EQ(point_in_not_created, expected);
+
+        // Creating
+        zaf::Point point_in_creating;
+        auto sub1 = window->HandleCreatingEvent().Subscribe([&](const zaf::HandleCreatingInfo&) {
+            point_in_creating = window->TransformToScreen(window_point);
+        });
+        auto holder = window->CreateHandle();
+        ASSERT_EQ(point_in_creating, expected);
+
+        // Created
+        auto point_in_created = window->TransformToScreen(window_point);
+        ASSERT_EQ(point_in_created, expected);
+
+        // Destroying
+        zaf::Point point_in_destroying;
+        auto sub2 = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+            point_in_destroying = window->TransformToScreen(window_point);
+        });
+        window->Destroy();
+        ASSERT_EQ(point_in_destroying, expected);
+
+        // Destroyed
+        auto point_in_destroyed = window->TransformToScreen(window_point);
+        ASSERT_EQ(point_in_destroyed, window_point);
+    };
+
+    test(zaf::Point{ -10.25f, -11.35f });
+    test(zaf::Point{ 10.15f, 11.45f });
+}
+
+
+TEST_F(WindowTest, TransformRectFromScreen_InVariantStates) {
+
+    auto test = [&](const zaf::Rect& screen_rect) {
+
+        auto window = zaf::Create<zaf::Window>();
+        window->SetPosition(zaf::Point{ 100, 100 });
+
+        auto content_offset = GetWindowContentOffset();
+        zaf::Rect expected{
+            screen_rect.position.x - 100.f - content_offset.x,
+            screen_rect.position.y - 100.f - content_offset.y,
+            screen_rect.size.width,
+            screen_rect.size.height
+        };
+
+        // Not created
+        auto rect_in_not_created = window->TransformFromScreen(screen_rect);
+        ASSERT_EQ(rect_in_not_created, expected);
+
+        // Creating
+        zaf::Rect rect_in_creating;
+        auto sub1 = window->HandleCreatingEvent().Subscribe([&](const zaf::HandleCreatingInfo&) {
+            rect_in_creating = window->TransformFromScreen(screen_rect);
+        });
+        auto holder = window->CreateHandle();
+        ASSERT_EQ(rect_in_creating, expected);
+
+        // Created
+        auto rect_in_created = window->TransformFromScreen(screen_rect);
+        ASSERT_EQ(rect_in_created, expected);
+
+        // Destroying
+        zaf::Rect rect_in_destroying;
+        auto sub2 = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+            rect_in_destroying = window->TransformFromScreen(screen_rect);
+        });
+        window->Destroy();
+        ASSERT_EQ(rect_in_destroying, expected);
+
+        // Destroyed
+        auto rect_in_destroyed = window->TransformFromScreen(screen_rect);
+        ASSERT_EQ(rect_in_destroyed, screen_rect);
+    };
+    test(zaf::Rect{ 40.25f, 50.25f, 100.f, 200.f });
+    test(zaf::Rect{ 100.15f, 100.81f, 300.f, 400.f });
+}
+
+
+TEST_F(WindowTest, TransformRectToScreen_InVariantState) {
+
+    auto test = [&](const zaf::Rect& window_rect) {
+
+        auto window = zaf::Create<zaf::Window>();
+        window->SetPosition(zaf::Point{ 100, 100 });
+
+        auto content_offset = GetWindowContentOffset();
+        zaf::Rect expected{
+            window_rect.position.x + 100.f + content_offset.x,
+            window_rect.position.y + 100.f + content_offset.y,
+            window_rect.size.width,
+            window_rect.size.height
+        };
+
+        // Not created
+        auto rect_in_not_created = window->TransformToScreen(window_rect);
+        ASSERT_EQ(rect_in_not_created, expected);
+
+        // Creating
+        zaf::Rect rect_in_creating;
+        auto sub1 = window->HandleCreatingEvent().Subscribe([&](const zaf::HandleCreatingInfo&) {
+            rect_in_creating = window->TransformToScreen(window_rect);
+        });
+        auto holder = window->CreateHandle();
+        ASSERT_EQ(rect_in_creating, expected);
+
+        // Created
+        auto rect_in_created = window->TransformToScreen(window_rect);
+        ASSERT_EQ(rect_in_created, expected);
+
+        // Destroying
+        zaf::Rect rect_in_destroying;
+        auto sub2 = window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
+            rect_in_destroying = window->TransformToScreen(window_rect);
+        });
+        window->Destroy();
+        ASSERT_EQ(rect_in_destroying, expected);
+
+        // Destroyed
+        auto rect_in_destroyed = window->TransformToScreen(window_rect);
+        ASSERT_EQ(rect_in_destroyed, window_rect);
+    };
+    test(zaf::Rect{ -10.25f, -11.35f, 100.f, 200.f });
+    test(zaf::Rect{ 10.15f, 11.45f, 300.f, 400.f });
+}
+
 }

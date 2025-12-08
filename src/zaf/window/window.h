@@ -803,6 +803,11 @@ public:
     rx::Observable<WindowSizeChangedInfo> SizeChangedEvent() const;
 
     /**
+    Indicates whether the window is in a sizing or moving state.
+    */
+    bool IsSizingOrMoving() const noexcept;
+
+    /**
     Gets a single that emits when the window has exited both the sizing and moving states.
 
     @return
@@ -829,7 +834,7 @@ public:
     @return
         The transformed position in the window's screen coordinates.
     */
-    Point TransformToScreen(const Point& position_in_window) const;
+    Point TransformToScreen(const Point& position_in_window) const noexcept;
 
     /**
     Transforms a position from screen coordinates to the window's content area coordinates.
@@ -840,7 +845,29 @@ public:
     @return
         The transformed position in the window's content area coordinates.
     */
-    Point TranslateFromScreen(const Point& position_in_screen) const;
+    Point TransformFromScreen(const Point& position_in_screen) const noexcept;
+
+    /**
+    Transforms a rectangle from the window's content area to its screen coordinates.
+
+    @param rect_in_window
+        The rectangle in the window's content area coordinates.
+
+    @return
+        The transformed rectangle in the window's screen coordinates.
+    */
+    zaf::Rect TransformToScreen(const zaf::Rect& rect_in_window) const noexcept;
+
+    /**
+    Transforms a rectangle from screen coordinates to the window's content area coordinates.
+
+    @param rect_in_screen
+        The rectangle in the window's screen coordinates.
+
+    @return
+        The transformed rectangle in the window's content area coordinates.
+    */
+    zaf::Rect TransformFromScreen(const zaf::Rect& rect_in_screen) const noexcept;
 #pragma endregion
     /**@}*/
 

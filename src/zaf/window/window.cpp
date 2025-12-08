@@ -389,8 +389,33 @@ void Window::SetContentHeight(float height) {
 }
 
 
+bool Window::IsSizingOrMoving() const noexcept {
+    return geometry_facet_.IsSizingOrMoving();
+}
+
+
 rx::Single<None> Window::WhenNotSizingOrMoving() const {
     return geometry_facet_.WhenNotSizingOrMoving();
+}
+
+
+Point Window::TransformToScreen(const Point& position) const noexcept {
+    return geometry_facet_.TransformToScreen(position);
+}
+
+
+Point Window::TransformFromScreen(const Point& position_in_screen) const noexcept {
+    return geometry_facet_.TransformFromScreen(position_in_screen);
+}
+
+
+zaf::Rect Window::TransformToScreen(const zaf::Rect& rect_in_window) const noexcept {
+    return geometry_facet_.TransformToScreen(rect_in_window);
+}
+
+
+zaf::Rect Window::TransformFromScreen(const zaf::Rect& rect_in_screen) const noexcept {
+    return geometry_facet_.TransformFromScreen(rect_in_screen);
 }
 
 #pragma endregion
@@ -1688,38 +1713,6 @@ Point Window::GetMousePosition() const {
     };
 
     return ToDIPs(point_in_pixels, DPI());
-}
-
-
-Point Window::TransformToScreen(const Point& position) const {
-
-    auto handle = Handle();
-    ZAF_EXPECT(handle);
-
-    auto dpi = DPI();
-    auto position_in_pixel = FromDIPs(position, dpi);
-
-    auto point = position_in_pixel.ToPOINT();
-    ClientToScreen(handle, &point);
-
-    auto result = Point::FromPOINT(point);
-    return ToDIPs(result, dpi);
-}
-
-
-Point Window::TranslateFromScreen(const Point& position_in_screen) const {
-
-    auto handle = Handle();
-    ZAF_EXPECT(handle);
-
-    auto dpi = DPI();
-    auto position_in_pixel = FromDIPs(position_in_screen, dpi);
-
-    auto point = position_in_pixel.ToPOINT();
-    ScreenToClient(handle, &point);
-
-    auto result = Point::FromPOINT(point);
-    return ToDIPs(result, dpi);
 }
 
 

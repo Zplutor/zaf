@@ -67,25 +67,37 @@ public:
     float ContentHeight() const noexcept;
     void SetContentHeight(float height);
 
-    Frame GetWindowFrame(
-        const internal::WindowBasicStyle& basic_style,
-        const internal::WindowExtendedStyle& extend_style) const noexcept;
-
-    zaf::Size AdjustContentSizeToWindowSize(
-        const zaf::Size& content_size,
-        const internal::WindowBasicStyle& basic_style,
-        const internal::WindowExtendedStyle& extend_style) const noexcept;
-
+    bool IsSizingOrMoving() const noexcept;
     rx::Single<None> WhenNotSizingOrMoving() const;
     void HandleWMENTERSIZEMOVE() noexcept;
     void HandleWMEXITSIZEMOVE();
 
+    Point TransformToScreen(const Point& position) const noexcept;
+    Point TransformFromScreen(const Point& position) const noexcept;
+    zaf::Rect TransformToScreen(const zaf::Rect& rect) const noexcept;
+    zaf::Rect TransformFromScreen(const zaf::Rect& rect) const noexcept;
+
 private:
     zaf::Size ClampSize(const zaf::Size& size) const noexcept;
-    zaf::Rect AdjustContentRectToWindowRect(
-        const zaf::Rect& content_rect,
+
+    static Frame GetWindowFrame(
+        float dpi,
         const internal::WindowBasicStyle& basic_style,
-        const internal::WindowExtendedStyle& extend_style) const noexcept;
+        const internal::WindowExtendedStyle& extend_style) noexcept;
+
+    static zaf::Size AdjustContentSizeToWindowSize(
+        const zaf::Size& content_size,
+        float dpi,
+        const internal::WindowBasicStyle& basic_style,
+        const internal::WindowExtendedStyle& extend_style) noexcept;
+
+    static zaf::Rect AdjustContentRectToWindowRect(
+        const zaf::Rect& content_rect,
+        float dpi,
+        const internal::WindowBasicStyle& basic_style,
+        const internal::WindowExtendedStyle& extend_style) noexcept;
+
+    Point GetContentOriginInScreen() const noexcept;
 
 private:
     Window& window_;
