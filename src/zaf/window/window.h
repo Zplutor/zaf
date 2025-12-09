@@ -1304,6 +1304,31 @@ protected:
     void Initialize() override;
 
     /**
+    @name Protected Geometry Management
+    @{
+    */
+#pragma region
+    /**
+    Called after the window's size is changed.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        This method is called when the window receives WM_SIZE message, after the internal resize
+        handling is done.
+
+        The default implementation of this method raises the `SizeChangedEvent()`. Derived classes
+        should call the same method of the base class if they override this method.
+
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
+    */
+    virtual void OnSizeChanged(const WindowSizeChangedInfo& event_info);
+    /**@}*/
+#pragma endregion
+
+    /**
     @name Protected Lifecycle Management
     @{
     */
@@ -1477,24 +1502,6 @@ protected:
     virtual void OnHide(const HideInfo& event_info);
 
     /**
-    Called after the window's size is changed.
-
-    @param event_info
-        Information of the event.
-
-    @details
-        This method is called when the window receives WM_SIZE message, after the root control is
-        resized.
-
-        The default implementation of this method raises the `SizeChangedEvent()`. Derived classes
-        should call the same method of the base class if they override this method.
-
-        @warning
-            This method must not throw, otherwise the behavior is undefined.
-    */
-    virtual void OnSizeChanged(const WindowSizeChangedInfo& event_info);
-
-    /**
     Handles window activated event. This event is raised when the window receives WM_ACTIVATE
     message, whose wParam is WA_ACTIVE or WA_CLICKACTIVE.
 
@@ -1616,8 +1623,6 @@ private:
     void HandleWMACTIVATE(const ActivateMessage& message);
     void HandleWMSETFOCUS(const SetFocusMessage& message);
     void HandleWMKILLFOCUS(const KillFocusMessage& message);
-    void HandleWMSIZEMessage(const Message& message);
-    void HandleMoveMessage();
     bool RedirectMouseWheelMessage(const Message& message);
     bool HandleMouseMessage(const MouseMessage& message);
     bool RouteMouseEvent(const MouseMessage& message);

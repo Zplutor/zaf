@@ -7,6 +7,7 @@
 #include <zaf/rx/single.h>
 
 namespace zaf {
+class Message;
 class Screen;
 class Window;
 }
@@ -67,6 +68,8 @@ public:
     float ContentHeight() const noexcept;
     void SetContentHeight(float height);
 
+    void HandleWMSIZE(const Message& message);
+
     bool IsSizingOrMoving() const noexcept;
     rx::Single<None> WhenNotSizingOrMoving() const;
     void HandleWMENTERSIZEMOVE() noexcept;
@@ -79,6 +82,7 @@ public:
 
 private:
     zaf::Size ClampSize(const zaf::Size& size) const noexcept;
+    void RaiseSizeChangedEvent();
 
     static Frame GetWindowFrame(
         float dpi,

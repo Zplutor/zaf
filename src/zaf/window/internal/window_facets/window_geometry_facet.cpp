@@ -144,7 +144,11 @@ void WindowGeometryFacet::SetRect(const zaf::Rect& rect) {
 
         auto& not_created_state_data = window_.lifecycle_facet_.NotCreatedStateData();
         not_created_state_data.initial_position = new_rect.position;
-        not_created_state_data.size = new_rect.size;
+
+        if (not_created_state_data.size != new_rect.size) {
+            not_created_state_data.size = new_rect.size;
+            RaiseSizeChangedEvent();
+        }
     }
     else if (handle_state == WindowHandleState::Creating ||
              handle_state == WindowHandleState::Created) {
@@ -199,8 +203,16 @@ zaf::Size WindowGeometryFacet::Size() const noexcept {
 
 
 void WindowGeometryFacet::SetSize(const zaf::Size& size) {
+
     if (window_.HandleState() == WindowHandleState::NotCreated) {
-        window_.lifecycle_facet_.NotCreatedStateData().size = ClampSize(size);
+
+        auto new_size = ClampSize(size);
+
+        auto& not_created_state_data = window_.lifecycle_facet_.NotCreatedStateData();
+        if (not_created_state_data.size != new_size) {
+            not_created_state_data.size = new_size;
+            RaiseSizeChangedEvent();
+        }
     }
     else {
         zaf::Rect new_rect = Rect();
@@ -495,6 +507,29 @@ void WindowGeometryFacet::SetContentHeight(float height) {
     zaf::Size new_size = ContentSize();
     new_size.height = height;
     SetContentSize(new_size);
+}
+
+
+void WindowGeometryFacet::HandleWMSIZE(const Message& message) {
+
+    zaf::Size new_size{
+        static_cast<float>(LOWORD(message.LParam())),
+        static_cast<float>(HIWORD(message.LParam()))
+    };
+
+    if (window_.renderer_) {
+        window_.renderer_.Resize(new_size);
+    }
+
+    zaf::Rect root_control_rect{ Point(), ToDIPs(new_size, DPI()) };
+    window_.root_control_->SetRect(root_control_rect);
+
+    RaiseSizeChangedEvent();
+}
+
+
+void WindowGeometryFacet::RaiseSizeChangedEvent() {
+    window_.OnSizeChanged(WindowSizeChangedInfo{ window_.shared_from_this() });
 }
 
 

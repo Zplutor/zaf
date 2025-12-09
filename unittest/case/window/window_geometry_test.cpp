@@ -216,7 +216,7 @@ TEST_F(WindowTest, SetRect_NotCreated) {
         rect_in_creating = window->Rect();
     });
     auto holder = window->CreateHandle();
-    //ASSERT_EQ(rect_in_creating, new_rect);
+    ASSERT_EQ(rect_in_creating, new_rect);
 
     // Created state
     ASSERT_EQ(window->Rect(), new_rect);
@@ -991,6 +991,136 @@ TEST_F(WindowTest, SetContentSize_InvalidStates) {
 
     //Destroyed state
     ASSERT_THROW(window->SetContentSize(zaf::Size{ 300, 400 }), zaf::InvalidHandleStateError);
+}
+
+
+TEST_F(WindowTest, SizeChangedEvent_SetRect_NotCreated) {
+
+    auto window = zaf::Create<zaf::Window>();
+    int call_count{};
+    auto sub = window->SizeChangedEvent().Subscribe([&](const zaf::WindowSizeChangedInfo&) {
+        call_count++;
+    });
+
+    window->SetRect(zaf::Rect{ 0, 0, 100, 100 });
+    ASSERT_EQ(call_count, 1);
+    window->SetRect(zaf::Rect{ 0, 0, 200, 100 });
+    ASSERT_EQ(call_count, 2);
+    window->SetRect(zaf::Rect{ 0, 0, 200, 200 });
+    ASSERT_EQ(call_count, 3);
+    // Setting position or setting the same size won't raise the event.
+    window->SetRect(zaf::Rect{ 100, 100, 200, 200 });
+    ASSERT_EQ(call_count, 3);
+}
+
+
+TEST_F(WindowTest, SizeChangedEvent_SetRect_Creating) {
+
+    auto window = zaf::Create<zaf::Window>();
+    int call_count{};
+    auto sub1 = window->SizeChangedEvent().Subscribe([&](const zaf::WindowSizeChangedInfo&) {
+        call_count++;
+    });
+
+    auto sub2 = window->HandleCreatingEvent().Subscribe([&](const zaf::HandleCreatingInfo&) {
+        window->SetRect(zaf::Rect{ 0, 0, 100, 100 });
+        ASSERT_EQ(call_count, 1);
+        window->SetRect(zaf::Rect{ 0, 0, 200, 100 });
+        ASSERT_EQ(call_count, 2);
+        window->SetRect(zaf::Rect{ 0, 0, 200, 200 });
+        ASSERT_EQ(call_count, 3);
+        // Setting position or setting the same size won't raise the event.
+        window->SetRect(zaf::Rect{ 100, 100, 200, 200 });
+        ASSERT_EQ(call_count, 3);
+    });
+
+    auto holder = window->CreateHandle();
+    ASSERT_EQ(call_count, 3);
+}
+
+
+TEST_F(WindowTest, SizeChangedEvent_SetRect_Created) {
+
+    auto window = zaf::Create<zaf::Window>();
+    int call_count{};
+    auto sub = window->SizeChangedEvent().Subscribe([&](const zaf::WindowSizeChangedInfo&) {
+        call_count++;
+    });
+    auto holder = window->CreateHandle();
+    window->SetRect(zaf::Rect{ 0, 0, 100, 100 });
+    ASSERT_EQ(call_count, 1);
+    window->SetRect(zaf::Rect{ 0, 0, 200, 100 });
+    ASSERT_EQ(call_count, 2);
+    window->SetRect(zaf::Rect{ 0, 0, 200, 200 });
+    ASSERT_EQ(call_count, 3);
+    // Setting position or setting the same size won't raise the event.
+    window->SetRect(zaf::Rect{ 100, 100, 200, 200 });
+    ASSERT_EQ(call_count, 3);
+}
+
+
+TEST_F(WindowTest, SizeChangedEvent_SetSize_NotCreated) {
+
+    auto window = zaf::Create<zaf::Window>();
+    int call_count{};
+    auto sub = window->SizeChangedEvent().Subscribe([&](const zaf::WindowSizeChangedInfo&) {
+        call_count++;
+    });
+
+    window->SetSize(zaf::Size{ 100, 100 });
+    ASSERT_EQ(call_count, 1);
+    window->SetSize(zaf::Size{ 200, 100 });
+    ASSERT_EQ(call_count, 2);
+    window->SetSize(zaf::Size{ 200, 200 });
+    ASSERT_EQ(call_count, 3);
+    // Setting the same size won't raise the event.
+    window->SetSize(zaf::Size{ 200, 200 });
+    ASSERT_EQ(call_count, 3);
+}
+
+
+TEST_F(WindowTest, SizeChangedEvent_SetSize_Creating) {
+
+    auto window = zaf::Create<zaf::Window>();
+    int call_count{};
+    auto sub1 = window->SizeChangedEvent().Subscribe([&](const zaf::WindowSizeChangedInfo&) {
+        call_count++;
+    });
+
+    auto sub2 = window->HandleCreatingEvent().Subscribe([&](const zaf::HandleCreatingInfo&) {
+        window->SetSize(zaf::Size{ 100, 100 });
+        ASSERT_EQ(call_count, 1);
+        window->SetSize(zaf::Size{ 200, 100 });
+        ASSERT_EQ(call_count, 2);
+        window->SetSize(zaf::Size{ 200, 200 });
+        ASSERT_EQ(call_count, 3);
+        // Setting the same size won't raise the event.
+        window->SetSize(zaf::Size{ 200, 200 });
+        ASSERT_EQ(call_count, 3);
+    });
+    auto holder = window->CreateHandle();
+    ASSERT_EQ(call_count, 3);
+}
+
+
+TEST_F(WindowTest, SizeChangedEvent_SetSize_Created) {
+
+    auto window = zaf::Create<zaf::Window>();
+    int call_count{};
+    auto sub = window->SizeChangedEvent().Subscribe([&](const zaf::WindowSizeChangedInfo&) {
+        call_count++;
+    });
+
+    auto holder = window->CreateHandle();
+    window->SetSize(zaf::Size{ 100, 100 });
+    ASSERT_EQ(call_count, 1);
+    window->SetSize(zaf::Size{ 200, 100 });
+    ASSERT_EQ(call_count, 2);
+    window->SetSize(zaf::Size{ 200, 200 });
+    ASSERT_EQ(call_count, 3);
+    // Setting the same size won't raise the event.
+    window->SetSize(zaf::Size{ 200, 200 });
+    ASSERT_EQ(call_count, 3);
 }
 
 

@@ -389,6 +389,16 @@ void Window::SetContentHeight(float height) {
 }
 
 
+void Window::OnSizeChanged(const WindowSizeChangedInfo& event_info) {
+    size_changed_event_.Raise(event_info);
+}
+
+
+rx::Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() const {
+    return size_changed_event_.GetObservable();
+}
+
+
 bool Window::IsSizingOrMoving() const noexcept {
     return geometry_facet_.IsSizingOrMoving();
 }
@@ -706,11 +716,7 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_SIZE:
-        HandleWMSIZEMessage(message);
-        return 0;
-
-    case WM_MOVE:
-        HandleMoveMessage();
+        geometry_facet_.HandleWMSIZE(message);
         return 0;
 
     case WM_SETFOCUS:
@@ -1062,45 +1068,6 @@ void Window::OnFocusLost(const WindowFocusLostInfo& event_info) {
 
 rx::Observable<WindowFocusLostInfo> Window::FocusLostEvent() const {
     return focus_lost_event_.GetObservable();
-}
-
-
-void Window::HandleWMSIZEMessage(const Message& message) {
-
-    //Don't handle size message during window creation procedure,
-    //because the object state is inconsistent until creation completed.
-    if (!Handle()) {
-        return;
-    }
-
-    zaf::Size size{
-        static_cast<float>(LOWORD(message.LParam())),
-        static_cast<float>(HIWORD(message.LParam()))
-    };
-
-    if (renderer_) {
-        renderer_.Resize(size);
-    }
-
-    zaf::Rect root_control_rect{ Point(), ToDIPs(size, DPI()) };
-    root_control_->SetRect(root_control_rect);
-
-    OnSizeChanged(WindowSizeChangedInfo{ shared_from_this() });
-}
-
-
-void Window::OnSizeChanged(const WindowSizeChangedInfo& event_info) {
-    size_changed_event_.Raise(event_info);
-}
-
-
-rx::Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() const {
-    return size_changed_event_.GetObservable();
-}
-
-
-void Window::HandleMoveMessage() {
-
 }
 
 
