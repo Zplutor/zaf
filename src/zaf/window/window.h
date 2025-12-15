@@ -1143,6 +1143,16 @@ public:
     Indicates whether the window is visible.
     */
     bool IsVisible() const noexcept;
+
+    /**
+    Gets the event that is raised when the window shows.
+    */
+    rx::Observable<ShowInfo> ShowEvent() const;
+
+    /**
+    Gets the event that is raised when the window hides.
+    */
+    rx::Observable<HideInfo> HideEvent() const;
 #pragma endregion
     /**@}*/
 
@@ -1196,6 +1206,32 @@ public:
     Gets the event that is raised after the focused control in the window is changed.
     */
     rx::Observable<FocusedControlChangedInfo> FocusedControlChangedEvent() const;
+#pragma endregion
+    /**@}*/
+
+    /**
+    @name Public Message Handling
+    @{
+    */
+#pragma region
+    /**
+    Gets the event that is raised when a message is received by the window.
+    */
+    rx::Observable<MessageReceivedInfo> MessageReceivedEvent() const;
+
+    /**
+    Gets the event that is raised after a message is handled by the window.
+    */
+    rx::Observable<MessageHandledInfo> MessageHandledEvent() const;
+
+    /**
+    Gets the messager to send or post messages to the window.
+
+    @details
+        This method wouldn't throw even if the window handle state is `NotCreated` or `Destroyed`.
+        The exception is delayed until sending or posting a message.
+    */
+    WindowMessager Messager() noexcept;
 #pragma endregion
     /**@}*/
 
@@ -1275,32 +1311,6 @@ public:
     d2d::Renderer& Renderer() {
         return renderer_;
     }
-
-    /**
-    Window show event. This event is raised when the window receives WM_SHOWWINDOW message, whose
-    wParam is TRUE.
-    */
-    rx::Observable<ShowInfo> ShowEvent() const;
-
-    /**
-    Window hide event. This event is raised when the window receives WM_SHOWWINDOW message, whose
-    wParam is FALSE.
-    */
-    rx::Observable<HideInfo> HideEvent() const;
-
-    rx::Observable<MessageReceivedInfo> MessageReceivedEvent() const;
-    rx::Observable<MessageHandledInfo> MessageHandledEvent() const;
-
-    /**
-    Gets the messager to send or post messages to the window.
-
-    @return 
-        The messager object. 
-
-    @throw std::logic_error
-        Thrown if the window handle is not created yet.
-    */
-    WindowMessager Messager();
 
     /**
      Get position of the mouse cursor in current window's coordinate system.
@@ -1439,6 +1449,37 @@ protected:
     /**@}*/
 
     /**
+    @name Protected Visibility Management
+    @{
+    */
+#pragma region
+    /**
+    Called when the window shows.
+
+    @param event_info
+        Information of the event.
+        
+    @details
+        The default implementation of this method raises the `ShowEvent()`. Derived classes should 
+        call the same method of base class if they override this method.
+    */
+    virtual void OnShow(const ShowInfo& event_info);
+
+    /**
+    Called when the window hides.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        The default implementation of this method raises the `HideEvent()`. Derived classes should 
+        call the same method of base class if they override this method.
+    */
+    virtual void OnHide(const HideInfo& event_info);
+#pragma endregion
+    /**@}*/
+
+    /**
     @name Protected Focus Management
     @{
     */
@@ -1524,6 +1565,44 @@ protected:
     /**@}*/
 
     /**
+    @name Protected Message Handling
+    @{
+    */
+#pragma region
+    /**
+    Called when the window receives a message, but before handling it.
+
+    @param event_info
+        Information of the event. Call event_info.MarkAsHandled() to prevent the message from being
+        handled by default.
+
+    @details
+        The default implementation of this method raises the `MessageReceivedEvent()`. Derived 
+        classes should call the same method of base class if they override this method.
+        
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
+    */
+    virtual void OnMessageReceived(const MessageReceivedInfo& event_info);
+
+    /**
+    Called after the message is handled, including the default window procedure.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        The default implementation of this method will raise MessageHandledEvent. Derived classes
+        should call the same method of base class if they override this method.
+
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
+    */
+    virtual void OnMessageHandled(const MessageHandledInfo& event_info);
+#pragma endregion
+    /**@}*/
+
+    /**
      Preprocess a key message.
 
      @param message
@@ -1540,60 +1619,7 @@ protected:
      */
     virtual bool PreprocessMessage(const KeyMessage& message);
 
-    /**
-    Handle message received event. This method is called when the window receives a message, but 
-    before passing it to the default window procedure.
-
-    @param event_info
-        Information of the event. Call event_info.MarkAsHandled() to prevent the message from being
-        passed to the default window procedure.
-
-    The default implementation of this method will raise MessageReceivedEvent first, and then do 
-    some default handling according to different message. Event handlers might call 
-    MarkAsHandle() as well, in such case the default handling wouldn't be called. 
-
-    Derived classes must call the same method of base class, unless they have special needs to 
-    change default handling of the message.
-    */
-    virtual void OnMessageReceived(const MessageReceivedInfo& event_info);
-
-    /**
-    Handle message handled event. This method is called after the message is handled, including the 
-    default window procedure.
-
-    @param event_info
-        Information of the event.
-
-    The default implementation of this method will raise MessageHandledEvent. Derived classes 
-    should call the same method of base class.
-    */
-    virtual void OnMessageHandled(const MessageHandledInfo& event_info);
-
     virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
-
-    /**
-    Handles window show event. This method is called when the window receives WM_SHOWWINDOW 
-    message, whose wParam is TRUE.
-
-    @param event_info
-        Information of the event.
-
-    The default implementation raises ShowEvent. Derived classes should call the same method of 
-    base class.
-    */
-    virtual void OnShow(const ShowInfo& event_info);
-
-    /**
-    Handles window hide event. This method is called when the window receives WM_SHOWWINDOW 
-    message, whose wParam is FALSE.
-
-    @param event_info
-        Information of the event.
-
-    The default implementation raises HideEvent. Derived classes should call the same method of
-    base class.
-    */
-    virtual void OnHide(const HideInfo& event_info);
 
     virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
 
@@ -1648,7 +1674,6 @@ private:
     bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);
 
     LRESULT RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam);
-    void RaiseMessageReceivedEvent(const MessageReceivedInfo& event_info);
     std::optional<LRESULT> HandleMessage(const Message& message);
 
     void HandleWMPAINT();

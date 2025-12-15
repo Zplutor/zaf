@@ -48,25 +48,6 @@ Point TranslateAbsolutePositionToControlPosition(
 
 ZAF_OBJECT_IMPL(Window);
 
-LRESULT CALLBACK Window::WindowProcedure(
-    HWND hwnd, 
-    UINT message_id, 
-    WPARAM wparam, 
-    LPARAM lparam) {
-
-    if (message_id == WM_NCCREATE) {
-        internal::WindowLifecycleFacet::HandleWMNCCREATE(hwnd, lparam);
-    }
-
-    auto window = GetWindowFromHandle(hwnd);
-    if (window) {
-        return window->RouteWindowMessage(hwnd, message_id, wparam, lparam);
-    }
-
-    return CallWindowProc(DefWindowProc, hwnd, message_id, wparam, lparam);
-}
-
-
 Window::Window() : Window(WindowClassRegistry::Instance().GetDefaultWindowClass()) {
 
 }
@@ -544,6 +525,26 @@ bool Window::IsVisible() const noexcept {
     return visibility_facet_.IsVisible();
 }
 
+
+void Window::OnShow(const ShowInfo& event_info) {
+    show_event_.Raise(event_info);
+}
+
+
+rx::Observable<ShowInfo> Window::ShowEvent() const {
+    return show_event_.GetObservable();
+}
+
+
+void Window::OnHide(const HideInfo& event_info) {
+    hide_event_.Raise(event_info);
+}
+
+
+rx::Observable<HideInfo> Window::HideEvent() const {
+    return hide_event_.GetObservable();
+}
+
 #pragma endregion
 
 
@@ -616,6 +617,243 @@ rx::Observable<FocusedControlChangedInfo> Window::FocusedControlChangedEvent() c
 #pragma endregion
 
 
+#pragma region Message Handling
+
+LRESULT CALLBACK Window::WindowProcedure(
+    HWND hwnd,
+    UINT message_id,
+    WPARAM wparam,
+    LPARAM lparam) {
+
+    if (message_id == WM_NCCREATE) {
+        internal::WindowLifecycleFacet::HandleWMNCCREATE(hwnd, lparam);
+    }
+
+    auto window = GetWindowFromHandle(hwnd);
+    if (window) {
+        return window->RouteWindowMessage(hwnd, message_id, wparam, lparam);
+    }
+
+    return CallWindowProc(DefWindowProc, hwnd, message_id, wparam, lparam);
+}
+
+
+LRESULT Window::RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam) {
+
+    Message message{ hwnd, id, wparam, lparam };
+    auto shared_this = shared_from_this();
+
+    // Raise the message received event first.
+    MessageReceivedInfo message_received_info{ shared_this, message };
+    OnMessageReceived(message_received_info);
+
+    // Check if the message has been handled, if not, handle it.
+    auto handle_result = message_received_info.HandleResult();
+    if (!handle_result) {
+
+        handle_result = HandleMessage(message);
+        
+        // If still not handled, call the default window procedure.
+        if (!handle_result) {
+            handle_result = CallWindowProc(DefWindowProc, hwnd, id, wparam, lparam);
+        }
+    }
+
+    // Raise the message handled event then.
+    MessageHandledInfo message_handled_info{ shared_this, message, *handle_result };
+    OnMessageHandled(message_handled_info);
+
+    return *handle_result;
+}
+
+
+std::optional<LRESULT> Window::HandleMessage(const Message& message) {
+
+    switch (message.ID()) {
+    case WM_CREATE:
+        lifecycle_facet_.HandleWMCREATE();
+        return 0;
+
+    case WM_NCCALCSIZE:
+        return HandleWMNCCALCSIZE(message);
+
+    case WM_ERASEBKGND:
+        //Don't erase background to avoid blinking.
+        return TRUE;
+
+    case WM_PAINT:
+        HandleWMPAINT();
+        return 0;
+
+    case WM_GETMINMAXINFO: {
+        auto dpi = this->DPI();
+        auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.LParam());
+        min_max_info->ptMinTrackSize.x = static_cast<LONG>(FromDIPs(MinWidth(), dpi));
+        min_max_info->ptMinTrackSize.y = static_cast<LONG>(FromDIPs(MinHeight(), dpi));
+        min_max_info->ptMaxTrackSize.x = static_cast<LONG>(FromDIPs(MaxWidth(), dpi));
+        min_max_info->ptMaxTrackSize.y = static_cast<LONG>(FromDIPs(MaxHeight(), dpi));
+        return 0;
+    }
+
+    case WM_SHOWWINDOW:
+        HandleWMSHOWWINDOW(ShowWindowMessage{ message });
+        return 0;
+
+    case WM_ACTIVATE:
+        focus_facet_->HandleWMACTIVATE(ActivateMessage{ message });
+        return 0;
+
+    case WM_ENTERSIZEMOVE:
+        geometry_facet_.HandleWMENTERSIZEMOVE();
+        return 0;
+
+    case WM_EXITSIZEMOVE:
+        geometry_facet_.HandleWMEXITSIZEMOVE();
+        return 0;
+
+    case WM_SIZE:
+        geometry_facet_.HandleWMSIZE(message);
+        return 0;
+
+    case WM_SETFOCUS:
+        focus_facet_->HandleWMSETFOCUS(message);
+        return 0;
+
+    case WM_KILLFOCUS:
+        focus_facet_->HandleWMKILLFOCUS(message);
+        return 0;
+
+    case WM_MOUSEACTIVATE:
+        return focus_facet_->HandleWMMOUSEACTIVATE();
+
+    case WM_CAPTURECHANGED:
+        CancelMouseCapture();
+        return 0;
+
+    case WM_NCHITTEST: {
+        auto hit_test_result = HitTest(HitTestMessage{ message });
+        if (hit_test_result) {
+            return static_cast<LRESULT>(*hit_test_result);
+        }
+        else {
+            return std::nullopt;
+        }
+    }
+
+    case WM_SETCURSOR: {
+        if (HandleWMSETCURSOR(message)) {
+            return TRUE;
+        }
+        return std::nullopt;
+    }
+
+    case WM_MOUSEWHEEL:
+    case WM_MOUSEHWHEEL: {
+        //Mouse wheel messages are not sent to an unfocused window even if it captures
+        //the mouse, because these messages are only sent to focused window.
+        //But we wish these messages have the same behaviour as other mouse input messages,
+        //so the messages are redircted to the window which is capturing the mouse.
+        if (RedirectMouseWheelMessage(message)) {
+            return 0;
+        }
+
+        if (HandleMouseMessage(MouseWheelMessage{ message })) {
+            return 0;
+        }
+
+        return std::nullopt;
+    }
+
+    case WM_MOUSEMOVE:
+    case WM_NCMOUSEMOVE:
+    case WM_LBUTTONDOWN:
+    case WM_NCLBUTTONDOWN:
+    case WM_LBUTTONUP:
+    case WM_NCLBUTTONUP:
+    case WM_MBUTTONDOWN:
+    case WM_MBUTTONUP:
+    case WM_RBUTTONDOWN:
+    case WM_RBUTTONUP: {
+        if (HandleMouseMessage(MouseMessage{ message })) {
+            return 0;
+        }
+        return std::nullopt;
+    }
+
+    case WM_MOUSEHOVER:
+    case WM_NCMOUSEHOVER:
+        OnMouseHover(message);
+        return 0;
+
+    case WM_MOUSELEAVE:
+    case WM_NCMOUSELEAVE:
+        OnMouseLeave(message);
+        return 0;
+
+    case WM_KEYDOWN:
+    case WM_KEYUP:
+    case WM_CHAR:
+    case WM_SYSKEYDOWN:
+    case WM_SYSKEYUP:
+    case WM_SYSCHAR:
+        if (HandleKeyboardMessage(message)) {
+            return 0;
+        }
+        return std::nullopt;
+
+    case WM_IME_STARTCOMPOSITION:
+    case WM_IME_COMPOSITION:
+    case WM_IME_ENDCOMPOSITION:
+        HandleIMEMessage(message);
+        //For now, we always pass IME messages to the default window procedure even if we handle 
+        //the messages. This may be adjusted once we are more familiar with the IME mechanism.
+        return std::nullopt;
+
+    case WM_CLOSE:
+        lifecycle_facet_.HandleWMCLOSE();
+        return 0;
+
+    case WM_DESTROY:
+        lifecycle_facet_.HandleWMDESTROY();
+        return 0;
+
+    case WM_NCDESTROY:
+        lifecycle_facet_.HandleWMNCDESTROY();
+        return 0;
+
+    default:
+        return std::nullopt;
+    }
+}
+
+
+void Window::OnMessageReceived(const MessageReceivedInfo& event_info) {
+    message_received_event_.Raise(event_info);
+}
+
+
+rx::Observable<MessageReceivedInfo> Window::MessageReceivedEvent() const {
+    return message_received_event_.GetObservable();
+}
+
+
+void Window::OnMessageHandled(const MessageHandledInfo& event_info) {
+    message_handled_event_.Raise(event_info);
+}
+
+
+rx::Observable<MessageHandledInfo> Window::MessageHandledEvent() const {
+    return message_handled_event_.GetObservable();
+}
+
+
+WindowMessager Window::Messager() noexcept {
+    return WindowMessager{ Handle() };
+}
+
+#pragma endregion
+
+
 void Window::CreateRenderer() {
 
     renderer_ = GraphicFactory::Instance().CreateWindowRenderer(Handle());
@@ -681,225 +919,6 @@ bool Window::TryToPreprocessInspectorShortcutMessage(const KeyMessage& message) 
 #else
     return false;
 #endif
-}
-
-
-LRESULT Window::RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam) {
-
-    Message message{ hwnd, id, wparam, lparam };
-
-    //Route message received event first.
-    MessageReceivedInfo message_received_info{ shared_from_this(), message };
-    OnMessageReceived(message_received_info);
-
-    //Check if the message has been handled, pass it to default window procedure if not.
-    auto handle_result = message_received_info.HandleResult();
-    if (!handle_result) {
-        handle_result = CallWindowProc(DefWindowProc, hwnd, id, wparam, lparam);
-    }
-
-    //Route message handled event then.
-    MessageHandledInfo message_handled_info{ shared_from_this(), message, *handle_result };
-    OnMessageHandled(message_handled_info);
-
-    return *handle_result;
-}
-
-
-void Window::OnMessageReceived(const MessageReceivedInfo& event_info) {
-
-    RaiseMessageReceivedEvent(event_info);
-    if (event_info.IsHandled()) {
-        return;
-    }
-
-    auto result = HandleMessage(event_info.Message());
-    if (result) {
-        event_info.MarkAsHandled(*result);
-    }
-}
-
-
-void Window::RaiseMessageReceivedEvent(const MessageReceivedInfo& event_info) {
-
-    if (event_info.Message().ID() != WM_NCDESTROY) {
-        message_received_event_.Raise(event_info);
-    }
-}
-
-
-rx::Observable<MessageReceivedInfo> Window::MessageReceivedEvent() const {
-    return message_received_event_.GetObservable();
-}
-
-
-std::optional<LRESULT> Window::HandleMessage(const Message& message) {
-
-    switch (message.ID()) {
-    case WM_CREATE:
-        lifecycle_facet_.HandleWMCREATE();
-        return 0;
-
-    case WM_NCCALCSIZE:
-        return HandleWMNCCALCSIZE(message);
-
-    case WM_ERASEBKGND:
-        //Don't erase background to avoid blinking.
-        return TRUE;
-        
-    case WM_PAINT:
-        HandleWMPAINT();
-        return 0;
-
-    case WM_GETMINMAXINFO: {
-        auto dpi = this->DPI();
-        auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.LParam());
-        min_max_info->ptMinTrackSize.x = static_cast<LONG>(FromDIPs(MinWidth(), dpi));
-        min_max_info->ptMinTrackSize.y = static_cast<LONG>(FromDIPs(MinHeight(), dpi));
-        min_max_info->ptMaxTrackSize.x = static_cast<LONG>(FromDIPs(MaxWidth(), dpi));
-        min_max_info->ptMaxTrackSize.y = static_cast<LONG>(FromDIPs(MaxHeight(), dpi));
-        return 0;
-    }
-
-    case WM_SHOWWINDOW:
-        HandleWMSHOWWINDOW(ShowWindowMessage{ message });
-        return 0;
-
-    case WM_ACTIVATE:
-        focus_facet_->HandleWMACTIVATE(ActivateMessage{ message });
-        return 0;
-
-    case WM_ENTERSIZEMOVE:
-        geometry_facet_.HandleWMENTERSIZEMOVE();
-        return 0;
-
-    case WM_EXITSIZEMOVE:
-        geometry_facet_.HandleWMEXITSIZEMOVE();
-        return 0;
-
-    case WM_SIZE:
-        geometry_facet_.HandleWMSIZE(message);
-        return 0;
-
-    case WM_SETFOCUS:
-        focus_facet_->HandleWMSETFOCUS(message);
-        return 0;
-
-    case WM_KILLFOCUS: 
-        focus_facet_->HandleWMKILLFOCUS(message);
-        return 0;
-
-    case WM_MOUSEACTIVATE:
-        return focus_facet_->HandleWMMOUSEACTIVATE();
-
-    case WM_CAPTURECHANGED: 
-        CancelMouseCapture();
-        return 0;
-
-    case WM_NCHITTEST: {
-        auto hit_test_result = HitTest(HitTestMessage{ message });
-        if (hit_test_result) {
-            return static_cast<LRESULT>(*hit_test_result);
-        }
-        else {
-            return std::nullopt;
-        }
-    }
-
-    case WM_SETCURSOR: {
-        if (HandleWMSETCURSOR(message)) {
-            return TRUE;
-        }
-        return std::nullopt;
-    }
-
-    case WM_MOUSEWHEEL:
-    case WM_MOUSEHWHEEL: {
-        //Mouse wheel messages are not sent to an unfocused window even if it captures
-        //the mouse, because these messages are only sent to focused window.
-        //But we wish these messages have the same behaviour as other mouse input messages,
-        //so the messages are redircted to the window which is capturing the mouse.
-        if (RedirectMouseWheelMessage(message)) {
-            return 0;
-        }
-
-        if (HandleMouseMessage(MouseWheelMessage{ message })) {
-            return 0;
-        }
-
-        return std::nullopt;
-    }
-
-    case WM_MOUSEMOVE:
-    case WM_NCMOUSEMOVE:
-    case WM_LBUTTONDOWN:
-    case WM_NCLBUTTONDOWN:
-    case WM_LBUTTONUP:
-    case WM_NCLBUTTONUP:
-    case WM_MBUTTONDOWN:
-    case WM_MBUTTONUP:
-    case WM_RBUTTONDOWN:
-    case WM_RBUTTONUP: {
-        if (HandleMouseMessage(MouseMessage{ message })) {
-            return 0;
-        }
-        return std::nullopt;
-    }
-
-    case WM_MOUSEHOVER:
-    case WM_NCMOUSEHOVER:
-        OnMouseHover(message);
-        return 0;
-
-    case WM_MOUSELEAVE:
-    case WM_NCMOUSELEAVE:
-        OnMouseLeave(message);
-        return 0;
-
-    case WM_KEYDOWN: 
-    case WM_KEYUP:
-    case WM_CHAR:
-    case WM_SYSKEYDOWN:
-    case WM_SYSKEYUP:
-    case WM_SYSCHAR:
-        if (HandleKeyboardMessage(message)) {
-            return 0;
-        }
-        return std::nullopt;
-
-    case WM_IME_STARTCOMPOSITION:
-    case WM_IME_COMPOSITION:
-    case WM_IME_ENDCOMPOSITION:
-        HandleIMEMessage(message);
-        //For now, we always pass IME messages to the default window procedure even if we handle 
-        //the messages. This may be adjusted once we are more familiar with the IME mechanism.
-        return std::nullopt;
-
-    case WM_CLOSE:
-        lifecycle_facet_.HandleWMCLOSE();
-        return 0;
-
-    case WM_DESTROY:
-        lifecycle_facet_.HandleWMDESTROY();
-        return 0;
-
-    case WM_NCDESTROY:
-        lifecycle_facet_.HandleWMNCDESTROY();
-        return 0;
-
-    default:
-        return std::nullopt;
-    }
-}
-
-
-void Window::OnMessageHandled(const MessageHandledInfo& event_info) {
-    message_handled_event_.Raise(event_info);
-}
-
-
-rx::Observable<MessageHandledInfo> Window::MessageHandledEvent() const {
-    return message_handled_event_.GetObservable();
 }
 
 
@@ -1033,26 +1052,6 @@ void Window::HandleWMSHOWWINDOW(const ShowWindowMessage& message) {
     else {
         OnShow(event_info);
     }
-}
-
-
-void Window::OnShow(const ShowInfo& event_info) {
-    show_event_.Raise(event_info);
-}
-
-
-rx::Observable<ShowInfo> Window::ShowEvent() const {
-    return show_event_.GetObservable();
-}
-
-
-void Window::OnHide(const HideInfo& event_info) {
-    hide_event_.Raise(event_info);
-}
-
-
-rx::Observable<HideInfo> Window::HideEvent() const {
-    return hide_event_.GetObservable();
 }
 
 
@@ -1655,12 +1654,6 @@ Point Window::GetMousePosition() const {
     };
 
     return ToDIPs(point_in_pixels, DPI());
-}
-
-
-WindowMessager Window::Messager() {
-    ZAF_EXPECT(Handle());
-    return WindowMessager{ Handle() };
 }
 
 
