@@ -407,6 +407,7 @@
     <ClCompile Include="src\zaf\window\event\window_size_changed_info.cpp" />
     <ClCompile Include="src\zaf\window\input_method_context.cpp" />
     <ClCompile Include="src\zaf\window\internal\popup_menu_controller.cpp" />
+    <ClCompile Include="src\zaf\window\internal\window_facets\window_focus_facet.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_facets\window_geometry_facet.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_facets\window_lifecycle_facet.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_facets\window_style_facet.cpp" />
@@ -997,6 +998,7 @@
     <ClInclude Include="src\zaf\window\event\window_size_changed_info.h" />
     <ClInclude Include="src\zaf\window\input_method_context.h" />
     <ClInclude Include="src\zaf\window\internal\popup_menu_controller.h" />
+    <ClInclude Include="src\zaf\window\internal\window_facets\window_focus_facet.h" />
     <ClInclude Include="src\zaf\window\internal\window_facets\window_geometry_facet.h" />
     <ClInclude Include="src\zaf\window\internal\window_facets\window_lifecycle_facet.h" />
     <ClInclude Include="src\zaf\window\internal\window_facets\window_style_facet.h" />

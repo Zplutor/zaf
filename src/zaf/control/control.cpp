@@ -16,9 +16,9 @@
 #include <zaf/graphic/d2d/rectangle_geometry.h>
 #include <zaf/graphic/image.h>
 #include <zaf/internal/theme.h>
-#include <zaf/internal/window/window_focused_control_manager.h>
 #include <zaf/rx/subject/subject.h>
 #include <zaf/window/inspector/internal/inspector_port.h>
+#include <zaf/window/internal/window_facets/window_focus_facet.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window.h>
@@ -1588,7 +1588,7 @@ void Control::SetIsFocused(bool is_focused) {
         return;
     }
 
-    window->focused_control_manager_->ChangeFocusedControl(
+    window->focus_facet_->ChangeFocusedControl(
         is_focused ? shared_from_this() : nullptr);
 }
 

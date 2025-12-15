@@ -5,6 +5,7 @@
 #include <zaf/control/control.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/internal/window/window_focused_control_manager.h>
+#include <zaf/window/internal/window_facets/window_focus_facet.h>
 #include <zaf/window/internal/window_facets/window_geometry_facet.h>
 #include <zaf/window/invalid_handle_state_error.h>
 #include <zaf/window/window.h>
@@ -265,7 +266,7 @@ void WindowLifecycleFacet::HandleWMDESTROY() {
     window_.OnDestroying(DestroyingInfo{ window_.shared_from_this(), destroy_reason_ });
 
     window_.CancelMouseCapture();
-    window_.focused_control_manager_->HandleWindowDestroy();
+    window_.focus_facet_->HandleWindowDestroy();
     window_.root_control_->ReleaseRendererResources();
 
     HWND old_handle = Handle();

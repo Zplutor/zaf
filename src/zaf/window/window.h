@@ -38,10 +38,13 @@
 #include <zaf/window/window_messager.h>
 #include <zaf/window/window_parser.h>
 
+namespace zaf::internal {
+class WindowFocusFacet;
+}
+
 namespace zaf {
 namespace internal {
 class InspectorPort;
-class WindowFocusedControlManager;
 }
 
 class HitTestMessage;
@@ -1144,6 +1147,67 @@ public:
     /**@}*/
 
     /**
+    @name Public Focus Management
+    @{
+    */
+#pragma region
+    /**
+    Attempts to bring the window to the foreground and activates it.
+
+    @pre
+        The window handle has been created.
+
+    @return
+        Returns true if the window is activated; otherwise false.
+
+    @throw zaf::PreconditionError
+
+    @details
+        This method calls `SetForegroundWindow` to activate the window.
+    */
+    bool Activate();
+
+    /**
+    Gets the event that is raised after the window is activated.    
+    */
+    rx::Observable<ActivatedInfo> ActivatedEvent() const;
+
+    /**
+    Gets the event that is raised after the window is deactivated.
+    */
+    rx::Observable<DeactivatedInfo> DeactivatedEvent() const;
+
+    /**
+    Indicates whether the window has input focus.
+    */
+    bool IsFocused() const noexcept;
+
+    /**
+    Gets the event that is raised after the window gains input focus.
+    */
+    rx::Observable<WindowFocusGainedInfo> FocusGainedEvent() const;
+
+    /**
+    Gets the event that is raised after the window loses input focus.
+    */
+    rx::Observable<WindowFocusLostInfo> FocusLostEvent() const;
+
+    /**
+    Gets the control that has input focus in the window.
+
+    @return
+        The control that has input focus in the window. Null if there is no focused control.
+    */
+    std::shared_ptr<Control> FocusedControl() const noexcept;
+
+    /**
+    Gets the event that is raised after the focused control in the window is changed.
+    */
+    rx::Observable<FocusedControlChangedInfo> FocusedControlChangedEvent() const;
+#pragma endregion
+    /**@}*/
+
+    /**
     Gets the window's owner.
 
     @return
@@ -1214,13 +1278,6 @@ public:
     }
 
     /**
-     Get the control which has input focus in the window.
-      */
-    std::shared_ptr<Control> FocusedControl() const;
-
-    rx::Observable<FocusedControlChangedInfo> FocusedControlChangedEvent() const;
-
-    /**
      Get the renderer of the window.
      */
     d2d::Renderer& Renderer() {
@@ -1238,28 +1295,6 @@ public:
     wParam is FALSE.
     */
     rx::Observable<HideInfo> HideEvent() const;
-
-    /**
-    Window activated event. This event is raised when the window receives WM_ACTIVATE message, 
-    whose wParam is WA_ACTIVE or WA_CLICKACTIVE.
-    */
-    rx::Observable<ActivatedInfo> ActivatedEvent() const;
-
-    /**
-    Window deactivated event. This event is raised when the window receives WM_ACTIVATE message,
-    whose wParam is WA_INACTIVE.
-    */
-    rx::Observable<DeactivatedInfo> DeactivatedEvent() const;
-
-    /**
-    Window gained focus event. This event is raised when the window receives WM_SETFOCUS message.
-    */
-    rx::Observable<WindowFocusGainedInfo> FocusGainedEvent() const;
-
-    /**
-    Window lost focus event. This event is raised when the window receives WM_KILLFOCUS message.
-    */
-    rx::Observable<WindowFocusLostInfo> FocusLostEvent() const;
 
     rx::Observable<MessageReceivedInfo> MessageReceivedEvent() const;
     rx::Observable<MessageHandledInfo> MessageHandledEvent() const;
@@ -1279,24 +1314,6 @@ public:
      Get position of the mouse cursor in current window's coordinate system.
      */
     Point GetMousePosition() const;
-
-    /**
-    Attempts to bring the window to the foreground and activates it.
-
-    @pre
-        The window handle has been created.
-
-    @return
-        Returns true if the window is activated; otherwise false.
-
-    @throw zaf::PreconditionError
-
-    @details
-        This method calls `SetForegroundWindow` to activate the window.
-    */
-    bool Activate();
-
-    bool IsFocused() const;
 
     void ShowInspectorWindow();
 
@@ -1319,14 +1336,14 @@ protected:
         handling is done.
 
         The default implementation of this method raises the `SizeChangedEvent()`. Derived classes
-        should call the same method of the base class if they override this method.
+        should call the same method of base class if they override this method.
 
         @warning
             This method must not throw, otherwise the behavior is undefined.
     */
     virtual void OnSizeChanged(const WindowSizeChangedInfo& event_info);
-    /**@}*/
 #pragma endregion
+    /**@}*/
 
     /**
     @name Protected Lifecycle Management
@@ -1426,8 +1443,93 @@ protected:
             This method must not throw, otherwise the behavior is undefined.
     */
     virtual void OnClosing(const ClosingInfo& event_info);
-    /**@}*/
 #pragma endregion
+    /**@}*/
+
+    /**
+    @name Protected Focus Management
+    @{
+    */
+#pragma region
+    /**
+    Called after the window is activated.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        This method is called when the window receives WM_ACTIVATE message, whose wParam is not
+        WA_INACTIVE. The default implementation of this method raises the `ActivatedEvent()`. 
+        Derived class should call the same method of base class if they override this method.
+
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
+    */
+    virtual void OnActivated(const ActivatedInfo& event_info);
+
+    /**
+    Call after the window is deactivated.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        This method is called when the window receives WM_ACTIVATE message, whose wParam is
+        WA_INACTIVE. The default implementation of this method raises the `DeactivatedEvent()`. 
+        Derived classes should call the same method of base class if they override this method.
+
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
+    */
+    virtual void OnDeactivated(const DeactivatedInfo& event_info);
+
+    /**
+    Called after the window gains input focus.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        This method is called when the window receives WM_SETFOCUS message, after the internal
+        focus handling is done. The default implementation of this method raises the
+        `FocusGainedEvent()`. Derived classes should call the same method of base class if they
+        override this method.
+
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
+    */
+    virtual void OnFocusGained(const WindowFocusGainedInfo& event_info);
+
+    /**
+    Called after the window loses input focus.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        This method is called when the window receives WM_KILLFOCUS message, after the internal
+        focus handling is done. The default implementation of this method raises the
+        `FocusLostEvent()`. Derived classes should call the same method of base class if they
+        override this method.
+
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
+    */
+    virtual void OnFocusLost(const WindowFocusLostInfo& event_info);
+
+    /**
+    Called after the focused control in the window is changed.
+    
+    @param event_info
+        Information of the event.
+
+    @details
+        The default implementation of this method raises the `FocusedControlChangedEvent()`. 
+        Derived classes should call the same method of base class if they override this method.
+    */
+    virtual void OnFocusedControlChanged(const FocusedControlChangedInfo& event_info);
+#pragma endregion
+    /**@}*/
 
     /**
      Preprocess a key message.
@@ -1501,67 +1603,7 @@ protected:
     */
     virtual void OnHide(const HideInfo& event_info);
 
-    /**
-    Handles window activated event. This event is raised when the window receives WM_ACTIVATE
-    message, whose wParam is WA_ACTIVE or WA_CLICKACTIVE.
-
-    @param event_info
-        Information of the event.
-
-    The default implementation raises WindowActivatedEvent. Derived class should call the same 
-    method of base class.
-    */
-    virtual void OnActivated(const ActivatedInfo& event_info);
-
-    /**
-    Handles window deactivated event. This event is raised when the window receives WM_ACTIVATE
-    message, whose wParam is WA_INACTIVE.
-
-    @param event_info
-        Information of the event.
-
-    The default implementation raises WindowDeactivatedEvent. Derived class should call the same
-    method of base class.
-    */
-    virtual void OnDeactivated(const DeactivatedInfo& event_info);
-
-    /**
-    Handles window focus gained event. This method is called when the window receives WM_SETFOCUS
-    message.
-
-    @param event_info
-        Information of the event.
-
-    The default implementation raises FocusGainedEvent. Derived classes should call the same method
-    of base class.
-    */
-    virtual void OnFocusGained(const WindowFocusGainedInfo& event_info);
-
-    /**
-    Handles window focus lost event. This method is called when the window receives WM_KILLFOCUS
-    message.
-
-    @param event_info
-        Information of the event.
-
-    The default implementation raises FocusLostEvent. Derived classes should call the same method
-    of base class.
-    */
-    virtual void OnFocusLost(const WindowFocusLostInfo& event_info);
-
     virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
-
-    /**
-    Handle focused control changed event. This method is called after the focused control is 
-    changed.
-
-    @param event_info
-        Information of the event.
-
-    The default implementation of this method raises FocusedControlChangedEvent. Derived classes
-    should call the same method of base class.
-    */
-    virtual void OnFocusedControlChanged(const FocusedControlChangedInfo& event_info);
 
     /**
     Handles mouse capture changed event. This method is called after the mouse capture control
@@ -1620,9 +1662,6 @@ private:
     void HandleWMPAINT();
     void PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect);
     void HandleWMSHOWWINDOW(const ShowWindowMessage& message);
-    void HandleWMACTIVATE(const ActivateMessage& message);
-    void HandleWMSETFOCUS(const SetFocusMessage& message);
-    void HandleWMKILLFOCUS(const KillFocusMessage& message);
     bool RedirectMouseWheelMessage(const Message& message);
     bool HandleMouseMessage(const MouseMessage& message);
     bool RouteMouseEvent(const MouseMessage& message);
@@ -1653,13 +1692,21 @@ private:
     internal::WindowLifecycleFacet lifecycle_facet_;
     internal::WindowVisibilityFacet visibility_facet_;
 
+#pragma region Focus Releated
+    std::unique_ptr<internal::WindowFocusFacet> focus_facet_;
+    Event<ActivatedInfo> activated_event_;
+    Event<DeactivatedInfo> deactivated_event_;
+    Event<WindowFocusGainedInfo> focus_gained_event_;
+    Event<WindowFocusLostInfo> focus_lost_event_;
+    Event<FocusedControlChangedInfo> focused_control_changed_event_;
+#pragma endregion
+
     TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };
 
     std::shared_ptr<Control> root_control_;
     std::shared_ptr<Control> mouse_over_control_;
     std::shared_ptr<Control> mouse_capture_control_;
-    std::unique_ptr<internal::WindowFocusedControlManager> focused_control_manager_;
-    Event<FocusedControlChangedInfo> focused_control_changed_event_;
+    
     std::shared_ptr<TooltipWindow> tooltip_window_;
 
     std::weak_ptr<InspectorWindow> inspector_window_;
@@ -1674,15 +1721,12 @@ private:
     Event<MessageHandledInfo> message_handled_event_;
     Event<ShowInfo> show_event_;
     Event<HideInfo> hide_event_;
-    Event<ActivatedInfo> activated_event_;
-    Event<DeactivatedInfo> deactivated_event_;
-    Event<WindowFocusGainedInfo> focus_gained_event_;
-    Event<WindowFocusLostInfo> focus_lost_event_;
     Event<ClosingInfo> closing_event_;
     Event<WindowSizeChangedInfo> size_changed_event_;
     Event<RootControlChangedInfo> root_control_changed_event_;
     Event<MouseCaptureControlChangedInfo> mouse_capture_control_changed_event_;
 
+    friend class internal::WindowFocusFacet;
     friend class internal::WindowGeometryFacet;
     friend class internal::WindowLifecycleFacet;
     friend class internal::WindowStyleFacet;

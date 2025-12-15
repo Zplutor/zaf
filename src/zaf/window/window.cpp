@@ -14,6 +14,7 @@
 #include <zaf/internal/theme.h>
 #include <zaf/internal/window/window_focused_control_manager.h>
 #include <zaf/window/inspector/inspector_window.h>
+#include <zaf/window/internal/window_facets/window_focus_facet.h>
 #include <zaf/window/internal/window_style_shim.h>
 #include <zaf/window/tooltip_window.h>
 #include <zaf/window/invalid_handle_state_error.h>
@@ -81,7 +82,8 @@ Window::Window(std::shared_ptr<WindowClass> window_class) :
     style_facet_(*this, std::move(window_class)),
     geometry_facet_(*this),
     lifecycle_facet_(*this),
-    visibility_facet_(*this) {
+    visibility_facet_(*this),
+    focus_facet_(std::make_unique<internal::WindowFocusFacet>(*this)) {
 
 }
 
@@ -95,15 +97,6 @@ Window::~Window() {
 void Window::Initialize() {
 
     __super::Initialize();
-
-    focused_control_manager_ = std::make_unique<internal::WindowFocusedControlManager>(*this);
-    Disposables() += focused_control_manager_->FocusedControlChangedEvent().Subscribe(
-        [this](const std::shared_ptr<Control>& previous_focused_control) {
-            OnFocusedControlChanged(FocusedControlChangedInfo{ 
-                shared_from_this(), 
-                previous_focused_control 
-            });
-        });
 
     SetRootControl(Create<Control>());
 }
@@ -554,6 +547,76 @@ bool Window::IsVisible() const noexcept {
 #pragma endregion
 
 
+#pragma region Focus Management
+
+bool Window::Activate() {
+    ZAF_EXPECT(Handle());
+    return !!SetForegroundWindow(Handle());
+}
+
+
+void Window::OnActivated(const ActivatedInfo& event_info) {
+    activated_event_.Raise(event_info);
+}
+
+
+rx::Observable<ActivatedInfo> Window::ActivatedEvent() const {
+    return activated_event_.GetObservable();
+}
+
+
+void Window::OnDeactivated(const DeactivatedInfo& event_info) {
+    deactivated_event_.Raise(event_info);
+}
+
+
+rx::Observable<DeactivatedInfo> Window::DeactivatedEvent() const {
+    return deactivated_event_.GetObservable();
+}
+
+
+bool Window::IsFocused() const noexcept {
+    return focus_facet_->IsFocused();
+}
+
+
+void Window::OnFocusGained(const WindowFocusGainedInfo& event_info) {
+    focus_gained_event_.Raise(event_info);
+}
+
+
+rx::Observable<WindowFocusGainedInfo> Window::FocusGainedEvent() const {
+    return focus_gained_event_.GetObservable();
+}
+
+
+void Window::OnFocusLost(const WindowFocusLostInfo& event_info) {
+    focus_lost_event_.Raise(event_info);
+}
+
+
+rx::Observable<WindowFocusLostInfo> Window::FocusLostEvent() const {
+    return focus_lost_event_.GetObservable();
+}
+
+
+std::shared_ptr<Control> Window::FocusedControl() const noexcept {
+    return focus_facet_->FocusedControl();
+}
+
+
+void Window::OnFocusedControlChanged(const FocusedControlChangedInfo& event_info) {
+    focused_control_changed_event_.Raise(event_info);
+}
+
+
+rx::Observable<FocusedControlChangedInfo> Window::FocusedControlChangedEvent() const {
+    return focused_control_changed_event_.GetObservable();
+}
+
+#pragma endregion
+
+
 void Window::CreateRenderer() {
 
     renderer_ = GraphicFactory::Instance().CreateWindowRenderer(Handle());
@@ -588,7 +651,7 @@ void Window::SetOwner(std::shared_ptr<Window> owner) {
 
 bool Window::PreprocessMessage(const KeyMessage& message) {
 
-    if (focused_control_manager_->TryToPreprocessTabKeyMessage(message)) {
+    if (focus_facet_->TryToPreprocessTabKeyMessage(message)) {
         return true;
     }
 
@@ -704,7 +767,7 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_ACTIVATE:
-        HandleWMACTIVATE(ActivateMessage{ message });
+        focus_facet_->HandleWMACTIVATE(ActivateMessage{ message });
         return 0;
 
     case WM_ENTERSIZEMOVE:
@@ -720,29 +783,19 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 
     case WM_SETFOCUS:
-        HandleWMSETFOCUS(SetFocusMessage{ message });
+        focus_facet_->HandleWMSETFOCUS(message);
         return 0;
 
     case WM_KILLFOCUS: 
-        HandleWMKILLFOCUS(KillFocusMessage{ message });
+        focus_facet_->HandleWMKILLFOCUS(message);
         return 0;
 
-    case WM_MOUSEACTIVATE: {
-        auto activate_option = ActivateOptions();
-        bool no_activate = HasFlag(activate_option, ActivateOptions::NoMouseActivate);
-        bool discard_message = HasFlag(activate_option, ActivateOptions::DiscardMouseMessage);
-        if (no_activate) {
-            return discard_message ? MA_NOACTIVATEANDEAT : MA_NOACTIVATE;
-        }
-        else {
-            return discard_message ? MA_ACTIVATEANDEAT : MA_ACTIVATE;
-        }
-    }
+    case WM_MOUSEACTIVATE:
+        return focus_facet_->HandleWMMOUSEACTIVATE();
 
-    case WM_CAPTURECHANGED: {
+    case WM_CAPTURECHANGED: 
         CancelMouseCapture();
         return 0;
-    }
 
     case WM_NCHITTEST: {
         auto hit_test_result = HitTest(HitTestMessage{ message });
@@ -1001,73 +1054,6 @@ void Window::OnHide(const HideInfo& event_info) {
 
 rx::Observable<HideInfo> Window::HideEvent() const {
     return hide_event_.GetObservable();
-}
-
-
-void Window::HandleWMACTIVATE(const ActivateMessage& message) {
-
-    internal::ActivateEventInfo event_info{ shared_from_this(), message };
-
-    if (event_info.Message().ActivateState() != ActivateState::Inactive) {
-        OnActivated(event_info);
-    }
-    else {
-        OnDeactivated(event_info);
-    }
-}
-
-
-void Window::OnActivated(const ActivatedInfo& event_info) {
-    activated_event_.Raise(event_info);
-}
-
-
-rx::Observable<ActivatedInfo> Window::ActivatedEvent() const {
-    return activated_event_.GetObservable();
-}
-
-
-void Window::OnDeactivated(const DeactivatedInfo& event_info) {
-    deactivated_event_.Raise(event_info);
-}
-
-
-rx::Observable<DeactivatedInfo> Window::DeactivatedEvent() const {
-    return deactivated_event_.GetObservable();
-}
-
-
-void Window::HandleWMSETFOCUS(const SetFocusMessage& message) {
-
-    focused_control_manager_->HandleWindowSetFocus();
-    OnFocusGained(WindowFocusGainedInfo{ shared_from_this(), message.Inner() });
-}
-
-
-void Window::OnFocusGained(const WindowFocusGainedInfo& event_info) {
-    focus_gained_event_.Raise(event_info);
-}
-
-
-rx::Observable<WindowFocusGainedInfo> Window::FocusGainedEvent() const {
-    return focus_gained_event_.GetObservable();
-}
-
-
-void Window::HandleWMKILLFOCUS(const KillFocusMessage& message) {
-
-    focused_control_manager_->HandleWindowKillFocus();
-    OnFocusLost(WindowFocusLostInfo{ shared_from_this(), message.Inner() });
-}
-
-
-void Window::OnFocusLost(const WindowFocusLostInfo& event_info) {
-    focus_lost_event_.Raise(event_info);
-}
-
-
-rx::Observable<WindowFocusLostInfo> Window::FocusLostEvent() const {
-    return focus_lost_event_.GetObservable();
 }
 
 
@@ -1387,7 +1373,7 @@ bool Window::HandleWMSETCURSOR(const Message& message) {
 
 bool Window::HandleKeyboardMessage(const Message& message) {
 
-    const auto& focused_control = focused_control_manager_->FocusedControl();
+    const auto& focused_control = this->FocusedControl();
     if (focused_control) {
         return internal::RouteKeyboardEvent(focused_control, message);
     }
@@ -1606,21 +1592,6 @@ rx::Observable<MouseCaptureControlChangedInfo> Window::MouseCaptureControlChange
 }
 
 
-std::shared_ptr<Control> Window::FocusedControl() const {
-    return focused_control_manager_->FocusedControl();
-}
-
-
-rx::Observable<FocusedControlChangedInfo> Window::FocusedControlChangedEvent() const {
-    return focused_control_changed_event_.GetObservable();
-}
-
-
-void Window::OnFocusedControlChanged(const FocusedControlChangedInfo& event_info) {
-    focused_control_changed_event_.Raise(event_info);
-}
-
-
 void Window::SetRootControl(const std::shared_ptr<Control>& control) {
 
     ZAF_EXPECT(control);
@@ -1685,23 +1656,6 @@ Point Window::GetMousePosition() const {
     };
 
     return ToDIPs(point_in_pixels, DPI());
-}
-
-
-bool Window::Activate() {
-    ZAF_EXPECT(Handle());
-    return !!SetForegroundWindow(Handle());
-}
-
-
-bool Window::IsFocused() const {
-
-    auto handle = Handle();
-    if (!handle) {
-        return false;
-    }
-
-    return GetFocus() == handle;
 }
 
 
