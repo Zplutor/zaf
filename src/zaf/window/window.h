@@ -1154,18 +1154,10 @@ public:
     /**
     Attempts to bring the window to the foreground and activates it.
 
-    @pre
-        The window handle has been created.
-
     @return
-        Returns true if the window is activated; otherwise false.
-
-    @throw zaf::PreconditionError
-
-    @details
-        This method calls `SetForegroundWindow` to activate the window.
+        Returns true if the window is brought to foreground and activated; otherwise false.
     */
-    bool Activate();
+    bool BringToForeground() noexcept;
 
     /**
     Gets the event that is raised after the window is activated.    

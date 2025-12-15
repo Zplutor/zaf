@@ -549,9 +549,8 @@ bool Window::IsVisible() const noexcept {
 
 #pragma region Focus Management
 
-bool Window::Activate() {
-    ZAF_EXPECT(Handle());
-    return !!SetForegroundWindow(Handle());
+bool Window::BringToForeground() noexcept {
+    return focus_facet_->BringToForeground();
 }
 
 

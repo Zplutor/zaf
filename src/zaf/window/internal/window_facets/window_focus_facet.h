@@ -11,6 +11,7 @@ class WindowFocusFacet : NonCopyableNonMovable {
 public:
     explicit WindowFocusFacet(Window& window) noexcept;
 
+    bool BringToForeground() noexcept;
     void HandleWMACTIVATE(const ActivateMessage& message);
     LRESULT HandleWMMOUSEACTIVATE();
 

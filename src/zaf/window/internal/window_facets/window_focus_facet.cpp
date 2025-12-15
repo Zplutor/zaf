@@ -19,6 +19,18 @@ WindowFocusFacet::WindowFocusFacet(Window& window) noexcept :
 }
 
 
+bool WindowFocusFacet::BringToForeground() noexcept {
+
+    auto handle_state = window_.HandleState();
+    if (handle_state == WindowHandleState::Creating ||
+        handle_state == WindowHandleState::Created ||
+        handle_state == WindowHandleState::Destroying) {
+        return !!SetForegroundWindow(window_.Handle());
+    }
+    return false;
+}
+
+
 void WindowFocusFacet::HandleWMACTIVATE(const ActivateMessage& message) {
 
     internal::ActivateEventInfo event_info{ window_.shared_from_this(), message };
