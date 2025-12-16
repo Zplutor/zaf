@@ -2,6 +2,8 @@
 #include <zaf/base/error/win32_error.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/pixel_snapping.h>
+#include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
+#include <zaf/window/internal/window_not_created_state_data.h>
 #include <zaf/window/invalid_handle_state_error.h>
 #include <zaf/window/screen_manager.h>
 #include <zaf/window/window.h>
@@ -71,7 +73,7 @@ std::shared_ptr<zaf::Screen> WindowGeometryFacet::Screen() const noexcept {
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
         return ResolveInitialScreen(
-            window_.lifecycle_facet_.NotCreatedStateData(), 
+            window_.lifecycle_facet_->NotCreatedStateData(), 
             window_.Owner());
     }
     else if (handle_state == WindowHandleState::Creating ||
@@ -95,7 +97,7 @@ void WindowGeometryFacet::SetScreen(std::shared_ptr<zaf::Screen> screen) {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
     }
 
-    window_.lifecycle_facet_.NotCreatedStateData().screen = std::move(screen);
+    window_.lifecycle_facet_->NotCreatedStateData().screen = std::move(screen);
 }
 
 
@@ -118,7 +120,7 @@ zaf::Rect WindowGeometryFacet::Rect() const noexcept {
         return ResolveInitialRect(
             *this->Screen(),
             window_.Owner(), 
-            window_.lifecycle_facet_.NotCreatedStateData());
+            window_.lifecycle_facet_->NotCreatedStateData());
     }
 
     if (handle_state == WindowHandleState::Creating ||
@@ -142,7 +144,7 @@ void WindowGeometryFacet::SetRect(const zaf::Rect& rect) {
         zaf::Rect new_rect{ rect.position, ClampSize(rect.size) };
         new_rect = SnapToPixels(new_rect, DPI());
 
-        auto& not_created_state_data = window_.lifecycle_facet_.NotCreatedStateData();
+        auto& not_created_state_data = window_.lifecycle_facet_->NotCreatedStateData();
         not_created_state_data.initial_position = new_rect.position;
 
         if (not_created_state_data.size != new_rect.size) {
@@ -208,7 +210,7 @@ void WindowGeometryFacet::SetSize(const zaf::Size& size) {
 
         auto new_size = ClampSize(size);
 
-        auto& not_created_state_data = window_.lifecycle_facet_.NotCreatedStateData();
+        auto& not_created_state_data = window_.lifecycle_facet_->NotCreatedStateData();
         if (not_created_state_data.size != new_size) {
             not_created_state_data.size = new_size;
             RaiseSizeChangedEvent();
@@ -430,7 +432,7 @@ zaf::Size WindowGeometryFacet::ContentSize() const noexcept {
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
 
-        auto& not_created_state_data = window_.lifecycle_facet_.NotCreatedStateData();
+        auto& not_created_state_data = window_.lifecycle_facet_->NotCreatedStateData();
         auto frame = GetWindowFrame(
             this->DPI(),
             not_created_state_data.basic_style,
@@ -462,7 +464,7 @@ void WindowGeometryFacet::SetContentSize(const zaf::Size& size) {
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
 
-        auto& not_created_state_data = window_.lifecycle_facet_.NotCreatedStateData();
+        auto& not_created_state_data = window_.lifecycle_facet_->NotCreatedStateData();
         window_size = AdjustContentSizeToWindowSize(
             size,
             this->DPI(),
@@ -507,6 +509,17 @@ void WindowGeometryFacet::SetContentHeight(float height) {
     zaf::Size new_size = ContentSize();
     new_size.height = height;
     SetContentSize(new_size);
+}
+
+
+void WindowGeometryFacet::HandleWMGETMINMAXINFO(const Message& message) {
+
+    auto dpi = this->DPI();
+    auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.LParam());
+    min_max_info->ptMinTrackSize.x = static_cast<LONG>(FromDIPs(MinWidth(), dpi));
+    min_max_info->ptMinTrackSize.y = static_cast<LONG>(FromDIPs(MinHeight(), dpi));
+    min_max_info->ptMaxTrackSize.x = static_cast<LONG>(FromDIPs(MaxWidth(), dpi));
+    min_max_info->ptMaxTrackSize.y = static_cast<LONG>(FromDIPs(MaxHeight(), dpi));
 }
 
 
@@ -588,7 +601,7 @@ zaf::Rect WindowGeometryFacet::AdjustContentRectToWindowRect(
 
 
 bool WindowGeometryFacet::IsSizingOrMoving() const noexcept {
-    return window_.lifecycle_facet_.HandleStateData().is_sizing_or_moving;
+    return window_.lifecycle_facet_->HandleStateData().is_sizing_or_moving;
 }
 
 
@@ -599,7 +612,7 @@ rx::Single<None> WindowGeometryFacet::WhenNotSizingOrMoving() const {
         handle_state == WindowHandleState::Created ||
         handle_state == WindowHandleState::Destroying) {
 
-        auto& state_data = window_.lifecycle_facet_.HandleStateData();
+        auto& state_data = window_.lifecycle_facet_->HandleStateData();
         if (!state_data.is_sizing_or_moving) {
             return rx::Single<None>::Just({});
         }
@@ -616,13 +629,13 @@ rx::Single<None> WindowGeometryFacet::WhenNotSizingOrMoving() const {
 
 
 void WindowGeometryFacet::HandleWMENTERSIZEMOVE() noexcept {
-    window_.lifecycle_facet_.HandleStateData().is_sizing_or_moving = true;
+    window_.lifecycle_facet_->HandleStateData().is_sizing_or_moving = true;
 }
 
 
 void WindowGeometryFacet::HandleWMEXITSIZEMOVE() {
 
-    auto& state_data = window_.lifecycle_facet_.HandleStateData();
+    auto& state_data = window_.lifecycle_facet_->HandleStateData();
     state_data.is_sizing_or_moving = false;
 
     if (state_data.exit_sizing_or_moving_subject) {
@@ -663,7 +676,7 @@ Point WindowGeometryFacet::GetContentOriginInScreen() const noexcept {
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
 
-        auto& not_create_state_data = window_.lifecycle_facet_.NotCreatedStateData();
+        auto& not_create_state_data = window_.lifecycle_facet_->NotCreatedStateData();
 
         auto screen = this->Screen();
         auto initial_rect = ResolveInitialRect(*screen, window_.Owner(), not_create_state_data);

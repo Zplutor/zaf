@@ -1,5 +1,6 @@
 #include <zaf/window/internal/window_facets/window_visibility_facet.h>
 #include <zaf/application.h>
+#include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
 #include <zaf/window/invalid_handle_state_error.h>
 #include <zaf/window/window.h>
 
@@ -45,7 +46,7 @@ void WindowVisibilityFacet::InnerShowWindow(int show_command) {
     }
     else if (handle_state == WindowHandleState::Creating ||
              handle_state == WindowHandleState::Created) {
-        holder = window_.lifecycle_facet_.Holder();
+        holder = window_.lifecycle_facet_->Holder();
     }
     else {
         throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());

@@ -27,10 +27,6 @@
 #include <zaf/window/event/show_window_event_info.h>
 #include <zaf/window/event/window_focus_event_info.h>
 #include <zaf/window/event/window_size_changed_info.h>
-#include <zaf/window/internal/window_facets/window_geometry_facet.h>
-#include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
-#include <zaf/window/internal/window_facets/window_style_facet.h>
-#include <zaf/window/internal/window_facets/window_visibility_facet.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/screen.h>
 #include <zaf/window/show_options.h>
@@ -40,6 +36,10 @@
 
 namespace zaf::internal {
 class WindowFocusFacet;
+class WindowGeometryFacet;
+class WindowLifecycleFacet;
+class WindowStyleFacet;
+class WindowVisibilityFacet;
 }
 
 namespace zaf {
@@ -1704,18 +1704,42 @@ private:
     d2d::WindowRenderer renderer_;
     std::weak_ptr<Window> owner_;
 
-    internal::WindowStyleFacet style_facet_;
-    internal::WindowGeometryFacet geometry_facet_;
-    internal::WindowLifecycleFacet lifecycle_facet_;
-    internal::WindowVisibilityFacet visibility_facet_;
+#pragma region Style Related
+    std::unique_ptr<internal::WindowStyleFacet> style_facet_;
+#pragma endregion
 
-#pragma region Focus Releated
+#pragma region Geometry Related
+    std::unique_ptr<internal::WindowGeometryFacet> geometry_facet_;
+    Event<WindowSizeChangedInfo> size_changed_event_;
+#pragma endregion
+
+#pragma region Lifecycle Related
+    std::unique_ptr<internal::WindowLifecycleFacet> lifecycle_facet_;
+    Event<HandleCreatingInfo> handle_creating_event_;
+    Event<HandleCreatedInfo> handle_created_event_;
+    Event<ClosingInfo> closing_event_;
+    Event<DestroyingInfo> destroying_event_;
+    Event<DestroyedInfo> destroyed_event_;
+#pragma endregion
+
+#pragma region Visibility Related
+    std::unique_ptr<internal::WindowVisibilityFacet> visibility_facet_;
+    Event<ShowInfo> show_event_;
+    Event<HideInfo> hide_event_;
+#pragma endregion
+
+#pragma region Focus Related
     std::unique_ptr<internal::WindowFocusFacet> focus_facet_;
     Event<ActivatedInfo> activated_event_;
     Event<DeactivatedInfo> deactivated_event_;
     Event<WindowFocusGainedInfo> focus_gained_event_;
     Event<WindowFocusLostInfo> focus_lost_event_;
     Event<FocusedControlChangedInfo> focused_control_changed_event_;
+#pragma endregion
+
+#pragma region Message Handling Related
+    Event<MessageReceivedInfo> message_received_event_;
+    Event<MessageHandledInfo> message_handled_event_;
 #pragma endregion
 
     TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };
@@ -1730,16 +1754,6 @@ private:
     std::shared_ptr<Control> highlight_control_;
     bool is_selecting_inspector_control_{};
 
-    Event<HandleCreatingInfo> handle_creating_event_;
-    Event<HandleCreatedInfo> handle_created_event_;
-    Event<DestroyingInfo> destroying_event_;
-    Event<DestroyedInfo> destroyed_event_;
-    Event<MessageReceivedInfo> message_received_event_;
-    Event<MessageHandledInfo> message_handled_event_;
-    Event<ShowInfo> show_event_;
-    Event<HideInfo> hide_event_;
-    Event<ClosingInfo> closing_event_;
-    Event<WindowSizeChangedInfo> size_changed_event_;
     Event<RootControlChangedInfo> root_control_changed_event_;
     Event<MouseCaptureControlChangedInfo> mouse_capture_control_changed_event_;
 

@@ -1,6 +1,7 @@
 #include <zaf/window/internal/window_facets/window_style_facet.h>
 #include <zaf/base/error/precondition_error.h>
 #include <zaf/base/error/win32_error.h>
+#include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
 #include <zaf/window/internal/window_style_shim.h>
 #include <zaf/window/invalid_handle_state_error.h>
 #include <zaf/window/window.h>
@@ -19,13 +20,13 @@ std::wstring WindowStyleFacet::Title() const {
 
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
-        return window_.lifecycle_facet_.NotCreatedStateData().title;
+        return window_.lifecycle_facet_->NotCreatedStateData().title;
     }
     else if (handle_state == WindowHandleState::Creating ||
              handle_state == WindowHandleState::Created ||
              handle_state == WindowHandleState::Destroying) {
 
-        const auto& handle_state = window_.lifecycle_facet_.HandleStateData();
+        const auto& handle_state = window_.lifecycle_facet_->HandleStateData();
 
         SetLastError(0);
         int title_length = GetWindowTextLength(handle_state.handle);
@@ -61,7 +62,7 @@ void WindowStyleFacet::SetTitle(const std::wstring& title) {
 
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
-        window_.lifecycle_facet_.NotCreatedStateData().title = title;
+        window_.lifecycle_facet_->NotCreatedStateData().title = title;
     }
     else if (handle_state == WindowHandleState::Creating ||
              handle_state == WindowHandleState::Created) {
@@ -84,7 +85,7 @@ bool WindowStyleFacet::HasStyleProperty(PROPERTY property) const noexcept {
     if (handle_state == WindowHandleState::NotCreated) {
 
         return internal::WindowStyleShim<PROPERTY>::Has(
-            window_.lifecycle_facet_.NotCreatedStateData(),
+            window_.lifecycle_facet_->NotCreatedStateData(),
             property);
     }
 
@@ -93,7 +94,7 @@ bool WindowStyleFacet::HasStyleProperty(PROPERTY property) const noexcept {
         handle_state == WindowHandleState::Destroying) {
 
         return internal::WindowStyleShim<PROPERTY>::Has(
-            window_.lifecycle_facet_.HandleStateData(),
+            window_.lifecycle_facet_->HandleStateData(),
             property);
     }
 
@@ -111,7 +112,7 @@ void WindowStyleFacet::SetStyleProperty(
     if (handle_state == WindowHandleState::NotCreated) {
 
         internal::WindowStyleShim<PROPERTY>::Set(
-            window_.lifecycle_facet_.NotCreatedStateData(), 
+            window_.lifecycle_facet_->NotCreatedStateData(), 
             property, 
             enable);
     }
@@ -123,7 +124,7 @@ void WindowStyleFacet::SetStyleProperty(
         }
 
         internal::WindowStyleShim<PROPERTY>::Set(
-            window_.lifecycle_facet_.HandleStateData(), 
+            window_.lifecycle_facet_->HandleStateData(), 
             property,
             enable);
     }
@@ -223,7 +224,7 @@ void WindowStyleFacet::SetIsTopmost(bool is_topmost) {
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
 
-        window_.lifecycle_facet_.NotCreatedStateData().extended_style.Set(
+        window_.lifecycle_facet_->NotCreatedStateData().extended_style.Set(
             internal::WindowExtendedStyleProperty::IsTopMost,
             is_topmost);
     }

@@ -68,6 +68,7 @@ public:
     float ContentHeight() const noexcept;
     void SetContentHeight(float height);
 
+    void HandleWMGETMINMAXINFO(const Message& message);
     void HandleWMSIZE(const Message& message);
 
     bool IsSizingOrMoving() const noexcept;

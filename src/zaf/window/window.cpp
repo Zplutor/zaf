@@ -15,6 +15,10 @@
 #include <zaf/internal/window/window_focused_control_manager.h>
 #include <zaf/window/inspector/inspector_window.h>
 #include <zaf/window/internal/window_facets/window_focus_facet.h>
+#include <zaf/window/internal/window_facets/window_geometry_facet.h>
+#include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
+#include <zaf/window/internal/window_facets/window_style_facet.h>
+#include <zaf/window/internal/window_facets/window_visibility_facet.h>
 #include <zaf/window/internal/window_style_shim.h>
 #include <zaf/window/tooltip_window.h>
 #include <zaf/window/invalid_handle_state_error.h>
@@ -60,10 +64,10 @@ Window::Window(std::wstring_view window_class_name) :
 
 
 Window::Window(std::shared_ptr<WindowClass> window_class) :
-    style_facet_(*this, std::move(window_class)),
-    geometry_facet_(*this),
-    lifecycle_facet_(*this),
-    visibility_facet_(*this),
+    style_facet_(std::make_unique<internal::WindowStyleFacet>(*this, std::move(window_class))),
+    geometry_facet_(std::make_unique<internal::WindowGeometryFacet>(*this)),
+    lifecycle_facet_(std::make_unique<internal::WindowLifecycleFacet>(*this)),
+    visibility_facet_(std::make_unique<internal::WindowVisibilityFacet>(*this)),
     focus_facet_(std::make_unique<internal::WindowFocusFacet>(*this)) {
 
 }
@@ -86,117 +90,117 @@ void Window::Initialize() {
 #pragma region Style Management
 
 const std::shared_ptr<WindowClass>& Window::Class() const noexcept {
-    return style_facet_.Class();
+    return style_facet_->Class();
 }
 
 
 std::wstring Window::Title() const {
-    return style_facet_.Title();
+    return style_facet_->Title();
 }
 
 
 void Window::SetTitle(const std::wstring& title) {
-    style_facet_.SetTitle(title);
+    style_facet_->SetTitle(title);
 }
 
 
 bool Window::IsPopup() const noexcept {
-    return style_facet_.IsPopup();
+    return style_facet_->IsPopup();
 }
 
 
 void Window::SetIsPopup(bool is_popup) {
-    style_facet_.SetIsPopup(is_popup);
+    style_facet_->SetIsPopup(is_popup);
 }
 
 
 bool Window::HasBorder() const noexcept {
-    return style_facet_.HasBorder();
+    return style_facet_->HasBorder();
 }
 
 
 void Window::SetHasBorder(bool has_border) {
-    style_facet_.SetHasBorder(has_border);
+    style_facet_->SetHasBorder(has_border);
 }
 
 
 bool Window::HasTitleBar() const noexcept {
-    return style_facet_.HasTitleBar();
+    return style_facet_->HasTitleBar();
 }
 
 
 void Window::SetHasTitleBar(bool has_title_bar) {
-    style_facet_.SetHasTitleBar(has_title_bar);
+    style_facet_->SetHasTitleBar(has_title_bar);
 }
 
 
 bool Window::HasSystemMenu() const noexcept {
-    return style_facet_.HasSystemMenu();
+    return style_facet_->HasSystemMenu();
 }
 
 
 void Window::SetHasSystemMenu(bool has_system_menu) {
-    style_facet_.SetHasSystemMenu(has_system_menu);
+    style_facet_->SetHasSystemMenu(has_system_menu);
 }
 
 
 bool Window::IsSizable() const noexcept {
-    return style_facet_.IsSizable();
+    return style_facet_->IsSizable();
 }
 
 
 void Window::SetIsSizable(bool is_sizable) {
-    style_facet_.SetIsSizable(is_sizable);
+    style_facet_->SetIsSizable(is_sizable);
 }
 
 
 bool Window::CanMaximize() const noexcept {
-    return style_facet_.CanMaximize();
+    return style_facet_->CanMaximize();
 }
 
 
 void Window::SetCanMaximize(bool has_maximize_button) {
-    style_facet_.SetCanMaximize(has_maximize_button);
+    style_facet_->SetCanMaximize(has_maximize_button);
 }
 
 
 bool Window::CanMinimize() const noexcept {
-    return style_facet_.CanMinimize();
+    return style_facet_->CanMinimize();
 }
 
 
 void Window::SetCanMinimize(bool can_minimize) {
-    style_facet_.SetCanMinimize(can_minimize);
+    style_facet_->SetCanMinimize(can_minimize);
 }
 
 
 bool Window::IsToolWindow() const noexcept {
-    return style_facet_.IsToolWindow();
+    return style_facet_->IsToolWindow();
 }
 
 
 void Window::SetIsToolWindow(bool is_tool_window) {
-    style_facet_.SetIsToolWindow(is_tool_window);
+    style_facet_->SetIsToolWindow(is_tool_window);
 }
 
 
 bool Window::IsTopmost() const noexcept {
-    return style_facet_.IsTopmost();
+    return style_facet_->IsTopmost();
 }
 
 
 void Window::SetIsTopmost(bool is_topmost) {
-    style_facet_.SetIsTopmost(is_topmost);
+    style_facet_->SetIsTopmost(is_topmost);
 }
 
 
 ActivateOptions Window::ActivateOptions() const noexcept {
-    return style_facet_.ActivateOptions();
+    return style_facet_->ActivateOptions();
 }
 
 
 void Window::SetActivateOptions(zaf::ActivateOptions options) {
-    style_facet_.SetActivateOptions(options);
+    style_facet_->SetActivateOptions(options);
 }
 
 #pragma endregion
@@ -205,161 +209,161 @@ void Window::SetActivateOptions(zaf::ActivateOptions options) {
 #pragma region Geometry Management
 
 std::shared_ptr<zaf::Screen> Window::Screen() const noexcept {
-    return geometry_facet_.Screen();
+    return geometry_facet_->Screen();
 }
 
 
 void Window::SetScreen(std::shared_ptr<zaf::Screen> screen) {
-    geometry_facet_.SetScreen(std::move(screen));
+    geometry_facet_->SetScreen(std::move(screen));
 }
 
 
 float Window::DPI() const noexcept {
-    return geometry_facet_.DPI();
+    return geometry_facet_->DPI();
 }
 
 
 zaf::Rect Window::Rect() const noexcept {
-    return geometry_facet_.Rect();
+    return geometry_facet_->Rect();
 }
 
 
 void Window::SetRect(const zaf::Rect& rect) {
-    geometry_facet_.SetRect(rect);
+    geometry_facet_->SetRect(rect);
 }
 
 
 Point Window::Position() const noexcept {
-    return geometry_facet_.Position();
+    return geometry_facet_->Position();
 }
 
 
 void Window::SetPosition(const Point& position) {
-    geometry_facet_.SetPosition(position);
+    geometry_facet_->SetPosition(position);
 }
 
 
 zaf::Size Window::Size() const noexcept {
-    return geometry_facet_.Size();
+    return geometry_facet_->Size();
 }
 
 void Window::SetSize(const zaf::Size& size) {
-    geometry_facet_.SetSize(size);
+    geometry_facet_->SetSize(size);
 }
 
 
 float Window::Width() const noexcept {
-    return geometry_facet_.Width();
+    return geometry_facet_->Width();
 }
 
 
 void Window::SetWidth(float width) {
-    geometry_facet_.SetWidth(width);
+    geometry_facet_->SetWidth(width);
 }
 
 
 float Window::Height() const noexcept {
-    return geometry_facet_.Height();
+    return geometry_facet_->Height();
 }
 
 
 void Window::SetHeight(float height) {
-    geometry_facet_.SetHeight(height);
+    geometry_facet_->SetHeight(height);
 }
 
 
 float Window::MinWidth() const noexcept {
-    return geometry_facet_.MinWidth();
+    return geometry_facet_->MinWidth();
 }
 
 
 void Window::SetMinWidth(float min_width) {
-    geometry_facet_.SetMinWidth(min_width);
+    geometry_facet_->SetMinWidth(min_width);
 }
 
 
 float Window::MaxWidth() const noexcept {
-    return geometry_facet_.MaxWidth();
+    return geometry_facet_->MaxWidth();
 }
 
 
 void Window::SetMaxWidth(float max_width) {
-    geometry_facet_.SetMaxWidth(max_width);
+    geometry_facet_->SetMaxWidth(max_width);
 }
 
 
 float Window::MinHeight() const noexcept {
-    return geometry_facet_.MinHeight();
+    return geometry_facet_->MinHeight();
 }
 
 
 void Window::SetMinHeight(float min_height) {
-    geometry_facet_.SetMinHeight(min_height);
+    geometry_facet_->SetMinHeight(min_height);
 }
 
 
 float Window::MaxHeight() const noexcept {
-    return geometry_facet_.MaxHeight();
+    return geometry_facet_->MaxHeight();
 }
 
 
 void Window::SetMaxHeight(float max_height) {
-    geometry_facet_.SetMaxHeight(max_height);
+    geometry_facet_->SetMaxHeight(max_height);
 }
 
 
 zaf::Size Window::MinSize() const noexcept {
-    return geometry_facet_.MinSize();
+    return geometry_facet_->MinSize();
 }
 
 
 void Window::SetMinSize(const zaf::Size& size) {
-    geometry_facet_.SetMinSize(size);
+    geometry_facet_->SetMinSize(size);
 }
 
 
 zaf::Size Window::MaxSize() const noexcept {
-    return geometry_facet_.MaxSize();
+    return geometry_facet_->MaxSize();
 }
 
 
 void Window::SetMaxSize(const zaf::Size& size) {
-    geometry_facet_.SetMaxSize(size);
+    geometry_facet_->SetMaxSize(size);
 }
 
 
 zaf::Rect Window::ContentRect() const noexcept {
-    return geometry_facet_.ContentRect();
+    return geometry_facet_->ContentRect();
 }
 
 
 zaf::Size Window::ContentSize() const noexcept {
-    return geometry_facet_.ContentSize();
+    return geometry_facet_->ContentSize();
 }
 
 
 void Window::SetContentSize(const zaf::Size& size) {
-    geometry_facet_.SetContentSize(size);
+    geometry_facet_->SetContentSize(size);
 }
 
 
 float Window::ContentWidth() const noexcept {
-    return geometry_facet_.ContentWidth();
+    return geometry_facet_->ContentWidth();
 }
 
 
 void Window::SetContentWidth(float width) {
-    geometry_facet_.SetContentWidth(width);
+    geometry_facet_->SetContentWidth(width);
 }
 
 
 float Window::ContentHeight() const noexcept {
-    return geometry_facet_.ContentHeight();
+    return geometry_facet_->ContentHeight();
 }
 
 
 void Window::SetContentHeight(float height) {
-    geometry_facet_.SetContentHeight(height);
+    geometry_facet_->SetContentHeight(height);
 }
 
 
@@ -374,32 +378,32 @@ rx::Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() const {
 
 
 bool Window::IsSizingOrMoving() const noexcept {
-    return geometry_facet_.IsSizingOrMoving();
+    return geometry_facet_->IsSizingOrMoving();
 }
 
 
 rx::Single<None> Window::WhenNotSizingOrMoving() const {
-    return geometry_facet_.WhenNotSizingOrMoving();
+    return geometry_facet_->WhenNotSizingOrMoving();
 }
 
 
 Point Window::TransformToScreen(const Point& position) const noexcept {
-    return geometry_facet_.TransformToScreen(position);
+    return geometry_facet_->TransformToScreen(position);
 }
 
 
 Point Window::TransformFromScreen(const Point& position_in_screen) const noexcept {
-    return geometry_facet_.TransformFromScreen(position_in_screen);
+    return geometry_facet_->TransformFromScreen(position_in_screen);
 }
 
 
 zaf::Rect Window::TransformToScreen(const zaf::Rect& rect_in_window) const noexcept {
-    return geometry_facet_.TransformToScreen(rect_in_window);
+    return geometry_facet_->TransformToScreen(rect_in_window);
 }
 
 
 zaf::Rect Window::TransformFromScreen(const zaf::Rect& rect_in_screen) const noexcept {
-    return geometry_facet_.TransformFromScreen(rect_in_screen);
+    return geometry_facet_->TransformFromScreen(rect_in_screen);
 }
 
 #pragma endregion
@@ -408,17 +412,17 @@ zaf::Rect Window::TransformFromScreen(const zaf::Rect& rect_in_screen) const noe
 #pragma region Lifecycle Management
 
 WindowHandleState Window::HandleState() const noexcept {
-    return lifecycle_facet_.HandleState();
+    return lifecycle_facet_->HandleState();
 }
 
 
 HWND Window::Handle() const noexcept {
-    return lifecycle_facet_.Handle();
+    return lifecycle_facet_->Handle();
 }
 
 
 std::shared_ptr<WindowHolder> Window::CreateHandle() {
-    return lifecycle_facet_.CreateHandle();
+    return lifecycle_facet_->CreateHandle();
 }
 
 
@@ -443,7 +447,7 @@ rx::Observable<HandleCreatedInfo> Window::HandleCreatedEvent() const {
 
 
 void Window::Destroy() noexcept {
-    lifecycle_facet_.Destroy();
+    lifecycle_facet_->Destroy();
 }
 
 
@@ -468,7 +472,7 @@ rx::Observable<DestroyedInfo> Window::DestroyedEvent() const {
 
 
 void Window::Close() noexcept {
-    lifecycle_facet_.Close();
+    lifecycle_facet_->Close();
 }
 
 
@@ -487,42 +491,42 @@ rx::Observable<ClosingInfo> Window::ClosingEvent() const {
 #pragma region Visibility Management
 
 void Window::Show(ShowOptions options) {
-    visibility_facet_.Show(options);
+    visibility_facet_->Show(options);
 }
 
 
 void Window::Maximize() {
-    visibility_facet_.Maximize();
+    visibility_facet_->Maximize();
 }
 
 
 bool Window::IsWindowMaximized() const noexcept {
-    return visibility_facet_.IsWindowMaximized();
+    return visibility_facet_->IsWindowMaximized();
 }
 
 
 void Window::Minimize() {
-    visibility_facet_.Minimize();
+    visibility_facet_->Minimize();
 }
 
 
 bool Window::IsWindowMinimized() const noexcept {
-    return visibility_facet_.IsWindowMinimized();
+    return visibility_facet_->IsWindowMinimized();
 }
 
 
 void Window::Restore() {
-    visibility_facet_.Restore();
+    visibility_facet_->Restore();
 }
 
 
 void Window::Hide() noexcept {
-    visibility_facet_.Hide();
+    visibility_facet_->Hide();
 }
 
 
 bool Window::IsVisible() const noexcept {
-    return visibility_facet_.IsVisible();
+    return visibility_facet_->IsVisible();
 }
 
 
@@ -670,9 +674,41 @@ LRESULT Window::RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lpa
 std::optional<LRESULT> Window::HandleMessage(const Message& message) {
 
     switch (message.ID()) {
+#pragma region Lifecycle Messages
     case WM_CREATE:
-        lifecycle_facet_.HandleWMCREATE();
+        lifecycle_facet_->HandleWMCREATE();
         return 0;
+
+    case WM_CLOSE:
+        lifecycle_facet_->HandleWMCLOSE();
+        return 0;
+
+    case WM_DESTROY:
+        lifecycle_facet_->HandleWMDESTROY();
+        return 0;
+
+    case WM_NCDESTROY:
+        lifecycle_facet_->HandleWMNCDESTROY();
+        return 0;
+#pragma endregion
+
+#pragma region Geometry Messages
+    case WM_GETMINMAXINFO: 
+        geometry_facet_->HandleWMGETMINMAXINFO(message);
+        return 0;
+
+    case WM_ENTERSIZEMOVE:
+        geometry_facet_->HandleWMENTERSIZEMOVE();
+        return 0;
+
+    case WM_EXITSIZEMOVE:
+        geometry_facet_->HandleWMEXITSIZEMOVE();
+        return 0;
+
+    case WM_SIZE:
+        geometry_facet_->HandleWMSIZE(message);
+        return 0;
+#pragma endregion
 
     case WM_NCCALCSIZE:
         return HandleWMNCCALCSIZE(message);
@@ -685,34 +721,12 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         HandleWMPAINT();
         return 0;
 
-    case WM_GETMINMAXINFO: {
-        auto dpi = this->DPI();
-        auto min_max_info = reinterpret_cast<MINMAXINFO*>(message.LParam());
-        min_max_info->ptMinTrackSize.x = static_cast<LONG>(FromDIPs(MinWidth(), dpi));
-        min_max_info->ptMinTrackSize.y = static_cast<LONG>(FromDIPs(MinHeight(), dpi));
-        min_max_info->ptMaxTrackSize.x = static_cast<LONG>(FromDIPs(MaxWidth(), dpi));
-        min_max_info->ptMaxTrackSize.y = static_cast<LONG>(FromDIPs(MaxHeight(), dpi));
-        return 0;
-    }
-
     case WM_SHOWWINDOW:
         HandleWMSHOWWINDOW(ShowWindowMessage{ message });
         return 0;
 
     case WM_ACTIVATE:
         focus_facet_->HandleWMACTIVATE(ActivateMessage{ message });
-        return 0;
-
-    case WM_ENTERSIZEMOVE:
-        geometry_facet_.HandleWMENTERSIZEMOVE();
-        return 0;
-
-    case WM_EXITSIZEMOVE:
-        geometry_facet_.HandleWMEXITSIZEMOVE();
-        return 0;
-
-    case WM_SIZE:
-        geometry_facet_.HandleWMSIZE(message);
         return 0;
 
     case WM_SETFOCUS:
@@ -808,18 +822,6 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         //For now, we always pass IME messages to the default window procedure even if we handle 
         //the messages. This may be adjusted once we are more familiar with the IME mechanism.
         return std::nullopt;
-
-    case WM_CLOSE:
-        lifecycle_facet_.HandleWMCLOSE();
-        return 0;
-
-    case WM_DESTROY:
-        lifecycle_facet_.HandleWMDESTROY();
-        return 0;
-
-    case WM_NCDESTROY:
-        lifecycle_facet_.HandleWMNCDESTROY();
-        return 0;
 
     default:
         return std::nullopt;
