@@ -19,6 +19,7 @@
 #include <zaf/rx/subject/subject.h>
 #include <zaf/window/inspector/internal/inspector_port.h>
 #include <zaf/window/internal/window_facets/window_focus_facet.h>
+#include <zaf/window/internal/window_facets/window_mouse_facet.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
 #include <zaf/window/window.h>
@@ -1462,7 +1463,7 @@ void Control::SetInteractiveProperty(
             const auto& mouse_over_control = window->MouseOverControl();
             if (mouse_over_control) {
                 if (this->IsSameOrAncestorOf(*mouse_over_control)) {
-                    window->SetMouseOverControl(nullptr, MouseMessage{ Message{} });
+                    window->mouse_facet_->SetMouseOverControl(nullptr, MouseMessage{ Message{} });
                 }
             }
         }
@@ -1676,7 +1677,7 @@ void Control::CaptureMouse() {
 
     auto window = Window();
     if (window != nullptr) {
-        window->SetMouseCaptureControl(shared_from_this(), false);
+        window->mouse_facet_->SetMouseCaptureControl(shared_from_this(), false);
     }
 }
 
@@ -1685,7 +1686,7 @@ void Control::ReleaseMouse() {
 
     auto window = Window();
     if (window != nullptr) {
-        window->SetMouseCaptureControl(shared_from_this(), true);
+        window->mouse_facet_->SetMouseCaptureControl(shared_from_this(), true);
     }
 }
 

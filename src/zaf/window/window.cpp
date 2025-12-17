@@ -17,10 +17,10 @@
 #include <zaf/window/internal/window_facets/window_focus_facet.h>
 #include <zaf/window/internal/window_facets/window_geometry_facet.h>
 #include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
+#include <zaf/window/internal/window_facets/window_mouse_facet.h>
 #include <zaf/window/internal/window_facets/window_style_facet.h>
 #include <zaf/window/internal/window_facets/window_visibility_facet.h>
 #include <zaf/window/internal/window_style_shim.h>
-#include <zaf/window/tooltip_window.h>
 #include <zaf/window/invalid_handle_state_error.h>
 #include <zaf/window/message/hit_test_message.h>
 #include <zaf/window/message/keyboard_message.h>
@@ -68,7 +68,8 @@ Window::Window(std::shared_ptr<WindowClass> window_class) :
     geometry_facet_(std::make_unique<internal::WindowGeometryFacet>(*this)),
     lifecycle_facet_(std::make_unique<internal::WindowLifecycleFacet>(*this)),
     visibility_facet_(std::make_unique<internal::WindowVisibilityFacet>(*this)),
-    focus_facet_(std::make_unique<internal::WindowFocusFacet>(*this)) {
+    focus_facet_(std::make_unique<internal::WindowFocusFacet>(*this)),
+    mouse_facet_(std::make_unique<internal::WindowMouseFacet>(*this)) {
 
 }
 
@@ -620,6 +621,33 @@ rx::Observable<FocusedControlChangedInfo> Window::FocusedControlChangedEvent() c
 
 #pragma endregion
 
+#pragma region Mouse Input Handling
+
+std::shared_ptr<Control> Window::MouseOverControl() const noexcept {
+    return mouse_facet_->MouseOverControl();
+}
+
+
+std::shared_ptr<Control> Window::MouseCaptureControl() const noexcept {
+    return mouse_facet_->MouseCaptureControl();
+}
+
+
+void Window::OnMouseCaptureControlChanged(const MouseCaptureControlChangedInfo& event_info) {
+    mouse_capture_control_changed_event_.Raise(event_info);
+}
+
+
+rx::Observable<MouseCaptureControlChangedInfo> Window::MouseCaptureControlChangedEvent() const {
+    return mouse_capture_control_changed_event_.GetObservable();
+}
+
+
+std::optional<HitTestResult> Window::HitTest(const HitTestMessage& message) {
+    return mouse_facet_->HitTest(message);
+}
+
+#pragma endregion
 
 #pragma region Message Handling
 
@@ -710,6 +738,53 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 #pragma endregion
 
+#pragma region Mouse Messages
+    case WM_MOUSEMOVE:
+    case WM_NCMOUSEMOVE:
+    case WM_LBUTTONDOWN:
+    case WM_NCLBUTTONDOWN:
+    case WM_LBUTTONUP:
+    case WM_NCLBUTTONUP:
+    case WM_MBUTTONDOWN:
+    case WM_MBUTTONUP:
+    case WM_RBUTTONDOWN:
+    case WM_RBUTTONUP: {
+        if (mouse_facet_->HandleGeneralMouseMessage(MouseMessage{ message })) {
+            return 0;
+        }
+        return std::nullopt;
+    }
+
+    case WM_MOUSEHOVER:
+    case WM_NCMOUSEHOVER:
+        mouse_facet_->HandleMouseHoverMessage(message);
+        return 0;
+
+    case WM_MOUSELEAVE:
+    case WM_NCMOUSELEAVE:
+        mouse_facet_->HandleMouseLeaveMessage(message);
+        return 0;
+
+    case WM_MOUSEWHEEL:
+    case WM_MOUSEHWHEEL: {
+        if (mouse_facet_->HandleMouseWheelMessage(message)) {
+            return 0;
+        }
+        return std::nullopt;
+    }
+
+    case WM_CAPTURECHANGED:
+        mouse_facet_->CancelMouseCapture();
+        return 0;
+
+    case WM_SETCURSOR: {
+        if (mouse_facet_->HandleWMSETCURSOR(message)) {
+            return TRUE;
+        }
+        return std::nullopt;
+    }
+#pragma endregion
+
     case WM_NCCALCSIZE:
         return HandleWMNCCALCSIZE(message);
 
@@ -740,10 +815,6 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
     case WM_MOUSEACTIVATE:
         return focus_facet_->HandleWMMOUSEACTIVATE();
 
-    case WM_CAPTURECHANGED:
-        CancelMouseCapture();
-        return 0;
-
     case WM_NCHITTEST: {
         auto hit_test_result = HitTest(HitTestMessage{ message });
         if (hit_test_result) {
@@ -753,56 +824,6 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
             return std::nullopt;
         }
     }
-
-    case WM_SETCURSOR: {
-        if (HandleWMSETCURSOR(message)) {
-            return TRUE;
-        }
-        return std::nullopt;
-    }
-
-    case WM_MOUSEWHEEL:
-    case WM_MOUSEHWHEEL: {
-        //Mouse wheel messages are not sent to an unfocused window even if it captures
-        //the mouse, because these messages are only sent to focused window.
-        //But we wish these messages have the same behaviour as other mouse input messages,
-        //so the messages are redircted to the window which is capturing the mouse.
-        if (RedirectMouseWheelMessage(message)) {
-            return 0;
-        }
-
-        if (HandleMouseMessage(MouseWheelMessage{ message })) {
-            return 0;
-        }
-
-        return std::nullopt;
-    }
-
-    case WM_MOUSEMOVE:
-    case WM_NCMOUSEMOVE:
-    case WM_LBUTTONDOWN:
-    case WM_NCLBUTTONDOWN:
-    case WM_LBUTTONUP:
-    case WM_NCLBUTTONUP:
-    case WM_MBUTTONDOWN:
-    case WM_MBUTTONUP:
-    case WM_RBUTTONDOWN:
-    case WM_RBUTTONUP: {
-        if (HandleMouseMessage(MouseMessage{ message })) {
-            return 0;
-        }
-        return std::nullopt;
-    }
-
-    case WM_MOUSEHOVER:
-    case WM_NCMOUSEHOVER:
-        OnMouseHover(message);
-        return 0;
-
-    case WM_MOUSELEAVE:
-    case WM_NCMOUSELEAVE:
-        OnMouseLeave(message);
-        return 0;
 
     case WM_KEYDOWN:
     case WM_KEYUP:
@@ -1077,155 +1098,6 @@ std::optional<LRESULT> Window::HandleWMNCCALCSIZE(const Message& message) {
 }
 
 
-std::optional<HitTestResult> Window::HitTest(const HitTestMessage& message) {
-
-    auto mouse_over_control = [&]() {
-        
-        Point mouse_position = message.MousePosition();
-        std::shared_ptr<Control> current_control = root_control_;
-        while (true) {
-
-            auto child = current_control->FindChildAtPosition(mouse_position);
-            if (child == nullptr) {
-                break;
-            }
-
-            auto child_position = child->Position();
-            mouse_position.x += child_position.x;
-            mouse_position.y += child_position.y;
-
-            current_control = child;
-        }
-        return current_control;
-    }();
-
-    return mouse_over_control->HitTest(message);
-}
-
-
-bool Window::RedirectMouseWheelMessage(const Message& message) {
-
-    HWND handle = GetCapture();
-    if ((handle == nullptr) || (handle == Handle())) {
-        return false;
-    }
-
-    auto capturing_mouse_window = GetWindowFromHandle(GetCapture());
-    if (capturing_mouse_window == nullptr) {
-        return false;
-    }
-
-    PostMessage(
-        capturing_mouse_window->Handle(), 
-        message.ID(),
-        message.WParam(),
-        message.LParam());
-
-    return true;
-}
-
-
-bool Window::HandleMouseMessage(const MouseMessage& message) {
-
-    if (message.ID() == WM_MOUSEMOVE || message.ID() == WM_NCMOUSEMOVE) {
-
-        if (is_selecting_inspector_control_) {
-            HighlightControlAtPosition(message.MousePosition());
-            return true;
-        }
-
-        TrackMouseByMouseMove(message);
-    }
-    else {
-
-        HideTooltipWindow();
-
-        if (message.ID() == WM_LBUTTONDOWN || message.ID() == WM_RBUTTONDOWN) {
-
-            if (is_selecting_inspector_control_) {
-                SelectInspectedControl();
-                return true;
-            }
-        }
-    }
-
-    return RouteMouseEvent(message);
-}
-
-
-bool Window::RouteMouseEvent(const MouseMessage& message) {
-
-    const auto is_mouse_move = [&message]() {
-        return message.ID() == WM_MOUSEMOVE || message.ID() == WM_NCMOUSEMOVE;
-    };
-
-    Point position_at_begin_routing_control;
-    auto begin_routing_control = GetBeginRoutingControlForMouseMessage(
-        message,
-        position_at_begin_routing_control);
-
-    auto event_target_info = internal::FindMouseEventTarget(
-        begin_routing_control,
-        position_at_begin_routing_control);
-
-    if (!event_target_info.control) {
-        //Need to clear mouse over control if event target is not found for mouse move message.
-        if (is_mouse_move()) {
-            SetMouseOverControl(nullptr, MouseMessage{ Message{} });
-        }
-        return false;
-    }
-
-    auto event_info_state = std::make_shared<internal::MouseEventSharedState>(
-        event_target_info.control,
-        message.Inner(),
-        event_target_info.position
-    );
-
-    //Tunnel the event.
-    internal::TunnelMouseEvent(event_target_info.control, event_info_state, message);
-    if (!event_info_state->IsHandled()) {
-        //Change mouse over control if the event is not handled in tunneling phase.
-        if (is_mouse_move()) {
-            SetMouseOverControl(event_target_info.control, message);
-        }
-    }
-
-    //Bubble the event.
-    internal::BubbleMouseEvent(
-        event_target_info.control, 
-        event_target_info.position,
-        event_info_state,
-        message);
-
-    return event_info_state->IsHandled();
-}
-
-
-std::shared_ptr<Control> Window::GetBeginRoutingControlForMouseMessage(
-    const MouseMessage& message,
-    Point& position_at_control) const {
-
-    std::shared_ptr<Control> result;
-
-    if (mouse_capture_control_) {
-
-        result = mouse_capture_control_;
-
-        position_at_control = TranslateAbsolutePositionToControlPosition(
-            message.MousePosition(),
-            *result);
-    }
-    else {
-
-        result = root_control_;
-        position_at_control = message.MousePosition();
-    }
-
-    return result;
-}
-
-
 void Window::HighlightControlAtPosition(const Point& position) {
 
     auto highlight_control = root_control_->FindChildAtPositionRecursively(position);
@@ -1259,118 +1131,6 @@ void Window::SelectInspectedControl() {
 }
 
 
-void Window::TrackMouseByMouseMove(const MouseMessage& message) {
-
-    bool is_non_client = message.ID() == WM_NCMOUSEMOVE;
-
-    auto is_tracking_mouse = [this, is_non_client]() {
-
-        if (track_mouse_mode_ == TrackMouseMode::ClientArea &&
-            !is_non_client) {
-            return true;
-        }
-
-        if (track_mouse_mode_ == TrackMouseMode::NonClientArea &&
-            is_non_client) {
-            return true;
-        }
-
-        return false;
-    }();
-
-    if (is_tracking_mouse) {
-        return;
-    }
-
-    TrackMouse(is_non_client);
-}
-
-
-void Window::TrackMouse(bool is_non_client) {
-
-    //Don't track mouse if the mouse is being captured and the capturing window is not the current 
-    //window. This would happen if WM_MOUSEMOVE message is redirected from a capturing window to 
-    //another window (this is the way how PopupMenu works).
-    auto capturing_window = GetCapture();
-    if (capturing_window && capturing_window != Handle()) {
-        return;
-    }
-
-    TRACKMOUSEEVENT track_mouse_event_param {};
-    track_mouse_event_param.cbSize = sizeof(track_mouse_event_param);
-    track_mouse_event_param.dwFlags = TME_LEAVE | TME_HOVER;
-    if (is_non_client) {
-        track_mouse_event_param.dwFlags |= TME_NONCLIENT;
-    }
-    track_mouse_event_param.hwndTrack = Handle();
-
-    if (TrackMouseEvent(&track_mouse_event_param)) {
-
-        track_mouse_mode_ =
-            is_non_client ?
-            TrackMouseMode::NonClientArea :
-            TrackMouseMode::ClientArea;
-    }
-}
-
-
-void Window::OnMouseHover(const Message& message) {
-
-    if (mouse_over_control_) {
-
-        //Raise and route mouse hover event.
-        auto event_info_state = std::make_shared<RoutedEventSharedState>(mouse_over_control_);
-        for (auto control = mouse_over_control_; control; control = control->Parent()) {
-            control->OnMouseHover(MouseHoverInfo{ event_info_state, control });
-        }
-    }
-
-    TryToShowTooltipWindow();
-}
-
-
-void Window::OnMouseLeave(const Message& message) {
-
-    bool is_tracking_mouse = [&]() {
-    
-        if (track_mouse_mode_ == TrackMouseMode::ClientArea &&
-            message.ID() == WM_MOUSELEAVE) {
-            return true;
-        }
-
-        if (track_mouse_mode_ == TrackMouseMode::NonClientArea &&
-            message.ID() == WM_NCMOUSELEAVE) {
-            return true;
-        }
-
-        return false;
-    }();
-
-    if (is_tracking_mouse) {
-        track_mouse_mode_ = TrackMouseMode::None;
-        SetMouseOverControl(nullptr, MouseMessage{ Message{} });
-    }
-}
-
-
-bool Window::HandleWMSETCURSOR(const Message& message) {
-
-    if (!mouse_over_control_) {
-        return false;
-    }
-
-    auto event_state = std::make_shared<internal::MouseCursorChangingState>(
-        mouse_over_control_,
-        message);
-
-    for (auto sender = mouse_over_control_; sender; sender = sender->Parent()) {
-        sender->OnMouseCursorChanging(MouseCursorChangingInfo{ event_state, sender });
-    }
-
-    return event_state->IsHandled();
-}
-
-
 bool Window::HandleKeyboardMessage(const Message& message) {
 
     const auto& focused_control = this->FocusedControl();
@@ -1378,34 +1138,6 @@ bool Window::HandleKeyboardMessage(const Message& message) {
         return internal::RouteKeyboardEvent(focused_control, message);
     }
     return false;
-}
-
-
-void Window::TryToShowTooltipWindow() {
-
-    if (!mouse_over_control_) {
-        return;
-    }
-
-    auto tooltip = mouse_over_control_->Tooltip();
-    if (tooltip.empty()) {
-        return;
-    }
-
-    if (!tooltip_window_) {
-        tooltip_window_ = zaf::Create<zaf::TooltipWindow>();
-        tooltip_window_->SetOwner(shared_from_this());
-    }
-
-    tooltip_window_->SetText(tooltip);
-    tooltip_window_->ShowBelowMouseCursor();
-}
-
-
-void Window::HideTooltipWindow() {
-    if (tooltip_window_) {
-        tooltip_window_->Hide();
-    }
 }
 
 
@@ -1432,163 +1164,6 @@ void Window::HandleIMEMessage(const Message& message) {
     default:
         break;
     }
-}
-
-
-void Window::SetMouseOverControl(
-    const std::shared_ptr<Control>& mouse_over_control, 
-    const MouseMessage& message) {
-
-    if (mouse_over_control_ == mouse_over_control) {
-        return;
-    }
-
-    if (mouse_over_control != nullptr) {
-
-        //The mouse over control must be contained in this window
-        if (mouse_over_control->Window().get() != this) {
-            return;
-        }
-    }
-
-    auto old_control = mouse_over_control_;
-    mouse_over_control_ = mouse_over_control;
-
-    if (old_control ) {
-        ChangeControlMouseOverState(old_control, false, mouse_over_control_);
-    }
-
-    if (mouse_over_control_ != nullptr) {
-
-        //Window finds the mouse over control when received WM_MOUSEMOVE,
-        //but WM_SETCURSOR is always received before WM_MOUSEMOVE, in such
-        //case the mouse over control cannot change the cursor promptly. So 
-        //here, a simulated WM_SETCURSOR is posted to give a change to 
-        //change the cursor immediately.
-        this->Messager().PostWMSETCURSOR(message);
-
-        ChangeControlMouseOverState(mouse_over_control_, true, old_control);
-
-        //Track mouse again to generate next mouse hover message.
-        //TODO: Find out whether the new control is in non-client area.
-        TrackMouse(false);
-    }
-
-    HideTooltipWindow();
-}
-
-
-void Window::ChangeControlMouseOverState(
-    const std::shared_ptr<Control>& target_control,
-    bool is_mouse_over,
-    const std::shared_ptr<Control>& changed_control) {
-
-    target_control->SetIsMouseOverByWindow(is_mouse_over);
-
-    //Raise and route event.
-    auto event_info_state = std::make_shared<internal::MouseOverEventSharedState>(
-        target_control, 
-        changed_control);
-
-    for (auto sender = target_control; sender; sender = sender->Parent()) {
-
-        //Parents at the route path should update their styles to reflect the change of mouse 
-        //over state. For example, parents may use ContainsMouse to update their styles.
-        sender->NeedUpdateStyle();
-
-        if (is_mouse_over) {
-            sender->OnMouseEnter(MouseEnterInfo{ event_info_state, sender });
-        }
-        else {
-            sender->OnMouseLeave(MouseLeaveInfo{ event_info_state, sender });
-        }
-    }
-}
-
-
-void Window::SetMouseCaptureControl(
-    const std::shared_ptr<Control>& capture_control,
-    bool is_releasing) {
-
-    if (capture_control == nullptr) {
-        return;
-    }
-
-    if (!is_releasing) {
-        CaptureMouseWithControl(capture_control);
-    }
-    else {
-        ReleaseMouseWithControl(capture_control);
-    }
-}
-
-
-void Window::CaptureMouseWithControl(const std::shared_ptr<Control>& control) {
-    
-    auto previous_control = mouse_capture_control_;
-    if (previous_control == control) {
-        return;
-    }
-
-    //The control must be contained in this window.
-    if (control->Window().get() != this) {
-        return;
-    }
-
-    if (previous_control != nullptr) {
-        previous_control->IsCapturingMouseChanged(false);
-    }
-    else {
-        SetCapture(Handle());
-    }
-
-    mouse_capture_control_ = control;
-    mouse_capture_control_->IsCapturingMouseChanged(true);
-
-    OnMouseCaptureControlChanged(MouseCaptureControlChangedInfo{ 
-        shared_from_this(),
-        previous_control 
-    });
-}
-
-
-void Window::ReleaseMouseWithControl(const std::shared_ptr<Control>& control) {
-
-    if (mouse_capture_control_ != control) {
-        return;
-    }
-
-    //ReleaseCapture sends a WM_CAPTURECAHNGED message to the window, 
-    //in which message handler will set mouse_capture_control_ to nullptr.
-    ReleaseCapture();
-}
-
-
-void Window::CancelMouseCapture() {
-
-    if (!mouse_capture_control_) {
-        return;
-    }
-
-    //Set mouse_capture_control_ to nullptr before raising events to avoid reentering issues.
-    auto previous_control = mouse_capture_control_;
-    mouse_capture_control_ = nullptr;
-    previous_control->IsCapturingMouseChanged(false);
-
-    OnMouseCaptureControlChanged(MouseCaptureControlChangedInfo{
-        shared_from_this(),
-        previous_control
-    });
-}
-
-
-void Window::OnMouseCaptureControlChanged(const MouseCaptureControlChangedInfo& event_info) {
-    mouse_capture_control_changed_event_.Raise(event_info);
-}
-
-
-rx::Observable<MouseCaptureControlChangedInfo> Window::MouseCaptureControlChangedEvent() const {
-    return mouse_capture_control_changed_event_.GetObservable();
 }
 
 

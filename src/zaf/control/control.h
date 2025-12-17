@@ -47,6 +47,7 @@ class ControlUpdateLock;
 class ControlUpdateState;
 class InspectorPort;
 class WindowLifecycleFacet;
+class WindowMouseFacet;
 }
 
 class Canvas;
@@ -1013,6 +1014,7 @@ private:
     friend class internal::ControlEventInvokerBinder;
     friend class internal::WindowFocusedControlManager;
     friend class internal::WindowLifecycleFacet;
+    friend class internal::WindowMouseFacet;
 
     void SetWindow(const std::shared_ptr<zaf::Window>& window) {
         window_ = window;

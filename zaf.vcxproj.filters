@@ -1375,6 +1375,9 @@
     <ClCompile Include="src\zaf\window\internal\window_facets\window_focus_facet.cpp">
       <Filter>zaf\window\internal\window_facets</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\internal\window_facets\window_mouse_facet.cpp">
+      <Filter>zaf\window\internal\window_facets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3215,6 +3218,9 @@
       <Filter>zaf\window\internal\window_facets</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\internal\window_facets\window_focus_facet.h">
+      <Filter>zaf\window\internal\window_facets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\internal\window_facets\window_mouse_facet.h">
       <Filter>zaf\window\internal\window_facets</Filter>
     </ClInclude>
   </ItemGroup>

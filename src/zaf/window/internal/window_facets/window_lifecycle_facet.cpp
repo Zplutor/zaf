@@ -7,7 +7,9 @@
 #include <zaf/internal/window/window_focused_control_manager.h>
 #include <zaf/window/internal/window_facets/window_focus_facet.h>
 #include <zaf/window/internal/window_facets/window_geometry_facet.h>
+#include <zaf/window/internal/window_facets/window_mouse_facet.h>
 #include <zaf/window/invalid_handle_state_error.h>
+#include <zaf/window/tooltip_window.h>
 #include <zaf/window/window.h>
 #include <zaf/window/window_class.h>
 #include <zaf/window/window_holder.h>
@@ -265,13 +267,18 @@ void WindowLifecycleFacet::HandleWMDESTROY() {
     handle_state_ = WindowHandleState::Destroying;
     window_.OnDestroying(DestroyingInfo{ window_.shared_from_this(), destroy_reason_ });
 
-    window_.CancelMouseCapture();
+    window_.mouse_facet_->CancelMouseCapture();
     window_.focus_facet_->HandleWindowDestroy();
     window_.root_control_->ReleaseRendererResources();
 
     HWND old_handle = Handle();
     window_.renderer_ = {};
-    window_.tooltip_window_.reset();
+
+    auto& state_data = HandleStateData();
+    if (state_data.tooltip_window) {
+        state_data.tooltip_window->Destroy();
+        state_data.tooltip_window.reset();
+    }
 
     state_data_.emplace<std::monostate>();
     handle_state_ = WindowHandleState::Destroyed;

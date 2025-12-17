@@ -38,6 +38,7 @@ namespace zaf::internal {
 class WindowFocusFacet;
 class WindowGeometryFacet;
 class WindowLifecycleFacet;
+class WindowMouseFacet;
 class WindowStyleFacet;
 class WindowVisibilityFacet;
 }
@@ -84,11 +85,12 @@ public:
      */
     virtual ~Window();
 
+#pragma region Public Style Management
     /**
     @name Public Style Management
     @{
     */
-#pragma region
+
     const std::shared_ptr<WindowClass>& Class() const noexcept;
 
     /**
@@ -398,14 +400,15 @@ public:
         Thrown if fails to change the window style.
     */
     void SetActivateOptions(zaf::ActivateOptions options);
-#pragma endregion
     /**@}*/
+#pragma endregion
 
+#pragma region Public Geometry Management
     /**
     @name Public Geometry Management
     @{
     */
-#pragma region
+
     std::shared_ptr<zaf::Screen> Screen() const noexcept;
     void SetScreen(std::shared_ptr<zaf::Screen> screen);
     float DPI() const noexcept;
@@ -871,14 +874,15 @@ public:
         The transformed rectangle in the window's content area coordinates.
     */
     zaf::Rect TransformFromScreen(const zaf::Rect& rect_in_screen) const noexcept;
-#pragma endregion
     /**@}*/
+#pragma endregion
 
+#pragma region Public Lifecycle Management
     /**
     @name Public Lifecycle Management
     @{
     */
-#pragma region
+
     /**
     Gets the state of the window handle.
     */
@@ -1041,14 +1045,15 @@ public:
     @see zaf::Window::Destroy()
     */
     rx::Observable<ClosingInfo> ClosingEvent() const;
-#pragma endregion
     /**@}*/
+#pragma endregion
 
+#pragma region VisibilityManagement
     /**
     @name Public Visibility Management
     @{
     */
-#pragma region
+
     /**
     Shows the window, creates the window handle if it has not been created.
 
@@ -1153,14 +1158,15 @@ public:
     Gets the event that is raised when the window hides.
     */
     rx::Observable<HideInfo> HideEvent() const;
-#pragma endregion
     /**@}*/
+#pragma endregion
 
+#pragma region Public Focus Management
     /**
     @name Public Focus Management
     @{
     */
-#pragma region
+
     /**
     Attempts to bring the window to the foreground and activates it.
 
@@ -1206,14 +1212,39 @@ public:
     Gets the event that is raised after the focused control in the window is changed.
     */
     rx::Observable<FocusedControlChangedInfo> FocusedControlChangedEvent() const;
-#pragma endregion
     /**@}*/
+#pragma endregion
 
+#pragma region Public Mouse Input Handling
+    /**
+    @name Public Mouse Input Handling
+    @{
+    */
+
+    /**
+    Gets the control which is under the mouse cursor.
+    */
+    std::shared_ptr<Control> MouseOverControl() const noexcept;
+
+    /**
+    Gets the control which captures mouse in the window.
+    */
+    std::shared_ptr<Control> MouseCaptureControl() const noexcept;
+
+    /**
+    Gets the event that is raised after the mouse capture control is changed.
+    */
+    rx::Observable<MouseCaptureControlChangedInfo> MouseCaptureControlChangedEvent() const;
+
+    /**@}*/
+#pragma endregion
+
+#pragma region Public Message Handling
     /**
     @name Public Message Handling
     @{
     */
-#pragma region
+
     /**
     Gets the event that is raised when a message is received by the window.
     */
@@ -1232,8 +1263,8 @@ public:
         The exception is delayed until sending or posting a message.
     */
     WindowMessager Messager() noexcept;
-#pragma endregion
     /**@}*/
+#pragma endregion
 
     /**
     Gets the window's owner.
@@ -1286,26 +1317,6 @@ public:
     rx::Observable<RootControlChangedInfo> RootControlChangedEvent() const;
 
     /**
-     Gets the control which captures mouse in the window.
-     */
-    const std::shared_ptr<Control>& MouseCaptureControl() const {
-        return mouse_capture_control_;
-    }
-
-    /**
-    Gets mouse capture control changed event. This event is raised after the mouse capture control 
-    changed.
-    */
-    rx::Observable<MouseCaptureControlChangedInfo> MouseCaptureControlChangedEvent() const;
-
-    /**
-     Get the control which is under mouse cursor.
-     */
-    const std::shared_ptr<Control>& MouseOverControl() const {
-        return mouse_over_control_;
-    }
-
-    /**
      Get the renderer of the window.
      */
     d2d::Renderer& Renderer() {
@@ -1322,11 +1333,12 @@ public:
 protected:
     void Initialize() override;
 
+#pragma region Protected Geometry Management
     /**
     @name Protected Geometry Management
     @{
     */
-#pragma region
+
     /**
     Called after the window's size is changed.
 
@@ -1344,14 +1356,15 @@ protected:
             This method must not throw, otherwise the behavior is undefined.
     */
     virtual void OnSizeChanged(const WindowSizeChangedInfo& event_info);
-#pragma endregion
     /**@}*/
+#pragma endregion
 
+#pragma region Protected Lifecycle Management
     /**
     @name Protected Lifecycle Management
     @{
     */
-#pragma region
+
     /**
     Called after the window handle state is transited to `Creating`.
 
@@ -1445,14 +1458,15 @@ protected:
             This method must not throw, otherwise the behavior is undefined.
     */
     virtual void OnClosing(const ClosingInfo& event_info);
-#pragma endregion
     /**@}*/
+#pragma endregion
 
+#pragma region Protected Visibility Management
     /**
     @name Protected Visibility Management
     @{
     */
-#pragma region
+
     /**
     Called when the window shows.
 
@@ -1476,14 +1490,15 @@ protected:
         call the same method of base class if they override this method.
     */
     virtual void OnHide(const HideInfo& event_info);
-#pragma endregion
     /**@}*/
+#pragma endregion
 
+#pragma region Protected Focus Management
     /**
     @name Protected Focus Management
     @{
     */
-#pragma region
+
     /**
     Called after the window is activated.
 
@@ -1561,14 +1576,37 @@ protected:
         Derived classes should call the same method of base class if they override this method.
     */
     virtual void OnFocusedControlChanged(const FocusedControlChangedInfo& event_info);
-#pragma endregion
     /**@}*/
+#pragma endregion
 
+#pragma region Protected Mouse Input Handling
+    /**
+    @name Protected Mouse Input Handling
+    @{
+    */
+
+    virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
+
+    /**
+    Called after the mouse capture control is changed.
+
+    @param event_info
+        Information of the event.
+        
+    @details
+        The default implementation of this method raises the `MouseCaptureChangedEvent()`. Derived 
+        classes should call the same method of base class if they override this method.
+    */
+    virtual void OnMouseCaptureControlChanged(const MouseCaptureControlChangedInfo& event_info);
+    /**@}*/
+#pragma endregion
+
+#pragma region Protected Message Handling
     /**
     @name Protected Message Handling
     @{
     */
-#pragma region
+
     /**
     Called when the window receives a message, but before handling it.
 
@@ -1599,8 +1637,8 @@ protected:
             This method must not throw, otherwise the behavior is undefined.
     */
     virtual void OnMessageHandled(const MessageHandledInfo& event_info);
-#pragma endregion
     /**@}*/
+#pragma endregion
 
     /**
      Preprocess a key message.
@@ -1619,18 +1657,7 @@ protected:
      */
     virtual bool PreprocessMessage(const KeyMessage& message);
 
-    virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
-
     virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
-
-    /**
-    Handles mouse capture changed event. This method is called after the mouse capture control
-    changed.
-
-    The default implementation raise MouseCaptureChangedEvent. Derived classes should call the same 
-    method of base class.
-    */
-    virtual void OnMouseCaptureControlChanged(const MouseCaptureControlChangedInfo& event_info);
 
 private:
     friend class Application;
@@ -1640,28 +1667,10 @@ private:
     friend class WindowClassRegistry;
 
     void NeedRepaintRect(const zaf::Rect& rect);
-    void SetMouseOverControl(
-        const std::shared_ptr<Control>& mouse_over_control, 
-        const MouseMessage& message);
-    void ChangeControlMouseOverState(
-        const std::shared_ptr<Control>& target_control,
-        bool is_mouse_over,
-        const std::shared_ptr<Control>& changed_control);
-    void SetMouseCaptureControl(
-        const std::shared_ptr<Control>& capture_control,
-        bool is_releasing);
-    void CancelMouseCapture();
 
     void SetHighlightControl(const std::shared_ptr<Control>& inspected_control);
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
     void BeginSelectInspectedControl();
-
-private:
-    enum class TrackMouseMode {
-        None,
-        ClientArea,
-        NonClientArea,
-    };
 
 private:
     static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
@@ -1679,87 +1688,63 @@ private:
     void HandleWMPAINT();
     void PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect);
     void HandleWMSHOWWINDOW(const ShowWindowMessage& message);
-    bool RedirectMouseWheelMessage(const Message& message);
-    bool HandleMouseMessage(const MouseMessage& message);
-    bool RouteMouseEvent(const MouseMessage& message);
-    std::shared_ptr<Control> GetBeginRoutingControlForMouseMessage(
-        const MouseMessage& message,
-        Point& position_at_control) const;
     void HighlightControlAtPosition(const Point& position);
     void SelectInspectedControl();
-    void TrackMouseByMouseMove(const MouseMessage& message);
-    void TrackMouse(bool is_non_client);
-    void OnMouseHover(const Message& message);
-    void OnMouseLeave(const Message& message);
     bool HandleKeyboardMessage(const Message& message);
-    void TryToShowTooltipWindow();
-    void HideTooltipWindow();
-    bool HandleWMSETCURSOR(const Message& message);
     void HandleIMEMessage(const Message& message);
     
-    void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
-    void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
-
 private:
     d2d::WindowRenderer renderer_;
     std::weak_ptr<Window> owner_;
 
-#pragma region Style Related
+    // Style Related
     std::unique_ptr<internal::WindowStyleFacet> style_facet_;
-#pragma endregion
 
-#pragma region Geometry Related
+    // Geometry Related
     std::unique_ptr<internal::WindowGeometryFacet> geometry_facet_;
     Event<WindowSizeChangedInfo> size_changed_event_;
-#pragma endregion
 
-#pragma region Lifecycle Related
+    // Lifecycle Related
     std::unique_ptr<internal::WindowLifecycleFacet> lifecycle_facet_;
     Event<HandleCreatingInfo> handle_creating_event_;
     Event<HandleCreatedInfo> handle_created_event_;
     Event<ClosingInfo> closing_event_;
     Event<DestroyingInfo> destroying_event_;
     Event<DestroyedInfo> destroyed_event_;
-#pragma endregion
 
-#pragma region Visibility Related
+    // Visibility Related
     std::unique_ptr<internal::WindowVisibilityFacet> visibility_facet_;
     Event<ShowInfo> show_event_;
     Event<HideInfo> hide_event_;
-#pragma endregion
 
-#pragma region Focus Related
+    // Focus Related
     std::unique_ptr<internal::WindowFocusFacet> focus_facet_;
     Event<ActivatedInfo> activated_event_;
     Event<DeactivatedInfo> deactivated_event_;
     Event<WindowFocusGainedInfo> focus_gained_event_;
     Event<WindowFocusLostInfo> focus_lost_event_;
     Event<FocusedControlChangedInfo> focused_control_changed_event_;
-#pragma endregion
 
-#pragma region Message Handling Related
+    // Mouse input Related
+    std::unique_ptr<internal::WindowMouseFacet> mouse_facet_;
+    Event<MouseCaptureControlChangedInfo> mouse_capture_control_changed_event_;
+    
+    // Message Handling Related
     Event<MessageReceivedInfo> message_received_event_;
     Event<MessageHandledInfo> message_handled_event_;
-#pragma endregion
-
-    TrackMouseMode track_mouse_mode_{ TrackMouseMode::None };
 
     std::shared_ptr<Control> root_control_;
-    std::shared_ptr<Control> mouse_over_control_;
-    std::shared_ptr<Control> mouse_capture_control_;
     
-    std::shared_ptr<TooltipWindow> tooltip_window_;
-
     std::weak_ptr<InspectorWindow> inspector_window_;
     std::shared_ptr<Control> highlight_control_;
     bool is_selecting_inspector_control_{};
 
     Event<RootControlChangedInfo> root_control_changed_event_;
-    Event<MouseCaptureControlChangedInfo> mouse_capture_control_changed_event_;
 
     friend class internal::WindowFocusFacet;
     friend class internal::WindowGeometryFacet;
     friend class internal::WindowLifecycleFacet;
+    friend class internal::WindowMouseFacet;
     friend class internal::WindowStyleFacet;
     friend class internal::WindowVisibilityFacet;
 };

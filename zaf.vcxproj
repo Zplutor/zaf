@@ -410,6 +410,7 @@
     <ClCompile Include="src\zaf\window\internal\window_facets\window_focus_facet.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_facets\window_geometry_facet.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_facets\window_lifecycle_facet.cpp" />
+    <ClCompile Include="src\zaf\window\internal\window_facets\window_mouse_facet.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_facets\window_style_facet.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_facets\window_visibility_facet.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_styles.cpp" />
@@ -1001,6 +1002,7 @@
     <ClInclude Include="src\zaf\window\internal\window_facets\window_focus_facet.h" />
     <ClInclude Include="src\zaf\window\internal\window_facets\window_geometry_facet.h" />
     <ClInclude Include="src\zaf\window\internal\window_facets\window_lifecycle_facet.h" />
+    <ClInclude Include="src\zaf\window\internal\window_facets\window_mouse_facet.h" />
     <ClInclude Include="src\zaf\window\internal\window_facets\window_style_facet.h" />
     <ClInclude Include="src\zaf\window\internal\window_facets\window_visibility_facet.h" />
     <ClInclude Include="src\zaf\window\internal\window_handle_state_data.h" />
