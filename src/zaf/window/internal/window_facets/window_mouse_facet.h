@@ -35,6 +35,8 @@ public:
 
     bool HandleWMSETCURSOR(const Message& message);
 
+    Point MousePosition() const noexcept;
+
 private:
     void TrackMouseByMouseMove(const MouseMessage& message);
     void TrackMouse(bool is_non_client);

@@ -518,4 +518,15 @@ void WindowMouseFacet::HideTooltipWindow() {
     }
 }
 
+
+Point WindowMouseFacet::MousePosition() const noexcept {
+
+    POINT point_in_global{};
+    GetCursorPos(&point_in_global);
+
+    auto screen = window_.Screen();
+    auto point_in_screen = screen->TransformFromGlobal(Point::FromPOINT(point_in_global));
+    return window_.TransformFromScreen(point_in_screen);
+}
+
 }

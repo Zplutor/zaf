@@ -8,14 +8,12 @@
 #include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/graphic_factory.h>
-#include <zaf/internal/control/keyboard_event_routing.h>
-#include <zaf/internal/control/mouse_event_routing.h>
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
-#include <zaf/internal/window/window_focused_control_manager.h>
 #include <zaf/window/inspector/inspector_window.h>
 #include <zaf/window/internal/window_facets/window_focus_facet.h>
 #include <zaf/window/internal/window_facets/window_geometry_facet.h>
+#include <zaf/window/internal/window_facets/window_keyboard_facet.h>
 #include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
 #include <zaf/window/internal/window_facets/window_mouse_facet.h>
 #include <zaf/window/internal/window_facets/window_style_facet.h>
@@ -69,7 +67,8 @@ Window::Window(std::shared_ptr<WindowClass> window_class) :
     lifecycle_facet_(std::make_unique<internal::WindowLifecycleFacet>(*this)),
     visibility_facet_(std::make_unique<internal::WindowVisibilityFacet>(*this)),
     focus_facet_(std::make_unique<internal::WindowFocusFacet>(*this)),
-    mouse_facet_(std::make_unique<internal::WindowMouseFacet>(*this)) {
+    mouse_facet_(std::make_unique<internal::WindowMouseFacet>(*this)),
+    keyboard_facet_(std::make_unique<internal::WindowKeyboardFacet>(*this)) {
 
 }
 
@@ -647,6 +646,19 @@ std::optional<HitTestResult> Window::HitTest(const HitTestMessage& message) {
     return mouse_facet_->HitTest(message);
 }
 
+
+Point Window::MousePosition() const noexcept {
+    return mouse_facet_->MousePosition();
+}
+
+#pragma endregion
+
+#pragma region Keyboard Input Handling
+
+bool Window::PreprocessMessage(const KeyMessage& message) {
+    return keyboard_facet_->PreprocessMessage(message);
+}
+
 #pragma endregion
 
 #pragma region Message Handling
@@ -738,7 +750,31 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return 0;
 #pragma endregion
 
+#pragma region Focus Messages
+    case WM_ACTIVATE:
+        focus_facet_->HandleWMACTIVATE(ActivateMessage{ message });
+        return 0;
+
+    case WM_SETFOCUS:
+        focus_facet_->HandleWMSETFOCUS(message);
+        return 0;
+
+    case WM_KILLFOCUS:
+        focus_facet_->HandleWMKILLFOCUS(message);
+        return 0;
+
+    case WM_MOUSEACTIVATE:
+        return focus_facet_->HandleWMMOUSEACTIVATE();
+#pragma endregion
+
 #pragma region Mouse Messages
+    case WM_NCHITTEST: {
+        auto hit_test_result = HitTest(HitTestMessage{ message });
+        if (hit_test_result) {
+            return static_cast<LRESULT>(*hit_test_result);
+        }
+        return std::nullopt;
+    }
     case WM_MOUSEMOVE:
     case WM_NCMOUSEMOVE:
     case WM_LBUTTONDOWN:
@@ -785,6 +821,27 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
     }
 #pragma endregion
 
+#pragma region Keyboard Messages
+    case WM_KEYDOWN:
+    case WM_KEYUP:
+    case WM_CHAR:
+    case WM_SYSKEYDOWN:
+    case WM_SYSKEYUP:
+    case WM_SYSCHAR:
+        if (keyboard_facet_->HandleKeyboardMessage(message)) {
+            return 0;
+        }
+        return std::nullopt;
+
+    case WM_IME_STARTCOMPOSITION:
+    case WM_IME_COMPOSITION:
+    case WM_IME_ENDCOMPOSITION:
+        keyboard_facet_->HandleIMEMessage(message);
+        //For now, we always pass IME messages to the default window procedure even if we handle 
+        //the messages. This may be adjusted once we are more familiar with the IME mechanism.
+        return std::nullopt;
+#pragma endregion
+
     case WM_NCCALCSIZE:
         return HandleWMNCCALCSIZE(message);
 
@@ -799,50 +856,6 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
     case WM_SHOWWINDOW:
         HandleWMSHOWWINDOW(ShowWindowMessage{ message });
         return 0;
-
-    case WM_ACTIVATE:
-        focus_facet_->HandleWMACTIVATE(ActivateMessage{ message });
-        return 0;
-
-    case WM_SETFOCUS:
-        focus_facet_->HandleWMSETFOCUS(message);
-        return 0;
-
-    case WM_KILLFOCUS:
-        focus_facet_->HandleWMKILLFOCUS(message);
-        return 0;
-
-    case WM_MOUSEACTIVATE:
-        return focus_facet_->HandleWMMOUSEACTIVATE();
-
-    case WM_NCHITTEST: {
-        auto hit_test_result = HitTest(HitTestMessage{ message });
-        if (hit_test_result) {
-            return static_cast<LRESULT>(*hit_test_result);
-        }
-        else {
-            return std::nullopt;
-        }
-    }
-
-    case WM_KEYDOWN:
-    case WM_KEYUP:
-    case WM_CHAR:
-    case WM_SYSKEYDOWN:
-    case WM_SYSKEYUP:
-    case WM_SYSCHAR:
-        if (HandleKeyboardMessage(message)) {
-            return 0;
-        }
-        return std::nullopt;
-
-    case WM_IME_STARTCOMPOSITION:
-    case WM_IME_COMPOSITION:
-    case WM_IME_ENDCOMPOSITION:
-        HandleIMEMessage(message);
-        //For now, we always pass IME messages to the default window procedure even if we handle 
-        //the messages. This may be adjusted once we are more familiar with the IME mechanism.
-        return std::nullopt;
 
     default:
         return std::nullopt;
@@ -906,42 +919,6 @@ void Window::SetOwner(std::shared_ptr<Window> owner) {
     }
 
     owner_ = std::move(owner);
-}
-
-
-bool Window::PreprocessMessage(const KeyMessage& message) {
-
-    if (focus_facet_->TryToPreprocessTabKeyMessage(message)) {
-        return true;
-    }
-
-    if (TryToPreprocessInspectorShortcutMessage(message)) {
-        return true;
-    }
-
-    return false;
-}
-
-
-bool Window::TryToPreprocessInspectorShortcutMessage(const KeyMessage& message) {
-#ifndef NDEBUG
-    if (message.ID() != WM_KEYDOWN) {
-        return false;
-    }
-
-    if (message.Key() != Key::F12) {
-        return false;
-    }
-
-    if ((GetKeyState(VK_CONTROL) >> 15) == 0) {
-        return false;
-    }
-
-    ShowInspectorWindow();
-    return true;
-#else
-    return false;
-#endif
 }
 
 
@@ -1131,42 +1108,6 @@ void Window::SelectInspectedControl() {
 }
 
 
-bool Window::HandleKeyboardMessage(const Message& message) {
-
-    const auto& focused_control = this->FocusedControl();
-    if (focused_control) {
-        return internal::RouteKeyboardEvent(focused_control, message);
-    }
-    return false;
-}
-
-
-void Window::HandleIMEMessage(const Message& message) {
-
-    auto focused_control = this->FocusedControl();
-    if (!focused_control) {
-        return;
-    }
-
-    switch (message.ID()) {
-    case WM_IME_STARTCOMPOSITION:
-        focused_control->OnIMEStartComposition(IMEStartCompositionInfo{ 
-            focused_control,
-            message 
-        });
-        break;
-    case WM_IME_ENDCOMPOSITION:
-        focused_control->OnIMEEndComposition(IMEEndCompositionInfo{ focused_control, message });
-        break;
-    case WM_IME_COMPOSITION:
-        focused_control->OnIMEComposition(IMECompositionInfo{ focused_control, message });
-        break;
-    default:
-        break;
-    }
-}
-
-
 void Window::SetRootControl(const std::shared_ptr<Control>& control) {
 
     ZAF_EXPECT(control);
@@ -1216,21 +1157,6 @@ void Window::OnRootControlChanged(const RootControlChangedInfo& event_info) {
 
 rx::Observable<RootControlChangedInfo> Window::RootControlChangedEvent() const {
     return root_control_changed_event_.GetObservable();
-}
-
-
-Point Window::GetMousePosition() const {
-
-    POINT cursor_point = { 0 };
-    GetCursorPos(&cursor_point);
-    ScreenToClient(Handle(), &cursor_point);
-
-    Point point_in_pixels{ 
-        static_cast<float>(cursor_point.x), 
-        static_cast<float>(cursor_point.y) 
-    };
-
-    return ToDIPs(point_in_pixels, DPI());
 }
 
 

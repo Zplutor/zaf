@@ -46,6 +46,7 @@ class WindowFocusedControlManager;
 class ControlUpdateLock;
 class ControlUpdateState;
 class InspectorPort;
+class WindowKeyboardFacet;
 class WindowLifecycleFacet;
 class WindowMouseFacet;
 }
@@ -1013,6 +1014,7 @@ private:
     friend class Window;
     friend class internal::ControlEventInvokerBinder;
     friend class internal::WindowFocusedControlManager;
+    friend class internal::WindowKeyboardFacet;
     friend class internal::WindowLifecycleFacet;
     friend class internal::WindowMouseFacet;
 

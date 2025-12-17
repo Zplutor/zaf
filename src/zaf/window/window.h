@@ -37,6 +37,7 @@
 namespace zaf::internal {
 class WindowFocusFacet;
 class WindowGeometryFacet;
+class WindowKeyboardFacet;
 class WindowLifecycleFacet;
 class WindowMouseFacet;
 class WindowStyleFacet;
@@ -1236,6 +1237,11 @@ public:
     */
     rx::Observable<MouseCaptureControlChangedInfo> MouseCaptureControlChangedEvent() const;
 
+    /**
+    Gets the position of the mouse cursor in the window's content coordinate.
+    */
+    Point MousePosition() const noexcept;
+
     /**@}*/
 #pragma endregion
 
@@ -1322,11 +1328,6 @@ public:
     d2d::Renderer& Renderer() {
         return renderer_;
     }
-
-    /**
-     Get position of the mouse cursor in current window's coordinate system.
-     */
-    Point GetMousePosition() const;
 
     void ShowInspectorWindow();
 
@@ -1601,6 +1602,32 @@ protected:
     /**@}*/
 #pragma endregion
 
+#pragma region Protected Keyboard Input Handling
+    /**
+    @name Protected Keyboard Input Handling
+    @{
+    */
+
+    /**
+     Preprocess a key message.
+
+     @param message
+         Contains information of the message.
+
+     @return
+         Return true if the method processes the message, otherwise return false.
+
+     This method is called before dispatching the WM_KEYDOWN and WM_SYSKEYDOWN messages.
+     If the method returns true, the message would not been dispatched.
+
+     Derived classes should always call the same method of super class if it doesn't
+     process the message.
+     */
+    virtual bool PreprocessMessage(const KeyMessage& message);
+
+    /**@}*/
+#pragma endregion
+
 #pragma region Protected Message Handling
     /**
     @name Protected Message Handling
@@ -1640,23 +1667,6 @@ protected:
     /**@}*/
 #pragma endregion
 
-    /**
-     Preprocess a key message.
-
-     @param message
-         Contains information of the message.
-
-     @return 
-         Return true if the method processes the message, otherwise return false.
-
-     This method is called before dispatching the WM_KEYDOWN and WM_SYSKEYDOWN messages.
-     If the method returns true, the message would not been dispatched.
-
-     Derived classes should always call the same method of super class if it doesn't 
-     process the message.
-     */
-    virtual bool PreprocessMessage(const KeyMessage& message);
-
     virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
 
 private:
@@ -1680,8 +1690,6 @@ private:
     void CreateRenderer();
     void RecreateRenderer();
 
-    bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);
-
     LRESULT RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam);
     std::optional<LRESULT> HandleMessage(const Message& message);
 
@@ -1690,8 +1698,6 @@ private:
     void HandleWMSHOWWINDOW(const ShowWindowMessage& message);
     void HighlightControlAtPosition(const Point& position);
     void SelectInspectedControl();
-    bool HandleKeyboardMessage(const Message& message);
-    void HandleIMEMessage(const Message& message);
     
 private:
     d2d::WindowRenderer renderer_;
@@ -1728,6 +1734,9 @@ private:
     // Mouse input Related
     std::unique_ptr<internal::WindowMouseFacet> mouse_facet_;
     Event<MouseCaptureControlChangedInfo> mouse_capture_control_changed_event_;
+
+    // Keyboard input Related
+    std::unique_ptr<internal::WindowKeyboardFacet> keyboard_facet_;
     
     // Message Handling Related
     Event<MessageReceivedInfo> message_received_event_;
@@ -1742,6 +1751,7 @@ private:
     Event<RootControlChangedInfo> root_control_changed_event_;
 
     friend class internal::WindowFocusFacet;
+    friend class internal::WindowKeyboardFacet;
     friend class internal::WindowGeometryFacet;
     friend class internal::WindowLifecycleFacet;
     friend class internal::WindowMouseFacet;

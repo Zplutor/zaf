@@ -1712,7 +1712,7 @@ const Point Control::GetMousePosition() const {
         return Point();
     }
     
-    Point mouse_position = window->GetMousePosition();
+    Point mouse_position = window->MousePosition();
     Point absolute_position = *PositionInWindow();
     mouse_position.x -= absolute_position.x;
     mouse_position.y -= absolute_position.y;
