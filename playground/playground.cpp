@@ -18,12 +18,6 @@ protected:
 
         __super::Initialize();
 
-        Disposables() += zaf::rx::Timer::Once(
-            std::chrono::seconds(3), 
-            zaf::rx::MainThreadScheduler::Instance()
-        ).Subscribe([this](std::size_t) {
-            this->Destroy();
-        });
     }
 
 private:
@@ -50,8 +44,10 @@ std::shared_ptr<zaf::WindowHolder> holder;
 void BeginRun(const zaf::BeginRunInfo& event_info) {
 
     auto window = zaf::Create<Window>();
+    window->SetIsPopup(true);
     window->SetIsSizable(true);
     window->SetHasTitleBar(true);
+    window->SetUseCustomFrame(true);
 
     window->SetRect({ 100.25, 100.25, 200.25, 200.25 });
     window->Show();

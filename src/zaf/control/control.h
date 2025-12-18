@@ -49,6 +49,7 @@ class InspectorPort;
 class WindowKeyboardFacet;
 class WindowLifecycleFacet;
 class WindowMouseFacet;
+class WindowRenderFacet;
 }
 
 class Canvas;
@@ -1017,6 +1018,7 @@ private:
     friend class internal::WindowKeyboardFacet;
     friend class internal::WindowLifecycleFacet;
     friend class internal::WindowMouseFacet;
+    friend class internal::WindowRenderFacet;
 
     void SetWindow(const std::shared_ptr<zaf::Window>& window) {
         window_ = window;

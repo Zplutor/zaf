@@ -269,4 +269,47 @@ void WindowStyleFacet::SetActivateOptions(zaf::ActivateOptions options) {
     activate_options_ = options;
 }
 
+
+bool WindowStyleFacet::UseCustomFrame() const noexcept {
+    return use_custom_frame_;
+}
+
+
+void WindowStyleFacet::SetUseCustomFrame(bool use_custom_frame) noexcept {
+
+    if (use_custom_frame_ == use_custom_frame) {
+        return;
+    }
+
+    use_custom_frame_ = use_custom_frame;
+
+    auto handle_state = window_.HandleState();
+    if (handle_state == WindowHandleState::Creating || 
+        handle_state == WindowHandleState::Created) {
+
+        // Call SetWindowPos to re-calculate the non-client area.
+        SetWindowPos(
+            window_.Handle(),
+            nullptr,
+            0,
+            0,
+            0,
+            0,
+            SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+    }
+}
+
+
+std::optional<LRESULT> WindowStyleFacet::HandleWMNCCALCSIZE(const Message& message) {
+
+    // WM_NCCALCSIZE must be passed to default window procedure if wparam is FALSE, no matter if
+    // the window uses custom frame, otherwise the window could have some odd behaviors.
+    if (message.WParam() == FALSE) {
+        return std::nullopt;
+    }
+
+    //Return 0 to remove the default window frame.
+    return 0;
+}
+
 }

@@ -5,17 +5,15 @@
 #include <zaf/base/error/win32_error.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/pixel_snapping.h>
-#include <zaf/graphic/canvas.h>
 #include <zaf/graphic/dpi.h>
-#include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/tab_stop_utility.h>
-#include <zaf/internal/theme.h>
 #include <zaf/window/internal/window_facets/window_focus_facet.h>
 #include <zaf/window/internal/window_facets/window_geometry_facet.h>
 #include <zaf/window/internal/window_facets/window_inspect_facet.h>
 #include <zaf/window/internal/window_facets/window_keyboard_facet.h>
 #include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
 #include <zaf/window/internal/window_facets/window_mouse_facet.h>
+#include <zaf/window/internal/window_facets/window_render_facet.h>
 #include <zaf/window/internal/window_facets/window_style_facet.h>
 #include <zaf/window/internal/window_facets/window_visibility_facet.h>
 #include <zaf/window/internal/window_style_shim.h>
@@ -48,6 +46,7 @@ Window::Window(std::shared_ptr<WindowClass> window_class) :
     geometry_facet_(std::make_unique<internal::WindowGeometryFacet>(*this)),
     lifecycle_facet_(std::make_unique<internal::WindowLifecycleFacet>(*this)),
     visibility_facet_(std::make_unique<internal::WindowVisibilityFacet>(*this)),
+    render_facet_(std::make_unique<internal::WindowRenderFacet>(*this)),
     focus_facet_(std::make_unique<internal::WindowFocusFacet>(*this)),
     mouse_facet_(std::make_unique<internal::WindowMouseFacet>(*this)),
     keyboard_facet_(std::make_unique<internal::WindowKeyboardFacet>(*this)),
@@ -265,6 +264,16 @@ ActivateOptions Window::ActivateOptions() const noexcept {
 
 void Window::SetActivateOptions(zaf::ActivateOptions options) {
     style_facet_->SetActivateOptions(options);
+}
+
+
+bool Window::UseCustomFrame() const noexcept {
+    return style_facet_->UseCustomFrame();
+}
+
+
+void Window::SetUseCustomFrame(bool use_custom_frame) noexcept {
+    style_facet_->SetUseCustomFrame(use_custom_frame);
 }
 
 #pragma endregion
@@ -781,6 +790,14 @@ LRESULT Window::RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lpa
 std::optional<LRESULT> Window::HandleMessage(const Message& message) {
 
     switch (message.ID()) {
+
+    case WM_NCCALCSIZE:
+        return style_facet_->HandleWMNCCALCSIZE(message);
+
+    case WM_SHOWWINDOW:
+        HandleWMSHOWWINDOW(ShowWindowMessage{ message });
+        return 0;
+
 #pragma region Lifecycle Messages
     case WM_CREATE:
         lifecycle_facet_->HandleWMCREATE();
@@ -814,6 +831,16 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
 
     case WM_SIZE:
         geometry_facet_->HandleWMSIZE(message);
+        return 0;
+#pragma endregion
+
+#pragma region Rendering Messages
+    case WM_ERASEBKGND:
+        //Don't erase background to avoid blinking.
+        return TRUE;
+
+    case WM_PAINT:
+        render_facet_->HandleWMPAINT();
         return 0;
 #pragma endregion
 
@@ -909,21 +936,6 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return std::nullopt;
 #pragma endregion
 
-    case WM_NCCALCSIZE:
-        return HandleWMNCCALCSIZE(message);
-
-    case WM_ERASEBKGND:
-        //Don't erase background to avoid blinking.
-        return TRUE;
-
-    case WM_PAINT:
-        HandleWMPAINT();
-        return 0;
-
-    case WM_SHOWWINDOW:
-        HandleWMSHOWWINDOW(ShowWindowMessage{ message });
-        return 0;
-
     default:
         return std::nullopt;
     }
@@ -957,67 +969,6 @@ WindowMessager Window::Messager() noexcept {
 #pragma endregion
 
 
-void Window::CreateRenderer() {
-
-    lifecycle_facet_->HandleStateData().renderer = 
-        GraphicFactory::Instance().CreateWindowRenderer(Handle());
-}
-
-
-void Window::RecreateRenderer() {
-
-    root_control_->ReleaseRendererResources();
-    CreateRenderer();
-}
-
-
-void Window::HandleWMPAINT() {
-
-    auto handle = Handle();
-
-    zaf::Rect dirty_rect;
-    RECT win32_rect{};
-    if (GetUpdateRect(handle, &win32_rect, TRUE)) {
-        dirty_rect = ToDIPs(Rect::FromRECT(win32_rect), DPI());
-    }
-    else {
-        dirty_rect = root_control_->Rect();
-    }
-
-    //The update rect must be validated before painting.
-    //Because some controls may call NeedRepaint while it is painting,
-    //and this may fails if there is an invalidated update rect.
-    ValidateRect(handle, nullptr);
-
-    auto renderer = lifecycle_facet_->HandleStateData().renderer; 
-    renderer.BeginDraw();
-    Canvas canvas(renderer);
-    {
-        auto layer_guard = canvas.PushRegion(root_control_->Rect(), dirty_rect);
-
-        //Paint window background color first.
-        {
-            auto state_guard = canvas.PushState();
-            canvas.SetBrushWithColor(Color::FromRGB(internal::ControlBackgroundColorRGB));
-            canvas.DrawRectangle(dirty_rect);
-        }
-
-        root_control_->Repaint(canvas, dirty_rect);
-
-        inspect_facet_->PaintInspectedControl(canvas, dirty_rect);
-    }
-
-    try {
-        renderer.EndDraw();
-    }
-    catch (const COMError& error) {
-        if (error.code() == COMError::MakeCode(D2DERR_RECREATE_TARGET)) {
-            RecreateRenderer();
-        }
-    }
-}
-
-
 void Window::NeedRepaintRect(const zaf::Rect& rect) {
 
     auto handle = Handle();
@@ -1038,26 +989,6 @@ void Window::HandleWMSHOWWINDOW(const ShowWindowMessage& message) {
     else {
         OnShow(event_info);
     }
-}
-
-
-std::optional<LRESULT> Window::HandleWMNCCALCSIZE(const Message& message) {
-
-    //WM_NCCALCSIZE must be passed to default window procedure if wparam is FALSE, no matter if
-    //the window has customized style, otherwise the window could have some odd behaviors.
-    if (message.WParam() == FALSE) {
-        return std::nullopt;
-    }
-
-    //We need to remove the default window frame in WM_NCCALCSIZE for overlapped window without 
-    //boder. It is no need to do that for popup window without boder.
-    bool has_customized_style = !IsPopup() && !HasBorder();
-    if (!has_customized_style) {
-        return std::nullopt;
-    }
-
-    //Return TRUE to remove the default window frame.
-    return TRUE;
 }
 
 

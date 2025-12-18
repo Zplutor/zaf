@@ -2,6 +2,7 @@
 
 #include <zaf/base/non_copyable.h>
 #include <zaf/window/activate_options.h>
+#include <zaf/window/message/message.h>
 
 namespace zaf {
 class Window;
@@ -51,6 +52,10 @@ public:
     zaf::ActivateOptions ActivateOptions() const noexcept;
     void SetActivateOptions(zaf::ActivateOptions options);
 
+    bool UseCustomFrame() const noexcept;
+    void SetUseCustomFrame(bool use_custom_frame) noexcept;
+    std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
+
 private:
     template<typename PROPERTY>
     bool HasStyleProperty(PROPERTY property) const noexcept;
@@ -61,6 +66,7 @@ private:
     Window& window_;
 
     std::shared_ptr<WindowClass> class_;
+    bool use_custom_frame_{ false };
     zaf::ActivateOptions activate_options_{ zaf::ActivateOptions::Normal };
 };
 

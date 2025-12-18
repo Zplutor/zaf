@@ -40,6 +40,7 @@ class WindowInspectFacet;
 class WindowKeyboardFacet;
 class WindowLifecycleFacet;
 class WindowMouseFacet;
+class WindowRenderFacet;
 class WindowStyleFacet;
 class WindowVisibilityFacet;
 }
@@ -450,6 +451,24 @@ public:
         Thrown if fails to change the window style.
     */
     void SetActivateOptions(zaf::ActivateOptions options);
+
+    /**
+    Indicates whether the window uses a custom frame rather than the system frame.
+    */
+    bool UseCustomFrame() const noexcept;
+
+    /**
+    Sets whether the window uses a custom frame rather than the system frame.
+
+    @param use_custom_frame
+        A bool value indicates whether the window uses a custom frame.
+
+    @details
+        Setting this property to true will remove the system frame of the window, including the
+        title bar and borders, and the window will be responsible for drawing its own frame and
+        handling related behaviors, such as moving and resizing.
+    */
+    void SetUseCustomFrame(bool use_custom_frame) noexcept;
     /**@}*/
 #pragma endregion
 
@@ -1666,12 +1685,6 @@ private:
     static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
     LRESULT RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam);
     std::optional<LRESULT> HandleMessage(const Message& message);
-
-    std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
-    void CreateRenderer();
-    void RecreateRenderer();
-
-    void HandleWMPAINT();
     void HandleWMSHOWWINDOW(const ShowWindowMessage& message);
     
 private:
@@ -1698,6 +1711,9 @@ private:
     std::unique_ptr<internal::WindowVisibilityFacet> visibility_facet_;
     Event<ShowInfo> show_event_;
     Event<HideInfo> hide_event_;
+
+    // Rendering Related
+    std::unique_ptr<internal::WindowRenderFacet> render_facet_;
 
     // Focus Related
     std::unique_ptr<internal::WindowFocusFacet> focus_facet_;
@@ -1732,6 +1748,7 @@ private:
     friend class internal::WindowKeyboardFacet;
     friend class internal::WindowLifecycleFacet;
     friend class internal::WindowMouseFacet;
+    friend class internal::WindowRenderFacet;
     friend class internal::WindowStyleFacet;
     friend class internal::WindowVisibilityFacet;
 };
@@ -1770,6 +1787,7 @@ ZAF_OBJECT_PROPERTY(MouseCaptureControl)
 ZAF_OBJECT_PROPERTY(MouseOverControl)
 ZAF_OBJECT_PROPERTY(FocusedControl)
 ZAF_OBJECT_PROPERTY(IsVisible)
+ZAF_OBJECT_PROPERTY(UseCustomFrame)
 ZAF_OBJECT_END
 
 std::shared_ptr<Window> GetWindowFromHandle(HWND handle);

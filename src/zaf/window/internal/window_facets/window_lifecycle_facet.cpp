@@ -8,6 +8,7 @@
 #include <zaf/window/internal/window_facets/window_focus_facet.h>
 #include <zaf/window/internal/window_facets/window_geometry_facet.h>
 #include <zaf/window/internal/window_facets/window_mouse_facet.h>
+#include <zaf/window/internal/window_facets/window_render_facet.h>
 #include <zaf/window/invalid_handle_state_error.h>
 #include <zaf/window/tooltip_window.h>
 #include <zaf/window/window.h>
@@ -199,6 +200,18 @@ void WindowLifecycleFacet::HandleWMCREATE() {
 
 void WindowLifecycleFacet::ProcessCreatedState() {
 
+    // Call SetWindowPos to re-calculate the non-client area if custom frame is used.
+    if (window_.UseCustomFrame()) {
+        SetWindowPos(
+            window_.Handle(),
+            nullptr,
+            0, 
+            0,
+            0,
+            0,
+            SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+    }
+
     auto handle = Handle();
     auto dpi = static_cast<float>(GetDpiForWindow(handle));
 
@@ -206,7 +219,7 @@ void WindowLifecycleFacet::ProcessCreatedState() {
     GetClientRect(handle, &client_rect);
     window_.root_control_->SetRect(ToDIPs(Rect::FromRECT(client_rect), dpi));
 
-    window_.CreateRenderer();
+    window_.render_facet_->CreateRenderer();
 
     window_.OnHandleCreated(HandleCreatedInfo{ window_.shared_from_this() });
 }
