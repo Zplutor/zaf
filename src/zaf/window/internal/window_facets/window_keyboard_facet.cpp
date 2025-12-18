@@ -38,7 +38,7 @@ bool WindowKeyboardFacet::TryToPreprocessInspectorShortcutMessage(const KeyMessa
         return false;
     }
 
-    window_.ShowInspectorWindow();
+    window_.ShowInspector();
     return true;
 #else
     return false;

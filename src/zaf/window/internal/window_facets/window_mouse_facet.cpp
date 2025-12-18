@@ -1,5 +1,6 @@
 #include <zaf/window/internal/window_facets/window_mouse_facet.h>
 #include <zaf/internal/control/mouse_event_routing.h>
+#include <zaf/window/internal/window_facets/window_inspect_facet.h>
 #include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
 #include <zaf/window/tooltip_window.h>
 #include <zaf/window/window.h>
@@ -59,8 +60,8 @@ bool WindowMouseFacet::HandleGeneralMouseMessage(const MouseMessage& message) {
 
     if (message.ID() == WM_MOUSEMOVE || message.ID() == WM_NCMOUSEMOVE) {
 
-        if (window_.is_selecting_inspector_control_) {
-            window_.HighlightControlAtPosition(message.MousePosition());
+        if (window_.inspect_facet_->IsSelectingInspectedControl()) {
+            window_.inspect_facet_->HighlightControlAtPosition(message.MousePosition());
             return true;
         }
 
@@ -72,8 +73,8 @@ bool WindowMouseFacet::HandleGeneralMouseMessage(const MouseMessage& message) {
 
         if (message.ID() == WM_LBUTTONDOWN || message.ID() == WM_RBUTTONDOWN) {
 
-            if (window_.is_selecting_inspector_control_) {
-                window_.SelectInspectedControl();
+            if (window_.inspect_facet_->IsSelectingInspectedControl()) {
+                window_.inspect_facet_->SelectInspectedControl();
                 return true;
             }
         }

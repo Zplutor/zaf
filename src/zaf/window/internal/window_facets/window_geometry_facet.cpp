@@ -530,8 +530,9 @@ void WindowGeometryFacet::HandleWMSIZE(const Message& message) {
         static_cast<float>(HIWORD(message.LParam()))
     };
 
-    if (window_.renderer_) {
-        window_.renderer_.Resize(new_size);
+    auto& state_data = window_.lifecycle_facet_->HandleStateData();
+    if (state_data.renderer) {
+        state_data.renderer.Resize(new_size);
     }
 
     zaf::Rect root_control_rect{ Point(), ToDIPs(new_size, DPI()) };

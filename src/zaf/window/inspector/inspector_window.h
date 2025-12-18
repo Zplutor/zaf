@@ -9,6 +9,7 @@
 namespace zaf {
 namespace internal {
 class InspectDataSource;
+class WindowInspectFacet;
 }
 
 class TreeControl;
@@ -38,7 +39,7 @@ protected:
     void Initialize() override;
 
 private:
-    friend class Window;
+    friend class internal::WindowInspectFacet;
 
     std::shared_ptr<internal::InspectorPort> GetPort();
 

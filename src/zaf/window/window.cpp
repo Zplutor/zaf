@@ -10,9 +10,9 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/tab_stop_utility.h>
 #include <zaf/internal/theme.h>
-#include <zaf/window/inspector/inspector_window.h>
 #include <zaf/window/internal/window_facets/window_focus_facet.h>
 #include <zaf/window/internal/window_facets/window_geometry_facet.h>
+#include <zaf/window/internal/window_facets/window_inspect_facet.h>
 #include <zaf/window/internal/window_facets/window_keyboard_facet.h>
 #include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
 #include <zaf/window/internal/window_facets/window_mouse_facet.h>
@@ -29,24 +29,6 @@
 #include <zaf/window/window_holder.h>
 
 namespace zaf {
-namespace {
-
-Point TranslateAbsolutePositionToControlPosition(
-    const Point& absolute_position, 
-    const Control& control ) {
-
-    auto control_absolute_rect = control.RectInWindow();
-    if (!control_absolute_rect) {
-        return absolute_position;
-    }
-
-    Point result;
-    result.x = absolute_position.x - control_absolute_rect->position.x;
-    result.y = absolute_position.y - control_absolute_rect->position.y;
-    return result;
-}
-
-} // namespace
 
 ZAF_OBJECT_IMPL(Window);
 
@@ -68,7 +50,8 @@ Window::Window(std::shared_ptr<WindowClass> window_class) :
     visibility_facet_(std::make_unique<internal::WindowVisibilityFacet>(*this)),
     focus_facet_(std::make_unique<internal::WindowFocusFacet>(*this)),
     mouse_facet_(std::make_unique<internal::WindowMouseFacet>(*this)),
-    keyboard_facet_(std::make_unique<internal::WindowKeyboardFacet>(*this)) {
+    keyboard_facet_(std::make_unique<internal::WindowKeyboardFacet>(*this)),
+    inspect_facet_(std::make_unique<internal::WindowInspectFacet>(*this)) {
 
 }
 
@@ -84,6 +67,87 @@ void Window::Initialize() {
     __super::Initialize();
 
     SetRootControl(Create<Control>());
+}
+
+
+std::shared_ptr<Window> Window::Owner() const noexcept {
+    return owner_.lock();
+}
+
+
+void Window::SetOwner(std::shared_ptr<Window> owner) {
+
+    if (HandleState() != WindowHandleState::NotCreated) {
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
+    if (this == owner.get()) {
+        throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+    }
+
+    owner_ = std::move(owner);
+}
+
+
+const std::shared_ptr<Control>& Window::RootControl() const noexcept {
+    return root_control_;
+}
+
+
+void Window::SetRootControl(const std::shared_ptr<Control>& control) {
+
+    ZAF_EXPECT(control);
+    ZAF_EXPECT(!control->Parent());
+
+    //The same root control is allowed to be set multiple times.
+    if (root_control_ == control) {
+        return;
+    }
+
+    ZAF_EXPECT(!control->Window());
+
+    //Cancel the focused control before changing the root control.
+    auto focused_control = FocusedControl();
+    if (focused_control) {
+        focused_control->SetIsFocused(false);
+    }
+
+    auto previous_root_control = root_control_;
+    if (previous_root_control) {
+
+        previous_root_control->ReleaseRendererResources();
+        previous_root_control->SetWindow(nullptr);
+        previous_root_control->RaiseWindowChangedEvent(shared_from_this());
+    }
+
+    root_control_ = control;
+
+    auto old_window = root_control_->Window();
+    root_control_->SetWindow(shared_from_this());
+    root_control_->RaiseWindowChangedEvent(old_window);
+
+    if (auto handle = Handle()) {
+        RECT client_rect{};
+        ::GetClientRect(handle, &client_rect);
+        root_control_->SetRect(Rect::FromRECT(client_rect));
+    }
+
+    OnRootControlChanged(RootControlChangedInfo{ shared_from_this(), previous_root_control });
+}
+
+
+void Window::OnRootControlChanged(const RootControlChangedInfo& event_info) {
+    root_control_changed_event_.Raise(event_info);
+}
+
+
+rx::Observable<RootControlChangedInfo> Window::RootControlChangedEvent() const {
+    return root_control_changed_event_.GetObservable();
+}
+
+
+void Window::ShowInspector() const {
+    inspect_facet_->ShowInspector();
 }
 
 
@@ -620,6 +684,7 @@ rx::Observable<FocusedControlChangedInfo> Window::FocusedControlChangedEvent() c
 
 #pragma endregion
 
+
 #pragma region Mouse Input Handling
 
 std::shared_ptr<Control> Window::MouseOverControl() const noexcept {
@@ -653,6 +718,7 @@ Point Window::MousePosition() const noexcept {
 
 #pragma endregion
 
+
 #pragma region Keyboard Input Handling
 
 bool Window::PreprocessMessage(const KeyMessage& message) {
@@ -660,6 +726,7 @@ bool Window::PreprocessMessage(const KeyMessage& message) {
 }
 
 #pragma endregion
+
 
 #pragma region Message Handling
 
@@ -892,7 +959,8 @@ WindowMessager Window::Messager() noexcept {
 
 void Window::CreateRenderer() {
 
-    renderer_ = GraphicFactory::Instance().CreateWindowRenderer(Handle());
+    lifecycle_facet_->HandleStateData().renderer = 
+        GraphicFactory::Instance().CreateWindowRenderer(Handle());
 }
 
 
@@ -900,25 +968,6 @@ void Window::RecreateRenderer() {
 
     root_control_->ReleaseRendererResources();
     CreateRenderer();
-}
-
-
-std::shared_ptr<Window> Window::Owner() const noexcept {
-    return owner_.lock();
-}
-
-
-void Window::SetOwner(std::shared_ptr<Window> owner) {
-
-    if (HandleState() != WindowHandleState::NotCreated) {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
-    }
-
-    if (this == owner.get()) {
-        throw InvalidOperationError(ZAF_SOURCE_LOCATION());
-    }
-
-    owner_ = std::move(owner);
 }
 
 
@@ -940,8 +989,9 @@ void Window::HandleWMPAINT() {
     //and this may fails if there is an invalidated update rect.
     ValidateRect(handle, nullptr);
 
-    renderer_.BeginDraw();
-    Canvas canvas(renderer_);
+    auto renderer = lifecycle_facet_->HandleStateData().renderer; 
+    renderer.BeginDraw();
+    Canvas canvas(renderer);
     {
         auto layer_guard = canvas.PushRegion(root_control_->Rect(), dirty_rect);
 
@@ -954,81 +1004,17 @@ void Window::HandleWMPAINT() {
 
         root_control_->Repaint(canvas, dirty_rect);
 
-        PaintInspectedControl(canvas, dirty_rect);
+        inspect_facet_->PaintInspectedControl(canvas, dirty_rect);
     }
 
     try {
-        renderer_.EndDraw();
+        renderer.EndDraw();
     }
     catch (const COMError& error) {
         if (error.code() == COMError::MakeCode(D2DERR_RECREATE_TARGET)) {
             RecreateRenderer();
         }
     }
-}
-
-
-void Window::PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect) {
-
-    if (!highlight_control_) {
-        return;
-    }
-
-    auto control_rect = highlight_control_->RectInWindow();
-    if (!control_rect) {
-        return;
-    }
-
-    if (!control_rect->HasIntersection(dirty_rect)) {
-        return;
-    }
-
-    auto padding_rect = *control_rect;
-    padding_rect.Deflate(highlight_control_->Border());
-
-    auto content_rect = padding_rect;
-    content_rect.Deflate(highlight_control_->Padding());
-
-    auto margin_rect = *control_rect;
-    margin_rect.Inflate(highlight_control_->Margin());
-
-    auto draw_frame = [&canvas](
-        const zaf::Rect& rect,
-        const zaf::Rect excluded_rect,
-        std::uint32_t color_rgb) {
-    
-        auto rect_geometry = canvas.CreateRectangleGeometry(rect);
-        auto excluded_geometry = canvas.CreateRectangleGeometry(excluded_rect);
-
-        auto frame_geometry = canvas.CreatePathGeometry();
-        auto sink = frame_geometry.Open();
-        d2d::Geometry::Combine(
-            rect_geometry, 
-            excluded_geometry, 
-            d2d::Geometry::CombineMode::Exclude, 
-            sink);
-        sink.Close();
-        
-        auto color = Color::FromRGB(color_rgb);
-        color.a /= 2.f;
-        canvas.SetBrushWithColor(color);
-        canvas.DrawGeometry(frame_geometry);
-    };
-
-    auto state_guard = canvas.PushState();
-    auto clipping_guard = canvas.PushClipping(dirty_rect);
-
-    //Draw content rect.
-    draw_frame(content_rect, zaf::Rect{}, internal::InspectedControlContentColor);
-
-    //Draw padding rect.
-    draw_frame(padding_rect, content_rect, internal::InspectedControlPaddingColor);
-
-    //Draw border rect.
-    draw_frame(*control_rect, padding_rect, internal::InspectedControlBorderColor);
-
-    //Draw margin rect.
-    draw_frame(margin_rect, *control_rect, internal::InspectedControlMarginColor);
 }
 
 
@@ -1072,152 +1058,6 @@ std::optional<LRESULT> Window::HandleWMNCCALCSIZE(const Message& message) {
 
     //Return TRUE to remove the default window frame.
     return TRUE;
-}
-
-
-void Window::HighlightControlAtPosition(const Point& position) {
-
-    auto highlight_control = root_control_->FindChildAtPositionRecursively(position);
-    if (!highlight_control) {
-        highlight_control = root_control_;
-    }
-
-    SetHighlightControl(highlight_control);
-
-    auto inspector_port = GetInspectorPort();
-    if (inspector_port) {
-        inspector_port->HighlightControl(highlight_control);
-    }
-}
-
-
-void Window::SelectInspectedControl() {
-
-    is_selecting_inspector_control_ = false;
-
-    if (!highlight_control_) {
-        return;
-    }
-
-    auto inspector_port = GetInspectorPort();
-    if (inspector_port) {
-        inspector_port->SelectControl(highlight_control_); 
-    }
-    
-    SetHighlightControl(nullptr);
-}
-
-
-void Window::SetRootControl(const std::shared_ptr<Control>& control) {
-
-    ZAF_EXPECT(control);
-    ZAF_EXPECT(!control->Parent());
-
-    //The same root control is allowed to be set multiple times.
-    if (root_control_ == control) {
-        return;
-    }
-
-    ZAF_EXPECT(!control->Window());
-
-    //Cancel the focused control before changing the root control.
-    auto focused_control = FocusedControl();
-    if (focused_control) {
-        focused_control->SetIsFocused(false);
-    }
-
-    auto previous_root_control = root_control_;
-    if (previous_root_control) {
-
-        previous_root_control->ReleaseRendererResources();
-        previous_root_control->SetWindow(nullptr);
-        previous_root_control->RaiseWindowChangedEvent(shared_from_this());
-    }
-
-    root_control_ = control;
-
-    auto old_window = root_control_->Window();
-    root_control_->SetWindow(shared_from_this());
-    root_control_->RaiseWindowChangedEvent(old_window);
-
-    if (auto handle = Handle()) {
-        RECT client_rect{};
-        ::GetClientRect(handle, &client_rect);
-        root_control_->SetRect(Rect::FromRECT(client_rect));
-    }
-
-    OnRootControlChanged(RootControlChangedInfo{ shared_from_this(), previous_root_control });
-}
-
-
-void Window::OnRootControlChanged(const RootControlChangedInfo& event_info) {
-    root_control_changed_event_.Raise(event_info);
-}
-
-
-rx::Observable<RootControlChangedInfo> Window::RootControlChangedEvent() const {
-    return root_control_changed_event_.GetObservable();
-}
-
-
-void Window::ShowInspectorWindow() {
-
-    if (inspector_window_.lock()) {
-        return;
-    }
-
-    auto inspector_window = Create<InspectorWindow>(shared_from_this());
-    inspector_window->Show();
-
-    inspector_window_ = inspector_window;
-}
-
-
-void Window::SetHighlightControl(const std::shared_ptr<Control>& highlight_control) {
-
-    if (highlight_control_ == highlight_control) {
-        return;
-    }
-
-    if (!highlight_control) {
-        highlight_control_ = nullptr;
-        NeedRepaintRect(root_control_->Rect());
-        return;
-    }
-
-    if (highlight_control->Window().get() != this) {
-        return;
-    }
-
-    //Repaint the rect of previous highlight control.
-    if (highlight_control_) {
-        auto rect_in_window = highlight_control_->RectInWindow();
-        if (rect_in_window) {
-            NeedRepaintRect(*rect_in_window);
-        }
-    }
-
-    highlight_control_ = highlight_control;
-
-    //Repaint the rect of new highlight control.
-    NeedRepaintRect(*highlight_control_->RectInWindow());
-}
-
-
-std::shared_ptr<internal::InspectorPort> Window::GetInspectorPort() const {
-
-    auto inspector_window = inspector_window_.lock();
-    if (!inspector_window) {
-        return nullptr;
-    }
-
-    return inspector_window->GetPort();
-}
-
-
-void Window::BeginSelectInspectedControl() {
-
-    is_selecting_inspector_control_ = true;
 }
 
 

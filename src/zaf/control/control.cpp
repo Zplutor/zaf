@@ -19,6 +19,7 @@
 #include <zaf/rx/subject/subject.h>
 #include <zaf/window/inspector/internal/inspector_port.h>
 #include <zaf/window/internal/window_facets/window_focus_facet.h>
+#include <zaf/window/internal/window_facets/window_inspect_facet.h>
 #include <zaf/window/internal/window_facets/window_mouse_facet.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/message/mouse_message.h>
@@ -2193,7 +2194,7 @@ std::shared_ptr<internal::InspectorPort> Control::GetInspectorPort() const {
         return nullptr;
     }
 
-    return window->GetInspectorPort();
+    return window->inspect_facet_->GetInspectorPort();
 }
 
 }

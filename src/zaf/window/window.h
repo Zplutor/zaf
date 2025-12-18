@@ -8,7 +8,6 @@
 #include <zaf/base/none.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/graphic/d2d/window_renderer.h>
 #include <zaf/internal/message_loop.h>
 #include <zaf/object/object.h>
 #include <zaf/object/property_support.h>
@@ -37,6 +36,7 @@
 namespace zaf::internal {
 class WindowFocusFacet;
 class WindowGeometryFacet;
+class WindowInspectFacet;
 class WindowKeyboardFacet;
 class WindowLifecycleFacet;
 class WindowMouseFacet;
@@ -50,7 +50,6 @@ class InspectorPort;
 }
 
 class HitTestMessage;
-class InspectorWindow;
 class MouseMessage;
 class TooltipWindow;
 class WindowClass;
@@ -85,6 +84,56 @@ public:
      Destruct the instance.
      */
     virtual ~Window();
+
+    /**
+    Gets the window's owner.
+
+    @return
+        The owner of the window. It is null if the window has no owner.
+    */
+    std::shared_ptr<Window> Owner() const noexcept;
+
+    /**
+    Sets the window's owner.
+
+    @param owner
+        The owner window. It can be null to remove the owner. The owner will be stored as a weak
+        pointer to avoid circular reference.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `Creating`, `Created`, `Destroying` or `Destroyed`.
+
+    @throw zaf::InvalidOperationError
+        Thrown if trying to set the window itself as its owner.
+
+    @details
+        If a window has an owner, the owner's handle must be created before the window's handle is
+        created, otherwise an exception will be thrown when creating the window's handle.
+
+    @see zaf::Window::CreateHandle()
+    */
+    void SetOwner(std::shared_ptr<Window> owner);
+
+    /**
+    Gets the window's root control.
+    */
+    const std::shared_ptr<Control>& RootControl() const noexcept;
+
+    /**
+    Sets the specified control as the window's root control.
+
+    @param control
+        The new root control. It can't be nullptr, can't be the root control of another window, and
+        can't have parent.
+
+    @throw std::logic_error
+        Thrown if control doesn't meet the precondiction.
+    */
+    void SetRootControl(const std::shared_ptr<Control>& control);
+
+    rx::Observable<RootControlChangedInfo> RootControlChangedEvent() const;
+
+    void ShowInspector() const;
 
 #pragma region Public Style Management
     /**
@@ -1049,7 +1098,7 @@ public:
     /**@}*/
 #pragma endregion
 
-#pragma region VisibilityManagement
+#pragma region Public Visibility Management
     /**
     @name Public Visibility Management
     @{
@@ -1272,67 +1321,10 @@ public:
     /**@}*/
 #pragma endregion
 
-    /**
-    Gets the window's owner.
-
-    @return
-        The owner of the window. It is null if the window has no owner.
-    */
-    std::shared_ptr<Window> Owner() const noexcept;
-
-    /**
-    Sets the window's owner.
-
-    @param owner
-        The owner window. It can be null to remove the owner. The owner will be stored as a weak
-        pointer to avoid circular reference.
-
-    @throw zaf::InvalidHandleStateError
-        Thrown if the window handle state is `Creating`, `Created`, `Destroying` or `Destroyed`.
-
-    @throw zaf::InvalidOperationError
-        Thrown if trying to set the window itself as its owner.
-
-    @details
-        If a window has an owner, the owner's handle must be created before the window's handle is
-        created, otherwise an exception will be thrown when creating the window's handle.
-
-    @see zaf::Window::CreateHandle()
-    */
-    void SetOwner(std::shared_ptr<Window> owner);
-
-    /**
-     Get window's root control.
-     */
-    const std::shared_ptr<Control>& RootControl() const {
-        return root_control_;
-    }
-
-    /**
-    Sets specified control as the root control of the window.
-
-    @param control
-        The new root control. It can't be nullptr, can't be the root control of another window, and
-        can't have parent.
-
-    @throw std::logic_error
-        Thrown if control doesn't meet the precondiction.
-    */
-    void SetRootControl(const std::shared_ptr<Control>& control);
-
-    rx::Observable<RootControlChangedInfo> RootControlChangedEvent() const;
-
-    /**
-     Get the renderer of the window.
-     */
-    d2d::Renderer& Renderer() {
-        return renderer_;
-    }
-
-    void ShowInspectorWindow();
-
 protected:
     void Initialize() override;
+
+    virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
 
 #pragma region Protected Geometry Management
     /**
@@ -1667,41 +1659,25 @@ protected:
     /**@}*/
 #pragma endregion
 
-    virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
-
 private:
-    friend class Application;
-    friend class Control;
-    friend class InspectorWindow;
-    friend class internal::MessageLoop;
-    friend class WindowClassRegistry;
-
     void NeedRepaintRect(const zaf::Rect& rect);
-
-    void SetHighlightControl(const std::shared_ptr<Control>& inspected_control);
-    std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
-    void BeginSelectInspectedControl();
 
 private:
     static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
+    LRESULT RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam);
+    std::optional<LRESULT> HandleMessage(const Message& message);
 
-private:
     std::optional<LRESULT> HandleWMNCCALCSIZE(const Message& message);
     void CreateRenderer();
     void RecreateRenderer();
 
-    LRESULT RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam);
-    std::optional<LRESULT> HandleMessage(const Message& message);
-
     void HandleWMPAINT();
-    void PaintInspectedControl(Canvas& canvas, const zaf::Rect& dirty_rect);
     void HandleWMSHOWWINDOW(const ShowWindowMessage& message);
-    void HighlightControlAtPosition(const Point& position);
-    void SelectInspectedControl();
     
 private:
-    d2d::WindowRenderer renderer_;
     std::weak_ptr<Window> owner_;
+    std::shared_ptr<Control> root_control_;
+    Event<RootControlChangedInfo> root_control_changed_event_;
 
     // Style Related
     std::unique_ptr<internal::WindowStyleFacet> style_facet_;
@@ -1742,17 +1718,18 @@ private:
     Event<MessageReceivedInfo> message_received_event_;
     Event<MessageHandledInfo> message_handled_event_;
 
-    std::shared_ptr<Control> root_control_;
-    
-    std::weak_ptr<InspectorWindow> inspector_window_;
-    std::shared_ptr<Control> highlight_control_;
-    bool is_selecting_inspector_control_{};
+    // Inspection Related
+    std::unique_ptr<internal::WindowInspectFacet> inspect_facet_;
 
-    Event<RootControlChangedInfo> root_control_changed_event_;
-
+    friend class Application;
+    friend class Control;
+    friend class InspectorWindow;
+    friend class WindowClassRegistry;
+    friend class internal::MessageLoop;
     friend class internal::WindowFocusFacet;
-    friend class internal::WindowKeyboardFacet;
     friend class internal::WindowGeometryFacet;
+    friend class internal::WindowInspectFacet;
+    friend class internal::WindowKeyboardFacet;
     friend class internal::WindowLifecycleFacet;
     friend class internal::WindowMouseFacet;
     friend class internal::WindowStyleFacet;

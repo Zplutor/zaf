@@ -7,6 +7,7 @@
 #include <zaf/window/inspector/internal/inspect_control_item.h>
 #include <zaf/window/inspector/internal/inspect_data_source.h>
 #include <zaf/window/inspector/internal/inspect_item.h>
+#include <zaf/window/internal/window_facets/window_inspect_facet.h>
 
 namespace zaf {
 namespace {
@@ -72,7 +73,7 @@ void InspectorWindow::InitializeFirstPaneToolbar() {
     auto select_button = Create<Button>();
     select_button->SetText(L"Select");
     Disposables() += select_button->ClickEvent().Subscribe(std::bind([this]() {
-        target_window_->BeginSelectInspectedControl();
+        target_window_->inspect_facet_->BeginSelectInspectedControl();
     }));
 
     auto toolbar = Create<Control>();
@@ -177,7 +178,7 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
 
         auto control = std::dynamic_pointer_cast<Control>(item_data);
         if (control) {
-            target_window_->SetHighlightControl(control);
+            target_window_->inspect_facet_->SetHighlightControl(control);
         }
     });
 
@@ -189,7 +190,7 @@ std::shared_ptr<TreeItem> InspectorWindow::CreateItem(
         }
 
         ChangeHighlightObject(nullptr);
-        target_window_->SetHighlightControl(nullptr);
+        target_window_->inspect_facet_->SetHighlightControl(nullptr);
     });
 
     return item;

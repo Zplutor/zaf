@@ -272,9 +272,9 @@ void WindowLifecycleFacet::HandleWMDESTROY() {
     window_.root_control_->ReleaseRendererResources();
 
     HWND old_handle = Handle();
-    window_.renderer_ = {};
 
     auto& state_data = HandleStateData();
+    state_data.renderer = {};
     if (state_data.tooltip_window) {
         state_data.tooltip_window->Destroy();
         state_data.tooltip_window.reset();
