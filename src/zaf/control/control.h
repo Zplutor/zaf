@@ -46,6 +46,7 @@ class WindowFocusedControlManager;
 class ControlUpdateLock;
 class ControlUpdateState;
 class InspectorPort;
+class WindowControlFacet;
 class WindowKeyboardFacet;
 class WindowLifecycleFacet;
 class WindowMouseFacet;
@@ -1014,13 +1015,14 @@ private:
     friend class Caret;
     friend class Window;
     friend class internal::ControlEventInvokerBinder;
+    friend class internal::WindowControlFacet;
     friend class internal::WindowFocusedControlManager;
     friend class internal::WindowKeyboardFacet;
     friend class internal::WindowLifecycleFacet;
     friend class internal::WindowMouseFacet;
     friend class internal::WindowRenderFacet;
 
-    void SetWindow(const std::shared_ptr<zaf::Window>& window) {
+    void SetWindow(const std::shared_ptr<zaf::Window>& window) noexcept {
         window_ = window;
     }
 

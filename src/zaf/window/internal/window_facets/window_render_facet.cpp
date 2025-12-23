@@ -32,7 +32,7 @@ void WindowRenderFacet::HandleWMPAINT() {
         dirty_rect = ToDIPs(Rect::FromRECT(win32_rect), window_.DPI());
     }
     else {
-        dirty_rect = window_.root_control_->Rect();
+        dirty_rect = window_.RootControl()->Rect();
     }
 
     //The update rect must be validated before painting.
@@ -44,7 +44,7 @@ void WindowRenderFacet::HandleWMPAINT() {
     renderer.BeginDraw();
     Canvas canvas(renderer);
     {
-        auto layer_guard = canvas.PushRegion(window_.root_control_->Rect(), dirty_rect);
+        auto layer_guard = canvas.PushRegion(window_.RootControl()->Rect(), dirty_rect);
 
         //Paint window background color first.
         {
@@ -53,7 +53,7 @@ void WindowRenderFacet::HandleWMPAINT() {
             canvas.DrawRectangle(dirty_rect);
         }
 
-        window_.root_control_->Repaint(canvas, dirty_rect);
+        window_.RootControl()->Repaint(canvas, dirty_rect);
 
         window_.inspect_facet_->PaintInspectedControl(canvas, dirty_rect);
     }
@@ -71,7 +71,7 @@ void WindowRenderFacet::HandleWMPAINT() {
 
 void WindowRenderFacet::RecreateRenderer() {
 
-    window_.root_control_->ReleaseRendererResources();
+    window_.RootControl()->ReleaseRendererResources();
     CreateRenderer();
 }
 

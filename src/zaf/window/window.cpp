@@ -7,6 +7,7 @@
 #include <zaf/graphic/pixel_snapping.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/internal/tab_stop_utility.h>
+#include <zaf/window/internal/window_facets/window_control_facet.h>
 #include <zaf/window/internal/window_facets/window_focus_facet.h>
 #include <zaf/window/internal/window_facets/window_geometry_facet.h>
 #include <zaf/window/internal/window_facets/window_inspect_facet.h>
@@ -46,6 +47,7 @@ Window::Window(std::shared_ptr<WindowClass> window_class) :
     geometry_facet_(std::make_unique<internal::WindowGeometryFacet>(*this)),
     lifecycle_facet_(std::make_unique<internal::WindowLifecycleFacet>(*this)),
     visibility_facet_(std::make_unique<internal::WindowVisibilityFacet>(*this)),
+    control_facet_(std::make_unique<internal::WindowControlFacet>(*this)),
     render_facet_(std::make_unique<internal::WindowRenderFacet>(*this)),
     focus_facet_(std::make_unique<internal::WindowFocusFacet>(*this)),
     mouse_facet_(std::make_unique<internal::WindowMouseFacet>(*this)),
@@ -65,7 +67,7 @@ void Window::Initialize() {
 
     __super::Initialize();
 
-    SetRootControl(Create<Control>());
+    control_facet_->OnWindowInitialize();
 }
 
 
@@ -85,63 +87,6 @@ void Window::SetOwner(std::shared_ptr<Window> owner) {
     }
 
     owner_ = std::move(owner);
-}
-
-
-const std::shared_ptr<Control>& Window::RootControl() const noexcept {
-    return root_control_;
-}
-
-
-void Window::SetRootControl(const std::shared_ptr<Control>& control) {
-
-    ZAF_EXPECT(control);
-    ZAF_EXPECT(!control->Parent());
-
-    //The same root control is allowed to be set multiple times.
-    if (root_control_ == control) {
-        return;
-    }
-
-    ZAF_EXPECT(!control->Window());
-
-    //Cancel the focused control before changing the root control.
-    auto focused_control = FocusedControl();
-    if (focused_control) {
-        focused_control->SetIsFocused(false);
-    }
-
-    auto previous_root_control = root_control_;
-    if (previous_root_control) {
-
-        previous_root_control->ReleaseRendererResources();
-        previous_root_control->SetWindow(nullptr);
-        previous_root_control->RaiseWindowChangedEvent(shared_from_this());
-    }
-
-    root_control_ = control;
-
-    auto old_window = root_control_->Window();
-    root_control_->SetWindow(shared_from_this());
-    root_control_->RaiseWindowChangedEvent(old_window);
-
-    if (auto handle = Handle()) {
-        RECT client_rect{};
-        ::GetClientRect(handle, &client_rect);
-        root_control_->SetRect(Rect::FromRECT(client_rect));
-    }
-
-    OnRootControlChanged(RootControlChangedInfo{ shared_from_this(), previous_root_control });
-}
-
-
-void Window::OnRootControlChanged(const RootControlChangedInfo& event_info) {
-    root_control_changed_event_.Raise(event_info);
-}
-
-
-rx::Observable<RootControlChangedInfo> Window::RootControlChangedEvent() const {
-    return root_control_changed_event_.GetObservable();
 }
 
 
@@ -620,6 +565,30 @@ void Window::OnHide(const HideInfo& event_info) {
 
 rx::Observable<HideInfo> Window::HideEvent() const {
     return hide_event_.GetObservable();
+}
+
+#pragma endregion
+
+
+#pragma region Control Management
+
+const std::shared_ptr<Control>& Window::RootControl() const noexcept {
+    return control_facet_->RootControl();
+}
+
+
+void Window::SetRootControl(const std::shared_ptr<Control>& control) {
+    control_facet_->SetRootControl(control);
+}
+
+
+void Window::OnRootControlChanged(const RootControlChangedInfo& event_info) {
+    root_control_changed_event_.Raise(event_info);
+}
+
+
+rx::Observable<RootControlChangedInfo> Window::RootControlChangedEvent() const {
+    return root_control_changed_event_.GetObservable();
 }
 
 #pragma endregion

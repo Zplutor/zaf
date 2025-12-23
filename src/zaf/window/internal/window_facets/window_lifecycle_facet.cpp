@@ -217,7 +217,7 @@ void WindowLifecycleFacet::ProcessCreatedState() {
 
     RECT client_rect{};
     GetClientRect(handle, &client_rect);
-    window_.root_control_->SetRect(ToDIPs(Rect::FromRECT(client_rect), dpi));
+    window_.RootControl()->SetRect(ToDIPs(Rect::FromRECT(client_rect), dpi));
 
     window_.render_facet_->CreateRenderer();
 
@@ -282,7 +282,7 @@ void WindowLifecycleFacet::HandleWMDESTROY() {
 
     window_.mouse_facet_->CancelMouseCapture();
     window_.focus_facet_->HandleWindowDestroy();
-    window_.root_control_->ReleaseRendererResources();
+    window_.RootControl()->ReleaseRendererResources();
 
     HWND old_handle = Handle();
 

@@ -70,7 +70,7 @@ void WindowInspectFacet::SetHighlightControl(const std::shared_ptr<Control>& con
 
     if (!control) {
         state_data.highlight_control = nullptr;
-        window_.NeedRepaintRect(window_.root_control_->Rect());
+        window_.NeedRepaintRect(window_.RootControl()->Rect());
         return;
     }
 
@@ -95,9 +95,9 @@ void WindowInspectFacet::SetHighlightControl(const std::shared_ptr<Control>& con
 
 void WindowInspectFacet::HighlightControlAtPosition(const Point& position) {
 
-    auto highlight_control = window_.root_control_->FindChildAtPositionRecursively(position);
+    auto highlight_control = window_.RootControl()->FindChildAtPositionRecursively(position);
     if (!highlight_control) {
-        highlight_control = window_.root_control_;
+        highlight_control = window_.RootControl();
     }
 
     SetHighlightControl(highlight_control);

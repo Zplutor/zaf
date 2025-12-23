@@ -536,7 +536,7 @@ void WindowGeometryFacet::HandleWMSIZE(const Message& message) {
     }
 
     zaf::Rect root_control_rect{ Point(), ToDIPs(new_size, DPI()) };
-    window_.root_control_->SetRect(root_control_rect);
+    window_.RootControl()->SetRect(root_control_rect);
 
     RaiseSizeChangedEvent();
 }

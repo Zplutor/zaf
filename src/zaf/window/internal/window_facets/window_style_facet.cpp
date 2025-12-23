@@ -302,6 +302,10 @@ void WindowStyleFacet::SetUseCustomFrame(bool use_custom_frame) noexcept {
 
 std::optional<LRESULT> WindowStyleFacet::HandleWMNCCALCSIZE(const Message& message) {
 
+    if (!use_custom_frame_) {
+        return std::nullopt;
+    }
+
     // WM_NCCALCSIZE must be passed to default window procedure if wparam is FALSE, no matter if
     // the window uses custom frame, otherwise the window could have some odd behaviors.
     if (message.WParam() == FALSE) {

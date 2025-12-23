@@ -34,6 +34,7 @@
 #include <zaf/window/window_parser.h>
 
 namespace zaf::internal {
+class WindowControlFacet;
 class WindowFocusFacet;
 class WindowGeometryFacet;
 class WindowInspectFacet;
@@ -114,25 +115,6 @@ public:
     @see zaf::Window::CreateHandle()
     */
     void SetOwner(std::shared_ptr<Window> owner);
-
-    /**
-    Gets the window's root control.
-    */
-    const std::shared_ptr<Control>& RootControl() const noexcept;
-
-    /**
-    Sets the specified control as the window's root control.
-
-    @param control
-        The new root control. It can't be nullptr, can't be the root control of another window, and
-        can't have parent.
-
-    @throw std::logic_error
-        Thrown if control doesn't meet the precondiction.
-    */
-    void SetRootControl(const std::shared_ptr<Control>& control);
-
-    rx::Observable<RootControlChangedInfo> RootControlChangedEvent() const;
 
     void ShowInspector() const;
 
@@ -1230,6 +1212,40 @@ public:
     /**@}*/
 #pragma endregion
 
+#pragma region Public Control Management
+    /**
+    @name Public Control Management
+    @{
+    */
+
+    /**
+    Gets the window's root control.
+    */
+    const std::shared_ptr<Control>& RootControl() const noexcept;
+
+    /**
+    Sets the specified control as the window's root control.
+
+    @param control
+        The new root control.
+
+    @pre
+        The control is not null.
+
+    @throw zaf::PreconditionError
+
+    @throw zaf::InvalidOperationError
+        Thrown if the control already has a parent or is already a root control of other window.
+
+    @throw ...
+        Any exception that may be thrown when setting the root control to the window.
+    */
+    void SetRootControl(const std::shared_ptr<Control>& control);
+
+    rx::Observable<RootControlChangedInfo> RootControlChangedEvent() const;
+    /**@}*/
+#pragma endregion
+
 #pragma region Public Focus Management
     /**
     @name Public Focus Management
@@ -1342,8 +1358,6 @@ public:
 
 protected:
     void Initialize() override;
-
-    virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
 
 #pragma region Protected Geometry Management
     /**
@@ -1502,6 +1516,15 @@ protected:
         call the same method of base class if they override this method.
     */
     virtual void OnHide(const HideInfo& event_info);
+    /**@}*/
+#pragma endregion
+
+#pragma region Protected Control Management
+    /**
+    @name Protected Control Management
+    @{
+    */
+    virtual void OnRootControlChanged(const RootControlChangedInfo& event_info);
     /**@}*/
 #pragma endregion
 
@@ -1689,8 +1712,6 @@ private:
     
 private:
     std::weak_ptr<Window> owner_;
-    std::shared_ptr<Control> root_control_;
-    Event<RootControlChangedInfo> root_control_changed_event_;
 
     // Style Related
     std::unique_ptr<internal::WindowStyleFacet> style_facet_;
@@ -1711,6 +1732,10 @@ private:
     std::unique_ptr<internal::WindowVisibilityFacet> visibility_facet_;
     Event<ShowInfo> show_event_;
     Event<HideInfo> hide_event_;
+
+    // Control Related
+    std::unique_ptr<internal::WindowControlFacet> control_facet_;
+    Event<RootControlChangedInfo> root_control_changed_event_;
 
     // Rendering Related
     std::unique_ptr<internal::WindowRenderFacet> render_facet_;
@@ -1742,6 +1767,7 @@ private:
     friend class InspectorWindow;
     friend class WindowClassRegistry;
     friend class internal::MessageLoop;
+    friend class internal::WindowControlFacet;
     friend class internal::WindowFocusFacet;
     friend class internal::WindowGeometryFacet;
     friend class internal::WindowInspectFacet;

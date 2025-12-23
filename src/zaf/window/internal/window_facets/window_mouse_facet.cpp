@@ -35,7 +35,7 @@ std::optional<HitTestResult> WindowMouseFacet::HitTest(const HitTestMessage& mes
     auto mouse_over_control = [&]() {
 
         Point mouse_position = message.MousePosition();
-        std::shared_ptr<Control> current_control = window_.root_control_;
+        std::shared_ptr<Control> current_control = window_.RootControl();
         while (true) {
 
             auto child = current_control->FindChildAtPosition(mouse_position);
@@ -370,7 +370,7 @@ std::shared_ptr<Control> WindowMouseFacet::GetBeginRoutingControlForMouseMessage
     }
     else {
 
-        result = window_.root_control_;
+        result = window_.RootControl();
         position_at_control = message.MousePosition();
     }
 
