@@ -432,7 +432,11 @@ zaf::Size WindowGeometryFacet::ContentSize() const noexcept {
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::NotCreated) {
 
-        auto& not_created_state_data = window_.lifecycle_facet_->NotCreatedStateData();
+        const auto& not_created_state_data = window_.lifecycle_facet_->NotCreatedStateData();
+        if (window_.UseCustomFrame()) {
+            return not_created_state_data.size;
+        }
+
         auto frame = GetWindowFrame(
             this->DPI(),
             not_created_state_data.basic_style,
@@ -459,29 +463,37 @@ zaf::Size WindowGeometryFacet::ContentSize() const noexcept {
 
 void WindowGeometryFacet::SetContentSize(const zaf::Size& size) {
 
+    auto handle_state = window_.HandleState();
+    if (handle_state == WindowHandleState::Destroying ||
+        handle_state == WindowHandleState::Destroyed) {
+
+        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+    }
+
     zaf::Size window_size;
 
-    auto handle_state = window_.HandleState();
-    if (handle_state == WindowHandleState::NotCreated) {
-
-        auto& not_created_state_data = window_.lifecycle_facet_->NotCreatedStateData();
-        window_size = AdjustContentSizeToWindowSize(
-            size,
-            this->DPI(),
-            not_created_state_data.basic_style,
-            not_created_state_data.extended_style);
-    }
-    else if (handle_state == WindowHandleState::Creating ||
-             handle_state == WindowHandleState::Created) {
-
-        window_size = AdjustContentSizeToWindowSize(
-            size,
-            this->DPI(),
-            internal::WindowBasicStyle::FromHandle(window_.Handle()),
-            internal::WindowExtendedStyle::FromHandle(window_.Handle()));
+    if (window_.UseCustomFrame()) {
+        window_size = size;
     }
     else {
-        throw InvalidHandleStateError(ZAF_SOURCE_LOCATION());
+
+        if (handle_state == WindowHandleState::NotCreated) {
+
+            auto& not_created_state_data = window_.lifecycle_facet_->NotCreatedStateData();
+            window_size = AdjustContentSizeToWindowSize(
+                size,
+                this->DPI(),
+                not_created_state_data.basic_style,
+                not_created_state_data.extended_style);
+        }
+        else {
+
+            window_size = AdjustContentSizeToWindowSize(
+                size,
+                this->DPI(),
+                internal::WindowBasicStyle::FromHandle(window_.Handle()),
+                internal::WindowExtendedStyle::FromHandle(window_.Handle()));
+        }
     }
 
     SetSize(window_size);

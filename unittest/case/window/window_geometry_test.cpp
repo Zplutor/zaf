@@ -956,6 +956,23 @@ TEST_F(WindowTest, SetContentSize_NotCreate) {
 }
 
 
+TEST_F(WindowTest, SetContentSize_UseCustomFrame_NotCreated) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetUseCustomFrame(true);
+
+    zaf::Size content_size{ 400, 300 };
+    window->SetContentSize(content_size);
+    ASSERT_EQ(window->ContentSize(), content_size);
+    ASSERT_EQ(window->Size(), content_size);
+
+    // After creating the handle, the content size should remain unchanged.
+    auto holder = window->CreateHandle();
+    ASSERT_EQ(window->ContentSize(), content_size);
+    ASSERT_EQ(window->Size(), content_size);
+}
+
+
 TEST_F(WindowTest, SetContentSize_Created) {
 
     auto window = zaf::Create<zaf::Window>();
@@ -971,6 +988,20 @@ TEST_F(WindowTest, SetContentSize_Created) {
     auto window_size = window->Size();
     ASSERT_GT(window_size.width, content_size.width);
     ASSERT_GT(window_size.height, content_size.height);
+    window->Destroy();
+}
+
+
+TEST_F(WindowTest, SetContentSize_UseCustomFrame_Created) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetUseCustomFrame(true);
+    auto holder = window->CreateHandle();
+    
+    zaf::Size content_size{ 400, 300 };
+    window->SetContentSize(content_size);
+    ASSERT_EQ(window->ContentSize(), content_size);
+    ASSERT_EQ(window->Size(), content_size);
     window->Destroy();
 }
 
