@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file
+    Defines the `zaf::Window` class.
+*/
+
 #include <Windows.h>
 #include <optional>
 #include <variant>
@@ -47,9 +52,6 @@ class WindowVisibilityFacet;
 }
 
 namespace zaf {
-namespace internal {
-class InspectorPort;
-}
 
 class HitTestMessage;
 class MouseMessage;
@@ -59,12 +61,9 @@ class WindowClassRegistry;
 class WindowHolder;
 enum class HitTestResult;
 
-
 /**
- Represents a top-level window.
-
- You should always use Create method to create a window.
- */
+Represents a top-level window.
+*/
 class Window : 
     public Object, 
     public rx::DisposableHost,
@@ -76,16 +75,44 @@ public:
 
 public:
     /**
-     Construct the instance.
-     */
+    Constructs the window with the default window class.
+
+    @throw std::bad_alloc
+    */
     Window();
+
+    /**
+    Constrcuts the window with the specified window class name.
+
+    @param window_class_name
+        The name of the window class.
+
+    @throw std::bad_alloc
+
+    @details
+        This method will register a window class with the specified name if it is not registered
+        yet, using the default window class properties.
+    */
     explicit Window(std::wstring_view window_class_name);
+
+    /**
+    Constructs the window with the specified window class.
+
+    @param window_class
+        The window class.
+
+    @pre
+        The window class is not null.
+
+    @throw std::bad_alloc
+    @throw zaf::PreconditionError
+    */
     explicit Window(std::shared_ptr<WindowClass> window_class);
 
     /**
-     Destruct the instance.
-     */
-    virtual ~Window();
+    Destructs the window.
+    */
+    ~Window();
 
     /**
     Gets the window's owner.
@@ -116,6 +143,19 @@ public:
     */
     void SetOwner(std::shared_ptr<Window> owner);
 
+    /**
+    Shows the inspector window that inspects the properties and control tree of the current window.
+
+    @throw zaf::InvalidHandleStateError
+        Thrown if the window handle state is `NotCreated`, `Creating`, `Destroying` or `Destroyed`.
+
+    @throw ...
+        Any exception thrown during the creation of the inspector window.
+
+    @details
+        The inspector window is unique for each window. Calling this method multiple times will 
+        only show the existing inspector window.
+    */
     void ShowInspector() const;
 
 #pragma region Public Style Management
@@ -124,6 +164,12 @@ public:
     @{
     */
 
+    /**
+    Gets the window class of the window.
+
+    @post
+        The returned window class is not null.
+    */
     const std::shared_ptr<WindowClass>& Class() const noexcept;
 
     /**
