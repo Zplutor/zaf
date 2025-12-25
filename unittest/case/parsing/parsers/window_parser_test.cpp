@@ -14,9 +14,15 @@ TEST(WindowParser, ParseIsPopup) {
 
 TEST(WindowParser, ParseHasBorder) {
 
-    ASSERT_TRUE(TestBooleanProperty<zaf::Window>("HasBorder", [](zaf::Window& window) {
-        return window.HasBorder();
-    }));
+    auto window = zaf::CreateObjectFromXaml<zaf::Window>(R"(
+        <Window IsPopup="true" HasBorder="true" />
+    )");
+    ASSERT_TRUE(window->HasBorder());
+
+    window = zaf::CreateObjectFromXaml<zaf::Window>(R"(
+        <Window IsPopup="true" HasBorder="false" />
+    )");
+    ASSERT_FALSE(window->HasBorder());
 };
 
 
@@ -25,12 +31,12 @@ TEST(WindowParser, ParseHasTitleBar) {
     //HasTitleBar depends on IsPopup and HasBorder.
 
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(R"(
-        <Window HasBorder="false" HasTitleBar="true" />
+        <Window IsPopup="true" HasBorder="true" HasTitleBar="true" />
     )");
     ASSERT_TRUE(window->HasTitleBar());
 
     window = zaf::CreateObjectFromXaml<zaf::Window>(R"(
-        <Window HasBorder="false" HasTitleBar="false" />
+        <Window IsPopup="true" HasBorder="true" HasTitleBar="false" />
     )");
     ASSERT_FALSE(window->HasTitleBar());
 };
@@ -73,20 +79,20 @@ TEST(WindowParser, ParseTitle) {
 
 TEST(WindowParser, ParseWidthAndHeight) {
 
-    auto xaml = R"(<Window Width="1" Height="2"></Window>)";
+    auto xaml = R"(<Window Width="500" Height="600"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->Width(), 1);
-    ASSERT_EQ(window->Height(), 2);
+    ASSERT_EQ(window->Width(), 500);
+    ASSERT_EQ(window->Height(), 600);
 
     xaml = R"(
         <Window>
-            <Window.Width>3</Window.Width>
-            <Window.Height>4</Window.Height>
+            <Window.Width>300</Window.Width>
+            <Window.Height>400</Window.Height>
         </Window>
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->Width(), 3);
-    ASSERT_EQ(window->Height(), 4);
+    ASSERT_EQ(window->Width(), 300);
+    ASSERT_EQ(window->Height(), 400);
 }
 
 
@@ -127,17 +133,17 @@ TEST(WindowParser, ParsePosition) {
 
 TEST(WindowParser, ParseSize) {
 
-    auto xaml = R"(<Window Size="10,20"></Window>)";
+    auto xaml = R"(<Window Size="1000,200"></Window>)";
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->Size(), zaf::Size(10, 20));
+    ASSERT_EQ(window->Size(), zaf::Size(1000, 200));
 
     xaml = R"(
         <Window>
-            <Window.Size Width="30" Height="40"></Window.Size>
+            <Window.Size Width="300" Height="400"></Window.Size>
         </Window>
     )";
     window = zaf::CreateObjectFromXaml<zaf::Window>(xaml);
-    ASSERT_EQ(window->Size(), zaf::Size(30, 40));
+    ASSERT_EQ(window->Size(), zaf::Size(300, 400));
 }
 
 
@@ -166,10 +172,10 @@ TEST(WindowParser, ParseRect) {
 
     auto window = zaf::CreateObjectFromXaml<zaf::Window>(R"(
         <Window>
-            <Window.Rect Position="1,2" Size="3,4"></Window.Rect>
+            <Window.Rect Position="1,2" Size="300,400"></Window.Rect>
         </Window>
     )");
-    ASSERT_EQ(window->Rect(), zaf::Rect(1, 2, 3, 4));
+    ASSERT_EQ(window->Rect(), zaf::Rect(1, 2, 300, 400));
 }
 
 

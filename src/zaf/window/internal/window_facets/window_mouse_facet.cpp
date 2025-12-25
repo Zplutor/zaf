@@ -384,7 +384,7 @@ std::shared_ptr<Control> WindowMouseFacet::MouseCaptureControl() const noexcept 
     if (handle_state == WindowHandleState::Creating ||
         handle_state == WindowHandleState::Created ||
         handle_state == WindowHandleState::Destroying) {
-        return window_.lifecycle_facet_->HandleStateData().mouse_over_control;
+        return window_.lifecycle_facet_->HandleStateData().mouse_capture_control;
     }
     return nullptr;
 }

@@ -36,8 +36,8 @@ protected:
 
         window_ = zaf::Create<zaf::Window>();
         window_->SetRect(zaf::Rect{ 0, 0, 100, 100 });
-        window_->SetHasBorder(false);
         window_->SetIsPopup(true);
+        window_->SetHasBorder(false);
 
         rich_edit_ = zaf::Create<zaf::RichEdit>();
         rich_edit_->SetBorder(zaf::Frame{ 0 });
