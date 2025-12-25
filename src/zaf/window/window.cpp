@@ -663,6 +663,25 @@ rx::Observable<FocusedControlChangedInfo> Window::FocusedControlChangedEvent() c
 #pragma endregion
 
 
+#pragma region Rendering Management
+
+void Window::RequestRepaint() noexcept {
+    render_facet_->RequestRepaint();
+}
+
+
+void Window::RequestRepaint(const zaf::Rect& repaint_rect) noexcept {
+    render_facet_->RequestRepaint(repaint_rect);
+}
+
+
+void Window::RepaintIfNeeded() noexcept {
+    render_facet_->RepaintIfNeeded();
+}
+
+#pragma endregion
+
+
 #pragma region Mouse Input Handling
 
 std::shared_ptr<Control> Window::MouseOverControl() const noexcept {
@@ -936,16 +955,6 @@ WindowMessager Window::Messager() noexcept {
 }
 
 #pragma endregion
-
-
-void Window::NeedRepaintRect(const zaf::Rect& rect) {
-
-    auto handle = Handle();
-    if (handle != nullptr) {
-        RECT win32_rect = SnapAndTransformToPixels(rect, DPI()).ToRECT();
-        InvalidateRect(handle, &win32_rect, FALSE);
-    }
-}
 
 
 void Window::HandleWMSHOWWINDOW(const ShowWindowMessage& message) {

@@ -69,7 +69,7 @@ protected:
     }
 
     void RepaintWindow() {
-        UpdateWindow(test_window_->Handle());
+        test_window_->RepaintIfNeeded();
     }
 
     static const std::shared_ptr<Window>& TestWindow() {

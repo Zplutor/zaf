@@ -385,7 +385,7 @@ void Control::NeedRepaintRect(const zaf::Rect& rect) {
 
     auto window = window_.lock();
     if (window != nullptr) {
-        window->NeedRepaintRect(repaint_rect);
+        window->RequestRepaint(repaint_rect);
         return;
     }
 

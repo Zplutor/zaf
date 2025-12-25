@@ -75,4 +75,34 @@ void WindowRenderFacet::RecreateRenderer() {
     CreateRenderer();
 }
 
+
+void WindowRenderFacet::RequestRepaint() noexcept {
+    RequestRepaint(window_.ContentRect());
+}
+
+
+void WindowRenderFacet::RequestRepaint(const zaf::Rect& rect) noexcept {
+
+    auto handle_state = window_.HandleState();
+    if (handle_state == WindowHandleState::Creating ||
+        handle_state == WindowHandleState::Created ||
+        handle_state == WindowHandleState::Destroying) {
+        
+        RECT win32_rect = SnapAndTransformToPixels(rect, window_.DPI()).ToRECT();
+        InvalidateRect(window_.Handle(), &win32_rect, FALSE);
+    }
+}
+
+
+void WindowRenderFacet::RepaintIfNeeded() noexcept {
+
+    auto handle_state = window_.HandleState();
+    if (handle_state == WindowHandleState::Creating ||
+        handle_state == WindowHandleState::Created ||
+        handle_state == WindowHandleState::Destroying) {
+
+        UpdateWindow(window_.Handle());
+    }
+}
+
 }

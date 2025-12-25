@@ -70,7 +70,7 @@ void WindowInspectFacet::SetHighlightControl(const std::shared_ptr<Control>& con
 
     if (!control) {
         state_data.highlight_control = nullptr;
-        window_.NeedRepaintRect(window_.RootControl()->Rect());
+        window_.RequestRepaint(window_.RootControl()->Rect());
         return;
     }
 
@@ -82,14 +82,14 @@ void WindowInspectFacet::SetHighlightControl(const std::shared_ptr<Control>& con
     if (state_data.highlight_control) {
         auto rect_in_window = state_data.highlight_control->RectInWindow();
         if (rect_in_window) {
-            window_.NeedRepaintRect(*rect_in_window);
+            window_.RequestRepaint(*rect_in_window);
         }
     }
 
     state_data.highlight_control = control;
 
     //Repaint the rect of new highlight control.
-    window_.NeedRepaintRect(*state_data.highlight_control->RectInWindow());
+    window_.RequestRepaint(*state_data.highlight_control->RectInWindow());
 }
 
 

@@ -7,17 +7,15 @@
 
 #include <Windows.h>
 #include <optional>
-#include <variant>
 #include <zaf/base/event/event.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/none.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
-#include <zaf/internal/message_loop.h>
 #include <zaf/object/object.h>
 #include <zaf/object/property_support.h>
-#include <zaf/rx/subject/single_subject.h>
 #include <zaf/rx/disposable_host.h>
+#include <zaf/rx/single.h>
 #include <zaf/window/activate_options.h>
 #include <zaf/window/event/activate_event_info.h>
 #include <zaf/window/event/closing_info.h>
@@ -31,6 +29,7 @@
 #include <zaf/window/event/show_window_event_info.h>
 #include <zaf/window/event/window_focus_event_info.h>
 #include <zaf/window/event/window_size_changed_info.h>
+#include <zaf/window/message/keyboard_message.h>
 #include <zaf/window/message/message.h>
 #include <zaf/window/screen.h>
 #include <zaf/window/show_options.h>
@@ -39,6 +38,7 @@
 #include <zaf/window/window_parser.h>
 
 namespace zaf::internal {
+class MessageLoop;
 class WindowControlFacet;
 class WindowFocusFacet;
 class WindowGeometryFacet;
@@ -1346,6 +1346,39 @@ public:
     /**@}*/
 #pragma endregion
 
+#pragma region Public Rendering Management
+    /**
+    @name Public Rendering Management
+    @{
+    */
+
+    /**
+    Requests a repaint of the entire window.
+
+    @see zaf::Window::RequestRepaint(const zaf::Rect&)
+    */
+    void RequestRepaint() noexcept;
+
+    /**
+    Requests a repaint of a specific area of the window.
+
+    @param repaint_rect
+        The rectangle area to be repainted, in the window's content coordinate.
+
+    @details
+        The repaint will be scheduled on the next repaint cycle. Multiple calls to this method 
+        before the next repaint cycle may be coalesced into a single repaint.
+    */
+    void RequestRepaint(const zaf::Rect& repaint_rect) noexcept;
+
+    /**
+    Repaints the window immediately if there is any pending repaint request.
+    */
+    void RepaintIfNeeded() noexcept;
+
+    /**@}*/
+#pragma endregion
+
 #pragma region Public Mouse Input Handling
     /**
     @name Public Mouse Input Handling
@@ -1746,9 +1779,6 @@ protected:
     virtual void OnMessageHandled(const MessageHandledInfo& event_info);
     /**@}*/
 #pragma endregion
-
-private:
-    void NeedRepaintRect(const zaf::Rect& rect);
 
 private:
     static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
