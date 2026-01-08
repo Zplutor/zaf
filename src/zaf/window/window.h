@@ -20,6 +20,7 @@
 #include <zaf/window/event/activate_event_info.h>
 #include <zaf/window/event/closing_info.h>
 #include <zaf/window/event/destroy_infos.h>
+#include <zaf/window/event/dpi_changed_info.h>
 #include <zaf/window/event/focused_control_changed_info.h>
 #include <zaf/window/event/handle_create_infos.h>
 #include <zaf/window/event/message_handled_info.h>
@@ -906,6 +907,17 @@ public:
     rx::Observable<WindowSizeChangedInfo> SizeChangedEvent() const;
 
     /**
+    Gets the event that is raised after the window's DPI is changed.
+
+    @details
+        @warning
+            Observers of this event must not throw, otherwise the behavior is undefined.
+
+    @see zaf::Window::OnDPIChanged()
+    */
+    rx::Observable<DPIChangedInfo> DPIChangedEvent() const;
+
+    /**
     Indicates whether the window is in a sizing or moving state.
     */
     bool IsSizingOrMoving() const noexcept;
@@ -1461,6 +1473,24 @@ protected:
             This method must not throw, otherwise the behavior is undefined.
     */
     virtual void OnSizeChanged(const WindowSizeChangedInfo& event_info);
+
+    /**
+    Called after the window's DPI is changed.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        This method is called when the window receives WM_DPICHANGED message, before changing the
+        window to the suggested rectangle.
+
+        The default implementation of this method raises the `DPIChangedEvent()`. Derived classes
+        should call the same method of base class if they override this method.
+
+        @warning
+            This method must not throw, otherwise the behavior is undefined.
+    */
+    virtual void OnDPIChanged(const DPIChangedInfo& event_info);
     /**@}*/
 #pragma endregion
 
@@ -1795,6 +1825,7 @@ private:
     // Geometry Related
     std::unique_ptr<internal::WindowGeometryFacet> geometry_facet_;
     Event<WindowSizeChangedInfo> size_changed_event_;
+    Event<DPIChangedInfo> dpi_changed_event_;
 
     // Lifecycle Related
     std::unique_ptr<internal::WindowLifecycleFacet> lifecycle_facet_;

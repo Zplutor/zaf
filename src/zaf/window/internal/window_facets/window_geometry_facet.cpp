@@ -2,6 +2,7 @@
 #include <zaf/base/error/win32_error.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/pixel_snapping.h>
+#include <zaf/window/event/dpi_changed_info.h>
 #include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
 #include <zaf/window/internal/window_not_created_state_data.h>
 #include <zaf/window/invalid_handle_state_error.h>
@@ -556,6 +557,24 @@ void WindowGeometryFacet::HandleWMSIZE(const Message& message) {
 
 void WindowGeometryFacet::RaiseSizeChangedEvent() {
     window_.OnSizeChanged(WindowSizeChangedInfo{ window_.shared_from_this() });
+}
+
+
+void WindowGeometryFacet::HandleWMDPICHANGED(const Message& message) {
+
+    window_.OnDPIChanged(DPIChangedInfo{ window_.shared_from_this() });
+
+    // The lParam contains a pointer to a RECT with the suggested window position and size
+    auto suggested_rect = reinterpret_cast<const RECT*>(message.LParam());
+
+    SetWindowPos(
+        window_.Handle(),
+        nullptr,
+        suggested_rect->left,
+        suggested_rect->top,
+        suggested_rect->right - suggested_rect->left,
+        suggested_rect->bottom - suggested_rect->top,
+        SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
 

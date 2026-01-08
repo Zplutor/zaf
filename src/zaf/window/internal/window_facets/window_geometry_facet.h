@@ -70,6 +70,7 @@ public:
 
     void HandleWMGETMINMAXINFO(const Message& message);
     void HandleWMSIZE(const Message& message);
+    void HandleWMDPICHANGED(const Message& message);
 
     bool IsSizingOrMoving() const noexcept;
     rx::Single<None> WhenNotSizingOrMoving() const;

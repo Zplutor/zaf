@@ -1390,6 +1390,9 @@
     <ClCompile Include="src\zaf\window\internal\window_facets\window_control_facet.cpp">
       <Filter>zaf\window\internal\window_facets</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\event\dpi_changed_info.cpp">
+      <Filter>zaf\window\event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3246,6 +3249,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\internal\window_facets\window_control_facet.h">
       <Filter>zaf\window\internal\window_facets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\event\dpi_changed_info.h">
+      <Filter>zaf\window\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

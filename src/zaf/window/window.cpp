@@ -395,6 +395,16 @@ rx::Observable<WindowSizeChangedInfo> Window::SizeChangedEvent() const {
 }
 
 
+void Window::OnDPIChanged(const DPIChangedInfo& event_info) {
+    dpi_changed_event_.Raise(event_info);
+}
+
+
+rx::Observable<DPIChangedInfo> Window::DPIChangedEvent() const {
+    return dpi_changed_event_.GetObservable();
+}
+
+
 bool Window::IsSizingOrMoving() const noexcept {
     return geometry_facet_->IsSizingOrMoving();
 }
@@ -819,6 +829,10 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
 
     case WM_SIZE:
         geometry_facet_->HandleWMSIZE(message);
+        return 0;
+
+    case WM_DPICHANGED:
+        geometry_facet_->HandleWMDPICHANGED(message);
         return 0;
 #pragma endregion
 

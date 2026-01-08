@@ -18,6 +18,13 @@ protected:
 
         __super::Initialize();
 
+        Disposables() += this->DPIChangedEvent().Subscribe([](const zaf::DPIChangedInfo&) {
+            ZAF_LOG() << "DPI Changed.";
+        });
+
+        Disposables() += this->SizeChangedEvent().Subscribe([](const zaf::WindowSizeChangedInfo& event_info) {
+            ZAF_LOG() << "Size Changed.";
+        });
     }
 
 private:
@@ -30,6 +37,8 @@ int WINAPI WinMain(
     LPSTR /* lpCmdLine */,
     int /* nCmdShow */
 ) {
+
+    SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
     auto& application = zaf::Application::Instance();
     application.Disposables() += application.BeginRunEvent().Subscribe(BeginRun);
@@ -44,12 +53,6 @@ std::shared_ptr<zaf::WindowHolder> holder;
 void BeginRun(const zaf::BeginRunInfo& event_info) {
 
     auto window = zaf::Create<Window>();
-    window->SetIsPopup(true);
-    window->SetIsSizable(true);
-    window->SetHasTitleBar(true);
-    window->SetUseCustomFrame(true);
-
-    window->SetRect({ 100.25, 100.25, 200.25, 200.25 });
     window->Show();
     zaf::Application::Instance().SetMainWindow(window);
 }
