@@ -1243,6 +1243,33 @@ TEST_F(WindowTest, WhenNotSizingOrMoving_DestroyWhileBeingSizedOrMoved) {
 }
 
 
+TEST_F(WindowTest, DPIChanged) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    int call_count{};
+    auto sub = window->DPIChangedEvent().Subscribe([&](const zaf::DPIChangedInfo&) {
+        call_count++;
+    });
+
+    bool size_changed_call{};
+    auto sub2 = window->SizeChangedEvent().Subscribe([&](const zaf::WindowSizeChangedInfo&) {
+        size_changed_call = true;
+    });
+
+    //Simulate DPI change.
+    RECT suggested_rect{ 0, 0, 800, 600 };
+    window->Messager().Send(
+        WM_DPICHANGED,
+        MAKELPARAM(96, 96),
+        reinterpret_cast<LPARAM>(&suggested_rect));
+
+    ASSERT_EQ(call_count, 1);
+    // SizeChangedEvent should not be raised on DPI change.
+    ASSERT_FALSE(size_changed_call);
+}
+
+
 namespace {
 
 zaf::Point GetWindowContentOffset() {

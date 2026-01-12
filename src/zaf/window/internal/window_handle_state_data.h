@@ -34,6 +34,8 @@ public:
     bool is_sizing_or_moving{};
     std::optional<rx::SingleSubject<zaf::None>> exit_sizing_or_moving_subject;
 
+    bool is_handling_dpi_changed{};
+
     TrackMouseMode track_mouse_mode{ TrackMouseMode::None };
     std::shared_ptr<Control> mouse_over_control;
     std::shared_ptr<Control> mouse_capture_control;

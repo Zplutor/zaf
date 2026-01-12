@@ -1,4 +1,5 @@
 #include <zaf/window/internal/window_facets/window_geometry_facet.h>
+#include <zaf/base/auto_reset.h>
 #include <zaf/base/error/win32_error.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/pixel_snapping.h>
@@ -548,10 +549,14 @@ void WindowGeometryFacet::HandleWMSIZE(const Message& message) {
         state_data.renderer.Resize(new_size);
     }
 
-    zaf::Rect root_control_rect{ Point(), ToDIPs(new_size, DPI()) };
-    window_.RootControl()->SetRect(root_control_rect);
+    auto& handle_state_data = window_.lifecycle_facet_->HandleStateData();
+    if (!handle_state_data.is_handling_dpi_changed) {
 
-    RaiseSizeChangedEvent();
+        zaf::Rect root_control_rect{ Point(), ToDIPs(new_size, DPI()) };
+        window_.RootControl()->SetRect(root_control_rect);
+
+        RaiseSizeChangedEvent();
+    }
 }
 
 
@@ -562,19 +567,24 @@ void WindowGeometryFacet::RaiseSizeChangedEvent() {
 
 void WindowGeometryFacet::HandleWMDPICHANGED(const Message& message) {
 
+    {
+        auto& handle_state_data = window_.lifecycle_facet_->HandleStateData();
+        auto auto_reset = MakeAutoReset(handle_state_data.is_handling_dpi_changed, true);
+
+        // The LParam contains a pointer to a RECT with the suggested window position and size
+        auto suggested_rect = reinterpret_cast<const RECT*>(message.LParam());
+
+        SetWindowPos(
+            window_.Handle(),
+            nullptr,
+            suggested_rect->left,
+            suggested_rect->top,
+            suggested_rect->right - suggested_rect->left,
+            suggested_rect->bottom - suggested_rect->top,
+            SWP_NOZORDER | SWP_NOACTIVATE);
+    }
+
     window_.OnDPIChanged(DPIChangedInfo{ window_.shared_from_this() });
-
-    // The lParam contains a pointer to a RECT with the suggested window position and size
-    auto suggested_rect = reinterpret_cast<const RECT*>(message.LParam());
-
-    SetWindowPos(
-        window_.Handle(),
-        nullptr,
-        suggested_rect->left,
-        suggested_rect->top,
-        suggested_rect->right - suggested_rect->left,
-        suggested_rect->bottom - suggested_rect->top,
-        SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
 

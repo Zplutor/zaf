@@ -1481,7 +1481,7 @@ protected:
         Information of the event.
 
     @details
-        This method is called when the window receives WM_DPICHANGED message, before changing the
+        This method is called when the window receives WM_DPICHANGED message, after changing the
         window to the suggested rectangle.
 
         The default implementation of this method raises the `DPIChangedEvent()`. Derived classes
