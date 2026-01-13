@@ -39,19 +39,20 @@
 #include <zaf/rx/observable.h>
 #include <zaf/rx/disposable_host.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 class ControlEventInvokerBinder;
-class WindowFocusedControlManager;
 class ControlUpdateLock;
 class ControlUpdateState;
 class InspectorPort;
 class WindowControlFacet;
+class WindowFocusedControlManager;
 class WindowKeyboardFacet;
 class WindowLifecycleFacet;
 class WindowMouseFacet;
 class WindowRenderFacet;
 }
+
+namespace zaf {
 
 class Canvas;
 class Message;
@@ -115,9 +116,7 @@ public:
 
         The default rect of a control is empty.
     */
-    const zaf::Rect& Rect() const {
-        return rect_;
-    }
+    const zaf::Rect& Rect() const;
 
     /**
     Sets the control's rectangle area in its container's coordinate space.
@@ -140,62 +139,39 @@ public:
      Get the control's position which is related to the coordinate system of 
      parent content rect.
      */
-    const Point& Position() const {
-        return rect_.position;
-    }
+    const Point& Position() const;
 
     /**
      Set the control's position.
 
      See also Position.
      */
-    void SetPosition(const Point& position) {
-        SetRect(zaf::Rect(position, Rect().size));
-    }
+    void SetPosition(const Point& position);
 
-    float X() const {
-        return Position().x;
-    }
-
-    void SetX(float x) {
-        SetPosition(Point(x, Y()));
-    }
-
-    float Y() const {
-        return Position().y;
-    }
-
-    void SetY(float y) {
-        SetPosition(Point(X(), y));
-    }
+    float X() const;
+    void SetX(float x);
+    float Y() const;
+    void SetY(float y);
 
     /**
      Get the control's size.
      */
-    const zaf::Size& Size() const {
-        return rect_.size;
-    }
+    const zaf::Size& Size() const;
 
     /**
      Set the control's size;
      */
-    void SetSize(const zaf::Size& size) {
-        SetRect(zaf::Rect(Rect().position, size));
-    }
+    void SetSize(const zaf::Size& size);
 
     /**
      Get the control's width.
      */
-    float Width() const {
-        return rect_.size.width;
-    }
+    float Width() const;
 
     /**
      Set the control's width.
      */
-    void SetWidth(float width) {
-        SetSize(zaf::Size(width, Height()));
-    }
+    void SetWidth(float width);
 
     /**
      Get the control's minimum width.
@@ -228,16 +204,12 @@ public:
     /**
      Get the control's height.
      */
-    float Height() const {
-        return rect_.size.height;
-    }
+    float Height() const;
 
     /**
      Set the control's height.
      */
-    void SetHeight(float height) {
-        SetSize(zaf::Size(Width(), height));
-    }
+    void SetHeight(float height);
 
     /**
      Get the control's minimum height.
@@ -290,30 +262,15 @@ public:
      */
     void SetAnchor(zaf::Anchor anchor);
 
-    const Frame& Margin() const {
-        return margin_;
-    }
+    const Frame& Margin() const;
 
     void SetMargin(const Frame& margin);
 
-    const Frame& Border() const {
-        return border_;
-    }
+    const Frame& Border() const;
+    void SetBorder(const Frame& border);
 
-    void SetBorder(const Frame& border) {
-        border_ = border;
-        NeedRepaint();
-        NeedRelayout();
-    }
-
-    const Frame& Padding() const {
-        return padding_;
-    }
-
-    void SetPadding(const Frame& padding) {
-        padding_ = padding;
-        NeedRelayout();
-    }
+    const Frame& Padding() const;
+    void SetPadding(const Frame& padding);
 
     /**
     Gets the control's content's rectangle area in the window's coordinate space.
@@ -332,19 +289,13 @@ public:
     /**
      Get the control's content size.
      */
-    zaf::Size ContentSize() const {
-        return ContentRect().size;
-    }
+    zaf::Size ContentSize() const;
 
-    std::shared_ptr<Image> BackgroundImage() const {
-        return BackgroundImagePicker()(*this);
-    }
+    std::shared_ptr<Image> BackgroundImage() const;
 
     ImagePicker BackgroundImagePicker() const;
 
-    void SetBackgroundImage(const std::shared_ptr<Image>& image) {
-        SetBackgroundImagePicker(CreateImagePicker(image));
-    }
+    void SetBackgroundImage(const std::shared_ptr<Image>& image);
 
     void SetBackgroundImagePicker(const ImagePicker& image_picker);
 
@@ -389,24 +340,15 @@ public:
      */
     void SetLayouter(const std::shared_ptr<zaf::Layouter>& layouter);
 
-    bool HasChildren() const {
-        return !children_.empty();
-    }
+    bool HasChildren() const;
+    std::size_t ChildCount() const;
 
-    std::size_t ChildCount() const {
-        return children_.size();
-    }
-
-    const std::shared_ptr<Control>& GetChildAtIndex(std::size_t index) const {
-        return children_[index];
-    }
+    const std::shared_ptr<Control>& GetChildAtIndex(std::size_t index) const;
 
     /**
      Get the control's children.
      */
-    const std::vector<std::shared_ptr<Control>>& Children() const {
-        return children_;
-    }
+    const std::vector<std::shared_ptr<Control>>& Children() const;
 
     /**
     Removes all existing children and adds the specified children to the control.
@@ -464,13 +406,9 @@ public:
         return !!child;
     }
 
-    std::shared_ptr<Control> FindChildAtPosition(const Point& position) const {
-        return InnerFindChildAtPosition(position, false);
-    }
+    std::shared_ptr<Control> FindChildAtPosition(const Point& position) const;
 
-    std::shared_ptr<Control> FindChildAtPositionRecursively(const Point& position) const {
-        return InnerFindChildAtPosition(position, true);
-    }
+    std::shared_ptr<Control> FindChildAtPositionRecursively(const Point& position) const;
 
     /**
     Determines whether the current control is the direct parent of the specified control.
@@ -494,9 +432,7 @@ public:
 
      Return nullptr if the control does not have parent.
      */
-    std::shared_ptr<Control> Parent() const {
-        return parent_.lock();
-    }
+    std::shared_ptr<Control> Parent() const;
 
     /**
      Get the control's name.
@@ -589,9 +525,7 @@ public:
     /**
      Get a value indicating that whether the control itself is under mouse cursor.
      */
-    bool IsMouseOver() const {
-        return is_mouse_over_;
-    }
+    bool IsMouseOver() const;
 
     /**
     Indicates whether the control or any of its children is under mouse cursor.
@@ -603,18 +537,14 @@ public:
 
      The default value is false.
      */
-    bool CanFocus() const {
-        return can_focus_;
-    }
+    bool CanFocus() const;
 
     /**
      Set a value indicating that whether the control can be focused.
 
      See also CanFocus.
      */
-    void SetCanFocus(bool can_focused) {
-        can_focus_ = can_focused;
-    }
+    void SetCanFocus(bool can_focused);
 
     /**
      Get a value indicating that whether the control and its children can be focused 
@@ -645,9 +575,7 @@ public:
     /**
      Get a value indicating that whether the control is focused.
      */
-    bool IsFocused() const {
-        return is_focused_;
-    }
+    bool IsFocused() const;
 
     /**
      Set a value indicating that whether the control is focused.
@@ -663,9 +591,7 @@ public:
 
     bool ContainsFocus() const;
 
-    bool IsCachedPaintingEnabled() const {
-        return is_cached_painting_enabled_;
-    }
+    bool IsCachedPaintingEnabled() const;
 
     void SetIsCachedPaintingEnabled(bool value);
 
@@ -683,9 +609,7 @@ public:
     /**
     Indicates whether the control is capturing the mouse.
     */
-    bool IsCapturingMouse() const noexcept {
-        return is_capturing_mouse_;
-    }
+    bool IsCapturingMouse() const noexcept;
 
     /**
     Gets mouse captured event. This event is raised after the control calling CaptureMouse() and 
@@ -727,9 +651,7 @@ public:
      against the TAB key down message in this method to prevent the preprocessing,
      then it can receive the event.
      */
-    virtual bool AcceptKeyMessage(const KeyMessage& message) {
-        return false;
-    }
+    virtual bool AcceptKeyMessage(const KeyMessage& message);
 
     void NeedUpdateStyle();
 
@@ -1022,9 +944,7 @@ private:
     friend class internal::WindowMouseFacet;
     friend class internal::WindowRenderFacet;
 
-    void SetWindow(const std::shared_ptr<zaf::Window>& window) noexcept {
-        window_ = window;
-    }
+    void SetWindow(const std::shared_ptr<zaf::Window>& window) noexcept;
 
     void SetIsMouseOverByWindow(bool is_mouse_over);
     void SetIsFocusedByWindow(bool is_focused);

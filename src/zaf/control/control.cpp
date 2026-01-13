@@ -59,6 +59,189 @@ Control::~Control() {
 }
 
 
+const zaf::Rect& Control::Rect() const {
+    return rect_;
+}
+
+
+const Point& Control::Position() const {
+    return rect_.position;
+}
+
+
+void Control::SetPosition(const Point& position) {
+    SetRect(zaf::Rect(position, Rect().size));
+}
+
+
+float Control::X() const {
+    return Position().x;
+}
+
+
+void Control::SetX(float x) {
+    SetPosition(Point(x, Y()));
+}
+
+
+float Control::Y() const {
+    return Position().y;
+}
+
+
+void Control::SetY(float y) {
+    SetPosition(Point(X(), y));
+}
+
+
+const zaf::Size& Control::Size() const {
+    return rect_.size;
+}
+
+
+void Control::SetSize(const zaf::Size& size) {
+    SetRect(zaf::Rect(Rect().position, size));
+}
+
+
+float Control::Width() const {
+    return rect_.size.width;
+}
+
+
+void Control::SetWidth(float width) {
+    SetSize(zaf::Size(width, Height()));
+}
+
+
+float Control::Height() const {
+    return rect_.size.height;
+}
+
+
+void Control::SetHeight(float height) {
+    SetSize(zaf::Size(Width(), height));
+}
+
+
+const Frame& Control::Margin() const {
+    return margin_;
+}
+
+
+const Frame& Control::Border() const {
+    return border_;
+}
+
+
+void Control::SetBorder(const Frame& border) {
+    border_ = border;
+    NeedRepaint();
+    NeedRelayout();
+}
+
+
+const Frame& Control::Padding() const {
+    return padding_;
+}
+
+
+void Control::SetPadding(const Frame& padding) {
+    padding_ = padding;
+    NeedRelayout();
+}
+
+
+zaf::Size Control::ContentSize() const {
+    return ContentRect().size;
+}
+
+
+std::shared_ptr<Image> Control::BackgroundImage() const {
+    return BackgroundImagePicker()(*this);
+}
+
+
+void Control::SetBackgroundImage(const std::shared_ptr<Image>& image) {
+    SetBackgroundImagePicker(CreateImagePicker(image));
+}
+
+
+bool Control::HasChildren() const {
+    return !children_.empty();
+}
+
+
+std::size_t Control::ChildCount() const {
+    return children_.size();
+}
+
+
+const std::shared_ptr<Control>& Control::GetChildAtIndex(std::size_t index) const {
+    return children_[index];
+}
+
+
+const std::vector<std::shared_ptr<Control>>& Control::Children() const {
+    return children_;
+}
+
+
+std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) const {
+    return InnerFindChildAtPosition(position, false);
+}
+
+
+std::shared_ptr<Control> Control::FindChildAtPositionRecursively(const Point& position) const {
+    return InnerFindChildAtPosition(position, true);
+}
+
+
+std::shared_ptr<Control> Control::Parent() const {
+    return parent_.lock();
+}
+
+
+bool Control::IsMouseOver() const {
+    return is_mouse_over_;
+}
+
+
+bool Control::CanFocus() const {
+    return can_focus_;
+}
+
+
+void Control::SetCanFocus(bool can_focused) {
+    can_focus_ = can_focused;
+}
+
+
+bool Control::IsFocused() const {
+    return is_focused_;
+}
+
+
+bool Control::IsCachedPaintingEnabled() const {
+    return is_cached_painting_enabled_;
+}
+
+
+bool Control::IsCapturingMouse() const noexcept {
+    return is_capturing_mouse_;
+}
+
+
+bool Control::AcceptKeyMessage(const KeyMessage& message) {
+    return false;
+}
+
+
+void Control::SetWindow(const std::shared_ptr<zaf::Window>& window) noexcept {
+    window_ = window;
+}
+
+
 void Control::InvokeInitialize() {
 
     //Enter update state during initialization.
