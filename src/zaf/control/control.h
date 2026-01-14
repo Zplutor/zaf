@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <zaf/base/event/event.h>
+#include <zaf/base/non_copyable.h>
 #include <zaf/control/anchor.h>
 #include <zaf/control/event/double_click_info.h>
 #include <zaf/control/event/focus_event_info.h>
@@ -70,7 +71,8 @@ enum class HitTestResult;
 class Control : 
     public Object, 
     public rx::DisposableHost,
-    public std::enable_shared_from_this<Control> {
+    public std::enable_shared_from_this<Control>,
+    NonCopyableNonMovable {
 
 public:
     ZAF_OBJECT;
@@ -79,161 +81,315 @@ public:
     Control();
     virtual ~Control();
 
-    Control(const Control&) = delete;
-    Control& operator=(const Control&) = delete;
-
     [[nodiscard]]
     ControlUpdateGuard BeginUpdate();
 
+#pragma region Public Geometry Management
     /**
-    Gets the control's rectangle area in the window's coordinate space.
-
-    @return 
-        The rectangle area of the control in the window's coordinate space. If the control is not
-        in a window, std::nullopt is returned.
+    @name Public Geometry Management
+    @{
     */
-    std::optional<zaf::Rect> RectInWindow() const noexcept;
 
     /**
-    Gets the control's rectangle area in its own coordinate space.
-
-    @return 
-        The rectangle area of the control in its own coordinate space, where the position is always 
-        zero.
-    */
-    zaf::Rect RectInSelf() const noexcept;
-
-    /**
-    Gets the control's rectangle area in its container's coordinate space.
+    Gets the control's rectangle in its container's coordinate.
 
     @return
-        The rectangle area of the control in its container's coordinate space.
+        The rectangle of the control in its container's coordinate.
 
-    @remark
-        If the control is the root control of a window, the rect is expressed in the coordinate 
-        space of the window's client area; otherwise the rect is expressed in the coordinate space
-        of its parent's content area.
+    @details
+        If the control is the root control of a window, the rectangle is expressed in the
+        coordinate space of the window's content area; otherwise the rectangle is expressed in the
+        coordinate space of its parent's content area.
 
-        The default rect of a control is empty.
+        The default rectangle of a control is an empty rectangle at position (0, 0).
     */
-    const zaf::Rect& Rect() const;
+    const zaf::Rect& Rect() const noexcept;
 
     /**
-    Sets the control's rectangle area in its container's coordinate space.
+    Sets the control's rectangle in its container's coordinate.
 
     @param rect
-         The rect to be set.
+         The new rect to be set.
+
+    @see zaf::Control::Rect()
     */
     void SetRect(const zaf::Rect& rect);
 
     /**
-    Gets the control's position in the window's coordinate space.
+    Gets the control's rectangle in its own coordinate.
 
     @return
-        The position of the control in the window's coordinate space. If the control is not in a 
+        The rectangle of the control in its own coordinate, whose position is always `(0, 0)`.
+    */
+    zaf::Rect RectInSelf() const noexcept;
+
+    /**
+    Gets the control's rectangle in its window's coordinate.
+
+    @return
+        The rectangle of the control in its window's coordinate. If the control is not in a
+        window, `std::nullopt` is returned.
+    */
+    std::optional<zaf::Rect> RectInWindow() const noexcept;
+
+    /**
+    Gets the control's position in its container's coordinate.
+
+    @return
+        The position of the control in its container's coordinate.
+
+    @details
+        This is a shortcut method for `Rect().position`.
+
+    @see zaf::Control::Rect()
+    */
+    const Point& Position() const noexcept;
+
+    /**
+    Sets the control's position in its container's coordinate.
+
+    @param position
+        The new position to be set.
+
+    @details
+        This a shortcut method for calling `SetRect()` with a new position while keeping the size.
+    */
+    void SetPosition(const Point& position);
+
+    /**
+    Gets the control's position in its window's coordinate.
+
+    @return
+        The position of the control in its window's coordinate space. If the control is not in a
         window, std::nullopt is returned.
     */
     std::optional<zaf::Point> PositionInWindow() const noexcept;
 
     /**
-     Get the control's position which is related to the coordinate system of 
-     parent content rect.
-     */
-    const Point& Position() const;
+    Gets the control's X coordinate in its container's coordinate.
+
+    @return
+        The X coordinate of the control in its container's coordinate.
+
+    @details
+        This is a shortcut method for `Position().x`.
+    */
+    float X() const noexcept;
 
     /**
-     Set the control's position.
+    Sets the control's X coordinate in its container's coordinate.
 
-     See also Position.
-     */
-    void SetPosition(const Point& position);
+    @param x
+        The new X coordinate to be set.
 
-    float X() const;
+    @details
+        This is a shortcut method for calling `SetPosition()` with a new X coordinate while
+        keeping the Y coordinate.
+    */
     void SetX(float x);
-    float Y() const;
+
+    /**
+    Gets the control's Y coordinate in its container's coordinate.
+
+    @return
+        The Y coordinate of the control in its container's coordinate.
+
+    @details
+        This is a shortcut method for `Position().y`.
+    */
+    float Y() const noexcept;
+
+    /**
+    Sets the control's Y coordinate in its container's coordinate.
+
+    @param y
+        The new Y coordinate to be set.
+
+    @details
+        This is a shortcut method for calling `SetPosition()` with a new Y coordinate while
+        keeping the X coordinate.
+    */
     void SetY(float y);
 
     /**
-     Get the control's size.
-     */
-    const zaf::Size& Size() const;
+    Gets the control's size.
+
+    @return
+        The size of the control.
+
+    @details
+        This is a shortcut method for `Rect().size`.
+    */
+    const zaf::Size& Size() const noexcept;
 
     /**
-     Set the control's size;
-     */
+    Sets the control's size;
+
+    @param size
+        The new size to be set.
+
+    @details
+        This is a shortcut method for calling `SetRect()` with a new size while keeping the 
+        position.
+    */
     void SetSize(const zaf::Size& size);
 
     /**
-     Get the control's width.
-     */
-    float Width() const;
+    Gets the control's width.
+
+    @return
+        The width of the control.
+
+    @details
+        This is a shortcut method for `Size().width`.
+    */
+    float Width() const noexcept;
 
     /**
-     Set the control's width.
-     */
+    Sets the control's width.
+
+    @param width
+        The new width to be set.
+
+    @details
+        This is a shortcut method for calling `SetSize()` with a new width while keeping the 
+        height.
+    */
     void SetWidth(float width);
 
     /**
-     Get the control's minimum width.
+    Gets the control's height.
 
-     The default value is 0.
-     */
-    float MinWidth() const;
+    @return
+        The height of the control.
 
-    /**
-     Set the control's minimum width.
-     */
-    void SetMinWidth(float min_width);
-
-    /**
-     Get the control's maximum width.
-
-     The default value is the maximum value of float.
-     */
-    float MaxWidth() const;
+    @details
+        This is a shortcut method for `Size().height`.
+    */
+    float Height() const noexcept;
 
     /**
-     Set the control's maximum width.
-     */
-    void SetMaxWidth(float max_width);
+    Sets the control's height.
 
-    void SetFixedWidth(float width);
-    void SetFixedHeight(float height);
-    void SetFixedSize(const zaf::Size& size);
+    @param height
+        The new height to be set.
 
-    /**
-     Get the control's height.
-     */
-    float Height() const;
-
-    /**
-     Set the control's height.
-     */
+    @details
+        This is a shortcut method for calling `SetSize()` with a new height while keeping the 
+        width.
+    */
     void SetHeight(float height);
 
     /**
-     Get the control's minimum height.
+    Gets the control's minimum width.
 
-     The default value is 0.
-     */
-    float MinHeight() const;
+    @return
+        The minimum width of the control.
+
+    @details
+        The default minimum width is 0.
+    */
+    float MinWidth() const noexcept;
 
     /**
-     Set the control's minimum height.
+    Sets the control's minimum width.
+
+    @param min_width
+        The new minimum width to be set.
+    */
+    void SetMinWidth(float min_width);
+
+    /**
+    Gets the control's maximum width.
+
+    @return
+        The maximum width of the control.
+
+    @details
+        The default maximum width is the maximum value of float.
+    */
+    float MaxWidth() const noexcept;
+
+    /**
+    Sets the control's maximum width.
+
+    @param max_width
+        The new maximum width to be set.
+    */
+    void SetMaxWidth(float max_width);
+
+    /**
+    Sets the control's fixed width.
+
+    @param width
+        The fixed width to be set.
+
+    @details
+        This is a shortcut method for setting both minimum width and maximum width to the same 
+        value.
+    */
+    void SetFixedWidth(float width);
+
+    /**
+    Gets the control's minimum height.
+
+    @return
+        The minimum height of the control.
+
+    @details
+        The default minimum height is 0.
      */
+    float MinHeight() const noexcept;
+
+    /**
+    Sets the control's minimum height.
+
+    @param min_height
+        The new minimum height to be set.
+    */
     void SetMinHeight(float min_height);
 
     /**
-     Get the control's maximum height.
+    Gets the control's maximum height.
 
-     The default value is the maximum value of float.
-     */
-    float MaxHeight() const;
+    @return
+        The maximum height of the control.
+
+    @details
+        The default maximum height is the maximum value of float.
+    */
+    float MaxHeight() const noexcept;
 
     /**
-     Set the control's maximum height.
-     */
+    Sets the control's maximum height.
+
+    @param max_height
+        The new maximum height to be set.
+    */
     void SetMaxHeight(float max_height);
+
+    /**
+    Sets the control's fixed height.
+
+    @param height
+        The fixed height to be set.
+
+    @details
+        This is a shortcut method for setting both minimum height and maximum height to the same
+        value.
+    */
+    void SetFixedHeight(float height);
+
+    /**
+    Sets the control's fixed size.
+
+    @param size
+        The fixed size to be set.
+
+    @details
+        This is a shortcut method for setting both minimum size and maximum size to the same value.
+    */
+    void SetFixedSize(const zaf::Size& size);
 
     zaf::Size CalculatePreferredSize() const;
     zaf::Size CalculatePreferredSize(const zaf::Size& bound_size) const;
@@ -290,6 +446,8 @@ public:
      Get the control's content size.
      */
     zaf::Size ContentSize() const;
+    /** @} */
+#pragma endregion
 
     std::shared_ptr<Image> BackgroundImage() const;
 

@@ -59,12 +59,79 @@ Control::~Control() {
 }
 
 
-const zaf::Rect& Control::Rect() const {
+#pragma region Geometry Management
+
+const zaf::Rect& Control::Rect() const noexcept {
     return rect_;
 }
 
 
-const Point& Control::Position() const {
+void Control::SetRect(const zaf::Rect& rect) {
+
+    zaf::Rect previous_rect = Rect();
+
+    zaf::Rect new_rect{ rect.position, ApplySizeLimit(rect.size) };
+
+    if (new_rect.size != previous_rect.size) {
+        //Auto size.
+        ApplyAutoSizeOnRectChanged(new_rect.size);
+    }
+
+    //Don't layout if rects are the same.
+    if (new_rect == previous_rect) {
+        return;
+    }
+
+    rect_ = new_rect;
+
+    if (rect_.size != previous_rect.size) {
+
+        ReleaseCachedPaintingRenderer();
+
+        //Layout children if size is changed.
+        NeedRelayout(previous_rect);
+    }
+
+    //The focused control need to be notified while its absolute position changed, 
+    //so that it can relayout its elements, if needed.
+    auto window = Window();
+    if (window) {
+        auto focused_control = window->FocusedControl();
+        if (focused_control) {
+            if (IsAncestorOf(*focused_control)) {
+                focused_control->NeedRelayout();
+            }
+        }
+    }
+
+    //Notify rect change.
+    RectChangedInfo event_info{ shared_from_this(), previous_rect };
+    OnRectChanged(event_info);
+
+    auto parent = Parent();
+    if (parent) {
+        parent->OnChildRectChanged(shared_from_this(), previous_rect);
+    }
+}
+
+
+zaf::Rect Control::RectInSelf() const noexcept {
+    return zaf::Rect{ zaf::Point{}, this->Size() };
+}
+
+
+std::optional<zaf::Rect> Control::RectInWindow() const noexcept {
+
+    auto position_in_window = PositionInWindow();
+    if (!position_in_window) {
+        return std::nullopt;
+    }
+
+    return zaf::Rect{ *position_in_window, this->Size() };
+}
+
+
+const Point& Control::Position() const noexcept {
     return rect_.position;
 }
 
@@ -74,7 +141,36 @@ void Control::SetPosition(const Point& position) {
 }
 
 
-float Control::X() const {
+std::optional<zaf::Point> Control::PositionInWindow() const noexcept {
+
+    auto parent = Parent();
+
+    //Current control has no parent, it may be the root control of a window.
+    if (!parent) {
+
+        auto window = Window();
+        if (window) {
+            //Current control is the root control, whose position is the position in window.
+            return this->Position();
+        }
+
+        //Current control doesn't belong to any window.
+        return std::nullopt;
+    }
+
+    auto parent_position_in_window = parent->PositionInWindow();
+    if (!parent_position_in_window) {
+        return std::nullopt;
+    }
+
+    auto result = *parent_position_in_window;
+    result.AddOffset(parent->ContentRect().position);
+    result.AddOffset(this->Position());
+    return result;
+}
+
+
+float Control::X() const noexcept {
     return Position().x;
 }
 
@@ -84,7 +180,7 @@ void Control::SetX(float x) {
 }
 
 
-float Control::Y() const {
+float Control::Y() const noexcept {
     return Position().y;
 }
 
@@ -94,7 +190,7 @@ void Control::SetY(float y) {
 }
 
 
-const zaf::Size& Control::Size() const {
+const zaf::Size& Control::Size() const noexcept {
     return rect_.size;
 }
 
@@ -104,7 +200,7 @@ void Control::SetSize(const zaf::Size& size) {
 }
 
 
-float Control::Width() const {
+float Control::Width() const noexcept {
     return rect_.size.width;
 }
 
@@ -114,7 +210,7 @@ void Control::SetWidth(float width) {
 }
 
 
-float Control::Height() const {
+float Control::Height() const noexcept {
     return rect_.size.height;
 }
 
@@ -124,8 +220,223 @@ void Control::SetHeight(float height) {
 }
 
 
+float Control::MinWidth() const noexcept {
+    return min_width_;
+}
+
+
+void Control::SetMinWidth(float min_width) {
+
+    min_width_ = min_width;
+
+    if (MaxWidth() < min_width) {
+        SetMaxWidth(min_width);
+    }
+
+    if (Width() < min_width) {
+        SetWidth(min_width);
+    }
+}
+
+
+float Control::MaxWidth() const noexcept {
+    return max_width_;
+}
+
+
+void Control::SetMaxWidth(float max_width) {
+
+    max_width_ = max_width;
+
+    if (MinWidth() > max_width) {
+        SetMinWidth(max_width);
+    }
+
+    if (Width() > max_width) {
+        SetWidth(max_width);
+    }
+}
+
+
+void Control::SetFixedWidth(float width) {
+    SetFixedWidthValue(width);
+    SetWidth(width);
+}
+
+
+float Control::MinHeight() const noexcept {
+    return min_height_;
+}
+
+
+void Control::SetMinHeight(float min_height) {
+
+    min_height_ = min_height;
+
+    if (MaxHeight() < min_height) {
+        SetMaxHeight(min_height);
+    }
+
+    if (Height() < min_height) {
+        SetHeight(min_height);
+    }
+}
+
+
+float Control::MaxHeight() const noexcept {
+    return max_height_;
+}
+
+
+void Control::SetMaxHeight(float max_height) {
+
+    max_height_ = max_height;
+
+    if (MinHeight() > max_height) {
+        SetMinHeight(max_height);
+    }
+
+    if (Height() > max_height) {
+        SetHeight(max_height);
+    }
+}
+
+
+void Control::SetFixedHeight(float height) {
+    SetFixedHeightValue(height);
+    SetHeight(height);
+}
+
+
+void Control::SetFixedSize(const zaf::Size& size) {
+    SetFixedWidthValue(size.width);
+    SetFixedHeightValue(size.height);
+    SetSize(size);
+}
+
+
+zaf::Size Control::CalculatePreferredSize() const {
+
+    zaf::Size bound_size{ 
+        std::numeric_limits<float>::max(),
+        std::numeric_limits<float>::max() 
+    };
+
+    return CalculatePreferredSize(bound_size);
+}
+
+
+zaf::Size Control::CalculatePreferredSize(const zaf::Size& bound_size) const {
+
+    float non_content_width{};
+    float non_content_height{};
+
+    const auto& padding = Padding();
+    non_content_width += padding.left + padding.right;
+    non_content_height += padding.top + padding.bottom;
+
+    const auto& border = Border();
+    non_content_width += border.left + border.right;
+    non_content_height += border.top + border.bottom;
+
+    zaf::Size max_content_size{
+        std::max(bound_size.width - non_content_width, 0.f),
+        std::max(bound_size.height - non_content_height, 0.f)
+    };
+    auto preferred_content_size = CalculatePreferredContentSize(max_content_size);
+
+    zaf::Size result{
+        preferred_content_size.width + non_content_width,
+        preferred_content_size.height + non_content_height
+    };
+    return result;
+}
+
+
+bool Control::AutoWidth() const {
+    return auto_width_;
+}
+
+
+void Control::SetAutoWidth(bool value) {
+    auto_width_ = value;
+    AutoResizeToPreferredSize();
+}
+
+
+bool Control::AutoHeight() const {
+    return auto_height_;
+}
+
+
+void Control::SetAutoHeight(bool value) {
+    auto_height_ = value;
+    AutoResizeToPreferredSize();
+}
+
+
+void Control::SetAutoSize(bool value) {
+
+    auto update_guard = BeginUpdate();
+
+    SetAutoWidth(true);
+    SetAutoHeight(true);
+}
+
+
+float Control::ApplyWidthLimit(float width) const {
+
+    float result = width;
+    result = std::max(result, MinWidth());
+    result = std::min(result, MaxWidth());
+    return result;
+}
+
+
+float Control::ApplyHeightLimit(float height) const {
+
+    float result = height;
+    result = std::max(result, MinHeight());
+    result = std::min(result, MaxHeight());
+    return result;
+}
+
+
+zaf::Size Control::ApplySizeLimit(const zaf::Size& size) const {
+
+    return zaf::Size{ 
+        ApplyWidthLimit(size.width),
+        ApplyHeightLimit(size.height) 
+    };
+}
+
+
+Anchor Control::Anchor() const {
+    return anchor_;
+}
+
+
+void Control::SetAnchor(zaf::Anchor anchor) {
+    anchor_ = anchor;
+}
+
+
 const Frame& Control::Margin() const {
     return margin_;
+}
+
+
+void Control::SetMargin(const Frame& margin) {
+
+    margin_ = margin;
+
+    //Notify parent to re-layout all children.
+    auto parent = Parent();
+    if (parent) {
+
+        parent->NeedRelayout();
+        parent->AutoResizeToPreferredSize();
+    }
 }
 
 
@@ -152,9 +463,39 @@ void Control::SetPadding(const Frame& padding) {
 }
 
 
+std::optional<zaf::Rect> Control::ContentRectInWindow() const noexcept {
+
+    auto rect_in_window = this->RectInWindow();
+    if (!rect_in_window) {
+        return std::nullopt;
+    }
+
+    auto result = ContentRect();
+    result.AddOffset(rect_in_window->position);
+    return result;
+}
+
+
+zaf::Rect Control::ContentRect() const {
+
+    zaf::Rect content_rect = zaf::Rect(Point(), Size());
+    content_rect.Deflate(Border());
+    content_rect.Deflate(Padding());
+
+    //Make sure the width and the height are not less than 0.
+    content_rect.size.width = (std::max)(content_rect.size.width, 0.f);
+    content_rect.size.height = (std::max)(content_rect.size.height, 0.f);
+
+    return content_rect;
+}
+
+
 zaf::Size Control::ContentSize() const {
     return ContentRect().size;
 }
+
+
+#pragma endregion
 
 
 std::shared_ptr<Image> Control::BackgroundImage() const {
@@ -666,100 +1007,6 @@ void Control::NeedRelayout(const zaf::Rect& previous_rect) {
 }
 
 
-std::optional<zaf::Point> Control::PositionInWindow() const noexcept {
-
-    auto parent = Parent();
-
-    //Current control has no parent, it may be the root control of a window.
-    if (!parent) {
-
-        auto window = Window();
-        if (window) {
-            //Current control is the root control, whose position is the position in window.
-            return this->Position();
-        }
-
-        //Current control doesn't belong to any window.
-        return std::nullopt;
-    }
-
-    auto parent_position_in_window = parent->PositionInWindow();
-    if (!parent_position_in_window) {
-        return std::nullopt;
-    }
-
-    auto result = *parent_position_in_window;
-    result.AddOffset(parent->ContentRect().position);
-    result.AddOffset(this->Position());
-    return result;
-}
-
-
-std::optional<zaf::Rect> Control::RectInWindow() const noexcept {
-
-    auto position_in_window = PositionInWindow();
-    if (!position_in_window) {
-        return std::nullopt;
-    }
-
-    return zaf::Rect{ *position_in_window, this->Size() };
-}
-
-
-zaf::Rect Control::RectInSelf() const noexcept {
-    return zaf::Rect{ zaf::Point{}, this->Size() };
-}
-
-
-void Control::SetRect(const zaf::Rect& rect) {
-
-    zaf::Rect previous_rect = Rect();
-
-    zaf::Rect new_rect{ rect.position, ApplySizeLimit(rect.size) };
-
-    if (new_rect.size != previous_rect.size) {
-        //Auto size.
-        ApplyAutoSizeOnRectChanged(new_rect.size);
-    }
-
-    //Don't layout if rects are the same.
-    if (new_rect == previous_rect) {
-        return;
-    }
-
-    rect_ = new_rect;
-
-    if (rect_.size != previous_rect.size) {
-
-        ReleaseCachedPaintingRenderer();
-
-        //Layout children if size is changed.
-        NeedRelayout(previous_rect);
-    }
-
-    //The focused control need to be notified while its absolute position changed, 
-    //so that it can relayout its elements, if needed.
-    auto window = Window();
-    if (window) {
-        auto focused_control = window->FocusedControl();
-        if (focused_control) {
-            if (IsAncestorOf(*focused_control)) {
-                focused_control->NeedRelayout();
-            }
-        }
-    }
-
-    //Notify rect change.
-    RectChangedInfo event_info{ shared_from_this(), previous_rect };
-    OnRectChanged(event_info);
-
-    auto parent = Parent();
-    if (parent) {
-        parent->OnChildRectChanged(shared_from_this(), previous_rect);
-    }
-}
-
-
 void Control::OnRectChanged(const RectChangedInfo& event_info) {
 
     rect_changed_event_.Raise(event_info);
@@ -807,158 +1054,15 @@ rx::Observable<SizeChangedInfo> Control::SizeChangedEvent() const {
 }
 
 
-void Control::SetMargin(const Frame& margin) {
-
-    margin_ = margin;
-
-    //Notify parent to re-layout all children.
-    auto parent = Parent();
-    if (parent) {
-
-        parent->NeedRelayout();
-        parent->AutoResizeToPreferredSize();
-    }
-}
-
-
-float Control::MinWidth() const {
-    return min_width_;
-}
-
-void Control::SetMinWidth(float min_width) {
-
-    min_width_ = min_width;
-
-    if (MaxWidth() < min_width) {
-        SetMaxWidth(min_width);
-    }
-
-    if (Width() < min_width) {
-        SetWidth(min_width);
-    }
-}
-
-
-float Control::MaxWidth() const {
-    return max_width_;
-}
-
-void Control::SetMaxWidth(float max_width) {
-
-    max_width_ = max_width;
-
-    if (MinWidth() > max_width) {
-        SetMinWidth(max_width);
-    }
-
-    if (Width() > max_width) {
-        SetWidth(max_width);
-    }
-}
-
-
-float Control::MinHeight() const {
-    return min_height_;
-}
-
-void Control::SetMinHeight(float min_height) {
-
-    min_height_ = min_height;
-
-    if (MaxHeight() < min_height) {
-        SetMaxHeight(min_height);
-    }
-
-    if (Height() < min_height) {
-        SetHeight(min_height);
-    }
-}
-
-
-float Control::MaxHeight() const {
-    return max_height_;
-}
-
-void Control::SetMaxHeight(float max_height) {
-
-    max_height_ = max_height;
-
-    if (MinHeight() > max_height) {
-        SetMinHeight(max_height);
-    }
-
-    if (Height() > max_height) {
-        SetHeight(max_height);
-    }
-}
-
-
-void Control::SetFixedWidth(float width) {
-    SetFixedWidthValue(width);
-    SetWidth(width);
-}
-
-
 void Control::SetFixedWidthValue(float value) {
     min_width_ = value;
     max_width_ = value;
 }
 
 
-void Control::SetFixedHeight(float height) {
-    SetFixedHeightValue(height);
-    SetHeight(height);
-}
-
-
 void Control::SetFixedHeightValue(float value) {
     min_height_ = value;
     max_height_ = value;
-}
-
-
-void Control::SetFixedSize(const zaf::Size& size) {
-    SetFixedWidthValue(size.width);
-    SetFixedHeightValue(size.height);
-    SetSize(size);
-}
-
-
-zaf::Size Control::CalculatePreferredSize() const {
-
-    zaf::Size bound_size{ 
-        std::numeric_limits<float>::max(),
-        std::numeric_limits<float>::max() 
-    };
-
-    return CalculatePreferredSize(bound_size);
-}
-
-
-zaf::Size Control::CalculatePreferredSize(const zaf::Size& bound_size) const {
-
-    float non_content_width{};
-    float non_content_height{};
-
-    const auto& padding = Padding();
-    non_content_width += padding.left + padding.right;
-    non_content_height += padding.top + padding.bottom;
-
-    const auto& border = Border();
-    non_content_width += border.left + border.right;
-    non_content_height += border.top + border.bottom;
-
-    zaf::Size max_content_size{
-        std::max(bound_size.width - non_content_width, 0.f),
-        std::max(bound_size.height - non_content_height, 0.f)
-    };
-    auto preferred_content_size = CalculatePreferredContentSize(max_content_size);
-
-    zaf::Size result{
-        preferred_content_size.width + non_content_width,
-        preferred_content_size.height + non_content_height
-    };
-    return result;
 }
 
 
@@ -1049,101 +1153,8 @@ zaf::Size Control::CalculatePreferredSizeForAutoSize(const zaf::Size& control_si
 }
 
 
-bool Control::AutoWidth() const {
-    return auto_width_;
-}
-
-void Control::SetAutoWidth(bool value) {
-    auto_width_ = value;
-    AutoResizeToPreferredSize();
-}
-
-
-bool Control::AutoHeight() const {
-    return auto_height_;
-}
-
-void Control::SetAutoHeight(bool value) {
-    auto_height_ = value;
-    AutoResizeToPreferredSize();
-}
-
-
-void Control::SetAutoSize(bool value) {
-
-    auto update_guard = BeginUpdate();
-
-    SetAutoWidth(true);
-    SetAutoHeight(true);
-}
-
-
-float Control::ApplyWidthLimit(float width) const {
-
-    float result = width;
-    result = std::max(result, MinWidth());
-    result = std::min(result, MaxWidth());
-    return result;
-}
-
-
-float Control::ApplyHeightLimit(float height) const {
-
-    float result = height;
-    result = std::max(result, MinHeight());
-    result = std::min(result, MaxHeight());
-    return result;
-}
-
-
-zaf::Size Control::ApplySizeLimit(const zaf::Size& size) const {
-
-    return zaf::Size{ 
-        ApplyWidthLimit(size.width),
-        ApplyHeightLimit(size.height) 
-    };
-}
-
-
 void Control::RaiseContentChangedEvent() {
     AutoResizeToPreferredSize();
-}
-
-
-Anchor Control::Anchor() const {
-    return anchor_;
-}
-
-
-void Control::SetAnchor(zaf::Anchor anchor) {
-    anchor_ = anchor;
-}
-
-
-std::optional<zaf::Rect> Control::ContentRectInWindow() const noexcept {
-
-    auto rect_in_window = this->RectInWindow();
-    if (!rect_in_window) {
-        return std::nullopt;
-    }
-
-    auto result = ContentRect();
-    result.AddOffset(rect_in_window->position);
-    return result;
-}
-
-
-zaf::Rect Control::ContentRect() const {
-
-    zaf::Rect content_rect = zaf::Rect(Point(), Size());
-    content_rect.Deflate(Border());
-    content_rect.Deflate(Padding());
-
-    //Make sure the width and the height are not less than 0.
-    content_rect.size.width = (std::max)(content_rect.size.width, 0.f);
-    content_rect.size.height = (std::max)(content_rect.size.height, 0.f);
-
-    return content_rect;
 }
 
 
@@ -1165,6 +1176,7 @@ void Control::SetBackgroundImagePicker(const ImagePicker& image_picker) {
 ImageLayout Control::BackgroundImageLayout() const {
     return background_image_layout_;
 }
+
 
 void Control::SetBackgroundImageLayout(ImageLayout image_layout) {
     background_image_layout_ = image_layout;
