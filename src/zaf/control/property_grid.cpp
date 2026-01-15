@@ -50,9 +50,9 @@ void PropertyGrid::Initialize() {
 }
 
 
-void PropertyGrid::Layout(const zaf::Rect& previous_rect) {
+void PropertyGrid::Layout(const zaf::Size& previous_size) {
 
-    __super::Layout(previous_rect);
+    __super::Layout(previous_size);
 
     split_distance_manager_->UpdateDefaultDistance(this->ScrollContent()->Width() / 2);
 

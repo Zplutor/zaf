@@ -15,7 +15,7 @@ void ConversationDetailView::Initialize() {
 }
 
 
-void ConversationDetailView::Layout(const zaf::Rect&) {
+void ConversationDetailView::Layout(const zaf::Size&) {
 
     LayoutHeaderView();
     LayoutMemberView();

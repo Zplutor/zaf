@@ -17,9 +17,9 @@ void TrackBar::Initialize() {
 }
 
 
-void TrackBar::Layout(const zaf::Rect& old_rect) {
+void TrackBar::Layout(const zaf::Size& old_size) {
 
-    __super::Layout(old_rect);
+    __super::Layout(old_size);
 
     auto content_size = ContentSize();
 

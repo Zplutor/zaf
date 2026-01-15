@@ -43,7 +43,7 @@ void ControlGeometryFacet::SetRect(const zaf::Rect& rect) {
         control_.ReleaseCachedPaintingRenderer();
 
         //Layout children if size is changed.
-        control_.RequestLayout(previous_rect);
+        control_.RequestLayout(previous_rect.size);
     }
 
     //The focused control need to be notified while its absolute position changed, 

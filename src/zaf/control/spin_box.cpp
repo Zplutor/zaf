@@ -153,9 +153,9 @@ void SpinBox::ChangeValueByButtonEvent(bool increase) {
 }
 
 
-void SpinBox::Layout(const zaf::Rect& previous_rect) {
+void SpinBox::Layout(const zaf::Size& previous_size) {
 
-    __super::Layout(previous_rect);
+    __super::Layout(previous_size);
 
     auto content_size = ContentSize();
 

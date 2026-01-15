@@ -23,7 +23,7 @@ void MessageItem::Initialize() {
 }
 
 
-void MessageItem::Layout(const zaf::Rect& previous_rect) {
+void MessageItem::Layout(const zaf::Size& previous_size) {
 
     float top = TopPadding;
 

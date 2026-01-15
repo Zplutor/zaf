@@ -39,7 +39,7 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const zaf::Rect&) override;
+    void Layout(const zaf::Size&) override;
 
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseMove(const MouseMoveInfo& event_info) override;

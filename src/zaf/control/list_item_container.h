@@ -14,7 +14,7 @@ Represents a container control that acts as the parent of items in a list contro
 class ListItemContainer : public Control {
 protected:
     void Initialize() override;
-    void Layout(const zaf::Rect& previous_rect) override;
+    void Layout(const zaf::Size& previous_size) override;
 };
 
 }

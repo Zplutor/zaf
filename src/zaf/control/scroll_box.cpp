@@ -123,7 +123,7 @@ void ScrollBox::InitializeLayouter() {
 }
 
 
-void ScrollBox::Layout(const zaf::Rect& previous_rect) {
+void ScrollBox::Layout(const zaf::Size& previous_size) {
 
     if (layouter_) {
         layouter_->Layout();

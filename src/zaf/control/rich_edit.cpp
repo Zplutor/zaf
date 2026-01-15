@@ -154,9 +154,9 @@ void RichEdit::InitializeTextService() {
 }
 
 
-void RichEdit::Layout(const zaf::Rect& previous_rect) {
+void RichEdit::Layout(const zaf::Size& previous_size) {
 
-    if (this->Size() != previous_rect.size) {
+    if (this->Size() != previous_size) {
         ResetCachedTextHeight();
     }
 

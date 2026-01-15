@@ -29,9 +29,9 @@ void MemberItem::Initialize() {
 }
 
 
-void MemberItem::Layout(const zaf::Rect& old_rect) {
+void MemberItem::Layout(const zaf::Size& old_size) {
 
-    __super::Layout(old_rect);
+    __super::Layout(old_size);
 
     zaf::Rect label_rect{ {}, ContentSize() };
     label_rect.Deflate(zaf::Frame(IconSize + 5, 0, 0, 0));

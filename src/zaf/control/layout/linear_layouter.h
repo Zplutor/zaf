@@ -3,7 +3,7 @@
 #include <zaf/control/layout/axis_alignment.h>
 #include <zaf/control/layout/layout_direction.h>
 #include <zaf/control/layout/layouter.h>
-#include <zaf/graphic/size.h>
+#include <zaf/graphic/rect.h>
 #include <zaf/object/object.h>
 #include <zaf/object/property_support.h>
 
@@ -44,7 +44,7 @@ public:
 
     void Layout(
         const Control& parent,
-        const Rect& parent_old_rect,
+        const Size& parent_old_size,
         const std::vector<std::shared_ptr<Control>>& children) override;
 
 private:

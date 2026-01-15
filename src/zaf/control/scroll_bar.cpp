@@ -288,7 +288,7 @@ void ScrollBar::Wheel(int distance) {
 }
 
 
-void ScrollBar::Layout(const zaf::Rect& previous_rect) {
+void ScrollBar::Layout(const zaf::Size& previous_size) {
 
     auto content_rect = ContentRect();
 

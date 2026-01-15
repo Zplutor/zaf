@@ -97,7 +97,7 @@ void ConversationItem::InitializeTitleLabel() {
     }));
 
     zaf::Font font;
-    font.family_name = L"΢���ź�";
+    font.family_name = L"微软雅黑";
     font.size = 14;
     title_label_->SetFont(font);
     title_label_->SetTextTrimming(zaf::dwrite::TextTrimmingGranularity::Character);
@@ -121,7 +121,7 @@ void ConversationItem::InitializeDigestLabel() {
     }));
 
     zaf::Font font;
-    font.family_name = L"΢���ź�";
+    font.family_name = L"微软雅黑";
     font.size = 12;
     digest_label_->SetFont(font);
     digest_label_->SetTextTrimming(zaf::dwrite::TextTrimmingGranularity::Character);
@@ -141,7 +141,7 @@ void ConversationItem::InitializeTimeLabel() {
     }));
 
     zaf::Font font;
-    font.family_name = L"΢���ź�";
+    font.family_name = L"微软雅黑";
     font.size = 11;
     time_label_->SetFont(font);
 
@@ -149,9 +149,9 @@ void ConversationItem::InitializeTimeLabel() {
 }
 
 
-void ConversationItem::Layout(const zaf::Rect& previous_rect) {
+void ConversationItem::Layout(const zaf::Size& previous_size) {
 
-    __super::Layout(previous_rect);
+    __super::Layout(previous_size);
 
     const auto& current_size = ContentSize();
 
@@ -373,7 +373,7 @@ void ConversationItem::UnreadCountBubble::PaintNormalBubble(zaf::Canvas& canvas)
     canvas.DrawRoundedRectangle(rounded_rect);
 
     zaf::dwrite::TextFormatProperties text_format_properties;
-    text_format_properties.font_family_name = L"΢���ź�";
+    text_format_properties.font_family_name = L"微软雅黑";
     text_format_properties.font_size = 10;
     text_format_properties.font_weight = zaf::FontWeight::Regular;
     auto text_format = zaf::GraphicFactory::Instance().CreateTextFormat(text_format_properties);

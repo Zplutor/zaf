@@ -947,13 +947,13 @@ protected:
     /**
      Layout the control's children.
 
-     @param previous_rect
-        The previous rect of the control.
+     @param previous_size
+        The previous size of the control.
 
      Derived classes may not call the same method of base class if they do the layout 
      by themself.
      */
-    virtual void Layout(const zaf::Rect& previous_rect);
+    virtual void Layout(const zaf::Size& previous_size);
 
     /**
      Require the control to relayout its children.
@@ -1152,7 +1152,7 @@ private:
         const Point& position, 
         bool recursively) const;
 
-    void RequestLayout(const zaf::Rect& previous_rect);
+    void RequestLayout(const zaf::Size& previous_size);
 
     void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
 

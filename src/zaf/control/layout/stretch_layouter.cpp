@@ -7,7 +7,7 @@ ZAF_OBJECT_IMPL(StretchLayouter)
 
 void StretchLayouter::Layout(
     const Control& parent,
-    const Rect& parent_old_rect, 
+    const Size& parent_old_size, 
     const std::vector<std::shared_ptr<Control>>& children) {
 
     if (children.empty()) {

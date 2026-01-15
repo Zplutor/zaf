@@ -49,9 +49,9 @@ void TreeControl::Initialize() {
 }
 
 
-void TreeControl::Layout(const zaf::Rect& previous_rect) {
+void TreeControl::Layout(const zaf::Size& previous_size) {
 
-    __super::Layout(previous_rect);
+    __super::Layout(previous_size);
 
     core_->ListParts().Core().OnLayout();
 }

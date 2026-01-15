@@ -12,7 +12,7 @@ public:
     void SetConversation(const std::shared_ptr<Conversation>& conversation);
 
 protected:
-    void Layout(const zaf::Rect&) override;
+    void Layout(const zaf::Size&) override;
 
 private:
     void LayoutHeaderView();

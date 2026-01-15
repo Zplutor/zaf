@@ -14,7 +14,7 @@ public:
     float DeterminateHeight(float max_width);
 
 protected:
-    void Layout(const zaf::Rect& previous_rect) override;
+    void Layout(const zaf::Size& previous_size) override;
 
 private:
     std::shared_ptr<zaf::Label> sender_label_;

@@ -184,9 +184,9 @@ void PropertyGridItem::SetFirstPaneMinLength(float max_x) {
 }
 
 
-void PropertyGridItem::Layout(const zaf::Rect& previous_rect) {
+void PropertyGridItem::Layout(const zaf::Size& previous_size) {
 
-    __super::Layout(previous_rect);
+    __super::Layout(previous_size);
 
     auto update_guard = split_control_->BeginUpdate();
 

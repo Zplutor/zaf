@@ -35,7 +35,7 @@ void ControlViewPanel::ExploredControlRectChanged(const zaf::RectChangedInfo& ev
 }
 
 
-void ControlViewPanel::Layout(const zaf::Rect&) {
+void ControlViewPanel::Layout(const zaf::Size&) {
 
     if (explored_control_ == nullptr) {
         return;

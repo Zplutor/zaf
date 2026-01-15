@@ -230,7 +230,7 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const zaf::Rect& previous_rect) override;
+    void Layout(const zaf::Size& previous_size) override;
 
     void OnMouseWheel(const MouseWheelInfo& event_info) override;
 

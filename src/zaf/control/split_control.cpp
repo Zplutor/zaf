@@ -69,7 +69,7 @@ void SplitControl::UninitializeSplitBar() {
 }
 
 
-void SplitControl::Layout(const zaf::Rect& previous_rect) {
+void SplitControl::Layout(const zaf::Size& previous_size) {
 
     auto content_size = ContentSize();
     if (IsHorizontalSplit()) {

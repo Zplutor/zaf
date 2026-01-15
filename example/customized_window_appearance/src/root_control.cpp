@@ -43,9 +43,9 @@ void RootControl::Initialize() {
 }
 
 
-void RootControl::Layout(const zaf::Rect& previous_rect) {
+void RootControl::Layout(const zaf::Size& previous_size) {
 
-    __super::Layout(previous_rect);
+    __super::Layout(previous_size);
 
     auto size = Size();
     content_control_->SetRect(zaf::Rect(

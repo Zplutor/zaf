@@ -145,9 +145,9 @@ void ComboBox::UninitializeEditBox() {
 }
 
 
-void ComboBox::Layout(const zaf::Rect& previous_rect) {
+void ComboBox::Layout(const zaf::Size& previous_size) {
 
-    __super::Layout(previous_rect);
+    __super::Layout(previous_size);
 
     auto edit_box_rect = DetermineTextRect();
     edit_box_->SetRect(edit_box_rect);

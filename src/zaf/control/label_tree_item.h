@@ -11,7 +11,7 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const zaf::Rect&) override;
+    void Layout(const zaf::Size&) override;
 
     void OnItemDataChanged() override;
 

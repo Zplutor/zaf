@@ -381,7 +381,7 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const zaf::Rect&) override;
+    void Layout(const zaf::Size&) override;
     zaf::Rect DetermineTextRect() override;
     void OnTextChanged(const TextChangedInfo& event_info) override;
     void UpdateStyle() override;

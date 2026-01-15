@@ -787,21 +787,21 @@ void Control::OnChildRectChanged(
 }
 
 
-void Control::Layout(const zaf::Rect& previous_rect) {
+void Control::Layout(const zaf::Size& previous_size) {
 
     auto layouter = Layouter();
     if (layouter) {
-        layouter->Layout(*this, previous_rect, Children());
+        layouter->Layout(*this, previous_size, Children());
     }
 }
 
 
 void Control::RequestLayout() {
-    RequestLayout(Rect());
+    RequestLayout(Size());
 }
 
 
-void Control::RequestLayout(const zaf::Rect& previous_rect) {
+void Control::RequestLayout(const zaf::Size& previous_size) {
 
     ZAF_EXPECT(!is_updating_style_);
 
@@ -814,7 +814,7 @@ void Control::RequestLayout(const zaf::Rect& previous_rect) {
         auto update_guard = BeginUpdate();
 
         auto auto_reset = MakeAutoReset(is_layouting_, true);
-        Layout(previous_rect);
+        Layout(previous_size);
     }
 }
 

@@ -6,8 +6,8 @@ namespace zaf {
 namespace {
 
 void LayoutChild(
-    const Rect& current_rect,
-    const Rect& previous_rect,
+    const Size& current_size,
+    const Size& previous_size,
     Control& child
 ) {
 
@@ -54,8 +54,8 @@ void LayoutChild(
     change_single_dimension_with_anchor(
         has_left_anchor,
         has_right_anchor,
-        previous_rect.size.width,
-        current_rect.size.width,
+        previous_size.width,
+        current_size.width,
         child_old_rect.position.x,
         child_old_rect.size.width,
         child_new_rect.position.x,
@@ -65,8 +65,8 @@ void LayoutChild(
     change_single_dimension_with_anchor(
         has_top_anchor,
         has_bottom_anchor,
-        previous_rect.size.height,
-        current_rect.size.height,
+        previous_size.height,
+        current_size.height,
         child_old_rect.position.y,
         child_old_rect.size.height,
         child_new_rect.position.y,
@@ -81,18 +81,18 @@ class AnchorLayouter : public Layouter {
 public:
     void Layout(
         const Control& parent,
-        const Rect& parent_old_rect,
+        const Size& parent_old_size,
         const std::vector<std::shared_ptr<Control>>& children
     ) override {
 
-        //Do nothing when previous rect is empty, or the layouts of chilren
+        //Do nothing when previous size is empty, or the layouts of children
         //are incorrect.
-        if (parent_old_rect.IsEmpty()) {
+        if (parent_old_size.width == 0 && parent_old_size.height == 0) {
             return;
         }
 
         for (const auto& child : children) {
-            LayoutChild(parent.Rect(), parent_old_rect, *child);
+            LayoutChild(parent.Size(), parent_old_size, *child);
         }
     }
 };

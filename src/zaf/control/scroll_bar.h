@@ -201,7 +201,7 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const zaf::Rect& previous_rect) override;
+    void Layout(const zaf::Size& previous_size) override;
 
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseUp(const MouseUpInfo& event_info) override;

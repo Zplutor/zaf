@@ -25,7 +25,7 @@ public:
 
 protected:
     void Initialize() override;
-    void Layout(const zaf::Rect& previous_rect) override;
+    void Layout(const zaf::Size& previous_size) override;
 
     virtual void OnValueChanged(const SpinBoxValueChangedInfo& event_info);
 

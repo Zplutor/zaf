@@ -7,7 +7,7 @@
 class RootControl : public zaf::Control {
 public:
     void Initialize() override;
-    void Layout(const zaf::Rect&) override;
+    void Layout(const zaf::Size&) override;
     std::optional<zaf::HitTestResult> HitTest(const zaf::HitTestMessage&) override;
 
 private:

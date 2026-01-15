@@ -12,7 +12,7 @@ void ListItemContainer::Initialize() {
 }
 
 
-void ListItemContainer::Layout(const zaf::Rect& previous_rect) {
+void ListItemContainer::Layout(const zaf::Size& previous_size) {
 
     float width = ContentSize().width;
 

@@ -25,9 +25,9 @@ void TreeItem::Initialize() {
 }
 
 
-void TreeItem::Layout(const zaf::Rect& previous_rect) {
+void TreeItem::Layout(const zaf::Size& previous_size) {
 
-    __super::Layout(previous_rect);
+    __super::Layout(previous_size);
 
     expand_button_->SetRect(ExpanderRect());
 }

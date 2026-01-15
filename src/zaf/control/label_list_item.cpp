@@ -14,7 +14,7 @@ void LabelListItem::Initialize() {
 }
 
 
-void LabelListItem::Layout(const zaf::Rect& old_rect) {
+void LabelListItem::Layout(const zaf::Size& old_size) {
 
     zaf::Rect label_rect{ {}, ContentSize() };
     label_->SetRect(label_rect);

@@ -14,7 +14,7 @@ public:
     }
 
 protected:
-    void Layout(const zaf::Rect&) override;
+    void Layout(const zaf::Size&) override;
     void Paint(zaf::Canvas& canvas, const zaf::Rect&) const override;
 
     void OnMouseEnter(const zaf::MouseEnterInfo& event_info) override {

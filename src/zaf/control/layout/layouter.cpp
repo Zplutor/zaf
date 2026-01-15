@@ -11,11 +11,11 @@ public:
 
     void Layout(
         const Control& parent,
-        const Rect& parent_old_rect,
+        const Size& parent_old_size,
         const std::vector<std::shared_ptr<Control>>& children
     ) override {
 
-        layout_function_(parent, parent_old_rect, children);
+        layout_function_(parent, parent_old_size, children);
     }
 
 private:
@@ -29,7 +29,7 @@ ZAF_OBJECT_IMPL(Layouter)
 
 void Layouter::Layout(
     const Control& parent,
-    const Rect& parent_old_rect,
+    const Size& parent_old_size,
     const std::vector<std::shared_ptr<Control>>& children) {
 
     //Do nothing.

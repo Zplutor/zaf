@@ -74,9 +74,9 @@ void TextualControl::Initialize() {
 }
 
 
-void TextualControl::Layout(const zaf::Rect& previous_rect) {
+void TextualControl::Layout(const zaf::Size& previous_size) {
 
-    __super::Layout(previous_rect);
+    __super::Layout(previous_size);
     
     auto text_rect = DetermineTextRect();
     UpdateTextRect(text_rect);

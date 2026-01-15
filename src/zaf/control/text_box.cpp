@@ -68,12 +68,12 @@ void TextBox::Initialize() {
 }
 
 
-void TextBox::Layout(const zaf::Rect& previous_rect) {
+void TextBox::Layout(const zaf::Size& previous_size) {
 
     //Text rect need to be updated before calling Layout(), as Layout() relies on text rect.
     UpdateTextRectOnLayout();
 
-    __super::Layout(previous_rect);
+    __super::Layout(previous_size);
 
     module_context_->CaretManager().MoveCaretToCurrentCaretIndex();
 }

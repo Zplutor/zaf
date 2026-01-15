@@ -356,7 +356,7 @@ protected:
     void Initialize() override;
     void UpdateStyle() override;
     void Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const override;
-    void Layout(const zaf::Rect& previous_rect) override;
+    void Layout(const zaf::Size& previous_size) override;
     zaf::Size CalculatePreferredContentSize(const zaf::Size& max_size) const override;
 
     void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) override;

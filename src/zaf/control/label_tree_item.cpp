@@ -12,9 +12,9 @@ void LabelTreeItem::Initialize() {
 }
 
 
-void LabelTreeItem::Layout(const zaf::Rect& old_rect) {
+void LabelTreeItem::Layout(const zaf::Size& old_size) {
 
-    __super::Layout(old_rect);
+    __super::Layout(old_size);
 
     label_->SetRect(BodyRect());
 }

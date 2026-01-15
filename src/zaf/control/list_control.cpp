@@ -59,9 +59,9 @@ void ListControl::Initialize() {
 }
 
 
-void ListControl::Layout(const zaf::Rect& previous_rect) {
+void ListControl::Layout(const zaf::Size& previous_size) {
 
-    __super::Layout(previous_rect);
+    __super::Layout(previous_size);
 
     parts_->Core().OnLayout();
 }
