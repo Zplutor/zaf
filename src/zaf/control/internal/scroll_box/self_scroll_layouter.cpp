@@ -129,7 +129,7 @@ void SelfScrollLayouter::ScrollBarScroll(const ScrollBarScrollInfo& event_info) 
 
 
 void SelfScrollLayouter::SelfScrollingControlScrollBarChange() {
-    ScrollBox()->NeedRelayout();
+    ScrollBox()->RequestLayout();
 }
 
 

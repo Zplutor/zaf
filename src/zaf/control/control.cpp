@@ -238,18 +238,18 @@ void Control::SetAutoSize(bool value) {
 }
 
 
-float Control::ApplyWidthLimit(float width) const {
-    return geometry_facet_->ApplyWidthLimit(width);
+float Control::ClampWidth(float width) const noexcept {
+    return geometry_facet_->ClampWidth(width);
 }
 
 
-float Control::ApplyHeightLimit(float height) const {
-    return geometry_facet_->ApplyHeightLimit(height);
+float Control::ClampHeight(float height) const noexcept {
+    return geometry_facet_->ClampHeight(height);
 }
 
 
-zaf::Size Control::ApplySizeLimit(const zaf::Size& size) const {
-    return geometry_facet_->ApplySizeLimit(size);
+zaf::Size Control::ClampSize(const zaf::Size& size) const noexcept {
+    return geometry_facet_->ClampSize(size);
 }
 
 
@@ -448,7 +448,7 @@ void Control::EndUpdate() {
     update_lock_.reset();
 
     if (update_state->need_relayout) {
-        NeedRelayout();
+        RequestLayout();
     }
 
     if (!update_state->need_repainted_rect.IsEmpty()) {
@@ -781,7 +781,7 @@ void Control::OnChildRectChanged(
     }
 
     if (!is_layouting_ || (AutoWidth() || AutoHeight())) {
-        NeedRelayout();
+        RequestLayout();
     }
     AutoResizeToPreferredSize();
 }
@@ -796,12 +796,12 @@ void Control::Layout(const zaf::Rect& previous_rect) {
 }
 
 
-void Control::NeedRelayout() {
-    NeedRelayout(Rect());
+void Control::RequestLayout() {
+    RequestLayout(Rect());
 }
 
 
-void Control::NeedRelayout(const zaf::Rect& previous_rect) {
+void Control::RequestLayout(const zaf::Rect& previous_rect) {
 
     ZAF_EXPECT(!is_updating_style_);
 
@@ -977,7 +977,7 @@ std::shared_ptr<Layouter> Control::Layouter() const {
 
 void Control::SetLayouter(const std::shared_ptr<zaf::Layouter>& layouter) {
     layouter_ = layouter;
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -1066,7 +1066,7 @@ void Control::AddChildAtIndex(const std::shared_ptr<Control>& child, std::size_t
     children_.insert(std::next(children_.begin(), index), child);
     child->SetParent(shared_from_this());
 
-    NeedRelayout();
+    RequestLayout();
     NeedRepaintRect(child->Rect());
 
     AutoResizeToPreferredSize();
@@ -1143,12 +1143,12 @@ void Control::InnerRemoveChild(const std::shared_ptr<Control>& child, bool set_p
         child->SetParent(nullptr);
     }
 
-    //The child's rect may be changed while calling NeedRelayout(), leading to a wrong repaint rect
+    //The child's rect may be changed while calling RequestLayout(), leading to a wrong repaint rect
     //while calling NeedRepaintRect(), so we preserve the original rect before calling 
-    //NeedRelayout().
+    //RequestLayout().
     auto child_rect = child->Rect();
 
-    NeedRelayout();
+    RequestLayout();
     NeedRepaintRect(child_rect);
 
     AutoResizeToPreferredSize();
@@ -1330,7 +1330,7 @@ void Control::SetIsVisible(bool is_visible) {
     //Notify parent to re-layout.
     auto parent = Parent();
     if (parent) {
-        parent->NeedRelayout();
+        parent->RequestLayout();
         parent->AutoResizeToPreferredSize();
     }
 }

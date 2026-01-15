@@ -20,7 +20,7 @@ public:
 
     void SetDirection(LayoutDirection direction) {
         layouter_->SetDirection(direction);
-        NeedRelayout();
+        RequestLayout();
     }
 
     zaf::AxisAlignment AxisAlignment() const {
@@ -29,7 +29,7 @@ public:
 
     void SetAxisAlignment(zaf::AxisAlignment alignment) {
         layouter_->SetAxisAlignment(alignment);
-        NeedRelayout();
+        RequestLayout();
     }
 
     zaf::AxisAlignment CrossAxisAlignment() const {
@@ -38,7 +38,7 @@ public:
 
     void SetCrossAxisAlignment(zaf::AxisAlignment alignment) {
         layouter_->SetCrossAxisAlignment(alignment);
-        NeedRelayout();
+        RequestLayout();
     }
 
 protected:

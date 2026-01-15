@@ -54,7 +54,7 @@ Size GeneralScrollLayouter::DeterminateScrollContentSize(
     
         if (scrollable_control->AutoScrollContentHeight()) {
             content_height = container_size.height - content_margin.Height();
-            content_height = content_control->ApplyHeightLimit(content_height);
+            content_height = content_control->ClampHeight(content_height);
         }
         else {
             content_height = content_size.height;
@@ -76,7 +76,7 @@ Size GeneralScrollLayouter::DeterminateScrollContentSize(
     float content_width{};
     if (scrollable_control->AutoScrollContentWidth()) {
         content_width = container_size.width - content_margin.Width();
-        content_width = content_control->ApplyWidthLimit(content_width);
+        content_width = content_control->ClampWidth(content_width);
     }
     else {
         content_width = content_size.width;

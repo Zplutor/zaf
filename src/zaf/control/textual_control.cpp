@@ -539,7 +539,7 @@ void TextualControl::OnTextModelChanged(const internal::TextModelChangedInfo& ev
         event_info.IsFontChanged() || 
         event_info.IsInlineObjectChanged()) {
 
-        NeedRelayout();
+        RequestLayout();
         RaiseContentChangedEvent();
 
         if (event_info.IsTextChanged()) {

@@ -133,7 +133,7 @@ void SplitControl::OnRectChanged(const RectChangedInfo& event_info) {
     }
 
     if (UpdateActualSplitDistance(false)) {
-        NeedRelayout();
+        RequestLayout();
     }
 }
 
@@ -204,7 +204,7 @@ void SplitControl::SetIsHorizontalSplit(bool is_horizontal) {
     split_bar_->SetIsHorizontal(is_horizontal);
 
     UpdateActualSplitDistance(false);
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -216,7 +216,7 @@ void SplitControl::SetSplitBarThickness(float thickness) {
 
     split_bar_thickness_ = thickness;
     UpdateActualSplitDistance(false);
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -235,7 +235,7 @@ void SplitControl::InnerSetSplitDistance(float distance, bool is_by_dragging) {
     expected_split_distance_ = distance;
 
     if (UpdateActualSplitDistance(is_by_dragging)) {
-        NeedRelayout();
+        RequestLayout();
     }
 }
 
@@ -341,7 +341,7 @@ void SplitControl::SetPaneLimitLength(
     }
 
     if (UpdateActualSplitDistance(false)) {
-        NeedRelayout();
+        RequestLayout();
     }
 }
 

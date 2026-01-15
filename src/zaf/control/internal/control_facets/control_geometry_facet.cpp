@@ -24,14 +24,14 @@ void ControlGeometryFacet::SetRect(const zaf::Rect& rect) {
 
     zaf::Rect previous_rect = Rect();
 
-    zaf::Rect new_rect{ rect.position, ApplySizeLimit(rect.size) };
+    zaf::Rect new_rect{ rect.position, ClampSize(rect.size) };
 
     if (new_rect.size != previous_rect.size) {
         //Auto size.
-        ApplyAutoSizeOnRectChanged(new_rect.size);
+        ApplyAutoSizeOnSetRect(new_rect.size);
     }
 
-    //Don't layout if rects are the same.
+    //Don't continue if rects are the same.
     if (new_rect == previous_rect) {
         return;
     }
@@ -43,7 +43,7 @@ void ControlGeometryFacet::SetRect(const zaf::Rect& rect) {
         control_.ReleaseCachedPaintingRenderer();
 
         //Layout children if size is changed.
-        control_.NeedRelayout(previous_rect);
+        control_.RequestLayout(previous_rect);
     }
 
     //The focused control need to be notified while its absolute position changed, 
@@ -53,7 +53,7 @@ void ControlGeometryFacet::SetRect(const zaf::Rect& rect) {
         auto focused_control = window->FocusedControl();
         if (focused_control) {
             if (control_.IsAncestorOf(*focused_control)) {
-                focused_control->NeedRelayout();
+                focused_control->RequestLayout();
             }
         }
     }
@@ -65,6 +65,30 @@ void ControlGeometryFacet::SetRect(const zaf::Rect& rect) {
     auto parent = control_.Parent();
     if (parent) {
         parent->OnChildRectChanged(control_.shared_from_this(), previous_rect);
+    }
+}
+
+
+void ControlGeometryFacet::ApplyAutoSizeOnSetRect(zaf::Size& new_size) {
+
+    if (control_.is_auto_resizing_) {
+        return;
+    }
+
+    if (!auto_width_ && !auto_height_) {
+        return;
+    }
+
+    auto preferred_size = CalculatePreferredSizeForAutoSize(new_size);
+
+    if (auto_width_) {
+        SetFixedWidthValue(preferred_size.width);
+        new_size.width = preferred_size.width;
+    }
+
+    if (auto_height_) {
+        SetFixedHeightValue(preferred_size.height);
+        new_size.height = preferred_size.height;
     }
 }
 
@@ -338,7 +362,7 @@ void ControlGeometryFacet::SetAutoSize(bool value) {
 }
 
 
-float ControlGeometryFacet::ApplyWidthLimit(float width) const {
+float ControlGeometryFacet::ClampWidth(float width) const noexcept {
 
     float result = width;
     result = std::max(result, MinWidth());
@@ -347,7 +371,7 @@ float ControlGeometryFacet::ApplyWidthLimit(float width) const {
 }
 
 
-float ControlGeometryFacet::ApplyHeightLimit(float height) const {
+float ControlGeometryFacet::ClampHeight(float height) const noexcept {
 
     float result = height;
     result = std::max(result, MinHeight());
@@ -356,11 +380,10 @@ float ControlGeometryFacet::ApplyHeightLimit(float height) const {
 }
 
 
-zaf::Size ControlGeometryFacet::ApplySizeLimit(const zaf::Size& size) const {
-
+zaf::Size ControlGeometryFacet::ClampSize(const zaf::Size& size) const noexcept {
     return zaf::Size{ 
-        ApplyWidthLimit(size.width),
-        ApplyHeightLimit(size.height) 
+        ClampWidth(size.width),
+        ClampHeight(size.height) 
     };
 }
 
@@ -388,7 +411,7 @@ void ControlGeometryFacet::SetMargin(const Frame& margin) {
     auto parent = control_.Parent();
     if (parent) {
 
-        parent->NeedRelayout();
+        parent->RequestLayout();
         parent->AutoResizeToPreferredSize();
     }
 }
@@ -402,7 +425,7 @@ const Frame& ControlGeometryFacet::Border() const {
 void ControlGeometryFacet::SetBorder(const Frame& border) {
     border_ = border;
     control_.NeedRepaint();
-    control_.NeedRelayout();
+    control_.RequestLayout();
 }
 
 
@@ -413,7 +436,7 @@ const Frame& ControlGeometryFacet::Padding() const {
 
 void ControlGeometryFacet::SetPadding(const Frame& padding) {
     padding_ = padding;
-    control_.NeedRelayout();
+    control_.RequestLayout();
 }
 
 
@@ -449,39 +472,15 @@ zaf::Size ControlGeometryFacet::ContentSize() const {
 }
 
 
-void ControlGeometryFacet::SetFixedWidthValue(float value) {
+void ControlGeometryFacet::SetFixedWidthValue(float value) noexcept {
     min_width_ = value;
     max_width_ = value;
 }
 
 
-void ControlGeometryFacet::SetFixedHeightValue(float value) {
+void ControlGeometryFacet::SetFixedHeightValue(float value) noexcept {
     min_height_ = value;
     max_height_ = value;
-}
-
-
-void ControlGeometryFacet::ApplyAutoSizeOnRectChanged(zaf::Size& new_size) {
-
-    if (control_.is_auto_resizing_) {
-        return;
-    }
-
-    if (!auto_width_ && !auto_height_) {
-        return;
-    }
-
-    auto preferred_size = CalculatePreferredSizeForAutoSize(new_size);
-
-    if (auto_width_) {
-        SetFixedWidthValue(preferred_size.width);
-        new_size.width = preferred_size.width;
-    }
-
-    if (auto_height_) {
-        SetFixedHeightValue(preferred_size.height);
-        new_size.height = preferred_size.height;
-    }
 }
 
 

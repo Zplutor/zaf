@@ -269,7 +269,7 @@ void TrackBar::SetValue(int value) {
     }
 
     value_ = value_to_set;
-    NeedRelayout();
+    RequestLayout();
 
     value_changed_event_.Raise(TrackBarValueChangedInfo{
         As<TrackBar>(shared_from_this()) 
@@ -302,7 +302,7 @@ void TrackBar::SetMinValue(int value) {
         value_ = min_value_;
     }
 
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -326,7 +326,7 @@ void TrackBar::SetMaxValue(int value) {
         value_ = max_value_;
     }
 
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -350,7 +350,7 @@ void TrackBar::SetIsHorizontal(bool is_horizontal) {
     }
 
     is_horizontal_ = is_horizontal;
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -398,7 +398,7 @@ void TrackBar::SetThumbThickness(float thickness) {
     }
 
     thumb_thickness_ = thickness;
-    NeedRelayout();
+    RequestLayout();
 }
 
 

@@ -218,7 +218,7 @@ void ComboBox::SetTextInset(const Frame& inset) {
     }
 
     text_inset_ = inset;
-    NeedRelayout();
+    RequestLayout();
 }
 
 

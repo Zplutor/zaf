@@ -135,7 +135,7 @@ void TrackBarThumb::SetIsHorizontal(bool is_horizontal) {
     }
 
     is_horizontal_ = is_horizontal;
-    NeedRelayout();
+    RequestLayout();
     NeedRepaint();
 }
 

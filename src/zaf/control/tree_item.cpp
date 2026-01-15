@@ -68,7 +68,7 @@ void TreeItem::SetExpandState(zaf::ExpandState expand_state) {
 void TreeItem::SetIndentLevel(std::size_t deep) {
 
     indent_level_ = deep;
-    NeedRelayout();
+    RequestLayout();
 }
 
 

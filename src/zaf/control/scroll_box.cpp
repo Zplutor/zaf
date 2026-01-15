@@ -134,7 +134,7 @@ void ScrollBox::Layout(const zaf::Rect& previous_rect) {
 void ScrollBox::OnScrollContentRectChange(const RectChangedInfo& event_info) {
 
     if (As<Control>(event_info.Source())->Size() != event_info.PreviousRect().size) {
-        NeedRelayout();
+        RequestLayout();
     }
 }
 
@@ -152,7 +152,7 @@ void ScrollBox::SetAllowVerticalScroll(bool allow_scroll) {
         self_scrolling_control_->SetAllowVerticalScroll(allow_scroll);
     }
 
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -169,7 +169,7 @@ void ScrollBox::SetAllowHorizontalScroll(bool allow_scroll) {
         self_scrolling_control_->SetAllowHorizontalScroll(allow_scroll);
     }
 
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -186,7 +186,7 @@ void ScrollBox::SetAutoHideScrollBars(bool auto_hide) {
         self_scrolling_control_->SetAutoHideScrollBars(auto_hide);
     }
 
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -202,7 +202,7 @@ void ScrollBox::SetUseOverlayScrollBars(bool use) {
     }
 
     use_overlay_scroll_bars_ = use;
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -214,7 +214,7 @@ bool ScrollBox::AutoScrollBarLargeChange() const {
 void ScrollBox::SetAutoScrollBarLargeChange(bool value) {
 
     auto_scroll_bar_large_change_ = value;
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -232,7 +232,7 @@ void ScrollBox::SetVerticalScrollBar(const std::shared_ptr<ScrollBar>& scroll_ba
 
     layouter_->ScrollBarChange(false, previous_scroll_bar);
     OnVerticalScrollBarChanged(previous_scroll_bar);
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -250,7 +250,7 @@ void ScrollBox::SetHorizontalScrollBar(const std::shared_ptr<ScrollBar>& scroll_
 
     layouter_->ScrollBarChange(true, previous_scroll_bar);
     OnHorizontalScrollBarChanged(previous_scroll_bar);
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -267,7 +267,7 @@ void ScrollBox::SetScrollBarCorner(const std::shared_ptr<Control>& control) {
     InitializeScrollBarCorner(control != nullptr ? control : Create<Control>());
 
     OnScrollBarCornerChanged(previous_corner);
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -291,7 +291,7 @@ void ScrollBox::SetScrollContent(const std::shared_ptr<Control>& control) {
     InitializeLayouter();
 
     OnScrollContentChanged(previous_control);
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -303,7 +303,7 @@ bool ScrollBox::AutoScrollContentWidth() const {
 void ScrollBox::SetAutoScrollContentWidth(bool value) {
 
     auto_scroll_content_width_ = value;
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -315,7 +315,7 @@ bool ScrollBox::AutoScrollContentHeight() const {
 void ScrollBox::SetAutoScrollContentHeight(bool value) {
 
     auto_scroll_content_height_ = value;
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -333,7 +333,7 @@ float ScrollBox::VerticalScrollBarThickness() const {
 
 void ScrollBox::SetVerticalScrollBarThickness(float thickness) {
     vertical_scroll_bar_thickness_ = thickness;
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -343,7 +343,7 @@ float ScrollBox::HorizontalScrollBarThickness() const {
 
 void ScrollBox::SetHorizontalScrollBarThickness(float thickness) {
     horizontal_scroll_bar_thickness_ = thickness;
-    NeedRelayout();
+    RequestLayout();
 }
 
 

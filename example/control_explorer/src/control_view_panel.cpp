@@ -31,7 +31,7 @@ void ControlViewPanel::ExploredControlRectChanged(const zaf::RectChangedInfo& ev
         return;
     }
 
-    NeedRelayout();
+    RequestLayout();
 }
 
 

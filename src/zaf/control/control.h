@@ -403,9 +403,9 @@ public:
 
     void SetAutoSize(bool value);
 
-    float ApplyWidthLimit(float width) const;
-    float ApplyHeightLimit(float height) const;
-    zaf::Size ApplySizeLimit(const zaf::Size& size) const;
+    float ClampWidth(float width) const noexcept;
+    float ClampHeight(float height) const noexcept;
+    zaf::Size ClampSize(const zaf::Size& size) const noexcept;
 
     /**
      Get the control's anchor.
@@ -958,7 +958,7 @@ protected:
     /**
      Require the control to relayout its children.
      */
-    void NeedRelayout();
+    void RequestLayout();
 
     void AutoResizeToPreferredSize();
 
@@ -1152,7 +1152,7 @@ private:
         const Point& position, 
         bool recursively) const;
 
-    void NeedRelayout(const zaf::Rect& previous_rect);
+    void RequestLayout(const zaf::Rect& previous_rect);
 
     void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
 

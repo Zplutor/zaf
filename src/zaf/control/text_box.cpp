@@ -457,7 +457,7 @@ void TextBox::OnTextChanged(const TextChangedInfo& event_info) {
 
     //Clear previous text rect and re-calculate it.
     text_rect_ = {};
-    NeedRelayout();
+    RequestLayout();
 
     __super::OnTextChanged(event_info);
 }
@@ -603,7 +603,7 @@ bool TextBox::Input(std::shared_ptr<textual::InlineObject> inline_object) {
 void TextBox::SetAllowVerticalScroll(bool allow) {
 
     allow_vertical_scroll_ = allow;
-    NeedRelayout();
+    RequestLayout();
     NeedRepaint();
 }
 
@@ -611,14 +611,14 @@ void TextBox::SetAllowVerticalScroll(bool allow) {
 void TextBox::SetAllowHorizontalScroll(bool allow) {
 
     allow_horizontal_scroll_ = allow;
-    NeedRelayout();
+    RequestLayout();
     NeedRepaint();
 }
 
 
 void TextBox::SetAutoHideScrollBars(bool auto_hide) {
     auto_hide_scroll_bars_ = auto_hide;
-    NeedRelayout();
+    RequestLayout();
     NeedRepaint();
 }
 

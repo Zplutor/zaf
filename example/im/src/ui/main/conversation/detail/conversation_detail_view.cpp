@@ -70,5 +70,5 @@ void ConversationDetailView::SetConversation(const std::shared_ptr<Conversation>
         member_view_->SetIsVisible(false);
     }
 
-    NeedRelayout();
+    RequestLayout();
 }

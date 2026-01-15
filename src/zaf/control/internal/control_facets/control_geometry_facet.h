@@ -62,9 +62,9 @@ public:
     void SetAutoHeight(bool value);
     void SetAutoSize(bool value);
 
-    float ApplyWidthLimit(float width) const;
-    float ApplyHeightLimit(float height) const;
-    zaf::Size ApplySizeLimit(const zaf::Size& size) const;
+    float ClampWidth(float width) const noexcept;
+    float ClampHeight(float height) const noexcept;
+    zaf::Size ClampSize(const zaf::Size& size) const noexcept;
 
     zaf::Anchor Anchor() const;
     void SetAnchor(zaf::Anchor anchor);
@@ -85,9 +85,9 @@ public:
     void AutoResizeToPreferredSize();
 
 private:
-    void SetFixedWidthValue(float value);
-    void SetFixedHeightValue(float value);
-    void ApplyAutoSizeOnRectChanged(zaf::Size& new_size);
+    void ApplyAutoSizeOnSetRect(zaf::Size& new_size);
+    void SetFixedWidthValue(float value) noexcept;
+    void SetFixedHeightValue(float value) noexcept;
     zaf::Size CalculatePreferredSizeForAutoSize(const zaf::Size& control_size) const;
 
 private:

@@ -175,7 +175,7 @@ float ScrollBar::ArrowLength() const {
 void ScrollBar::SetArrowLength(float length) {
 
     arrow_length_ = length;
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -193,7 +193,7 @@ void ScrollBar::SetValue(int value) {
 
     if (previous_value != value_) {
 
-        NeedRelayout();
+        RequestLayout();
 
         scroll_event_.Raise(ScrollBarScrollInfo{
             std::dynamic_pointer_cast<ScrollBar>(shared_from_this()) 
@@ -219,7 +219,7 @@ void ScrollBar::ChangeValueRange(int min_value, int max_value, bool max_value_ha
 
     auto update_guard = this->BeginUpdate();
     SetValue(value_);
-    NeedRelayout();
+    RequestLayout();
 }
 
 
@@ -251,7 +251,7 @@ void ScrollBar::SetPageSize(int value) {
     ZAF_EXPECT(value >= 0);
 
     page_size_ = value;
-    NeedRelayout();
+    RequestLayout();
 }
 
 

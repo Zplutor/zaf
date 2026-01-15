@@ -80,7 +80,7 @@ public:
     void SetIsHorizontal(bool is_horizontal) {
         is_horizontal_ = is_horizontal;
         ApplyOrientationToChildren();
-        NeedRelayout();
+        RequestLayout();
     }
 
     /**
