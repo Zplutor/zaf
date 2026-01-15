@@ -42,6 +42,7 @@
 
 namespace zaf::internal {
 class ControlEventInvokerBinder;
+class ControlGeometryFacet;
 class ControlUpdateLock;
 class ControlUpdateState;
 class InspectorPort;
@@ -959,6 +960,8 @@ protected:
      */
     void NeedRelayout();
 
+    void AutoResizeToPreferredSize();
+
     virtual zaf::Size CalculatePreferredContentSize(const zaf::Size& bound_size) const;
 
     void RaiseContentChangedEvent();
@@ -1095,6 +1098,7 @@ private:
     friend class Caret;
     friend class Window;
     friend class internal::ControlEventInvokerBinder;
+    friend class internal::ControlGeometryFacet;
     friend class internal::WindowControlFacet;
     friend class internal::WindowFocusedControlManager;
     friend class internal::WindowKeyboardFacet;
@@ -1139,12 +1143,6 @@ private:
     void SetParent(const std::shared_ptr<Control>& parent);
     void InnerRemoveChild(const std::shared_ptr<Control>& child, bool set_parent_to_null);
 
-    void SetFixedWidthValue(float value);
-    void SetFixedHeightValue(float value);
-    void ApplyAutoSizeOnRectChanged(zaf::Size& new_size);
-    void AutoResizeToPreferredSize();
-    zaf::Size CalculatePreferredSizeForAutoSize(const zaf::Size& control_size) const;
-
     /**
      Called when a child's rect has changed.
      */
@@ -1166,6 +1164,8 @@ private:
     std::shared_ptr<internal::InspectorPort> GetInspectorPort() const;
 
 private:
+    std::unique_ptr<internal::ControlGeometryFacet> geometry_facet_;
+
     std::weak_ptr<zaf::Window> window_;
     std::weak_ptr<Control> parent_;
     std::vector<std::shared_ptr<Control>> children_;
@@ -1180,13 +1180,6 @@ private:
     d2d::BitmapRenderer cached_renderer_;
     zaf::Rect valid_cached_renderer_rect_;
 
-    zaf::Anchor anchor_{ zaf::Anchor::None };
-    bool auto_width_{};
-    bool auto_height_{};
-    float min_width_{};
-    float max_width_{ (std::numeric_limits<float>::max)() };
-    float min_height_{};
-    float max_height_{ (std::numeric_limits<float>::max)() };
     std::shared_ptr<zaf::Layouter> layouter_;
     bool is_auto_resizing_{ false };
     bool is_layouting_{ false };
@@ -1201,11 +1194,6 @@ private:
     bool is_selected_{};
     bool can_tab_stop_{ true };
     std::optional<std::size_t> tab_index_;
-
-    zaf::Rect rect_;
-    Frame margin_;
-    Frame border_;
-    Frame padding_;
 
     std::uint32_t last_mouse_down_time_{};
     Point last_mouse_down_position_;

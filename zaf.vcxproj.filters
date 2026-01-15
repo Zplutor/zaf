@@ -208,6 +208,9 @@
     <Filter Include="zaf\window\internal\window_facets">
       <UniqueIdentifier>{6996c1ac-d9de-4271-846e-a9477e7b31f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\control\internal\control_facets">
+      <UniqueIdentifier>{87a3a9e5-edc9-4b81-ac19-162234222963}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -1392,6 +1395,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\window\event\dpi_changed_info.cpp">
       <Filter>zaf\window\event</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\control_facets\control_geometry_facet.cpp">
+      <Filter>zaf\control\internal\control_facets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3252,6 +3258,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\event\dpi_changed_info.h">
       <Filter>zaf\window\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\control_facets\control_geometry_facet.h">
+      <Filter>zaf\control\internal\control_facets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

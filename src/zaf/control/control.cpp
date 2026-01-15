@@ -6,6 +6,7 @@
 #include <zaf/base/define.h>
 #include <zaf/base/error/precondition_error.h>
 #include <zaf/control/internal/cached_painting.h>
+#include <zaf/control/internal/control_facets/control_geometry_facet.h>
 #include <zaf/control/internal/control_updating.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
 #include <zaf/control/layout/anchor_layouter.h>
@@ -45,6 +46,7 @@ constexpr bool DefaultIsVisible = true;
 
 
 Control::Control() : 
+    geometry_facet_(std::make_unique<internal::ControlGeometryFacet>(*this)),
     is_mouse_over_(false), 
     is_capturing_mouse_(false),
     is_focused_(false),
@@ -62,438 +64,248 @@ Control::~Control() {
 #pragma region Geometry Management
 
 const zaf::Rect& Control::Rect() const noexcept {
-    return rect_;
+    return geometry_facet_->Rect();
 }
 
 
 void Control::SetRect(const zaf::Rect& rect) {
-
-    zaf::Rect previous_rect = Rect();
-
-    zaf::Rect new_rect{ rect.position, ApplySizeLimit(rect.size) };
-
-    if (new_rect.size != previous_rect.size) {
-        //Auto size.
-        ApplyAutoSizeOnRectChanged(new_rect.size);
-    }
-
-    //Don't layout if rects are the same.
-    if (new_rect == previous_rect) {
-        return;
-    }
-
-    rect_ = new_rect;
-
-    if (rect_.size != previous_rect.size) {
-
-        ReleaseCachedPaintingRenderer();
-
-        //Layout children if size is changed.
-        NeedRelayout(previous_rect);
-    }
-
-    //The focused control need to be notified while its absolute position changed, 
-    //so that it can relayout its elements, if needed.
-    auto window = Window();
-    if (window) {
-        auto focused_control = window->FocusedControl();
-        if (focused_control) {
-            if (IsAncestorOf(*focused_control)) {
-                focused_control->NeedRelayout();
-            }
-        }
-    }
-
-    //Notify rect change.
-    RectChangedInfo event_info{ shared_from_this(), previous_rect };
-    OnRectChanged(event_info);
-
-    auto parent = Parent();
-    if (parent) {
-        parent->OnChildRectChanged(shared_from_this(), previous_rect);
-    }
+    geometry_facet_->SetRect(rect);
 }
 
 
 zaf::Rect Control::RectInSelf() const noexcept {
-    return zaf::Rect{ zaf::Point{}, this->Size() };
+    return geometry_facet_->RectInSelf();
 }
 
 
 std::optional<zaf::Rect> Control::RectInWindow() const noexcept {
-
-    auto position_in_window = PositionInWindow();
-    if (!position_in_window) {
-        return std::nullopt;
-    }
-
-    return zaf::Rect{ *position_in_window, this->Size() };
+    return geometry_facet_->RectInWindow();
 }
 
 
 const Point& Control::Position() const noexcept {
-    return rect_.position;
+    return geometry_facet_->Position();
 }
 
 
 void Control::SetPosition(const Point& position) {
-    SetRect(zaf::Rect(position, Rect().size));
+    geometry_facet_->SetPosition(position);
 }
 
 
 std::optional<zaf::Point> Control::PositionInWindow() const noexcept {
-
-    auto parent = Parent();
-
-    //Current control has no parent, it may be the root control of a window.
-    if (!parent) {
-
-        auto window = Window();
-        if (window) {
-            //Current control is the root control, whose position is the position in window.
-            return this->Position();
-        }
-
-        //Current control doesn't belong to any window.
-        return std::nullopt;
-    }
-
-    auto parent_position_in_window = parent->PositionInWindow();
-    if (!parent_position_in_window) {
-        return std::nullopt;
-    }
-
-    auto result = *parent_position_in_window;
-    result.AddOffset(parent->ContentRect().position);
-    result.AddOffset(this->Position());
-    return result;
+    return geometry_facet_->PositionInWindow();
 }
 
 
 float Control::X() const noexcept {
-    return Position().x;
+    return geometry_facet_->X();
 }
 
 
 void Control::SetX(float x) {
-    SetPosition(Point(x, Y()));
+    geometry_facet_->SetX(x);
 }
 
 
 float Control::Y() const noexcept {
-    return Position().y;
+    return geometry_facet_->Y();
 }
 
 
 void Control::SetY(float y) {
-    SetPosition(Point(X(), y));
+    geometry_facet_->SetY(y);
 }
 
 
 const zaf::Size& Control::Size() const noexcept {
-    return rect_.size;
+    return geometry_facet_->Size();
 }
 
 
 void Control::SetSize(const zaf::Size& size) {
-    SetRect(zaf::Rect(Rect().position, size));
+    geometry_facet_->SetSize(size);
 }
 
 
 float Control::Width() const noexcept {
-    return rect_.size.width;
+    return geometry_facet_->Width();
 }
 
 
 void Control::SetWidth(float width) {
-    SetSize(zaf::Size(width, Height()));
+    geometry_facet_->SetWidth(width);
 }
 
 
 float Control::Height() const noexcept {
-    return rect_.size.height;
+    return geometry_facet_->Height();
 }
 
 
 void Control::SetHeight(float height) {
-    SetSize(zaf::Size(Width(), height));
+    geometry_facet_->SetHeight(height);
 }
 
 
 float Control::MinWidth() const noexcept {
-    return min_width_;
+    return geometry_facet_->MinWidth();
 }
 
 
 void Control::SetMinWidth(float min_width) {
-
-    min_width_ = min_width;
-
-    if (MaxWidth() < min_width) {
-        SetMaxWidth(min_width);
-    }
-
-    if (Width() < min_width) {
-        SetWidth(min_width);
-    }
+    geometry_facet_->SetMinWidth(min_width);
 }
 
 
 float Control::MaxWidth() const noexcept {
-    return max_width_;
+    return geometry_facet_->MaxWidth();
 }
 
 
 void Control::SetMaxWidth(float max_width) {
-
-    max_width_ = max_width;
-
-    if (MinWidth() > max_width) {
-        SetMinWidth(max_width);
-    }
-
-    if (Width() > max_width) {
-        SetWidth(max_width);
-    }
+    geometry_facet_->SetMaxWidth(max_width);
 }
 
 
 void Control::SetFixedWidth(float width) {
-    SetFixedWidthValue(width);
-    SetWidth(width);
+    geometry_facet_->SetFixedWidth(width);
 }
 
 
 float Control::MinHeight() const noexcept {
-    return min_height_;
+    return geometry_facet_->MinHeight();
 }
 
 
 void Control::SetMinHeight(float min_height) {
-
-    min_height_ = min_height;
-
-    if (MaxHeight() < min_height) {
-        SetMaxHeight(min_height);
-    }
-
-    if (Height() < min_height) {
-        SetHeight(min_height);
-    }
+    geometry_facet_->SetMinHeight(min_height);
 }
 
 
 float Control::MaxHeight() const noexcept {
-    return max_height_;
+    return geometry_facet_->MaxHeight();
 }
 
 
 void Control::SetMaxHeight(float max_height) {
-
-    max_height_ = max_height;
-
-    if (MinHeight() > max_height) {
-        SetMinHeight(max_height);
-    }
-
-    if (Height() > max_height) {
-        SetHeight(max_height);
-    }
+    geometry_facet_->SetMaxHeight(max_height);
 }
 
 
 void Control::SetFixedHeight(float height) {
-    SetFixedHeightValue(height);
-    SetHeight(height);
+    geometry_facet_->SetFixedHeight(height);
 }
 
 
 void Control::SetFixedSize(const zaf::Size& size) {
-    SetFixedWidthValue(size.width);
-    SetFixedHeightValue(size.height);
-    SetSize(size);
+    geometry_facet_->SetFixedSize(size);
 }
 
 
 zaf::Size Control::CalculatePreferredSize() const {
-
-    zaf::Size bound_size{ 
-        std::numeric_limits<float>::max(),
-        std::numeric_limits<float>::max() 
-    };
-
-    return CalculatePreferredSize(bound_size);
+    return geometry_facet_->CalculatePreferredSize();
 }
 
 
 zaf::Size Control::CalculatePreferredSize(const zaf::Size& bound_size) const {
-
-    float non_content_width{};
-    float non_content_height{};
-
-    const auto& padding = Padding();
-    non_content_width += padding.left + padding.right;
-    non_content_height += padding.top + padding.bottom;
-
-    const auto& border = Border();
-    non_content_width += border.left + border.right;
-    non_content_height += border.top + border.bottom;
-
-    zaf::Size max_content_size{
-        std::max(bound_size.width - non_content_width, 0.f),
-        std::max(bound_size.height - non_content_height, 0.f)
-    };
-    auto preferred_content_size = CalculatePreferredContentSize(max_content_size);
-
-    zaf::Size result{
-        preferred_content_size.width + non_content_width,
-        preferred_content_size.height + non_content_height
-    };
-    return result;
+    return geometry_facet_->CalculatePreferredSize(bound_size);
 }
 
 
 bool Control::AutoWidth() const {
-    return auto_width_;
+    return geometry_facet_->AutoWidth();
 }
 
 
 void Control::SetAutoWidth(bool value) {
-    auto_width_ = value;
-    AutoResizeToPreferredSize();
+    geometry_facet_->SetAutoWidth(value);
 }
 
 
 bool Control::AutoHeight() const {
-    return auto_height_;
+    return geometry_facet_->AutoHeight();
 }
 
 
 void Control::SetAutoHeight(bool value) {
-    auto_height_ = value;
-    AutoResizeToPreferredSize();
+    geometry_facet_->SetAutoHeight(value);
 }
 
 
 void Control::SetAutoSize(bool value) {
-
-    auto update_guard = BeginUpdate();
-
-    SetAutoWidth(true);
-    SetAutoHeight(true);
+    geometry_facet_->SetAutoSize(value);
 }
 
 
 float Control::ApplyWidthLimit(float width) const {
-
-    float result = width;
-    result = std::max(result, MinWidth());
-    result = std::min(result, MaxWidth());
-    return result;
+    return geometry_facet_->ApplyWidthLimit(width);
 }
 
 
 float Control::ApplyHeightLimit(float height) const {
-
-    float result = height;
-    result = std::max(result, MinHeight());
-    result = std::min(result, MaxHeight());
-    return result;
+    return geometry_facet_->ApplyHeightLimit(height);
 }
 
 
 zaf::Size Control::ApplySizeLimit(const zaf::Size& size) const {
-
-    return zaf::Size{ 
-        ApplyWidthLimit(size.width),
-        ApplyHeightLimit(size.height) 
-    };
+    return geometry_facet_->ApplySizeLimit(size);
 }
 
 
 Anchor Control::Anchor() const {
-    return anchor_;
+    return geometry_facet_->Anchor();
 }
 
 
 void Control::SetAnchor(zaf::Anchor anchor) {
-    anchor_ = anchor;
+    geometry_facet_->SetAnchor(anchor);
 }
 
 
 const Frame& Control::Margin() const {
-    return margin_;
+    return geometry_facet_->Margin();
 }
 
 
 void Control::SetMargin(const Frame& margin) {
-
-    margin_ = margin;
-
-    //Notify parent to re-layout all children.
-    auto parent = Parent();
-    if (parent) {
-
-        parent->NeedRelayout();
-        parent->AutoResizeToPreferredSize();
-    }
+    geometry_facet_->SetMargin(margin);
 }
 
 
 const Frame& Control::Border() const {
-    return border_;
+    return geometry_facet_->Border();
 }
 
 
 void Control::SetBorder(const Frame& border) {
-    border_ = border;
-    NeedRepaint();
-    NeedRelayout();
+    geometry_facet_->SetBorder(border);
 }
 
 
 const Frame& Control::Padding() const {
-    return padding_;
+    return geometry_facet_->Padding();
 }
 
 
 void Control::SetPadding(const Frame& padding) {
-    padding_ = padding;
-    NeedRelayout();
+    geometry_facet_->SetPadding(padding);
 }
 
 
 std::optional<zaf::Rect> Control::ContentRectInWindow() const noexcept {
-
-    auto rect_in_window = this->RectInWindow();
-    if (!rect_in_window) {
-        return std::nullopt;
-    }
-
-    auto result = ContentRect();
-    result.AddOffset(rect_in_window->position);
-    return result;
+    return geometry_facet_->ContentRectInWindow();
 }
 
 
 zaf::Rect Control::ContentRect() const {
-
-    zaf::Rect content_rect = zaf::Rect(Point(), Size());
-    content_rect.Deflate(Border());
-    content_rect.Deflate(Padding());
-
-    //Make sure the width and the height are not less than 0.
-    content_rect.size.width = (std::max)(content_rect.size.width, 0.f);
-    content_rect.size.height = (std::max)(content_rect.size.height, 0.f);
-
-    return content_rect;
+    return geometry_facet_->ContentRect();
 }
 
 
 zaf::Size Control::ContentSize() const {
-    return ContentRect().size;
+    return geometry_facet_->ContentSize();
 }
-
 
 #pragma endregion
 
@@ -878,7 +690,7 @@ void Control::DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_re
 
 
 void Control::NeedRepaint() {
-    NeedRepaintRect(zaf::Rect(Point(), rect_.size));
+    NeedRepaintRect(zaf::Rect(Point(), Size()));
 }
 
 
@@ -899,7 +711,7 @@ void Control::NeedRepaintRect(const zaf::Rect& rect) {
         return;
     }
 
-    zaf::Rect bound_rect(Point(), rect_.size);
+    zaf::Rect bound_rect(Point(), Size());
     zaf::Rect repaint_rect = zaf::Rect::Intersect(bound_rect, rect);
     if (repaint_rect.IsEmpty()) {
         return;
@@ -968,7 +780,7 @@ void Control::OnChildRectChanged(
         NeedRepaintRect(previous_rect);
     }
 
-    if (!is_layouting_ || (auto_width_ || auto_height_)) {
+    if (!is_layouting_ || (AutoWidth() || AutoHeight())) {
         NeedRelayout();
     }
     AutoResizeToPreferredSize();
@@ -1054,18 +866,6 @@ rx::Observable<SizeChangedInfo> Control::SizeChangedEvent() const {
 }
 
 
-void Control::SetFixedWidthValue(float value) {
-    min_width_ = value;
-    max_width_ = value;
-}
-
-
-void Control::SetFixedHeightValue(float value) {
-    min_height_ = value;
-    max_height_ = value;
-}
-
-
 zaf::Size Control::CalculatePreferredContentSize(const zaf::Size& bound_size) const {
 
     zaf::Rect union_rect;
@@ -1093,63 +893,8 @@ zaf::Size Control::CalculatePreferredContentSize(const zaf::Size& bound_size) co
 }
 
 
-void Control::ApplyAutoSizeOnRectChanged(zaf::Size& new_size) {
-
-    if (is_auto_resizing_) {
-        return;
-    }
-
-    if (!auto_width_ && !auto_height_) {
-        return;
-    }
-
-    auto preferred_size = CalculatePreferredSizeForAutoSize(new_size);
-
-    if (auto_width_) {
-        SetFixedWidthValue(preferred_size.width);
-        new_size.width = preferred_size.width;
-    }
-
-    if (auto_height_) {
-        SetFixedHeightValue(preferred_size.height);
-        new_size.height = preferred_size.height;
-    }
-}
-
-
 void Control::AutoResizeToPreferredSize() {
-
-    if (!auto_width_ && !auto_height_) {
-        return;
-    }
-
-    if (update_state_) {
-        update_state_->need_resize = true;
-        return;
-    }
-
-    auto preferred_size = CalculatePreferredSizeForAutoSize(Size());
-
-    auto update_guard = BeginUpdate();
-    auto auto_reset = MakeAutoReset(is_auto_resizing_, true);
-
-    if (auto_width_) {
-        SetFixedWidth(preferred_size.width);
-    }
-
-    if (auto_height_) {
-        SetFixedHeight(preferred_size.height);
-    }
-}
-
-
-zaf::Size Control::CalculatePreferredSizeForAutoSize(const zaf::Size& control_size) const {
-
-    zaf::Size bound_size;
-    bound_size.width = auto_width_ ? std::numeric_limits<float>::max() : control_size.width;
-    bound_size.height = auto_height_ ? std::numeric_limits<float>::max() : control_size.height;
-
-    return CalculatePreferredSize(bound_size);
+    geometry_facet_->AutoResizeToPreferredSize();
 }
 
 

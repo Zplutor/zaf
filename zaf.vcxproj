@@ -119,6 +119,7 @@
     <ClCompile Include="src\zaf\control\image_picker.cpp" />
     <ClCompile Include="src\zaf\control\internal\cached_painting.cpp" />
     <ClCompile Include="src\zaf\control\internal\combo_box_drop_down_window.cpp" />
+    <ClCompile Include="src\zaf\control\internal\control_facets\control_geometry_facet.cpp" />
     <ClCompile Include="src\zaf\control\internal\image_box\gif_player.cpp" />
     <ClCompile Include="src\zaf\control\internal\image_box\image_drawing.cpp" />
     <ClCompile Include="src\zaf\control\internal\image_box\image_player_factory.cpp" />
@@ -585,6 +586,7 @@
     <ClInclude Include="src\zaf\control\image_picker.h" />
     <ClInclude Include="src\zaf\control\internal\cached_painting.h" />
     <ClInclude Include="src\zaf\control\internal\combo_box_drop_down_window.h" />
+    <ClInclude Include="src\zaf\control\internal\control_facets\control_geometry_facet.h" />
     <ClInclude Include="src\zaf\control\internal\control_updating.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h" />
     <ClInclude Include="src\zaf\control\internal\image_box\image_drawing.h" />
