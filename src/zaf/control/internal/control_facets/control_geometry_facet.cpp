@@ -22,16 +22,30 @@ const zaf::Rect& ControlGeometryFacet::Rect() const noexcept {
 
 void ControlGeometryFacet::SetRect(const zaf::Rect& rect) {
 
-    zaf::Rect previous_rect = Rect();
+    const zaf::Rect previous_rect = Rect();
 
     zaf::Rect new_rect{ rect.position, ClampSize(rect.size) };
 
     if (new_rect.size != previous_rect.size) {
-        //Auto size.
-        ApplyAutoSizeOnSetRect(new_rect.size);
+
+        // Apply auto size. Exception may be thrown here, when calling CalculatePreferredSize.
+        std::optional<float> new_fixed_width;
+        std::optional<float> new_fixed_height;
+        ApplyAutoSizeOnNewSize(
+            new_rect.size,
+            new_fixed_width,
+            new_fixed_height);
+
+        if (new_fixed_width) {
+            SetFixedWidthValue(*new_fixed_width);
+        }
+
+        if (new_fixed_height) {
+            SetFixedHeightValue(*new_fixed_height);
+        }
     }
 
-    //Don't continue if rects are the same.
+    //  Don't continue if rects are the same.
     if (new_rect == previous_rect) {
         return;
     }
@@ -39,15 +53,13 @@ void ControlGeometryFacet::SetRect(const zaf::Rect& rect) {
     rect_ = new_rect;
 
     if (rect_.size != previous_rect.size) {
-
         control_.ReleaseCachedPaintingRenderer();
-
         //Layout children if size is changed.
         control_.RequestLayout(previous_rect.size);
     }
 
-    //The focused control need to be notified while its absolute position changed, 
-    //so that it can relayout its elements, if needed.
+    // The focused control need to be notified while its absolute position changed, so that it can 
+    // layout its elements if needed. Such as a text box control needs to layout its caret.
     auto window = control_.Window();
     if (window) {
         auto focused_control = window->FocusedControl();
@@ -58,10 +70,21 @@ void ControlGeometryFacet::SetRect(const zaf::Rect& rect) {
         }
     }
 
-    //Notify rect change.
-    RectChangedInfo event_info{ control_.shared_from_this(), previous_rect };
-    control_.OnRectChanged(event_info);
+    // Raise events.
+    if (rect_.position != previous_rect.position) {
+        control_.OnPositionChanged(PositionChangedInfo{ 
+            control_.shared_from_this(), 
+            previous_rect.position 
+        });
+    }
 
+    if (rect_.size != previous_rect.size) {
+        control_.OnSizeChanged(SizeChangedInfo{ control_.shared_from_this(), previous_rect.size });
+    }
+    
+    control_.OnRectChanged(RectChangedInfo{ control_.shared_from_this(), previous_rect });
+
+    // Notify the parent to repaint or layout.
     auto parent = control_.Parent();
     if (parent) {
         parent->OnChildRectChanged(control_.shared_from_this(), previous_rect);
@@ -69,7 +92,10 @@ void ControlGeometryFacet::SetRect(const zaf::Rect& rect) {
 }
 
 
-void ControlGeometryFacet::ApplyAutoSizeOnSetRect(zaf::Size& new_size) {
+void ControlGeometryFacet::ApplyAutoSizeOnNewSize(
+    zaf::Size& new_size,
+    std::optional<float>& new_fixed_width,
+    std::optional<float>& new_fixed_height) const {
 
     if (control_.is_auto_resizing_) {
         return;
@@ -82,12 +108,12 @@ void ControlGeometryFacet::ApplyAutoSizeOnSetRect(zaf::Size& new_size) {
     auto preferred_size = CalculatePreferredSizeForAutoSize(new_size);
 
     if (auto_width_) {
-        SetFixedWidthValue(preferred_size.width);
+        new_fixed_width = preferred_size.width;
         new_size.width = preferred_size.width;
     }
 
     if (auto_height_) {
-        SetFixedHeightValue(preferred_size.height);
+        new_fixed_height = preferred_size.height;
         new_size.height = preferred_size.height;
     }
 }

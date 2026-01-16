@@ -307,6 +307,36 @@ zaf::Size Control::ContentSize() const {
     return geometry_facet_->ContentSize();
 }
 
+
+void Control::OnRectChanged(const RectChangedInfo& event_info) {
+    rect_changed_event_.Raise(event_info);
+}
+
+
+rx::Observable<RectChangedInfo> Control::RectChangedEvent() const {
+    return rect_changed_event_.GetObservable();
+}
+
+
+void Control::OnPositionChanged(const PositionChangedInfo& event_info) {
+    position_changed_event_.Raise(event_info);
+}
+
+
+rx::Observable<PositionChangedInfo> Control::PositionChangedEvent() const {
+    return position_changed_event_.GetObservable();
+}
+
+
+void Control::OnSizeChanged(const SizeChangedInfo& event_info) {
+    size_changed_event_.Raise(event_info);
+}
+
+
+rx::Observable<SizeChangedInfo> Control::SizeChangedEvent() const {
+    return size_changed_event_.GetObservable();
+}
+
 #pragma endregion
 
 
@@ -816,53 +846,6 @@ void Control::RequestLayout(const zaf::Size& previous_size) {
         auto auto_reset = MakeAutoReset(is_layouting_, true);
         Layout(previous_size);
     }
-}
-
-
-void Control::OnRectChanged(const RectChangedInfo& event_info) {
-
-    rect_changed_event_.Raise(event_info);
-
-    if (this->Rect().position != event_info.PreviousRect().position) {
-
-        OnPositionChanged(PositionChangedInfo{ 
-            shared_from_this(),
-            event_info.PreviousRect().position 
-        });
-    }
-
-    if (this->Rect().size != event_info.PreviousRect().size) {
-
-        OnSizeChanged(SizeChangedInfo{ 
-            shared_from_this(), 
-            event_info.PreviousRect().size
-        });
-    }
-}
-
-
-rx::Observable<RectChangedInfo> Control::RectChangedEvent() const {
-    return rect_changed_event_.GetObservable();
-}
-
-
-void Control::OnPositionChanged(const PositionChangedInfo& event_info) {
-    position_changed_event_.Raise(event_info);
-}
-
-
-rx::Observable<PositionChangedInfo> Control::PositionChangedEvent() const {
-    return position_changed_event_.GetObservable();
-}
-
-
-void Control::OnSizeChanged(const SizeChangedInfo& event_info) {
-    size_changed_event_.Raise(event_info);
-}
-
-
-rx::Observable<SizeChangedInfo> Control::SizeChangedEvent() const {
-    return size_changed_event_.GetObservable();
 }
 
 

@@ -110,7 +110,13 @@ public:
     Sets the control's rectangle in its container's coordinate.
 
     @param rect
-         The new rect to be set.
+        The new rect to be set.
+
+    @throw ...
+        Any exception may be thrown while:
+        - Calculating the preferred size for auto size, if it is enabled.
+        - Updating the layout of children or parent.
+        - Raising position, size or rect changed events.
 
     @see zaf::Control::Rect()
     */
@@ -152,6 +158,9 @@ public:
     @param position
         The new position to be set.
 
+    @throw ...
+        Any exception may be thrown while setting the new position, see `SetRect()` for details.
+
     @details
         This a shortcut method for calling `SetRect()` with a new position while keeping the size.
     */
@@ -183,6 +192,9 @@ public:
     @param x
         The new X coordinate to be set.
 
+    @throw ...
+        Any exception may be thrown while setting the new X, see `SetRect()` for details.
+
     @details
         This is a shortcut method for calling `SetPosition()` with a new X coordinate while
         keeping the Y coordinate.
@@ -205,6 +217,9 @@ public:
 
     @param y
         The new Y coordinate to be set.
+
+    @throw ...
+        Any exception may be thrown while setting the new Y, see `SetRect()` for details.
 
     @details
         This is a shortcut method for calling `SetPosition()` with a new Y coordinate while
@@ -229,6 +244,9 @@ public:
     @param size
         The new size to be set.
 
+    @throw ...
+        Any exception may be thrown while setting the new size, see `SetRect()` for details.
+
     @details
         This is a shortcut method for calling `SetRect()` with a new size while keeping the 
         position.
@@ -252,6 +270,9 @@ public:
     @param width
         The new width to be set.
 
+    @throw ...
+        Any exception may be thrown while setting the new width, see `SetRect()` for details.
+
     @details
         This is a shortcut method for calling `SetSize()` with a new width while keeping the 
         height.
@@ -274,6 +295,9 @@ public:
 
     @param height
         The new height to be set.
+
+    @throw ...
+        Any exception may be thrown while setting the new height, see `SetRect()` for details.
 
     @details
         This is a shortcut method for calling `SetSize()` with a new height while keeping the 
@@ -447,6 +471,25 @@ public:
      Get the control's content size.
      */
     zaf::Size ContentSize() const;
+
+    /**
+    Gets the event that is raised when the position of the control is changed.
+    */
+    rx::Observable<PositionChangedInfo> PositionChangedEvent() const;
+
+    /**
+    Gets the event that is raised when the size of the control is changed.
+    */
+    rx::Observable<SizeChangedInfo> SizeChangedEvent() const;
+
+    /**
+    Gets the event that is raised when the rectangle of the control is changed.
+
+    @details
+        This event is raised after `PositionChangedEvent` and `SizeChangedEvent`.
+    */
+    rx::Observable<RectChangedInfo> RectChangedEvent() const;
+
     /** @} */
 #pragma endregion
 
@@ -856,15 +899,6 @@ public:
 
     rx::Observable<StyleUpdateInfo> StyleUpdateEvent() const;
 
-    /**
-     Get rect change event.
-
-     This event is raised when the control's rect is changed.
-     */
-    rx::Observable<RectChangedInfo> RectChangedEvent() const;
-    rx::Observable<PositionChangedInfo> PositionChangedEvent() const;
-    rx::Observable<SizeChangedInfo> SizeChangedEvent() const;
-
     rx::Observable<PreFocusGainedInfo> PreFocusGainedEvent() const;
     rx::Observable<FocusGainedInfo> FocusGainedEvent() const;
 
@@ -917,6 +951,51 @@ protected:
     void InvokeParse() override;
 
     void Initialize() override;
+
+#pragma region Protected Geometry Management
+    /**
+    @name Protected Geometry Management
+    @{
+    */
+
+    /**
+    Called after the position of the control is changed.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        The default implementation of this method raises `PositionChangedEvent()`. Derived classes
+        should call the same method of base class if they override this method. 
+    */
+    virtual void OnPositionChanged(const PositionChangedInfo& event_info);
+
+    /**
+    Called after the size of the control is changed.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        The default implementation of this method raises `SizeChangedEvent()`. Derived classes
+        should call the same method of base class if they override this method. 
+    */
+    virtual void OnSizeChanged(const SizeChangedInfo& event_info);
+
+    /**
+    Called after the rectangle of the control is changed.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        The default implementation of this method raises `RectChangedEvent()`. Derived classes
+        should call the same method of base class if they override this method. 
+    */
+    virtual void OnRectChanged(const RectChangedInfo& event_info);
+
+    /**}@*/
+#pragma endregion
 
     virtual void UpdateStyle();
     virtual void OnStyleUpdate(const StyleUpdateInfo& event_info);
@@ -1041,29 +1120,6 @@ protected:
     virtual void OnIMEStartComposition(const IMEStartCompositionInfo& event_info);
     virtual void OnIMEComposition(const IMECompositionInfo& event_info);
     virtual void OnIMEEndComposition(const IMEEndCompositionInfo& event_info);
-
-    /**
-    Handles rect changed event. This method is called after the rect of the control changed.
-
-    The default implementation raises RectChangedEvent, calls OnPositionChanged() if the position
-    is changed, and calls OnSizeChanged() if the size is changed.
-    */
-    virtual void OnRectChanged(const RectChangedInfo& event_info);
-
-    /**
-    Handles position changed event. This method is called after the position of the control
-    changed.
-
-    The default implementation raises SizeChangedEvent.
-    */
-    virtual void OnPositionChanged(const PositionChangedInfo& event_info);
-
-    /**
-    Handles size changed event. This method is called after the size of the control changed.
-
-    The default implementation raises SizeChangedEvent.
-    */
-    virtual void OnSizeChanged(const SizeChangedInfo& event_info);
 
     /**
     Called when the visibility of the control itself has changed.

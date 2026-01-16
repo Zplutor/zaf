@@ -85,7 +85,11 @@ public:
     void AutoResizeToPreferredSize();
 
 private:
-    void ApplyAutoSizeOnSetRect(zaf::Size& new_size);
+    void ApplyAutoSizeOnNewSize(
+        zaf::Size& new_size, 
+        std::optional<float>& new_fixed_width,
+        std::optional<float>& new_fixed_height) const;
+
     void SetFixedWidthValue(float value) noexcept;
     void SetFixedHeightValue(float value) noexcept;
     zaf::Size CalculatePreferredSizeForAutoSize(const zaf::Size& control_size) const;
