@@ -23,16 +23,15 @@ const zaf::Rect& ControlGeometryFacet::Rect() const noexcept {
 void ControlGeometryFacet::SetRect(const zaf::Rect& rect) {
 
     const zaf::Rect previous_rect = Rect();
+    rect_ = zaf::Rect{ rect.position, ClampSize(rect.size) };
 
-    zaf::Rect new_rect{ rect.position, ClampSize(rect.size) };
-
-    if (new_rect.size != previous_rect.size) {
+    if (rect_.size != previous_rect.size) {
 
         // Apply auto size. Exception may be thrown here, when calling CalculatePreferredSize.
         std::optional<float> new_fixed_width;
         std::optional<float> new_fixed_height;
         ApplyAutoSizeOnNewSize(
-            new_rect.size,
+            rect_.size,
             new_fixed_width,
             new_fixed_height);
 
@@ -46,11 +45,9 @@ void ControlGeometryFacet::SetRect(const zaf::Rect& rect) {
     }
 
     //  Don't continue if rects are the same.
-    if (new_rect == previous_rect) {
+    if (rect_ == previous_rect) {
         return;
     }
-
-    rect_ = new_rect;
 
     if (rect_.size != previous_rect.size) {
         control_.ReleaseCachedPaintingRenderer();
@@ -234,10 +231,12 @@ void ControlGeometryFacet::SetMinWidth(float min_width) {
     min_width_ = min_width;
 
     if (MaxWidth() < min_width) {
-        SetMaxWidth(min_width);
+        max_width_ = min_width;
     }
 
     if (Width() < min_width) {
+        // Even if exception may be thrown here, the width is already set. So we don't need to 
+        // recover the min/max width.
         SetWidth(min_width);
     }
 }
@@ -253,10 +252,12 @@ void ControlGeometryFacet::SetMaxWidth(float max_width) {
     max_width_ = max_width;
 
     if (MinWidth() > max_width) {
-        SetMinWidth(max_width);
+        min_width_ = max_width;
     }
 
     if (Width() > max_width) {
+        // Even if exception may be thrown here, the width is already set. So we don't need to 
+        // recover the min/max width.
         SetWidth(max_width);
     }
 }
@@ -278,10 +279,12 @@ void ControlGeometryFacet::SetMinHeight(float min_height) {
     min_height_ = min_height;
 
     if (MaxHeight() < min_height) {
-        SetMaxHeight(min_height);
+        max_height_ = min_height;
     }
 
     if (Height() < min_height) {
+        // Even if exception may be thrown here, the height is already set. So we don't need to 
+        // recover the min/max height.
         SetHeight(min_height);
     }
 }
@@ -297,10 +300,12 @@ void ControlGeometryFacet::SetMaxHeight(float max_height) {
     max_height_ = max_height;
 
     if (MinHeight() > max_height) {
-        SetMinHeight(max_height);
+        min_height_ = max_height;
     }
 
     if (Height() > max_height) {
+        // Even if exception may be thrown here, the height is already set. So we don't need to 
+        // recover the min/max height.
         SetHeight(max_height);
     }
 }

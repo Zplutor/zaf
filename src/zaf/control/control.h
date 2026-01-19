@@ -321,6 +321,13 @@ public:
 
     @param min_width
         The new minimum width to be set.
+
+    @throw ...
+        Any exception may be thrown while changing the width, see `SetRect()` for details.
+
+    @details
+        Setting this property may change the maximum width and the current width of the control if
+        they are less than the new minimum width.
     */
     void SetMinWidth(float min_width);
 
@@ -340,6 +347,13 @@ public:
 
     @param max_width
         The new maximum width to be set.
+
+    @throw ...
+        Any exception may be thrown while changing the width, see `SetRect()` for details.
+
+    @details
+        Setting this property may change the minimum width and the current width of the control if
+        they are greater than the new maximum width.
     */
     void SetMaxWidth(float max_width);
 
@@ -348,6 +362,9 @@ public:
 
     @param width
         The fixed width to be set.
+
+    @throw ...
+        Any exception may be thrown while changing the width, see `SetRect()` for details.
 
     @details
         This is a shortcut method for setting both minimum width and maximum width to the same 
@@ -371,6 +388,13 @@ public:
 
     @param min_height
         The new minimum height to be set.
+
+    @throw ...
+        Any exception may be thrown while changing the height, see `SetRect()` for details.
+
+    @details
+        Setting this property may change the maximum height and the current height of the control
+        if they are less than the new minimum height.
     */
     void SetMinHeight(float min_height);
 
@@ -390,6 +414,13 @@ public:
 
     @param max_height
         The new maximum height to be set.
+
+    @throw ...
+        Any exception may be thrown while changing the height, see `SetRect()` for details.
+
+    @details
+        Setting this property may change the minimum height and the current height of the control 
+        if they are greater than the new maximum height.
     */
     void SetMaxHeight(float max_height);
 
@@ -398,6 +429,9 @@ public:
 
     @param height
         The fixed height to be set.
+
+    @throw ...
+        Any exception may be thrown while changing the height, see `SetRect()` for details.
 
     @details
         This is a shortcut method for setting both minimum height and maximum height to the same
@@ -410,6 +444,9 @@ public:
 
     @param size
         The fixed size to be set.
+
+    @throw ...
+        Any exception may be thrown while changing the size, see `SetRect()` for details.
 
     @details
         This is a shortcut method for setting both minimum size and maximum size to the same value.
