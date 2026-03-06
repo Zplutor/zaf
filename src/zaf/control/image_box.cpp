@@ -32,7 +32,7 @@ void ImageBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
         return;
     }
 
-    auto content_rect = ContentRect();
+    auto content_rect = ContentRectInSelf();
     auto clipping_guard = canvas.PushClipping(content_rect);
     internal::DrawImage(canvas, content_rect, ImageLayout(), bitmap, InterpolationMode());
 }

@@ -78,11 +78,11 @@ void Button::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
         auto state_guard = canvas.PushState();
         canvas.SetBrushWithColor(Color::FromRGB(internal::ButtonActivedBorderColorRGB));
-        canvas.DrawRectangleFrame(ContentRect(), 1);
+        canvas.DrawRectangleFrame(ContentRectInSelf(), 1);
     }
     
     if (IsFocused()) {
-        auto focus_rect = ContentRect();
+        auto focus_rect = ContentRectInSelf();
         focus_rect.Inflate(-1);
         internal::DrawFocusRectangleFrame(canvas, focus_rect);
     }

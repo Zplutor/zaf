@@ -20,7 +20,7 @@ TextBoxHitTestManager::HitTestPositionResult TextBoxHitTestManager::HitTestAtPos
     const auto& text_box = Context().Owner();
 
     auto position_in_text_rect = position_in_text_box;
-    position_in_text_rect.SubtractOffset(text_box.ContentRect().position);
+    position_in_text_rect.SubtractOffset(text_box.ContentRectInSelf().position);
     position_in_text_rect.SubtractOffset(text_box.text_rect_.position);
 
     HitTestPositionResult result;

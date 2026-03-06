@@ -351,7 +351,7 @@ textual::HitTestIndexResult TextBox::HitTestAtIndex(std::size_t index) const {
 
     auto rect = hit_test_metrics.Metrics().Rect();
     rect.AddOffset(text_rect_.position);
-    rect.AddOffset(ContentRect().position);
+    rect.AddOffset(ContentRectInSelf().position);
 
     return textual::HitTestIndexResult{ rect, hit_test_metrics.Metrics().IsText() };
 }

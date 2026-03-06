@@ -80,26 +80,41 @@ TEST(ControlTest, RectInSelf) {
 }
 
 
+TEST(ControlTest, ContentRectInSelf) {
+
+    auto control = zaf::Create<zaf::Control>();
+    ASSERT_EQ(control->ContentRectInSelf(), zaf::Rect());
+
+    //Size is empty, and there are border and padding.
+    control->SetBorder(zaf::Frame{ 10, 20, 30, 40 });
+    control->SetPadding(zaf::Frame{ 20, 30, 40, 50 });
+    ASSERT_EQ(control->ContentRectInSelf(), zaf::Rect(30, 50, 0, 0));
+
+    //Size is too small to contain border and padding.
+    control->SetSize(zaf::Size{ 20, 20 });
+    ASSERT_EQ(control->ContentRectInSelf(), zaf::Rect(30, 50, 0, 0));
+
+    control->SetSize(zaf::Size{ 40, 40 });
+    ASSERT_EQ(control->ContentRectInSelf(), zaf::Rect(30, 50, 0, 0));
+
+    //Size is large enough to contain border and padding.
+    control->SetSize(zaf::Size{ 200, 200 });
+    ASSERT_EQ(control->ContentRectInSelf(), zaf::Rect(30, 50, 100, 60));
+}
+
+
 TEST(ControlTest, ContentRect) {
 
     auto control = zaf::Create<zaf::Control>();
     ASSERT_EQ(control->ContentRect(), zaf::Rect());
 
-    //Size is empty, and there are border and padding.
     control->SetBorder(zaf::Frame{ 10, 20, 30, 40 });
     control->SetPadding(zaf::Frame{ 20, 30, 40, 50 });
-    ASSERT_EQ(control->ContentRect(), zaf::Rect(30, 50, 0, 0));
+    ASSERT_EQ(control->ContentRect(), zaf::Rect(zaf::Point{}, control->ContentSize()));
 
-    //Size is too small to contain border and padding.
-    control->SetSize(zaf::Size{ 20, 20 });
-    ASSERT_EQ(control->ContentRect(), zaf::Rect(30, 50, 0, 0));
-
-    control->SetSize(zaf::Size{ 40, 40 });
-    ASSERT_EQ(control->ContentRect(), zaf::Rect(30, 50, 0, 0));
-
-    //Size is large enough to contain border and padding.
     control->SetSize(zaf::Size{ 200, 200 });
-    ASSERT_EQ(control->ContentRect(), zaf::Rect(30, 50, 100, 60));
+    ASSERT_EQ(control->ContentRect(), zaf::Rect(zaf::Point{}, control->ContentSize()));
+    ASSERT_EQ(control->ContentRect(), zaf::Rect(0, 0, 100, 60));
 }
 
 

@@ -144,13 +144,13 @@ void ColorEditor::ColorSquare::Paint(Canvas& canvas, const zaf::Rect& dirty_rect
     PaintTransparentColorSmallSquares(canvas);
 
     canvas.SetBrushWithColor(color_);
-    canvas.DrawRectangle(ContentRect());
+    canvas.DrawRectangle(ContentRectInSelf());
 }
 
 
 void ColorEditor::ColorSquare::PaintTransparentColorSmallSquares(Canvas& canvas) const {
 
-    auto content_rect = ContentRect();
+    auto content_rect = ContentRectInSelf();
     auto clipping_guard = canvas.PushClipping(content_rect);
 
     canvas.SetBrushWithColor(Color::White());

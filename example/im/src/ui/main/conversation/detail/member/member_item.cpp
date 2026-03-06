@@ -43,7 +43,7 @@ void MemberItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
-    auto content_rect = ContentRect();
+    auto content_rect = ContentRectInSelf();
 
     float radius = IconSize / 2;
 

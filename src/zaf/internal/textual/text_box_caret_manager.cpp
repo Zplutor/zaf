@@ -145,7 +145,7 @@ void TextBoxCaretManager::PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect
         return;
     }
 
-    auto content_rect = Context().Owner().ContentRect();
+    auto content_rect = Context().Owner().ContentRectInSelf();
     auto region_guard = canvas.PushRegion(content_rect, dirty_rect);
 
     auto caret_dirty_rect = dirty_rect;

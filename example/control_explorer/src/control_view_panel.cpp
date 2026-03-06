@@ -41,7 +41,7 @@ void ControlViewPanel::Layout(const zaf::Size&) {
         return;
     }
 
-    auto rect = ContentRect();
+    auto rect = ContentRectInSelf();
     auto child_rect = explored_control_->Rect();
 
     zaf::Point child_position;

@@ -100,7 +100,7 @@ void TextualControl::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
         return;
     }
 
-    auto content_rect = this->ContentRect();
+    auto content_rect = this->ContentRectInSelf();
 
     auto layout_rect_in_control = text_rect_;
     layout_rect_in_control.AddOffset(content_rect.position);

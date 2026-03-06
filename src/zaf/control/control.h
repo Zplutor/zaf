@@ -491,18 +491,33 @@ public:
     void SetPadding(const Frame& padding);
 
     /**
-    Gets the control's content's rectangle area in the window's coordinate space.
+    Gets the rectangle of the control's content area in the window's coordinate space.
 
     @return
-        The rectangle area of the control's content in the window's coordinate space. If the 
-        control is not in a window, std::nullopt is returned.
+        The content rectangle in the window's coordinate space. If the control is not in a window, 
+        std::nullopt is returned.
     */
     std::optional<zaf::Rect> ContentRectInWindow() const noexcept;
 
     /**
-     Get the control's content rect, related to its coordinate system.
-     */
-    zaf::Rect ContentRect() const;
+    Gets the rectangle of the control's content area in the control's own coordinate space.
+
+    @return
+        The content rectangle in the control's coordinate space.
+    */
+    zaf::Rect ContentRectInSelf() const noexcept;
+
+    /**
+    Gets the rectangle of the control's content area in the content coordinate space.
+
+    @return
+        The content rectangle, whose position is always (0,0).
+    
+    @details
+        The content area is the area inside the control, excluding the border and padding. Child
+        controls are placed within the content area.
+    */
+    zaf::Rect ContentRect() const noexcept;
 
     /**
      Get the control's content size.

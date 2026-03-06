@@ -165,7 +165,7 @@ std::optional<zaf::Point> ControlGeometryFacet::PositionInWindow() const noexcep
     }
 
     auto result = *parent_position_in_window;
-    result.AddOffset(parent->ContentRect().position);
+    result.AddOffset(parent->ContentRectInSelf().position);
     result.AddOffset(this->Position());
     return result;
 }
@@ -478,13 +478,13 @@ std::optional<zaf::Rect> ControlGeometryFacet::ContentRectInWindow() const noexc
         return std::nullopt;
     }
 
-    auto result = ContentRect();
+    auto result = ContentRectInSelf();
     result.AddOffset(rect_in_window->position);
     return result;
 }
 
 
-zaf::Rect ControlGeometryFacet::ContentRect() const {
+zaf::Rect ControlGeometryFacet::ContentRectInSelf() const noexcept {
 
     zaf::Rect content_rect = zaf::Rect(Point(), Size());
     content_rect.Deflate(Border());
@@ -498,8 +498,13 @@ zaf::Rect ControlGeometryFacet::ContentRect() const {
 }
 
 
+zaf::Rect ControlGeometryFacet::ContentRect() const noexcept {
+    return zaf::Rect{ zaf::Point{}, ContentSize() };
+}
+
+
 zaf::Size ControlGeometryFacet::ContentSize() const {
-    return ContentRect().size;
+    return ContentRectInSelf().size;
 }
 
 

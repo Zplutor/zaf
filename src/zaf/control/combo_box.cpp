@@ -159,7 +159,7 @@ void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
     __super::Paint(canvas, dirty_rect);
 
     float button_width = DropDownButtonWidth();
-    auto button_rect = ContentRect();
+    auto button_rect = ContentRectInSelf();
     button_rect.position.x = button_rect.position.x + button_rect.size.width - button_width;
     button_rect.size.width = button_width;
 

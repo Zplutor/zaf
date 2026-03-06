@@ -79,7 +79,8 @@ public:
     void SetPadding(const Frame& padding);
 
     std::optional<zaf::Rect> ContentRectInWindow() const noexcept;
-    zaf::Rect ContentRect() const;
+    zaf::Rect ContentRectInSelf() const noexcept;
+    zaf::Rect ContentRect() const noexcept;
     zaf::Size ContentSize() const;
 
     void AutoResizeToPreferredSize();

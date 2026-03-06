@@ -15,7 +15,7 @@ void DrawTextWithIcon(
     dwrite::TextLayout& text_layout,
     const std::function<void(Canvas& canvas, const Rect& icon_rect)>& paint_icon_function) {
 
-    auto content_rect = control.ContentRect();
+    auto content_rect = control.ContentRectInSelf();
 
     Rect text_rect = content_rect;
     float x_offset = IconSize + IconMargin;

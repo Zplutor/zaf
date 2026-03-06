@@ -53,7 +53,7 @@ void MenuItem::PaintSubMenuArrow(Canvas& canvas) const {
         SubMenuArrowWidth,
         90);
 
-    Point transform_position = ContentRect().position;
+    Point transform_position = ContentRectInSelf().position;
     transform_position.AddOffset(sub_menu_arrow_rect.position);
 
     auto transformed_geometry = GraphicFactory::Instance().CreateTransformedGeometry(

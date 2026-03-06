@@ -290,7 +290,7 @@ void ScrollBar::Wheel(int distance) {
 
 void ScrollBar::Layout(const zaf::Size& previous_size) {
 
-    auto content_rect = ContentRect();
+    auto content_rect = ContentRectInSelf();
 
     float bar_thickness = 0;
     float bar_length = 0;

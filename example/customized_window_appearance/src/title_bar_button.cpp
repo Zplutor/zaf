@@ -18,7 +18,7 @@ void TitleBarButton::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) con
 
     __super::Paint(canvas, dirty_rect);
 
-    auto content_rect = ContentRect();
+    auto content_rect = ContentRectInSelf();
 
     zaf::Ellipse ellipse;
     ellipse.x_radius = content_rect.size.width / 2;

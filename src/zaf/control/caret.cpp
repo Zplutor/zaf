@@ -103,7 +103,7 @@ void Caret::NeedRepaint() {
     }
 
     auto repaint_rect = rect_;
-    repaint_rect.AddOffset(owner->ContentRect().position);
+    repaint_rect.AddOffset(owner->ContentRectInSelf().position);
     owner->NeedRepaintRect(repaint_rect);
 }
 

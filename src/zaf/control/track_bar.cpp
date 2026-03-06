@@ -52,7 +52,7 @@ void TrackBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
-    auto content_rect = ContentRect();
+    auto content_rect = ContentRectInSelf();
     auto region_guard = canvas.PushRegion(content_rect, content_rect);
 
     float track_length = content_rect.size.width;
@@ -149,7 +149,7 @@ void TrackBar::ContinuePressing() {
 TrackBar::Zone TrackBar::DetermineMouseZone() const {
 
     auto thumb_rect = thumb_->Rect();
-    thumb_rect.AddOffset(this->ContentRect().position);
+    thumb_rect.AddOffset(this->ContentRectInSelf().position);
 
     float thumb_leading_position = is_horizontal_ ? thumb_rect.Left() : thumb_rect.Top();
     float thumb_tailing_position = is_horizontal_ ? thumb_rect.Right() : thumb_rect.Bottom();

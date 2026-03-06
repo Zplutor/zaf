@@ -19,7 +19,7 @@ void AvatarView::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const {
     }
 
     zaf::RoundedRect rounded_rect;
-    rounded_rect.rect = ContentRect();
+    rounded_rect.rect = ContentRectInSelf();
     rounded_rect.x_radius = 4;
     rounded_rect.y_radius = 4;
 

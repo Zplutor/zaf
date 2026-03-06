@@ -21,7 +21,7 @@ void MenuSeparator::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
-    auto content_rect = ContentRect();
+    auto content_rect = ContentRectInSelf();
 
     float line_y = content_rect.Top() + std::floor(content_rect.size.height / 2);
     

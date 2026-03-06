@@ -225,7 +225,7 @@ void RichEdit::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
     __super::Paint(canvas, dirty_rect);
 
     //Note: all painting operations are in content coordinate.
-    auto content_rect = this->ContentRect();
+    auto content_rect = this->ContentRectInSelf();
     auto content_region_guard = canvas.PushRegion(content_rect, dirty_rect);
 
     zaf::Rect bounds_in_content;
@@ -1028,7 +1028,7 @@ void RichEdit::HandleMouseCursorChanging(const MouseCursorChangingInfo& event_in
 
     //Don't change mouse cursor if the mouse is not in content rect.
     auto mouse_position_in_control = this->GetMousePosition();
-    if (!this->ContentRect().Contains(mouse_position_in_control)) {
+    if (!this->ContentRectInSelf().Contains(mouse_position_in_control)) {
         return;
     }
 
@@ -1201,7 +1201,7 @@ Point RichEdit::AdjustMousePositionIntoRichEdit(const Point& position_in_control
         return position_in_control;
     }
 
-    zaf::Rect offset_area_rect = ContentRect();
+    zaf::Rect offset_area_rect = ContentRectInSelf();
     offset_area_rect.size.height = vertical_offset;
 
     //Position is not in offset area, no need to adjust.

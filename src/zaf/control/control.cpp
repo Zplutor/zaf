@@ -298,7 +298,12 @@ std::optional<zaf::Rect> Control::ContentRectInWindow() const noexcept {
 }
 
 
-zaf::Rect Control::ContentRect() const {
+zaf::Rect Control::ContentRectInSelf() const noexcept {
+    return geometry_facet_->ContentRectInSelf();
+}
+
+
+zaf::Rect Control::ContentRect() const noexcept {
     return geometry_facet_->ContentRect();
 }
 
@@ -618,7 +623,7 @@ void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect, bool 
     }
 
     //No need to repaint if the content rect is not dirty.
-    zaf::Rect content_rect = ContentRect();
+    zaf::Rect content_rect = ContentRectInSelf();
     if (!content_rect.HasIntersection(dirty_rect)) {
         return;
     }
@@ -763,7 +768,7 @@ void Control::NeedRepaintRect(const zaf::Rect& rect) {
     Point position_in_parent = TranslateToParent(repaint_rect.position);
 
     zaf::Rect repaint_rect_in_parent(position_in_parent, repaint_rect.size);
-    repaint_rect_in_parent.Intersect(parent->ContentRect());
+    repaint_rect_in_parent.Intersect(parent->ContentRectInSelf());
     parent->NeedRepaintRect(repaint_rect_in_parent);
 }
 
@@ -1191,7 +1196,7 @@ std::shared_ptr<Control> Control::InnerFindChildAtPosition(
     const Point& position, 
     bool recursively) const {
 
-    auto content_rect = ContentRect();
+    auto content_rect = ContentRectInSelf();
 
     auto position_in_content = position;
     position_in_content.x -= content_rect.position.x;
