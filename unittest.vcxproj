@@ -581,6 +581,7 @@
     <ClCompile Include="unittest\case\window\window_lifecycle_test.cpp" />
     <ClCompile Include="unittest\case\window\window_message_routing_test.cpp" />
     <ClCompile Include="unittest\case\window\window_mouse_over_control_test.cpp" />
+    <ClCompile Include="unittest\case\window\window_render_test.cpp" />
     <ClCompile Include="unittest\case\window\window_style_test.cpp" />
     <ClCompile Include="unittest\case\window\window_test.cpp" />
     <ClCompile Include="unittest\case\xml\xml_reader_test.cpp" />

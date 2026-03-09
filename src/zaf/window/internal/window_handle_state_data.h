@@ -30,6 +30,7 @@ public:
     HWND handle{};
 
     d2d::WindowRenderer renderer;
+    bool is_painting{};
 
     bool is_sizing_or_moving{};
     std::optional<rx::SingleSubject<zaf::None>> exit_sizing_or_moving_subject;

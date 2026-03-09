@@ -1,4 +1,5 @@
 #include <zaf/window/internal/window_facets/window_render_facet.h>
+#include <zaf/base/auto_reset.h>
 #include <zaf/window/internal/window_facets/window_inspect_facet.h>
 #include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
 #include <zaf/control/control.h>
@@ -24,6 +25,9 @@ void WindowRenderFacet::CreateRenderer() {
 
 void WindowRenderFacet::HandleWMPAINT() {
 
+    auto& handle_state_data = window_.lifecycle_facet_->HandleStateData();
+    auto auto_reset = MakeAutoReset(handle_state_data.is_painting, true);
+
     auto handle = window_.Handle();
 
     zaf::Rect dirty_rect;
@@ -40,7 +44,7 @@ void WindowRenderFacet::HandleWMPAINT() {
     //and this may fails if there is an invalidated update rect.
     ValidateRect(handle, nullptr);
 
-    auto renderer = window_.lifecycle_facet_->HandleStateData().renderer;
+    auto& renderer = handle_state_data.renderer;
     renderer.BeginDraw();
     Canvas canvas(renderer);
     {
@@ -88,6 +92,12 @@ void WindowRenderFacet::RequestRepaint(const zaf::Rect& rect) noexcept {
         handle_state == WindowHandleState::Created ||
         handle_state == WindowHandleState::Destroying) {
         
+        // It is not allowed to request another repaint when it is painting, as it will cause 
+        // infinite repainting.
+        if (window_.lifecycle_facet_->HandleStateData().is_painting) {
+            return;
+        }
+
         RECT win32_rect = SnapAndTransformToPixels(rect, window_.DPI()).ToRECT();
         InvalidateRect(window_.Handle(), &win32_rect, FALSE);
     }
