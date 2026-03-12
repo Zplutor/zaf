@@ -1,6 +1,7 @@
 #include <zaf/control/text_box.h>
 #include <zaf/base/as.h>
 #include <zaf/base/log.h>
+#include <zaf/control/caret.h>
 #include <zaf/control/textual/active_inline_object.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/input/mouse.h>
@@ -465,6 +466,14 @@ void TextBox::OnTextChanged(const TextChangedInfo& event_info) {
 
 std::size_t TextBox::CaretIndex() const {
     return module_context_->SelectionManager().CaretIndex();
+}
+
+Color TextBox::CaretColor() const noexcept {
+    return module_context_->CaretManager().GetCaret()->Color();
+}
+
+void TextBox::SetCaretColor(const Color& color) noexcept {
+    module_context_->CaretManager().GetCaret()->SetColor(color);
 }
 
 

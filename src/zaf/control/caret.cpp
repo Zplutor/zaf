@@ -10,7 +10,9 @@ namespace zaf {
 ZAF_OBJECT_IMPL(Caret);
 
 
-Caret::Caret(const std::weak_ptr<Control>& owner) : owner_(owner) {
+Caret::Caret(const std::weak_ptr<Control>& owner) noexcept : 
+    owner_(owner), 
+    color_(Color::Black()) {
 
 }
 
@@ -31,7 +33,7 @@ void Caret::SetRect(const zaf::Rect& rect) {
 
     //Repaint the old rect to clear the previous caret.
     if (IsVisible()) {
-        NeedRepaint();
+        RequestRepaint();
     }
 
     rect_ = rect;
@@ -39,6 +41,26 @@ void Caret::SetRect(const zaf::Rect& rect) {
     if (IsVisible()) {
         ShowCaret();
     }
+}
+
+
+const zaf::Color& Caret::Color() const noexcept {
+    return color_;
+}
+
+
+void Caret::SetColor(const zaf::Color& color) noexcept {
+
+    color_ = color;
+
+    if (IsVisible()) {
+        RequestRepaint();
+    }
+}
+
+
+bool Caret::IsVisible() const noexcept {
+    return is_visible_;
 }
 
 
@@ -63,7 +85,7 @@ void Caret::ShowCaret() {
 
     //The system caret is not for rendering, but for making IME window follow the input focus.
     CreateSystemCaret();
-    NeedRepaint();
+    RequestRepaint();
 
     UINT blink_time = GetCaretBlinkTime();
     if (blink_time == 0) {
@@ -79,7 +101,7 @@ void Caret::ShowCaret() {
     blink_timer_subscription_ = timer.Subscribe([this](std::size_t) {
 
         is_blink_on_ = !is_blink_on_;
-        NeedRepaint();
+        RequestRepaint();
     });
 }
 
@@ -87,7 +109,7 @@ void Caret::ShowCaret() {
 void Caret::HideCaret() {
 
     DestroySystemCaret();
-    NeedRepaint();
+    RequestRepaint();
 
     if (blink_timer_subscription_) {
         blink_timer_subscription_->Dispose();
@@ -95,7 +117,7 @@ void Caret::HideCaret() {
 }
 
 
-void Caret::NeedRepaint() {
+void Caret::RequestRepaint() noexcept {
 
     auto owner = owner_.lock();
     if (!owner) {
@@ -159,7 +181,7 @@ void Caret::Paint(Canvas& owner_canvas, const zaf::Rect& dirty_rect) const {
     }
 
     auto state_guard = owner_canvas.PushState();
-    owner_canvas.SetBrushWithColor(Color::Black());
+    owner_canvas.SetBrushWithColor(color_);
     owner_canvas.DrawRectangle(rect_);
 }
 

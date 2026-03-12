@@ -32,6 +32,10 @@ public:
 
     void PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect);
 
+    const std::shared_ptr<Caret>& GetCaret() const noexcept {
+        return caret_;
+    }
+
 private:
     void InnerShowCaret();
     void SetCaretRectToCurrentCaretIndex();

@@ -17,14 +17,15 @@
 #include <zaf/control/textual/word_extractor.h>
 #include <zaf/window/event/message_received_info.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 class TextBoxCaretManager;
 class TextBoxHitTestManager;
 class TextBoxModuleContext;
 class TextBoxMouseInputHandler;
 class TextBoxSelectionChangedInfo;
 }
+
+namespace zaf {
 
 class TextBox : public TextualControl, public SelfScrollControl {
 public:
@@ -121,6 +122,9 @@ public:
     std::size_t LineCount() const;
 
     std::size_t CaretIndex() const;
+
+    Color CaretColor() const noexcept;
+    void SetCaretColor(const Color& color) noexcept;
 
     const Range& SelectionRange() const;
 
@@ -469,6 +473,7 @@ ZAF_OBJECT_BEGIN(TextBox);
 ZAF_OBJECT_PROPERTY(AllowUndo);
 ZAF_OBJECT_PROPERTY(CanRedo);
 ZAF_OBJECT_PROPERTY(CanUndo);
+ZAF_OBJECT_PROPERTY(CaretColor);
 ZAF_OBJECT_PROPERTY(IsCaretEnabledWhenNotEditable);
 ZAF_OBJECT_PROPERTY(IsEditable);
 ZAF_OBJECT_PROPERTY(SelectionBackColor);

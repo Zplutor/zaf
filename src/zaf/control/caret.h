@@ -16,7 +16,7 @@ public:
     /**
     Construct a caret which belongs to the specified control.
     */
-    explicit Caret(const std::weak_ptr<Control>& owner);
+    explicit Caret(const std::weak_ptr<Control>& owner) noexcept;
     ~Caret();
 
     const zaf::Rect& Rect() const {
@@ -51,9 +51,10 @@ public:
         SetRect(zaf::Rect{ rect_.position, size });
     }
 
-    bool IsVisible() const {
-        return is_visible_;
-    }
+    const zaf::Color& Color() const noexcept;
+    void SetColor(const zaf::Color& color) noexcept;
+
+    bool IsVisible() const noexcept;
 
     void SetIsVisible(bool is_visible);
 
@@ -71,13 +72,14 @@ public:
 private:
     void ShowCaret();
     void HideCaret();
-    void NeedRepaint();
+    void RequestRepaint() noexcept;
     void CreateSystemCaret();
     void DestroySystemCaret();
 
 private:
     std::weak_ptr<Control> owner_;
     zaf::Rect rect_{};
+    zaf::Color color_;
     bool is_visible_{};
 
     std::shared_ptr<rx::Disposable> blink_timer_subscription_;

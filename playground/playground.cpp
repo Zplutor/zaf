@@ -9,6 +9,7 @@
 #include <zaf/rx/timer.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/window/screen_manager.h>
+#include <zaf/control/text_box.h>
 
 void BeginRun(const zaf::BeginRunInfo& event_info);
 
@@ -18,16 +19,22 @@ protected:
 
         __super::Initialize();
 
-        Disposables() += this->DPIChangedEvent().Subscribe([](const zaf::DPIChangedInfo&) {
-            ZAF_LOG() << "DPI Changed.";
-        });
+        this->SetIsPopup(true);
 
-        Disposables() += this->SizeChangedEvent().Subscribe([](const zaf::WindowSizeChangedInfo& event_info) {
-            ZAF_LOG() << "Size Changed.";
-        });
+        text_box_ = zaf::Create<zaf::TextBox>();
+        text_box_->SetRect(zaf::Rect{ 0, 0, 200, 100 });
+        text_box_->SetFontSize(20);
+        text_box_->SetCaretColor(zaf::Color::Red());
+        RootControl()->AddChild(text_box_);
+    }
+
+    void OnShow(const zaf::ShowInfo& event_info) override {
+        __super::OnShow(event_info);
+        text_box_->SetIsFocused(true);
     }
 
 private:
+    std::shared_ptr<zaf::TextBox> text_box_;
 };
 
 
