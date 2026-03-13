@@ -9,7 +9,7 @@
 #include <zaf/control/textual/line_break.h>
 #include <zaf/control/textual/styled_text.h>
 #include <zaf/internal/control/color_picker_equal.h>
-#include <zaf/internal/textual/inline_object_attached_info.h>
+#include <zaf/control/internal/textual/inline_object_attached_info.h>
 #include <zaf/rx/subject/subject.h>
 
 namespace zaf::internal {

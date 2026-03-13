@@ -1,10 +1,10 @@
-#include <zaf/internal/textual/text_box_caret_manager.h>
+#include <zaf/control/internal/textual/text_box_caret_manager.h>
 #include <zaf/base/as.h>
 #include <zaf/control/text_box.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
-#include <zaf/internal/textual/text_box_editor.h>
-#include <zaf/internal/textual/text_box_module_context.h>
+#include <zaf/control/internal/textual/text_box_editor.h>
+#include <zaf/control/internal/textual/text_box_module_context.h>
 
 namespace zaf::internal {
 

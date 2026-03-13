@@ -7,8 +7,8 @@
 #include <zaf/control/event/mouse_event_info.h>
 #include <zaf/control/textual/active_inline_object.h>
 #include <zaf/graphic/dwrite/hit_test_metrics.h>
-#include <zaf/internal/textual/text_box_hit_test_manager.h>
-#include <zaf/internal/textual/text_box_module.h>
+#include <zaf/control/internal/textual/text_box_hit_test_manager.h>
+#include <zaf/control/internal/textual/text_box_module.h>
 #include <zaf/rx/disposable_host.h>
 
 namespace zaf::internal {

@@ -5,15 +5,15 @@
 #include <zaf/control/textual/active_inline_object.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/input/mouse.h>
-#include <zaf/internal/textual/text_model.h>
-#include <zaf/internal/textual/text_box_caret_manager.h>
-#include <zaf/internal/textual/text_box_editor.h>
-#include <zaf/internal/textual/text_box_hit_test_manager.h>
-#include <zaf/internal/textual/text_box_ime_manager.h>
-#include <zaf/internal/textual/text_box_keyboard_input_handler.h>
-#include <zaf/internal/textual/text_box_module_context.h>
-#include <zaf/internal/textual/text_box_mouse_input_handler.h>
-#include <zaf/internal/textual/text_box_selection_manager.h>
+#include <zaf/control/internal/textual/text_model.h>
+#include <zaf/control/internal/textual/text_box_caret_manager.h>
+#include <zaf/control/internal/textual/text_box_editor.h>
+#include <zaf/control/internal/textual/text_box_hit_test_manager.h>
+#include <zaf/control/internal/textual/text_box_ime_manager.h>
+#include <zaf/control/internal/textual/text_box_keyboard_input_handler.h>
+#include <zaf/control/internal/textual/text_box_module_context.h>
+#include <zaf/control/internal/textual/text_box_mouse_input_handler.h>
+#include <zaf/control/internal/textual/text_box_selection_manager.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/window/window.h>
 

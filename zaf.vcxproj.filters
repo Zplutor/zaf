@@ -142,9 +142,6 @@
     <Filter Include="zaf\control\textual">
       <UniqueIdentifier>{fbe5ce84-c7cb-4322-8f83-777e157558a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\internal\textual">
-      <UniqueIdentifier>{cc231b1d-56ca-47fa-a826-a017009b9ce9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="zaf\internal\window">
       <UniqueIdentifier>{f8bf1293-ffd0-4207-afb9-0e18153a62ea}</UniqueIdentifier>
     </Filter>
@@ -210,6 +207,9 @@
     </Filter>
     <Filter Include="zaf\control\internal\control_facets">
       <UniqueIdentifier>{87a3a9e5-edc9-4b81-ac19-162234222963}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\control\internal\textual">
+      <UniqueIdentifier>{277185c0-007d-4bf8-908f-57d9db9da258}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -901,35 +901,8 @@
     <ClCompile Include="src\zaf\control\textual\word_extractor.cpp">
       <Filter>zaf\control\textual</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_box_edit_command.cpp">
-      <Filter>zaf\internal\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_box_editor.cpp">
-      <Filter>zaf\internal\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_box_keyboard_input_handler.cpp">
-      <Filter>zaf\internal\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_box_module.cpp">
-      <Filter>zaf\internal\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_box_module_context.cpp">
-      <Filter>zaf\internal\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_box_mouse_input_handler.cpp">
-      <Filter>zaf\internal\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_box_selection_manager.cpp">
-      <Filter>zaf\internal\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_model.cpp">
-      <Filter>zaf\internal\textual</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\textual\active_inline_object_events.cpp">
       <Filter>zaf\control\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_box_hit_test_manager.cpp">
-      <Filter>zaf\internal\textual</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\textual\styled_text.cpp">
       <Filter>zaf\control\textual</Filter>
@@ -939,12 +912,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\textual\ranged_text_style.cpp">
       <Filter>zaf\control\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_box_index_manager.cpp">
-      <Filter>zaf\internal\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_box_caret_manager.cpp">
-      <Filter>zaf\internal\textual</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\internal\window\window_focused_control_manager.cpp">
       <Filter>zaf\internal\window</Filter>
@@ -973,9 +940,6 @@
     <ClCompile Include="src\zaf\control\event\ime_event_infos.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_box_ime_manager.cpp">
-      <Filter>zaf\internal\textual</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\base\error\win32_error.cpp">
       <Filter>zaf\base\error</Filter>
     </ClCompile>
@@ -987,9 +951,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\clipboard\format_type.cpp">
       <Filter>zaf\clipboard</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\text_box_clipboard_operation.cpp">
-      <Filter>zaf\internal\textual</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\xml\xml_writer.cpp">
       <Filter>zaf\xml</Filter>
@@ -1065,9 +1026,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\textual\line_break.cpp">
       <Filter>zaf\control\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\internal\textual\line_utility.cpp">
-      <Filter>zaf\internal\textual</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\textual\copying_info.cpp">
       <Filter>zaf\control\textual</Filter>
@@ -1398,6 +1356,48 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\control_facets\control_geometry_facet.cpp">
       <Filter>zaf\control\internal\control_facets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\line_utility.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_box_caret_manager.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_box_clipboard_operation.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_box_edit_command.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_box_editor.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_box_hit_test_manager.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_box_ime_manager.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_box_index_manager.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_box_keyboard_input_handler.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_box_module.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_box_module_context.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_box_mouse_input_handler.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_box_selection_manager.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\textual\text_model.cpp">
+      <Filter>zaf\control\internal\textual</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2419,30 +2419,6 @@
     <ClInclude Include="src\zaf\control\textual\word_extractor.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_box_edit_command.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_box_editor.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_box_keyboard_input_handler.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_box_module.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_box_module_context.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_box_mouse_input_handler.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_box_selection_manager.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_model.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\textual\active_inline_object_events.h">
       <Filter>zaf\control\textual</Filter>
     </ClInclude>
@@ -2451,12 +2427,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\input\cursor.h">
       <Filter>zaf\input</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_box_hit_test_manager.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\inline_object_attached_info.h">
-      <Filter>zaf\internal\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual\ranged_text_style.h">
       <Filter>zaf\control\textual</Filter>
@@ -2472,12 +2442,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\contract_error.h">
       <Filter>zaf\base\error</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_box_index_manager.h">
-      <Filter>zaf\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_box_caret_manager.h">
-      <Filter>zaf\internal\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\internal\window\window_focused_control_manager.h">
       <Filter>zaf\internal\window</Filter>
@@ -2508,9 +2472,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\event\ime_event_infos.h">
       <Filter>zaf\control\event</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_box_ime_manager.h">
-      <Filter>zaf\internal\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\runtime_error_base.h">
       <Filter>zaf\base\error</Filter>
@@ -2550,9 +2511,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\clipboard\data_aspect.h">
       <Filter>zaf\clipboard</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\text_box_clipboard_operation.h">
-      <Filter>zaf\internal\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual\default_text_style.h">
       <Filter>zaf\control\textual</Filter>
@@ -2712,9 +2670,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual\line_break.h">
       <Filter>zaf\control\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\textual\line_utility.h">
-      <Filter>zaf\internal\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\textual\copying_info.h">
       <Filter>zaf\control\textual</Filter>
@@ -3261,6 +3216,51 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\control_facets\control_geometry_facet.h">
       <Filter>zaf\control\internal\control_facets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\inline_object_attached_info.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\line_utility.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_box_caret_manager.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_box_clipboard_operation.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_box_edit_command.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_box_editor.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_box_hit_test_manager.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_box_ime_manager.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_box_index_manager.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_box_keyboard_input_handler.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_box_module.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_box_module_context.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_box_mouse_input_handler.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_box_selection_manager.h">
+      <Filter>zaf\control\internal\textual</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\textual\text_model.h">
+      <Filter>zaf\control\internal\textual</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

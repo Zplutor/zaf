@@ -1,7 +1,7 @@
-#include <zaf/internal/textual/text_box_index_manager.h>
+#include <zaf/control/internal/textual/text_box_index_manager.h>
 #include <zaf/base/error/precondition_error.h>
-#include <zaf/internal/textual/text_box_module_context.h>
-#include <zaf/internal/textual/text_model.h>
+#include <zaf/control/internal/textual/text_box_module_context.h>
+#include <zaf/control/internal/textual/text_model.h>
 
 namespace zaf::internal {
 

@@ -1,4 +1,4 @@
-#include <zaf/internal/textual/text_box_clipboard_operation.h>
+#include <zaf/control/internal/textual/text_box_clipboard_operation.h>
 #include <zaf/base/as.h>
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/clipboard/clipboard.h>

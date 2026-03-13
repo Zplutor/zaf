@@ -2,8 +2,8 @@
 
 #include <optional>
 #include <zaf/base/range.h>
-#include <zaf/internal/textual/text_box_module.h>
-#include <zaf/internal/textual/text_model.h>
+#include <zaf/control/internal/textual/text_box_module.h>
+#include <zaf/control/internal/textual/text_model.h>
 #include <zaf/control/textual/selection_option.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/rx/disposable_host.h>

@@ -1,6 +1,6 @@
-#include <zaf/internal/textual/text_box_ime_manager.h>
-#include <zaf/internal/textual/text_box_caret_manager.h>
-#include <zaf/internal/textual/text_box_module_context.h>
+#include <zaf/control/internal/textual/text_box_ime_manager.h>
+#include <zaf/control/internal/textual/text_box_caret_manager.h>
+#include <zaf/control/internal/textual/text_box_module_context.h>
 #include <zaf/window/input_method_context.h>
 
 namespace zaf::internal {

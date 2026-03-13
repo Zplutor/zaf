@@ -1,6 +1,6 @@
-#include <zaf/internal/textual/text_box_edit_command.h>
-#include <zaf/internal/textual/text_box_selection_manager.h>
-#include <zaf/internal/textual/text_model.h>
+#include <zaf/control/internal/textual/text_box_edit_command.h>
+#include <zaf/control/internal/textual/text_box_selection_manager.h>
+#include <zaf/control/internal/textual/text_model.h>
 
 namespace zaf::internal {
 

@@ -3,7 +3,7 @@
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
 #include <zaf/control/textual/styled_text.h>
-#include <zaf/internal/textual/text_box_module_context.h>
+#include <zaf/control/internal/textual/text_box_module_context.h>
 
 namespace zaf::internal {
 

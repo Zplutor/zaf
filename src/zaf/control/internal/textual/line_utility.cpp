@@ -1,4 +1,4 @@
-#include <zaf/internal/textual/line_utility.h>
+#include <zaf/control/internal/textual/line_utility.h>
 
 using namespace zaf::textual;
 

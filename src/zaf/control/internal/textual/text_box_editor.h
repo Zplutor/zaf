@@ -6,8 +6,8 @@
 #include <zaf/base/range.h>
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/textual/pasting_info.h>
-#include <zaf/internal/textual/text_box_edit_command.h>
-#include <zaf/internal/textual/text_box_module.h>
+#include <zaf/control/internal/textual/text_box_edit_command.h>
+#include <zaf/control/internal/textual/text_box_module.h>
 #include <zaf/rx/disposable_host.h>
 
 namespace zaf::internal {

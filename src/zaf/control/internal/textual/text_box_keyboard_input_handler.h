@@ -4,7 +4,7 @@
 #include <zaf/base/range.h>
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/textual/copying_info.h>
-#include <zaf/internal/textual/text_box_module.h>
+#include <zaf/control/internal/textual/text_box_module.h>
 
 namespace zaf::internal {
 

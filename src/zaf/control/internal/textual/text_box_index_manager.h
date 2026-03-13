@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/internal/textual/text_box_module.h>
+#include <zaf/control/internal/textual/text_box_module.h>
 
 namespace zaf::internal {
 

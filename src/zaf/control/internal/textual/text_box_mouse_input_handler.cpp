@@ -1,13 +1,13 @@
-#include <zaf/internal/textual/text_box_mouse_input_handler.h>
+#include <zaf/control/internal/textual/text_box_mouse_input_handler.h>
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/log.h>
 #include <zaf/control/text_box.h>
 #include <zaf/control/textual/active_inline_object.h>
 #include <zaf/input/keyboard.h>
-#include <zaf/internal/textual/text_model.h>
-#include <zaf/internal/textual/text_box_module_context.h>
-#include <zaf/internal/textual/text_box_selection_manager.h>
+#include <zaf/control/internal/textual/text_model.h>
+#include <zaf/control/internal/textual/text_box_module_context.h>
+#include <zaf/control/internal/textual/text_box_selection_manager.h>
 #include <zaf/window/window.h>
 
 namespace zaf::internal {

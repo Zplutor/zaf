@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/control/event/ime_event_infos.h>
-#include <zaf/internal/textual/text_box_module.h>
+#include <zaf/control/internal/textual/text_box_module.h>
 
 namespace zaf::internal {
 

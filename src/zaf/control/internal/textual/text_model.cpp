@@ -1,6 +1,6 @@
-#include <zaf/internal/textual/text_model.h>
+#include <zaf/control/internal/textual/text_model.h>
 #include <zaf/base/error/precondition_error.h>
-#include <zaf/internal/textual/line_utility.h>
+#include <zaf/control/internal/textual/line_utility.h>
 
 namespace zaf::internal {
 

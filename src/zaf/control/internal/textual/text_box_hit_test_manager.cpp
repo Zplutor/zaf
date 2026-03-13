@@ -1,5 +1,5 @@
-#include <zaf/internal/textual/text_box_hit_test_manager.h>
-#include <zaf/internal/textual/text_box_module_context.h>
+#include <zaf/control/internal/textual/text_box_hit_test_manager.h>
+#include <zaf/control/internal/textual/text_box_module_context.h>
 
 namespace zaf::internal {
 
