@@ -1,28 +1,26 @@
 #include <zaf/control/internal/textual/text_box_selection_manager.h>
 #include <zaf/control/text_box.h>
 #include <zaf/control/internal/textual/text_box_editor.h>
-#include <zaf/control/internal/textual/text_box_module_context.h>
 
 using namespace zaf::textual;
 
 namespace zaf::internal {
 
-TextBoxSelectionManager::TextBoxSelectionManager(TextBoxModuleContext* context) : 
-    TextBoxModule(context) {
+TextBoxSelectionManager::TextBoxSelectionManager(TextBox& owner) : owner_(owner) {
 
 }
 
 
 void TextBoxSelectionManager::Initialize() {
 
-    Disposables() += Context().TextModel().TextChangedEvent().Subscribe(
+    Disposables() += owner_.InnerTextModel().TextChangedEvent().Subscribe(
         std::bind(&TextBoxSelectionManager::OnTextModelChanged, this, std::placeholders::_1));
 }
 
 
 void TextBoxSelectionManager::OnTextModelChanged(const TextModelChangedInfo& event_info) {
 
-    if (Context().Editor().IsEditing()) {
+    if (owner_.Editor().IsEditing()) {
         return;
     }
 
@@ -103,7 +101,7 @@ void TextBoxSelectionManager::SetSelectionRange(
     std::optional<std::size_t> anchor_index,
     bool update_caret_x) {
 
-    ZAF_EXPECT(0 <= range.index && range.EndIndex() <= Context().Owner().TextLength());
+    ZAF_EXPECT(0 <= range.index && range.EndIndex() <= owner_.TextLength());
     if (anchor_index) {
         ZAF_EXPECT(range.index <= *anchor_index && *anchor_index <= range.EndIndex());
     }
@@ -126,7 +124,7 @@ void TextBoxSelectionManager::SetSelectionRange(
 
 void TextBoxSelectionManager::AfterSetCaretIndex(bool update_caret_x, bool scroll_to_caret) {
 
-    auto hit_test_result = Context().GetTextLayout().HitTestIndex(caret_index_, false);
+    auto hit_test_result = owner_.InnerTextLayout().HitTestIndex(caret_index_, false);
     const auto& metrics = hit_test_result.Metrics();
 
     if (update_caret_x) {

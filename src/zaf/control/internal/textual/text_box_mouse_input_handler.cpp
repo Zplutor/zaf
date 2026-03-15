@@ -6,28 +6,26 @@
 #include <zaf/control/textual/active_inline_object.h>
 #include <zaf/input/keyboard.h>
 #include <zaf/control/internal/textual/text_model.h>
-#include <zaf/control/internal/textual/text_box_module_context.h>
 #include <zaf/control/internal/textual/text_box_selection_manager.h>
 #include <zaf/window/window.h>
 
 namespace zaf::internal {
 
-TextBoxMouseInputHandler::TextBoxMouseInputHandler(TextBoxModuleContext* context) : 
-    TextBoxModule(context) {
+TextBoxMouseInputHandler::TextBoxMouseInputHandler(TextBox& owner) : owner_(owner) {
 
 }
 
 
 void TextBoxMouseInputHandler::Initialize() {
 
-    Disposables() += Context().SelectionManager().SelectionChangedEvent().Subscribe(
+    Disposables() += owner_.SelectionManager().SelectionChangedEvent().Subscribe(
         std::bind(&TextBoxMouseInputHandler::OnSelectionChanged, this));
 }
 
 
 void TextBoxMouseInputHandler::HandleMouseMove(const MouseMoveInfo& event_info) {
 
-    auto& hit_test_manager = Context().HitTestManager();
+    auto& hit_test_manager = owner_.HitTestManager();
     auto hit_test_result = hit_test_manager.HitTestAtPosition(event_info.PositionAtSource());
 
     HandleMouseOverInlineObject(hit_test_result, event_info.Message());
@@ -61,7 +59,7 @@ void TextBoxMouseInputHandler::HandleMouseOverInlineObject(
         new_object->OnMouseEnter(textual::InlineObjectMouseEnterInfo{ new_object });
 
         //See also Window::SetMouseOverControl()
-        auto window = Context().Owner().Window();
+        auto window = owner_.Window();
         if (window) {
             window->Messager().PostWMSETCURSOR(mouse_message);
         }
@@ -87,7 +85,7 @@ std::shared_ptr<textual::ActiveInlineObject> TextBoxMouseInputHandler::FindInlin
     }
 
     auto text_index = hit_test_result.metrics.Metrics().TextIndex();
-    auto inline_object = Context().TextModel().StyledText().GetInlineObjectAtIndex(text_index);
+    auto inline_object = owner_.InnerTextModel().StyledText().GetInlineObjectAtIndex(text_index);
     auto dynamic_inline_object = As<textual::ActiveInlineObject>(inline_object);
     if (!dynamic_inline_object) {
         return nullptr;
@@ -120,11 +118,11 @@ void TextBoxMouseInputHandler::HandleMouseCursorChanging(
 
 void TextBoxMouseInputHandler::HandleMouseDown(const MouseDownInfo& event_info) {
 
-    auto& text_box = Context().Owner();
+    auto& text_box = owner_;
     text_box.SetIsFocused(true);
     text_box.CaptureMouse();
 
-    auto& hit_test_manager = Context().HitTestManager();
+    auto& hit_test_manager = owner_.HitTestManager();
     auto hit_test_result = hit_test_manager.HitTestAtPosition(event_info.PositionAtSource());
 
     auto inline_object = FindInlineObject(hit_test_result);
@@ -139,7 +137,7 @@ void TextBoxMouseInputHandler::HandleMouseDown(const MouseDownInfo& event_info) 
     
     auto mouse_down_index = hit_test_manager.TextIndexFromHitTestResult(hit_test_result);
     if (Keyboard::IsShiftDown()) {
-        begin_selecting_index_ = Context().SelectionManager().AnchorIndex();
+        begin_selecting_index_ = owner_.SelectionManager().AnchorIndex();
     }
     else {
         begin_selecting_index_ = mouse_down_index;
@@ -150,12 +148,12 @@ void TextBoxMouseInputHandler::HandleMouseDown(const MouseDownInfo& event_info) 
 
 void TextBoxMouseInputHandler::HandleMouseUp(const MouseUpInfo& event_info) {
 
-    auto& text_box = Context().Owner();
+    auto& text_box = owner_;
     text_box.ReleaseMouse();
 
     begin_selecting_index_.reset();
 
-    auto& hit_test_manager = Context().HitTestManager();
+    auto& hit_test_manager = owner_.HitTestManager();
     auto hit_test_result = hit_test_manager.HitTestAtPosition(event_info.PositionAtSource());
 
     auto inline_object = FindInlineObject(hit_test_result);
@@ -186,7 +184,7 @@ void TextBoxMouseInputHandler::SetSelectionRangeByMouse(std::size_t caret_index)
     }
 
     auto auto_reset = MakeAutoReset(is_setting_selection_range_, true);
-    Context().SelectionManager().SetSelectionRange(
+    owner_.SelectionManager().SetSelectionRange(
         selection_range, 
         selection_option, 
         *begin_selecting_index_,
@@ -205,13 +203,13 @@ void TextBoxMouseInputHandler::OnSelectionChanged() {
     }
 
     //Reset begin selecting index to the caret index if it is changed during mouse dragging.
-    *begin_selecting_index_ = Context().SelectionManager().CaretIndex();
+    *begin_selecting_index_ = owner_.SelectionManager().CaretIndex();
 }
 
 
 void TextBoxMouseInputHandler::HandleDoubleClick(const DoubleClickInfo& event_info) {
 
-    const auto& hit_test_manager = Context().HitTestManager();
+    const auto& hit_test_manager = owner_.HitTestManager();
     auto hit_test_result = hit_test_manager.HitTestAtPosition(event_info.Position());
 
     auto inline_object = FindInlineObject(hit_test_result);
@@ -225,7 +223,7 @@ void TextBoxMouseInputHandler::HandleDoubleClick(const DoubleClickInfo& event_in
     }
 
     auto text_index = hit_test_manager.TextIndexFromHitTestResult(hit_test_result);
-    Context().Owner().SelectWordAtIndex(text_index);
+    owner_.SelectWordAtIndex(text_index);
 }
 
 }

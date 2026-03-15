@@ -1384,12 +1384,6 @@
     <ClCompile Include="src\zaf\control\internal\textual\text_box_keyboard_input_handler.cpp">
       <Filter>zaf\control\internal\textual</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\textual\text_box_module.cpp">
-      <Filter>zaf\control\internal\textual</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\textual\text_box_module_context.cpp">
-      <Filter>zaf\control\internal\textual</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\internal\textual\text_box_mouse_input_handler.cpp">
       <Filter>zaf\control\internal\textual</Filter>
     </ClCompile>
@@ -3245,12 +3239,6 @@
       <Filter>zaf\control\internal\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\textual\text_box_keyboard_input_handler.h">
-      <Filter>zaf\control\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\textual\text_box_module.h">
-      <Filter>zaf\control\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\textual\text_box_module_context.h">
       <Filter>zaf\control\internal\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\textual\text_box_mouse_input_handler.h">

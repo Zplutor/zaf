@@ -2,8 +2,8 @@
 
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
+#include <zaf/control/text_box.h>
 #include <zaf/control/textual/styled_text.h>
-#include <zaf/control/internal/textual/text_box_module_context.h>
 
 namespace zaf::internal {
 
@@ -41,17 +41,17 @@ public:
         const SelectionInfo& do_selection_info,
         const SelectionInfo& undo_selection_info);
 
-    void Do(const TextBoxModuleContext& context);
-    void Undo(const TextBoxModuleContext& context);
+    void Do(TextBox& text_box);
+    void Undo(TextBox& text_box);
 
 private:
     static EditInfo Execute(
-        const TextBoxModuleContext& context, 
+        TextBox& text_box,
         EditInfo edit_info,
         const SelectionInfo& selection_info);
 
     static void SetEditInfoToText(
-        const TextBoxModuleContext& context, 
+        TextBox& text_box,
         EditInfo edit_info,
         const SelectionInfo& selection_info,
         Range& new_text_range,

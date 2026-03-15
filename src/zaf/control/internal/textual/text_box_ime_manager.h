@@ -1,18 +1,21 @@
 #pragma once
 
 #include <zaf/control/event/ime_event_infos.h>
-#include <zaf/control/internal/textual/text_box_module.h>
+#include <zaf/control/text_box.h>
 
 namespace zaf::internal {
 
-class TextBoxIMEManager : public TextBoxModule {
+class TextBoxIMEManager {
 public:
-    explicit TextBoxIMEManager(TextBoxModuleContext* context);
+    explicit TextBoxIMEManager(TextBox& owner);
 
-    void Initialize() override;
+    void Initialize();
 
     void HandleIMEStartComposition(const IMEStartCompositionInfo& event_info);
     void HandleIMEComposition(const IMECompositionInfo& event_info);
+
+private:
+    TextBox& owner_;
 };
 
 }

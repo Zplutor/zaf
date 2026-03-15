@@ -2,17 +2,17 @@
 
 #include <zaf/base/event/event.h>
 #include <zaf/base/range.h>
+#include <zaf/control/text_box.h>
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/textual/copying_info.h>
-#include <zaf/control/internal/textual/text_box_module.h>
 
 namespace zaf::internal {
 
-class TextBoxKeyboardInputHandler : public TextBoxModule {
+class TextBoxKeyboardInputHandler {
 public:
-    explicit TextBoxKeyboardInputHandler(TextBoxModuleContext* context);
+    explicit TextBoxKeyboardInputHandler(TextBox& owner);
 
-    void Initialize() override;
+    void Initialize();
 
     void HandleKeyDown(const KeyDownInfo& event_info);
 
@@ -63,6 +63,7 @@ private:
     void HandleSelectAll();
 
 private:
+    TextBox& owner_;
     Event<textual::CopyingInfo> copying_event_;
 };
 

@@ -4,20 +4,19 @@
 #include <zaf/creation.h>
 #include <zaf/graphic/canvas.h>
 #include <zaf/control/internal/textual/text_box_editor.h>
-#include <zaf/control/internal/textual/text_box_module_context.h>
 
 namespace zaf::internal {
 
-TextBoxCaretManager::TextBoxCaretManager(TextBoxModuleContext* context) : TextBoxModule(context) {
+TextBoxCaretManager::TextBoxCaretManager(TextBox& owner) : owner_(owner) {
 
 }
 
 
 void TextBoxCaretManager::Initialize() {
 
-    caret_ = zaf::Create<zaf::Caret>(As<TextBox>(Context().Owner().shared_from_this()));
+    caret_ = zaf::Create<zaf::Caret>(As<TextBox>(owner_.shared_from_this()));
 
-    Disposables() += Context().Editor().CanEditChangedEvent().Subscribe(
+    Disposables() += owner_.Editor().CanEditChangedEvent().Subscribe(
         std::bind(&TextBoxCaretManager::UpdateCaretOnPropertyChanged, this));
 }
 
@@ -25,7 +24,7 @@ void TextBoxCaretManager::Initialize() {
 bool TextBoxCaretManager::IsCaretEnabled() const {
 
     //Caret is enabled if the text box is editable.
-    if (Context().Editor().CanEdit()) {
+    if (owner_.Editor().CanEdit()) {
         return true;
     }
 
@@ -86,15 +85,15 @@ void TextBoxCaretManager::MoveCaretToCharRect(const Rect& char_rect) {
 
 void TextBoxCaretManager::SetCaretRectToCurrentCaretIndex() {
 
-    auto caret_index = Context().SelectionManager().CaretIndex();
-    auto hit_test_result = Context().GetTextLayout().HitTestIndex(caret_index, false);
+    auto caret_index = owner_.SelectionManager().CaretIndex();
+    auto hit_test_result = owner_.InnerTextLayout().HitTestIndex(caret_index, false);
     SetCaretRectToCharRect(hit_test_result.Metrics().Rect());
 }
 
 
 void TextBoxCaretManager::SetCaretRectToCharRect(const Rect& char_rect_at_caret) {
 
-    auto& owner = Context().Owner();
+    auto& owner = owner_;
 
     Rect caret_rect = char_rect_at_caret;
     caret_rect.size.width = 1;
@@ -128,7 +127,7 @@ void TextBoxCaretManager::SetIsCaretEnabledWhenNotEditable(bool value) {
 
 void TextBoxCaretManager::UpdateCaretOnPropertyChanged() {
 
-    bool can_show_caret = IsCaretEnabled() && Context().Owner().IsFocused();
+    bool can_show_caret = IsCaretEnabled() && owner_.IsFocused();
     if (can_show_caret) {
         InnerShowCaret();
     }
@@ -145,7 +144,7 @@ void TextBoxCaretManager::PaintCaret(Canvas& canvas, const zaf::Rect& dirty_rect
         return;
     }
 
-    auto content_rect = Context().Owner().ContentRectInSelf();
+    auto content_rect = owner_.ContentRectInSelf();
     auto region_guard = canvas.PushRegion(content_rect, dirty_rect);
 
     auto caret_dirty_rect = dirty_rect;

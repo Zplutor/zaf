@@ -2,22 +2,22 @@
 
 #include <optional>
 #include <zaf/base/range.h>
+#include <zaf/control/text_box.h>
 #include <zaf/control/event/double_click_info.h>
 #include <zaf/control/event/mouse_cursor_changing_info.h>
 #include <zaf/control/event/mouse_event_info.h>
 #include <zaf/control/textual/active_inline_object.h>
 #include <zaf/graphic/dwrite/hit_test_metrics.h>
 #include <zaf/control/internal/textual/text_box_hit_test_manager.h>
-#include <zaf/control/internal/textual/text_box_module.h>
 #include <zaf/rx/disposable_host.h>
 
 namespace zaf::internal {
 
-class TextBoxMouseInputHandler : public TextBoxModule, rx::DisposableHost {
+class TextBoxMouseInputHandler : rx::DisposableHost {
 public:
-    explicit TextBoxMouseInputHandler(TextBoxModuleContext* context);
+    explicit TextBoxMouseInputHandler(TextBox& owner);
 
-    void Initialize() override;
+    void Initialize();
 
     void HandleMouseMove(const MouseMoveInfo& event_info);
     void HandleMouseCursorChanging(const MouseCursorChangingInfo& event_info);
@@ -37,6 +37,7 @@ private:
         const TextBoxHitTestManager::HitTestPositionResult& hit_test_result) const;
 
 private:
+    TextBox& owner_;
     std::optional<std::size_t> begin_selecting_index_{};
     bool is_setting_selection_range_{};
 

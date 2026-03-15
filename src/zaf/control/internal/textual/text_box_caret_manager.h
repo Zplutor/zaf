@@ -1,17 +1,17 @@
 #pragma once
 
 #include <zaf/control/caret.h>
-#include <zaf/control/internal/textual/text_box_module.h>
+#include <zaf/control/text_box.h>
 #include <zaf/control/internal/textual/text_box_selection_manager.h>
 #include <zaf/rx/disposable_host.h>
 
 namespace zaf::internal {
 
-class TextBoxCaretManager : public TextBoxModule, rx::DisposableHost {
+class TextBoxCaretManager : rx::DisposableHost {
 public:
-    explicit TextBoxCaretManager(TextBoxModuleContext* context);
+    explicit TextBoxCaretManager(TextBox& owner);
 
-    void Initialize() override;
+    void Initialize();
 
     bool IsCaretEnabledWhenNotEditable() const noexcept {
         return is_caret_enabled_when_not_editable_;
@@ -43,6 +43,7 @@ private:
     void UpdateCaretOnPropertyChanged();
 
 private:
+    TextBox& owner_;
     std::shared_ptr<Caret> caret_;
     bool is_caret_enabled_when_not_editable_{ false };
 };

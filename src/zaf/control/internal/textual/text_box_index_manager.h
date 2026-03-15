@@ -1,20 +1,23 @@
 #pragma once
 
-#include <zaf/control/internal/textual/text_box_module.h>
+#include <zaf/control/text_box.h>
 
 namespace zaf::internal {
 
 /**
 Provides common index related logic interfaces.
 */
-class TextBoxIndexManager : public TextBoxModule {
+class TextBoxIndexManager {
 public:
-    explicit TextBoxIndexManager(TextBoxModuleContext* context);
+    explicit TextBoxIndexManager(TextBox& owner);
 
-    void Initialize() override;
+    void Initialize();
 
     std::size_t GetBackwardIndex(std::size_t index) const;
     std::size_t GetForwardIndex(std::size_t index) const;
+
+private:
+    TextBox& owner_;
 };
 
 }

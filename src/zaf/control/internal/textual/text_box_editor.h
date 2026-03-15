@@ -4,19 +4,19 @@
 #include <zaf/base/event/event.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/range.h>
+#include <zaf/control/text_box.h>
 #include <zaf/control/event/keyboard_event_info.h>
 #include <zaf/control/textual/pasting_info.h>
 #include <zaf/control/internal/textual/text_box_edit_command.h>
-#include <zaf/control/internal/textual/text_box_module.h>
 #include <zaf/rx/disposable_host.h>
 
 namespace zaf::internal {
 
-class TextBoxEditor : public TextBoxModule, rx::DisposableHost {
+class TextBoxEditor : rx::DisposableHost {
 public:
-    explicit TextBoxEditor(TextBoxModuleContext* context);
+    explicit TextBoxEditor(TextBox& owner);
 
-    void Initialize() override;
+    void Initialize();
 
     bool CanEdit() const noexcept {
         return can_edit_;
@@ -104,6 +104,7 @@ private:
     void ClearCommands();
 
 private:
+    TextBox& owner_;
     bool can_edit_{ true };
     Event<bool> can_edit_changed_event_;
 

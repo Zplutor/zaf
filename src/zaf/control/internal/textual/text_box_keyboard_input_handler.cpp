@@ -7,14 +7,12 @@
 #include <zaf/control/internal/textual/text_box_clipboard_operation.h>
 #include <zaf/control/internal/textual/text_box_editor.h>
 #include <zaf/control/internal/textual/text_box_index_manager.h>
-#include <zaf/control/internal/textual/text_box_module_context.h>
 #include <zaf/control/internal/textual/text_box_selection_manager.h>
 #include <zaf/input/keyboard.h>
 
 namespace zaf::internal {
 
-TextBoxKeyboardInputHandler::TextBoxKeyboardInputHandler(TextBoxModuleContext* context) : 
-    TextBoxModule(context) {
+TextBoxKeyboardInputHandler::TextBoxKeyboardInputHandler(TextBox& owner) : owner_(owner) {
 
 }
 
@@ -38,7 +36,7 @@ void TextBoxKeyboardInputHandler::HandleKeyDown(const KeyDownInfo& event_info) {
         HandleSelectAll();
     }
     else {
-        Context().Editor().HandleKeyDown(event_info);
+        owner_.Editor().HandleKeyDown(event_info);
     }
 }
 
@@ -46,7 +44,7 @@ void TextBoxKeyboardInputHandler::HandleKeyDown(const KeyDownInfo& event_info) {
 bool TextBoxKeyboardInputHandler::TryToHandleCaretRelatedKeyEvent(Key key) {
 
     //Ignore these key events if the caret is disabled.
-    if (!Context().CaretManager().IsCaretEnabled()) {
+    if (!owner_.CaretManager().IsCaretEnabled()) {
         return false;
     }
 
@@ -102,8 +100,8 @@ void TextBoxKeyboardInputHandler::BackwardCaretIndex(bool expand_selection) {
         }
     }
 
-    auto caret_index = Context().SelectionManager().CaretIndex();
-    auto new_index = Context().IndexManager().GetBackwardIndex(caret_index);
+    auto caret_index = owner_.SelectionManager().CaretIndex();
+    auto new_index = owner_.IndexManager().GetBackwardIndex(caret_index);
 
     SetCaretIndexByKey(new_index, expand_selection, true);
 }
@@ -117,8 +115,8 @@ void TextBoxKeyboardInputHandler::ForwardCaretIndex(bool expand_selection) {
         }
     }
 
-    auto caret_index = Context().SelectionManager().CaretIndex();
-    auto new_index = Context().IndexManager().GetForwardIndex(caret_index);
+    auto caret_index = owner_.SelectionManager().CaretIndex();
+    auto new_index = owner_.IndexManager().GetForwardIndex(caret_index);
 
     SetCaretIndexByKey(new_index, expand_selection, true);
 }
@@ -127,7 +125,7 @@ void TextBoxKeyboardInputHandler::ForwardCaretIndex(bool expand_selection) {
 bool TextBoxKeyboardInputHandler::TryToMoveCaretToSelectionEdge(bool backward) {
 
     //Move the caret index to the beginning or the end of the selection if its length is not zero.
-    const auto& selection_range = Context().SelectionManager().SelectionRange();
+    const auto& selection_range = owner_.SelectionManager().SelectionRange();
     if (selection_range.length == 0) {
         return false;
     }
@@ -155,9 +153,9 @@ void TextBoxKeyboardInputHandler::UpdateCaretIndexVertically(
     bool is_downward,
     bool expand_selection) {
 
-    auto text_layout = Context().GetTextLayout();
+    auto text_layout = owner_.InnerTextLayout();
     auto caret_hit_test_result = text_layout.HitTestIndex(
-        Context().SelectionManager().CaretIndex(),
+        owner_.SelectionManager().CaretIndex(),
         false);
 
     auto current_line_info = LocateCurrentLineInfo();
@@ -171,7 +169,7 @@ void TextBoxKeyboardInputHandler::UpdateCaretIndexVertically(
     previous_line_y = (std::max)(previous_line_y, 0.f);
 
     auto previous_line_hit_test_result = text_layout.HitTestPoint(
-        Point{ Context().SelectionManager().CaretLastX(), previous_line_y});
+        Point{ owner_.SelectionManager().CaretLastX(), previous_line_y });
 
     auto new_index = previous_line_hit_test_result.Metrics().TextIndex();
     if (previous_line_hit_test_result.IsTrailingHit()) {
@@ -202,7 +200,7 @@ void TextBoxKeyboardInputHandler::MoveCaretIndexToTextHead() {
 
 
 void TextBoxKeyboardInputHandler::MoveCaretIndexToTextEnd() {
-    SetCaretIndexByKey(Context().TextModel().Text().length(), Keyboard::IsShiftDown(), true);
+    SetCaretIndexByKey(owner_.InnerTextModel().Text().length(), Keyboard::IsShiftDown(), true);
 }
 
 
@@ -213,7 +211,7 @@ std::size_t TextBoxKeyboardInputHandler::LocateCurrentLineEndIndex() const {
         return line_info.line_char_index;
     }
 
-    std::wstring_view text = Context().TextModel().Text();
+    std::wstring_view text = owner_.InnerTextModel().Text();
 
     auto last_char_index = line_info.line_char_index + line_info.line_length - 1;
     if (text[last_char_index] == L'\r') {
@@ -238,8 +236,8 @@ std::size_t TextBoxKeyboardInputHandler::LocateCurrentLineEndIndex() const {
 
 TextBoxKeyboardInputHandler::LineInfo TextBoxKeyboardInputHandler::LocateCurrentLineInfo() const {
 
-    auto line_metrics = Context().GetTextLayout().GetLineMetrics();
-    auto caret_index = Context().SelectionManager().CaretIndex();
+    auto line_metrics = owner_.InnerTextLayout().GetLineMetrics();
+    auto caret_index = owner_.SelectionManager().CaretIndex();
 
     LineInfo current_line_info;
     float last_line_y{};
@@ -270,8 +268,8 @@ void TextBoxKeyboardInputHandler::SetCaretIndexByKey(
     bool expand_selection,
     bool update_caret_x) {
 
-    auto& selection_manager = Context().SelectionManager();
-    auto caret_index = (std::min)(new_index, Context().Owner().TextLength());
+    auto& selection_manager = owner_.SelectionManager();
+    auto caret_index = (std::min)(new_index, owner_.TextLength());
 
     std::size_t selection_begin = caret_index;
     std::size_t selection_end = caret_index;
@@ -313,13 +311,13 @@ void TextBoxKeyboardInputHandler::HandleCopy() {
 
 bool TextBoxKeyboardInputHandler::PerformCopy() {
 
-    auto selection_range = Context().SelectionManager().SelectionRange();
+    auto selection_range = owner_.SelectionManager().SelectionRange();
     if (selection_range.IsEmpty()) {
         return false;
     }
 
     textual::CopyingInfo event_info{ 
-        As<TextBox>(Context().Owner().shared_from_this()),
+        As<TextBox>(owner_.shared_from_this()),
         selection_range 
     };
 
@@ -335,7 +333,7 @@ bool TextBoxKeyboardInputHandler::PerformCopy() {
         return true;
     }
 
-    auto selected_styled_text = Context().TextModel().StyledText().GetSubText(selection_range);
+    auto selected_styled_text = owner_.InnerTextModel().StyledText().GetSubText(selection_range);
     internal::SaveStyledTextToClipboard(std::move(selected_styled_text));
     return true;
 }
@@ -343,8 +341,8 @@ bool TextBoxKeyboardInputHandler::PerformCopy() {
 
 void TextBoxKeyboardInputHandler::HandleSelectAll() {
 
-    Context().SelectionManager().SetSelectionRange(
-        Range{ 0, Context().TextModel().Text().length() },
+    owner_.SelectionManager().SetSelectionRange(
+        Range{ 0, owner_.InnerTextModel().Text().length() },
         textual::SelectionOption::SetCaretToEnd | textual::SelectionOption::ScrollToCaret, 
         std::nullopt,
         true);

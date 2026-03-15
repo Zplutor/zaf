@@ -1,11 +1,10 @@
 #include <zaf/control/internal/textual/text_box_index_manager.h>
 #include <zaf/base/error/precondition_error.h>
-#include <zaf/control/internal/textual/text_box_module_context.h>
 #include <zaf/control/internal/textual/text_model.h>
 
 namespace zaf::internal {
 
-TextBoxIndexManager::TextBoxIndexManager(TextBoxModuleContext* context) : TextBoxModule(context) {
+TextBoxIndexManager::TextBoxIndexManager(TextBox& owner) : owner_(owner) {
 
 }
 
@@ -17,7 +16,7 @@ void TextBoxIndexManager::Initialize() {
 
 std::size_t TextBoxIndexManager::GetBackwardIndex(std::size_t index) const {
 
-    auto& text_model = Context().TextModel();
+    auto& text_model = owner_.InnerTextModel();
     std::wstring_view text = text_model.Text();
     ZAF_EXPECT(index <= text.length());
 
@@ -31,7 +30,7 @@ std::size_t TextBoxIndexManager::GetBackwardIndex(std::size_t index) const {
     }
 
     //Move index to the beginning of the inline object if the index is inside an inline object.
-    auto& inline_objects = Context().TextModel().StyledText().InlineObjects();
+    auto& inline_objects = owner_.InnerTextModel().StyledText().InlineObjects();
     auto iterator = inline_objects.FindItemAtIndex(previous_index);
     if (iterator != inline_objects.end()) {
 
@@ -51,7 +50,7 @@ std::size_t TextBoxIndexManager::GetBackwardIndex(std::size_t index) const {
 
 std::size_t TextBoxIndexManager::GetForwardIndex(std::size_t index) const {
     
-    std::wstring_view text = Context().TextModel().Text();
+    std::wstring_view text = owner_.InnerTextModel().Text();
     ZAF_EXPECT(index <= text.length());
 
     if (index == text.length()) {
@@ -59,7 +58,7 @@ std::size_t TextBoxIndexManager::GetForwardIndex(std::size_t index) const {
     }
 
     //Move index to the end of the inline object if the index is inside an inline object.
-    auto& inline_objects = Context().TextModel().StyledText().InlineObjects();
+    auto& inline_objects = owner_.InnerTextModel().StyledText().InlineObjects();
     auto iterator = inline_objects.FindItemAtIndex(index);
     if (iterator != inline_objects.end()) {
 

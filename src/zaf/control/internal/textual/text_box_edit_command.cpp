@@ -16,28 +16,28 @@ TextBoxEditCommand::TextBoxEditCommand(
 }
 
 
-void TextBoxEditCommand::Do(const TextBoxModuleContext& context) {
+void TextBoxEditCommand::Do(TextBox& text_box) {
     ZAF_EXPECT(!is_done_);
-    edit_info_ = Execute(context, std::move(edit_info_), do_selection_info_);
+    edit_info_ = Execute(text_box, std::move(edit_info_), do_selection_info_);
     is_done_ = true;
 }
 
 
-void TextBoxEditCommand::Undo(const TextBoxModuleContext& context) {
+void TextBoxEditCommand::Undo(TextBox& text_box) {
     ZAF_EXPECT(is_done_);
-    edit_info_ = Execute(context, std::move(edit_info_), undo_selection_info_);
+    edit_info_ = Execute(text_box, std::move(edit_info_), undo_selection_info_);
     is_done_ = false;
 }
 
 
 TextBoxEditCommand::EditInfo TextBoxEditCommand::Execute(
-    const TextBoxModuleContext& context, 
+    TextBox& text_box,
     EditInfo edit_info,
     const SelectionInfo& selection_info) {
 
     Range new_text_range;
     textual::StyledText old_text;
-    SetEditInfoToText(context, std::move(edit_info), selection_info, new_text_range, old_text);
+    SetEditInfoToText(text_box, std::move(edit_info), selection_info, new_text_range, old_text);
 
     EditInfo undo_info;
     undo_info.replaced_range = new_text_range;
@@ -47,13 +47,13 @@ TextBoxEditCommand::EditInfo TextBoxEditCommand::Execute(
 
 
 void TextBoxEditCommand::SetEditInfoToText(
-    const TextBoxModuleContext& context,
+    TextBox& text_box,
     EditInfo edit_info,
     const SelectionInfo& selection_info,
     Range& new_text_range,
     textual::StyledText& old_text) {
 
-    new_text_range = context.TextModel().SetStyledTextInRange(
+    new_text_range = text_box.InnerTextModel().SetStyledTextInRange(
         std::move(edit_info.styled_text_slice),
         edit_info.replaced_range, 
         &old_text);
@@ -64,10 +64,10 @@ void TextBoxEditCommand::SetEditInfoToText(
     }
     else {
         if (selection_info.set_caret_to_begin) {
-            selection_range.index = new_text_range.index;
+            selection_range.SetIndex(new_text_range.Index());
         }
         else {
-            selection_range.index = new_text_range.EndIndex();
+            selection_range.SetIndex(new_text_range.EndIndex());
         }
     }
 
@@ -78,7 +78,7 @@ void TextBoxEditCommand::SetEditInfoToText(
 
     selection_option |= textual::SelectionOption::ScrollToCaret;
 
-    context.SelectionManager().SetSelectionRange(
+    text_box.SelectionManager().SetSelectionRange(
         selection_range,
         selection_option,
         std::nullopt,

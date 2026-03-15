@@ -19,10 +19,16 @@
 
 namespace zaf::internal {
 class TextBoxCaretManager;
+class TextBoxEditor;
+class TextBoxEditCommand;
 class TextBoxHitTestManager;
-class TextBoxModuleContext;
+class TextBoxIMEManager;
+class TextBoxIndexManager;
+class TextBoxKeyboardInputHandler;
 class TextBoxMouseInputHandler;
+class TextBoxSelectionManager;
 class TextBoxSelectionChangedInfo;
+class TextModel;
 }
 
 namespace zaf {
@@ -421,8 +427,27 @@ protected:
 
 private:
     friend class internal::TextBoxCaretManager;
+    friend class internal::TextBoxEditor;
+    friend class internal::TextBoxEditCommand;
     friend class internal::TextBoxHitTestManager;
-    friend class internal::TextBoxModuleContext;
+    friend class internal::TextBoxIMEManager;
+    friend class internal::TextBoxIndexManager;
+    friend class internal::TextBoxKeyboardInputHandler;
+    friend class internal::TextBoxMouseInputHandler;
+    friend class internal::TextBoxSelectionManager;
+
+    internal::TextModel& InnerTextModel();
+    const internal::TextModel& InnerTextModel() const;
+    dwrite::TextLayout InnerTextLayout() const;
+
+    internal::TextBoxHitTestManager& HitTestManager() const;
+    internal::TextBoxIndexManager& IndexManager() const;
+    internal::TextBoxSelectionManager& SelectionManager() const;
+    internal::TextBoxCaretManager& CaretManager() const noexcept;
+    internal::TextBoxMouseInputHandler& MouseInputHandler() const;
+    internal::TextBoxKeyboardInputHandler& KeyboardInputHandler() const;
+    internal::TextBoxEditor& Editor() const noexcept;
+    internal::TextBoxIMEManager& IMEManager() const;
 
     void PaintSelection(
         Canvas& canvas,
@@ -448,7 +473,15 @@ private:
     void DoScroll(int new_value, float content_length, float text_length, float& text_position);
 
 private:
-    std::unique_ptr<internal::TextBoxModuleContext> module_context_;
+    // The module order is intentionally fixed and must remain unchanged.
+    std::unique_ptr<internal::TextBoxHitTestManager> hit_test_manager_;
+    std::unique_ptr<internal::TextBoxIndexManager> index_manager_;
+    std::unique_ptr<internal::TextBoxSelectionManager> selection_manager_;
+    std::unique_ptr<internal::TextBoxCaretManager> caret_manager_;
+    std::unique_ptr<internal::TextBoxMouseInputHandler> mouse_input_handler_;
+    std::unique_ptr<internal::TextBoxKeyboardInputHandler> keyboard_input_handler_;
+    std::unique_ptr<internal::TextBoxEditor> editor_;
+    std::unique_ptr<internal::TextBoxIMEManager> ime_manager_;
 
     zaf::Rect text_rect_;
 

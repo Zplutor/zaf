@@ -6,7 +6,6 @@
 #include <zaf/control/internal/textual/text_box_clipboard_operation.h>
 #include <zaf/control/internal/textual/text_box_keyboard_input_handler.h>
 #include <zaf/control/internal/textual/text_box_index_manager.h>
-#include <zaf/control/internal/textual/text_box_module_context.h>
 #include <zaf/control/internal/textual/text_box_selection_manager.h>
 #include <zaf/input/keyboard.h>
 
@@ -59,14 +58,14 @@ bool ShouldIgnoreChar(wchar_t ch) {
 
 }
 
-TextBoxEditor::TextBoxEditor(TextBoxModuleContext* context) : TextBoxModule(context) {
+TextBoxEditor::TextBoxEditor(TextBox& owner) : owner_(owner) {
 
 }
 
 
 void TextBoxEditor::Initialize() {
 
-    Disposables() += Context().TextModel().TextChangedEvent().Subscribe(
+    Disposables() += owner_.InnerTextModel().TextChangedEvent().Subscribe(
         std::bind(&TextBoxEditor::OnTextModelChanged, this));
 }
 
@@ -171,7 +170,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleKey(Key key) {
 
 void TextBoxEditor::HandleEnter() {
 
-    if (Context().TextModel().IsMultiline()) {
+    if (owner_.InnerTextModel().IsMultiline()) {
         InnerPerformInputText(L"\r\n", false);
     }
 }
@@ -179,14 +178,14 @@ void TextBoxEditor::HandleEnter() {
 
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleDelete() {
 
-    const auto& selection_range = Context().SelectionManager().SelectionRange();
+    const auto& selection_range = owner_.SelectionManager().SelectionRange();
 
     //Remove the selected text.
     if (selection_range.length > 0) {
         return CreateCommand({}, selection_range, true);
     }
 
-    auto next_index = Context().IndexManager().GetForwardIndex(selection_range.index);
+    auto next_index = owner_.IndexManager().GetForwardIndex(selection_range.index);
     if (next_index == selection_range.index) {
         //Index not changed, no action.
         return nullptr;
@@ -202,7 +201,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleDelete() {
 
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchDelete() {
 
-    const auto& selection_range = Context().SelectionManager().SelectionRange();
+    const auto& selection_range = owner_.SelectionManager().SelectionRange();
 
     //Remove the selected text.
     if (selection_range.length > 0) {
@@ -210,8 +209,8 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchDelete() {
     }
 
     //Determine the word range.
-    auto text = Context().TextModel().Text();
-    auto word_range = Context().Owner().WordExtractor()(text, selection_range.index);
+    auto text = owner_.InnerTextModel().Text();
+    auto word_range = owner_.WordExtractor()(text, selection_range.index);
 
     //Nothing can be removed.
     if (word_range.EndIndex() <= selection_range.index) {
@@ -227,7 +226,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchDelete() {
 
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
 
-    const auto& selection_range = Context().SelectionManager().SelectionRange();
+    const auto& selection_range = owner_.SelectionManager().SelectionRange();
 
     //Remove the selected text.
     if (selection_range.length > 0) {
@@ -236,10 +235,10 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
 
     //Determine the word range. Note that the index used to determine should be prior to the caret 
     //index.
-    auto text = Context().TextModel().Text();
+    auto text = owner_.InnerTextModel().Text();
 
     auto determined_index = selection_range.index > 0 ? selection_range.index - 1 : 0;
-    auto word_range = Context().Owner().WordExtractor()(text, determined_index);
+    auto word_range = owner_.WordExtractor()(text, determined_index);
 
     //Nothing can be removed.
     if (word_range.index >= selection_range.index) {
@@ -256,14 +255,14 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
 
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBackspace() {
 
-    const auto& selection_range = Context().SelectionManager().SelectionRange();
+    const auto& selection_range = owner_.SelectionManager().SelectionRange();
 
     //Remove the selected text.
     if (selection_range.length > 0) {
         return CreateCommand({}, selection_range, true);
     }
 
-    auto previous_index = Context().IndexManager().GetBackwardIndex(selection_range.index);
+    auto previous_index = owner_.IndexManager().GetBackwardIndex(selection_range.index);
     if (previous_index == selection_range.index) {
         //Index not changed, no action.
         return nullptr;
@@ -285,12 +284,12 @@ bool TextBoxEditor::PerformCut() {
 
     auto auto_reset = MakeAutoReset(is_editing_, true);
 
-    if (!Context().KeyboardInputHandler().PerformCopy()) {
+    if (!owner_.KeyboardInputHandler().PerformCopy()) {
         return false;
     }
 
     //Remove the selected text.
-    auto selection_range = Context().SelectionManager().SelectionRange();
+    auto selection_range = owner_.SelectionManager().SelectionRange();
     auto command = CreateCommand({}, selection_range, true);
     ExecuteCommand(std::move(command));
     return true;
@@ -306,7 +305,7 @@ bool TextBoxEditor::PerformPaste() {
     auto data_object = clipboard::Clipboard::GetDataObject();
 
     textual::PastingInfo event_info{
-        As<TextBox>(Context().Owner().shared_from_this()),
+        As<TextBox>(owner_.shared_from_this()),
         data_object
     };
 
@@ -323,7 +322,7 @@ bool TextBoxEditor::PerformPaste() {
     }
 
     if (!is_styled_text) {
-        const auto& default_style = Context().TextModel().StyledText().DefaultStyle();
+        const auto& default_style = owner_.InnerTextModel().StyledText().DefaultStyle();
         styled_text.SetDefaultStyle(default_style);
     }
 
@@ -363,10 +362,10 @@ bool TextBoxEditor::InnerPerformInputText(std::wstring_view text, bool can_trunc
 
 void TextBoxEditor::FillTextStyleFromSelection(StyledText& styled_text) const {
 
-    const auto& current_styled_text = Context().TextModel().StyledText();
+    const auto& current_styled_text = owner_.InnerTextModel().StyledText();
     std::size_t index_to_inherit{};
 
-    const auto& selection_manager = Context().SelectionManager();
+    const auto& selection_manager = owner_.SelectionManager();
     auto selection_range = selection_manager.SelectionRange();
     auto caret_index = selection_manager.CaretIndex();
 
@@ -429,7 +428,7 @@ bool TextBoxEditor::InnerPerformInputStyledText(StyledText styled_text, bool can
 
 bool TextBoxEditor::InputStyledText(textual::StyledText styled_text, bool can_truncate) {
 
-    auto selection_range = Context().SelectionManager().SelectionRange();
+    auto selection_range = owner_.SelectionManager().SelectionRange();
 
     if (!EnforceMaxLength(styled_text, selection_range, can_truncate)) {
         return false;
@@ -456,7 +455,7 @@ bool TextBoxEditor::EnforceMaxLength(
         return true;
     }
 
-    auto current_length = Context().TextModel().Text().length();
+    auto current_length = owner_.InnerTextModel().Text().length();
     auto new_length = current_length - selection_range.length + styled_text.Length();
     if (new_length <= *max_length_) {
         return true;
@@ -485,7 +484,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
     const Range& replaced_selection_range,
     bool set_caret_to_begin) const {
 
-    auto& selection_manager = Context().SelectionManager();
+    auto& selection_manager = owner_.SelectionManager();
     auto old_caret_index = selection_manager.CaretIndex();
     auto old_selection_range = selection_manager.SelectionRange();
 
@@ -516,7 +515,7 @@ void TextBoxEditor::ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command) 
 
     edit_commands_.erase(edit_commands_.begin() + next_command_index_, edit_commands_.end());
 
-    command->Do(Context());
+    command->Do(owner_);
 
     if (AllowUndo()) {
         edit_commands_.push_back(std::move(command));
@@ -535,7 +534,7 @@ bool TextBoxEditor::PerformUndo() {
 
     --next_command_index_;
     const auto& command = edit_commands_[next_command_index_];
-    command->Undo(Context());
+    command->Undo(owner_);
     return true;
 }
 
@@ -549,7 +548,7 @@ bool TextBoxEditor::PerformRedo() {
     auto auto_reset = MakeAutoReset(is_editing_, true);
 
     const auto& command = edit_commands_[next_command_index_];
-    command->Do(Context());
+    command->Do(owner_);
     ++next_command_index_;
     return true;
 }

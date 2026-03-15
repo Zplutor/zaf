@@ -1,10 +1,9 @@
 #include <zaf/control/internal/textual/text_box_hit_test_manager.h>
-#include <zaf/control/internal/textual/text_box_module_context.h>
+#include <zaf/control/text_box.h>
 
 namespace zaf::internal {
 
-TextBoxHitTestManager::TextBoxHitTestManager(TextBoxModuleContext* context) : 
-    TextBoxModule(context) {
+TextBoxHitTestManager::TextBoxHitTestManager(TextBox& owner) : owner_(owner) {
 
 }
 
@@ -17,7 +16,7 @@ void TextBoxHitTestManager::Initialize() {
 TextBoxHitTestManager::HitTestPositionResult TextBoxHitTestManager::HitTestAtPosition(
     const Point& position_in_text_box) const {
 
-    const auto& text_box = Context().Owner();
+    const auto& text_box = owner_;
 
     auto position_in_text_rect = position_in_text_box;
     position_in_text_rect.SubtractOffset(text_box.ContentRectInSelf().position);
@@ -25,7 +24,7 @@ TextBoxHitTestManager::HitTestPositionResult TextBoxHitTestManager::HitTestAtPos
 
     HitTestPositionResult result;
     result.hit_test_position = position_in_text_rect;
-    result.metrics = Context().GetTextLayout().HitTestPoint(position_in_text_rect);
+    result.metrics = owner_.InnerTextLayout().HitTestPoint(position_in_text_rect);
     return result;
 }
 

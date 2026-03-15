@@ -2,7 +2,7 @@
 
 #include <optional>
 #include <zaf/base/range.h>
-#include <zaf/control/internal/textual/text_box_module.h>
+#include <zaf/control/text_box.h>
 #include <zaf/control/internal/textual/text_model.h>
 #include <zaf/control/textual/selection_option.h>
 #include <zaf/graphic/rect.h>
@@ -13,11 +13,11 @@ namespace zaf::internal {
 
 class TextBoxSelectionChangedInfo;
 
-class TextBoxSelectionManager : public TextBoxModule, public rx::DisposableHost {
+class TextBoxSelectionManager : public rx::DisposableHost {
 public:
-    explicit TextBoxSelectionManager(TextBoxModuleContext* context);
+    explicit TextBoxSelectionManager(TextBox& owner);
 
-    void Initialize() override;
+    void Initialize();
 
     const Range& SelectionRange() const noexcept {
         return selection_range_;
@@ -53,6 +53,7 @@ private:
     void AfterSetCaretIndex(bool update_caret_x, bool scroll_to_caret);
 
 private:
+    TextBox& owner_;
     Range selection_range_;
     std::size_t caret_index_{};
     std::size_t anchor_index_{};

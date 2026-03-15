@@ -10,8 +10,8 @@
 #include <zaf/control/internal/textual/text_box_editor.h>
 #include <zaf/control/internal/textual/text_box_hit_test_manager.h>
 #include <zaf/control/internal/textual/text_box_ime_manager.h>
+#include <zaf/control/internal/textual/text_box_index_manager.h>
 #include <zaf/control/internal/textual/text_box_keyboard_input_handler.h>
-#include <zaf/control/internal/textual/text_box_module_context.h>
 #include <zaf/control/internal/textual/text_box_mouse_input_handler.h>
 #include <zaf/control/internal/textual/text_box_selection_manager.h>
 #include <zaf/graphic/canvas.h>
@@ -34,12 +34,82 @@ TextBox::~TextBox() {
 }
 
 
+internal::TextModel& TextBox::InnerTextModel() {
+    return TextModel();
+}
+
+
+const internal::TextModel& TextBox::InnerTextModel() const {
+    return TextModel();
+}
+
+
+dwrite::TextLayout TextBox::InnerTextLayout() const {
+    return GetTextLayout();
+}
+
+
+internal::TextBoxHitTestManager& TextBox::HitTestManager() const {
+    return *hit_test_manager_;
+}
+
+
+internal::TextBoxIndexManager& TextBox::IndexManager() const {
+    return *index_manager_;
+}
+
+
+internal::TextBoxSelectionManager& TextBox::SelectionManager() const {
+    return *selection_manager_;
+}
+
+
+internal::TextBoxCaretManager& TextBox::CaretManager() const noexcept {
+    return *caret_manager_;
+}
+
+
+internal::TextBoxMouseInputHandler& TextBox::MouseInputHandler() const {
+    return *mouse_input_handler_;
+}
+
+
+internal::TextBoxKeyboardInputHandler& TextBox::KeyboardInputHandler() const {
+    return *keyboard_input_handler_;
+}
+
+
+internal::TextBoxEditor& TextBox::Editor() const noexcept {
+    return *editor_;
+}
+
+
+internal::TextBoxIMEManager& TextBox::IMEManager() const {
+    return *ime_manager_;
+}
+
+
 void TextBox::Initialize() {
 
     __super::Initialize();
 
-    module_context_ = std::make_unique<internal::TextBoxModuleContext>(this);
-    module_context_->Initialize();
+    hit_test_manager_ = std::make_unique<internal::TextBoxHitTestManager>(*this);
+    index_manager_ = std::make_unique<internal::TextBoxIndexManager>(*this);
+    selection_manager_ = std::make_unique<internal::TextBoxSelectionManager>(*this);
+    caret_manager_ = std::make_unique<internal::TextBoxCaretManager>(*this);
+    mouse_input_handler_ = std::make_unique<internal::TextBoxMouseInputHandler>(*this);
+    keyboard_input_handler_ = std::make_unique<internal::TextBoxKeyboardInputHandler>(*this);
+    editor_ = std::make_unique<internal::TextBoxEditor>(*this);
+    ime_manager_ = std::make_unique<internal::TextBoxIMEManager>(*this);
+
+    HitTestManager().Initialize();
+    IndexManager().Initialize();
+    SelectionManager().Initialize();
+    CaretManager().Initialize();
+    MouseInputHandler().Initialize();
+    KeyboardInputHandler().Initialize();
+    Editor().Initialize();
+    IMEManager().Initialize();
 
     SetSelectionBackColorPicker(ColorPicker([](const Control& control) {
 
@@ -53,13 +123,13 @@ void TextBox::Initialize() {
         return Color::FromRGB(0xE4E4E4);
     }));
 
-    Disposables() += module_context_->SelectionManager().SelectionChangedEvent().Subscribe(
+    Disposables() += SelectionManager().SelectionChangedEvent().Subscribe(
         std::bind(&TextBox::OnInnerSelectionChanged, this, std::placeholders::_1));
 
-    Disposables() += module_context_->KeyboardInputHandler().CopyingEvent().Subscribe(
+    Disposables() += KeyboardInputHandler().CopyingEvent().Subscribe(
         std::bind(&TextBox::OnInnerCopying, this, std::placeholders::_1));
 
-    Disposables() += module_context_->Editor().PastingEvent().Subscribe(
+    Disposables() += Editor().PastingEvent().Subscribe(
         std::bind(&TextBox::OnInnerPasting, this, std::placeholders::_1));
 
     SetCanFocus(true);
@@ -76,7 +146,7 @@ void TextBox::Layout(const zaf::Size& previous_size) {
 
     __super::Layout(previous_size);
 
-    module_context_->CaretManager().MoveCaretToCurrentCaretIndex();
+    CaretManager().MoveCaretToCurrentCaretIndex();
 }
 
 
@@ -165,7 +235,7 @@ void TextBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
-    module_context_->CaretManager().PaintCaret(canvas, dirty_rect);
+    CaretManager().PaintCaret(canvas, dirty_rect);
 }
 
 
@@ -219,62 +289,62 @@ void TextBox::PaintSelection(
 
 
 bool TextBox::IsEditable() const noexcept {
-    return module_context_->Editor().CanEdit();
+    return Editor().CanEdit();
 }
 
 
 void TextBox::SetIsEditable(bool is_editable) {
-    module_context_->Editor().SetCanEdit(is_editable);
+    Editor().SetCanEdit(is_editable);
 }
 
 
 bool TextBox::IsCaretEnabledWhenNotEditable() const noexcept {
-    return module_context_->CaretManager().IsCaretEnabledWhenNotEditable();
+    return CaretManager().IsCaretEnabledWhenNotEditable();
 }
 
 
 void TextBox::SetIsCaretEnabledWhenNotEditable(bool value) {
-    module_context_->CaretManager().SetIsCaretEnabledWhenNotEditable(value);
+    CaretManager().SetIsCaretEnabledWhenNotEditable(value);
 }
 
 
 std::optional<std::size_t> TextBox::MaxLength() const noexcept {
-    return module_context_->Editor().MaxLength();
+    return Editor().MaxLength();
 }
 
 
 void TextBox::SetMaxLength(std::size_t max_length) noexcept {
-    module_context_->Editor().SetMaxLength(max_length);
+    Editor().SetMaxLength(max_length);
 }
 
 
 bool TextBox::AllowUndo() const noexcept {
-    return module_context_->Editor().AllowUndo();
+    return Editor().AllowUndo();
 }
 
 
 void TextBox::SetAllowUndo(bool allow_undo) {
-    module_context_->Editor().SetAllowUndo(allow_undo);
+    Editor().SetAllowUndo(allow_undo);
 }
 
 
 bool TextBox::CanUndo() const noexcept {
-    return module_context_->Editor().CanUndo();
+    return Editor().CanUndo();
 }
 
 
 bool TextBox::Undo() {
-    return module_context_->Editor().PerformUndo();
+    return Editor().PerformUndo();
 }
 
 
 bool TextBox::CanRedo() const noexcept {
-    return module_context_->Editor().CanRedo();
+    return Editor().CanRedo();
 }
 
 
 bool TextBox::Redo() {
-    return module_context_->Editor().PerformRedo();
+    return Editor().PerformRedo();
 }
 
 
@@ -285,7 +355,7 @@ void TextBox::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
         return;
     }
 
-    module_context_->MouseInputHandler().HandleMouseCursorChanging(event_info);
+    MouseInputHandler().HandleMouseCursorChanging(event_info);
     if (event_info.IsHandled()) {
         return;
     }
@@ -302,7 +372,7 @@ void TextBox::OnMouseDown(const MouseDownInfo& event_info) {
         return;
     }
 
-    module_context_->MouseInputHandler().HandleMouseDown(event_info);
+    MouseInputHandler().HandleMouseDown(event_info);
     event_info.MarkAsHandled();
 }
 
@@ -314,7 +384,7 @@ void TextBox::OnMouseMove(const MouseMoveInfo& event_info) {
         return;
     }
 
-    module_context_->MouseInputHandler().HandleMouseMove(event_info);
+    MouseInputHandler().HandleMouseMove(event_info);
     event_info.MarkAsHandled();
 }
 
@@ -326,21 +396,21 @@ void TextBox::OnMouseUp(const MouseUpInfo& event_info) {
         return;
     }
 
-    module_context_->MouseInputHandler().HandleMouseUp(event_info);
+    MouseInputHandler().HandleMouseUp(event_info);
     event_info.MarkAsHandled();
 }
 
 
 std::size_t TextBox::FindIndexAtPosition(const Point& position) const {
 
-    const auto& hit_test_manager = module_context_->HitTestManager();
+    const auto& hit_test_manager = HitTestManager();
     auto hit_test_result = hit_test_manager.HitTestAtPosition(position);
     return hit_test_manager.TextIndexFromHitTestResult(hit_test_result);
 }
 
 
 bool TextBox::IsPositionInsideText(const Point& position) const {
-    return module_context_->HitTestManager().HitTestAtPosition(position).metrics.IsInside();
+    return HitTestManager().HitTestAtPosition(position).metrics.IsInside();
 }
 
 
@@ -362,7 +432,7 @@ void TextBox::OnDoubleClick(const DoubleClickInfo& event_info) {
 
     __super::OnDoubleClick(event_info);
 
-    module_context_->MouseInputHandler().HandleDoubleClick(event_info);
+    MouseInputHandler().HandleDoubleClick(event_info);
 }
 
 
@@ -392,7 +462,7 @@ void TextBox::OnFocusGained(const FocusGainedInfo& event_info) {
 
     __super::OnFocusGained(event_info);
 
-    module_context_->CaretManager().ShowCaret();
+    CaretManager().ShowCaret();
     event_info.MarkAsHandled();
 
     if (this->SelectionRange().length > 0) {
@@ -405,7 +475,7 @@ void TextBox::OnFocusLost(const FocusLostInfo& event_info) {
 
     __super::OnFocusLost(event_info);
 
-    module_context_->CaretManager().HideCaret();
+    CaretManager().HideCaret();
     event_info.MarkAsHandled();
 
     if (this->SelectionRange().length > 0) {
@@ -421,7 +491,7 @@ void TextBox::OnKeyDown(const KeyDownInfo& event_info) {
         return;
     }
 
-    module_context_->KeyboardInputHandler().HandleKeyDown(event_info);
+    KeyboardInputHandler().HandleKeyDown(event_info);
     event_info.MarkAsHandled();
 }
 
@@ -433,7 +503,7 @@ void TextBox::OnCharInput(const CharInputInfo& event_info) {
         return;
     }
 
-    module_context_->Editor().HandleCharInput(event_info);
+    Editor().HandleCharInput(event_info);
     event_info.MarkAsHandled();
 }
 
@@ -442,7 +512,7 @@ void TextBox::OnIMEStartComposition(const IMEStartCompositionInfo& event_info) {
 
     __super::OnIMEStartComposition(event_info);
 
-    module_context_->IMEManager().HandleIMEStartComposition(event_info);
+    IMEManager().HandleIMEStartComposition(event_info);
 }
 
 
@@ -450,7 +520,7 @@ void TextBox::OnIMEComposition(const IMECompositionInfo& event_info) {
 
     __super::OnIMEComposition(event_info);
 
-    module_context_->IMEManager().HandleIMEComposition(event_info);
+    IMEManager().HandleIMEComposition(event_info);
 }
 
 
@@ -465,32 +535,32 @@ void TextBox::OnTextChanged(const TextChangedInfo& event_info) {
 
 
 std::size_t TextBox::CaretIndex() const {
-    return module_context_->SelectionManager().CaretIndex();
+    return SelectionManager().CaretIndex();
 }
 
 Color TextBox::CaretColor() const noexcept {
-    return module_context_->CaretManager().GetCaret()->Color();
+    return CaretManager().GetCaret()->Color();
 }
 
 void TextBox::SetCaretColor(const Color& color) noexcept {
-    module_context_->CaretManager().GetCaret()->SetColor(color);
+    CaretManager().GetCaret()->SetColor(color);
 }
 
 
 const Range& TextBox::SelectionRange() const {
-    return module_context_->SelectionManager().SelectionRange();
+    return SelectionManager().SelectionRange();
 }
 
 
 void TextBox::SetSelectionRange(const Range& range, textual::SelectionOption selection_option) {
 
-    std::wstring_view text = module_context_->TextModel().Text();
+    std::wstring_view text = TextModel().Text();
 
     auto revised_range = Range::FromIndexPair(
         (std::min)(range.index, text.length()),
         (std::min)(range.EndIndex(), text.length()));
 
-    module_context_->SelectionManager().SetSelectionRange(
+    SelectionManager().SetSelectionRange(
         revised_range,
         selection_option, 
         std::nullopt,
@@ -515,7 +585,7 @@ void TextBox::OnInnerSelectionChanged(const internal::TextBoxSelectionChangedInf
     }
 
     //Moving caret should go after scrolling.
-    module_context_->CaretManager().MoveCaretToCharRect(event_info.CharRectAtCaret());
+    CaretManager().MoveCaretToCharRect(event_info.CharRectAtCaret());
 
     NeedRepaint();
 
@@ -595,17 +665,17 @@ void TextBox::EnsureCaretVisible(const zaf::Rect& char_rect_at_caret) {
 
 
 bool TextBox::Input(std::wstring_view text) {
-    return module_context_->Editor().PerformInputText(text);
+    return Editor().PerformInputText(text);
 }
 
 
 bool TextBox::Input(textual::StyledText styled_text) {
-    return module_context_->Editor().PerformInputStyledText(std::move(styled_text));
+    return Editor().PerformInputStyledText(std::move(styled_text));
 }
 
 
 bool TextBox::Input(std::shared_ptr<textual::InlineObject> inline_object) {
-    return module_context_->Editor().PerformInputInlineObject(std::move(inline_object));
+    return Editor().PerformInputInlineObject(std::move(inline_object));
 }
 
 
@@ -764,7 +834,7 @@ void TextBox::DoScroll(
 
     UpdateTextRect(text_rect_);
 
-    module_context_->CaretManager().MoveCaretToCurrentCaretIndex();
+    CaretManager().MoveCaretToCurrentCaretIndex();
     NeedRepaint();
 }
 
@@ -775,7 +845,7 @@ std::size_t TextBox::LineCount() const {
 
 
 bool TextBox::Copy() const {
-    return module_context_->KeyboardInputHandler().PerformCopy();
+    return KeyboardInputHandler().PerformCopy();
 }
 
 
@@ -795,7 +865,7 @@ rx::Observable<textual::CopyingInfo> TextBox::CopyingEvent() const {
 
 
 bool TextBox::Paste() {
-    return module_context_->Editor().PerformPaste();
+    return Editor().PerformPaste();
 }
 
 
@@ -815,7 +885,7 @@ rx::Observable<textual::PastingInfo> TextBox::PastingEvent() const {
 
 
 bool TextBox::Cut() {
-    return module_context_->Editor().PerformCut();
+    return Editor().PerformCut();
 }
 
 }
