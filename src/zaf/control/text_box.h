@@ -22,7 +22,6 @@ class TextBoxCaretManager;
 class TextBoxEditor;
 class TextBoxEditCommand;
 class TextBoxHitTestManager;
-class TextBoxIMEManager;
 class TextBoxIndexManager;
 class TextBoxKeyboardInputHandler;
 class TextBoxMouseInputHandler;
@@ -412,6 +411,7 @@ protected:
     void OnCharInput(const CharInputInfo& event_info) override;
     void OnIMEStartComposition(const IMEStartCompositionInfo& event_info) override;
     void OnIMEComposition(const IMECompositionInfo& event_info) override;
+    void OnIMEEndComposition(const IMEEndCompositionInfo& event_info) override;
 
     virtual void OnSelectionChanged(const textual::SelectionChangedInfo& event_info);
 
@@ -430,7 +430,6 @@ private:
     friend class internal::TextBoxEditor;
     friend class internal::TextBoxEditCommand;
     friend class internal::TextBoxHitTestManager;
-    friend class internal::TextBoxIMEManager;
     friend class internal::TextBoxIndexManager;
     friend class internal::TextBoxKeyboardInputHandler;
     friend class internal::TextBoxMouseInputHandler;
@@ -447,7 +446,6 @@ private:
     internal::TextBoxMouseInputHandler& MouseInputHandler() const;
     internal::TextBoxKeyboardInputHandler& KeyboardInputHandler() const;
     internal::TextBoxEditor& Editor() const noexcept;
-    internal::TextBoxIMEManager& IMEManager() const;
 
     void PaintSelection(
         Canvas& canvas,
@@ -481,7 +479,6 @@ private:
     std::unique_ptr<internal::TextBoxMouseInputHandler> mouse_input_handler_;
     std::unique_ptr<internal::TextBoxKeyboardInputHandler> keyboard_input_handler_;
     std::unique_ptr<internal::TextBoxEditor> editor_;
-    std::unique_ptr<internal::TextBoxIMEManager> ime_manager_;
 
     zaf::Rect text_rect_;
 

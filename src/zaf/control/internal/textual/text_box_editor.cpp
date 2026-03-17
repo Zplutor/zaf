@@ -2,12 +2,14 @@
 #include <cwctype>
 #include <zaf/base/auto_reset.h>
 #include <zaf/clipboard/clipboard.h>
+#include <zaf/control/event/ime_event_infos.h>
 #include <zaf/control/internal/textual/text_model.h>
 #include <zaf/control/internal/textual/text_box_clipboard_operation.h>
 #include <zaf/control/internal/textual/text_box_keyboard_input_handler.h>
 #include <zaf/control/internal/textual/text_box_index_manager.h>
 #include <zaf/control/internal/textual/text_box_selection_manager.h>
 #include <zaf/input/keyboard.h>
+#include <zaf/window/input_method_context.h>
 
 using namespace zaf::textual;
 
@@ -135,7 +137,7 @@ void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
             if (!CanEdit()) {
                 return;
             }
-            auto auto_reset = MakeAutoReset(is_editing_, true);
+            auto auto_reset = MakeAutoReset(is_performing_edit_, true);
             auto command = HandleKey(key);
             if (command) {
                 ExecuteCommand(std::move(command));
@@ -282,7 +284,7 @@ bool TextBoxEditor::PerformCut() {
         return false;
     }
 
-    auto auto_reset = MakeAutoReset(is_editing_, true);
+    auto auto_reset = MakeAutoReset(is_performing_edit_, true);
 
     if (!owner_.KeyboardInputHandler().PerformCopy()) {
         return false;
@@ -327,6 +329,114 @@ bool TextBoxEditor::PerformPaste() {
     }
 
     return InputStyledText(std::move(styled_text), true);
+}
+
+
+void TextBoxEditor::HandleIMEStartComposition(const IMEStartCompositionInfo& event_info) {
+
+    composition_state_.reset();
+    event_info.MarkAsHandled();
+
+    if (!CanEdit()) {
+        return;
+    }
+
+    composition_state_.emplace();
+    composition_state_->composition_range = owner_.SelectionManager().SelectionRange();
+}
+
+
+void TextBoxEditor::HandleIMEComposition(const IMECompositionInfo& event_info) {
+
+    event_info.MarkAsHandled();
+
+    if (!CanEdit()) {
+        return;
+    }
+
+    if (!composition_state_) {
+        return;
+    }
+
+    auto context = InputMethodContext::FromWindowHandle(event_info.Message().WindowHandle());
+    if (event_info.Message().HasResultString()) {
+        auto result_string = context.GetResultString();
+        UpdateCompositionText({});
+        PerformInputText(result_string);
+    }
+
+    if (event_info.Message().HasCompositionString()) {
+        auto composition_string = context.GetCompositionString();
+        UpdateCompositionText(std::move(composition_string));
+    }
+}
+
+
+void TextBoxEditor::HandleIMEEndComposition(const IMEEndCompositionInfo& event_info) {
+
+    ClearCompositionState();
+    event_info.MarkAsHandled();
+}
+
+
+void TextBoxEditor::UpdateCompositionText(std::wstring text) {
+
+    if (!composition_state_) {
+        return;
+    }
+
+    auto& composition_range = composition_state_->composition_range;
+    // If new composition text is empty and the composition range is empty, it means there is no
+    // composition text to update and we can just return.
+    if (text.empty() && composition_range.IsEmpty()) {
+        return;
+    }
+
+    auto new_text_length = text.length();
+
+    auto auto_reset = MakeAutoReset(is_performing_edit_, true);
+
+    // Replace the text in composition range with the new composition text.
+    textual::StyledText styled_text;
+    styled_text.SetText(std::move(text));
+    auto font = owner_.Font();
+    font.has_underline = true;
+    styled_text.SetDefaultFont(std::move(font));
+
+    auto& text_model = owner_.TextModel();
+    text_model.SetStyledTextInRange(std::move(styled_text), composition_range);
+
+    // Update the composition range according to the new composition text.
+    composition_range.length = new_text_length;
+
+    owner_.SelectionManager().SetSelectionRange(
+        Range{ composition_range.EndIndex(), 0 },
+        textual::SelectionOption::ScrollToCaret,
+        std::nullopt,
+        true);
+}
+
+
+void TextBoxEditor::ClearCompositionState() {
+
+    UpdateCompositionText({});
+    composition_state_.reset();
+}
+
+
+void TextBoxEditor::HandleFocusLost() {
+
+    if (!composition_state_) {
+        return;
+    }
+
+    auto window = owner_.Window();
+    if (window) {
+        auto context = InputMethodContext::FromWindow(*window);
+        ImmNotifyIME(context.Handle(), NI_COMPOSITIONSTR, CPS_CANCEL, 0);
+    }
+
+    ClearCompositionState();
 }
 
 
@@ -440,7 +550,7 @@ bool TextBoxEditor::InputStyledText(textual::StyledText styled_text, bool can_tr
 
     auto command = CreateCommand(std::move(styled_text), selection_range, false);
 
-    auto auto_reset = MakeAutoReset(is_editing_, true);
+    auto auto_reset = MakeAutoReset(is_performing_edit_, true);
     ExecuteCommand(std::move(command));
     return true;
 }
@@ -530,7 +640,7 @@ bool TextBoxEditor::PerformUndo() {
         return false;
     }
 
-    auto auto_reset = MakeAutoReset(is_editing_, true);
+    auto auto_reset = MakeAutoReset(is_performing_edit_, true);
 
     --next_command_index_;
     const auto& command = edit_commands_[next_command_index_];
@@ -545,7 +655,7 @@ bool TextBoxEditor::PerformRedo() {
         return false;
     }
 
-    auto auto_reset = MakeAutoReset(is_editing_, true);
+    auto auto_reset = MakeAutoReset(is_performing_edit_, true);
 
     const auto& command = edit_commands_[next_command_index_];
     command->Do(owner_);
@@ -556,7 +666,7 @@ bool TextBoxEditor::PerformRedo() {
 
 void TextBoxEditor::OnTextModelChanged() {
 
-    if (is_editing_) {
+    if (is_performing_edit_) {
         return;
     }
 

@@ -133,7 +133,6 @@
     <ClCompile Include="src\zaf\control\internal\textual\text_box_editor.cpp" />
     <ClCompile Include="src\zaf\control\internal\textual\text_box_edit_command.cpp" />
     <ClCompile Include="src\zaf\control\internal\textual\text_box_hit_test_manager.cpp" />
-    <ClCompile Include="src\zaf\control\internal\textual\text_box_ime_manager.cpp" />
     <ClCompile Include="src\zaf\control\internal\textual\text_box_index_manager.cpp" />
     <ClCompile Include="src\zaf\control\internal\textual\text_box_keyboard_input_handler.cpp" />
     <ClCompile Include="src\zaf\control\internal\textual\text_box_mouse_input_handler.cpp" />
@@ -418,6 +417,7 @@
     <ClCompile Include="src\zaf\window\internal\window_facets\window_style_facet.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_facets\window_visibility_facet.cpp" />
     <ClCompile Include="src\zaf\window\internal\window_styles.cpp" />
+    <ClCompile Include="src\zaf\window\message\ime_message.cpp" />
     <ClCompile Include="src\zaf\window\popup_menu.cpp" />
     <ClCompile Include="src\zaf\window\dialog.cpp" />
     <ClCompile Include="src\zaf\window\event\closing_info.cpp" />
@@ -603,7 +603,6 @@
     <ClInclude Include="src\zaf\control\internal\textual\text_box_editor.h" />
     <ClInclude Include="src\zaf\control\internal\textual\text_box_edit_command.h" />
     <ClInclude Include="src\zaf\control\internal\textual\text_box_hit_test_manager.h" />
-    <ClInclude Include="src\zaf\control\internal\textual\text_box_ime_manager.h" />
     <ClInclude Include="src\zaf\control\internal\textual\text_box_index_manager.h" />
     <ClInclude Include="src\zaf\control\internal\textual\text_box_keyboard_input_handler.h" />
     <ClInclude Include="src\zaf\control\internal\textual\text_box_mouse_input_handler.h" />

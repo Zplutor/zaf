@@ -7,6 +7,9 @@ namespace zaf {
 class IMECompositionMessage : public MessageShim {
 public:
     using MessageShim::MessageShim;
+
+    bool HasResultString() const noexcept;
+    bool HasCompositionString() const noexcept;
 };
 
 }

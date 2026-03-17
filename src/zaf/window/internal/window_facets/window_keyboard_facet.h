@@ -16,7 +16,7 @@ public:
     bool PreprocessMessage(const KeyMessage& message);
 
     bool HandleKeyboardMessage(const Message& message);
-    void HandleIMEMessage(const Message& message);
+    bool HandleIMEMessage(const Message& message);
 
 private:
     bool TryToPreprocessInspectorShortcutMessage(const KeyMessage& message);

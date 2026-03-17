@@ -12,7 +12,6 @@
 #include <zaf/control/anchor.h>
 #include <zaf/control/event/double_click_info.h>
 #include <zaf/control/event/focus_event_info.h>
-#include <zaf/control/event/ime_event_infos.h>
 #include <zaf/control/event/is_enabled_changed_info.h>
 #include <zaf/control/event/is_selected_changed_info.h>
 #include <zaf/control/event/is_visible_changed_info.h>
@@ -57,6 +56,9 @@ class WindowRenderFacet;
 namespace zaf {
 
 class Canvas;
+class IMECompositionInfo;
+class IMEEndCompositionInfo;
+class IMEStartCompositionInfo;
 class Message;
 class MouseMessage;
 class MouseWheelMessage;

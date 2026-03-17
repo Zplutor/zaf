@@ -9,7 +9,6 @@
 #include <zaf/control/internal/textual/text_box_caret_manager.h>
 #include <zaf/control/internal/textual/text_box_editor.h>
 #include <zaf/control/internal/textual/text_box_hit_test_manager.h>
-#include <zaf/control/internal/textual/text_box_ime_manager.h>
 #include <zaf/control/internal/textual/text_box_index_manager.h>
 #include <zaf/control/internal/textual/text_box_keyboard_input_handler.h>
 #include <zaf/control/internal/textual/text_box_mouse_input_handler.h>
@@ -84,11 +83,6 @@ internal::TextBoxEditor& TextBox::Editor() const noexcept {
 }
 
 
-internal::TextBoxIMEManager& TextBox::IMEManager() const {
-    return *ime_manager_;
-}
-
-
 void TextBox::Initialize() {
 
     __super::Initialize();
@@ -100,7 +94,6 @@ void TextBox::Initialize() {
     mouse_input_handler_ = std::make_unique<internal::TextBoxMouseInputHandler>(*this);
     keyboard_input_handler_ = std::make_unique<internal::TextBoxKeyboardInputHandler>(*this);
     editor_ = std::make_unique<internal::TextBoxEditor>(*this);
-    ime_manager_ = std::make_unique<internal::TextBoxIMEManager>(*this);
 
     HitTestManager().Initialize();
     IndexManager().Initialize();
@@ -109,7 +102,6 @@ void TextBox::Initialize() {
     MouseInputHandler().Initialize();
     KeyboardInputHandler().Initialize();
     Editor().Initialize();
-    IMEManager().Initialize();
 
     SetSelectionBackColorPicker(ColorPicker([](const Control& control) {
 
@@ -475,12 +467,14 @@ void TextBox::OnFocusLost(const FocusLostInfo& event_info) {
 
     __super::OnFocusLost(event_info);
 
+    editor_->HandleFocusLost();
     CaretManager().HideCaret();
-    event_info.MarkAsHandled();
 
     if (this->SelectionRange().length > 0) {
         NeedRepaint();
     }
+
+    event_info.MarkAsHandled();
 }
 
 
@@ -512,7 +506,7 @@ void TextBox::OnIMEStartComposition(const IMEStartCompositionInfo& event_info) {
 
     __super::OnIMEStartComposition(event_info);
 
-    IMEManager().HandleIMEStartComposition(event_info);
+    editor_->HandleIMEStartComposition(event_info);
 }
 
 
@@ -520,7 +514,15 @@ void TextBox::OnIMEComposition(const IMECompositionInfo& event_info) {
 
     __super::OnIMEComposition(event_info);
 
-    IMEManager().HandleIMEComposition(event_info);
+    editor_->HandleIMEComposition(event_info);
+}
+
+
+void TextBox::OnIMEEndComposition(const IMEEndCompositionInfo& event_info) {
+
+    __super::OnIMEEndComposition(event_info);
+
+    editor_->HandleIMEEndComposition(event_info);
 }
 
 

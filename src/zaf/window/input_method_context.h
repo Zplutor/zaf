@@ -19,12 +19,18 @@ public:
     InputMethodContext(HWND window_handle, HIMC context_handle);
     ~InputMethodContext();
 
+    std::wstring GetCompositionString() const;
+    std::wstring GetResultString() const;
+
     void MoveCompositionWindow(const Point& position_in_window);
     void SetCompositionFont(const Font& font);
 
     HIMC Handle() const noexcept {
         return context_handle_;
     }
+
+private:
+    std::wstring InnerGetCompositionString(DWORD type) const;
 
 private:
     HWND window_handle_{};

@@ -1,5 +1,6 @@
 #include <zaf/window/input_method_context.h>
 #include <zaf/base/error/precondition_error.h>
+#include <zaf/base/error/unknown_runtime_error.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/window/window.h>
 
@@ -29,6 +30,40 @@ InputMethodContext::InputMethodContext(HWND window_handle, HIMC context_handle) 
 InputMethodContext::~InputMethodContext() {
 
     ImmReleaseContext(window_handle_, context_handle_);
+}
+
+
+std::wstring InputMethodContext::GetCompositionString() const {
+    return InnerGetCompositionString(GCS_COMPSTR);
+}
+
+
+std::wstring InputMethodContext::GetResultString() const {
+    return InnerGetCompositionString(GCS_RESULTSTR);
+}
+
+
+std::wstring InputMethodContext::InnerGetCompositionString(DWORD type) const {
+
+    LONG size = ImmGetCompositionString(context_handle_, type, nullptr, 0);
+    if (size == 0) {
+        return {};
+    }
+
+    if (size < 0) {
+        throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
+    }
+
+    std::wstring result;
+    result.resize(size / sizeof(wchar_t));
+
+    size = ImmGetCompositionStringW(context_handle_, type, result.data(), size);
+    if (size < 0) {
+        throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
+    }
+
+    result.resize(size / sizeof(wchar_t));
+    return result;
 }
 
 

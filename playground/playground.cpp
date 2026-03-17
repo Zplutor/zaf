@@ -25,7 +25,12 @@ protected:
         text_box_->SetRect(zaf::Rect{ 0, 0, 200, 100 });
         text_box_->SetFontSize(20);
         text_box_->SetCaretColor(zaf::Color::Red());
+        text_box_->SetText(L"TextBox");
         RootControl()->AddChild(text_box_);
+
+        auto button = zaf::Create<zaf::Button>();
+        button->SetRect(zaf::Rect{ 0, 100, 200, 30 });
+        RootControl()->AddChild(button);
     }
 
     void OnShow(const zaf::ShowInfo& event_info) override {

@@ -932,9 +932,9 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
     case WM_IME_STARTCOMPOSITION:
     case WM_IME_COMPOSITION:
     case WM_IME_ENDCOMPOSITION:
-        keyboard_facet_->HandleIMEMessage(message);
-        //For now, we always pass IME messages to the default window procedure even if we handle 
-        //the messages. This may be adjusted once we are more familiar with the IME mechanism.
+        if (keyboard_facet_->HandleIMEMessage(message)) {
+            return 0;
+        }
         return std::nullopt;
 #pragma endregion
 

@@ -492,6 +492,10 @@ void TextualControl::SetIgnoreTailingWhiteSpaces(bool value) {
     ignore_tailing_white_spaces_ = value;
 }
 
+const zaf::Rect& TextualControl::TextRect() const noexcept {
+    return text_rect_;
+}
+
 
 rx::Observable<TextChangedInfo> TextualControl::TextChangedEvent() const {
     return text_changed_event_.GetObservable();
@@ -586,7 +590,7 @@ TextLayout TextualControl::GetTextLayout() const {
 
 TextLayout TextualControl::CreateTextLayout() const {
 
-    auto text = text_model_->Text();
+    const auto& text = text_model_->Text();
 
     auto text_layout = GraphicFactory::Instance().CreateTextLayout(
         text,

@@ -1375,9 +1375,6 @@
     <ClCompile Include="src\zaf\control\internal\textual\text_box_hit_test_manager.cpp">
       <Filter>zaf\control\internal\textual</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\control\internal\textual\text_box_ime_manager.cpp">
-      <Filter>zaf\control\internal\textual</Filter>
-    </ClCompile>
     <ClCompile Include="src\zaf\control\internal\textual\text_box_index_manager.cpp">
       <Filter>zaf\control\internal\textual</Filter>
     </ClCompile>
@@ -1392,6 +1389,9 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\internal\textual\text_model.cpp">
       <Filter>zaf\control\internal\textual</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\window\message\ime_message.cpp">
+      <Filter>zaf\window\message</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3230,9 +3230,6 @@
       <Filter>zaf\control\internal\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\textual\text_box_hit_test_manager.h">
-      <Filter>zaf\control\internal\textual</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\control\internal\textual\text_box_ime_manager.h">
       <Filter>zaf\control\internal\textual</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\textual\text_box_index_manager.h">

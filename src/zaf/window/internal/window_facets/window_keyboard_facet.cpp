@@ -1,4 +1,5 @@
 #include <zaf/window/internal/window_facets/window_keyboard_facet.h>
+#include <zaf/control/event/ime_event_infos.h>
 #include <zaf/internal/control/keyboard_event_routing.h>
 #include <zaf/window/internal/window_facets/window_focus_facet.h>
 #include <zaf/window/window.h>
@@ -56,28 +57,40 @@ bool WindowKeyboardFacet::HandleKeyboardMessage(const Message& message) {
 }
 
 
-void WindowKeyboardFacet::HandleIMEMessage(const Message& message) {
+bool WindowKeyboardFacet::HandleIMEMessage(const Message& message) {
 
     auto focused_control = window_.FocusedControl();
     if (!focused_control) {
-        return;
+        return false;
     }
 
     switch (message.ID()) {
-    case WM_IME_STARTCOMPOSITION:
-        focused_control->OnIMEStartComposition(IMEStartCompositionInfo{
-            focused_control,
-            message
-        });
-        break;
-    case WM_IME_ENDCOMPOSITION:
-        focused_control->OnIMEEndComposition(IMEEndCompositionInfo{ focused_control, message });
-        break;
-    case WM_IME_COMPOSITION:
-        focused_control->OnIMEComposition(IMECompositionInfo{ focused_control, message });
-        break;
+    case WM_IME_STARTCOMPOSITION: {
+        IMEStartCompositionInfo event_info{ 
+            std::make_shared<internal::IMEEventSharedState>(focused_control, message), 
+            focused_control 
+        };
+        focused_control->OnIMEStartComposition(event_info);
+        return event_info.IsHandled();
+    }
+    case WM_IME_ENDCOMPOSITION: {
+        IMEEndCompositionInfo event_info{ 
+            std::make_shared<internal::IMEEventSharedState>(focused_control, message), 
+            focused_control 
+        };
+        focused_control->OnIMEEndComposition(event_info);
+        return event_info.IsHandled();
+    }
+    case WM_IME_COMPOSITION: {
+        IMECompositionInfo event_info{ 
+            std::make_shared<internal::IMEEventSharedState>(focused_control, message), 
+            focused_control 
+        };
+        focused_control->OnIMEComposition(event_info);
+        return event_info.IsHandled();
+    }
     default:
-        break;
+        return false;
     }
 }
 

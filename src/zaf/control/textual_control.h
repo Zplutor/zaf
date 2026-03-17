@@ -354,6 +354,11 @@ public:
     void SetIgnoreTailingWhiteSpaces(bool value);
 
     /**
+    Gets the rectangle of the text area in the coordinate space of the textual control's content.
+    */
+    const zaf::Rect& TextRect() const noexcept;
+
+    /**
      Get text change event.
 
      This event is raised when the text is changed.

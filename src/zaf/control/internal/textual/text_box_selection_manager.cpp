@@ -20,7 +20,7 @@ void TextBoxSelectionManager::Initialize() {
 
 void TextBoxSelectionManager::OnTextModelChanged(const TextModelChangedInfo& event_info) {
 
-    if (owner_.Editor().IsEditing()) {
+    if (owner_.Editor().IsPerformingEdit()) {
         return;
     }
 

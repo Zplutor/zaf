@@ -12,6 +12,10 @@
 
 namespace zaf::internal {
 
+/**
+Responsible for handling text editing operations of a text box, such as inputting text, pasting 
+content, and performing undo/redo operations.
+*/
 class TextBoxEditor : rx::DisposableHost {
 public:
     explicit TextBoxEditor(TextBox& owner);
@@ -50,6 +54,10 @@ public:
 
     void HandleKeyDown(const KeyDownInfo& event_info);
     void HandleCharInput(const CharInputInfo& event_info);
+    void HandleIMEStartComposition(const IMEStartCompositionInfo& event_info);
+    void HandleIMEComposition(const IMECompositionInfo& event_info);
+    void HandleIMEEndComposition(const IMEEndCompositionInfo& event_info);
+    void HandleFocusLost();
 
     /**
     @throw zaf::COMError
@@ -71,8 +79,8 @@ public:
     bool PerformInputInlineObject(std::shared_ptr<textual::InlineObject> inline_object);
     bool PerformInputStyledText(textual::StyledText styled_text);
 
-    bool IsEditing() const {
-        return is_editing_;
+    bool IsPerformingEdit() const noexcept {
+        return is_performing_edit_;
     }
 
 private:
@@ -83,6 +91,9 @@ private:
     std::unique_ptr<TextBoxEditCommand> HandleBatchDelete();
     std::unique_ptr<TextBoxEditCommand> HandleBatchBackspace();
     std::unique_ptr<TextBoxEditCommand> HandleBackspace();
+
+    void UpdateCompositionText(std::wstring text);
+    void ClearCompositionState();
 
     bool InnerPerformInputText(std::wstring_view text, bool can_truncate);
     void FillTextStyleFromSelection(textual::StyledText& styled_text) const;
@@ -104,12 +115,20 @@ private:
     void ClearCommands();
 
 private:
+    class CompositionState {
+    public:
+        Range composition_range;
+    };
+
+private:
     TextBox& owner_;
     bool can_edit_{ true };
     Event<bool> can_edit_changed_event_;
 
+    std::optional<CompositionState> composition_state_;
+
     bool allow_undo_{ true };
-    bool is_editing_{};
+    bool is_performing_edit_{};
     std::optional<std::size_t> max_length_;
 
     Event<textual::PastingInfo> pasting_event_;
