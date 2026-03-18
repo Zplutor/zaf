@@ -1,12 +1,12 @@
 #include <zaf/control/internal/textual/text_box_mouse_input_handler.h>
 #include <zaf/base/as.h>
 #include <zaf/base/auto_reset.h>
-#include <zaf/base/log.h>
 #include <zaf/control/text_box.h>
 #include <zaf/control/textual/active_inline_object.h>
-#include <zaf/input/keyboard.h>
 #include <zaf/control/internal/textual/text_model.h>
+#include <zaf/control/internal/textual/text_box_editor.h>
 #include <zaf/control/internal/textual/text_box_selection_manager.h>
+#include <zaf/input/keyboard.h>
 #include <zaf/window/window.h>
 
 namespace zaf::internal {
@@ -118,9 +118,11 @@ void TextBoxMouseInputHandler::HandleMouseCursorChanging(
 
 void TextBoxMouseInputHandler::HandleMouseDown(const MouseDownInfo& event_info) {
 
-    auto& text_box = owner_;
-    text_box.SetIsFocused(true);
-    text_box.CaptureMouse();
+    owner_.SetIsFocused(true);
+    owner_.CaptureMouse();
+
+    // Cancel IME composition before moving the caret.
+    owner_.editor_->CancelIMEComposition();
 
     auto& hit_test_manager = owner_.HitTestManager();
     auto hit_test_result = hit_test_manager.HitTestAtPosition(event_info.PositionAtSource());

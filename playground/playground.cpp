@@ -23,9 +23,12 @@ protected:
 
         text_box_ = zaf::Create<zaf::TextBox>();
         text_box_->SetRect(zaf::Rect{ 0, 0, 200, 100 });
-        text_box_->SetFontSize(20);
+        text_box_->SetFontSize(14);
         text_box_->SetCaretColor(zaf::Color::Red());
         text_box_->SetText(L"TextBox");
+        Disposables() += text_box_->TextChangedEvent().Subscribe([this](const zaf::TextChangedInfo& event_info) {
+            ZAF_LOG() << L"TextChanged: " << text_box_->Text();
+        });
         RootControl()->AddChild(text_box_);
 
         auto button = zaf::Create<zaf::Button>();

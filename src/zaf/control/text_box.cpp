@@ -467,7 +467,7 @@ void TextBox::OnFocusLost(const FocusLostInfo& event_info) {
 
     __super::OnFocusLost(event_info);
 
-    editor_->HandleFocusLost();
+    editor_->CancelIMEComposition();
     CaretManager().HideCaret();
 
     if (this->SelectionRange().length > 0) {
@@ -528,8 +528,6 @@ void TextBox::OnIMEEndComposition(const IMEEndCompositionInfo& event_info) {
 
 void TextBox::OnTextChanged(const TextChangedInfo& event_info) {
 
-    //Clear previous text rect and re-calculate it.
-    text_rect_ = {};
     RequestLayout();
 
     __super::OnTextChanged(event_info);

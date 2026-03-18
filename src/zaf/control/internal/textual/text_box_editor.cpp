@@ -409,11 +409,39 @@ void TextBoxEditor::UpdateCompositionText(std::wstring text) {
     // Update the composition range according to the new composition text.
     composition_range.length = new_text_length;
 
+    textual::SelectionOption selection_option{};
+    if (new_text_length > 0) {
+        selection_option = textual::SelectionOption::ScrollToCaret;
+    }
+
     owner_.SelectionManager().SetSelectionRange(
         Range{ composition_range.EndIndex(), 0 },
-        textual::SelectionOption::ScrollToCaret,
+        selection_option,
         std::nullopt,
         true);
+}
+
+
+void TextBoxEditor::CommitCompositionText() {
+
+    if (!composition_state_) {
+        return;
+    }
+
+    auto& composition_range = composition_state_->composition_range;
+
+    const auto& text = owner_.TextModel().Text();
+    if (composition_range.index > text.length()) {
+        return;
+    }
+
+    auto composition_text = text.substr(composition_range.index, composition_range.length);
+
+    // Clear the composition text.
+    UpdateCompositionText({});
+
+    // Input the composition text as normal text.
+    PerformInputText(composition_text);
 }
 
 
@@ -424,10 +452,14 @@ void TextBoxEditor::ClearCompositionState() {
 }
 
 
-void TextBoxEditor::HandleFocusLost() {
+void TextBoxEditor::CancelIMEComposition() {
 
     if (!composition_state_) {
         return;
+    }
+
+    if (CanEdit()) {
+        CommitCompositionText();
     }
 
     auto window = owner_.Window();
@@ -435,7 +467,7 @@ void TextBoxEditor::HandleFocusLost() {
         auto context = InputMethodContext::FromWindow(*window);
         ImmNotifyIME(context.Handle(), NI_COMPOSITIONSTR, CPS_CANCEL, 0);
     }
-
+    
     ClearCompositionState();
 }
 

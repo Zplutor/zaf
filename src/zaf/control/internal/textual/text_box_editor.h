@@ -57,7 +57,8 @@ public:
     void HandleIMEStartComposition(const IMEStartCompositionInfo& event_info);
     void HandleIMEComposition(const IMECompositionInfo& event_info);
     void HandleIMEEndComposition(const IMEEndCompositionInfo& event_info);
-    void HandleFocusLost();
+
+    void CancelIMEComposition();
 
     /**
     @throw zaf::COMError
@@ -93,6 +94,7 @@ private:
     std::unique_ptr<TextBoxEditCommand> HandleBackspace();
 
     void UpdateCompositionText(std::wstring text);
+    void CommitCompositionText();
     void ClearCompositionState();
 
     bool InnerPerformInputText(std::wstring_view text, bool can_truncate);
