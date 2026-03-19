@@ -5,6 +5,7 @@
 #include <zaf/control/textual/active_inline_object.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/input/mouse.h>
+#include <zaf/control/internal/text_box/text_box_render_facet.h>
 #include <zaf/control/internal/textual/text_model.h>
 #include <zaf/control/internal/textual/text_box_caret_manager.h>
 #include <zaf/control/internal/textual/text_box_editor.h>
@@ -23,7 +24,9 @@ namespace zaf {
 ZAF_OBJECT_IMPL(TextBox);
 
 
-TextBox::TextBox() : word_extractor_(textual::DefaultWordExtractor()) {
+TextBox::TextBox() : 
+    word_extractor_(textual::DefaultWordExtractor()), 
+    render_facet_(std::make_unique<internal::TextBoxRenderFacet>(*this)) {
 
 }
 
@@ -277,6 +280,17 @@ void TextBox::PaintSelection(
 
         canvas.DrawRectangle(rect, brush);
     }
+}
+
+
+void TextBox::PaintText(
+    Canvas& canvas, 
+    const zaf::Rect& dirty_rect, 
+    const dwrite::TextLayout& text_layout, 
+    const zaf::Rect& layout_rect) const {
+
+    __super::PaintText(canvas, dirty_rect, text_layout, layout_rect);
+    render_facet_->PaintText(canvas, dirty_rect, text_layout, layout_rect);
 }
 
 

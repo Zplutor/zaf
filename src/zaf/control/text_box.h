@@ -25,6 +25,7 @@ class TextBoxHitTestManager;
 class TextBoxIndexManager;
 class TextBoxKeyboardInputHandler;
 class TextBoxMouseInputHandler;
+class TextBoxRenderFacet;
 class TextBoxSelectionManager;
 class TextBoxSelectionChangedInfo;
 class TextModel;
@@ -400,6 +401,11 @@ protected:
         const zaf::Rect& dirty_rect,
         const dwrite::TextLayout& text_layout,
         const zaf::Rect& layout_rect) const override;
+    void PaintText(
+        Canvas& canvas,
+        const zaf::Rect& dirty_rect,
+        const dwrite::TextLayout& text_layout,
+        const zaf::Rect& layout_rect) const override;
     void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) override;
     void OnMouseDown(const MouseDownInfo& event_info) override;
     void OnMouseMove(const MouseMoveInfo& event_info) override;
@@ -426,15 +432,6 @@ protected:
     virtual void OnPasting(const textual::PastingInfo& event_info);
 
 private:
-    friend class internal::TextBoxCaretManager;
-    friend class internal::TextBoxEditor;
-    friend class internal::TextBoxEditCommand;
-    friend class internal::TextBoxHitTestManager;
-    friend class internal::TextBoxIndexManager;
-    friend class internal::TextBoxKeyboardInputHandler;
-    friend class internal::TextBoxMouseInputHandler;
-    friend class internal::TextBoxSelectionManager;
-
     internal::TextModel& InnerTextModel();
     const internal::TextModel& InnerTextModel() const;
     dwrite::TextLayout InnerTextLayout() const;
@@ -479,6 +476,7 @@ private:
     std::unique_ptr<internal::TextBoxMouseInputHandler> mouse_input_handler_;
     std::unique_ptr<internal::TextBoxKeyboardInputHandler> keyboard_input_handler_;
     std::unique_ptr<internal::TextBoxEditor> editor_;
+    std::unique_ptr<internal::TextBoxRenderFacet> render_facet_;
 
     zaf::Rect text_rect_;
 
@@ -497,6 +495,16 @@ private:
     Event<textual::SelectionChangedInfo> selection_changed_event_;
     Event<textual::CopyingInfo> copying_event_;
     Event<textual::PastingInfo> pasting_event_;
+
+    friend class internal::TextBoxCaretManager;
+    friend class internal::TextBoxEditor;
+    friend class internal::TextBoxEditCommand;
+    friend class internal::TextBoxHitTestManager;
+    friend class internal::TextBoxIndexManager;
+    friend class internal::TextBoxKeyboardInputHandler;
+    friend class internal::TextBoxMouseInputHandler;
+    friend class internal::TextBoxRenderFacet;
+    friend class internal::TextBoxSelectionManager;
 };
 
 ZAF_OBJECT_BEGIN(TextBox);

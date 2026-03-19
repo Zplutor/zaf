@@ -627,28 +627,25 @@ void TextBoxEditor::RecordNewCompositionState() {
 
 
 void TextBoxEditor::InputCompositionText(std::wstring text) {
-    auto new_command = ExecuteCompositionTextCommand(std::move(text), true);
+    auto new_command = ExecuteCompositionTextCommand(std::move(text));
     composition_state_->composition_command = std::move(new_command);
 }
 
 
 void TextBoxEditor::CommitCompositionText(std::wstring text) {
-    auto new_command = ExecuteCompositionTextCommand(std::move(text), false);
+    auto new_command = ExecuteCompositionTextCommand(std::move(text));
     AddCommandToUndoHistory(std::move(new_command));
     RecordNewCompositionState();
 }
 
 
 std::unique_ptr<TextBoxEditCommand> TextBoxEditor::ExecuteCompositionTextCommand(
-    std::wstring text,
-    bool shows_underline) {
+    std::wstring text) {
 
     auto new_text_length = text.length();
 
     StyledText new_styled_text{ std::move(text) };
-    auto font = owner_.Font();
-    font.has_underline = shows_underline;
-    new_styled_text.SetDefaultFont(std::move(font));
+    new_styled_text.SetDefaultFont(owner_.Font());
 
     TextBoxEditCommand::EditParams edit_params{
         .replaced_range = composition_state_->composition_range,
@@ -695,7 +692,7 @@ void TextBoxEditor::DropCompositionText() {
 
     // Replace the current composition text with an empty text, which effectively drops the 
     // composition text.
-    auto new_command = ExecuteCompositionTextCommand({}, false);
+    auto new_command = ExecuteCompositionTextCommand({});
 
     // Only add the command to undo history if the composition text is not empty. Otherwise, the
     // command will be a no-op and should not be added to the undo history.
@@ -733,6 +730,14 @@ void TextBoxEditor::CancelIMEComposition() {
     }
 
     ClearCompositionState();
+}
+
+
+Range TextBoxEditor::GetCompositionRange() const noexcept {
+    if (!composition_state_) {
+        return {};
+    }
+    return composition_state_->composition_range;
 }
 
 

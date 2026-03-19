@@ -138,6 +138,7 @@
     <ClCompile Include="src\zaf\control\internal\textual\text_box_mouse_input_handler.cpp" />
     <ClCompile Include="src\zaf\control\internal\textual\text_box_selection_manager.cpp" />
     <ClCompile Include="src\zaf\control\internal\textual\text_model.cpp" />
+    <ClCompile Include="src\zaf\control\internal\text_box\text_box_render_facet.cpp" />
     <ClCompile Include="src\zaf\control\internal\triangle_geometry.cpp" />
     <ClCompile Include="src\zaf\control\label_list_item.cpp" />
     <ClCompile Include="src\zaf\control\label_tree_item.cpp" />
@@ -608,6 +609,7 @@
     <ClInclude Include="src\zaf\control\internal\textual\text_box_mouse_input_handler.h" />
     <ClInclude Include="src\zaf\control\internal\textual\text_box_selection_manager.h" />
     <ClInclude Include="src\zaf\control\internal\textual\text_model.h" />
+    <ClInclude Include="src\zaf\control\internal\text_box\text_box_render_facet.h" />
     <ClInclude Include="src\zaf\control\internal\triangle_geometry.h" />
     <ClInclude Include="src\zaf\control\label_list_item.h" />
     <ClInclude Include="src\zaf\control\label_tree_item.h" />

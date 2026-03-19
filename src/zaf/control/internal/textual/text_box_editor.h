@@ -83,6 +83,7 @@ public:
     void HandleIMEComposition(const IMECompositionInfo& event_info);
     void HandleIMEEndComposition(const IMEEndCompositionInfo& event_info);
     void CancelIMEComposition();
+    Range GetCompositionRange() const noexcept;
 
 private:
     void HandleEnter();
@@ -113,9 +114,7 @@ private:
     void RecordNewCompositionState();
     void InputCompositionText(std::wstring text);
     void CommitCompositionText(std::wstring text);
-    std::unique_ptr<TextBoxEditCommand> ExecuteCompositionTextCommand(
-        std::wstring text,
-        bool shows_underline);
+    std::unique_ptr<TextBoxEditCommand> ExecuteCompositionTextCommand(std::wstring text);
     void RetainCompositionText();
     void DropCompositionText();
     void ClearCompositionState();
