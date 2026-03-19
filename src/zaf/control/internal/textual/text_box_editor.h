@@ -54,11 +54,6 @@ public:
 
     void HandleKeyDown(const KeyDownInfo& event_info);
     void HandleCharInput(const CharInputInfo& event_info);
-    void HandleIMEStartComposition(const IMEStartCompositionInfo& event_info);
-    void HandleIMEComposition(const IMECompositionInfo& event_info);
-    void HandleIMEEndComposition(const IMEEndCompositionInfo& event_info);
-
-    void CancelIMEComposition();
 
     /**
     @throw zaf::COMError
@@ -84,6 +79,11 @@ public:
         return is_performing_edit_;
     }
 
+    void HandleIMEStartComposition(const IMEStartCompositionInfo& event_info);
+    void HandleIMEComposition(const IMECompositionInfo& event_info);
+    void HandleIMEEndComposition(const IMEEndCompositionInfo& event_info);
+    void CancelIMEComposition();
+
 private:
     void HandleEnter();
 
@@ -92,10 +92,6 @@ private:
     std::unique_ptr<TextBoxEditCommand> HandleBatchDelete();
     std::unique_ptr<TextBoxEditCommand> HandleBatchBackspace();
     std::unique_ptr<TextBoxEditCommand> HandleBackspace();
-
-    void UpdateCompositionText(std::wstring text);
-    void CommitCompositionText();
-    void ClearCompositionState();
 
     bool InnerPerformInputText(std::wstring_view text, bool can_truncate);
     void FillTextStyleFromSelection(textual::StyledText& styled_text) const;
@@ -106,12 +102,23 @@ private:
         const Range& selection_range,
         bool can_truncate) const;
 
-    std::unique_ptr<TextBoxEditCommand> CreateCommand(
+    std::unique_ptr<TextBoxEditCommand> CreateNormalCommand(
         textual::StyledText new_text,
         const Range& replaced_selection_range,
         bool set_caret_to_begin) const;
 
-    void ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command);
+    void ExecuteNormalCommand(std::unique_ptr<TextBoxEditCommand> command);
+    void AddCommandToUndoHistory(std::unique_ptr<TextBoxEditCommand> command);
+
+    void RecordNewCompositionState();
+    void InputCompositionText(std::wstring text);
+    void CommitCompositionText(std::wstring text);
+    std::unique_ptr<TextBoxEditCommand> ExecuteCompositionTextCommand(
+        std::wstring text,
+        bool shows_underline);
+    void RetainCompositionText();
+    void DropCompositionText();
+    void ClearCompositionState();
 
     void OnTextModelChanged();
     void ClearCommands();
@@ -119,7 +126,33 @@ private:
 private:
     class CompositionState {
     public:
+        /**
+        The original caret index before the composition starts. It is used for restoring the caret
+        index when committing or canceling the composition.
+        */
+        std::size_t original_caret_index{};
+
+        /**
+        The original selection range before the composition starts.
+        */
+        Range original_selection_range;
+
+        /**
+        The original text which is replaced by the composition text. It is used for undoing the
+        composition text when committing or canceling the composition.
+        */
+        textual::StyledText original_text;
+
+        /**
+        The range of the text that should be replaced by the composition text. It is used for 
+        updating the composition text when receiving composition update events.
+        */
         Range composition_range;
+
+        /**
+        The last command that inputs the composition text.
+        */
+        std::unique_ptr<TextBoxEditCommand> composition_command;
     };
 
 private:

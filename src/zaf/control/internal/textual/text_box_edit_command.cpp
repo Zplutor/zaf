@@ -5,58 +5,75 @@
 namespace zaf::internal {
 
 TextBoxEditCommand::TextBoxEditCommand(
-    EditInfo edit_info,
+    EditParams edit_params,
     const SelectionInfo& do_selection_info,
-    const SelectionInfo& undo_selection_info)
+    const SelectionInfo& undo_selection_info) noexcept
     : 
-    edit_info_(std::move(edit_info)),
+    edit_params_(std::move(edit_params)),
     do_selection_info_(do_selection_info),
     undo_selection_info_(undo_selection_info) {
 
 }
 
 
-void TextBoxEditCommand::Do(TextBox& text_box) {
+void TextBoxEditCommand::Do(
+    TextBox& text_box, 
+    std::optional<textual::StyledText> undo_styled_text) {
+
     ZAF_EXPECT(!is_done_);
-    edit_info_ = Execute(text_box, std::move(edit_info_), do_selection_info_);
+
+    edit_params_ = Execute(
+        text_box, 
+        edit_params_, 
+        do_selection_info_, 
+        std::move(undo_styled_text));
+
     is_done_ = true;
 }
 
 
 void TextBoxEditCommand::Undo(TextBox& text_box) {
+
     ZAF_EXPECT(is_done_);
-    edit_info_ = Execute(text_box, std::move(edit_info_), undo_selection_info_);
+    edit_params_ = Execute(text_box, edit_params_, undo_selection_info_, std::nullopt);
     is_done_ = false;
 }
 
 
-TextBoxEditCommand::EditInfo TextBoxEditCommand::Execute(
+TextBoxEditCommand::EditParams TextBoxEditCommand::Execute(
     TextBox& text_box,
-    EditInfo edit_info,
-    const SelectionInfo& selection_info) {
+    EditParams& edit_params,
+    const SelectionInfo& selection_info,
+    std::optional<textual::StyledText> undo_text) {
 
     Range new_text_range;
-    textual::StyledText old_text;
-    SetEditInfoToText(text_box, std::move(edit_info), selection_info, new_text_range, old_text);
+    auto old_text = std::move(undo_text);
 
-    EditInfo undo_info;
-    undo_info.replaced_range = new_text_range;
-    undo_info.styled_text_slice = std::move(old_text);
-    return undo_info;
+    ApplyEditParamsToText(
+        text_box, 
+        edit_params, 
+        selection_info, 
+        new_text_range, 
+        old_text ? nullptr : &old_text.emplace());
+
+    EditParams undo_params;
+    undo_params.replaced_range = new_text_range;
+    undo_params.styled_text_slice = std::move(*old_text);
+    return undo_params;
 }
 
 
-void TextBoxEditCommand::SetEditInfoToText(
+void TextBoxEditCommand::ApplyEditParamsToText(
     TextBox& text_box,
-    EditInfo edit_info,
+    EditParams& edit_params,
     const SelectionInfo& selection_info,
     Range& new_text_range,
-    textual::StyledText& old_text) {
+    textual::StyledText* old_text) {
 
     new_text_range = text_box.InnerTextModel().SetStyledTextInRange(
-        std::move(edit_info.styled_text_slice),
-        edit_info.replaced_range, 
-        &old_text);
+        std::move(edit_params.styled_text_slice),
+        edit_params.replaced_range, 
+        old_text);
 
     Range selection_range;
     if (selection_info.select_slice) {

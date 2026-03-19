@@ -22,7 +22,7 @@ public:
         bool select_slice{};
     };
 
-    class EditInfo {
+    class EditParams {
     public:
         /**
         The range which will be replaced in the original text.
@@ -37,30 +37,35 @@ public:
 
 public:
     TextBoxEditCommand(
-        EditInfo edit_info, 
+        EditParams edit_params,
         const SelectionInfo& do_selection_info,
-        const SelectionInfo& undo_selection_info);
+        const SelectionInfo& undo_selection_info) noexcept;
 
-    void Do(TextBox& text_box);
+    void Do(TextBox& text_box, std::optional<textual::StyledText> undo_styled_text = std::nullopt);
     void Undo(TextBox& text_box);
 
-private:
-    static EditInfo Execute(
-        TextBox& text_box,
-        EditInfo edit_info,
-        const SelectionInfo& selection_info);
+    const EditParams& GetEditParams() const noexcept {
+        return edit_params_;
+    }
 
-    static void SetEditInfoToText(
+private:
+    static EditParams Execute(
         TextBox& text_box,
-        EditInfo edit_info,
+        EditParams& edit_params,
+        const SelectionInfo& selection_info,
+        std::optional<textual::StyledText> undo_text);
+
+    static void ApplyEditParamsToText(
+        TextBox& text_box,
+        EditParams& edit_params,
         const SelectionInfo& selection_info,
         Range& new_text_range,
-        textual::StyledText& old_text);
+        textual::StyledText* old_text);
 
 private:
-    EditInfo edit_info_;
-    SelectionInfo do_selection_info_;
-    SelectionInfo undo_selection_info_;
+    EditParams edit_params_;
+    const SelectionInfo do_selection_info_;
+    const SelectionInfo undo_selection_info_;
     bool is_done_{};
 };
 

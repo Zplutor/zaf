@@ -140,7 +140,7 @@ void TextBoxEditor::HandleKeyDown(const KeyDownInfo& event_info) {
             auto auto_reset = MakeAutoReset(is_performing_edit_, true);
             auto command = HandleKey(key);
             if (command) {
-                ExecuteCommand(std::move(command));
+                ExecuteNormalCommand(std::move(command));
             }
         }
     }
@@ -184,7 +184,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleDelete() {
 
     //Remove the selected text.
     if (selection_range.length > 0) {
-        return CreateCommand({}, selection_range, true);
+        return CreateNormalCommand({}, selection_range, true);
     }
 
     auto next_index = owner_.IndexManager().GetForwardIndex(selection_range.index);
@@ -194,7 +194,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleDelete() {
     }
 
     //Remove chars between next index and current selection index.
-    return CreateCommand(
+    return CreateNormalCommand(
         {},
         Range::FromIndexPair(selection_range.index, next_index),
         true);
@@ -207,7 +207,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchDelete() {
 
     //Remove the selected text.
     if (selection_range.length > 0) {
-        return CreateCommand({}, selection_range, true);
+        return CreateNormalCommand({}, selection_range, true);
     }
 
     //Determine the word range.
@@ -219,7 +219,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchDelete() {
         return nullptr;
     }
 
-    return CreateCommand(
+    return CreateNormalCommand(
         {},
         Range{ selection_range.index, word_range.EndIndex() - selection_range.index },
         true);
@@ -232,7 +232,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
 
     //Remove the selected text.
     if (selection_range.length > 0) {
-        return CreateCommand({}, selection_range, true);
+        return CreateNormalCommand({}, selection_range, true);
     }
 
     //Determine the word range. Note that the index used to determine should be prior to the caret 
@@ -248,7 +248,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBatchBackspace() {
     }
 
     //Remove text in the word ahead of the caret.
-    return CreateCommand(
+    return CreateNormalCommand(
         {},
         Range{ word_range.index, selection_range.index - word_range.index },
         true);
@@ -261,7 +261,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBackspace() {
 
     //Remove the selected text.
     if (selection_range.length > 0) {
-        return CreateCommand({}, selection_range, true);
+        return CreateNormalCommand({}, selection_range, true);
     }
 
     auto previous_index = owner_.IndexManager().GetBackwardIndex(selection_range.index);
@@ -271,7 +271,7 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::HandleBackspace() {
     }
 
     //Remove chars between previous index and current selection index.
-    return CreateCommand(
+    return CreateNormalCommand(
         {},
         Range::FromIndexPair(previous_index, selection_range.index),
         true);
@@ -292,8 +292,8 @@ bool TextBoxEditor::PerformCut() {
 
     //Remove the selected text.
     auto selection_range = owner_.SelectionManager().SelectionRange();
-    auto command = CreateCommand({}, selection_range, true);
-    ExecuteCommand(std::move(command));
+    auto command = CreateNormalCommand({}, selection_range, true);
+    ExecuteNormalCommand(std::move(command));
     return true;
 }
 
@@ -329,146 +329,6 @@ bool TextBoxEditor::PerformPaste() {
     }
 
     return InputStyledText(std::move(styled_text), true);
-}
-
-
-void TextBoxEditor::HandleIMEStartComposition(const IMEStartCompositionInfo& event_info) {
-
-    composition_state_.reset();
-    event_info.MarkAsHandled();
-
-    if (!CanEdit()) {
-        return;
-    }
-
-    composition_state_.emplace();
-    composition_state_->composition_range = owner_.SelectionManager().SelectionRange();
-}
-
-
-void TextBoxEditor::HandleIMEComposition(const IMECompositionInfo& event_info) {
-
-    event_info.MarkAsHandled();
-
-    if (!CanEdit()) {
-        return;
-    }
-
-    if (!composition_state_) {
-        return;
-    }
-
-    auto context = InputMethodContext::FromWindowHandle(event_info.Message().WindowHandle());
-    if (event_info.Message().HasResultString()) {
-        auto result_string = context.GetResultString();
-        UpdateCompositionText({});
-        PerformInputText(result_string);
-    }
-
-    if (event_info.Message().HasCompositionString()) {
-        auto composition_string = context.GetCompositionString();
-        UpdateCompositionText(std::move(composition_string));
-    }
-}
-
-
-void TextBoxEditor::HandleIMEEndComposition(const IMEEndCompositionInfo& event_info) {
-
-    ClearCompositionState();
-    event_info.MarkAsHandled();
-}
-
-
-void TextBoxEditor::UpdateCompositionText(std::wstring text) {
-
-    if (!composition_state_) {
-        return;
-    }
-
-    auto& composition_range = composition_state_->composition_range;
-    // If new composition text is empty and the composition range is empty, it means there is no
-    // composition text to update and we can just return.
-    if (text.empty() && composition_range.IsEmpty()) {
-        return;
-    }
-
-    auto new_text_length = text.length();
-
-    auto auto_reset = MakeAutoReset(is_performing_edit_, true);
-
-    // Replace the text in composition range with the new composition text.
-    textual::StyledText styled_text;
-    styled_text.SetText(std::move(text));
-    auto font = owner_.Font();
-    font.has_underline = true;
-    styled_text.SetDefaultFont(std::move(font));
-
-    auto& text_model = owner_.TextModel();
-    text_model.SetStyledTextInRange(std::move(styled_text), composition_range);
-
-    // Update the composition range according to the new composition text.
-    composition_range.length = new_text_length;
-
-    textual::SelectionOption selection_option{};
-    if (new_text_length > 0) {
-        selection_option = textual::SelectionOption::ScrollToCaret;
-    }
-
-    owner_.SelectionManager().SetSelectionRange(
-        Range{ composition_range.EndIndex(), 0 },
-        selection_option,
-        std::nullopt,
-        true);
-}
-
-
-void TextBoxEditor::CommitCompositionText() {
-
-    if (!composition_state_) {
-        return;
-    }
-
-    auto& composition_range = composition_state_->composition_range;
-
-    const auto& text = owner_.TextModel().Text();
-    if (composition_range.index > text.length()) {
-        return;
-    }
-
-    auto composition_text = text.substr(composition_range.index, composition_range.length);
-
-    // Clear the composition text.
-    UpdateCompositionText({});
-
-    // Input the composition text as normal text.
-    PerformInputText(composition_text);
-}
-
-
-void TextBoxEditor::ClearCompositionState() {
-
-    UpdateCompositionText({});
-    composition_state_.reset();
-}
-
-
-void TextBoxEditor::CancelIMEComposition() {
-
-    if (!composition_state_) {
-        return;
-    }
-
-    if (CanEdit()) {
-        CommitCompositionText();
-    }
-
-    auto window = owner_.Window();
-    if (window) {
-        auto context = InputMethodContext::FromWindow(*window);
-        ImmNotifyIME(context.Handle(), NI_COMPOSITIONSTR, CPS_CANCEL, 0);
-    }
-    
-    ClearCompositionState();
 }
 
 
@@ -580,10 +440,10 @@ bool TextBoxEditor::InputStyledText(textual::StyledText styled_text, bool can_tr
         return false;
     }
 
-    auto command = CreateCommand(std::move(styled_text), selection_range, false);
+    auto command = CreateNormalCommand(std::move(styled_text), selection_range, false);
 
     auto auto_reset = MakeAutoReset(is_performing_edit_, true);
-    ExecuteCommand(std::move(command));
+    ExecuteNormalCommand(std::move(command));
     return true;
 }
 
@@ -621,7 +481,7 @@ bool TextBoxEditor::EnforceMaxLength(
 }
 
 
-std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateNormalCommand(
     textual::StyledText new_text,
     const Range& replaced_selection_range,
     bool set_caret_to_begin) const {
@@ -641,23 +501,32 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::CreateCommand(
         .select_slice = false,
     };
 
-    TextBoxEditCommand::EditInfo edit_info{
+    TextBoxEditCommand::EditParams edit_params{
         .replaced_range = replaced_selection_range,
         .styled_text_slice = std::move(new_text),
     };
 
     return std::make_unique<TextBoxEditCommand>(
-        std::move(edit_info), 
+        std::move(edit_params), 
         do_selection_info,
         undo_selection_info);
 }
 
 
-void TextBoxEditor::ExecuteCommand(std::unique_ptr<TextBoxEditCommand> command) {
+void TextBoxEditor::ExecuteNormalCommand(std::unique_ptr<TextBoxEditCommand> command) {
 
-    edit_commands_.erase(edit_commands_.begin() + next_command_index_, edit_commands_.end());
+    // Cancel the current composition if there is any, otherwise the composition will be messed up
+    // after the command is executed.
+    CancelIMEComposition();
 
     command->Do(owner_);
+    AddCommandToUndoHistory(std::move(command));
+}
+
+
+void TextBoxEditor::AddCommandToUndoHistory(std::unique_ptr<TextBoxEditCommand> command) {
+
+    edit_commands_.erase(edit_commands_.begin() + next_command_index_, edit_commands_.end());
 
     if (AllowUndo()) {
         edit_commands_.push_back(std::move(command));
@@ -696,11 +565,184 @@ bool TextBoxEditor::PerformRedo() {
 }
 
 
+void TextBoxEditor::HandleIMEStartComposition(const IMEStartCompositionInfo& event_info) {
+
+    composition_state_.reset();
+    event_info.MarkAsHandled();
+
+    if (!CanEdit()) {
+        return;
+    }
+
+    composition_state_.emplace();
+    RecordNewCompositionState();
+}
+
+
+void TextBoxEditor::HandleIMEComposition(const IMECompositionInfo& event_info) {
+
+    event_info.MarkAsHandled();
+
+    if (!CanEdit()) {
+        return;
+    }
+
+    if (!composition_state_) {
+        return;
+    }
+
+    auto context = InputMethodContext::FromWindowHandle(event_info.Message().WindowHandle());
+    if (event_info.Message().HasResultString()) {
+        auto result_string = context.GetResultString();
+        CommitCompositionText(result_string);
+    }
+
+    if (event_info.Message().HasCompositionString()) {
+        auto composition_string = context.GetCompositionString();
+        InputCompositionText(std::move(composition_string));
+    }
+}
+
+
+void TextBoxEditor::HandleIMEEndComposition(const IMEEndCompositionInfo& event_info) {
+
+    ClearCompositionState();
+    event_info.MarkAsHandled();
+}
+
+
+void TextBoxEditor::RecordNewCompositionState() {
+
+    const auto& selection_manager = owner_.SelectionManager();
+    composition_state_->original_caret_index = selection_manager.CaretIndex();
+
+    const auto& selection_range = selection_manager.SelectionRange();
+    composition_state_->original_selection_range = selection_range;
+    composition_state_->composition_range = selection_range;
+    composition_state_->original_text =
+        owner_.TextModel().StyledText().GetSubText(selection_range);
+
+    composition_state_->composition_command.reset();
+}
+
+
+void TextBoxEditor::InputCompositionText(std::wstring text) {
+    auto new_command = ExecuteCompositionTextCommand(std::move(text), true);
+    composition_state_->composition_command = std::move(new_command);
+}
+
+
+void TextBoxEditor::CommitCompositionText(std::wstring text) {
+    auto new_command = ExecuteCompositionTextCommand(std::move(text), false);
+    AddCommandToUndoHistory(std::move(new_command));
+    RecordNewCompositionState();
+}
+
+
+std::unique_ptr<TextBoxEditCommand> TextBoxEditor::ExecuteCompositionTextCommand(
+    std::wstring text,
+    bool shows_underline) {
+
+    auto new_text_length = text.length();
+
+    StyledText new_styled_text{ std::move(text) };
+    auto font = owner_.Font();
+    font.has_underline = shows_underline;
+    new_styled_text.SetDefaultFont(std::move(font));
+
+    TextBoxEditCommand::EditParams edit_params{
+        .replaced_range = composition_state_->composition_range,
+        .styled_text_slice = std::move(new_styled_text),
+    };
+
+    TextBoxEditCommand::SelectionInfo undo_selection_info;
+    undo_selection_info.select_slice = true;
+    if (composition_state_->original_caret_index ==
+        composition_state_->original_selection_range.index) {
+        undo_selection_info.set_caret_to_begin = true;
+    }
+
+    auto new_command = std::make_unique<TextBoxEditCommand>(
+        std::move(edit_params),
+        TextBoxEditCommand::SelectionInfo{},
+        undo_selection_info);
+
+    auto auto_reset = MakeAutoReset(is_performing_edit_, true);
+    new_command->Do(owner_, composition_state_->original_text.Clone());
+
+    composition_state_->composition_range.length = new_text_length;
+    return new_command;
+}
+
+
+void TextBoxEditor::RetainCompositionText() {
+
+    if (!composition_state_->composition_command) {
+        return;
+    }
+
+    AddCommandToUndoHistory(std::move(composition_state_->composition_command));
+    RecordNewCompositionState();
+}
+
+
+void TextBoxEditor::DropCompositionText() {
+
+    // No need to process if there is no composition text.
+    if (composition_state_->composition_range.IsEmpty()) {
+        return;
+    }
+
+    // Replace the current composition text with an empty text, which effectively drops the 
+    // composition text.
+    auto new_command = ExecuteCompositionTextCommand({}, false);
+
+    // Only add the command to undo history if the composition text is not empty. Otherwise, the
+    // command will be a no-op and should not be added to the undo history.
+    if (!new_command->GetEditParams().styled_text_slice.Text().empty()) {
+        AddCommandToUndoHistory(std::move(new_command));
+    }
+}
+
+
+void TextBoxEditor::ClearCompositionState() {
+
+    if (!composition_state_) {
+        return;
+    }
+
+    DropCompositionText();
+    composition_state_.reset();
+}
+
+
+void TextBoxEditor::CancelIMEComposition() {
+
+    if (!composition_state_) {
+        return;
+    }
+
+    if (CanEdit()) {
+        RetainCompositionText();
+    }
+
+    auto window = owner_.Window();
+    if (window) {
+        auto context = InputMethodContext::FromWindow(*window);
+        ImmNotifyIME(context.Handle(), NI_COMPOSITIONSTR, CPS_CANCEL, 0);
+    }
+
+    ClearCompositionState();
+}
+
+
 void TextBoxEditor::OnTextModelChanged() {
 
     if (is_performing_edit_) {
         return;
     }
+
+    CancelIMEComposition();
 
     //If the text is changed by other ways outside the editor, such as SetText() is called, we have
     //to clear the command queue.
