@@ -95,7 +95,11 @@ private:
     std::unique_ptr<TextBoxEditCommand> HandleBackspace();
 
     bool InnerPerformInputText(std::wstring_view text, bool can_truncate);
-    void FillTextStyleFromSelection(textual::StyledText& styled_text) const;
+    void FillTextStyleFromCurrentSelection(textual::StyledText& styled_text) const;
+    void FillTextStyleFromSelection(
+        textual::StyledText& styled_text, 
+        const Range& selection_range, 
+        std::size_t caret_index) const;
     bool InnerPerformInputStyledText(textual::StyledText styled_text, bool can_truncate);
     bool InputStyledText(textual::StyledText styled_text, bool can_truncate);
     bool EnforceMaxLength(

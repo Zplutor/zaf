@@ -357,22 +357,29 @@ bool TextBoxEditor::InnerPerformInputText(std::wstring_view text, bool can_trunc
     StyledText styled_text;
     styled_text.SetText(std::wstring{ text });
 
-    FillTextStyleFromSelection(styled_text);
+    FillTextStyleFromCurrentSelection(styled_text);
     return InputStyledText(std::move(styled_text), can_truncate);
 }
 
 
-void TextBoxEditor::FillTextStyleFromSelection(StyledText& styled_text) const {
-
-    const auto& current_styled_text = owner_.InnerTextModel().StyledText();
-    std::size_t index_to_inherit{};
+void TextBoxEditor::FillTextStyleFromCurrentSelection(StyledText& styled_text) const {
 
     const auto& selection_manager = owner_.SelectionManager();
-    auto selection_range = selection_manager.SelectionRange();
-    auto caret_index = selection_manager.CaretIndex();
+    FillTextStyleFromSelection(
+        styled_text, 
+        selection_manager.SelectionRange(), 
+        selection_manager.CaretIndex());
+}
 
+
+void TextBoxEditor::FillTextStyleFromSelection(
+    textual::StyledText& styled_text, 
+    const Range& selection_range, 
+    std::size_t caret_index) const {
+
+    std::size_t index_to_inherit{};
     if (selection_range.IsEmpty()) {
-        
+
         if (caret_index > 0) {
             index_to_inherit = caret_index - 1;
         }
@@ -390,10 +397,10 @@ void TextBoxEditor::FillTextStyleFromSelection(StyledText& styled_text) const {
         }
     }
 
-    styled_text.SetDefaultFont(current_styled_text.GetFontAtIndex(index_to_inherit));
-    styled_text.SetDefaultTextColor(current_styled_text.GetTextColorAtIndex(index_to_inherit));
-    styled_text.SetDefaultTextBackColor(
-        current_styled_text.GetTextBackColorAtIndex(index_to_inherit));
+    const auto& source = owner_.InnerTextModel().StyledText();
+    styled_text.SetDefaultFont(source.GetFontAtIndex(index_to_inherit));
+    styled_text.SetDefaultTextColor(source.GetTextColorAtIndex(index_to_inherit));
+    styled_text.SetDefaultTextBackColor(source.GetTextBackColorAtIndex(index_to_inherit));
 }
 
 
@@ -408,7 +415,7 @@ bool TextBoxEditor::PerformInputInlineObject(std::shared_ptr<InlineObject> inlin
     StyledText styled_text{ std::wstring(1, ObjectReplacementChar) };
     styled_text.AttachInlineObjectToRange(std::move(inline_object), Range{ 0, 1 });
 
-    FillTextStyleFromSelection(styled_text);
+    FillTextStyleFromCurrentSelection(styled_text);
     return InputStyledText(std::move(styled_text), false);
 }
 
@@ -660,7 +667,10 @@ std::unique_ptr<TextBoxEditCommand> TextBoxEditor::ExecuteCompositionTextCommand
     auto new_text_length = text.length();
 
     StyledText new_styled_text{ std::move(text) };
-    new_styled_text.SetDefaultFont(owner_.Font());
+    FillTextStyleFromSelection(
+        new_styled_text, 
+        composition_state_->composition_range, 
+        composition_state_->composition_range.index);
 
     TextBoxEditCommand::EditParams edit_params{
         .replaced_range = composition_state_->composition_range,
