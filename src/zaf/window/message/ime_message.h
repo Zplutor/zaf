@@ -13,4 +13,10 @@ public:
     bool HasCaretPosition() const noexcept;
 };
 
+
+class IMERequestMessage : public MessageShim {
+public:
+    using MessageShim::MessageShim;
+};
+
 }

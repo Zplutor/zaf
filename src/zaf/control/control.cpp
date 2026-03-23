@@ -2064,6 +2064,11 @@ void Control::OnIMEEndComposition(const IMEEndCompositionInfo& event_info) {
 }
 
 
+void Control::OnIMERequest(const IMERequestInfo& event_info) {
+
+}
+
+
 float Control::GetDPI() const {
     return GetDPIFromWindow(Window());
 }

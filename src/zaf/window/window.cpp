@@ -932,10 +932,8 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
     case WM_IME_STARTCOMPOSITION:
     case WM_IME_COMPOSITION:
     case WM_IME_ENDCOMPOSITION:
-        if (keyboard_facet_->HandleIMEMessage(message)) {
-            return 0;
-        }
-        return std::nullopt;
+    case WM_IME_REQUEST:
+        return keyboard_facet_->HandleIMEMessage(message);
 #pragma endregion
 
     default:

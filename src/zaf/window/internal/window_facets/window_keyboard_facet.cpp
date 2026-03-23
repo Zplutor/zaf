@@ -57,11 +57,11 @@ bool WindowKeyboardFacet::HandleKeyboardMessage(const Message& message) {
 }
 
 
-bool WindowKeyboardFacet::HandleIMEMessage(const Message& message) {
+std::optional<LRESULT> WindowKeyboardFacet::HandleIMEMessage(const Message& message) {
 
     auto focused_control = window_.FocusedControl();
     if (!focused_control) {
-        return false;
+        return std::nullopt;
     }
 
     switch (message.ID()) {
@@ -71,7 +71,10 @@ bool WindowKeyboardFacet::HandleIMEMessage(const Message& message) {
             focused_control 
         };
         focused_control->OnIMEStartComposition(event_info);
-        return event_info.IsHandled();
+        if (event_info.IsHandled()) {
+            return 0;
+        }
+        return std::nullopt;
     }
     case WM_IME_ENDCOMPOSITION: {
         IMEEndCompositionInfo event_info{ 
@@ -79,7 +82,10 @@ bool WindowKeyboardFacet::HandleIMEMessage(const Message& message) {
             focused_control 
         };
         focused_control->OnIMEEndComposition(event_info);
-        return event_info.IsHandled();
+        if (event_info.IsHandled()) {
+            return 0;
+        }
+        return std::nullopt;
     }
     case WM_IME_COMPOSITION: {
         IMECompositionInfo event_info{ 
@@ -87,10 +93,24 @@ bool WindowKeyboardFacet::HandleIMEMessage(const Message& message) {
             focused_control 
         };
         focused_control->OnIMEComposition(event_info);
-        return event_info.IsHandled();
+        if (event_info.IsHandled()) {
+            return 0;
+        }
+        return std::nullopt;
+    }
+    case WM_IME_REQUEST: {
+        IMERequestInfo event_info{
+            std::make_shared<internal::IMEEventSharedState>(focused_control, message),
+            focused_control
+        };
+        focused_control->OnIMERequest(event_info);
+        if (event_info.IsHandled()) {
+            return TRUE;
+        }
+        return std::nullopt;
     }
     default:
-        return false;
+        return std::nullopt;
     }
 }
 

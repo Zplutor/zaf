@@ -44,4 +44,14 @@ IMEEndCompositionInfo::IMEEndCompositionInfo(
 
 }
 
+
+IMERequestInfo::IMERequestInfo(
+    std::shared_ptr<internal::IMEEventSharedState> state,
+    std::shared_ptr<Control> sender) noexcept
+    :
+    RoutedEventInfo(state, std::move(sender)),
+    shared_state_(state) {
+
+}
+
 }

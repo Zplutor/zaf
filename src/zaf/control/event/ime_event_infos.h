@@ -67,4 +67,19 @@ private:
     std::shared_ptr<internal::IMEEventSharedState> shared_state_;
 };
 
+
+class IMERequestInfo : public RoutedEventInfo {
+public:
+    IMERequestInfo(
+        std::shared_ptr<internal::IMEEventSharedState> state,
+        std::shared_ptr<Control> sender) noexcept;
+
+    IMERequestMessage Message() const noexcept {
+        return IMERequestMessage{ shared_state_->Message() };
+    }
+
+private:
+    std::shared_ptr<internal::IMEEventSharedState> shared_state_;
+};
+
 }

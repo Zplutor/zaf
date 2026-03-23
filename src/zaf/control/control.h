@@ -58,6 +58,7 @@ namespace zaf {
 class Canvas;
 class IMECompositionInfo;
 class IMEEndCompositionInfo;
+class IMERequestInfo;
 class IMEStartCompositionInfo;
 class Message;
 class MouseMessage;
@@ -1174,6 +1175,7 @@ protected:
     virtual void OnIMEStartComposition(const IMEStartCompositionInfo& event_info);
     virtual void OnIMEComposition(const IMECompositionInfo& event_info);
     virtual void OnIMEEndComposition(const IMEEndCompositionInfo& event_info);
+    virtual void OnIMERequest(const IMERequestInfo& event_info);
 
     /**
     Called when the visibility of the control itself has changed.
