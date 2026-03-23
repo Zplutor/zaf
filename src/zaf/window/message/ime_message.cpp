@@ -11,4 +11,9 @@ bool IMECompositionMessage::HasCompositionString() const noexcept {
     return (LParam() & GCS_COMPSTR) != 0;
 }
 
+
+bool IMECompositionMessage::HasCaretPosition() const noexcept {
+    return (LParam() & GCS_CURSORPOS) != 0;
+}
+
 }

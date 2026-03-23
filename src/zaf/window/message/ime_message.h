@@ -10,6 +10,7 @@ public:
 
     bool HasResultString() const noexcept;
     bool HasCompositionString() const noexcept;
+    bool HasCaretPosition() const noexcept;
 };
 
 }

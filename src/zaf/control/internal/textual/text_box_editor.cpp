@@ -601,6 +601,21 @@ void TextBoxEditor::HandleIMEComposition(const IMECompositionInfo& event_info) {
         auto composition_string = context.GetCompositionString();
         InputCompositionText(std::move(composition_string));
     }
+
+    if (event_info.Message().HasCaretPosition()) {
+
+        auto caret_position = context.GetCaretPosition();
+        Range new_selection_range{ 
+            composition_state_->composition_range.index + caret_position, 
+            0 
+        };
+
+        owner_.SelectionManager().SetSelectionRange(
+            new_selection_range, 
+            textual::SelectionOption::ScrollToCaret,
+            std::nullopt,
+            false);
+    }
 }
 
 

@@ -21,6 +21,7 @@ public:
 
     std::wstring GetCompositionString() const;
     std::wstring GetResultString() const;
+    int GetCaretPosition() const;
 
     void MoveCompositionWindow(const Point& position_in_window);
     void SetCompositionFont(const Font& font);

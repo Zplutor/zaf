@@ -67,6 +67,16 @@ std::wstring InputMethodContext::InnerGetCompositionString(DWORD type) const {
 }
 
 
+int InputMethodContext::GetCaretPosition() const {
+
+    auto result = ImmGetCompositionString(context_handle_, GCS_CURSORPOS, nullptr, 0);
+    if (result < 0) {
+        throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
+    }
+    return static_cast<int>(result);
+}
+
+
 void InputMethodContext::MoveCompositionWindow(const Point& position_in_window) {
 
     auto position = FromDIPs(
