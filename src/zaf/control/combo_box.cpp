@@ -42,8 +42,8 @@ ComboBox::~ComboBox() {
     UninitializeDropDownListBox();
     UninitializeEditBox();
 
-    if (drop_down_window_) {
-        drop_down_window_->Close();
+    if (auto drop_down_window = drop_down_window_.lock()) {
+        drop_down_window->Destroy();
     }
 }
 
@@ -77,14 +77,6 @@ void ComboBox::Initialize() {
         return Color::Black();
     }));
 
-    drop_down_window_ = Create<internal::ComboBoxDropDownWindow>();
-    drop_down_window_->SetIsPopup(true);
-    drop_down_window_->SetHasBorder(false);
-    drop_down_window_->SetActivateOptions(ActivateOptions::NoActivate);
-
-    Disposables() += drop_down_window_->DestroyedEvent().Subscribe(
-        std::bind(&ComboBox::DropDownWindowDestroy, this));
-
     drop_down_list_box_ = Create<ComboBoxDropDownListBox>();
     InitializeDropDownListBox();
 
@@ -100,8 +92,6 @@ void ComboBox::InitializeDropDownListBox() {
 
     drop_down_list_box_subscription_ = drop_down_list_box_->SelectionChangedEvent().Subscribe(
         std::bind(&ComboBox::DropDownListBoxSelectionChange, this));
-
-    drop_down_window_->SetListControl(drop_down_list_box_);
 }
 
 
@@ -364,9 +354,19 @@ void ComboBox::PopupDropDownWindow() {
     ClientToScreen(window->Handle(), &screen_position);
     window_rect.position = ToDIPs(Point::FromPOINT(screen_position), window->DPI());
 
-    drop_down_window_->SetOwner(window);
-    drop_down_window_->SetRect(window_rect);
-    drop_down_window_->Show();
+    auto drop_down_window = Create<internal::ComboBoxDropDownWindow>();
+    drop_down_window->SetIsPopup(true);
+    drop_down_window->SetHasBorder(false);
+    drop_down_window->SetActivateOptions(ActivateOptions::NoActivate);
+    drop_down_window->SetOwner(window);
+    drop_down_window->SetRect(window_rect);
+    drop_down_window->SetListControl(drop_down_list_box_);
+
+    Disposables() += drop_down_window->DestroyedEvent().Subscribe(
+        std::bind(&ComboBox::DropDownWindowDestroy, this));
+
+    drop_down_window->Show();
+    drop_down_window_ = drop_down_window;
 }
 
 
@@ -516,7 +516,9 @@ void ComboBox::DropDownListBoxSelectionChange() {
         return;
     }
 
-    drop_down_window_->Close();
+    if (auto drop_down_window = drop_down_window_.lock()) {
+        drop_down_window->Destroy();
+    }
 }
 
 
@@ -541,7 +543,9 @@ void ComboBox::ConfirmSelection(bool discard_drop_down_list_selection) {
     if (drop_down_list_box_->SelectedItemCount() > 0) {
 
         if (discard_drop_down_list_selection) {
-            drop_down_window_->Close();
+            if (auto drop_down_window = drop_down_window_.lock()) {
+                drop_down_window->Destroy();
+            }
         }
         else {
 
@@ -554,7 +558,9 @@ void ComboBox::ConfirmSelection(bool discard_drop_down_list_selection) {
     //an editable combo box.
     else {
 
-        drop_down_window_->Close();
+        if (auto drop_down_window = drop_down_window_.lock()) {
+            drop_down_window->Destroy();
+        }
 
         if (IsEditable()) {
 

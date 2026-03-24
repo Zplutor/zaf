@@ -274,7 +274,7 @@ private:
     float drop_down_button_width_{ 12 };
     std::size_t min_visible_item_count_{ 1 };
     std::size_t max_visible_item_count_{ (std::numeric_limits<std::size_t>::max)() };
-    std::shared_ptr<internal::ComboBoxDropDownWindow> drop_down_window_;
+    std::weak_ptr<internal::ComboBoxDropDownWindow> drop_down_window_;
     std::shared_ptr<ComboBoxDropDownListBox> drop_down_list_box_;
     std::shared_ptr<rx::Disposable> drop_down_list_box_subscription_;
 
