@@ -18,27 +18,27 @@ public:
     virtual ~ApplicationDelegate() = default;
 
     /**
-    Called when the application begins to run.
+    Called when the application has started running.
     
     @details
         Users can perform startup tasks at this event, such as creating and showing the main
         window.
 
-        This methods is called before raising Application::BeginRunEvent().
+        This methods is called after raising Application::StartedEvent().
     */
-    virtual void OnBeginRun(const BeginRunInfo&) {
+    virtual void OnApplicationStarted(const ApplicationStartedInfo&) {
 
     }
 
     /**
-    Called when the application is about to end.
+    Called when the application is about to exit.
 
     @details
         Users can perform cleanup tasks at this event.
 
-        This methods is called before raising Application::EndRunEvent().
+        This methods is called after raising Application::ExitingEvent().
     */
-    virtual void OnEndRun(const EndRunInfo&) {
+    virtual void OnApplicationExiting(const ApplicationExitingInfo&) {
 
     }
 
@@ -47,8 +47,10 @@ public:
 
     @details
         This method is called when the application receives the WM_ENDSESSION message.
+
+        This method is called after raising Application::SystemSessionEndingEvent().
     */
-    virtual void OnSessionEnd(const SessionEndInfo&) {
+    virtual void OnSystemSessionEnding(const SystemSessionEndingInfo&) {
 
     }
 };

@@ -10,8 +10,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     application.Initialize({});
     
-    application.Disposables() += application.BeginRunEvent().Subscribe(
-        [](const zaf::BeginRunInfo&) {
+    application.Disposables() += application.StartedEvent().Subscribe(
+        [](const zaf::ApplicationStartedInfo&) {
     
             auto window = zaf::Create<zaf::Window>();
 

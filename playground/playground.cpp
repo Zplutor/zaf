@@ -11,7 +11,7 @@
 #include <zaf/window/screen_manager.h>
 #include <zaf/control/text_box.h>
 
-void BeginRun(const zaf::BeginRunInfo& event_info);
+void BeginRun(const zaf::ApplicationStartedInfo& event_info);
 
 class Window : public zaf::Window {
 protected:
@@ -58,7 +58,7 @@ int WINAPI WinMain(
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
     auto& application = zaf::Application::Instance();
-    application.Disposables() += application.BeginRunEvent().Subscribe(BeginRun);
+    application.Disposables() += application.StartedEvent().Subscribe(BeginRun);
 
     application.Initialize({});
 
@@ -67,7 +67,7 @@ int WINAPI WinMain(
 
 std::shared_ptr<zaf::WindowHolder> holder;
 
-void BeginRun(const zaf::BeginRunInfo& event_info) {
+void BeginRun(const zaf::ApplicationStartedInfo& event_info) {
 
     auto window = zaf::Create<Window>();
     window->Show();

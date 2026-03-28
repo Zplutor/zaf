@@ -96,11 +96,14 @@ void Application::InitializeSystemMessageWindow() {
 
     system_message_window_ = Create<internal::SystemMessageWindow>();
 
-    Disposables() += system_message_window_->SessionEndedEvent().Subscribe(
-        [this](const SessionEndInfo& event_info) {
+    Disposables() += system_message_window_->SessionEndingEvent().Subscribe(
+        [this](const SystemSessionEndingInfo& event_info) {
     
+            auto event_observer = system_session_ending_event_.AsObserver();
+            event_observer.OnSuccess(event_info);
+
             if (delegate_) {
-                delegate_->OnSessionEnd(event_info);
+                delegate_->OnSystemSessionEnding(event_info);
             }
         }
     );
@@ -111,46 +114,42 @@ void Application::Run() {
 
     ZAF_EXPECT(is_initialized_);
 
-    NotifyApplicationBeginRun();
+    RaiseStartedEvent();
 
     internal::MessageLoop message_loop;
     message_loop.Run();
 
     window_holders_.clear();
 
-    NotifyApplicationEndRun();
+    RaiseExitingEvent();
 }
 
 
-void Application::NotifyApplicationBeginRun() {
+void Application::RaiseStartedEvent() {
 
-    BeginRunInfo event_info;
+    ApplicationStartedInfo event_info;
+    auto event_observer = started_event_.AsObserver();
+    event_observer.OnSuccess(event_info);
     
     if (delegate_) {
-        delegate_->OnBeginRun(event_info);
+        delegate_->OnApplicationStarted(event_info);
     }
-
-    auto begin_run_event_observer = begin_run_event_.AsObserver();
-    begin_run_event_observer.OnNext(event_info);
-    begin_run_event_observer.OnCompleted();
 }
 
 
-void Application::NotifyApplicationEndRun() {
+void Application::RaiseExitingEvent() {
 
-    EndRunInfo event_info;
+    ApplicationExitingInfo event_info;
+    auto event_observer = exiting_event_.AsObserver();
+    event_observer.OnSuccess(event_info);
 
     if (delegate_) {
-        delegate_->OnEndRun(event_info);
+        delegate_->OnApplicationExiting(event_info);
     }
-
-    auto end_run_event_observer = end_run_event_.AsObserver();
-    end_run_event_observer.OnNext(event_info);
-    end_run_event_observer.OnCompleted();
 }
 
 
-void Application::Terminate() {
+void Application::Exit() {
 
     DestroyAllWindows();
     PostQuitMessage(0);
@@ -198,6 +197,21 @@ float Application::GetSystemDPI() const {
 }
 
 
+rx::Single<ApplicationStartedInfo> Application::StartedEvent() const noexcept {
+    return started_event_.AsSingle();
+}
+
+
+rx::Single<ApplicationExitingInfo> Application::ExitingEvent() const noexcept {
+    return exiting_event_.AsSingle();
+}
+
+
+rx::Single<SystemSessionEndingInfo> Application::SystemSessionEndingEvent() const noexcept {
+    return system_session_ending_event_.AsSingle();
+}
+
+
 void Application::RegisterShownWindow(const std::shared_ptr<WindowHolder>& window_holder) {
 
     ZAF_EXPECT(window_holder->Window());
@@ -212,7 +226,7 @@ void Application::UnregisterShownWindow(const std::shared_ptr<WindowHolder>& win
 
     auto main_window = main_window_.lock();
     if (main_window == window_holder->Window()) {
-        Terminate();
+        Exit();
     }
 }
 

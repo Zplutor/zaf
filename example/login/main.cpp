@@ -5,7 +5,7 @@
 #include <zaf/creation.h>
 #include <zaf/window/window.h>
 
-static void OnBeginRun(const zaf::BeginRunInfo&);
+static void OnApplicationStarted(const zaf::ApplicationStartedInfo&);
 static std::shared_ptr<zaf::Window> CreateMainWindow();
 static std::vector<std::shared_ptr<zaf::Control>> CreateControls();
 static void OnSignInClick(
@@ -23,7 +23,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     application.Initialize(initialize_parameters);
 
     //Register the begin run event, do something when the event triggers.
-    application.Disposables() += application.BeginRunEvent().Subscribe(OnBeginRun);
+    application.Disposables() += application.StartedEvent().Subscribe(OnApplicationStarted);
 
     //Begin to run.
     application.Run();
@@ -31,7 +31,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 }
 
 
-static void OnBeginRun(const zaf::BeginRunInfo&) {
+static void OnApplicationStarted(const zaf::ApplicationStartedInfo&) {
 
     //Create a main window.
     std::shared_ptr<zaf::Window> main_window = CreateMainWindow();

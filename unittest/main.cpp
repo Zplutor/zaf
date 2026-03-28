@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     int result = RUN_ALL_TESTS();
 
-    //Call Terminate() to destroy all windows created during testing.
-    zaf::Application::Instance().Terminate();
+    //Call Exit() to destroy all windows created during testing.
+    zaf::Application::Instance().Exit();
     return result;
 }

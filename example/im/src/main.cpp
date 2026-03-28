@@ -9,8 +9,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
     application.Initialize({});
 
-    application.Disposables() += application.BeginRunEvent().Subscribe(
-        [](const zaf::BeginRunInfo&) {
+    application.Disposables() += application.StartedEvent().Subscribe(
+        [](const zaf::ApplicationStartedInfo&) {
 
             Service::GetInstance().Initialize();
 

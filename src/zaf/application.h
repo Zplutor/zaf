@@ -7,8 +7,7 @@
 #include <system_error>
 #include <zaf/application_event_infos.h>
 #include <zaf/config.h>
-#include <zaf/rx/observable.h>
-#include <zaf/rx/subject/subject.h>
+#include <zaf/rx/subject/single_subject.h>
 #include <zaf/rx/disposable_host.h>
 
 namespace zaf::rx::internal {
@@ -65,10 +64,10 @@ provides access global shared objects and resources.
 
     After initialization, users can call Run() to start the application running. Users are 
     responsible for creating and showing windows. This can be done either in the
-    ApplicationDelegate::OnBeginRun() or by subscribing to the BeginRunEvent().
+    ApplicationDelegate::OnApplicationStarted() or by subscribing to the StartedEvent().
 
     A window can be set as the main window of the application by calling SetMainWindow(). Once the 
-    main window is destroyed, the application ends automatically. Users also can call Terminate()
+    main window is destroyed, the application ends automatically. Users also can call Exit()
     to end the application manually.
 */
 class Application : public rx::DisposableHost, NonCopyableNonMovable {
@@ -103,7 +102,7 @@ public:
     void Initialize(const InitializationOptions& options);
 
     /**
-    Runs the application by starting a main message loop.
+    Runs the application by entering a main message loop.
 
     @pre 
         The application runtime has been initialized.
@@ -113,25 +112,28 @@ public:
 
     @throw ...
         Any exceptions that are thrown by:
-        - ApplicationDelegate::OnBeginRun() or subscriptions of BeginRunEvent();
+        - ApplicationDelegate::OnApplicationStarted() or subscriptions of StartedEvent();
         - User codes during the handling of the main message loop.
-        - ApplicationDelegate::OnEndRun() or subscriptions of EndRunEvent();
+        - ApplicationDelegate::OnApplicationExiting() or subscriptions of ExitingEvent();
 
     @details
-        This method will not return until the message loop is end.
+        This method will not return until the message loop ends.
 
-        Before the message loop starts, ApplicationDelegate::OnBeginRun() is called, and then
-        BeginRunEvent() is raised. After the message loop ends, ApplicationDelegate::OnEndRun() is 
-        called, and then EndRunEvent() is raised.
+        Before the message loop starts, ApplicationDelegate::OnApplicationStarted() is called, and then
+        StartedEvent() is raised. After the message loop ends, ApplicationDelegate::OnApplicationExiting() is 
+        called, and then ExitingEvent() is raised.
 
-        To end the main message loop, users can either close the main window or call Terminate().
+        To end the main message loop, users can either close the main window or call Exit().
      */
     void Run();
 
     /**
-    Terminates the application by ending the main message loop.
+    Exits the application.
+
+    @details
+        This method destroys all windows and ends the main message loop.
     */
-    void Terminate();
+    void Exit();
 
     /**
     Gets the ApplicationDelegate object that is passed into the application runtime when calling 
@@ -175,7 +177,7 @@ public:
     float GetSystemDPI() const;
 
     /**
-    Gets the event that will be raised when the application begins to run.
+    Gets the event that is raised after the application has started running.
 
     @details
         Users can perform startup tasks at this event, such as creating and showing the main
@@ -183,23 +185,27 @@ public:
 
         This event should be subscribed before calling Run().
 
-        This event is raised after ApplicationDelegate::OnBeginRun() is called.
+        This event is raised before calling ApplicationDelegate::OnApplicationStarted().
     */
-    rx::Observable<BeginRunInfo> BeginRunEvent() const {
-        return begin_run_event_.AsObservable();
-    }
+    rx::Single<ApplicationStartedInfo> StartedEvent() const noexcept;
 
     /**
-    Gets the event that will be raised when the application is about to end.
+    Gets the event that is raised when the application is about to exit.
 
     @details
         Users can perform cleanup tasks at this event.
 
-        This event is raised after ApplicationDelegate::OnEndRun() is called.
+        This event is raised before calling ApplicationDelegate::OnApplicationExiting().
     */
-    rx::Observable<EndRunInfo> EndRunEvent() const {
-        return end_run_event_.AsObservable();
-    }
+    rx::Single<ApplicationExitingInfo> ExitingEvent() const noexcept;
+
+    /**
+    Gets the event that is raised when the system user session is about to end.
+
+    @details
+        This event is raised before calling ApplicationDelegate::OnSystemSessionEnding().
+    */
+    rx::Single<SystemSessionEndingInfo> SystemSessionEndingEvent() const noexcept;
 
     /**
     Gets the main window of the application.
@@ -249,8 +255,8 @@ private:
 
     void InitializeSystemMessageWindow();
 
-    void NotifyApplicationBeginRun();
-    void NotifyApplicationEndRun();
+    void RaiseStartedEvent();
+    void RaiseExitingEvent();
 
     void DestroyAllWindows();
 
@@ -272,8 +278,9 @@ private:
 
     std::shared_ptr<ApplicationDelegate> delegate_;
 
-    rx::Subject<BeginRunInfo> begin_run_event_;
-    rx::Subject<EndRunInfo> end_run_event_;
+    rx::SingleSubject<ApplicationStartedInfo> started_event_;
+    rx::SingleSubject<ApplicationExitingInfo> exiting_event_;
+    rx::SingleSubject<SystemSessionEndingInfo> system_session_ending_event_;
 };
 
 }
