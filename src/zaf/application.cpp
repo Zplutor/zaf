@@ -96,6 +96,18 @@ void Application::InitializeSystemMessageWindow() {
 
     system_message_window_ = Create<internal::SystemMessageWindow>();
 
+    Disposables() += system_message_window_->TaskbarCreatedEvent().Subscribe(
+        [this](const SystemTaskbarCreatedInfo& event_info) {
+    
+            auto event_observer = system_taskbar_created_event_.AsObserver();
+            event_observer.OnNext(event_info);
+
+            if (delegate_) {
+                delegate_->OnSystemTaskbarCreated(event_info);
+            }
+        }
+    );
+
     Disposables() += system_message_window_->SessionEndingEvent().Subscribe(
         [this](const SystemSessionEndingInfo& event_info) {
     
@@ -204,6 +216,11 @@ rx::Single<ApplicationStartedInfo> Application::StartedEvent() const noexcept {
 
 rx::Single<ApplicationExitingInfo> Application::ExitingEvent() const noexcept {
     return exiting_event_.AsSingle();
+}
+
+
+rx::Observable<SystemTaskbarCreatedInfo> Application::SystemTaskbarCreatedEvent() const noexcept {
+    return system_taskbar_created_event_.AsObservable();
 }
 
 

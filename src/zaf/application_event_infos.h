@@ -12,6 +12,11 @@ class ApplicationExitingInfo {
 };
 
 
+class SystemTaskbarCreatedInfo {
+
+};
+
+
 class SystemSessionEndingInfo {
 
 };

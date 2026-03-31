@@ -1399,6 +1399,12 @@
     <ClCompile Include="src\zaf\control\internal\text_box\text_box_render_facet.cpp">
       <Filter>zaf\control\internal\text_box</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\tray_icon.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\base\unique_hicon.cpp">
+      <Filter>zaf\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3255,6 +3261,12 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\text_box\text_box_render_facet.h">
       <Filter>zaf\control\internal\text_box</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\tray_icon.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\base\unique_hicon.h">
+      <Filter>zaf\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

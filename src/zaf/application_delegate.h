@@ -26,9 +26,7 @@ public:
 
         This methods is called after raising Application::StartedEvent().
     */
-    virtual void OnApplicationStarted(const ApplicationStartedInfo&) {
-
-    }
+    virtual void OnApplicationStarted(const ApplicationStartedInfo&) { }
 
     /**
     Called when the application is about to exit.
@@ -38,9 +36,15 @@ public:
 
         This methods is called after raising Application::ExitingEvent().
     */
-    virtual void OnApplicationExiting(const ApplicationExitingInfo&) {
+    virtual void OnApplicationExiting(const ApplicationExitingInfo&) { }
 
-    }
+    /**
+    Called when the system taskbar is created.
+
+    @details
+        This method is called after raising Application::SystemTaskbarCreatedEvent().
+    */
+    virtual void OnSystemTaskbarCreated(const SystemTaskbarCreatedInfo&) { }
 
     /**
     Called when the system user session is about to end.
@@ -50,9 +54,7 @@ public:
 
         This method is called after raising Application::SystemSessionEndingEvent().
     */
-    virtual void OnSystemSessionEnding(const SystemSessionEndingInfo&) {
-
-    }
+    virtual void OnSystemSessionEnding(const SystemSessionEndingInfo&) { }
 };
 
 }

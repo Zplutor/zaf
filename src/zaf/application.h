@@ -8,6 +8,7 @@
 #include <zaf/application_event_infos.h>
 #include <zaf/config.h>
 #include <zaf/rx/subject/single_subject.h>
+#include <zaf/rx/subject/subject.h>
 #include <zaf/rx/disposable_host.h>
 
 namespace zaf::rx::internal {
@@ -200,6 +201,17 @@ public:
     rx::Single<ApplicationExitingInfo> ExitingEvent() const noexcept;
 
     /**
+    Gets the event that is raised when the system taskbar is created.
+
+    @details
+        This event is raised when the application receives the system-wide "TaskbarCreated" 
+        message, which is sent by the system when the taskbar is created or recreated.
+
+        This event is raised before calling ApplicationDelegate::OnSystemTaskbarCreated().
+    */
+    rx::Observable<SystemTaskbarCreatedInfo> SystemTaskbarCreatedEvent() const noexcept;
+
+    /**
     Gets the event that is raised when the system user session is about to end.
 
     @details
@@ -280,6 +292,7 @@ private:
 
     rx::SingleSubject<ApplicationStartedInfo> started_event_;
     rx::SingleSubject<ApplicationExitingInfo> exiting_event_;
+    rx::Subject<SystemTaskbarCreatedInfo> system_taskbar_created_event_;
     rx::SingleSubject<SystemSessionEndingInfo> system_session_ending_event_;
 };
 
