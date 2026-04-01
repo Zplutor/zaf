@@ -10,6 +10,12 @@
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/window/screen_manager.h>
 #include <zaf/control/text_box.h>
+#include <zaf/window/tray_icon.h>
+
+// {D5CD59A3-D13B-41F9-B74D-793C713F05DC}
+static const GUID TrayIconID =
+{ 0xd5cd59a3, 0xd13b, 0x41f9, { 0xb7, 0x4d, 0x79, 0x3c, 0x71, 0x3f, 0x5, 0xdc } };
+
 
 void BeginRun(const zaf::ApplicationStartedInfo& event_info);
 
@@ -18,6 +24,10 @@ protected:
     void Initialize() override {
 
         __super::Initialize();
+
+        tray_icon_ = zaf::Create<zaf::TrayIcon>(TrayIconID);
+        tray_icon_->SetTooltip(L"Playground");
+        tray_icon_->Add();
 
         this->SetIsPopup(true);
 
@@ -45,6 +55,7 @@ protected:
 
 private:
     std::shared_ptr<zaf::TextBox> text_box_;
+    std::shared_ptr<zaf::TrayIcon> tray_icon_;
 };
 
 
@@ -65,7 +76,6 @@ int WINAPI WinMain(
     application.Run();
 }
 
-std::shared_ptr<zaf::WindowHolder> holder;
 
 void BeginRun(const zaf::ApplicationStartedInfo& event_info) {
 

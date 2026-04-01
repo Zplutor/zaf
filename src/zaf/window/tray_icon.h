@@ -8,6 +8,7 @@
 #include <Windows.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/unique_hicon.h>
+#include <zaf/object/object.h>
 #include <zaf/rx/disposable_host.h>
 #include <zaf/window/message_only_window.h>
 
@@ -15,9 +16,32 @@ namespace zaf {
 
 /**
 Represents an icon in the system notification area.
+
+@details
+    The `TrayIcon` class encapsulates `Shell_NotifyIcon` win32 function to provide an easy way to 
+    manage icons in the system notification area.
+
+    Since the system notification area is managed by the shell process, and `Shell_NotifyIcon` is
+    actually an IPC call to the shell process, there are some special cases that may cause the call
+    to fail, such as the shell process too busy to respond. In these cases, methods like `Add()`,
+    `SetIcon()` and `SetTooltip()` will throw exceptions to report the failure by default. Derived
+    classes can override `OnAddFailed()` and `OnModifyFailed()` to handle the failure, such as 
+    retry after a period.
+
+    The shell process may also crash or restart, which will cause the icon in the system 
+    notification area to be removed. In this case, the `TrayIcon` instance will not be aware of the
+    change. Users of `TrayIcon` can subscribe to the 
+    `zaf::Application::SystemTaskbarCreatedEvent()` to be aware of the change, and call `Add()` to
+    add the icon again. This can also be done in derived classes.
+
+    Overall, the `TrayIcon` class provides the basic abilities to manage icons in the system 
+    notification area, and users of this class should be aware of the special cases and handle them
+    properly in derived classes.
 */
-class TrayIcon : rx::DisposableHost, NonCopyableNonMovable {
+class TrayIcon : public Object, rx::DisposableHost, NonCopyableNonMovable {
 public:
+    ZAF_OBJECT;
+
     /**
     Constructs an instance of `TrayIcon` with the specified ID.
     */
@@ -41,7 +65,7 @@ public:
         The icon handle to be set.
 
     @throw zaf::UnknownRuntimeError
-        Thrown if failed to modify the icon if derived class doesn't override `OnModifyFailed()`.
+        Thrown if failed to modify the icon, and derived class doesn't override `OnModifyFailed()`.
 
     @throw ...
         Any exception will be thrown by `OnModifyFailed()` if derived class overrides it.
@@ -66,7 +90,7 @@ public:
         defined by the system when it is set to the icon.
 
     @throw zaf::UnknownRuntimeError
-        Thrown if failed to modify the icon if derived class doesn't override `OnModifyFailed()`.
+        Thrown if failed to modify the icon, and derived class doesn't override `OnModifyFailed()`.
 
     @throw ...
         Any exception will be thrown by `OnModifyFailed()` if derived class overrides it.
@@ -128,6 +152,7 @@ protected:
 
 private:
     NOTIFYICONDATA MakeBasicIconData() const noexcept;
+    void OnMessageReceived(const Message& message);
 
 private:
     GUID id_{};
@@ -137,5 +162,8 @@ private:
     bool is_adding_{};
     bool has_added_{};
 };
+
+ZAF_OBJECT_BEGIN(TrayIcon)
+ZAF_OBJECT_END
 
 }
