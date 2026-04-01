@@ -37,8 +37,7 @@ const UniqueHICON& TrayIcon::Icon() const noexcept {
 void TrayIcon::SetIcon(UniqueHICON icon) {
 
     icon_ = std::move(icon);
-
-    if (!has_added_) {
+    if (icon_state_ == IconState::NotAdded) {
         return;
     }
 
@@ -46,9 +45,7 @@ void TrayIcon::SetIcon(UniqueHICON icon) {
     icon_data.uFlags |= NIF_ICON;
     icon_data.hIcon = icon_;
     BOOL is_succeeded = Shell_NotifyIcon(NIM_MODIFY, &icon_data);
-    if (!is_succeeded) {
-        OnModifyFailed();
-    }
+    HandleModifyResult(!!is_succeeded);
 }
 
 
@@ -60,8 +57,7 @@ const std::wstring& TrayIcon::Tooltip() const noexcept {
 void TrayIcon::SetTooltip(std::wstring tooltip) {
 
     tooltip_ = std::move(tooltip);
-
-    if (!has_added_) {
+    if (icon_state_ == IconState::NotAdded) {
         return;
     }
 
@@ -69,9 +65,7 @@ void TrayIcon::SetTooltip(std::wstring tooltip) {
     icon_data.uFlags |= NIF_TIP;
     wcscpy_s(icon_data.szTip, tooltip_.c_str());
     BOOL is_succeeded = Shell_NotifyIcon(NIM_MODIFY, &icon_data);
-    if (!is_succeeded) {
-        OnModifyFailed();
-    }
+    HandleModifyResult(!!is_succeeded);
 }
 
 
@@ -83,12 +77,49 @@ void TrayIcon::Add() {
 
     auto auto_reset = MakeAutoReset(is_adding_, true);
 
-    if (!message_window_) {
-        // This may throw `zaf::Win32Error` if failed to create the message window.
-        message_window_.emplace();
-        Disposables() += message_window_->MessageReceivedEvent().Subscribe(
-            std::bind_front(&TrayIcon::OnMessageReceived, this));
+    // This may throw `zaf::Win32Error` if failed to create the message window.
+    InitializeIfNeeded();
+
+    if (icon_state_ == IconState::NotAdded) {
+        AddIcon();
     }
+    else {
+        Remove();
+        AddIcon();
+    }
+}
+
+
+void TrayIcon::InitializeIfNeeded() {
+
+    if (message_window_) {
+        return;
+    }
+
+    message_window_.emplace();
+    Disposables() += message_window_->MessageReceivedEvent().Subscribe(
+        std::bind_front(&TrayIcon::OnMessageReceived, this));
+}
+
+
+void TrayIcon::AddIcon() {
+
+    if (!CallAdd()) {
+        OnAddFailed();
+        return;
+    }
+
+    icon_state_ = IconState::Intermediate;
+
+    if (!CallSetVersion()) {
+        // Set version fail, we should remove the icon.
+        Remove();
+        OnAddFailed();
+    }
+}
+
+
+bool TrayIcon::CallAdd() const noexcept {
 
     auto icon_data = MakeBasicIconData();
     icon_data.uFlags |= NIF_MESSAGE | NIF_TIP | NIF_ICON;
@@ -98,20 +129,45 @@ void TrayIcon::Add() {
     wcscpy_s(icon_data.szTip, tooltip_.c_str());
 
     BOOL is_succeeded = Shell_NotifyIcon(NIM_ADD, &icon_data);
-    if (!is_succeeded) {
-        OnAddFailed();
-    }
+    return !!is_succeeded;
+}
 
-    has_added_ = true;
+
+bool TrayIcon::CallSetVersion() const noexcept {
+
+    auto icon_data = MakeBasicIconData();
+    BOOL is_succeeded = Shell_NotifyIcon(NIM_SETVERSION, &icon_data);
+    return !!is_succeeded;
+}
+
+
+void TrayIcon::HandleModifyResult(bool is_succeeded) {
+    icon_state_ = IconState::Intermediate;
+    if (!is_succeeded) {
+        OnModifyFailed();
+    }
 }
 
 
 bool TrayIcon::Remove() noexcept {
 
+    // If the icon is not added, there is no need to call Shell_NotifyIcon.
+    if (icon_state_ == IconState::NotAdded) {
+        return true;
+    }
+
     auto icon_data = MakeBasicIconData();
     BOOL is_succeeded = Shell_NotifyIcon(NIM_DELETE, &icon_data);
-    has_added_ = false;
-    return !!is_succeeded;
+    if (is_succeeded) {
+        icon_state_ = IconState::NotAdded;
+        return true;
+    }
+    else {
+        // If failed to remove the icon, it may be because either the icon was not added or the IPC
+        // call to the shell process failed.
+        icon_state_ = IconState::Intermediate;
+        return false;
+    }
 }
 
 

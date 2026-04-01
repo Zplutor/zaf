@@ -18,8 +18,8 @@ namespace zaf {
 Represents an icon in the system notification area.
 
 @details
-    The `TrayIcon` class encapsulates `Shell_NotifyIcon` win32 function to provide an easy way to 
-    manage icons in the system notification area.
+    The `TrayIcon` class encapsulates `Shell_NotifyIcon` function to provide an easy way to manage
+    icons in the system notification area.
 
     Since the system notification area is managed by the shell process, and `Shell_NotifyIcon` is
     actually an IPC call to the shell process, there are some special cases that may cause the call
@@ -71,9 +71,8 @@ public:
         Any exception will be thrown by `OnModifyFailed()` if derived class overrides it.
 
     @details
-        If this method is called after a successful call of `Add()`, it will try to modify the icon 
-        in the system notification area. If the icon is failed to be modified, `OnModifyFailed()` 
-        will be called.
+        If the icon has been added, this method will try to modify the icon in the system 
+        notification area. If the icon is failed to be modified, `OnModifyFailed()` will be called.
     */
     void SetIcon(UniqueHICON icon);
 
@@ -96,9 +95,8 @@ public:
         Any exception will be thrown by `OnModifyFailed()` if derived class overrides it.
         
     @details
-        If this method is called after a successful call of `Add()`, it will try to modify the icon 
-        in the system notification area. If the icon is failed to be modified, `OnModifyFailed()` 
-        will be called.
+        If the icon has been added, this method will try to modify the icon in the system 
+        notification area. If the icon is failed to be modified, `OnModifyFailed()` will be called.
     */
     void SetTooltip(std::wstring tooltip);
 
@@ -118,7 +116,8 @@ public:
         Any exception will be thrown by `OnAddFailed()` if derived class overrides it.
 
     @details
-        If the icon is failed to be added, `OnAddFailed()` will be called.
+        This method will try to remove the existing icon before adding a new one. If the icon is 
+        failed to be added, `OnAddFailed()` will be called. 
     */
     void Add();
 
@@ -145,12 +144,32 @@ protected:
 
     @details
         The default implementation of this method simply throws `zaf::UnknownRuntimeError`. Derived
-        classes can override this method to handle the failure, such as retry after a period. A
-        common retry method is remove the icon and add it again.
+        classes can override this method to handle the failure, such as re-add the icon after a
+        period.
     */
     virtual void OnModifyFailed();
 
 private:
+    /**
+    Indicates the state of the icon in the system notification area.
+
+    @details
+        Since the icon is managed by the shell process, and the `Shell_NotifyIcon` doesn't return
+        a meaningful error code nor provide a way to query the state of the icon, we have to assume
+        the state of the icon is always intermediate even after a successful call to 
+        `Shell_NotifyIcon`.
+    */
+    enum class IconState {
+        NotAdded,
+        Intermediate,
+    };
+
+private:
+    void InitializeIfNeeded();
+    void AddIcon();
+    bool CallAdd() const noexcept;
+    bool CallSetVersion() const noexcept;
+    void HandleModifyResult(bool is_succeeded);
     NOTIFYICONDATA MakeBasicIconData() const noexcept;
     void OnMessageReceived(const Message& message);
 
@@ -159,8 +178,9 @@ private:
     std::wstring tooltip_;
     UniqueHICON icon_;
     std::optional<MessageOnlyWindow> message_window_;
+
+    IconState icon_state_{ IconState::NotAdded };
     bool is_adding_{};
-    bool has_added_{};
 };
 
 ZAF_OBJECT_BEGIN(TrayIcon)
