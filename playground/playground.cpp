@@ -28,6 +28,12 @@ protected:
         tray_icon_ = zaf::Create<zaf::TrayIcon>(TrayIconID);
         tray_icon_->SetTooltip(L"Playground");
         tray_icon_->Add();
+        Disposables() += tray_icon_->ActivateEvent().Subscribe([this](const zaf::TrayIconActivateInfo& event_info) {
+            ZAF_LOG() << L"Tray icon activated.";
+        });
+        Disposables() += tray_icon_->ContextMenuEvent().Subscribe([this](const zaf::TrayIconContextMenuInfo& event_info) {
+            ZAF_LOG() << L"Tray icon context menu requested.";
+        });
 
         this->SetIsPopup(true);
 

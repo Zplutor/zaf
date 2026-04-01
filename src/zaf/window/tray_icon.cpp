@@ -1,4 +1,5 @@
 #include <zaf/window/tray_icon.h>
+#include <windowsx.h>
 #include <zaf/application.h>
 #include <zaf/base/log.h>
 #include <zaf/base/auto_reset.h>
@@ -66,6 +67,19 @@ void TrayIcon::SetTooltip(std::wstring tooltip) {
     wcscpy_s(icon_data.szTip, tooltip_.c_str());
     BOOL is_succeeded = Shell_NotifyIcon(NIM_MODIFY, &icon_data);
     HandleModifyResult(!!is_succeeded);
+}
+
+
+void TrayIcon::HandleModifyResult(bool is_succeeded) {
+    icon_state_ = IconState::Intermediate;
+    if (!is_succeeded) {
+        OnModifyFailed();
+    }
+}
+
+
+void TrayIcon::OnModifyFailed() {
+    throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
 }
 
 
@@ -141,11 +155,8 @@ bool TrayIcon::CallSetVersion() const noexcept {
 }
 
 
-void TrayIcon::HandleModifyResult(bool is_succeeded) {
-    icon_state_ = IconState::Intermediate;
-    if (!is_succeeded) {
-        OnModifyFailed();
-    }
+void TrayIcon::OnAddFailed() {
+    throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
 }
 
 
@@ -187,50 +198,55 @@ void TrayIcon::OnMessageReceived(const Message& message) {
         return;
     }
 
-    ZAF_LOG() << "LOWORD(LParam()) " << LOWORD(message.LParam());
-
     switch (LOWORD(message.LParam())) {
-    // single click (keyboard or mouse)
     case NIN_SELECT:        
-        ZAF_LOG() << L"Selected";
+    case NIN_KEYSELECT: 
+        HandleSELECT(message);
         break;
 
-     // keyboard activation
-    case NIN_KEYSELECT:     
-        ZAF_LOG() << "Key Selected";
-        break;
-
-    // right-click
-    case WM_CONTEXTMENU: {
-        ZAF_LOG() << "Context menu requested";
-        break;
-    }
-
-    // double click
-    case WM_LBUTTONDBLCLK:  
-        ZAF_LOG() << "Double clicked";
-        break;
-
-    case NIN_BALLOONUSERCLICK:
-        break;
-
-    // hover (Vista+)
-    case NIN_POPUPOPEN:     
-        break;
-
-    case NIN_POPUPCLOSE:
+    case WM_CONTEXTMENU: 
+        HandleWMCONTEXTMENU(message);
         break;
     }
 }
 
 
-void TrayIcon::OnAddFailed() {
-    throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
+void TrayIcon::HandleSELECT(const Message& message) {
+    TrayIconActivateInfo event_info{ shared_from_this() };
+    OnActivate(event_info);
 }
 
 
-void TrayIcon::OnModifyFailed() {
-    throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
+void TrayIcon::HandleWMCONTEXTMENU(const Message& message) {
+
+    auto x = GET_X_LPARAM(message.WParam());
+    auto y = GET_Y_LPARAM(message.WParam());
+
+    TrayIconContextMenuInfo event_info{ 
+        shared_from_this(), 
+        Point{ static_cast<float>(x), static_cast<float>(y) }
+    };
+    OnContextMenu(event_info);
+}
+
+
+rx::Observable<TrayIconActivateInfo> TrayIcon::ActivateEvent() const {
+    return activate_event_.AsObservable();
+}
+
+
+void TrayIcon::OnActivate(const TrayIconActivateInfo& event_info) {
+    activate_event_.AsObserver().OnNext(event_info);
+}
+
+
+rx::Observable<TrayIconContextMenuInfo> TrayIcon::ContextMenuEvent() const {
+    return context_menu_event_.AsObservable();
+}
+
+
+void TrayIcon::OnContextMenu(const TrayIconContextMenuInfo& event_info) {
+    context_menu_event_.AsObserver().OnNext(event_info);
 }
 
 }

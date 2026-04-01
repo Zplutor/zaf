@@ -1405,6 +1405,9 @@
     <ClCompile Include="src\zaf\base\unique_hicon.cpp">
       <Filter>zaf\base</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\window\tray_icon_events.cpp">
+      <Filter>zaf\window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -3267,6 +3270,9 @@
     </ClInclude>
     <ClInclude Include="src\zaf\base\unique_hicon.h">
       <Filter>zaf\base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\window\tray_icon_events.h">
+      <Filter>zaf\window</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

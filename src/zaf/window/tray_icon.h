@@ -10,7 +10,10 @@
 #include <zaf/base/unique_hicon.h>
 #include <zaf/object/object.h>
 #include <zaf/rx/disposable_host.h>
+#include <zaf/rx/observable.h>
+#include <zaf/rx/subject/subject.h>
 #include <zaf/window/message_only_window.h>
+#include <zaf/window/tray_icon_events.h>
 
 namespace zaf {
 
@@ -38,7 +41,12 @@ Represents an icon in the system notification area.
     notification area, and users of this class should be aware of the special cases and handle them
     properly in derived classes.
 */
-class TrayIcon : public Object, rx::DisposableHost, NonCopyableNonMovable {
+class TrayIcon : 
+    public Object, 
+    public std::enable_shared_from_this<TrayIcon>, 
+    public rx::DisposableHost, 
+    NonCopyableNonMovable {
+
 public:
     ZAF_OBJECT;
 
@@ -129,6 +137,17 @@ public:
     */
     bool Remove() noexcept;
 
+    /**
+    Gets the event that is raised when the icon is activated, such as clicked.
+    */
+    rx::Observable<TrayIconActivateInfo> ActivateEvent() const;
+
+    /**
+    Gets the event that is raised when the context menu of the icon is requested,
+    such as right-clicked.
+    */
+    rx::Observable<TrayIconContextMenuInfo> ContextMenuEvent() const;
+
 protected:
     /**
     Called when the icon is failed to be added.
@@ -148,6 +167,30 @@ protected:
         period.
     */
     virtual void OnModifyFailed();
+
+    /**
+    Called when the icon is activated, such as clicked.
+
+    @param event_info
+        The information about the activation event.
+
+    @details
+        The default implementation of this method raises the `ActivateEvent()`. Derived classes 
+        should call the base implementation if they override this method.
+    */
+    virtual void OnActivate(const TrayIconActivateInfo& event_info);
+
+    /**
+    Called when the context menu of the icon is requested, such as right-clicked.
+
+    @param event_info
+        The information about the context menu event.
+
+    @details
+        The default implementation of this method raises the `ContextMenuEvent()`. Derived classes 
+        should call the base implementation if they override this method.
+    */
+    virtual void OnContextMenu(const TrayIconContextMenuInfo& event_info);
 
 private:
     /**
@@ -172,6 +215,8 @@ private:
     void HandleModifyResult(bool is_succeeded);
     NOTIFYICONDATA MakeBasicIconData() const noexcept;
     void OnMessageReceived(const Message& message);
+    void HandleSELECT(const Message& message);
+    void HandleWMCONTEXTMENU(const Message& message);
 
 private:
     GUID id_{};
@@ -181,6 +226,9 @@ private:
 
     IconState icon_state_{ IconState::NotAdded };
     bool is_adding_{};
+
+    rx::Subject<TrayIconActivateInfo> activate_event_;
+    rx::Subject<TrayIconContextMenuInfo> context_menu_event_;
 };
 
 ZAF_OBJECT_BEGIN(TrayIcon)

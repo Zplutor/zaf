@@ -440,6 +440,7 @@
     <ClCompile Include="src\zaf\window\screen_manager.cpp" />
     <ClCompile Include="src\zaf\window\tooltip_window.cpp" />
     <ClCompile Include="src\zaf\window\tray_icon.cpp" />
+    <ClCompile Include="src\zaf\window\tray_icon_events.cpp" />
     <ClCompile Include="src\zaf\window\window.cpp" />
     <ClCompile Include="src\zaf\window\window_class.cpp" />
     <ClCompile Include="src\zaf\window\window_class_registry.cpp" />
@@ -1055,6 +1056,7 @@
     <ClInclude Include="src\zaf\window\show_options.h" />
     <ClInclude Include="src\zaf\window\tooltip_window.h" />
     <ClInclude Include="src\zaf\window\tray_icon.h" />
+    <ClInclude Include="src\zaf\window\tray_icon_events.h" />
     <ClInclude Include="src\zaf\window\window.h" />
     <ClInclude Include="src\zaf\window\window_class.h" />
     <ClInclude Include="src\zaf\window\window_class_properties.h" />
