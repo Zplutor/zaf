@@ -71,15 +71,16 @@ void TrayIcon::SetTooltip(std::wstring tooltip) {
 
 
 void TrayIcon::HandleModifyResult(bool is_succeeded) {
-    icon_state_ = IconState::Intermediate;
+
     if (!is_succeeded) {
         OnModifyFailed();
+        throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
     }
 }
 
 
 void TrayIcon::OnModifyFailed() {
-    throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
+
 }
 
 
@@ -110,9 +111,11 @@ void TrayIcon::InitializeIfNeeded() {
         return;
     }
 
-    message_window_.emplace();
-    Disposables() += message_window_->MessageReceivedEvent().Subscribe(
+    auto window = std::make_unique<MessageOnlyWindow>();
+    Disposables() += window->MessageReceivedEvent().Subscribe(
         std::bind_front(&TrayIcon::OnMessageReceived, this));
+
+    message_window_ = std::move(window);
 }
 
 
@@ -120,7 +123,7 @@ void TrayIcon::AddIcon() {
 
     if (!CallAdd()) {
         OnAddFailed();
-        return;
+        throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
     }
 
     icon_state_ = IconState::Intermediate;
@@ -129,6 +132,7 @@ void TrayIcon::AddIcon() {
         // Set version fail, we should remove the icon.
         Remove();
         OnAddFailed();
+        throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
     }
 }
 
@@ -156,7 +160,7 @@ bool TrayIcon::CallSetVersion() const noexcept {
 
 
 void TrayIcon::OnAddFailed() {
-    throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
+
 }
 
 

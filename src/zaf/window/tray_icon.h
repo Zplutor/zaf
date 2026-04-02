@@ -73,7 +73,7 @@ public:
         The icon handle to be set.
 
     @throw zaf::UnknownRuntimeError
-        Thrown if failed to modify the icon, and derived class doesn't override `OnModifyFailed()`.
+        Thrown if failed to modify the icon.
 
     @throw ...
         Any exception will be thrown by `OnModifyFailed()` if derived class overrides it.
@@ -97,7 +97,7 @@ public:
         defined by the system when it is set to the icon.
 
     @throw zaf::UnknownRuntimeError
-        Thrown if failed to modify the icon, and derived class doesn't override `OnModifyFailed()`.
+        Thrown if failed to modify the icon.
 
     @throw ...
         Any exception will be thrown by `OnModifyFailed()` if derived class overrides it.
@@ -118,7 +118,7 @@ public:
         Thrown if failed to create the message window for the icon.
 
     @throw zaf::UnknownRuntimeError
-        Thrown if failed to add the icon if derived class doesn't override `OnAddFailed()`.
+        Thrown if failed to add the icon.
 
     @throw ...
         Any exception will be thrown by `OnAddFailed()` if derived class overrides it.
@@ -153,8 +153,8 @@ protected:
     Called when the icon is failed to be added.
 
     @details
-        The default implementation of this method simply throws `zaf::UnknownRuntimeError`. Derived
-        classes can override this method to handle the failure, such as retry after a period.
+        The default implementation of this method does nothing. Derived classes can override this 
+        method to handle the failure, such as retry after a period.
     */
     virtual void OnAddFailed();
 
@@ -162,9 +162,8 @@ protected:
     Called when the icon is failed to be modified.
 
     @details
-        The default implementation of this method simply throws `zaf::UnknownRuntimeError`. Derived
-        classes can override this method to handle the failure, such as re-add the icon after a
-        period.
+        The default implementation of this method does nothing. Derived classes can override this 
+        method to handle the failure, such as re-add the icon after a period.
     */
     virtual void OnModifyFailed();
 
@@ -222,7 +221,7 @@ private:
     GUID id_{};
     std::wstring tooltip_;
     UniqueHICON icon_;
-    std::optional<MessageOnlyWindow> message_window_;
+    std::unique_ptr<MessageOnlyWindow> message_window_;
 
     IconState icon_state_{ IconState::NotAdded };
     bool is_adding_{};
