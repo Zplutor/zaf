@@ -2,7 +2,6 @@
 #include <windowsx.h>
 #include <zaf/application.h>
 #include <zaf/base/log.h>
-#include <zaf/base/auto_reset.h>
 #include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/base/error/unknown_runtime_error.h>
 
@@ -45,8 +44,7 @@ void TrayIcon::SetIcon(UniqueHICON icon) {
     auto icon_data = MakeBasicIconData();
     icon_data.uFlags |= NIF_ICON;
     icon_data.hIcon = icon_;
-    BOOL is_succeeded = Shell_NotifyIcon(NIM_MODIFY, &icon_data);
-    HandleModifyResult(!!is_succeeded);
+    ModifyIcon(icon_data);
 }
 
 
@@ -65,32 +63,13 @@ void TrayIcon::SetTooltip(std::wstring tooltip) {
     auto icon_data = MakeBasicIconData();
     icon_data.uFlags |= NIF_TIP;
     wcscpy_s(icon_data.szTip, tooltip_.c_str());
-    BOOL is_succeeded = Shell_NotifyIcon(NIM_MODIFY, &icon_data);
-    HandleModifyResult(!!is_succeeded);
-}
-
-
-void TrayIcon::HandleModifyResult(bool is_succeeded) {
-
-    if (!is_succeeded) {
-        OnModifyFailed();
-        throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
-    }
-}
-
-
-void TrayIcon::OnModifyFailed() {
-
+    ModifyIcon(icon_data);
 }
 
 
 void TrayIcon::Add() {
 
-    if (is_adding_) {
-        throw InvalidOperationError(ZAF_SOURCE_LOCATION());
-    }
-
-    auto auto_reset = MakeAutoReset(is_adding_, true);
+    auto auto_reset = BeginOperatingIcon();
 
     // This may throw `zaf::Win32Error` if failed to create the message window.
     InitializeIfNeeded();
@@ -164,6 +143,23 @@ void TrayIcon::OnAddFailed() {
 }
 
 
+void TrayIcon::ModifyIcon(NOTIFYICONDATA& icon_data) {
+
+    auto auto_reset = BeginOperatingIcon();
+
+    BOOL is_succeeded = Shell_NotifyIcon(NIM_MODIFY, &icon_data);
+    if (!is_succeeded) {
+        OnModifyFailed();
+        throw UnknownRuntimeError(ZAF_SOURCE_LOCATION());
+    }
+}
+
+
+void TrayIcon::OnModifyFailed() {
+
+}
+
+
 bool TrayIcon::Remove() noexcept {
 
     // If the icon is not added, there is no need to call Shell_NotifyIcon.
@@ -193,6 +189,14 @@ NOTIFYICONDATA TrayIcon::MakeBasicIconData() const noexcept {
     icon_data.uFlags = NIF_GUID;
     icon_data.guidItem = id_;
     return icon_data;
+}
+
+
+AutoReset<bool> TrayIcon::BeginOperatingIcon() {
+    if (is_operating_icon_) {
+        throw InvalidOperationError(ZAF_SOURCE_LOCATION());
+    }
+    return MakeAutoReset(is_operating_icon_, true);
 }
 
 

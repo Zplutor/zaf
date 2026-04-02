@@ -6,6 +6,7 @@
 */
 
 #include <Windows.h>
+#include <zaf/base/auto_reset.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/base/unique_hicon.h>
 #include <zaf/object/object.h>
@@ -72,6 +73,10 @@ public:
     @param icon
         The icon handle to be set.
 
+    @throw zaf::InvalidOperationError
+        Thrown if calling this method directly in `OnAddFailed()` or `OnModifyFailed()`, which
+        causes reentrant.
+
     @throw zaf::UnknownRuntimeError
         Thrown if failed to modify the icon.
 
@@ -96,6 +101,10 @@ public:
         The tooltip to be set. It will be truncated if its length exceeds the maximum length 
         defined by the system when it is set to the icon.
 
+    @throw zaf::InvalidOperationError
+        Thrown if calling this method directly in `OnAddFailed()` or `OnModifyFailed()`, which
+        causes reentrant.
+
     @throw zaf::UnknownRuntimeError
         Thrown if failed to modify the icon.
 
@@ -112,7 +121,8 @@ public:
     Adds the icon to the system notification area.
 
     @throw zaf::InvalidOperationError
-        Thrown if calling this method directly in `OnAddFailed()`, which causes reentrant.
+        Thrown if calling this method directly in `OnAddFailed()` or `OnModifyFailed()`, which 
+        causes reentrant.
 
     @throw zaf::Win32Error
         Thrown if failed to create the message window for the icon.
@@ -211,8 +221,9 @@ private:
     void AddIcon();
     bool CallAdd() const noexcept;
     bool CallSetVersion() const noexcept;
-    void HandleModifyResult(bool is_succeeded);
+    void ModifyIcon(NOTIFYICONDATA& icon_data);
     NOTIFYICONDATA MakeBasicIconData() const noexcept;
+    AutoReset<bool> BeginOperatingIcon();
     void OnMessageReceived(const Message& message);
     void HandleSELECT(const Message& message);
     void HandleWMCONTEXTMENU(const Message& message);
@@ -224,7 +235,7 @@ private:
     std::unique_ptr<MessageOnlyWindow> message_window_;
 
     IconState icon_state_{ IconState::NotAdded };
-    bool is_adding_{};
+    bool is_operating_icon_{};
 
     rx::Subject<TrayIconActivateInfo> activate_event_;
     rx::Subject<TrayIconContextMenuInfo> context_menu_event_;
