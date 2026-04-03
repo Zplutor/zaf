@@ -23,8 +23,8 @@ protected:
 
         __super::Initialize();
 
-        Disposables() += this->MessageReceivedEvent().Subscribe(
-            [this](const zaf::MessageReceivedInfo& event_info) {
+        Disposables() += this->MessageHandlingEvent().Subscribe(
+            [this](const zaf::MessageHandlingInfo& event_info) {
 
             if (event_info.Message().ID() == TestMessage) {
                 message_received_event_sequence = ++current_sequence_;
@@ -40,13 +40,13 @@ protected:
         });
     }
 
-    void OnMessageReceived(const zaf::MessageReceivedInfo& event_info) override {
+    void OnMessageHandling(const zaf::MessageHandlingInfo& event_info) override {
 
         if (event_info.Message().ID() == TestMessage) {
             on_message_received1_sequence = ++current_sequence_;
         }
 
-        __super::OnMessageReceived(event_info);
+        __super::OnMessageHandling(event_info);
 
         if (event_info.Message().ID() == TestMessage) {
             on_message_received2_sequence = ++current_sequence_;

@@ -53,7 +53,7 @@ void PopupMenuController::InitializeOwnerMessageRedirection(
     SetForegroundWindow(owner->Handle());
     SetCapture(owner->Handle());
 
-    Disposables() += owner->MessageReceivedEvent().Subscribe(
+    Disposables() += owner->MessageHandlingEvent().Subscribe(
         std::bind(&PopupMenuController::OnOwnerMessageReceived, this, std::placeholders::_1));
 }
 
@@ -120,7 +120,7 @@ void PopupMenuController::CloseAllMenus() {
 }
 
 
-void PopupMenuController::OnOwnerMessageReceived(const MessageReceivedInfo& event_info) {
+void PopupMenuController::OnOwnerMessageReceived(const MessageHandlingInfo& event_info) {
 
     bool is_handled = HandleOwnerMessage(event_info.Message());
     if (is_handled) {

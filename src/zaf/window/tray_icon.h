@@ -28,9 +28,9 @@ Represents an icon in the system notification area.
     Since the system notification area is managed by the shell process, and `Shell_NotifyIcon` is
     actually an IPC call to the shell process, there are some special cases that may cause the call
     to fail, such as the shell process too busy to respond. In these cases, methods like `Add()`,
-    `SetIcon()` and `SetTooltip()` will throw exceptions to report the failure by default. Derived
-    classes can override `OnAddFailed()` and `OnModifyFailed()` to handle the failure, such as 
-    retry after a period.
+    `SetIcon()` and `SetTooltip()` will throw exceptions to report the failure. Derived classes can
+    override `OnAddFailed()` and `OnModifyFailed()` to handle the failure, such as retry after a
+    period.
 
     The shell process may also crash or restart, which will cause the icon in the system 
     notification area to be removed. In this case, the `TrayIcon` instance will not be aware of the

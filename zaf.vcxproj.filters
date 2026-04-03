@@ -640,7 +640,7 @@
     <ClCompile Include="src\zaf\control\event\split_bar_event_info.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\window\event\message_received_info.cpp">
+    <ClCompile Include="src\zaf\window\event\message_handling_info.cpp">
       <Filter>zaf\window\event</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\window\event\message_handled_info.cpp">
@@ -2101,7 +2101,7 @@
     <ClInclude Include="src\zaf\control\event\split_bar_event_info.h">
       <Filter>zaf\control\event</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\window\event\message_received_info.h">
+    <ClInclude Include="src\zaf\window\event\message_handling_info.h">
       <Filter>zaf\window\event</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\event\message_handled_info.h">

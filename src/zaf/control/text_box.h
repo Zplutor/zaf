@@ -15,7 +15,7 @@
 #include <zaf/control/textual/selection_changed_info.h>
 #include <zaf/control/textual/selection_option.h>
 #include <zaf/control/textual/word_extractor.h>
-#include <zaf/window/event/message_received_info.h>
+#include <zaf/window/event/message_handling_info.h>
 
 namespace zaf::internal {
 class TextBoxCaretManager;

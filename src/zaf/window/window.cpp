@@ -762,8 +762,8 @@ LRESULT Window::RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lpa
     auto shared_this = shared_from_this();
 
     // Raise the message received event first.
-    MessageReceivedInfo message_received_info{ shared_this, message };
-    OnMessageReceived(message_received_info);
+    MessageHandlingInfo message_received_info{ shared_this, message };
+    OnMessageHandling(message_received_info);
 
     // Check if the message has been handled, if not, handle it.
     auto handle_result = message_received_info.HandleResult();
@@ -942,13 +942,13 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
 }
 
 
-void Window::OnMessageReceived(const MessageReceivedInfo& event_info) {
-    message_received_event_.Raise(event_info);
+void Window::OnMessageHandling(const MessageHandlingInfo& event_info) {
+    message_handling_event_.Raise(event_info);
 }
 
 
-rx::Observable<MessageReceivedInfo> Window::MessageReceivedEvent() const {
-    return message_received_event_.GetObservable();
+rx::Observable<MessageHandlingInfo> Window::MessageHandlingEvent() const {
+    return message_handling_event_.GetObservable();
 }
 
 

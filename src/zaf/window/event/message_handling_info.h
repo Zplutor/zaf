@@ -7,9 +7,9 @@
 namespace zaf {
 namespace internal {
 
-class MessageReceivedSharedState {
+class MessageHandlingSharedState {
 public:
-    explicit MessageReceivedSharedState(const Message& m) : message(m) {
+    explicit MessageHandlingSharedState(const Message& m) : message(m) {
 
     }
 
@@ -21,9 +21,9 @@ public:
 
 class Window;
 
-class MessageReceivedInfo : public EventInfo {
+class MessageHandlingInfo : public EventInfo {
 public:
-    MessageReceivedInfo(
+    MessageHandlingInfo(
         const std::shared_ptr<Window>& source,
         const Message& message);
 
@@ -44,7 +44,7 @@ public:
     }
 
 private:
-    std::shared_ptr<internal::MessageReceivedSharedState> state_;
+    std::shared_ptr<internal::MessageHandlingSharedState> state_;
 };
 
 }

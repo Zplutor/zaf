@@ -264,8 +264,8 @@ TEST_F(ControlStyleTest, NoExtraPaintWhenUpdatingStyle) {
     });
 
     int paint_count{};
-    auto window_sub = TestWindow()->MessageReceivedEvent().Subscribe(
-        [&paint_count](const MessageReceivedInfo& event_info) {
+    auto window_sub = TestWindow()->MessageHandlingEvent().Subscribe(
+        [&paint_count](const MessageHandlingInfo& event_info) {
         if (event_info.Message().ID() == WM_PAINT) {
             paint_count++;
         }

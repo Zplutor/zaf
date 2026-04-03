@@ -1333,8 +1333,8 @@ void RichEdit::OnWindowChanged(const WindowChangedInfo& event_info) {
         return;
     }
 
-    ime_message_subscription_ = window->MessageReceivedEvent().Subscribe(
-        [this](const MessageReceivedInfo& event_info) {
+    ime_message_subscription_ = window->MessageHandlingEvent().Subscribe(
+        [this](const MessageHandlingInfo& event_info) {
     
         if (event_info.IsHandled()) {
             return;

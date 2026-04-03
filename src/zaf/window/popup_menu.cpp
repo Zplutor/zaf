@@ -238,14 +238,14 @@ void PopupMenu::OnRootControlMouseDown(const MouseDownInfo& event_info) {
 }
 
 
-void PopupMenu::OnMessageReceived(const MessageReceivedInfo& event_info) {
+void PopupMenu::OnMessageHandling(const MessageHandlingInfo& event_info) {
 
     if (event_info.Message().ID() == WM_KEYDOWN) {
         HandleKeyDownMessage(KeyMessage{ event_info.Message() });
         event_info.MarkAsHandled(0);
     }
 
-    __super::OnMessageReceived(event_info);
+    __super::OnMessageHandling(event_info);
 }
 
 

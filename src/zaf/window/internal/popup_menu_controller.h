@@ -27,7 +27,7 @@ private:
     void InitializeFirstMenu(const std::shared_ptr<PopupMenu>& menu);
     std::shared_ptr<Window> InitializeOwner(const std::shared_ptr<PopupMenu>& menu);
     void InitializeOwnerMessageRedirection(const std::shared_ptr<Window>& owner);
-    void OnOwnerMessageReceived(const MessageReceivedInfo& event_info);
+    void OnOwnerMessageReceived(const MessageHandlingInfo& event_info);
     bool HandleOwnerMessage(const Message& message);
     bool HandleOwnerMouseMessage(const Message& message);
     std::shared_ptr<PopupMenu> FindMenuAtPosition(const POINT& mouse_position_at_screen) const;

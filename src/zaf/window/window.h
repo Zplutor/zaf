@@ -24,7 +24,7 @@
 #include <zaf/window/event/focused_control_changed_info.h>
 #include <zaf/window/event/handle_create_infos.h>
 #include <zaf/window/event/message_handled_info.h>
-#include <zaf/window/event/message_received_info.h>
+#include <zaf/window/event/message_handling_info.h>
 #include <zaf/window/event/mouse_capture_control_changed_info.h>
 #include <zaf/window/event/root_control_changed_info.h>
 #include <zaf/window/event/show_window_event_info.h>
@@ -1427,9 +1427,9 @@ public:
     */
 
     /**
-    Gets the event that is raised when a message is received by the window.
+    Gets the event that is raised when the window receives a message and is about to handle it.
     */
-    rx::Observable<MessageReceivedInfo> MessageReceivedEvent() const;
+    rx::Observable<MessageHandlingInfo> MessageHandlingEvent() const;
 
     /**
     Gets the event that is raised after a message is handled by the window.
@@ -1778,20 +1778,20 @@ protected:
     */
 
     /**
-    Called when the window receives a message, but before handling it.
+    Called when the window receives a message and is about to handle it.
 
     @param event_info
-        Information of the event. Call event_info.MarkAsHandled() to prevent the message from being
-        handled by default.
+        Information of the event. Call `MarkAsHandled()` to prevent the message from being handled 
+        by default.
 
     @details
-        The default implementation of this method raises the `MessageReceivedEvent()`. Derived 
+        The default implementation of this method raises the `MessageHandlingEvent()`. Derived 
         classes should call the same method of base class if they override this method.
         
         @warning
             This method must not throw, otherwise the behavior is undefined.
     */
-    virtual void OnMessageReceived(const MessageReceivedInfo& event_info);
+    virtual void OnMessageHandling(const MessageHandlingInfo& event_info);
 
     /**
     Called after the message is handled, including the default window procedure.
@@ -1863,7 +1863,7 @@ private:
     std::unique_ptr<internal::WindowKeyboardFacet> keyboard_facet_;
     
     // Message Handling Related
-    Event<MessageReceivedInfo> message_received_event_;
+    Event<MessageHandlingInfo> message_handling_event_;
     Event<MessageHandledInfo> message_handled_event_;
 
     // Inspection Related

@@ -42,8 +42,8 @@ TEST_F(WindowTest, RequestRepaintWhenPainting) {
 	window->SetRootControl(control);
 
 	int paint_message_count{};
-	auto sub = window->MessageReceivedEvent().Subscribe(
-		[&paint_message_count](const zaf::MessageReceivedInfo& event_info) {
+	auto sub = window->MessageHandlingEvent().Subscribe(
+		[&paint_message_count](const zaf::MessageHandlingInfo& event_info) {
 			if (event_info.Message().ID() == WM_PAINT) {
 				++paint_message_count;
 			}

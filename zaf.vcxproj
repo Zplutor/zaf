@@ -425,7 +425,7 @@
     <ClCompile Include="src\zaf\window\event\closing_info.cpp" />
     <ClCompile Include="src\zaf\window\event\handle_create_infos.cpp" />
     <ClCompile Include="src\zaf\window\event\message_handled_info.cpp" />
-    <ClCompile Include="src\zaf\window\event\message_received_info.cpp" />
+    <ClCompile Include="src\zaf\window\event\message_handling_info.cpp" />
     <ClCompile Include="src\zaf\window\event\destroy_infos.cpp" />
     <ClCompile Include="src\zaf\window\event\show_window_event_info.cpp" />
     <ClCompile Include="src\zaf\window\event\window_focus_event_info.cpp" />
@@ -1030,7 +1030,7 @@
     <ClInclude Include="src\zaf\window\event\closing_info.h" />
     <ClInclude Include="src\zaf\window\event\handle_create_infos.h" />
     <ClInclude Include="src\zaf\window\event\message_handled_info.h" />
-    <ClInclude Include="src\zaf\window\event\message_received_info.h" />
+    <ClInclude Include="src\zaf\window\event\message_handling_info.h" />
     <ClInclude Include="src\zaf\window\event\destroy_infos.h" />
     <ClInclude Include="src\zaf\window\event\show_window_event_info.h" />
     <ClInclude Include="src\zaf\window\event\window_focus_event_info.h" />
