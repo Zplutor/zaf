@@ -105,4 +105,21 @@ TEST_F(WindowTest, Close_Destroyed) {
     ASSERT_FALSE(is_event_raised);
 }
 
+
+TEST_F(WindowTest, DestroyDuringHandlingMessage) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto holder = window->CreateHandle();
+    bool has_asserted{};
+    auto sub = window->MessageHandlingEvent().Subscribe([&](
+        const zaf::MessageHandlingInfo& event_info) {
+
+        if (event_info.Message().ID() == WM_LBUTTONDOWN) {
+            window->Destroy();
+        }
+    });
+
+    window->Messager().SendWMLBUTTONDOWN({});
+}
+
 }

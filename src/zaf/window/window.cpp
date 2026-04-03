@@ -770,7 +770,16 @@ LRESULT Window::RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lpa
     auto handle_result = message_handling_info.HandleResult();
     if (!handle_result) {
 
-        handle_result = HandleMessage(message);
+        // The window may be destroyed in the message handling event, in such case it cannot handle
+        // the message, otherwise it will cause undefined behavior. WM_NCDESTROY is the only 
+        // exception.
+        bool can_handle_message = 
+            (HandleState() != WindowHandleState::Destroyed) || 
+            (id == WM_NCDESTROY);
+
+        if (can_handle_message) {
+            handle_result = HandleMessage(message);
+        }
         
         // If still not handled, call the default window procedure.
         if (!handle_result) {
