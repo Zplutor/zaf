@@ -11,6 +11,7 @@
 #include <zaf/window/screen_manager.h>
 #include <zaf/control/text_box.h>
 #include <zaf/window/tray_icon.h>
+#include <zaf/window/popup_menu.h>
 
 // {D5CD59A3-D13B-41F9-B74D-793C713F05DC}
 static const GUID TrayIconID =
@@ -33,6 +34,15 @@ protected:
         });
         Disposables() += tray_icon_->ContextMenuEvent().Subscribe([this](const zaf::TrayIconContextMenuInfo& event_info) {
             ZAF_LOG() << L"Tray icon context menu requested.";
+            auto menu = zaf::Create<zaf::PopupMenu>();
+            auto menu_item = zaf::Create<zaf::MenuItem>();
+            menu_item->SetText(L"Menu Item 1");
+            menu->AddMenuItem(menu_item);
+
+            auto position = zaf::ScreenManager::Instance().PrimaryScreen()->TransformFromGlobal(event_info.PositionInGlobal());
+            menu->PopupOnScreen(
+                position, 
+                zaf::PopupMenuOptions::AlignBottomLeft);
         });
 
         this->SetIsPopup(true);

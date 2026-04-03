@@ -34,7 +34,8 @@ void PopupMenu::Initialize() {
 
 void PopupMenu::PopupOnControl(
     const std::shared_ptr<Control>& control,
-    const Point& position_on_control) {
+    const Point& position_on_control,
+    PopupMenuOptions options) {
 
     ZAF_EXPECT(control);
 
@@ -43,13 +44,14 @@ void PopupMenu::PopupOnControl(
 
     auto position_on_window = position_on_control;
     position_on_window.AddOffset(*control->PositionInWindow());
-    PopupOnWindow(window, position_on_window);
+    PopupOnWindow(window, position_on_window, options);
 }
 
 
 void PopupMenu::PopupOnWindow(
     const std::shared_ptr<Window>& window, 
-    const Point& position_on_window) {
+    const Point& position_on_window,
+    PopupMenuOptions options) {
 
     ZAF_EXPECT(window);
 
@@ -58,12 +60,12 @@ void PopupMenu::PopupOnWindow(
     auto position_in_screen = window->TransformToScreen(position_on_window);
     auto menu_position = CalculateMenuPosition(position_in_screen, menu_content_size, 0, *window);
 
-    InnerPopup(window, menu_position, menu_content_size);
+    InnerPopup(window, menu_position, options, menu_content_size);
 }
 
 
-void PopupMenu::PopupOnScreen(const Point& position_on_screen) {
-    InnerPopup(nullptr, position_on_screen, CalculateMenuContentSize());
+void PopupMenu::PopupOnScreen(const Point& position_on_screen, PopupMenuOptions options) {
+    InnerPopup(nullptr, position_on_screen, options, CalculateMenuContentSize());
 }
 
 
@@ -86,13 +88,14 @@ void PopupMenu::PopupAsSubMenu(const std::shared_ptr<MenuItem>& owner_menu_item)
         owner_menu_item->Width(),
         *owner_menu);
 
-    InnerPopup(owner_menu, menu_position, menu_content_size);
+    InnerPopup(owner_menu, menu_position, PopupMenuOptions::Default, menu_content_size);
 }
 
 
 void PopupMenu::InnerPopup(
     const std::shared_ptr<Window>& owner,
     const Point& position_in_screen,
+    PopupMenuOptions options,
     const zaf::Size& menu_content_size) {
 
     //Owner might be null if the menu popups on screen.
@@ -102,14 +105,24 @@ void PopupMenu::InnerPopup(
 
     InitializeController();
 
-    this->SetPosition(position_in_screen);
     this->SetContentSize(menu_content_size);
+
+    auto menu_size = this->Size();
+    Point menu_position = position_in_screen;
+    if (HasFlag(options, PopupMenuOptions::AlignRight)) {
+        menu_position.x -= menu_size.width;
+    }
+    if (HasFlag(options, PopupMenuOptions::AlignBottom)) {
+        menu_position.y -= menu_size.height;
+    }
+    this->SetPosition(menu_position);
+
     this->Show();
 
-    root_control_subscriptions_ += RootControl()->MouseEnterEvent().Subscribe(
+    root_control_subs_ += RootControl()->MouseEnterEvent().Subscribe(
         std::bind(&PopupMenu::OnRootControlMouseEnter, this, std::placeholders::_1));
 
-    root_control_subscriptions_ += RootControl()->MouseDownEvent().Subscribe(
+    root_control_subs_ += RootControl()->MouseDownEvent().Subscribe(
         std::bind(&PopupMenu::OnRootControlMouseDown, this, std::placeholders::_1));
 }
 
@@ -255,7 +268,7 @@ void PopupMenu::OnDestroyed(const DestroyedInfo& event_info) noexcept {
 
     UnselectCurrentMenuItem();
 
-    root_control_subscriptions_.Clear();
+    root_control_subs_.Clear();
     showing_sub_menu_item_.reset();
     if (show_sub_menu_timer_) {
         show_sub_menu_timer_->Dispose();

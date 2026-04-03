@@ -3274,5 +3274,8 @@
     <ClInclude Include="src\zaf\window\tray_icon_events.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\window\popup_menu_options.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

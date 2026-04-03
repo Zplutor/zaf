@@ -3,6 +3,7 @@
 #include <vector>
 #include <zaf/control/menu_item.h>
 #include <zaf/window/event/selected_menu_item_changed_info.h>
+#include <zaf/window/popup_menu_options.h>
 #include <zaf/window/window.h>
 
 namespace zaf {
@@ -49,8 +50,14 @@ public:
 
     @param position_on_control
         Position of the popup menu's top-left corner, in the control's coordinate.
+
+    @param options
+        Options for showing the popup menu.
     */
-    void PopupOnControl(const std::shared_ptr<Control>& control, const Point& position_on_control);
+    void PopupOnControl(
+        const std::shared_ptr<Control>& control, 
+        const Point& position_on_control,
+        PopupMenuOptions options = PopupMenuOptions::Default);
 
     /**
     Shows popup menu on a specified window.
@@ -60,16 +67,27 @@ public:
 
     @param position_on_window
         Position of the popup menu's top-left corner, in the window's coordinate.
+
+    @param options
+        Options for showing the popup menu.
     */
-    void PopupOnWindow(const std::shared_ptr<Window>& window, const Point& position_on_window);
+    void PopupOnWindow(
+        const std::shared_ptr<Window>& window,
+        const Point& position_on_window,
+        PopupMenuOptions options = PopupMenuOptions::Default);
 
     /**
     Shows popup menu on screen.
 
     @param position_on_screen
         Position of the popup menu's top-left corner on screen.
+
+    @param options
+        Options for showing the popup menu.
     */
-    void PopupOnScreen(const Point& position_on_screen);
+    void PopupOnScreen(
+        const Point& position_on_screen,
+        PopupMenuOptions options = PopupMenuOptions::Default);
 
     /**
     Shows popup menu as a sub menu of a specified menu item.
@@ -120,6 +138,7 @@ private:
     void InnerPopup(
         const std::shared_ptr<Window>& owner, 
         const Point& position_in_screen, 
+        PopupMenuOptions options,
         const zaf::Size& menu_content_size);
     void InitializeController();
     zaf::Size CalculateMenuContentSize() const;
@@ -151,7 +170,7 @@ private:
 
 private:
     std::shared_ptr<internal::PopupMenuController> controller_;
-    rx::DisposeBag root_control_subscriptions_;
+    rx::DisposeBag root_control_subs_;
 
     std::vector<std::unique_ptr<MenuItemInfo>> menu_item_infos_;
     std::weak_ptr<MenuItem> selected_menu_item_;
