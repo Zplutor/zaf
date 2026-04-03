@@ -10,9 +10,9 @@ constexpr UINT TestMessage = WM_USER + 1;
 
 class TestWindow : public zaf::Window {
 public:
-    std::size_t on_message_received1_sequence{};
-    std::size_t on_message_received2_sequence{};
-    std::size_t message_received_event_sequence{};
+    std::size_t on_message_handling1_sequence{};
+    std::size_t on_message_handling2_sequence{};
+    std::size_t message_handling_event_sequence{};
 
     std::size_t on_message_handled1_sequence{};
     std::size_t on_message_handled2_sequence{};
@@ -27,7 +27,7 @@ protected:
             [this](const zaf::MessageHandlingInfo& event_info) {
 
             if (event_info.Message().ID() == TestMessage) {
-                message_received_event_sequence = ++current_sequence_;
+                message_handling_event_sequence = ++current_sequence_;
             }
         });
 
@@ -43,13 +43,13 @@ protected:
     void OnMessageHandling(const zaf::MessageHandlingInfo& event_info) override {
 
         if (event_info.Message().ID() == TestMessage) {
-            on_message_received1_sequence = ++current_sequence_;
+            on_message_handling1_sequence = ++current_sequence_;
         }
 
         __super::OnMessageHandling(event_info);
 
         if (event_info.Message().ID() == TestMessage) {
-            on_message_received2_sequence = ++current_sequence_;
+            on_message_handling2_sequence = ++current_sequence_;
         }
     }
 
@@ -80,12 +80,56 @@ TEST_F(WindowTest, MessageRoutingSequence) {
 
     SendMessage(window->Handle(), TestMessage, 0, 0);
 
-    ASSERT_EQ(window->on_message_received1_sequence, 1);
-    ASSERT_EQ(window->message_received_event_sequence, 2);
-    ASSERT_EQ(window->on_message_received2_sequence, 3);
+    ASSERT_EQ(window->on_message_handling1_sequence, 1);
+    ASSERT_EQ(window->message_handling_event_sequence, 2);
+    ASSERT_EQ(window->on_message_handling2_sequence, 3);
     ASSERT_EQ(window->on_message_handled1_sequence, 4);
     ASSERT_EQ(window->message_handled_event_sequence, 5);
     ASSERT_EQ(window->on_message_handled2_sequence, 6);
+}
+
+
+TEST_F(WindowTest, MessageHandlingEvent_CannotBeHandledMessages) {
+
+    auto window = zaf::Create<Window>();
+
+    bool tested_wm_nccreate{};
+    bool tested_wm_create{};
+    bool tested_wm_destroy{};
+    bool tested_wm_ncdestroy{};
+
+    auto sub = window->MessageHandlingEvent().Subscribe(
+        [&](const zaf::MessageHandlingInfo& event_info) {
+
+        if (event_info.Message().ID() == WM_NCCREATE) {
+            tested_wm_nccreate = true;
+            ASSERT_FALSE(event_info.CanBeHandled());
+            ASSERT_THROW(event_info.MarkAsHandled(0), zaf::InvalidOperationError);
+        }
+        else if (event_info.Message().ID() == WM_CREATE) {
+            tested_wm_create = true;
+            ASSERT_FALSE(event_info.CanBeHandled());
+            ASSERT_THROW(event_info.MarkAsHandled(0), zaf::InvalidOperationError);
+        }
+        else if (event_info.Message().ID() == WM_DESTROY) {
+            tested_wm_destroy = true;
+            ASSERT_FALSE(event_info.CanBeHandled());
+            ASSERT_THROW(event_info.MarkAsHandled(0), zaf::InvalidOperationError);
+        }
+        else if (event_info.Message().ID() == WM_NCDESTROY) {
+            tested_wm_ncdestroy = true;
+            ASSERT_FALSE(event_info.CanBeHandled());
+            ASSERT_THROW(event_info.MarkAsHandled(0), zaf::InvalidOperationError);
+        }
+    });
+
+    auto holder = window->CreateHandle();
+    window->Destroy();
+
+    ASSERT_TRUE(tested_wm_nccreate);
+    ASSERT_TRUE(tested_wm_create);
+    ASSERT_TRUE(tested_wm_destroy);
+    ASSERT_TRUE(tested_wm_ncdestroy);
 }
 
 }

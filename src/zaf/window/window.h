@@ -1813,6 +1813,7 @@ protected:
 private:
     static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
     LRESULT RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lparam);
+    static bool CanMessageBeInterupted(const UINT message_id) noexcept;
     std::optional<LRESULT> HandleMessage(const Message& message);
     void HandleWMSHOWWINDOW(const ShowWindowMessage& message);
     

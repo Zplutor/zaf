@@ -761,12 +761,13 @@ LRESULT Window::RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lpa
     Message message{ hwnd, id, wparam, lparam };
     auto shared_this = shared_from_this();
 
-    // Raise the message received event first.
-    MessageHandlingInfo message_received_info{ shared_this, message };
-    OnMessageHandling(message_received_info);
+    // Raise the message handling event first.
+    bool can_be_interrupted = CanMessageBeInterupted(id);
+    MessageHandlingInfo message_handling_info{ shared_this, message, can_be_interrupted };
+    OnMessageHandling(message_handling_info);
 
     // Check if the message has been handled, if not, handle it.
-    auto handle_result = message_received_info.HandleResult();
+    auto handle_result = message_handling_info.HandleResult();
     if (!handle_result) {
 
         handle_result = HandleMessage(message);
@@ -782,6 +783,19 @@ LRESULT Window::RouteWindowMessage(HWND hwnd, UINT id, WPARAM wparam, LPARAM lpa
     OnMessageHandled(message_handled_info);
 
     return *handle_result;
+}
+
+
+bool Window::CanMessageBeInterupted(const UINT message_id) noexcept {
+    switch (message_id) {
+    case WM_NCCREATE:
+    case WM_CREATE:
+    case WM_DESTROY:
+    case WM_NCDESTROY:
+        return false;
+    default:
+        return true;
+    }
 }
 
 
