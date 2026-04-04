@@ -1006,6 +1006,7 @@
     <ClInclude Include="src\zaf\window\event\mouse_capture_control_changed_info.h" />
     <ClInclude Include="src\zaf\window\event\root_control_changed_info.h" />
     <ClInclude Include="src\zaf\window\event\window_size_changed_info.h" />
+    <ClInclude Include="src\zaf\window\find_screen_option.h" />
     <ClInclude Include="src\zaf\window\input_method_context.h" />
     <ClInclude Include="src\zaf\window\internal\popup_menu_controller.h" />
     <ClInclude Include="src\zaf\window\internal\window_facets\window_control_facet.h" />

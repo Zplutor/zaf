@@ -39,8 +39,10 @@ protected:
             menu_item->SetText(L"Menu Item 1");
             menu->AddMenuItem(menu_item);
 
-            auto position = zaf::ScreenManager::Instance().PrimaryScreen()->TransformFromGlobal(event_info.PositionInGlobal());
+            auto screen = zaf::ScreenManager::Instance().ScreenFromGlobalPosition(event_info.PositionInGlobal());
+            auto position = screen->TransformFromGlobal(event_info.PositionInGlobal());
             menu->PopupOnScreen(
+                screen,
                 position, 
                 zaf::PopupMenuOptions::AlignBottomLeft);
         });

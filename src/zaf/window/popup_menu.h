@@ -86,6 +86,7 @@ public:
         Options for showing the popup menu.
     */
     void PopupOnScreen(
+        const std::shared_ptr<zaf::Screen>& screen,
         const Point& position_on_screen,
         PopupMenuOptions options = PopupMenuOptions::Default);
 
@@ -137,6 +138,7 @@ private:
 private:
     void InnerPopup(
         const std::shared_ptr<Window>& owner, 
+        const std::shared_ptr<zaf::Screen>& screen,
         const Point& position_in_screen, 
         PopupMenuOptions options,
         const zaf::Size& menu_content_size);

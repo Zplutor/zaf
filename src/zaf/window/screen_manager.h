@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
+#include <zaf/window/find_screen_option.h>
 #include <zaf/window/screen.h>
 
 namespace zaf {
@@ -21,6 +22,10 @@ public:
     }
 
     std::shared_ptr<Screen> ScreenFromHandle(HMONITOR handle) const noexcept;
+
+    std::shared_ptr<Screen> ScreenFromGlobalPosition(
+        const Point& global_position,
+        FindScreenOption option = FindScreenOption::DefaultToNull) const noexcept;
 
 private:
     friend class Application;

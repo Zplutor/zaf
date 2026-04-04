@@ -3277,5 +3277,8 @@
     <ClInclude Include="src\zaf\window\popup_menu_options.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\window\find_screen_option.h">
+      <Filter>zaf\window</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

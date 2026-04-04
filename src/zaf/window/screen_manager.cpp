@@ -89,4 +89,16 @@ std::shared_ptr<Screen> ScreenManager::ScreenFromHandle(HMONITOR handle) const n
     return nullptr;
 }
 
+
+std::shared_ptr<Screen> ScreenManager::ScreenFromGlobalPosition(
+    const Point& global_position,
+    FindScreenOption option) const noexcept {
+
+    auto handle = MonitorFromPoint(global_position.ToPOINT(), static_cast<DWORD>(option));
+    if (!handle) {
+        return nullptr;
+    }
+    return ScreenFromHandle(handle);
+}
+
 }

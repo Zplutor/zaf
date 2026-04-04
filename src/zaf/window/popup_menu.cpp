@@ -60,12 +60,18 @@ void PopupMenu::PopupOnWindow(
     auto position_in_screen = window->TransformToScreen(position_on_window);
     auto menu_position = CalculateMenuPosition(position_in_screen, menu_content_size, 0, *window);
 
-    InnerPopup(window, menu_position, options, menu_content_size);
+    InnerPopup(window, window->Screen(), menu_position, options, menu_content_size);
 }
 
 
-void PopupMenu::PopupOnScreen(const Point& position_on_screen, PopupMenuOptions options) {
-    InnerPopup(nullptr, position_on_screen, options, CalculateMenuContentSize());
+void PopupMenu::PopupOnScreen(
+    const std::shared_ptr<zaf::Screen>& screen, 
+    const Point& position_on_screen,
+    PopupMenuOptions options) {
+
+    ZAF_EXPECT(screen);
+
+    InnerPopup(nullptr, screen, position_on_screen, options, CalculateMenuContentSize());
 }
 
 
@@ -88,12 +94,18 @@ void PopupMenu::PopupAsSubMenu(const std::shared_ptr<MenuItem>& owner_menu_item)
         owner_menu_item->Width(),
         *owner_menu);
 
-    InnerPopup(owner_menu, menu_position, PopupMenuOptions::Default, menu_content_size);
+    InnerPopup(
+        owner_menu,
+        owner_menu->Screen(),
+        menu_position,
+        PopupMenuOptions::Default,
+        menu_content_size);
 }
 
 
 void PopupMenu::InnerPopup(
     const std::shared_ptr<Window>& owner,
+    const std::shared_ptr<zaf::Screen>& screen,
     const Point& position_in_screen,
     PopupMenuOptions options,
     const zaf::Size& menu_content_size) {
@@ -105,6 +117,7 @@ void PopupMenu::InnerPopup(
 
     InitializeController();
 
+    this->SetScreen(screen);
     this->SetContentSize(menu_content_size);
 
     auto menu_size = this->Size();
