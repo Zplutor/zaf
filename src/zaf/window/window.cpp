@@ -895,11 +895,8 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
         return std::nullopt;
     }
     case WM_MOUSEMOVE:
-    case WM_NCMOUSEMOVE:
     case WM_LBUTTONDOWN:
-    case WM_NCLBUTTONDOWN:
     case WM_LBUTTONUP:
-    case WM_NCLBUTTONUP:
     case WM_MBUTTONDOWN:
     case WM_MBUTTONUP:
     case WM_RBUTTONDOWN:
@@ -911,12 +908,10 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
     }
 
     case WM_MOUSEHOVER:
-    case WM_NCMOUSEHOVER:
         mouse_facet_->HandleMouseHoverMessage(message);
         return 0;
 
     case WM_MOUSELEAVE:
-    case WM_NCMOUSELEAVE:
         mouse_facet_->HandleMouseLeaveMessage(message);
         return 0;
 

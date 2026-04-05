@@ -74,7 +74,6 @@ const ControlEventInvokerBinder::MouseEventBinding&
     ControlEventInvokerBinder::GetMouseEventBinding(UINT message_id) {
 
     switch (message_id) {
-        case WM_NCMOUSEMOVE:
         case WM_MOUSEMOVE: {
             static MouseEventBinding binding{
                 MakeMouseEventInvoker<PreMouseMoveInfo>(&Control::OnPreMouseMove),
@@ -84,7 +83,6 @@ const ControlEventInvokerBinder::MouseEventBinding&
         }
 
         case WM_LBUTTONDOWN:
-        case WM_NCLBUTTONDOWN:
         case WM_MBUTTONDOWN:
         case WM_RBUTTONDOWN: {
             static MouseEventBinding binding{
@@ -95,7 +93,6 @@ const ControlEventInvokerBinder::MouseEventBinding&
         }
 
         case WM_LBUTTONUP:
-        case WM_NCLBUTTONUP:
         case WM_MBUTTONUP:
         case WM_RBUTTONUP: {
             static MouseEventBinding binding{

@@ -58,7 +58,7 @@ std::optional<HitTestResult> WindowMouseFacet::HitTest(const HitTestMessage& mes
 
 bool WindowMouseFacet::HandleGeneralMouseMessage(const MouseMessage& message) {
 
-    if (message.ID() == WM_MOUSEMOVE || message.ID() == WM_NCMOUSEMOVE) {
+    if (message.ID() == WM_MOUSEMOVE) {
 
         if (window_.inspect_facet_->IsSelectingInspectedControl()) {
             window_.inspect_facet_->HighlightControlAtPosition(message.MousePosition());
@@ -86,6 +86,8 @@ bool WindowMouseFacet::HandleGeneralMouseMessage(const MouseMessage& message) {
 
 void WindowMouseFacet::TrackMouseByMouseMove(const MouseMessage& message) {
 
+    // There is no WM_NCMOUSEMOVE message now. We keep this code for future use when we want to
+    // support WM_NCMOUSEMOVE message again.
     bool is_non_client = message.ID() == WM_NCMOUSEMOVE;
 
     auto is_tracking_mouse = [this, is_non_client]() {
@@ -305,7 +307,7 @@ bool WindowMouseFacet::RedirectMouseWheelMessage(const Message& message) {
 bool WindowMouseFacet::RouteMouseEvent(const MouseMessage& message) {
 
     const auto is_mouse_move = [&message]() {
-        return message.ID() == WM_MOUSEMOVE || message.ID() == WM_NCMOUSEMOVE;
+        return message.ID() == WM_MOUSEMOVE;
     };
 
     Point position_at_begin_routing_control;
