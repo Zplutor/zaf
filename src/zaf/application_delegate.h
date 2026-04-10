@@ -47,6 +47,14 @@ public:
     virtual void OnSystemTaskbarCreated(const SystemTaskbarCreatedInfo&) { }
 
     /**
+    Called when the system time is changed.
+
+    @details
+        This method is called after raising Application::SystemTimeChangedEvent().
+    */
+    virtual void OnSystemTimeChanged(const SystemTimeChangedInfo&) { }
+
+    /**
     Called when the system user session is about to end.
 
     @details

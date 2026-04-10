@@ -17,6 +17,11 @@ class SystemTaskbarCreatedInfo {
 };
 
 
+class SystemTimeChangedInfo {
+
+};
+
+
 class SystemSessionEndingInfo {
 
 };

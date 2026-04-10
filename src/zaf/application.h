@@ -212,6 +212,16 @@ public:
     rx::Observable<SystemTaskbarCreatedInfo> SystemTaskbarCreatedEvent() const noexcept;
 
     /**
+    Gets the event that is raised when the system time is changed.
+
+    Details
+        This event is raised when the application receives a `WM_TIMECHANGE` message.
+
+        This event is raised before calling ApplicationDelegate::OnSystemTimeChanged().
+    */
+    rx::Observable<SystemTimeChangedInfo> SystemTimeChangedEvent() const noexcept;
+
+    /**
     Gets the event that is raised when the system user session is about to end.
 
     @details
@@ -280,7 +290,7 @@ private:
     std::unique_ptr<GraphicFactory> graphic_factory_;
     std::unique_ptr<wic::ImagingFactory> imaging_factory_;
     std::unique_ptr<WindowClassRegistry> window_class_registry_;
-    std::shared_ptr<internal::SystemMessageWindow> system_message_window_;
+    std::unique_ptr<internal::SystemMessageWindow> system_message_window_;
     std::unique_ptr<ScreenManager> screen_manager_;
     std::weak_ptr<Window> main_window_;
     std::set<std::shared_ptr<WindowHolder>> window_holders_;
@@ -293,6 +303,7 @@ private:
     rx::SingleSubject<ApplicationStartedInfo> started_event_;
     rx::SingleSubject<ApplicationExitingInfo> exiting_event_;
     rx::Subject<SystemTaskbarCreatedInfo> system_taskbar_created_event_;
+    rx::Subject<SystemTimeChangedInfo> system_time_changed_event_;
     rx::SingleSubject<SystemSessionEndingInfo> system_session_ending_event_;
 };
 

@@ -94,31 +94,35 @@ void Application::Initialize(const InitializationOptions& parameters) {
 
 void Application::InitializeSystemMessageWindow() {
 
-    system_message_window_ = Create<internal::SystemMessageWindow>();
+    system_message_window_ = std::make_unique<internal::SystemMessageWindow>();
 
-    Disposables() += system_message_window_->TaskbarCreatedEvent().Subscribe(
-        [this](const SystemTaskbarCreatedInfo& event_info) {
+    auto task_bar_created_message_id = RegisterWindowMessage(L"TaskbarCreated");
+
+    Disposables() += system_message_window_->MessageReceivedEvent().Subscribe(
+        [this, task_bar_created_message_id](const Message& message) {
     
-            auto event_observer = system_taskbar_created_event_.AsObserver();
-            event_observer.OnNext(event_info);
-
-            if (delegate_) {
-                delegate_->OnSystemTaskbarCreated(event_info);
+            if (message.ID() == task_bar_created_message_id) {
+                auto event_observer = system_taskbar_created_event_.AsObserver();
+                event_observer.OnNext(SystemTaskbarCreatedInfo{});
+                if (delegate_) {
+                    delegate_->OnSystemTaskbarCreated(SystemTaskbarCreatedInfo{});
+                }
             }
-        }
-    );
-
-    Disposables() += system_message_window_->SessionEndingEvent().Subscribe(
-        [this](const SystemSessionEndingInfo& event_info) {
-    
-            auto event_observer = system_session_ending_event_.AsObserver();
-            event_observer.OnSuccess(event_info);
-
-            if (delegate_) {
-                delegate_->OnSystemSessionEnding(event_info);
+            else if (message.ID() == WM_TIMECHANGE) {
+                auto event_observer = system_time_changed_event_.AsObserver();
+                event_observer.OnNext(SystemTimeChangedInfo{});
+                if (delegate_) {
+                    delegate_->OnSystemTimeChanged(SystemTimeChangedInfo{});
+                }
             }
-        }
-    );
+            else if (message.ID() == WM_ENDSESSION) {
+                auto event_observer = system_session_ending_event_.AsObserver();
+                event_observer.OnSuccess(SystemSessionEndingInfo{});
+                if (delegate_) {
+                    delegate_->OnSystemSessionEnding(SystemSessionEndingInfo{});
+                }
+            }
+        });
 }
 
 
@@ -221,6 +225,11 @@ rx::Single<ApplicationExitingInfo> Application::ExitingEvent() const noexcept {
 
 rx::Observable<SystemTaskbarCreatedInfo> Application::SystemTaskbarCreatedEvent() const noexcept {
     return system_taskbar_created_event_.AsObservable();
+}
+
+
+rx::Observable<SystemTimeChangedInfo> Application::SystemTimeChangedEvent() const noexcept {
+    return system_time_changed_event_.AsObservable();
 }
 
 
