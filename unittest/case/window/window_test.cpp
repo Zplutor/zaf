@@ -85,6 +85,24 @@ TEST_F(WindowTest, CreateHandle_ThrowInHandleCreatedEvent) {
 }
 
 
+// When an exception is thrown in the HandleCreatedEvent, the window handle will be destroyed, and
+// then the DestroyedEvent will be raised. In this case, user codes may release the window pointer
+// in the DestroyedEvent. This test is to make sure that the window pointer can be safely released
+// in this case, and no crash occurs.
+TEST_F(WindowTest, CreateHandle_ThrowInHandleCreatedEventAndReleaseInDestroyedEvent) {
+
+    auto window = zaf::Create<zaf::Window>();
+    auto sub1 = window->HandleCreatedEvent().Subscribe(
+        [](const zaf::HandleCreatedInfo& event_info) {
+            throw zaf::InvalidOperationError{};
+        });
+    auto sub2 = window->DestroyedEvent().Subscribe([&](const zaf::DestroyedInfo&) {
+        window.reset();
+    });
+    ASSERT_THROW(window->Show(), zaf::InvalidOperationError);
+}
+
+
 TEST_F(WindowTest, CreateHandle_WithOwner) {
 
     // Owner in Creating state

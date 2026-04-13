@@ -112,7 +112,13 @@ std::shared_ptr<WindowHolder> WindowLifecycleFacet::CreateHandleInNotCreatedStat
         }
     }
 
-    auto holder = std::make_shared<WindowHolder>(window_.shared_from_this());
+    // The window must be kept alive in this method using the shared pointer, as in the following
+    // DestroyedEvent callback, user codes may release the window pointer they kept, which causes 
+    // `this` pointer to be dangling after the DestroyedEvent callback returns, and then the code
+    // accessing members will crash.
+    auto shared_window = window_.shared_from_this();
+
+    auto holder = std::make_shared<WindowHolder>(shared_window);
     holder_ = holder;
 
     handle_state_ = WindowHandleState::Creating;
