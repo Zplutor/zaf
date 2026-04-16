@@ -43,6 +43,11 @@ void InspectorWindow::Initialize() {
     rect.position.x = target_window_rect.position.x + target_window_rect.size.width;
     rect.position.y = target_window_rect.position.y;
 
+    auto screen_rect = this->Screen()->RectInSelf();
+    if (rect.Right() > screen_rect.Right()) {
+        rect.position.x -= rect.Right() - screen_rect.Right();
+    }
+
     SetRect(rect);
 
     RootControl()->SetLayouter(Create<VerticalLayouter>());
