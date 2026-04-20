@@ -359,6 +359,9 @@ void ComboBox::PopupDropDownWindow() {
     drop_down_window->SetHasBorder(false);
     drop_down_window->SetActivateOptions(ActivateOptions::NoActivate);
     drop_down_window->SetOwner(window);
+    // MinWidth must be set before setting rect, otherwise the rect would be clamped to the default
+    // min width.
+    drop_down_window->SetMinWidth(window_rect.size.width);
     drop_down_window->SetRect(window_rect);
     drop_down_window->SetListControl(drop_down_list_box_);
 
