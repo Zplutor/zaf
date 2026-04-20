@@ -301,14 +301,6 @@ protected:
     void OnMouseMove(const MouseMoveInfo& event_info) override;
 
 private:
-    class DropDownListBoxDelegate : public ListBoxDelegate {
-    public:
-        std::shared_ptr<ListItem> CreateItem(
-            std::size_t item_index,
-            const std::shared_ptr<Object>& item_data) override;
-    };
-
-private:
     friend class ComboBox;
 
     void SetMouseMoveCallback(const std::function<void(const Point&)>& callback) {

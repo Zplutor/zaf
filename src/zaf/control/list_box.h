@@ -32,6 +32,9 @@ public:
      */
     void SetDefaultItemHeight(float item_height);
 
+    void SetDefaultTextColorPicker(ColorPicker color_picker);
+    void SetDefaultBackgroundColorPicker(ColorPicker color_picker);
+
     void AddItem(const std::shared_ptr<Object>& data);
     void AddItemAtIndex(std::size_t index, const std::shared_ptr<Object>& data);
     void RemoveItemAtIndex(std::size_t index);
@@ -47,6 +50,8 @@ private:
     std::shared_ptr<ListBoxDelegate> delegate_{};
 
     float default_item_height_{ 18 };
+    ColorPicker default_text_color_picker_;
+    ColorPicker default_background_color_picker_;
 };
 
 ZAF_OBJECT_BEGIN(ListBox);
