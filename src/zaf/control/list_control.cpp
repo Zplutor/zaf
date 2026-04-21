@@ -155,6 +155,11 @@ void ListControl::Reload() {
 }
 
 
+void ListControl::RefreshItems() {
+    parts_->Core().RefreshItems();
+}
+
+
 std::size_t ListControl::ItemCount() const {
     
     auto data_source = DataSource();

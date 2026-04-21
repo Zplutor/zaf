@@ -68,7 +68,7 @@ void ListBox::SetDefaultItemHeight(float item_height) {
     default_item_height_ = item_height;
 
     delegate_->SetItemHeight(default_item_height_);
-    Reload();
+    RefreshItems();
 }
 
 
@@ -78,7 +78,7 @@ void ListBox::SetDefaultTextColorPicker(ColorPicker color_picker) {
     default_text_color_picker_ = std::move(color_picker);
 
     delegate_->SetTextColorPicker(default_text_color_picker_);
-    Reload();
+    RefreshItems();
 }
 
 
@@ -87,7 +87,7 @@ void ListBox::SetDefaultBackgroundColorPicker(ColorPicker color_picker) {
     default_background_color_picker_ = std::move(color_picker);
 
     delegate_->SetBackgroundColorPicker(default_background_color_picker_);
-    Reload();
+    RefreshItems();
 }
 
 

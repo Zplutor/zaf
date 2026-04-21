@@ -461,6 +461,11 @@ void ListCore::HandleDataMoved(const ListDataMovedInfo& event_info) {
 }
 
 
+void ListCore::RefreshItems() {
+    InnerReload(true);
+}
+
+
 void ListCore::RefreshItemsIfNeeded() {
 
     if (!refresh_after_data_source_event_) {

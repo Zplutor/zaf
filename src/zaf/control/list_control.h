@@ -65,6 +65,8 @@ public:
      */
     void Reload();
 
+    void RefreshItems();
+
     /**
     Get total count of items.
     */

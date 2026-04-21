@@ -67,6 +67,7 @@ public:
     void HandleFocusLostEvent(const FocusLostInfo& event_info);
 
     void Reload();
+    void RefreshItems();
 
     void ScrollToItemAtIndex(std::size_t index);
 
