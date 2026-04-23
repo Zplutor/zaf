@@ -349,10 +349,7 @@ void ComboBox::PopupDropDownWindow() {
         CalculateDropDownListHeight(visible_item_count) + drop_down_list_box_border.top + drop_down_list_box_border.bottom;
 
     window_rect = SnapToPixels(window_rect, window->DPI());
-
-    POINT screen_position = FromDIPs(window_rect.position, window->DPI()).ToPOINT();
-    ClientToScreen(window->Handle(), &screen_position);
-    window_rect.position = ToDIPs(Point::FromPOINT(screen_position), window->DPI());
+    window_rect = window->TransformToScreen(window_rect);
 
     auto drop_down_window = Create<internal::ComboBoxDropDownWindow>();
     drop_down_window->SetIsPopup(true);
