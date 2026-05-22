@@ -9,7 +9,7 @@
 #include <zaf/control/list_data_source.h>
 #include <zaf/control/rich_edit.h>
 #include <zaf/graphic/pixel_snapping.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/d2d/path_geometry.h>
 #include <zaf/graphic/graphic_factory.h>

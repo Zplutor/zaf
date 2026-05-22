@@ -1,5 +1,5 @@
 #include "title_bar_button.h"
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 
 TitleBarButton::TitleBarButton(Type type) : type_(type) {
 

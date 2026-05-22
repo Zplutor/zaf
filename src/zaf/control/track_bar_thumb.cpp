@@ -1,5 +1,5 @@
 #include <zaf/control/track_bar_thumb.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 
 namespace zaf {
 

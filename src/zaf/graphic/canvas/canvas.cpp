@@ -1,4 +1,4 @@
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <dwrite.h>
 #include <zaf/base/error/com_error.h>
 #include <zaf/graphic/pixel_snapping.h>
@@ -16,7 +16,7 @@ namespace zaf {
 Canvas::Canvas(d2d::Renderer& renderer) : renderer_(renderer) {
 
     //Add an initial state.
-    internal::CanvasState initial_state;
+    internal::CanvasStateData initial_state;
     initial_state.brush = renderer.CreateSolidColorBrush(Color::White());
     states_.push(initial_state);
 }
@@ -169,7 +169,7 @@ void Canvas::SetStroke(const Stroke& stroke) {
 }
 
 
-const internal::CanvasState& Canvas::CurrentState() const {
+const internal::CanvasStateData& Canvas::CurrentState() const {
     return states_.top();
 }
 

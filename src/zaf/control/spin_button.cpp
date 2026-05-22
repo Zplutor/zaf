@@ -1,7 +1,7 @@
 #include <zaf/control/spin_button.h>
 #include <zaf/base/error/precondition_error.h>
 #include <zaf/control/internal/triangle_geometry.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 
 namespace zaf {
 

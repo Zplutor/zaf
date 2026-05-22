@@ -1,7 +1,7 @@
 #include <zaf/internal/paint_utility.h>
 #include <zaf/control/clickable_control.h>
 #include <zaf/control/textual_control.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/d2d/stroke_properties.h>
 #include <zaf/internal/theme.h>

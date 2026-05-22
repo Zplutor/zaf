@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/non_copyable.h>
-#include <zaf/graphic/canvas_clipping_guard.h>
+#include <zaf/graphic/canvas/canvas_clipping_guard.h>
 
 namespace zaf {
 

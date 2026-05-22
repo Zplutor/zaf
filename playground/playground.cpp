@@ -13,7 +13,7 @@
 #include <zaf/window/tray_icon.h>
 #include <zaf/window/popup_menu.h>
 #include <zaf/control/list_box.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/d2d/stroke_properties.h>
 

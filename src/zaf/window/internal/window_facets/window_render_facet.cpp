@@ -3,7 +3,7 @@
 #include <zaf/window/internal/window_facets/window_inspect_facet.h>
 #include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
 #include <zaf/control/control.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>

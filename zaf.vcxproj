@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug-MT|Win32">
@@ -235,9 +235,9 @@
     <ClCompile Include="src\zaf\crypto\md5.cpp" />
     <ClCompile Include="src\zaf\crypto\sha.cpp" />
     <ClCompile Include="src\zaf\graphic\pixel_snapping.cpp" />
-    <ClCompile Include="src\zaf\graphic\canvas_clipping_guard.cpp" />
-    <ClCompile Include="src\zaf\graphic\canvas_region_guard.cpp" />
-    <ClCompile Include="src\zaf\graphic\canvas_state_guard.cpp" />
+    <ClCompile Include="src\zaf\graphic\canvas\canvas_clipping_guard.cpp" />
+    <ClCompile Include="src\zaf\graphic\canvas\canvas_region_guard.cpp" />
+    <ClCompile Include="src\zaf\graphic\canvas\canvas_state_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\color_parser.cpp" />
     <ClCompile Include="src\zaf\graphic\d2d\bitmap_renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\d2d\geometry_sink.cpp" />
@@ -265,7 +265,7 @@
     <ClCompile Include="src\zaf\graphic\gif_metadata_querier.cpp" />
     <ClCompile Include="src\zaf\graphic\image.cpp" />
     <ClCompile Include="src\zaf\graphic\point_parser.cpp" />
-    <ClCompile Include="src\zaf\graphic\canvas.cpp" />
+    <ClCompile Include="src\zaf\graphic\canvas\canvas.cpp" />
     <ClCompile Include="src\zaf\graphic\color.cpp" />
     <ClCompile Include="src\zaf\graphic\ellipse.cpp" />
     <ClCompile Include="src\zaf\graphic\frame.cpp" />
@@ -723,9 +723,9 @@
     <ClInclude Include="src\zaf\crypto\md5.h" />
     <ClInclude Include="src\zaf\crypto\sha.h" />
     <ClInclude Include="src\zaf\graphic\pixel_snapping.h" />
-    <ClInclude Include="src\zaf\graphic\canvas_clipping_guard.h" />
-    <ClInclude Include="src\zaf\graphic\canvas_region_guard.h" />
-    <ClInclude Include="src\zaf\graphic\canvas_state_guard.h" />
+    <ClInclude Include="src\zaf\graphic\canvas\canvas_clipping_guard.h" />
+    <ClInclude Include="src\zaf\graphic\canvas\canvas_region_guard.h" />
+    <ClInclude Include="src\zaf\graphic\canvas\canvas_state_guard.h" />
     <ClInclude Include="src\zaf\graphic\color_parser.h" />
     <ClInclude Include="src\zaf\graphic\d2d\antialias_mode.h" />
     <ClInclude Include="src\zaf\graphic\d2d\arc_segment.h" />
@@ -779,9 +779,9 @@
     <ClInclude Include="src\zaf\graphic\frame_parser.h" />
     <ClInclude Include="src\zaf\graphic\gif_metadata_querier.h" />
     <ClInclude Include="src\zaf\graphic\image.h" />
-    <ClInclude Include="src\zaf\graphic\pixel_snap_mode.h" />
+    <ClInclude Include="src\zaf\graphic\canvas\pixel_snap_mode.h" />
     <ClInclude Include="src\zaf\graphic\point_parser.h" />
-    <ClInclude Include="src\zaf\graphic\canvas.h" />
+    <ClInclude Include="src\zaf\graphic\canvas\canvas.h" />
     <ClInclude Include="src\zaf\graphic\color.h" />
     <ClInclude Include="src\zaf\graphic\ellipse.h" />
     <ClInclude Include="src\zaf\graphic\frame.h" />
@@ -821,7 +821,7 @@
     <ClInclude Include="src\zaf\internal\graphic\alignment_helper.h" />
     <ClInclude Include="src\zaf\internal\graphic\alignment_info.h" />
     <ClInclude Include="src\zaf\internal\graphic\canvas_region.h" />
-    <ClInclude Include="src\zaf\internal\graphic\canvas_state.h" />
+    <ClInclude Include="src\zaf\graphic\internal\canvas_state_data.h" />
     <ClInclude Include="src\zaf\internal\graphic\text_inline_object_bridge.h" />
     <ClInclude Include="src\zaf\internal\graphic\text_inline_object_painter.h" />
     <ClInclude Include="src\zaf\internal\graphic\utility.h" />

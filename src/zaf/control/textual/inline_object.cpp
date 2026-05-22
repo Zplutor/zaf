@@ -1,6 +1,6 @@
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/base/as.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>
 

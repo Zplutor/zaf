@@ -3,7 +3,7 @@
 #include <zaf/base/log.h>
 #include <zaf/control/control_object.h>
 #include <zaf/creation.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/window/message/mouse_message.h>
 
 #undef min

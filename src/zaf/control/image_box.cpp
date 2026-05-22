@@ -2,7 +2,7 @@
 #include <zaf/control/control_object.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
 #include <zaf/control/internal/image_box/image_player_factory.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 
 namespace zaf {
 

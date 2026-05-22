@@ -1,5 +1,5 @@
-#include <zaf/graphic/canvas_region_guard.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas_region_guard.h>
+#include <zaf/graphic/canvas/canvas.h>
 
 namespace zaf {
 

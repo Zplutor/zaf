@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="zaf">
@@ -214,6 +214,12 @@
     <Filter Include="zaf\control\internal\text_box">
       <UniqueIdentifier>{50e01316-4251-465c-b6fa-7c392b0d6fd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="zaf\graphic\canvas">
+      <UniqueIdentifier>{17daa54d-a43c-4574-a9e8-32e0f3a9319f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\graphic\internal">
+      <UniqueIdentifier>{91286bba-edd5-4f62-8306-c441a40848c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\zaf\application.cpp">
@@ -224,9 +230,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\window\window.cpp">
       <Filter>zaf\window</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\canvas.cpp">
-      <Filter>zaf\graphic</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\color.cpp">
       <Filter>zaf\graphic</Filter>
@@ -708,15 +711,6 @@
     </ClCompile>
     <ClCompile Include="src\zaf\control\rich_edit\embedded_object.cpp">
       <Filter>zaf\control\rich_edit</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\canvas_region_guard.cpp">
-      <Filter>zaf\graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\canvas_clipping_guard.cpp">
-      <Filter>zaf\graphic</Filter>
-    </ClCompile>
-    <ClCompile Include="src\zaf\graphic\canvas_state_guard.cpp">
-      <Filter>zaf\graphic</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\rich_edit\internal\text_host_bridge.cpp">
       <Filter>zaf\control\rich_edit\internal</Filter>
@@ -1408,6 +1402,18 @@
     <ClCompile Include="src\zaf\window\tray_icon_events.cpp">
       <Filter>zaf\window</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\canvas\canvas.cpp">
+      <Filter>zaf\graphic\canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\canvas\canvas_clipping_guard.cpp">
+      <Filter>zaf\graphic\canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\canvas\canvas_region_guard.cpp">
+      <Filter>zaf\graphic\canvas</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\canvas\canvas_state_guard.cpp">
+      <Filter>zaf\graphic\canvas</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\zaf\application.h">
@@ -1421,9 +1427,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\window\window.h">
       <Filter>zaf\window</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\canvas.h">
-      <Filter>zaf\graphic</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\color.h">
       <Filter>zaf\graphic</Filter>
@@ -2179,15 +2182,6 @@
     <ClInclude Include="src\zaf\control\rich_edit\embedded_object.h">
       <Filter>zaf\control\rich_edit</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\canvas_region_guard.h">
-      <Filter>zaf\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\canvas_clipping_guard.h">
-      <Filter>zaf\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\graphic\canvas_state_guard.h">
-      <Filter>zaf\graphic</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\control\rich_edit\internal\text_host_bridge.h">
       <Filter>zaf\control\rich_edit\internal</Filter>
     </ClInclude>
@@ -2851,9 +2845,6 @@
     <ClInclude Include="src\zaf\internal\graphic\canvas_region.h">
       <Filter>zaf\internal\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\graphic\canvas_state.h">
-      <Filter>zaf\internal\graphic</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\wic\bitmap.h">
       <Filter>zaf\graphic\wic</Filter>
     </ClInclude>
@@ -3280,8 +3271,23 @@
     <ClInclude Include="src\zaf\window\find_screen_option.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\pixel_snap_mode.h">
-      <Filter>zaf\graphic</Filter>
+    <ClInclude Include="src\zaf\graphic\canvas\canvas_state_guard.h">
+      <Filter>zaf\graphic\canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\canvas\canvas.h">
+      <Filter>zaf\graphic\canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\canvas\canvas_clipping_guard.h">
+      <Filter>zaf\graphic\canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\canvas\canvas_region_guard.h">
+      <Filter>zaf\graphic\canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\canvas\pixel_snap_mode.h">
+      <Filter>zaf\graphic\canvas</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\internal\canvas_state_data.h">
+      <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

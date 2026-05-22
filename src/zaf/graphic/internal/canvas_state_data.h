@@ -5,7 +5,7 @@
 
 namespace zaf::internal {
 
-class CanvasState {
+class CanvasStateData {
 public:
     d2d::Brush brush;
     d2d::Stroke stroke;

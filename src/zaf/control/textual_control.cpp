@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/control/control_object.h>
 #include <zaf/control/internal/textual/text_model.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/font.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/graphic/text_inline_object_bridge.h>

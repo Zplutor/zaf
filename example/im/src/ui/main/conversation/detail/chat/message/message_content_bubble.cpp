@@ -1,5 +1,5 @@
 #include <ui/main/conversation/detail/chat/message/message_content_bubble.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 
 void MessageContentBubble::Initialize() {
 

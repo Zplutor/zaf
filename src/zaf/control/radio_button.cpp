@@ -1,6 +1,6 @@
 #include <zaf/control/radio_button.h>
 #include <algorithm>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/internal/paint_utility.h>
 #include <zaf/internal/theme.h>
 #include <zaf/rx/subject/subject.h>

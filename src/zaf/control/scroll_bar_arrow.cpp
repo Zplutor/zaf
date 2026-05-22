@@ -1,6 +1,6 @@
 #include <zaf/control/scroll_bar_arrow.h>
 #include <zaf/control/internal/triangle_geometry.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 
 namespace zaf {
 

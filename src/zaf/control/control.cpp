@@ -11,7 +11,7 @@
 #include <zaf/control/internal/image_box/image_drawing.h>
 #include <zaf/control/layout/anchor_layouter.h>
 #include <zaf/graphic/pixel_snapping.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/font.h>
 #include <zaf/graphic/d2d/path_geometry.h>
 #include <zaf/graphic/d2d/rectangle_geometry.h>

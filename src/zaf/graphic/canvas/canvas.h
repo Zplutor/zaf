@@ -4,14 +4,14 @@
 #include <stack>
 #include <string>
 #include <zaf/graphic/d2d/solid_color_brush.h>
-#include <zaf/graphic/canvas_clipping_guard.h>
-#include <zaf/graphic/canvas_region_guard.h>
-#include <zaf/graphic/canvas_state_guard.h>
+#include <zaf/graphic/canvas/canvas_clipping_guard.h>
+#include <zaf/graphic/canvas/canvas_region_guard.h>
+#include <zaf/graphic/canvas/canvas_state_guard.h>
 #include <zaf/graphic/color.h>
-#include <zaf/graphic/pixel_snap_mode.h>
+#include <zaf/graphic/canvas/pixel_snap_mode.h>
 #include <zaf/internal/graphic/alignment_helper.h>
 #include <zaf/internal/graphic/canvas_region.h>
-#include <zaf/internal/graphic/canvas_state.h>
+#include <zaf/graphic/internal/canvas_state_data.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/d2d/renderer.h>
 
@@ -244,7 +244,7 @@ private:
 
     CanvasClippingGuard InnerPushClipping(const Rect& clipping_rect);
 
-    const internal::CanvasState& CurrentState() const;
+    const internal::CanvasStateData& CurrentState() const;
 
     template<typename T>
     T AlignWithRegion(const T& object, float stroke_width = 0) const {
@@ -264,7 +264,7 @@ private:
     d2d::Renderer renderer_;
     std::stack<internal::CanvasRegion> regions_;
     std::size_t current_clipping_tag_{};
-    std::stack<internal::CanvasState> states_;
+    std::stack<internal::CanvasStateData> states_;
     std::size_t current_state_tag_{};
 };
 

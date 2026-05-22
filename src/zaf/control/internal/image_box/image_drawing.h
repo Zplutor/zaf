@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/control/image_layout.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/d2d/interpolation_mode.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/d2d/render_bitmap.h>

@@ -1,6 +1,6 @@
 #include <zaf/control/painter.h>
 #include <zaf/control/control.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 
 namespace zaf {
 

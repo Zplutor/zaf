@@ -14,7 +14,7 @@
 #include <zaf/control/rich_edit/internal/ole_object_impl.h>
 #include <zaf/control/rich_edit/internal/text_host_bridge.h>
 #include <zaf/graphic/pixel_snapping.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/d2d/renderer.h>
 #include <zaf/graphic/font.h>

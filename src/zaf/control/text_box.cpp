@@ -14,7 +14,7 @@
 #include <zaf/control/internal/textual/text_box_keyboard_input_handler.h>
 #include <zaf/control/internal/textual/text_box_mouse_input_handler.h>
 #include <zaf/control/internal/textual/text_box_selection_manager.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/window/window.h>
 
 using namespace zaf::dwrite;

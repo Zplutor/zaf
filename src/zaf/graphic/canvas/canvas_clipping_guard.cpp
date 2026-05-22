@@ -1,5 +1,5 @@
-#include <zaf/graphic/canvas_clipping_guard.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas_clipping_guard.h>
+#include <zaf/graphic/canvas/canvas.h>
 
 namespace zaf {
 

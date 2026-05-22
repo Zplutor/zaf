@@ -1,5 +1,5 @@
 #include <zaf/control/menu_separator.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 
 namespace zaf {
 

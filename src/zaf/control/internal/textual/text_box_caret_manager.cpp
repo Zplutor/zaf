@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/control/text_box.h>
 #include <zaf/creation.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/control/internal/textual/text_box_editor.h>
 
 namespace zaf::internal {

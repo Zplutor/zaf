@@ -3,7 +3,7 @@
 #include <zaf/control/internal/triangle_geometry.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/creation.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/internal/theme.h>

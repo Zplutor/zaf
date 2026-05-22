@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <sstream>
 #include <zaf/base/as.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/font.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/d2d/stroke_properties.h>

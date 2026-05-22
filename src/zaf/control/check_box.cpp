@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/base/error/precondition_error.h>
 #include <zaf/base/error/unreachable_error.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/d2d/geometry_sink.h>
 #include <zaf/graphic/d2d/path_geometry.h>
 #include <zaf/graphic/graphic_factory.h>

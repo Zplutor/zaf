@@ -1,5 +1,5 @@
 #include "ui/main/conversation/detail/member/member_item.h"
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 
 static const float IconSize = 8;
 

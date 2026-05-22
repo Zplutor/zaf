@@ -1,6 +1,6 @@
 #include <zaf/control/internal/text_box/text_box_render_facet.h>
 #include <zaf/control/internal/textual/text_box_editor.h>
-#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/d2d/stroke_properties.h>
 #include <zaf/graphic/graphic_factory.h>
 
