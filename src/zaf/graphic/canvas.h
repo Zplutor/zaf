@@ -8,6 +8,7 @@
 #include <zaf/graphic/canvas_region_guard.h>
 #include <zaf/graphic/canvas_state_guard.h>
 #include <zaf/graphic/color.h>
+#include <zaf/graphic/pixel_snap_mode.h>
 #include <zaf/internal/graphic/alignment_helper.h>
 #include <zaf/internal/graphic/canvas_region.h>
 #include <zaf/internal/graphic/canvas_state.h>
@@ -63,15 +64,15 @@ private:
 class Canvas : NonCopyableNonMovable {
 public:
     /**
-    Constructs a canvas with specified renderer and rects.
+    Constructs a canvas with the specified renderer.
 
     @param renderer
-        The renderer to which the canvas paints to.
+        The renderer to which the canvas paints.
     */
     explicit Canvas(d2d::Renderer& renderer);
     ~Canvas();
 
-    d2d::Renderer& Renderer() {
+    d2d::Renderer& Renderer() noexcept {
         return renderer_;
     }
 
@@ -91,7 +92,10 @@ public:
         in the region and destroy it after painting.
     */
     [[nodiscard]]
-    CanvasRegionGuard PushRegion(const Rect& region_rect, const Rect& paintable_rect);
+    CanvasRegionGuard PushRegion(
+        const Rect& region_rect, 
+        const Rect& paintable_rect,
+        PixelSnapMode pixel_snap_mode = PixelSnapMode::Snap);
 
     /**
     Pushes a clipping area into canvas. 
@@ -105,7 +109,9 @@ public:
         painting with the clipping and destroy it after painting.
     */
     [[nodiscard]]
-    CanvasClippingGuard PushClipping(const Rect& clipping_rect);
+    CanvasClippingGuard PushClipping(
+        const Rect& clipping_rect,
+        PixelSnapMode pixel_snap_mode = PixelSnapMode::Snap);
 
     [[nodiscard]]
     CanvasStateGuard PushState();
@@ -116,7 +122,11 @@ public:
 
     void Clear();
 
-    void DrawLine(const Point& from_point, const Point& to_point, float stroke_width);
+    void DrawLine(
+        const Point& from_point,
+        const Point& to_point, 
+        float stroke_width, 
+        PixelSnapMode pixel_snap_mode = PixelSnapMode::Snap);
 
     void DrawRectangle(const Rect& rect);
     void DrawRectangle(const Rect& rect, const Color& color);
@@ -230,7 +240,7 @@ private:
 private:
     internal::CanvasRegion CreateNewRegion(
         const Rect& region_rect,
-        const Rect& paintable_rect) const;
+        const Rect& paintable_rect) const noexcept;
 
     CanvasClippingGuard InnerPushClipping(const Rect& clipping_rect);
 
@@ -240,12 +250,14 @@ private:
     T AlignWithRegion(const T& object, float stroke_width = 0) const {
 
         const auto& current_region = regions_.top();
-        return internal::AlignInRelatedCoordinateSystem(
+        T result = internal::AlignInRelatedCoordinateSystem(
             object, 
             stroke_width, 
             renderer_.GetDPI(),
             current_region.rect.position, 
-            current_region.aligned_rect.position);
+            current_region.snapped_rect.position);
+        result.AddOffset(current_region.SnappedOffset());
+        return result;
     }
 
 private:

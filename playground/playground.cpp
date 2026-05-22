@@ -13,8 +13,54 @@
 #include <zaf/window/tray_icon.h>
 #include <zaf/window/popup_menu.h>
 #include <zaf/control/list_box.h>
+#include <zaf/graphic/canvas.h>
+#include <zaf/graphic/graphic_factory.h>
+#include <zaf/graphic/d2d/stroke_properties.h>
 
 void BeginRun(const zaf::ApplicationStartedInfo& event_info);
+
+class CustomPaintControl : public zaf::Control {
+protected:
+    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const override {
+
+        canvas.DrawRectangle(this->RectInSelf(), zaf::Color::White());
+
+        zaf::Rect region_rect{ 0.25, 0.25, 100, 100 };
+        auto region = canvas.PushRegion(region_rect, region_rect);
+
+        canvas.DrawRectangle(zaf::Rect{ 0, 0, 100, 100 }, zaf::Color::Gray());
+
+        canvas.SetBrushWithColor(zaf::Color::Red());
+
+        zaf::d2d::StrokeProperties stroke_properties;
+        stroke_properties.SetStartCapStyle(zaf::d2d::Stroke::CapStyle::Square);
+        auto stroke = zaf::GraphicFactory::Instance().CreateStroke(stroke_properties);
+        canvas.SetStroke(stroke);
+        canvas.DrawLine({ 0.25, 0.25 }, { 100.25, 0.25 }, 1);
+
+        /*
+        canvas.DrawRectangle(this->RectInSelf(), zaf::Color::White());
+
+        constexpr float StrokeWidth = 15;
+
+        zaf::Point start_point{ 50, 50 };
+        zaf::Point middle_point{ start_point.x + 100, start_point.y };
+        zaf::Point end_point{ middle_point.x, middle_point.y + 100 };
+
+        canvas.SetBrushWithColor(zaf::Color::Green());
+        canvas.DrawLine(start_point, middle_point, StrokeWidth);
+        canvas.DrawLine(middle_point, end_point, StrokeWidth);
+
+        zaf::Ellipse ellipse;
+        ellipse.position.x = middle_point.x;
+        ellipse.position.y = middle_point.y;
+        ellipse.x_radius = StrokeWidth / 2;
+        ellipse.y_radius = StrokeWidth / 2;
+        canvas.DrawEllipse(ellipse);
+        */
+    }
+};
+
 
 class Window : public zaf::Window {
 protected:
@@ -22,20 +68,7 @@ protected:
 
         __super::Initialize();
 
-        auto list_box = zaf::Create<zaf::ListBox>();
-        list_box->AddItem(zaf::Box("AAA"));
-        list_box->AddItem(zaf::Box("BBB"));
-        list_box->AddItem(zaf::Box("CCC"));
-        list_box->AddItem(zaf::Box("DDD"));
-        list_box->SetDefaultTextColorPicker(zaf::ColorPicker([](const zaf::Object&){ 
-            return zaf::Color::Red(); 
-        }));
-        list_box->SetDefaultBackgroundColorPicker(zaf::ColorPicker([](const zaf::Object&) {
-            return zaf::Color::Green();
-        }));
-
-        this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
-        this->RootControl()->AddChild(list_box);
+        this->SetRootControl(zaf::Create<CustomPaintControl>());
     }
 
 private:
@@ -63,6 +96,7 @@ int WINAPI WinMain(
 void BeginRun(const zaf::ApplicationStartedInfo& event_info) {
 
     auto window = zaf::Create<Window>();
+    window->SetTitle(L"New Canvas");
     window->Show();
     zaf::Application::Instance().SetMainWindow(window);
 }

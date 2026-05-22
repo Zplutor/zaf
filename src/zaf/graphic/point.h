@@ -72,14 +72,24 @@ public:
         return *this;
     }
 
-    void AddOffset(const Point& offset) {
+    void AddOffset(const Point& offset) noexcept {
         x += offset.x;
         y += offset.y;
+    }
+
+    Point& operator+=(const Point& offset) noexcept {
+        AddOffset(offset);
+        return *this;
     }
 
     void SubtractOffset(const Point& offset) {
         x -= offset.x;
         y -= offset.y;
+    }
+
+    Point& operator-=(const Point& offset) noexcept {
+        SubtractOffset(offset);
+        return *this;
     }
 
     /**
@@ -168,6 +178,20 @@ inline bool operator<(const Point& point1, const Point& point2) {
     }
 
     return point1.y < point2.y;
+}
+
+
+inline Point operator+(const Point& point, const Point& offset) {
+    Point result = point;
+    result += offset;
+    return result;
+}
+
+
+inline Point operator-(const Point& point, const Point& offset) {
+    Point result = point;
+    result -= offset;
+    return result;
 }
 
 

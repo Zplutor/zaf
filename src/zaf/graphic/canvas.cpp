@@ -27,24 +27,36 @@ Canvas::~Canvas() {
 }
 
 
-CanvasRegionGuard Canvas::PushRegion(const Rect& region_rect, const Rect& paintable_rect) {
+CanvasRegionGuard Canvas::PushRegion(
+    const Rect& region_rect,
+    const Rect& paintable_rect,
+    PixelSnapMode pixel_snap_mode) {
 
     auto new_region = CreateNewRegion(region_rect, paintable_rect);
     regions_.push(new_region);
 
-    renderer_.Transform(TransformMatrix::Translation(new_region.aligned_rect.position));
+    // Transform should always use the non-snapped rect, in order to support non-snapped painting.
+    renderer_.Transform(TransformMatrix::Translation(new_region.rect.position));
 
-    Rect clipping_rect = new_region.aligned_paintable_rect;
-    clipping_rect.SubtractOffset(new_region.aligned_rect.position);
+    Rect clipping_rect;
+    if (pixel_snap_mode == PixelSnapMode::Snap) {
+        clipping_rect = new_region.snapped_paintable_rect;
+        clipping_rect.position -= new_region.snapped_rect.position;
+        clipping_rect.position += new_region.SnappedOffset();
+    }
+    else {
+        clipping_rect = new_region.paintable_rect;
+        clipping_rect.position -= new_region.rect.position;
+    }
+
     auto clipping_guard = InnerPushClipping(clipping_rect);
-
     return CanvasRegionGuard{ this, std::move(clipping_guard) };
 }
 
 
 internal::CanvasRegion Canvas::CreateNewRegion(
     const Rect& region_rect,
-    const Rect& paintable_rect) const {
+    const Rect& paintable_rect) const noexcept {
 
     const internal::CanvasRegion* current_region{};
     if (!regions_.empty()) {
@@ -56,7 +68,7 @@ internal::CanvasRegion Canvas::CreateNewRegion(
     if (current_region) {
         new_region.rect.AddOffset(current_region->rect.position);
     }
-    new_region.aligned_rect = SnapToPixels(new_region.rect, renderer_.GetDPI());
+    new_region.snapped_rect = SnapToPixels(new_region.rect, renderer_.GetDPI());
 
     new_region.paintable_rect = paintable_rect;
     if (current_region) {
@@ -64,7 +76,9 @@ internal::CanvasRegion Canvas::CreateNewRegion(
         new_region.paintable_rect.Intersect(current_region->paintable_rect);
     }
     new_region.paintable_rect.Intersect(new_region.rect);
-    new_region.aligned_paintable_rect = SnapToPixels(new_region.paintable_rect, renderer_.GetDPI());
+    new_region.snapped_paintable_rect = 
+        SnapToPixels(new_region.paintable_rect, renderer_.GetDPI());
+
     return new_region;
 }
 
@@ -81,7 +95,7 @@ void Canvas::PopRegion(CanvasClippingGuard&& clipping_guard) {
     }
 
     if (!regions_.empty()) {
-        renderer_.Transform(TransformMatrix::Translation(regions_.top().aligned_rect.position));
+        renderer_.Transform(TransformMatrix::Translation(regions_.top().snapped_rect.position));
     }
     else {
         renderer_.Transform(TransformMatrix::Identity);
@@ -89,10 +103,17 @@ void Canvas::PopRegion(CanvasClippingGuard&& clipping_guard) {
 }
 
 
-CanvasClippingGuard Canvas::PushClipping(const Rect& clipping_rect) {
+CanvasClippingGuard Canvas::PushClipping(
+    const Rect& clipping_rect,
+    PixelSnapMode pixel_snap_mode) {
 
-    auto aligned_clipping_rect = AlignWithRegion(clipping_rect);
-    return InnerPushClipping(aligned_clipping_rect);
+    if (pixel_snap_mode == PixelSnapMode::Snap) {
+        auto aligned_clipping_rect = AlignWithRegion(clipping_rect);
+        return InnerPushClipping(aligned_clipping_rect);
+    }
+    else {
+        return InnerPushClipping(clipping_rect);
+    }
 }
 
 
@@ -158,15 +179,25 @@ void Canvas::Clear() {
 }
 
 
-void Canvas::DrawLine(const Point& from_point, const Point& to_point, float stroke_width) {
+void Canvas::DrawLine(
+    const Point& from_point, 
+    const Point& to_point, 
+    float stroke_width, 
+    PixelSnapMode pixel_snap_mode) {
 
     const auto& state = CurrentState();
-    renderer_.DrawLine(
-        AlignWithRegion(from_point, stroke_width),
-        AlignWithRegion(to_point, stroke_width),
-        state.brush,
-        stroke_width,
-        state.stroke);
+
+    if (pixel_snap_mode == PixelSnapMode::Snap) {
+        renderer_.DrawLine(
+            AlignWithRegion(from_point, stroke_width),
+            AlignWithRegion(to_point, stroke_width),
+            state.brush,
+            stroke_width,
+            state.stroke);
+    }
+    else {
+        renderer_.DrawLine(from_point, to_point, state.brush, stroke_width, state.stroke);
+    }
 }
 
 
@@ -272,7 +303,7 @@ void Canvas::DrawRoundedRectangleFrame(
 
 void Canvas::DrawEllipse(const Ellipse& ellipse) {
     const auto& state = CurrentState();
-    renderer_.DrawEllipse(ellipse, state.brush);
+    renderer_.DrawEllipse(AlignWithRegion(ellipse), state.brush);
 }
 
 
@@ -447,7 +478,7 @@ PathGeometry Canvas::CreatePathGeometry() const {
     internal::AlignmentInfo alignment_info;
     const auto& current_region = regions_.top();
     alignment_info.coordinate_origin = current_region.rect.position;
-    alignment_info.aligned_coordinate_origin = current_region.aligned_rect.position;
+    alignment_info.aligned_coordinate_origin = current_region.snapped_rect.position;
     alignment_info.dpi = renderer_.GetDPI();
 
     return PathGeometry{ std::move(inner), alignment_info };

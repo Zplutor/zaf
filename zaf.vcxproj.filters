@@ -3280,5 +3280,8 @@
     <ClInclude Include="src\zaf\window\find_screen_option.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\graphic\pixel_snap_mode.h">
+      <Filter>zaf\graphic</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -779,6 +779,7 @@
     <ClInclude Include="src\zaf\graphic\frame_parser.h" />
     <ClInclude Include="src\zaf\graphic\gif_metadata_querier.h" />
     <ClInclude Include="src\zaf\graphic\image.h" />
+    <ClInclude Include="src\zaf\graphic\pixel_snap_mode.h" />
     <ClInclude Include="src\zaf\graphic\point_parser.h" />
     <ClInclude Include="src\zaf\graphic\canvas.h" />
     <ClInclude Include="src\zaf\graphic\color.h" />
