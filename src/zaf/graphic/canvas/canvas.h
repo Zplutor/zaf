@@ -6,7 +6,7 @@
 #include <zaf/graphic/d2d/solid_color_brush.h>
 #include <zaf/graphic/canvas/canvas_clipping_guard.h>
 #include <zaf/graphic/canvas/canvas_region_guard.h>
-#include <zaf/graphic/canvas/canvas_state_guard.h>
+#include <zaf/graphic/canvas/canvas_state.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/canvas/pixel_snap_mode.h>
 #include <zaf/internal/graphic/alignment_helper.h>
@@ -114,11 +114,7 @@ public:
         PixelSnapMode pixel_snap_mode = PixelSnapMode::Snap);
 
     [[nodiscard]]
-    CanvasStateGuard PushState();
-
-    void SetBrush(const d2d::Brush& brush);
-    void SetBrushWithColor(const Color& color);
-    void SetStroke(const d2d::Stroke& stroke);
+    CanvasState PushState();
 
     void Clear();
 
@@ -231,13 +227,15 @@ public:
 private:
     friend class CanvasClippingGuard;
     friend class CanvasRegionGuard;
-    friend class CanvasStateGuard;
+    friend class CanvasState;
 
     void PopRegion(CanvasClippingGuard&& clipping_guard);
     void PopClipping(std::size_t tag);
     void PopState(std::size_t tag);
 
 private:
+    void PushInitialState();
+
     internal::CanvasRegion CreateNewRegion(
         const Rect& region_rect,
         const Rect& paintable_rect) const noexcept;
@@ -264,8 +262,9 @@ private:
     d2d::Renderer renderer_;
     std::stack<internal::CanvasRegion> regions_;
     std::size_t current_clipping_tag_{};
+
     std::stack<internal::CanvasStateData> states_;
-    std::size_t current_state_tag_{};
+    std::size_t state_tag_seed_{};
 };
 
 }

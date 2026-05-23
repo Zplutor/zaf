@@ -82,11 +82,13 @@ void CheckBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
 void CheckBox::PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const {
 
+    auto state_guard = canvas.PushState();
+
     //Paint the box.
-    canvas.SetBrushWithColor(BoxBackColor());
+    state_guard.SetBrush(BoxBackColor());
     canvas.DrawRectangle(box_rect);
 
-    canvas.SetBrushWithColor(BoxBorderColor());
+    state_guard.SetBrush(BoxBorderColor());
     canvas.DrawRectangleFrame(box_rect, 1);
 
     //Paint the check state mark.

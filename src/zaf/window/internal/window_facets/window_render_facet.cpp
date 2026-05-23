@@ -53,7 +53,7 @@ void WindowRenderFacet::HandleWMPAINT() {
         //Paint window background color first.
         {
             auto state_guard = canvas.PushState();
-            canvas.SetBrushWithColor(Color::FromRGB(internal::ControlBackgroundColorRGB));
+            state_guard.SetBrush(Color::FromRGB(internal::ControlBackgroundColorRGB));
             canvas.DrawRectangle(dirty_rect);
         }
 

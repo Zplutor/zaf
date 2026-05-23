@@ -185,7 +185,7 @@ void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
     sink.Close();
 
     auto state_guard = canvas.PushState();
-    canvas.SetBrushWithColor(DropDownButtonColor());
+    state_guard.SetBrush(DropDownButtonColor());
     canvas.DrawGeometry(path);
 }
 

@@ -1411,7 +1411,7 @@
     <ClCompile Include="src\zaf\graphic\canvas\canvas_region_guard.cpp">
       <Filter>zaf\graphic\canvas</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\canvas\canvas_state_guard.cpp">
+    <ClCompile Include="src\zaf\graphic\canvas\canvas_state.cpp">
       <Filter>zaf\graphic\canvas</Filter>
     </ClCompile>
   </ItemGroup>
@@ -3271,7 +3271,7 @@
     <ClInclude Include="src\zaf\window\find_screen_option.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\canvas\canvas_state_guard.h">
+    <ClInclude Include="src\zaf\graphic\canvas\canvas_state.h">
       <Filter>zaf\graphic\canvas</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\canvas\canvas.h">
@@ -3289,5 +3289,6 @@
     <ClInclude Include="src\zaf\graphic\internal\canvas_state_data.h">
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
+    <ClInclude Include="SRC\ZAF\GRAPHIC\CANVAS\CANVAS_STATE_GUARD.H" />
   </ItemGroup>
 </Project>

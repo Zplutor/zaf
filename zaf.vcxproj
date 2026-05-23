@@ -237,7 +237,7 @@
     <ClCompile Include="src\zaf\graphic\pixel_snapping.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas\canvas_clipping_guard.cpp" />
     <ClCompile Include="src\zaf\graphic\canvas\canvas_region_guard.cpp" />
-    <ClCompile Include="src\zaf\graphic\canvas\canvas_state_guard.cpp" />
+    <ClCompile Include="src\zaf\graphic\canvas\canvas_state.cpp" />
     <ClCompile Include="src\zaf\graphic\color_parser.cpp" />
     <ClCompile Include="src\zaf\graphic\d2d\bitmap_renderer.cpp" />
     <ClCompile Include="src\zaf\graphic\d2d\geometry_sink.cpp" />
@@ -722,10 +722,11 @@
     <ClInclude Include="src\zaf\crypto\internal\crypto_manager.h" />
     <ClInclude Include="src\zaf\crypto\md5.h" />
     <ClInclude Include="src\zaf\crypto\sha.h" />
+    <ClInclude Include="SRC\ZAF\GRAPHIC\CANVAS\CANVAS_STATE_GUARD.H" />
     <ClInclude Include="src\zaf\graphic\pixel_snapping.h" />
     <ClInclude Include="src\zaf\graphic\canvas\canvas_clipping_guard.h" />
     <ClInclude Include="src\zaf\graphic\canvas\canvas_region_guard.h" />
-    <ClInclude Include="src\zaf\graphic\canvas\canvas_state_guard.h" />
+    <ClInclude Include="src\zaf\graphic\canvas\canvas_state.h" />
     <ClInclude Include="src\zaf\graphic\color_parser.h" />
     <ClInclude Include="src\zaf\graphic\d2d\antialias_mode.h" />
     <ClInclude Include="src\zaf\graphic\d2d\arc_segment.h" />

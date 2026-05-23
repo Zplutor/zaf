@@ -30,12 +30,13 @@ protected:
 
         canvas.DrawRectangle(zaf::Rect{ 0, 0, 100, 100 }, zaf::Color::Gray());
 
-        canvas.SetBrushWithColor(zaf::Color::Red());
+        auto state_guard = canvas.PushState();
+        state_guard.SetBrush(zaf::Color::Red());
 
         zaf::d2d::StrokeProperties stroke_properties;
         stroke_properties.SetStartCapStyle(zaf::d2d::Stroke::CapStyle::Square);
         auto stroke = zaf::GraphicFactory::Instance().CreateStroke(stroke_properties);
-        canvas.SetStroke(stroke);
+        state_guard.SetStroke(stroke);
         canvas.DrawLine({ 0.25, 0.25 }, { 100.25, 0.25 }, 1);
 
         /*
@@ -47,7 +48,7 @@ protected:
         zaf::Point middle_point{ start_point.x + 100, start_point.y };
         zaf::Point end_point{ middle_point.x, middle_point.y + 100 };
 
-        canvas.SetBrushWithColor(zaf::Color::Green());
+        state_guard.SetBrush(zaf::Color::Green());
         canvas.DrawLine(start_point, middle_point, StrokeWidth);
         canvas.DrawLine(middle_point, end_point, StrokeWidth);
 

@@ -53,7 +53,8 @@ void MemberItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const {
         radius);
 
     std::uint32_t color_rgb = gender_ == User::Gender::Female ? 0xFDA357 : 0x7CA3D2;
-    canvas.SetBrushWithColor(zaf::Color::FromRGB(color_rgb));
+    auto state_guard = canvas.PushState();
+    state_guard.SetBrush(zaf::Color::FromRGB(color_rgb));
     canvas.DrawEllipse(ellipse);
 }
 

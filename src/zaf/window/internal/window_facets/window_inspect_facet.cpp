@@ -151,7 +151,10 @@ void WindowInspectFacet::PaintInspectedControl(Canvas& canvas, const Rect& dirty
     auto margin_rect = *control_rect;
     margin_rect.Inflate(highlight_control->Margin());
 
-    auto draw_frame = [&canvas](
+    auto state_guard = canvas.PushState();
+    auto clipping_guard = canvas.PushClipping(dirty_rect);
+
+    auto draw_frame = [&canvas, &state_guard](
         const zaf::Rect& rect,
         const zaf::Rect excluded_rect,
         std::uint32_t color_rgb) {
@@ -170,12 +173,9 @@ void WindowInspectFacet::PaintInspectedControl(Canvas& canvas, const Rect& dirty
 
             auto color = Color::FromRGB(color_rgb);
             color.a /= 2.f;
-            canvas.SetBrushWithColor(color);
+            state_guard.SetBrush(color);
             canvas.DrawGeometry(frame_geometry);
         };
-
-    auto state_guard = canvas.PushState();
-    auto clipping_guard = canvas.PushClipping(dirty_rect);
 
     //Draw content rect.
     draw_frame(content_rect, zaf::Rect{}, internal::InspectedControlContentColor);

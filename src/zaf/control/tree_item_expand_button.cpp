@@ -34,7 +34,7 @@ void TreeItemExpandButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) co
     auto state_guard = canvas.PushState();
 
     auto color = IsSelectedInContext() ? Color::White() : Color::Black();
-    canvas.SetBrushWithColor(color);
+    state_guard.SetBrush(color);
     canvas.DrawGeometry(triangle_geometry);
 }
 

@@ -7,7 +7,8 @@ namespace zaf {
 void Painter::Paint(Canvas& canvas, const Rect& dirty_rect, const std::shared_ptr<const Control>& control) {
 
     Rect rect = Rect(Point(), control->GetSize());
-    canvas.SetBrushWithColor(control->GetBorderColor());
+    auto state_guard = canvas.PushState();
+    state_guard.SetBrush(control->GetBorderColor());
     canvas.DrawRectangle(rect);
 
 

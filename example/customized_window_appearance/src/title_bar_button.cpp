@@ -26,10 +26,11 @@ void TitleBarButton::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) con
     ellipse.position.x = content_rect.position.x + ellipse.x_radius;
     ellipse.position.y = content_rect.position.y + ellipse.y_radius;
 
-    canvas.SetBrushWithColor(GetBackgroundColor());
+    auto state_guard = canvas.PushState();
+    state_guard.SetBrush(GetBackgroundColor());
     canvas.DrawEllipse(ellipse);
 
-    canvas.SetBrushWithColor(GetBorderColor());
+    state_guard.SetBrush(GetBorderColor());
     canvas.DrawEllipseFrame(ellipse, 1);
 }
 

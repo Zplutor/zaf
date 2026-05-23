@@ -668,7 +668,7 @@ void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
     zaf::Rect control_rect{ Point{}, Size() };
 
     //Draw background color.
-    canvas.SetBrushWithColor(BackgroundColor());
+    state_guard.SetBrush(BackgroundColor());
     canvas.DrawRectangle(control_rect);
 
     //Draw background image.
@@ -698,7 +698,7 @@ void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
         sink);
     sink.Close();
 
-    canvas.SetBrushWithColor(BorderColor());
+    state_guard.SetBrush(BorderColor());
     canvas.DrawGeometry(border_geometry);
 }
 

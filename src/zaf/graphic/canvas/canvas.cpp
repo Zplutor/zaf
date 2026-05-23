@@ -15,15 +15,21 @@ namespace zaf {
 
 Canvas::Canvas(d2d::Renderer& renderer) : renderer_(renderer) {
 
-    //Add an initial state.
-    internal::CanvasStateData initial_state;
-    initial_state.brush = renderer.CreateSolidColorBrush(Color::White());
-    states_.push(initial_state);
+    PushInitialState();
 }
 
 
 Canvas::~Canvas() {
 
+}
+
+
+void Canvas::PushInitialState() {
+
+    internal::CanvasStateData state_data;
+    state_data.pixel_snap_mode = PixelSnapMode::Snap;
+    state_data.brush = renderer_.CreateSolidColorBrush(Color::White());
+    states_.push(std::move(state_data));
 }
 
 
@@ -134,38 +140,22 @@ void Canvas::PopClipping(std::size_t tag) {
 }
 
 
-CanvasStateGuard Canvas::PushState() {
+CanvasState Canvas::PushState() {
 
     //Copy current state as new state.
     auto new_state = states_.top();
     states_.push(new_state);
-    return CanvasStateGuard{ this, ++current_state_tag_ };
+    return CanvasState{ this, &states_.top(), ++state_tag_seed_ };
 }
 
 
 void Canvas::PopState(std::size_t tag) {
 
     //Detect mismatch push and pop.
-    ZAF_EXPECT(tag == current_state_tag_);
+    ZAF_EXPECT(tag == state_tag_seed_);
 
     states_.pop();
-    --current_state_tag_;
-}
-
-
-void Canvas::SetBrush(const Brush& brush) {
-    states_.top().brush = brush;
-}
-
-
-void Canvas::SetBrushWithColor(const Color& color) {
-    auto brush = renderer_.CreateSolidColorBrush(color);
-    SetBrush(brush);
-}
-
-
-void Canvas::SetStroke(const Stroke& stroke) {
-    states_.top().stroke = stroke;
+    --state_tag_seed_;
 }
 
 

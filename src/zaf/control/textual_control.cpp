@@ -174,7 +174,7 @@ void TextualControl::PaintText(
     const zaf::Rect& layout_rect) const {
 
     auto state_guard = canvas.PushState();
-    canvas.SetBrushWithColor(TextColor());
+    state_guard.SetBrush(TextColor());
     canvas.DrawTextLayout(text_layout, layout_rect.position);
 }
 

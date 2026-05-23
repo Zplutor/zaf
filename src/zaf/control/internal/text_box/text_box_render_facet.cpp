@@ -32,7 +32,7 @@ void TextBoxRenderFacet::PaintCompositionUnderline(
     }
 
     auto state_gurad = canvas.PushState();
-    canvas.SetBrushWithColor(owner_.TextColor());
+    state_gurad.SetBrush(owner_.TextColor());
 
     d2d::StrokeProperties stroke_properties;
     stroke_properties.SetDashStyle(d2d::Stroke::DashStyle::Dot);
@@ -40,7 +40,7 @@ void TextBoxRenderFacet::PaintCompositionUnderline(
     stroke_properties.SetStartCapStyle(d2d::Stroke::CapStyle::Round);
     stroke_properties.SetEndCapStyle(d2d::Stroke::CapStyle::Round);
     auto stroke = GraphicFactory::Instance().CreateStroke(stroke_properties);
-    canvas.SetStroke(stroke);
+    state_gurad.SetStroke(stroke);
 
     auto range_metrics = text_layout.HitTestRange(composition_range);
     for (const auto& metrics : range_metrics) {

@@ -176,7 +176,8 @@ void ConversationItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) c
 
     __super::Paint(canvas, dirty_rect);
 
-    canvas.SetBrushWithColor(zaf::Color::FromRGB(0xE4E4E4));
+    auto state_guard = canvas.PushState();
+    state_guard.SetBrush(zaf::Color::FromRGB(0xE4E4E4));
 
     const auto& rect = Rect();
     float y = rect.size.height - 1;
@@ -369,7 +370,8 @@ void ConversationItem::UnreadCountBubble::PaintNormalBubble(zaf::Canvas& canvas)
             UnreadCountBubbleHeight);
     }
 
-    canvas.SetBrushWithColor(zaf::Color::FromRGB(0xFF6251));
+    auto state_guard = canvas.PushState();
+    state_guard.SetBrush(zaf::Color::FromRGB(0xFF6251));
     canvas.DrawRoundedRectangle(rounded_rect);
 
     zaf::dwrite::TextFormatProperties text_format_properties;
@@ -385,7 +387,7 @@ void ConversationItem::UnreadCountBubble::PaintNormalBubble(zaf::Canvas& canvas)
     text_format.SetParagraphAlignment(zaf::dwrite::ParagraphAlignment::Center);
     text_format.SetWordWrapping(zaf::dwrite::WordWrapping::NoWrap);
 
-    canvas.SetBrushWithColor(zaf::Color::White());
+    state_guard.SetBrush(zaf::Color::White());
     canvas.DrawTextFormat(unread_count_text, text_format, rounded_rect.rect);
 }
 
@@ -397,6 +399,7 @@ void ConversationItem::UnreadCountBubble::PaintMinimizeBubble(zaf::Canvas& canva
         5.5, 
         5.5);
 
-    canvas.SetBrushWithColor(zaf::Color::FromRGB(0xFF6251));
+    auto state_guard = canvas.PushState();
+    state_guard.SetBrush(zaf::Color::FromRGB(0xFF6251));
     canvas.DrawEllipse(ellipse);
 }

@@ -143,7 +143,8 @@ void ColorEditor::ColorSquare::Paint(Canvas& canvas, const zaf::Rect& dirty_rect
 
     PaintTransparentColorSmallSquares(canvas);
 
-    canvas.SetBrushWithColor(color_);
+    auto state_guard = canvas.PushState();
+    state_guard.SetBrush(color_);
     canvas.DrawRectangle(ContentRectInSelf());
 }
 
@@ -151,9 +152,10 @@ void ColorEditor::ColorSquare::Paint(Canvas& canvas, const zaf::Rect& dirty_rect
 void ColorEditor::ColorSquare::PaintTransparentColorSmallSquares(Canvas& canvas) const {
 
     auto content_rect = ContentRectInSelf();
+    auto state_guard = canvas.PushState();
     auto clipping_guard = canvas.PushClipping(content_rect);
 
-    canvas.SetBrushWithColor(Color::White());
+    state_guard.SetBrush(Color::White());
     canvas.DrawRectangle(content_rect);
 
     constexpr float square_size = 4.f;
@@ -161,7 +163,7 @@ void ColorEditor::ColorSquare::PaintTransparentColorSmallSquares(Canvas& canvas)
     auto column_count = static_cast<int>(std::ceil(content_rect.size.width / square_size));
 
     auto dim_square_color = Color::FromRGB(0xe5e5e5);
-    canvas.SetBrushWithColor(dim_square_color);
+    state_guard.SetBrush(dim_square_color);
 
     for (auto line : Range(0, line_count)) {
         for (auto column : Range(0, column_count)) {

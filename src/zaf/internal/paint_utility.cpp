@@ -45,7 +45,8 @@ void DrawTextWithIcon(
     Rect icon_rect(content_rect.Left(), icon_y, IconSize, IconSize);
     paint_icon_function(canvas, icon_rect);
 
-    canvas.SetBrushWithColor(control.TextColor());
+    auto state_guard = canvas.PushState();
+    state_guard.SetBrush(control.TextColor());
     canvas.DrawTextLayout(text_layout, text_rect.position);
     
     //Do not paint focus rectangle frame if there is no text at all.
@@ -68,8 +69,8 @@ void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect) {
     auto stroke = GraphicFactory::Instance().CreateStroke(stroke_properties);
 
     auto state_guard = canvas.PushState();
-    canvas.SetStroke(stroke);
-    canvas.SetBrushWithColor(Color::Black());
+    state_guard.SetStroke(stroke);
+    state_guard.SetBrush(Color::Black());
     canvas.DrawRectangleFrame(rect, 1);
 }
 

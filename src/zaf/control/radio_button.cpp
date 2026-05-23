@@ -76,6 +76,8 @@ void RadioButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
 void RadioButton::PaintRadio(Canvas& canvas, const zaf::Rect& radio_rect) const {
 
+    auto state_guard = canvas.PushState();
+
     float ellipse_x_radius = radio_rect.size.width / 2;
     float ellipse_y_radius = radio_rect.size.height / 2;
 
@@ -85,10 +87,10 @@ void RadioButton::PaintRadio(Canvas& canvas, const zaf::Rect& radio_rect) const 
 
     Ellipse ellipse(ellipse_position, ellipse_x_radius, ellipse_y_radius);
 
-    canvas.SetBrushWithColor(RadioBackColor());
+    state_guard.SetBrush(RadioBackColor());
     canvas.DrawEllipse(ellipse);
 
-    canvas.SetBrushWithColor(RadioBorderColor());
+    state_guard.SetBrush(RadioBorderColor());
     canvas.DrawEllipseFrame(ellipse, 1);
     
     if (IsChecked()) {

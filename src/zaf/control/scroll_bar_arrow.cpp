@@ -81,7 +81,7 @@ void ScrollBarArrow::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
         rotate_angle);
 
     auto state_guard = canvas.PushState();
-    canvas.SetBrushWithColor(ArrowColor());
+    state_guard.SetBrush(ArrowColor());
     canvas.DrawGeometry(triangle_geometry);
 }
 

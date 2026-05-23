@@ -181,7 +181,7 @@ void Caret::Paint(Canvas& owner_canvas, const zaf::Rect& dirty_rect) const {
     }
 
     auto state_guard = owner_canvas.PushState();
-    owner_canvas.SetBrushWithColor(color_);
+    state_guard.SetBrush(color_);
     owner_canvas.DrawRectangle(rect_);
 }
 
