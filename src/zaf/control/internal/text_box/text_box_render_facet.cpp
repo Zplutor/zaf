@@ -42,10 +42,12 @@ void TextBoxRenderFacet::PaintCompositionUnderline(
     auto stroke = GraphicFactory::Instance().CreateStroke(stroke_properties);
     state_gurad.SetStroke(stroke);
 
+    constexpr float LineWidth = 1.0f;
+    state_gurad.SetStrokeWidth(LineWidth);
+
     auto range_metrics = text_layout.HitTestRange(composition_range);
     for (const auto& metrics : range_metrics) {
 
-        constexpr float LineWidth = 1.0f;
         float y = metrics.Top() + metrics.Height() - LineWidth;
 
         Point start_point{ metrics.Left(), y };
@@ -54,7 +56,7 @@ void TextBoxRenderFacet::PaintCompositionUnderline(
         Point end_point{ metrics.Left() + metrics.Width(), y };
         end_point.AddOffset(layout_rect.position);
 
-        canvas.DrawLine(start_point, end_point, LineWidth);
+        canvas.DrawLine(start_point, end_point);
     }
 }
 

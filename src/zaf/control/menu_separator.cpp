@@ -28,9 +28,7 @@ void MenuSeparator::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
     Point line_begin_point{ content_rect.Left(), line_y };
     Point line_end_point{ content_rect.Right(), line_y };
 
-    auto state_guard = canvas.PushState();
-    state_guard.SetBrush(Color::Gray());
-    canvas.DrawLine(line_begin_point, line_end_point, 1);
+    canvas.DrawLine(line_begin_point, line_end_point, Color::Gray(), 1);
 }
 
 

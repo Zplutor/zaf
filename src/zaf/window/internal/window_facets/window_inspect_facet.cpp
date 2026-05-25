@@ -174,7 +174,7 @@ void WindowInspectFacet::PaintInspectedControl(Canvas& canvas, const Rect& dirty
             auto color = Color::FromRGB(color_rgb);
             color.a /= 2.f;
             state_guard.SetBrush(color);
-            canvas.DrawGeometry(frame_geometry);
+            canvas.FillGeometry(frame_geometry);
         };
 
     //Draw content rect.

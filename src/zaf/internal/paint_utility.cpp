@@ -69,9 +69,10 @@ void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect) {
     auto stroke = GraphicFactory::Instance().CreateStroke(stroke_properties);
 
     auto state_guard = canvas.PushState();
-    state_guard.SetStroke(stroke);
     state_guard.SetBrush(Color::Black());
-    canvas.DrawRectangleFrame(rect, 1);
+    state_guard.SetStrokeWidth(1);
+    state_guard.SetStroke(stroke);
+    canvas.DrawRectangle(rect);
 }
 
 

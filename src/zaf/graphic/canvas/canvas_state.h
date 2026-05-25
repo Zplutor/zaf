@@ -29,6 +29,7 @@ public:
     void SetPixelSnapMode(PixelSnapMode pixel_snap_mode);
     void SetBrush(d2d::Brush brush);
     void SetBrush(const Color& color);
+    void SetStrokeWidth(float stroke_width);
     void SetStroke(d2d::Stroke stroke);
 
 private:

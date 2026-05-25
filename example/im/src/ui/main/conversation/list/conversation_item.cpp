@@ -176,15 +176,13 @@ void ConversationItem::Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) c
 
     __super::Paint(canvas, dirty_rect);
 
-    auto state_guard = canvas.PushState();
-    state_guard.SetBrush(zaf::Color::FromRGB(0xE4E4E4));
-
     const auto& rect = Rect();
     float y = rect.size.height - 1;
 
     canvas.DrawLine(
-        zaf::Point(-1, y), 
-        zaf::Point(rect.size.width, y), 
+        zaf::Point(-1, y),
+        zaf::Point(rect.size.width, y),
+        zaf::Color::FromRGB(0xE4E4E4),
         1);
 }
 
@@ -372,7 +370,7 @@ void ConversationItem::UnreadCountBubble::PaintNormalBubble(zaf::Canvas& canvas)
 
     auto state_guard = canvas.PushState();
     state_guard.SetBrush(zaf::Color::FromRGB(0xFF6251));
-    canvas.DrawRoundedRectangle(rounded_rect);
+    canvas.FillRoundedRectangle(rounded_rect);
 
     zaf::dwrite::TextFormatProperties text_format_properties;
     text_format_properties.font_family_name = L"微软雅黑";
@@ -401,5 +399,5 @@ void ConversationItem::UnreadCountBubble::PaintMinimizeBubble(zaf::Canvas& canva
 
     auto state_guard = canvas.PushState();
     state_guard.SetBrush(zaf::Color::FromRGB(0xFF6251));
-    canvas.DrawEllipse(ellipse);
+    canvas.FillEllipse(ellipse);
 }

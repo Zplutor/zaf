@@ -7,6 +7,7 @@
 #include <zaf/graphic/d2d/rounded_rectangle_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/dwrite/text_format.h>
+#include <zaf/internal/graphic/alignment_helper.h>
 
 using namespace zaf::d2d;
 using namespace zaf::dwrite;
@@ -24,6 +25,27 @@ Canvas::~Canvas() {
 }
 
 
+template<typename T>
+T Canvas::SnapToPixelsIfNeeded(const T& object, float stroke_width) const {
+
+    const auto& current_state = CurrentState();
+    if (current_state.pixel_snap_mode == PixelSnapMode::NoSnap) {
+        return object;
+    }
+
+    const auto& current_region = regions_.top();
+    T result = internal::AlignInRelatedCoordinateSystem(
+        object,
+        stroke_width,
+        renderer_.GetDPI(),
+        current_region.rect.position,
+        current_region.snapped_rect.position);
+
+    result.AddOffset(current_region.SnappedOffset());
+    return result;
+}
+
+
 void Canvas::PushInitialState() {
 
     internal::CanvasStateData state_data;
@@ -33,10 +55,7 @@ void Canvas::PushInitialState() {
 }
 
 
-CanvasRegionGuard Canvas::PushRegion(
-    const Rect& region_rect,
-    const Rect& paintable_rect,
-    PixelSnapMode pixel_snap_mode) {
+CanvasRegionGuard Canvas::PushRegion(const Rect& region_rect, const Rect& paintable_rect) {
 
     auto new_region = CreateNewRegion(region_rect, paintable_rect);
     regions_.push(new_region);
@@ -45,7 +64,7 @@ CanvasRegionGuard Canvas::PushRegion(
     renderer_.Transform(TransformMatrix::Translation(new_region.rect.position));
 
     Rect clipping_rect;
-    if (pixel_snap_mode == PixelSnapMode::Snap) {
+    if (CurrentState().pixel_snap_mode == PixelSnapMode::Snap) {
         clipping_rect = new_region.snapped_paintable_rect;
         clipping_rect.position -= new_region.snapped_rect.position;
         clipping_rect.position += new_region.SnappedOffset();
@@ -109,22 +128,12 @@ void Canvas::PopRegion(CanvasClippingGuard&& clipping_guard) {
 }
 
 
-CanvasClippingGuard Canvas::PushClipping(
-    const Rect& clipping_rect,
-    PixelSnapMode pixel_snap_mode) {
-
-    if (pixel_snap_mode == PixelSnapMode::Snap) {
-        auto aligned_clipping_rect = AlignWithRegion(clipping_rect);
-        return InnerPushClipping(aligned_clipping_rect);
-    }
-    else {
-        return InnerPushClipping(clipping_rect);
-    }
+CanvasClippingGuard Canvas::PushClipping(const Rect& clipping_rect) {
+    return InnerPushClipping(SnapToPixelsIfNeeded(clipping_rect));
 }
 
 
 CanvasClippingGuard Canvas::InnerPushClipping(const Rect& clipping_rect) {
-
     renderer_.PushAxisAlignedClipping(clipping_rect, d2d::AntialiasMode::PerPrimitive);
     return CanvasClippingGuard{ this, ++current_clipping_tag_ };
 }
@@ -169,209 +178,267 @@ void Canvas::Clear() {
 }
 
 
-void Canvas::DrawLine(
-    const Point& from_point, 
-    const Point& to_point, 
-    float stroke_width, 
-    PixelSnapMode pixel_snap_mode) {
+void Canvas::DrawLine(const Point& from_point, const Point& to_point) {
+    const auto& state = CurrentState();
+    InnerDrawLine(from_point, to_point, state.brush, state.stroke_width, state.stroke);
+}
+
+
+void Canvas::DrawLine(const Point& from_point, const Point& to_point, const Color& color) {
 
     const auto& state = CurrentState();
+    InnerDrawLine(
+        from_point,
+        to_point, 
+        renderer_.CreateSolidColorBrush(color), 
+        state.stroke_width,
+        state.stroke);
+}
 
-    if (pixel_snap_mode == PixelSnapMode::Snap) {
-        renderer_.DrawLine(
-            AlignWithRegion(from_point, stroke_width),
-            AlignWithRegion(to_point, stroke_width),
-            state.brush,
-            stroke_width,
-            state.stroke);
-    }
-    else {
-        renderer_.DrawLine(from_point, to_point, state.brush, stroke_width, state.stroke);
-    }
+
+void Canvas::DrawLine(
+    const Point& from_point,
+    const Point& to_point,
+    const Color& color,
+    float stroke_width) {
+
+    InnerDrawLine(
+        from_point,
+        to_point, 
+        renderer_.CreateSolidColorBrush(color), 
+        stroke_width,
+        CurrentState().stroke);
+}
+
+
+void Canvas::InnerDrawLine(
+    const Point& from_point,
+    const Point& to_point,
+    const d2d::Brush& brush,
+    float stroke_width,
+    const d2d::Stroke& stroke) {
+
+    renderer_.DrawLine(
+        SnapToPixelsIfNeeded(from_point, stroke_width),
+        SnapToPixelsIfNeeded(to_point, stroke_width),
+        brush,
+        stroke_width,
+        stroke);
+}
+
+
+void Canvas::FillRectangle(const Rect& rect) {
+    InnerFillRectangle(rect, CurrentState().brush);
+}
+
+
+void Canvas::FillRectangle(const Rect& rect, const Color& color) {
+    InnerFillRectangle(rect, renderer_.CreateSolidColorBrush(color));
+}
+
+
+void Canvas::InnerFillRectangle(const Rect& rect, const d2d::Brush& brush) {
+    renderer_.FillRectangle(SnapToPixelsIfNeeded(rect), brush);
 }
 
 
 void Canvas::DrawRectangle(const Rect& rect) {
     const auto& state = CurrentState();
-    DrawRectangle(rect, state.brush);
+    InnerDrawRectangle(rect, state.brush, state.stroke_width, state.stroke);
 }
 
 
 void Canvas::DrawRectangle(const Rect& rect, const Color& color) {
-    DrawRectangle(rect, renderer_.CreateSolidColorBrush(color));
-}
-
-
-void Canvas::DrawRectangle(const Rect& rect, const Brush& brush) {
-    renderer_.DrawRectangle(AlignWithRegion(rect), brush);
-}
-
-
-void Canvas::DrawRectangleFrame(const Rect& rect, float stroke_width) {
     const auto& state = CurrentState();
-    DrawRectangleFrame(rect, stroke_width, state.brush, state.stroke);
+    InnerDrawRectangle(
+        rect,
+        renderer_.CreateSolidColorBrush(color),
+        state.stroke_width,
+        state.stroke);
 }
 
 
-void Canvas::DrawRectangleFrame(const Rect& rect, float stroke_width, const Brush& brush) {
-    const auto& state = CurrentState();
-    DrawRectangleFrame(rect, stroke_width, brush, state.stroke);
+void Canvas::DrawRectangle(const Rect& rect, const Color& color, float stroke_width) {
+    InnerDrawRectangle(
+        rect,
+        renderer_.CreateSolidColorBrush(color),
+        stroke_width,
+        CurrentState().stroke);
 }
 
 
-void Canvas::DrawRectangleFrame(const Rect& rect, float stroke_width, const Stroke& stroke) {
-    const auto& state = CurrentState();
-    DrawRectangleFrame(rect, stroke_width, state.brush, stroke);
-}
-
-
-void Canvas::DrawRectangleFrame(
+void Canvas::InnerDrawRectangle(
     const Rect& rect,
+    const d2d::Brush& brush,
     float stroke_width,
-    const Brush& brush,
-    const Stroke& stroke) {
+    const d2d::Stroke& stroke) {
 
-    renderer_.DrawRectangleFrame(AlignWithRegion(rect, stroke_width), brush, stroke_width, stroke);
+    renderer_.DrawRectangle(SnapToPixelsIfNeeded(rect, stroke_width), brush, stroke_width, stroke);
+}
+
+
+void Canvas::FillRoundedRectangle(const RoundedRect& rounded_rect) {
+    InnerFillRoundedRectangle(rounded_rect, CurrentState().brush);
+}
+
+
+void Canvas::FillRoundedRectangle(const RoundedRect& rounded_rect, const Color& color) {
+    InnerFillRoundedRectangle(rounded_rect, renderer_.CreateSolidColorBrush(color));
+}
+
+
+void Canvas::InnerFillRoundedRectangle(const RoundedRect& rounded_rect, const d2d::Brush& brush) {
+    renderer_.FillRoundedRectangle(SnapToPixelsIfNeeded(rounded_rect), brush);
 }
 
 
 void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect) {
     const auto& state = CurrentState();
-    DrawRoundedRectangle(rounded_rect, state.brush);
+    InnerDrawRoundedRectangle(rounded_rect, state.brush, state.stroke_width, state.stroke);
 }
 
 
 void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect, const Color& color) {
-    DrawRoundedRectangle(rounded_rect, renderer_.CreateSolidColorBrush(color));
-}
-
-
-void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush) {
-    renderer_.DrawRoundedRectangle(AlignWithRegion(rounded_rect), brush);
-}
-
-
-void Canvas::DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width) {
     const auto& state = CurrentState();
-    DrawRoundedRectangleFrame(rounded_rect, stroke_width, state.brush, state.stroke);
+    InnerDrawRoundedRectangle(
+        rounded_rect,
+        renderer_.CreateSolidColorBrush(color),
+        state.stroke_width,
+        state.stroke);
 }
 
 
-void Canvas::DrawRoundedRectangleFrame(
+void Canvas::DrawRoundedRectangle(
     const RoundedRect& rounded_rect,
-    float stroke_width,
-    const Brush& brush) {
+    const Color& color,
+    float stroke_width) {
 
-    const auto& state = CurrentState();
-    DrawRoundedRectangleFrame(rounded_rect, stroke_width, brush, state.stroke);
+    InnerDrawRoundedRectangle(
+        rounded_rect,
+        renderer_.CreateSolidColorBrush(color),
+        stroke_width,
+        CurrentState().stroke);
 }
 
 
-void Canvas::DrawRoundedRectangleFrame(
+void Canvas::InnerDrawRoundedRectangle(
     const RoundedRect& rounded_rect,
+    const d2d::Brush& brush,
     float stroke_width,
-    const Stroke& stroke) {
+    const d2d::Stroke& stroke) {
 
-    const auto& state = CurrentState();
-    DrawRoundedRectangleFrame(rounded_rect, stroke_width, state.brush, stroke);
-}
-
-
-void Canvas::DrawRoundedRectangleFrame(
-    const RoundedRect& rounded_rect,
-    float stroke_width,
-    const Brush& brush,
-    const Stroke& stroke) {
-
-    renderer_.DrawRoundedRectangleFrame(
-        AlignWithRegion(rounded_rect, stroke_width),
+    renderer_.DrawRoundedRectangle(
+        SnapToPixelsIfNeeded(rounded_rect, stroke_width),
         brush,
         stroke_width,
         stroke);
+}
+
+
+void Canvas::FillEllipse(const Ellipse& ellipse) {
+    InnerFillEllipse(ellipse, CurrentState().brush);
+}
+
+
+void Canvas::FillEllipse(const Ellipse& ellipse, const Color& color) {
+    InnerFillEllipse(ellipse, renderer_.CreateSolidColorBrush(color));
+}
+
+
+void Canvas::InnerFillEllipse(const Ellipse& ellipse, const d2d::Brush& brush) {
+    renderer_.FillEllipse(SnapToPixelsIfNeeded(ellipse), brush);
 }
 
 
 void Canvas::DrawEllipse(const Ellipse& ellipse) {
     const auto& state = CurrentState();
-    renderer_.DrawEllipse(AlignWithRegion(ellipse), state.brush);
+    InnerDrawEllipse(ellipse, state.brush, state.stroke_width, state.stroke);
 }
 
 
-void Canvas::DrawEllipse(const Ellipse& ellipse, const Brush& brush) {
-    renderer_.DrawEllipse(AlignWithRegion(ellipse), brush);
-}
-
-
-void Canvas::DrawEllipseFrame(const Ellipse& ellipse, float stroke_width) {
+void Canvas::DrawEllipse(const Ellipse& ellipse, const Color& color) {
     const auto& state = CurrentState();
-    DrawEllipseFrame(ellipse, stroke_width, state.brush, state.stroke);
+    InnerDrawEllipse(
+        ellipse,
+        renderer_.CreateSolidColorBrush(color),
+        state.stroke_width,
+        state.stroke);
 }
 
 
-void Canvas::DrawEllipseFrame(const Ellipse& ellipse, float stroke_width, const Brush& brush) {
-    const auto& state = CurrentState();
-    DrawEllipseFrame(ellipse, stroke_width, brush, state.stroke);
+void Canvas::DrawEllipse(const Ellipse& ellipse, const Color& color, float stroke_width) {
+    InnerDrawEllipse(
+        ellipse,
+        renderer_.CreateSolidColorBrush(color),
+        stroke_width,
+        CurrentState().stroke);
 }
 
 
-void Canvas::DrawEllipseFrame(const Ellipse& ellipse, float stroke_width, const Stroke& stroke) {
-    const auto& state = CurrentState();
-    DrawEllipseFrame(ellipse, stroke_width, state.brush, stroke);
-}
-
-
-void Canvas::DrawEllipseFrame(
+void Canvas::InnerDrawEllipse(
     const Ellipse& ellipse,
+    const d2d::Brush& brush,
     float stroke_width,
-    const Brush& brush,
-    const Stroke& stroke) {
+    const d2d::Stroke& stroke) {
 
-    renderer_.DrawEllipseFrame(
-        AlignWithRegion(ellipse, stroke_width),
+    renderer_.DrawEllipse(
+        SnapToPixelsIfNeeded(ellipse, stroke_width),
         brush,
         stroke_width,
         stroke);
 }
 
 
+void Canvas::FillGeometry(const Geometry& geometry) {
+    InnerFillGeometry(geometry, CurrentState().brush);
+}
+
+
+void Canvas::FillGeometry(const Geometry& geometry, const Color& color) {
+    InnerFillGeometry(geometry, renderer_.CreateSolidColorBrush(color));
+}
+
+
+void Canvas::InnerFillGeometry(const Geometry& geometry, const d2d::Brush& brush) {
+    renderer_.FillGeometry(geometry, brush, Brush{});
+}
+
+
 void Canvas::DrawGeometry(const Geometry& geometry) {
     const auto& state = CurrentState();
-    DrawGeometry(geometry, state.brush);
+    InnerDrawGeometry(geometry, state.brush, state.stroke_width, state.stroke);
 }
 
 
-void Canvas::DrawGeometry(const Geometry& geometry, const Brush& brush) {
-    renderer_.DrawGeometry(geometry, brush, Brush{});
-}
-
-
-void Canvas::DrawGeometryFrame(const Geometry& geometry, float stroke_width) {
-    const auto& state = CurrentState();
-    DrawGeometryFrame(geometry, stroke_width, state.brush, state.stroke);
-}
-
-
-void Canvas::DrawGeometryFrame(const Geometry& geometry, float stroke_width, const Brush& brush) {
-    const auto& state = CurrentState();
-    DrawGeometryFrame(geometry, stroke_width, brush, state.stroke);
-}
-
-
-void Canvas::DrawGeometryFrame(
-    const Geometry& geometry, 
-    float stroke_width, 
-    const Stroke& stroke) {
+void Canvas::DrawGeometry(const Geometry& geometry, const Color& color) {
 
     const auto& state = CurrentState();
-    DrawGeometryFrame(geometry, stroke_width, state.brush, stroke);
+    InnerDrawGeometry(
+        geometry,
+        renderer_.CreateSolidColorBrush(color),
+        state.stroke_width,
+        state.stroke);
 }
 
 
-void Canvas::DrawGeometryFrame(
+void Canvas::DrawGeometry(
     const Geometry& geometry,
+    const Color& color,
+    float stroke_width) {
+
+    InnerDrawGeometry(
+        geometry,
+        renderer_.CreateSolidColorBrush(color),
+        stroke_width,
+        CurrentState().stroke);
+}
+
+
+void Canvas::InnerDrawGeometry(
+    const Geometry& geometry,
+    const d2d::Brush& brush,
     float stroke_width,
-    const Brush& brush,
-    const Stroke& stroke) {
+    const d2d::Stroke& stroke) {
 
     Geometry drew_geometry;
 
@@ -386,7 +453,7 @@ void Canvas::DrawGeometryFrame(
         drew_geometry = geometry;
     }
 
-    renderer_.DrawGeometryFrame(drew_geometry, brush, stroke_width, stroke);
+    renderer_.DrawGeometry(drew_geometry, brush, stroke_width, stroke);
 }
 
 
@@ -416,7 +483,7 @@ void Canvas::DrawTextFormat(
     const Rect& rect,
     const Brush& brush) {
 
-    renderer_.DrawTextFormat(text, text_format, AlignWithRegion(rect), brush);
+    renderer_.DrawTextFormat(text, text_format, SnapToPixelsIfNeeded(rect), brush);
 }
 
 
@@ -440,7 +507,7 @@ void Canvas::DrawTextLayout(
     const Point& position,
     const Brush& brush) {
 
-    renderer_.DrawTextLayout(text_layout, AlignWithRegion(position), brush);
+    renderer_.DrawTextLayout(text_layout, SnapToPixelsIfNeeded(position), brush);
 }
 
 
@@ -451,7 +518,7 @@ void Canvas::DrawBitmap(
 
     renderer_.DrawBitmap(
         bitmap, 
-        AlignWithRegion(destination_rect),
+        SnapToPixelsIfNeeded(destination_rect),
         options.Opacity(),
         options.InterpolationMode(),
         options.SourceRect());
@@ -477,7 +544,7 @@ PathGeometry Canvas::CreatePathGeometry() const {
 
 RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect) const {
 
-    Rect aligned_rect = AlignWithRegion(rect);
+    Rect aligned_rect = SnapToPixelsIfNeeded(rect);
     return GraphicFactory::Instance().CreateRectangleGeometry(aligned_rect);
 }
 
@@ -485,14 +552,14 @@ RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect) const {
 RoundedRectangleGeometry Canvas::CreateRoundedRectangleGeometry(
     const RoundedRect& rounded_rect) const {
 
-    RoundedRect aligned_rounded_rect = AlignWithRegion(rounded_rect);
+    RoundedRect aligned_rounded_rect = SnapToPixelsIfNeeded(rounded_rect);
     return GraphicFactory::Instance().CreateRoundedRectangleGeometry(aligned_rounded_rect);
 }
 
 
 EllipseGeometry Canvas::CreateEllipseGeometry(const Ellipse& ellipse) const {
 
-    Ellipse aligned_ellipse = AlignWithRegion(ellipse);
+    Ellipse aligned_ellipse = SnapToPixelsIfNeeded(ellipse);
     return GraphicFactory::Instance().CreateEllipseGeometry(ellipse);
 }
 

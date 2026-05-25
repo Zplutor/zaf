@@ -162,7 +162,7 @@ void TextualControl::PaintTextBackInRange(
 
         auto rect = metrics.Rect();
         rect.Deflate(text_back_padding_);
-        canvas.DrawRectangle(rect, color);
+        canvas.FillRectangle(rect, color);
     }
 }
 

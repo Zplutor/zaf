@@ -264,10 +264,10 @@ void TextBox::PaintSelection(
 
     auto region_guard = canvas.PushRegion(layout_rect, layout_rect);
 
-    auto background_color = SelectionBackColor();
-    auto brush = canvas.Renderer().CreateSolidColorBrush(background_color);
-    std::wstring_view text = TextModel().Text();
+    auto canvas_state = canvas.PushState();
+    canvas_state.SetBrush(SelectionBackColor());
 
+    std::wstring_view text = TextModel().Text();
     for (const auto& metrics : metrics_list) {
 
         zaf::Rect rect = metrics.Rect();
@@ -278,7 +278,7 @@ void TextBox::PaintSelection(
             rect.size.width += metrics.Height() / 3;
         }
 
-        canvas.DrawRectangle(rect, brush);
+        canvas.FillRectangle(rect);
     }
 }
 

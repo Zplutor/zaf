@@ -49,11 +49,7 @@ void InlineObject::OnDetached(const DetachedInfo& event_info) {
 
 
 void InlineObject::Paint(Canvas& canvas) const {
-
-    canvas.DrawRectangleFrame(
-        Rect{ Point{}, this->Size() },
-        1.f, 
-        canvas.Renderer().CreateSolidColorBrush(Color::Black()));
+    canvas.DrawRectangle(Rect{ Point{}, this->Size() }, Color::Black(), 1.f);
 }
 
 

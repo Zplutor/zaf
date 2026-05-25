@@ -75,10 +75,10 @@ void Button::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
     __super::Paint(canvas, dirty_rect);
 
     if (IsDefault()) {
-
-        auto state_guard = canvas.PushState();
-        state_guard.SetBrush(Color::FromRGB(internal::ButtonActivedBorderColorRGB));
-        canvas.DrawRectangleFrame(ContentRectInSelf(), 1);
+        canvas.DrawRectangle(
+            ContentRectInSelf(), 
+            Color::FromRGB(internal::ButtonActivedBorderColorRGB), 
+            1);
     }
     
     if (IsFocused()) {

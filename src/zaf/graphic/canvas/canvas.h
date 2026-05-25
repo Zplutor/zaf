@@ -9,7 +9,6 @@
 #include <zaf/graphic/canvas/canvas_state.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/canvas/pixel_snap_mode.h>
-#include <zaf/internal/graphic/alignment_helper.h>
 #include <zaf/internal/graphic/canvas_region.h>
 #include <zaf/graphic/internal/canvas_state_data.h>
 #include <zaf/graphic/rect.h>
@@ -68,6 +67,14 @@ public:
 
     @param renderer
         The renderer to which the canvas paints.
+
+    @details
+        The constructed canvas has an initial state with the following options and graphic 
+        resources:
+        - Pixel snap mode: Snap.
+        - Brush: a solid color brush with white color.
+        - Stroke width: 1.
+        - Stroke: default stroke.
     */
     explicit Canvas(d2d::Renderer& renderer);
     ~Canvas();
@@ -92,10 +99,7 @@ public:
         in the region and destroy it after painting.
     */
     [[nodiscard]]
-    CanvasRegionGuard PushRegion(
-        const Rect& region_rect, 
-        const Rect& paintable_rect,
-        PixelSnapMode pixel_snap_mode = PixelSnapMode::Snap);
+    CanvasRegionGuard PushRegion(const Rect& region_rect, const Rect& paintable_rect);
 
     /**
     Pushes a clipping area into canvas. 
@@ -109,84 +113,54 @@ public:
         painting with the clipping and destroy it after painting.
     */
     [[nodiscard]]
-    CanvasClippingGuard PushClipping(
-        const Rect& clipping_rect,
-        PixelSnapMode pixel_snap_mode = PixelSnapMode::Snap);
+    CanvasClippingGuard PushClipping(const Rect& clipping_rect);
 
     [[nodiscard]]
     CanvasState PushState();
 
     void Clear();
 
+    void DrawLine(const Point& from_point, const Point& to_point);
+    void DrawLine(const Point& from_point, const Point& to_point, const Color& color);
     void DrawLine(
         const Point& from_point,
-        const Point& to_point, 
-        float stroke_width, 
-        PixelSnapMode pixel_snap_mode = PixelSnapMode::Snap);
+        const Point& to_point,
+        const Color& color,
+        float stroke_width);
+
+    void FillRectangle(const Rect& rect);
+    void FillRectangle(const Rect& rect, const Color& color);
 
     void DrawRectangle(const Rect& rect);
     void DrawRectangle(const Rect& rect, const Color& color);
-    void DrawRectangle(const Rect& rect, const d2d::Brush& brush);
+    void DrawRectangle(const Rect& rect, const Color& color, float stroke_width);
 
-    void DrawRectangleFrame(const Rect& rect, float stroke_width);
-    void DrawRectangleFrame(const Rect& rect, float stroke_width, const d2d::Brush& brush);
-    void DrawRectangleFrame(const Rect& rect, float stroke_width, const d2d::Stroke& stroke);
-    void DrawRectangleFrame(
-        const Rect& rect,
-        float stroke_width,
-        const d2d::Brush& brush,
-        const d2d::Stroke& stroke);
-
+    void FillRoundedRectangle(const RoundedRect& rounded_rect);
+    void FillRoundedRectangle(const RoundedRect& rounded_rect, const Color& color);
+    
     void DrawRoundedRectangle(const RoundedRect& rounded_rect);
     void DrawRoundedRectangle(const RoundedRect& rounded_rect, const Color& color);
-    void DrawRoundedRectangle(const RoundedRect& rounded_rect, const d2d::Brush& brush);
-
-    void DrawRoundedRectangleFrame(const RoundedRect& rounded_rect, float stroke_width);
-    void DrawRoundedRectangleFrame(
-        const RoundedRect& rounded_rect, 
-        float stroke_width, 
-        const d2d::Brush& brush);
-    void DrawRoundedRectangleFrame(
+    void DrawRoundedRectangle(
         const RoundedRect& rounded_rect,
-        float stroke_width,
-        const d2d::Stroke& stroke);
-    void DrawRoundedRectangleFrame(
-        const RoundedRect& rounded_rect,
-        float stroke_width,
-        const d2d::Brush& brush,
-        const d2d::Stroke& stroke);
+        const Color& color,
+        float stroke_width);
 
+    void FillEllipse(const Ellipse& ellipse);
+    void FillEllipse(const Ellipse& ellipse, const Color& color);
+    
     void DrawEllipse(const Ellipse& ellipse);
-    void DrawEllipse(const Ellipse& ellipse, const d2d::Brush& brush);
+    void DrawEllipse(const Ellipse& ellipse, const Color& color);
+    void DrawEllipse(const Ellipse& ellipse, const Color& color, float stroke_width);
 
-    void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width);
-    void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width, const d2d::Brush& brush);
-    void DrawEllipseFrame(const Ellipse& ellipse, float stroke_width, const d2d::Stroke& stroke);
-    void DrawEllipseFrame(
-        const Ellipse& ellipse, 
-        float stroke_width, 
-        const d2d::Brush& brush,
-        const d2d::Stroke& stroke);
+    void FillGeometry(const d2d::Geometry& geometry);
+    void FillGeometry(const d2d::Geometry& geometry, const Color& color);
 
     void DrawGeometry(const d2d::Geometry& geometry);
-    void DrawGeometry(const d2d::Geometry& geometry, const d2d::Brush& brush);
-
-    void DrawGeometryFrame(const d2d::Geometry& geometry, float stroke_width);
-    void DrawGeometryFrame(
-        const d2d::Geometry& geometry, 
-        float stroke_width, 
-        const d2d::Brush& brush);
-
-    void DrawGeometryFrame(
+    void DrawGeometry(const d2d::Geometry& geometry, const Color& color);
+    void DrawGeometry(
         const d2d::Geometry& geometry,
-        float stroke_width, 
-        const d2d::Stroke& stroke);
-
-    void DrawGeometryFrame(
-        const d2d::Geometry& geometry,
-        float stroke_width, 
-        const d2d::Brush& brush,
-        const d2d::Stroke& stroke);
+        const Color& color,
+        float stroke_width);
 
     void DrawTextFormat(
         const std::wstring& text,
@@ -245,18 +219,42 @@ private:
     const internal::CanvasStateData& CurrentState() const;
 
     template<typename T>
-    T AlignWithRegion(const T& object, float stroke_width = 0) const {
+    T SnapToPixelsIfNeeded(const T& object, float stroke_width = 0) const;
 
-        const auto& current_region = regions_.top();
-        T result = internal::AlignInRelatedCoordinateSystem(
-            object, 
-            stroke_width, 
-            renderer_.GetDPI(),
-            current_region.rect.position, 
-            current_region.snapped_rect.position);
-        result.AddOffset(current_region.SnappedOffset());
-        return result;
-    }
+    void InnerDrawLine(
+        const Point& from_point,
+        const Point& to_point,
+        const d2d::Brush& brush,
+        float stroke_width,
+        const d2d::Stroke& stroke);
+
+    void InnerFillRectangle(const Rect& rect, const d2d::Brush& brush);
+    void InnerDrawRectangle(
+        const Rect& rect,
+        const d2d::Brush& brush,
+        float stroke_width,
+        const d2d::Stroke& stroke);
+
+    void InnerFillRoundedRectangle(const RoundedRect& rounded_rect, const d2d::Brush& brush);
+    void InnerDrawRoundedRectangle(
+        const RoundedRect& rounded_rect,
+        const d2d::Brush& brush,
+        float stroke_width,
+        const d2d::Stroke& stroke);
+
+    void InnerFillEllipse(const Ellipse& ellipse, const d2d::Brush& brush);
+    void InnerDrawEllipse(
+        const Ellipse& ellipse,
+        const d2d::Brush& brush,
+        float stroke_width,
+        const d2d::Stroke& stroke);
+
+    void InnerFillGeometry(const d2d::Geometry& geometry, const d2d::Brush& brush);
+    void InnerDrawGeometry(
+        const d2d::Geometry& geometry,
+        const d2d::Brush& brush,
+        float stroke_width,
+        const d2d::Stroke& stroke);
 
 private:
     d2d::Renderer renderer_;

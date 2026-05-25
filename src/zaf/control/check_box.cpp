@@ -86,10 +86,11 @@ void CheckBox::PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const {
 
     //Paint the box.
     state_guard.SetBrush(BoxBackColor());
-    canvas.DrawRectangle(box_rect);
+    canvas.FillRectangle(box_rect);
 
     state_guard.SetBrush(BoxBorderColor());
-    canvas.DrawRectangleFrame(box_rect, 1);
+    state_guard.SetStrokeWidth(1);
+    canvas.DrawRectangle(box_rect);
 
     //Paint the check state mark.
     auto check_state = CheckState();
@@ -97,7 +98,7 @@ void CheckBox::PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const {
     if (check_state == CheckState::Indeterminate) {
         zaf::Rect mark_rect = box_rect;
         mark_rect.Inflate(-3);
-        canvas.DrawRectangle(mark_rect);
+        canvas.FillRectangle(mark_rect);
     }
     else if (check_state == CheckState::Checked) {
 
@@ -124,7 +125,7 @@ void CheckBox::PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const {
         sink.EndFigure(d2d::GeometrySink::EndFigureOption::Open);
         sink.Close();
 
-        canvas.DrawGeometryFrame(path, 1.5);
+        canvas.DrawGeometry(path, BoxBorderColor(), 1.5);
     }
 }
 

@@ -69,9 +69,7 @@ void TrackBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
         std::swap(end_position.x, end_position.y);
     }
 
-    auto state_guard = canvas.PushState();
-    state_guard.SetBrush(TrackColor());
-    canvas.DrawLine(from_position, end_position, track_thickness_);
+    canvas.DrawLine(from_position, end_position, TrackColor(), track_thickness_);
 }
 
 

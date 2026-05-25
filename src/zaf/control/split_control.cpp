@@ -414,9 +414,7 @@ void SplitBar::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
         std::swap(end_point.x, end_point.y);
     }
 
-    auto state_guard = canvas.PushState();
-    state_guard.SetBrush(SplitterColor());
-    canvas.DrawLine(start_point, end_point, 1);
+    canvas.DrawLine(start_point, end_point, SplitterColor(), 1);
 }
 
 

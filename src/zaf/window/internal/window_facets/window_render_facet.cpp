@@ -6,6 +6,7 @@
 #include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/graphic_factory.h>
+#include <zaf/graphic/pixel_snapping.h>
 #include <zaf/internal/theme.h>
 #include <zaf/window/window.h>
 
@@ -54,7 +55,7 @@ void WindowRenderFacet::HandleWMPAINT() {
         {
             auto state_guard = canvas.PushState();
             state_guard.SetBrush(Color::FromRGB(internal::ControlBackgroundColorRGB));
-            canvas.DrawRectangle(dirty_rect);
+            canvas.FillRectangle(dirty_rect);
         }
 
         window_.RootControl()->Repaint(canvas, dirty_rect);

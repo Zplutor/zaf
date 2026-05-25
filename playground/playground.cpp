@@ -23,21 +23,22 @@ class CustomPaintControl : public zaf::Control {
 protected:
     void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const override {
 
-        canvas.DrawRectangle(this->RectInSelf(), zaf::Color::White());
+        canvas.FillRectangle(this->RectInSelf(), zaf::Color::White());
 
         zaf::Rect region_rect{ 0.25, 0.25, 100, 100 };
         auto region = canvas.PushRegion(region_rect, region_rect);
 
-        canvas.DrawRectangle(zaf::Rect{ 0, 0, 100, 100 }, zaf::Color::Gray());
+        canvas.FillRectangle(zaf::Rect{ 0, 0, 100, 100 }, zaf::Color::Gray());
 
         auto state_guard = canvas.PushState();
+        state_guard.SetStrokeWidth(1);
         state_guard.SetBrush(zaf::Color::Red());
 
         zaf::d2d::StrokeProperties stroke_properties;
         stroke_properties.SetStartCapStyle(zaf::d2d::Stroke::CapStyle::Square);
         auto stroke = zaf::GraphicFactory::Instance().CreateStroke(stroke_properties);
         state_guard.SetStroke(stroke);
-        canvas.DrawLine({ 0.25, 0.25 }, { 100.25, 0.25 }, 1);
+        canvas.DrawLine({ 0.25, 0.25 }, { 100.25, 0.25 });
 
         /*
         canvas.DrawRectangle(this->RectInSelf(), zaf::Color::White());

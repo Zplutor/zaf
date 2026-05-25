@@ -88,14 +88,13 @@ void RadioButton::PaintRadio(Canvas& canvas, const zaf::Rect& radio_rect) const 
     Ellipse ellipse(ellipse_position, ellipse_x_radius, ellipse_y_radius);
 
     state_guard.SetBrush(RadioBackColor());
-    canvas.DrawEllipse(ellipse);
+    canvas.FillEllipse(ellipse);
 
-    state_guard.SetBrush(RadioBorderColor());
-    canvas.DrawEllipseFrame(ellipse, 1);
+    canvas.DrawEllipse(ellipse, RadioBorderColor(), 1);
     
     if (IsChecked()) {
         ellipse.Inflate(-3);
-        canvas.DrawEllipse(ellipse);
+        canvas.FillEllipse(ellipse);
     }
 }
 

@@ -85,7 +85,7 @@ void SpinButton::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     auto state_guard = canvas.PushState();
     state_guard.SetBrush(ArrowColor());
-    canvas.DrawGeometry(triangle_geometry);
+    canvas.FillGeometry(triangle_geometry);
 }
 
 

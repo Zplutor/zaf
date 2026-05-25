@@ -62,7 +62,7 @@ void MenuItem::PaintSubMenuArrow(Canvas& canvas) const {
 
     auto state_guard = canvas.PushState();
     state_guard.SetBrush(this->TextColor());
-    canvas.DrawGeometry(transformed_geometry);
+    canvas.FillGeometry(transformed_geometry);
 }
 
 

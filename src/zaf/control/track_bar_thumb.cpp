@@ -38,7 +38,7 @@ void TrackBarThumb::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
 
     __super::Paint(canvas, dirty_rect);
 
-    canvas.DrawRectangle(ContentRectInSelf(), ThumbColor());
+    canvas.FillRectangle(ContentRectInSelf(), ThumbColor());
 }
 
 

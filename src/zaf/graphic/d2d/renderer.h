@@ -87,11 +87,11 @@ public:
             stroke.Ptr().Inner());
     }
 
-    void DrawRectangle(const Rect& rect, const Brush& brush) {
+    void FillRectangle(const Rect& rect, const Brush& brush) {
         Ptr()->FillRectangle(rect.ToD2D1RECTF(), brush.Ptr().Inner());
     }
 
-    void DrawRectangleFrame(
+    void DrawRectangle(
         const Rect& rect,
         const Brush& brush,
         float stroke_width,
@@ -104,11 +104,11 @@ public:
             stroke.Ptr().Inner());
     }
 
-    void DrawRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush) {
+    void FillRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush) {
         Ptr()->FillRoundedRectangle(rounded_rect.ToD2D1ROUNDEDRECT(), brush.Ptr().Inner());
     }
 
-    void DrawRoundedRectangleFrame(
+    void DrawRoundedRectangle(
         const RoundedRect& rounded_rect,
         const Brush& brush,
         float stroke_width,
@@ -121,11 +121,11 @@ public:
             stroke.Ptr().Inner());
     }
 
-    void DrawEllipse(const Ellipse& ellipse, const Brush& brush) {
+    void FillEllipse(const Ellipse& ellipse, const Brush& brush) {
         Ptr()->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush.Ptr().Inner());
     }
 
-    void DrawEllipseFrame(
+    void DrawEllipse(
         const Ellipse& ellipse,
         const Brush& brush,
         float stroke_width,
@@ -138,7 +138,7 @@ public:
             stroke.Ptr().Inner());
     }
 
-    void DrawGeometry(
+    void FillGeometry(
         const Geometry& geometry,
         const Brush& brush,
         const Brush& opacity_brush) {
@@ -149,7 +149,7 @@ public:
             opacity_brush.Ptr().Inner());
     }
 
-    void DrawGeometryFrame(
+    void DrawGeometry(
         const Geometry& geometry,
         const Brush& brush,
         float stroke_width,
