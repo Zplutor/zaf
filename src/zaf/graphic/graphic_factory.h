@@ -13,13 +13,13 @@
 #include <zaf/graphic/wic/bitmap.h>
 #include <zaf/graphic/d2d/renderer_properties.h>
 #include <zaf/graphic/d2d/window_renderer.h>
-#include <zaf/graphic/d2d/stroke.h>
+#include <zaf/graphic/d2d/stroke_style.h>
 #include <zaf/graphic/dwrite/text_inline_object.h>
 #include <zaf/graphic/dwrite/text_layout.h>
 
 namespace zaf {
 namespace d2d {
-class StrokeProperties;
+class StrokeStyleProperties;
 }
 
 namespace dwrite {
@@ -80,12 +80,9 @@ public:
         const TransformMatrix& transform_matrix);
 
     /**
-     Create a stroke with specified properties.
-
-     @return 
-         Return nullptr if failed.
-     */
-    d2d::Stroke CreateStroke(const d2d::StrokeProperties& properties);
+    Create a stroke style with specified properties.
+    */
+    d2d::StrokeStyle CreateStrokeStyle(const d2d::StrokeStyleProperties& properties);
 
     /**
      Create a text format with specified properties.

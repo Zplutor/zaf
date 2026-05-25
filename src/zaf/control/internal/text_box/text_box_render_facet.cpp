@@ -1,7 +1,7 @@
 #include <zaf/control/internal/text_box/text_box_render_facet.h>
 #include <zaf/control/internal/textual/text_box_editor.h>
 #include <zaf/graphic/canvas/canvas.h>
-#include <zaf/graphic/d2d/stroke_properties.h>
+#include <zaf/graphic/d2d/stroke_style_properties.h>
 #include <zaf/graphic/graphic_factory.h>
 
 namespace zaf::internal {
@@ -34,13 +34,13 @@ void TextBoxRenderFacet::PaintCompositionUnderline(
     auto state_gurad = canvas.PushState();
     state_gurad.SetBrush(owner_.TextColor());
 
-    d2d::StrokeProperties stroke_properties;
-    stroke_properties.SetDashStyle(d2d::Stroke::DashStyle::Dot);
-    stroke_properties.SetDashCapStyle(d2d::Stroke::CapStyle::Round);
-    stroke_properties.SetStartCapStyle(d2d::Stroke::CapStyle::Round);
-    stroke_properties.SetEndCapStyle(d2d::Stroke::CapStyle::Round);
-    auto stroke = GraphicFactory::Instance().CreateStroke(stroke_properties);
-    state_gurad.SetStroke(stroke);
+    d2d::StrokeStyleProperties stroke_properties;
+    stroke_properties.SetDashStyle(d2d::DashStyle::Dot);
+    stroke_properties.SetDashCap(d2d::LineCap::Round);
+    stroke_properties.SetStartCap(d2d::LineCap::Round);
+    stroke_properties.SetEndCap(d2d::LineCap::Round);
+    auto stroke_style = GraphicFactory::Instance().CreateStrokeStyle(stroke_properties);
+    state_gurad.SetStrokeStyle(stroke_style);
 
     constexpr float LineWidth = 1.0f;
     state_gurad.SetStrokeWidth(LineWidth);

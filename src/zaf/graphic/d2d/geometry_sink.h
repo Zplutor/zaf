@@ -66,7 +66,7 @@ public:
 
         /**
          The segment is always joined with the one preceding it using a round line join,
-         regardless of which Stroke::LineJoinStyle enumeration is specified by the Stroke class.
+         regardless of which Stroke::LineJoin enumeration is specified by the Stroke class.
          If this segment is the first segment and the figure is closed, a round line join
          is used to connect the closing segment with the first segment. If the figure is not
          closed, this setting has no effect on the first segment of the figure. If GeometrySink::SetSegmentFlags

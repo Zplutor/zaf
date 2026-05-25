@@ -734,13 +734,16 @@
     <ClInclude Include="src\zaf\graphic\d2d\bitmap_properties.h" />
     <ClInclude Include="src\zaf\graphic\d2d\bitmap_renderer.h" />
     <ClInclude Include="src\zaf\graphic\d2d\brush.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\line_cap.h" />
     <ClInclude Include="src\zaf\graphic\d2d\compatible_renderer_properties.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\dash_style.h" />
     <ClInclude Include="src\zaf\graphic\d2d\ellipse_geometry.h" />
     <ClInclude Include="src\zaf\graphic\d2d\geometry.h" />
     <ClInclude Include="src\zaf\graphic\d2d\geometry_sink.h" />
     <ClInclude Include="src\zaf\graphic\d2d\interpolation_mode.h" />
     <ClInclude Include="src\zaf\graphic\d2d\layer.h" />
     <ClInclude Include="src\zaf\graphic\d2d\layer_parameters.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\line_join.h" />
     <ClInclude Include="src\zaf\graphic\d2d\path_geometry.h" />
     <ClInclude Include="src\zaf\graphic\d2d\pixel_format.h" />
     <ClInclude Include="src\zaf\graphic\d2d\pixel_properties.h" />
@@ -750,8 +753,8 @@
     <ClInclude Include="src\zaf\graphic\d2d\render_bitmap.h" />
     <ClInclude Include="src\zaf\graphic\d2d\rounded_rectangle_geometry.h" />
     <ClInclude Include="src\zaf\graphic\d2d\solid_color_brush.h" />
-    <ClInclude Include="src\zaf\graphic\d2d\stroke.h" />
-    <ClInclude Include="src\zaf\graphic\d2d\stroke_properties.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\stroke_style.h" />
+    <ClInclude Include="src\zaf\graphic\d2d\stroke_style_properties.h" />
     <ClInclude Include="src\zaf\graphic\d2d\transformed_geometry.h" />
     <ClInclude Include="src\zaf\graphic\d2d\window_renderer.h" />
     <ClInclude Include="src\zaf\graphic\dpi.h" />

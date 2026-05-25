@@ -2710,13 +2710,22 @@
     <ClInclude Include="src\zaf\graphic\d2d\brush.h">
       <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\line_cap.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
     <ClInclude Include="src\zaf\graphic\d2d\solid_color_brush.h">
       <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\d2d\stroke.h">
+    <ClInclude Include="src\zaf\graphic\d2d\dash_style.h">
       <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\d2d\stroke_properties.h">
+    <ClInclude Include="src\zaf\graphic\d2d\line_join.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\stroke_style.h">
+      <Filter>zaf\graphic\d2d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\d2d\stroke_style_properties.h">
       <Filter>zaf\graphic\d2d</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\d2d\arc_segment.h">

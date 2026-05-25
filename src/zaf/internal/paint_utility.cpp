@@ -3,7 +3,7 @@
 #include <zaf/control/textual_control.h>
 #include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/graphic_factory.h>
-#include <zaf/graphic/d2d/stroke_properties.h>
+#include <zaf/graphic/d2d/stroke_style_properties.h>
 #include <zaf/internal/theme.h>
 
 namespace zaf {
@@ -63,15 +63,15 @@ void DrawTextWithIcon(
 
 void DrawFocusRectangleFrame(Canvas& canvas, const Rect& rect) {
 
-    d2d::StrokeProperties stroke_properties;
-    stroke_properties.SetDashStyle(d2d::Stroke::DashStyle::Dot);
-    stroke_properties.SetDashCapStyle(d2d::Stroke::CapStyle::Square);
-    auto stroke = GraphicFactory::Instance().CreateStroke(stroke_properties);
+    d2d::StrokeStyleProperties stroke_properties;
+    stroke_properties.SetDashStyle(d2d::DashStyle::Dot);
+    stroke_properties.SetDashCap(d2d::LineCap::Square);
+    auto stroke_style = GraphicFactory::Instance().CreateStrokeStyle(stroke_properties);
 
     auto state_guard = canvas.PushState();
     state_guard.SetBrush(Color::Black());
     state_guard.SetStrokeWidth(1);
-    state_guard.SetStroke(stroke);
+    state_guard.SetStrokeStyle(stroke_style);
     canvas.DrawRectangle(rect);
 }
 

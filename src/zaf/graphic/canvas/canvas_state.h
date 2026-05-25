@@ -4,7 +4,7 @@
 #include <zaf/graphic/canvas/pixel_snap_mode.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/d2d/brush.h>
-#include <zaf/graphic/d2d/stroke.h>
+#include <zaf/graphic/d2d/stroke_style.h>
 
 namespace zaf::internal {
 class CanvasStateData;
@@ -30,7 +30,7 @@ public:
     void SetBrush(d2d::Brush brush);
     void SetBrush(const Color& color);
     void SetStrokeWidth(float stroke_width);
-    void SetStroke(d2d::Stroke stroke);
+    void SetStrokeStyle(d2d::StrokeStyle stroke_style);
 
 private:
     CanvasState(Canvas* canvas, internal::CanvasStateData* data, std::size_t tag) noexcept;

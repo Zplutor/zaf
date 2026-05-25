@@ -57,9 +57,9 @@ void CanvasState::SetStrokeWidth(float stroke_width) {
 }
 
 
-void CanvasState::SetStroke(d2d::Stroke stroke) {
+void CanvasState::SetStrokeStyle(d2d::StrokeStyle stroke_style) {
     ZAF_EXPECT(data_);
-    data_->stroke = std::move(stroke);
+    data_->stroke_style = std::move(stroke_style);
 }
 
 

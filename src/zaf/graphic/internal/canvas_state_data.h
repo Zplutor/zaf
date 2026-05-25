@@ -2,7 +2,7 @@
 
 #include <zaf/graphic/canvas/pixel_snap_mode.h>
 #include <zaf/graphic/d2d/brush.h>
-#include <zaf/graphic/d2d/stroke.h>
+#include <zaf/graphic/d2d/stroke_style.h>
 
 namespace zaf::internal {
 
@@ -11,7 +11,7 @@ public:
     PixelSnapMode pixel_snap_mode{ PixelSnapMode::Snap };
     d2d::Brush brush;
     float stroke_width{ 1.f };
-    d2d::Stroke stroke;
+    d2d::StrokeStyle stroke_style;
 };
 
 }

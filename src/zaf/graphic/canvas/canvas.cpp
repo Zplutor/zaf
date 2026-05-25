@@ -180,7 +180,7 @@ void Canvas::Clear() {
 
 void Canvas::DrawLine(const Point& from_point, const Point& to_point) {
     const auto& state = CurrentState();
-    InnerDrawLine(from_point, to_point, state.brush, state.stroke_width, state.stroke);
+    InnerDrawLine(from_point, to_point, state.brush, state.stroke_width, state.stroke_style);
 }
 
 
@@ -192,7 +192,7 @@ void Canvas::DrawLine(const Point& from_point, const Point& to_point, const Colo
         to_point, 
         renderer_.CreateSolidColorBrush(color), 
         state.stroke_width,
-        state.stroke);
+        state.stroke_style);
 }
 
 
@@ -207,7 +207,7 @@ void Canvas::DrawLine(
         to_point, 
         renderer_.CreateSolidColorBrush(color), 
         stroke_width,
-        CurrentState().stroke);
+        CurrentState().stroke_style);
 }
 
 
@@ -216,14 +216,14 @@ void Canvas::InnerDrawLine(
     const Point& to_point,
     const d2d::Brush& brush,
     float stroke_width,
-    const d2d::Stroke& stroke) {
+    const d2d::StrokeStyle& stroke_style) {
 
     renderer_.DrawLine(
         SnapToPixelsIfNeeded(from_point, stroke_width),
         SnapToPixelsIfNeeded(to_point, stroke_width),
         brush,
         stroke_width,
-        stroke);
+        stroke_style);
 }
 
 
@@ -244,7 +244,7 @@ void Canvas::InnerFillRectangle(const Rect& rect, const d2d::Brush& brush) {
 
 void Canvas::DrawRectangle(const Rect& rect) {
     const auto& state = CurrentState();
-    InnerDrawRectangle(rect, state.brush, state.stroke_width, state.stroke);
+    InnerDrawRectangle(rect, state.brush, state.stroke_width, state.stroke_style);
 }
 
 
@@ -254,7 +254,7 @@ void Canvas::DrawRectangle(const Rect& rect, const Color& color) {
         rect,
         renderer_.CreateSolidColorBrush(color),
         state.stroke_width,
-        state.stroke);
+        state.stroke_style);
 }
 
 
@@ -263,7 +263,7 @@ void Canvas::DrawRectangle(const Rect& rect, const Color& color, float stroke_wi
         rect,
         renderer_.CreateSolidColorBrush(color),
         stroke_width,
-        CurrentState().stroke);
+        CurrentState().stroke_style);
 }
 
 
@@ -271,9 +271,9 @@ void Canvas::InnerDrawRectangle(
     const Rect& rect,
     const d2d::Brush& brush,
     float stroke_width,
-    const d2d::Stroke& stroke) {
+    const d2d::StrokeStyle& stroke_style) {
 
-    renderer_.DrawRectangle(SnapToPixelsIfNeeded(rect, stroke_width), brush, stroke_width, stroke);
+    renderer_.DrawRectangle(SnapToPixelsIfNeeded(rect, stroke_width), brush, stroke_width, stroke_style);
 }
 
 
@@ -294,7 +294,7 @@ void Canvas::InnerFillRoundedRectangle(const RoundedRect& rounded_rect, const d2
 
 void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect) {
     const auto& state = CurrentState();
-    InnerDrawRoundedRectangle(rounded_rect, state.brush, state.stroke_width, state.stroke);
+    InnerDrawRoundedRectangle(rounded_rect, state.brush, state.stroke_width, state.stroke_style);
 }
 
 
@@ -304,7 +304,7 @@ void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect, const Color& 
         rounded_rect,
         renderer_.CreateSolidColorBrush(color),
         state.stroke_width,
-        state.stroke);
+        state.stroke_style);
 }
 
 
@@ -317,7 +317,7 @@ void Canvas::DrawRoundedRectangle(
         rounded_rect,
         renderer_.CreateSolidColorBrush(color),
         stroke_width,
-        CurrentState().stroke);
+        CurrentState().stroke_style);
 }
 
 
@@ -325,13 +325,13 @@ void Canvas::InnerDrawRoundedRectangle(
     const RoundedRect& rounded_rect,
     const d2d::Brush& brush,
     float stroke_width,
-    const d2d::Stroke& stroke) {
+    const d2d::StrokeStyle& stroke_style) {
 
     renderer_.DrawRoundedRectangle(
         SnapToPixelsIfNeeded(rounded_rect, stroke_width),
         brush,
         stroke_width,
-        stroke);
+        stroke_style);
 }
 
 
@@ -352,7 +352,7 @@ void Canvas::InnerFillEllipse(const Ellipse& ellipse, const d2d::Brush& brush) {
 
 void Canvas::DrawEllipse(const Ellipse& ellipse) {
     const auto& state = CurrentState();
-    InnerDrawEllipse(ellipse, state.brush, state.stroke_width, state.stroke);
+    InnerDrawEllipse(ellipse, state.brush, state.stroke_width, state.stroke_style);
 }
 
 
@@ -362,7 +362,7 @@ void Canvas::DrawEllipse(const Ellipse& ellipse, const Color& color) {
         ellipse,
         renderer_.CreateSolidColorBrush(color),
         state.stroke_width,
-        state.stroke);
+        state.stroke_style);
 }
 
 
@@ -371,7 +371,7 @@ void Canvas::DrawEllipse(const Ellipse& ellipse, const Color& color, float strok
         ellipse,
         renderer_.CreateSolidColorBrush(color),
         stroke_width,
-        CurrentState().stroke);
+        CurrentState().stroke_style);
 }
 
 
@@ -379,13 +379,13 @@ void Canvas::InnerDrawEllipse(
     const Ellipse& ellipse,
     const d2d::Brush& brush,
     float stroke_width,
-    const d2d::Stroke& stroke) {
+    const d2d::StrokeStyle& stroke_style) {
 
     renderer_.DrawEllipse(
         SnapToPixelsIfNeeded(ellipse, stroke_width),
         brush,
         stroke_width,
-        stroke);
+        stroke_style);
 }
 
 
@@ -406,7 +406,7 @@ void Canvas::InnerFillGeometry(const Geometry& geometry, const d2d::Brush& brush
 
 void Canvas::DrawGeometry(const Geometry& geometry) {
     const auto& state = CurrentState();
-    InnerDrawGeometry(geometry, state.brush, state.stroke_width, state.stroke);
+    InnerDrawGeometry(geometry, state.brush, state.stroke_width, state.stroke_style);
 }
 
 
@@ -417,7 +417,7 @@ void Canvas::DrawGeometry(const Geometry& geometry, const Color& color) {
         geometry,
         renderer_.CreateSolidColorBrush(color),
         state.stroke_width,
-        state.stroke);
+        state.stroke_style);
 }
 
 
@@ -430,7 +430,7 @@ void Canvas::DrawGeometry(
         geometry,
         renderer_.CreateSolidColorBrush(color),
         stroke_width,
-        CurrentState().stroke);
+        CurrentState().stroke_style);
 }
 
 
@@ -438,7 +438,7 @@ void Canvas::InnerDrawGeometry(
     const Geometry& geometry,
     const d2d::Brush& brush,
     float stroke_width,
-    const d2d::Stroke& stroke) {
+    const d2d::StrokeStyle& stroke_style) {
 
     Geometry drew_geometry;
 
@@ -453,7 +453,7 @@ void Canvas::InnerDrawGeometry(
         drew_geometry = geometry;
     }
 
-    renderer_.DrawGeometry(drew_geometry, brush, stroke_width, stroke);
+    renderer_.DrawGeometry(drew_geometry, brush, stroke_width, stroke_style);
 }
 
 

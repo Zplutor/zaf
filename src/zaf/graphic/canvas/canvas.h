@@ -74,7 +74,7 @@ public:
         - Pixel snap mode: Snap.
         - Brush: a solid color brush with white color.
         - Stroke width: 1.
-        - Stroke: default stroke.
+        - StrokeStyle: default stroke style.
     */
     explicit Canvas(d2d::Renderer& renderer);
     ~Canvas();
@@ -226,35 +226,35 @@ private:
         const Point& to_point,
         const d2d::Brush& brush,
         float stroke_width,
-        const d2d::Stroke& stroke);
+        const d2d::StrokeStyle& stroke_style);
 
     void InnerFillRectangle(const Rect& rect, const d2d::Brush& brush);
     void InnerDrawRectangle(
         const Rect& rect,
         const d2d::Brush& brush,
         float stroke_width,
-        const d2d::Stroke& stroke);
+        const d2d::StrokeStyle& stroke_style);
 
     void InnerFillRoundedRectangle(const RoundedRect& rounded_rect, const d2d::Brush& brush);
     void InnerDrawRoundedRectangle(
         const RoundedRect& rounded_rect,
         const d2d::Brush& brush,
         float stroke_width,
-        const d2d::Stroke& stroke);
+        const d2d::StrokeStyle& stroke_style);
 
     void InnerFillEllipse(const Ellipse& ellipse, const d2d::Brush& brush);
     void InnerDrawEllipse(
         const Ellipse& ellipse,
         const d2d::Brush& brush,
         float stroke_width,
-        const d2d::Stroke& stroke);
+        const d2d::StrokeStyle& stroke_style);
 
     void InnerFillGeometry(const d2d::Geometry& geometry, const d2d::Brush& brush);
     void InnerDrawGeometry(
         const d2d::Geometry& geometry,
         const d2d::Brush& brush,
         float stroke_width,
-        const d2d::Stroke& stroke);
+        const d2d::StrokeStyle& stroke_style);
 
 private:
     d2d::Renderer renderer_;

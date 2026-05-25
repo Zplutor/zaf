@@ -15,7 +15,7 @@
 #include <zaf/control/list_box.h>
 #include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/graphic_factory.h>
-#include <zaf/graphic/d2d/stroke_properties.h>
+#include <zaf/graphic/d2d/stroke_style_properties.h>
 
 void BeginRun(const zaf::ApplicationStartedInfo& event_info);
 
@@ -34,10 +34,10 @@ protected:
         state_guard.SetStrokeWidth(1);
         state_guard.SetBrush(zaf::Color::Red());
 
-        zaf::d2d::StrokeProperties stroke_properties;
-        stroke_properties.SetStartCapStyle(zaf::d2d::Stroke::CapStyle::Square);
-        auto stroke = zaf::GraphicFactory::Instance().CreateStroke(stroke_properties);
-        state_guard.SetStroke(stroke);
+        zaf::d2d::StrokeStyleProperties stroke_properties;
+        stroke_properties.SetStartCap(zaf::d2d::LineCap::Square);
+        auto stroke_style = zaf::GraphicFactory::Instance().CreateStrokeStyle(stroke_properties);
+        state_guard.SetStrokeStyle(stroke_style);
         canvas.DrawLine({ 0.25, 0.25 }, { 100.25, 0.25 });
 
         /*

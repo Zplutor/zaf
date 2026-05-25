@@ -16,7 +16,7 @@
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/graphic/rounded_rect.h>
-#include <zaf/graphic/d2d/stroke.h>
+#include <zaf/graphic/d2d/stroke_style.h>
 #include <zaf/graphic/d2d/geometry.h>
 #include <zaf/graphic/d2d/render_bitmap.h>
 #include <zaf/graphic/d2d/antialias_mode.h>
@@ -77,14 +77,14 @@ public:
         const Point& to_point,
         const Brush& brush,
         float stroke_width,
-        const Stroke& stroke) {
+        const StrokeStyle& stroke_style) {
 
         Ptr()->DrawLine(
             from_point.ToD2D1POINT2F(),
             to_point.ToD2D1POINT2F(),
             brush.Ptr().Inner(),
             stroke_width,
-            stroke.Ptr().Inner());
+            stroke_style.Ptr().Inner());
     }
 
     void FillRectangle(const Rect& rect, const Brush& brush) {
@@ -95,13 +95,13 @@ public:
         const Rect& rect,
         const Brush& brush,
         float stroke_width,
-        const Stroke& stroke) {
+        const StrokeStyle& stroke_style) {
 
         Ptr()->DrawRectangle(
             rect.ToD2D1RECTF(),
             brush.Ptr().Inner(),
             stroke_width,
-            stroke.Ptr().Inner());
+            stroke_style.Ptr().Inner());
     }
 
     void FillRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush) {
@@ -112,13 +112,13 @@ public:
         const RoundedRect& rounded_rect,
         const Brush& brush,
         float stroke_width,
-        const Stroke& stroke) {
+        const StrokeStyle& stroke_style) {
 
         Ptr()->DrawRoundedRectangle(
             rounded_rect.ToD2D1ROUNDEDRECT(),
             brush.Ptr().Inner(),
             stroke_width,
-            stroke.Ptr().Inner());
+            stroke_style.Ptr().Inner());
     }
 
     void FillEllipse(const Ellipse& ellipse, const Brush& brush) {
@@ -129,13 +129,13 @@ public:
         const Ellipse& ellipse,
         const Brush& brush,
         float stroke_width,
-        const Stroke& stroke) {
+        const StrokeStyle& stroke_style) {
 
         Ptr()->DrawEllipse(
             ellipse.ToD2D1ELLIPSE(),
             brush.Ptr().Inner(),
             stroke_width,
-            stroke.Ptr().Inner());
+            stroke_style.Ptr().Inner());
     }
 
     void FillGeometry(
@@ -153,13 +153,13 @@ public:
         const Geometry& geometry,
         const Brush& brush,
         float stroke_width,
-        const Stroke& stroke) {
+        const StrokeStyle& stroke_style) {
 
         Ptr()->DrawGeometry(
             geometry.Ptr().Inner(),
             brush.Ptr().Inner(),
             stroke_width,
-            stroke.Ptr().Inner());
+            stroke_style.Ptr().Inner());
     }
 
     void DrawTextFormat(
