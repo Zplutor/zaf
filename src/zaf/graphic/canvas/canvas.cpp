@@ -26,7 +26,7 @@ Canvas::~Canvas() {
 
 
 template<typename T>
-T Canvas::SnapToPixelsIfNeeded(const T& object, float stroke_width) const {
+T Canvas::SnapToPixelsIfNeeded(const T& object, float stroke_width) const noexcept {
 
     const auto& current_state = CurrentState();
     if (current_state.pixel_snap_mode == PixelSnapMode::NoSnap) {
@@ -55,7 +55,7 @@ void Canvas::PushInitialState() {
 }
 
 
-CanvasRegionGuard Canvas::PushRegion(const Rect& region_rect, const Rect& paintable_rect) {
+CanvasRegion Canvas::PushRegion(const Rect& region_rect, const Rect& paintable_rect) {
 
     auto new_region = CreateNewRegion(region_rect, paintable_rect);
     regions_.push(new_region);
@@ -75,20 +75,20 @@ CanvasRegionGuard Canvas::PushRegion(const Rect& region_rect, const Rect& painta
     }
 
     auto clipping_guard = InnerPushClipping(clipping_rect);
-    return CanvasRegionGuard{ this, std::move(clipping_guard) };
+    return CanvasRegion{ this, std::move(clipping_guard) };
 }
 
 
-internal::CanvasRegion Canvas::CreateNewRegion(
+internal::CanvasRegionData Canvas::CreateNewRegion(
     const Rect& region_rect,
     const Rect& paintable_rect) const noexcept {
 
-    const internal::CanvasRegion* current_region{};
+    const internal::CanvasRegionData* current_region{};
     if (!regions_.empty()) {
         current_region = &regions_.top();
     }
 
-    internal::CanvasRegion new_region;
+    internal::CanvasRegionData new_region;
     new_region.rect = region_rect;
     if (current_region) {
         new_region.rect.AddOffset(current_region->rect.position);
@@ -108,7 +108,7 @@ internal::CanvasRegion Canvas::CreateNewRegion(
 }
 
 
-void Canvas::PopRegion(CanvasClippingGuard&& clipping_guard) {
+void Canvas::PopRegion(CanvasClipping&& clipping_guard) {
 
     ZAF_EXPECT(!regions_.empty());
 
@@ -128,14 +128,14 @@ void Canvas::PopRegion(CanvasClippingGuard&& clipping_guard) {
 }
 
 
-CanvasClippingGuard Canvas::PushClipping(const Rect& clipping_rect) {
+CanvasClipping Canvas::PushClipping(const Rect& clipping_rect) noexcept {
     return InnerPushClipping(SnapToPixelsIfNeeded(clipping_rect));
 }
 
 
-CanvasClippingGuard Canvas::InnerPushClipping(const Rect& clipping_rect) {
+CanvasClipping Canvas::InnerPushClipping(const Rect& clipping_rect) noexcept {
     renderer_.PushAxisAlignedClipping(clipping_rect, d2d::AntialiasMode::PerPrimitive);
-    return CanvasClippingGuard{ this, ++current_clipping_tag_ };
+    return CanvasClipping{ this, ++current_clipping_tag_ };
 }
 
 
@@ -154,31 +154,31 @@ CanvasState Canvas::PushState() {
     //Copy current state as new state.
     auto new_state = states_.top();
     states_.push(new_state);
-    return CanvasState{ this, &states_.top(), ++state_tag_seed_ };
+    return CanvasState{ this, &states_.top(), ++current_state_tag_ };
 }
 
 
 void Canvas::PopState(std::size_t tag) {
 
     //Detect mismatch push and pop.
-    ZAF_EXPECT(tag == state_tag_seed_);
+    ZAF_EXPECT(tag == current_state_tag_);
 
     states_.pop();
-    --state_tag_seed_;
+    --current_state_tag_;
 }
 
 
-const internal::CanvasStateData& Canvas::CurrentState() const {
+const internal::CanvasStateData& Canvas::CurrentState() const noexcept {
     return states_.top();
 }
 
 
-void Canvas::Clear() {
+void Canvas::Clear() noexcept {
     renderer_.Clear();
 }
 
 
-void Canvas::DrawLine(const Point& from_point, const Point& to_point) {
+void Canvas::DrawLine(const Point& from_point, const Point& to_point) noexcept {
     const auto& state = CurrentState();
     InnerDrawLine(from_point, to_point, state.brush, state.stroke_width, state.stroke_style);
 }
@@ -216,7 +216,7 @@ void Canvas::InnerDrawLine(
     const Point& to_point,
     const d2d::Brush& brush,
     float stroke_width,
-    const d2d::StrokeStyle& stroke_style) {
+    const d2d::StrokeStyle& stroke_style) noexcept {
 
     renderer_.DrawLine(
         SnapToPixelsIfNeeded(from_point, stroke_width),
@@ -227,7 +227,7 @@ void Canvas::InnerDrawLine(
 }
 
 
-void Canvas::FillRectangle(const Rect& rect) {
+void Canvas::FillRectangle(const Rect& rect) noexcept {
     InnerFillRectangle(rect, CurrentState().brush);
 }
 
@@ -237,12 +237,12 @@ void Canvas::FillRectangle(const Rect& rect, const Color& color) {
 }
 
 
-void Canvas::InnerFillRectangle(const Rect& rect, const d2d::Brush& brush) {
+void Canvas::InnerFillRectangle(const Rect& rect, const d2d::Brush& brush) noexcept {
     renderer_.FillRectangle(SnapToPixelsIfNeeded(rect), brush);
 }
 
 
-void Canvas::DrawRectangle(const Rect& rect) {
+void Canvas::DrawRectangle(const Rect& rect) noexcept {
     const auto& state = CurrentState();
     InnerDrawRectangle(rect, state.brush, state.stroke_width, state.stroke_style);
 }
@@ -271,13 +271,13 @@ void Canvas::InnerDrawRectangle(
     const Rect& rect,
     const d2d::Brush& brush,
     float stroke_width,
-    const d2d::StrokeStyle& stroke_style) {
+    const d2d::StrokeStyle& stroke_style) noexcept {
 
     renderer_.DrawRectangle(SnapToPixelsIfNeeded(rect, stroke_width), brush, stroke_width, stroke_style);
 }
 
 
-void Canvas::FillRoundedRectangle(const RoundedRect& rounded_rect) {
+void Canvas::FillRoundedRectangle(const RoundedRect& rounded_rect) noexcept {
     InnerFillRoundedRectangle(rounded_rect, CurrentState().brush);
 }
 
@@ -287,12 +287,15 @@ void Canvas::FillRoundedRectangle(const RoundedRect& rounded_rect, const Color& 
 }
 
 
-void Canvas::InnerFillRoundedRectangle(const RoundedRect& rounded_rect, const d2d::Brush& brush) {
+void Canvas::InnerFillRoundedRectangle(
+    const RoundedRect& rounded_rect,
+    const d2d::Brush& brush) noexcept {
+
     renderer_.FillRoundedRectangle(SnapToPixelsIfNeeded(rounded_rect), brush);
 }
 
 
-void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect) {
+void Canvas::DrawRoundedRectangle(const RoundedRect& rounded_rect) noexcept {
     const auto& state = CurrentState();
     InnerDrawRoundedRectangle(rounded_rect, state.brush, state.stroke_width, state.stroke_style);
 }
@@ -325,7 +328,7 @@ void Canvas::InnerDrawRoundedRectangle(
     const RoundedRect& rounded_rect,
     const d2d::Brush& brush,
     float stroke_width,
-    const d2d::StrokeStyle& stroke_style) {
+    const d2d::StrokeStyle& stroke_style) noexcept {
 
     renderer_.DrawRoundedRectangle(
         SnapToPixelsIfNeeded(rounded_rect, stroke_width),
@@ -335,7 +338,7 @@ void Canvas::InnerDrawRoundedRectangle(
 }
 
 
-void Canvas::FillEllipse(const Ellipse& ellipse) {
+void Canvas::FillEllipse(const Ellipse& ellipse) noexcept {
     InnerFillEllipse(ellipse, CurrentState().brush);
 }
 
@@ -345,12 +348,12 @@ void Canvas::FillEllipse(const Ellipse& ellipse, const Color& color) {
 }
 
 
-void Canvas::InnerFillEllipse(const Ellipse& ellipse, const d2d::Brush& brush) {
+void Canvas::InnerFillEllipse(const Ellipse& ellipse, const d2d::Brush& brush) noexcept {
     renderer_.FillEllipse(SnapToPixelsIfNeeded(ellipse), brush);
 }
 
 
-void Canvas::DrawEllipse(const Ellipse& ellipse) {
+void Canvas::DrawEllipse(const Ellipse& ellipse) noexcept {
     const auto& state = CurrentState();
     InnerDrawEllipse(ellipse, state.brush, state.stroke_width, state.stroke_style);
 }
@@ -379,7 +382,7 @@ void Canvas::InnerDrawEllipse(
     const Ellipse& ellipse,
     const d2d::Brush& brush,
     float stroke_width,
-    const d2d::StrokeStyle& stroke_style) {
+    const d2d::StrokeStyle& stroke_style) noexcept {
 
     renderer_.DrawEllipse(
         SnapToPixelsIfNeeded(ellipse, stroke_width),
@@ -390,27 +393,31 @@ void Canvas::InnerDrawEllipse(
 
 
 void Canvas::FillGeometry(const Geometry& geometry) {
+    ZAF_EXPECT(geometry);
     InnerFillGeometry(geometry, CurrentState().brush);
 }
 
 
 void Canvas::FillGeometry(const Geometry& geometry, const Color& color) {
+    ZAF_EXPECT(geometry);
     InnerFillGeometry(geometry, renderer_.CreateSolidColorBrush(color));
 }
 
 
-void Canvas::InnerFillGeometry(const Geometry& geometry, const d2d::Brush& brush) {
+void Canvas::InnerFillGeometry(const Geometry& geometry, const d2d::Brush& brush) noexcept {
     renderer_.FillGeometry(geometry, brush, Brush{});
 }
 
 
 void Canvas::DrawGeometry(const Geometry& geometry) {
+    ZAF_EXPECT(geometry);
     const auto& state = CurrentState();
     InnerDrawGeometry(geometry, state.brush, state.stroke_width, state.stroke_style);
 }
 
 
 void Canvas::DrawGeometry(const Geometry& geometry, const Color& color) {
+    ZAF_EXPECT(geometry);
 
     const auto& state = CurrentState();
     InnerDrawGeometry(
@@ -425,6 +432,8 @@ void Canvas::DrawGeometry(
     const Geometry& geometry,
     const Color& color,
     float stroke_width) {
+
+    ZAF_EXPECT(geometry);
 
     InnerDrawGeometry(
         geometry,
@@ -462,8 +471,10 @@ void Canvas::DrawTextFormat(
     const TextFormat& text_format, 
     const Rect& rect) {
 
+    ZAF_EXPECT(text_format);
+
     const auto& state = CurrentState();
-    DrawTextFormat(text, text_format, rect, state.brush);
+    InnerDrawTextFormat(text, text_format, rect, state.brush);
 }
 
 
@@ -473,23 +484,25 @@ void Canvas::DrawTextFormat(
     const Rect& rect,
     const Color& color) {
 
-    DrawTextFormat(text, text_format, rect, renderer_.CreateSolidColorBrush(color));
+    ZAF_EXPECT(text_format);
+
+    InnerDrawTextFormat(text, text_format, rect, renderer_.CreateSolidColorBrush(color));
 }
 
 
-void Canvas::DrawTextFormat(
+void Canvas::InnerDrawTextFormat(
     const std::wstring& text,
     const TextFormat& text_format,
     const Rect& rect,
-    const Brush& brush) {
+    const Brush& brush) noexcept {
 
     renderer_.DrawTextFormat(text, text_format, SnapToPixelsIfNeeded(rect), brush);
 }
 
 
 void Canvas::DrawTextLayout(const TextLayout& text_layout, const Point& position) {
-    const auto& state = CurrentState();
-    DrawTextLayout(text_layout, position, state.brush);
+    ZAF_EXPECT(text_layout);
+    InnerDrawTextLayout(text_layout, position, CurrentState().brush);
 }
 
 
@@ -498,14 +511,16 @@ void Canvas::DrawTextLayout(
     const Point& position, 
     const Color& color) {
 
-    DrawTextLayout(text_layout, position, renderer_.CreateSolidColorBrush(color));
+    ZAF_EXPECT(text_layout);
+
+    InnerDrawTextLayout(text_layout, position, renderer_.CreateSolidColorBrush(color));
 }
 
 
-void Canvas::DrawTextLayout(
+void Canvas::InnerDrawTextLayout(
     const TextLayout& text_layout, 
     const Point& position,
-    const Brush& brush) {
+    const Brush& brush) noexcept {
 
     renderer_.DrawTextLayout(text_layout, SnapToPixelsIfNeeded(position), brush);
 }
@@ -515,6 +530,8 @@ void Canvas::DrawBitmap(
     const d2d::RenderBitmap& bitmap,
     const Rect& destination_rect, 
     const DrawImageOptions& options) {
+
+    ZAF_EXPECT(bitmap);
 
     renderer_.DrawBitmap(
         bitmap, 

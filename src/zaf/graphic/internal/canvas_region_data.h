@@ -7,7 +7,7 @@ namespace zaf::internal {
 /**
 Note: all rects are in canvas coordinate, rather in upper region coordinate.
 */
-class CanvasRegion {
+class CanvasRegionData {
 public:
     /**
     Gets the offset of the snapped rectangle to the original rectangle.

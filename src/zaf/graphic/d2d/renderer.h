@@ -34,14 +34,14 @@ public:
 
     virtual ~Renderer() = default;
 
-    float GetDPI() const {
+    float GetDPI() const noexcept {
         float x{};
         float y{};
         Ptr()->GetDpi(&x, &y);
         return x;
     }
 
-    void SetDPI(float dpi) {
+    void SetDPI(float dpi) noexcept {
         Ptr()->SetDpi(dpi, dpi);
     }
 
@@ -63,7 +63,7 @@ public:
 
     RenderBitmap CreateBitmap(const wic::BitmapSource& image_source);
 
-    void BeginDraw() {
+    void BeginDraw() noexcept {
         Ptr()->BeginDraw();
     }
 
@@ -77,7 +77,7 @@ public:
         const Point& to_point,
         const Brush& brush,
         float stroke_width,
-        const StrokeStyle& stroke_style) {
+        const StrokeStyle& stroke_style) noexcept {
 
         Ptr()->DrawLine(
             from_point.ToD2D1POINT2F(),
@@ -87,7 +87,7 @@ public:
             stroke_style.Ptr().Inner());
     }
 
-    void FillRectangle(const Rect& rect, const Brush& brush) {
+    void FillRectangle(const Rect& rect, const Brush& brush) noexcept {
         Ptr()->FillRectangle(rect.ToD2D1RECTF(), brush.Ptr().Inner());
     }
 
@@ -95,7 +95,7 @@ public:
         const Rect& rect,
         const Brush& brush,
         float stroke_width,
-        const StrokeStyle& stroke_style) {
+        const StrokeStyle& stroke_style) noexcept {
 
         Ptr()->DrawRectangle(
             rect.ToD2D1RECTF(),
@@ -104,7 +104,7 @@ public:
             stroke_style.Ptr().Inner());
     }
 
-    void FillRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush) {
+    void FillRoundedRectangle(const RoundedRect& rounded_rect, const Brush& brush) noexcept {
         Ptr()->FillRoundedRectangle(rounded_rect.ToD2D1ROUNDEDRECT(), brush.Ptr().Inner());
     }
 
@@ -112,7 +112,7 @@ public:
         const RoundedRect& rounded_rect,
         const Brush& brush,
         float stroke_width,
-        const StrokeStyle& stroke_style) {
+        const StrokeStyle& stroke_style) noexcept {
 
         Ptr()->DrawRoundedRectangle(
             rounded_rect.ToD2D1ROUNDEDRECT(),
@@ -121,7 +121,7 @@ public:
             stroke_style.Ptr().Inner());
     }
 
-    void FillEllipse(const Ellipse& ellipse, const Brush& brush) {
+    void FillEllipse(const Ellipse& ellipse, const Brush& brush) noexcept {
         Ptr()->FillEllipse(ellipse.ToD2D1ELLIPSE(), brush.Ptr().Inner());
     }
 
@@ -129,7 +129,7 @@ public:
         const Ellipse& ellipse,
         const Brush& brush,
         float stroke_width,
-        const StrokeStyle& stroke_style) {
+        const StrokeStyle& stroke_style) noexcept {
 
         Ptr()->DrawEllipse(
             ellipse.ToD2D1ELLIPSE(),
@@ -141,7 +141,7 @@ public:
     void FillGeometry(
         const Geometry& geometry,
         const Brush& brush,
-        const Brush& opacity_brush) {
+        const Brush& opacity_brush) noexcept {
 
         Ptr()->FillGeometry(
             geometry.Ptr().Inner(),
@@ -153,7 +153,7 @@ public:
         const Geometry& geometry,
         const Brush& brush,
         float stroke_width,
-        const StrokeStyle& stroke_style) {
+        const StrokeStyle& stroke_style) noexcept {
 
         Ptr()->DrawGeometry(
             geometry.Ptr().Inner(),
@@ -166,7 +166,7 @@ public:
         const std::wstring& text,
         const dwrite::TextFormat& text_format,
         const Rect& rect,
-        const Brush& brush) {
+        const Brush& brush) noexcept {
 
         Ptr()->DrawText(
             text.c_str(),
@@ -179,7 +179,7 @@ public:
     void DrawTextLayout(
         const dwrite::TextLayout& text_layout,
         const Point& position,
-        const Brush& brush) {
+        const Brush& brush) noexcept {
 
         Ptr()->DrawTextLayout(
             position.ToD2D1POINT2F(), 
@@ -192,33 +192,33 @@ public:
         const Rect& destination_rect,
         float opacity,
         InterpolationMode interpolation_mode,
-        const Rect* bitmap_rect);
+        const Rect* bitmap_rect) noexcept;
 
-    void PushAxisAlignedClipping(const Rect& rect, AntialiasMode antialias_mode) {
+    void PushAxisAlignedClipping(const Rect& rect, AntialiasMode antialias_mode) noexcept {
         Ptr()->PushAxisAlignedClip(
             rect.ToD2D1RECTF(), 
             static_cast<D2D1_ANTIALIAS_MODE>(antialias_mode));
     }
 
-    void PopAxisAlignedClipping() {
+    void PopAxisAlignedClipping() noexcept {
         Ptr()->PopAxisAlignedClip();
     }
 
-    void PushLayer(const Layer& layer, const LayerParameters& parameters);
+    void PushLayer(const Layer& layer, const LayerParameters& parameters) noexcept;
 
-    void PopLayer() {
+    void PopLayer() noexcept {
         Ptr()->PopLayer();
     }
 
-    void Clear() {
+    void Clear() noexcept {
         Ptr()->Clear();
     }
 
-    void Clear(const Color& color) {
+    void Clear(const Color& color) noexcept {
         Ptr()->Clear(color.ToD2D1COLORF());
     }
 
-    void Transform(const TransformMatrix& transform_matrix) {
+    void Transform(const TransformMatrix& transform_matrix) noexcept {
         Ptr()->SetTransform(transform_matrix.ToD2D1MATRIX3X2F());
     }
 

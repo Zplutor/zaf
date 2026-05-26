@@ -1405,10 +1405,10 @@
     <ClCompile Include="src\zaf\graphic\canvas\canvas.cpp">
       <Filter>zaf\graphic\canvas</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\canvas\canvas_clipping_guard.cpp">
+    <ClCompile Include="src\zaf\graphic\canvas\canvas_clipping.cpp">
       <Filter>zaf\graphic\canvas</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\graphic\canvas\canvas_region_guard.cpp">
+    <ClCompile Include="src\zaf\graphic\canvas\canvas_region.cpp">
       <Filter>zaf\graphic\canvas</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\graphic\canvas\canvas_state.cpp">
@@ -2851,9 +2851,6 @@
     <ClInclude Include="src\zaf\internal\graphic\alignment_info.h">
       <Filter>zaf\internal\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\graphic\canvas_region.h">
-      <Filter>zaf\internal\graphic</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\wic\bitmap.h">
       <Filter>zaf\graphic\wic</Filter>
     </ClInclude>
@@ -3286,10 +3283,10 @@
     <ClInclude Include="src\zaf\graphic\canvas\canvas.h">
       <Filter>zaf\graphic\canvas</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\canvas\canvas_clipping_guard.h">
+    <ClInclude Include="src\zaf\graphic\canvas\canvas_clipping.h">
       <Filter>zaf\graphic\canvas</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\graphic\canvas\canvas_region_guard.h">
+    <ClInclude Include="src\zaf\graphic\canvas\canvas_region.h">
       <Filter>zaf\graphic\canvas</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\canvas\pixel_snap_mode.h">
@@ -3299,5 +3296,8 @@
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
     <ClInclude Include="SRC\ZAF\GRAPHIC\CANVAS\CANVAS_STATE_GUARD.H" />
+    <ClInclude Include="src\zaf\graphic\internal\canvas_region_data.h">
+      <Filter>zaf\graphic\internal</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

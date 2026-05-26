@@ -15,7 +15,7 @@ namespace zaf {
 class Canvas;
 
 /**
-Contains options and graphic resources used to draw on canvas.
+Contains options and graphic resources used for painting on canvas.
 */
 class CanvasState : NonCopyable {
 public:

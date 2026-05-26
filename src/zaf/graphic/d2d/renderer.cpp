@@ -120,7 +120,7 @@ void Renderer::DrawBitmap(
     const Rect& destination_rect,
     float opacity,
     InterpolationMode interpolation_mode,
-    const Rect* bitmap_rect) {
+    const Rect* bitmap_rect) noexcept {
 
     std::optional<D2D1_RECT_F> d2d1_rect;
     if (bitmap_rect) {
@@ -136,7 +136,7 @@ void Renderer::DrawBitmap(
 }
 
 
-void Renderer::PushLayer(const Layer& layer, const LayerParameters& parameters) {
+void Renderer::PushLayer(const Layer& layer, const LayerParameters& parameters) noexcept {
     Ptr()->PushLayer(parameters.Inner(), layer.Ptr().Inner());
 }
 
