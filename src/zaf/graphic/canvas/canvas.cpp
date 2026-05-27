@@ -503,7 +503,6 @@ void Canvas::DrawTextLayout(
     const Color& color) {
 
     ZAF_EXPECT(text_layout);
-
     InnerDrawTextLayout(text_layout, position, renderer_.CreateSolidColorBrush(color));
 }
 

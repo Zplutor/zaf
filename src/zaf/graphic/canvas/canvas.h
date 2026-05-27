@@ -567,18 +567,88 @@ public:
         const Color& color,
         float stroke_width);
 
+    /**
+    Draws a text with the specified text format, using the brush in current state.
+
+    @param text
+        The text to draw.
+
+    @param text_format
+        The text format that describes the font and layout of the text.
+
+    @param rect
+        The rectangle that defines the layout area for the text, in current region coordinate.
+
+    @pre
+        The text format is not null.
+
+    @throw zaf::PreconditionError
+    */
     void DrawTextFormat(
         const std::wstring& text,
         const dwrite::TextFormat& text_format, 
         const Rect& rect);
 
+    /**
+    Draws a text with the specified text format and color.
+
+    @param text
+        The text to draw.
+
+    @param text_format
+        The text format that describes the font and layout of the text.
+
+    @param rect
+        The rectangle that defines the layout area for the text, in current region coordinate.
+
+    @param color
+        The color used to draw the text.
+
+    @pre
+        The text format is not null.
+
+    @throw zaf::PreconditionError
+    @throw zaf::COMError
+        Thrown if creating brush for the specified color fails.
+    */
     void DrawTextFormat(
         const std::wstring& text,
         const dwrite::TextFormat& text_format,
         const Rect& rect,
         const Color& color);
 
+    /**
+    Draws a text layout, using the brush in current state.
+
+    @param text_layout
+        The text layout to draw.
+
+    @param position
+        The position of the top-left corner of the text layout, in current region coordinate.
+
+    @pre
+        The text layout is not null.
+
+    @throw zaf::PreconditionError
+    */
     void DrawTextLayout(const dwrite::TextLayout& text_layout, const Point& position);
+
+    /**
+    Draws a text layout with the specified color.
+
+    @param text_layout
+        The text layout to draw.
+
+    @param position
+        The position of the top-left corner of the text layout, in current region coordinate.
+
+    @pre
+        The text layout is not null.
+
+    @throw zaf::PreconditionError
+    @throw zaf::COMError
+        Thrown if creating brush for the specified color fails.
+    */
     void DrawTextLayout(
         const dwrite::TextLayout& text_layout,
         const Point& position, 
