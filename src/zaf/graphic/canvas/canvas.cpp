@@ -26,12 +26,7 @@ Canvas::~Canvas() {
 
 
 template<typename T>
-T Canvas::SnapToPixelsIfNeeded(const T& object, float stroke_width) const noexcept {
-
-    const auto& current_state = CurrentState();
-    if (current_state.pixel_snap_mode == PixelSnapMode::NoSnap) {
-        return object;
-    }
+T Canvas::SnapToPixelsInCurrentRegion(const T& object, float stroke_width) const noexcept {
 
     const auto& current_region = regions_.top();
     T result = internal::AlignInRelatedCoordinateSystem(
@@ -43,6 +38,17 @@ T Canvas::SnapToPixelsIfNeeded(const T& object, float stroke_width) const noexce
 
     result.AddOffset(current_region.SnappedOffset());
     return result;
+}
+
+
+template<typename T>
+T Canvas::SnapToPixelsIfNeeded(const T& object, float stroke_width) const noexcept {
+
+    const auto& current_state = CurrentState();
+    if (current_state.pixel_snap_mode == PixelSnapMode::NoSnap) {
+        return object;
+    }
+    return SnapToPixelsInCurrentRegion(object, stroke_width);
 }
 
 
@@ -93,7 +99,7 @@ internal::CanvasRegionData Canvas::CreateNewRegion(
     if (current_region) {
         new_region.rect.AddOffset(current_region->rect.position);
     }
-    new_region.snapped_rect = SnapToPixels(new_region.rect, renderer_.GetDPI());
+    new_region.snapped_rect = zaf::SnapToPixels(new_region.rect, renderer_.GetDPI());
 
     new_region.paintable_rect = paintable_rect;
     if (current_region) {
@@ -102,7 +108,7 @@ internal::CanvasRegionData Canvas::CreateNewRegion(
     }
     new_region.paintable_rect.Intersect(new_region.rect);
     new_region.snapped_paintable_rect = 
-        SnapToPixels(new_region.paintable_rect, renderer_.GetDPI());
+        zaf::SnapToPixels(new_region.paintable_rect, renderer_.GetDPI());
 
     return new_region;
 }
@@ -418,7 +424,6 @@ void Canvas::DrawGeometry(const Geometry& geometry) {
 
 void Canvas::DrawGeometry(const Geometry& geometry, const Color& color) {
     ZAF_EXPECT(geometry);
-
     const auto& state = CurrentState();
     InnerDrawGeometry(
         geometry,
@@ -434,7 +439,6 @@ void Canvas::DrawGeometry(
     float stroke_width) {
 
     ZAF_EXPECT(geometry);
-
     InnerDrawGeometry(
         geometry,
         renderer_.CreateSolidColorBrush(color),
@@ -447,22 +451,9 @@ void Canvas::InnerDrawGeometry(
     const Geometry& geometry,
     const d2d::Brush& brush,
     float stroke_width,
-    const d2d::StrokeStyle& stroke_style) {
+    const d2d::StrokeStyle& stroke_style) noexcept {
 
-    Geometry drew_geometry;
-
-    //The geometry is not aligned for line, we need to do it by setting a new transform here.
-    float offset = SnappingPixelOffsetForLine(stroke_width, 96.f);
-    if (offset != 0) {
-        drew_geometry = GraphicFactory::Instance().CreateTransformedGeometry(
-            geometry,
-            TransformMatrix::Translation(Point(offset, offset)));
-    }
-    else {
-        drew_geometry = geometry;
-    }
-
-    renderer_.DrawGeometry(drew_geometry, brush, stroke_width, stroke_style);
+    renderer_.DrawGeometry(geometry, brush, stroke_width, stroke_style);
 }
 
 
@@ -542,6 +533,56 @@ void Canvas::DrawBitmap(
 }
 
 
+Point Canvas::SnapToPixels(const Point& point, float stroke_width) const noexcept {
+    return SnapToPixelsInCurrentRegion(point, stroke_width);
+}
+
+
+Rect Canvas::SnapToPixels(const Rect& rect, float stroke_width) const noexcept {
+    return SnapToPixelsInCurrentRegion(rect, stroke_width);
+}
+
+
+RoundedRect Canvas::SnapToPixels(
+    const RoundedRect& rounded_rect, 
+    float stroke_width) const noexcept {
+
+    return SnapToPixelsInCurrentRegion(rounded_rect, stroke_width);
+}
+
+
+Ellipse Canvas::SnapToPixels(const Ellipse& ellipse, float stroke_width) const noexcept {
+    return SnapToPixelsInCurrentRegion(ellipse, stroke_width);
+}
+
+
+d2d::RectangleGeometry Canvas::CreateSnappedRectangleGeometry(
+    const Rect& rect,
+    float stroke_width) const {
+
+    auto snapped_rect = SnapToPixelsInCurrentRegion(rect, stroke_width);
+    return GraphicFactory::Instance().CreateRectangleGeometry(snapped_rect);
+}
+
+
+RoundedRectangleGeometry Canvas::CreateSnappedRoundedRectangleGeometry(
+    const RoundedRect& rounded_rect,
+    float stroke_width) const {
+
+    auto snapped_rounded_rect = SnapToPixelsInCurrentRegion(rounded_rect, stroke_width);
+    return GraphicFactory::Instance().CreateRoundedRectangleGeometry(snapped_rounded_rect);
+}
+
+
+EllipseGeometry Canvas::CreateSnappedEllipseGeometry(
+    const Ellipse& ellipse,
+    float stroke_width) const {
+
+    Ellipse snapped_ellipse = SnapToPixelsInCurrentRegion(ellipse, stroke_width);
+    return GraphicFactory::Instance().CreateEllipseGeometry(snapped_ellipse);
+}
+
+
 PathGeometry Canvas::CreatePathGeometry() const {
 
     COMPtr<ID2D1PathGeometry> inner;
@@ -556,28 +597,6 @@ PathGeometry Canvas::CreatePathGeometry() const {
     alignment_info.dpi = renderer_.GetDPI();
 
     return PathGeometry{ std::move(inner), alignment_info };
-}
-
-
-RectangleGeometry Canvas::CreateRectangleGeometry(const Rect& rect) const {
-
-    Rect aligned_rect = SnapToPixelsIfNeeded(rect);
-    return GraphicFactory::Instance().CreateRectangleGeometry(aligned_rect);
-}
-
-
-RoundedRectangleGeometry Canvas::CreateRoundedRectangleGeometry(
-    const RoundedRect& rounded_rect) const {
-
-    RoundedRect aligned_rounded_rect = SnapToPixelsIfNeeded(rounded_rect);
-    return GraphicFactory::Instance().CreateRoundedRectangleGeometry(aligned_rounded_rect);
-}
-
-
-EllipseGeometry Canvas::CreateEllipseGeometry(const Ellipse& ellipse) const {
-
-    Ellipse aligned_ellipse = SnapToPixelsIfNeeded(ellipse);
-    return GraphicFactory::Instance().CreateEllipseGeometry(ellipse);
 }
 
 }

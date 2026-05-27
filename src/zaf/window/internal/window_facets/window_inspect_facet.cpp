@@ -159,8 +159,8 @@ void WindowInspectFacet::PaintInspectedControl(Canvas& canvas, const Rect& dirty
         const zaf::Rect excluded_rect,
         std::uint32_t color_rgb) {
 
-            auto rect_geometry = canvas.CreateRectangleGeometry(rect);
-            auto excluded_geometry = canvas.CreateRectangleGeometry(excluded_rect);
+            auto rect_geometry = canvas.CreateSnappedRectangleGeometry(rect);
+            auto excluded_geometry = canvas.CreateSnappedRectangleGeometry(excluded_rect);
 
             auto frame_geometry = canvas.CreatePathGeometry();
             auto sink = frame_geometry.Open();

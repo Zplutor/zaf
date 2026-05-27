@@ -686,8 +686,8 @@ void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
         inner_rect.size.height = 0;
     }
 
-    auto control_geometry = canvas.CreateRectangleGeometry(control_rect);
-    auto inner_geometry = canvas.CreateRectangleGeometry(inner_rect);
+    auto control_geometry = canvas.CreateSnappedRectangleGeometry(control_rect);
+    auto inner_geometry = canvas.CreateSnappedRectangleGeometry(inner_rect);
     
     auto border_geometry = canvas.CreatePathGeometry();
     auto sink = border_geometry.Open();

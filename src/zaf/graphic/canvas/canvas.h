@@ -92,6 +92,14 @@ Provides rich functionalities for drawing graphics in a renderer.
     The default pixel snap mode of canvas is `Snap`, as it is mainly used for painting UI elements,
     which usually requires sharper rendering result.
 
+    Note that the following methods won't snap the painting to pixels, regardless of the pixel snap
+    mode in current state:
+    - `FillGeometry` overloads.
+    - `DrawGeometry` overloads.
+
+    In order to get sharper rendering result by using these methods, users can call factory methods
+    like `CreateSnappedRectangleGeometry()` to create snapped geometries.
+
     <b> About Region and Clipping</b>
 
     A canvas maintains a stack of regions. A region is a rectangle area that transforms the 
@@ -445,11 +453,115 @@ public:
     */
     void DrawEllipse(const Ellipse& ellipse, const Color& color, float stroke_width);
 
+    /**
+    Fills a geometry, using the brush in current state.
+
+    @param geometry
+        The geometry to fill, in current region coordinate.
+
+    @pre
+        The geometry is not null.
+
+    @throw zaf::PreconditionError
+
+    @details
+        @note
+        This method won't snap the geometry to pixels, even if current state's pixel snap mode is 
+        set to `Snap`.
+    */
     void FillGeometry(const d2d::Geometry& geometry);
+
+    /**
+    Fills a geometry with the specified color.
+
+    @param geometry
+        The geometry to fill, in current region coordinate.
+
+    @param color
+        The color used to fill the geometry.
+
+    @pre
+        The geometry is not null.
+
+    @throw zaf::PreconditionError
+    @throw zaf::COMError
+        Thrown if creating brush for the specified color fails.
+
+    @details
+        @note
+        This method won't snap the geometry to pixels, even if current state's pixel snap mode is
+        set to `Snap`.
+    */
     void FillGeometry(const d2d::Geometry& geometry, const Color& color);
 
+    /**
+    Draws the outline of a geometry, using the brush, stroke width and stroke style in current
+    state.
+
+    @param geometry
+        The geometry to draw, in current region coordinate.
+
+    @pre
+        The geometry is not null.
+
+    @throw zaf::PreconditionError
+
+    @details
+        @note
+        This method won't snap the geometry to pixels, even if current state's pixel snap mode is
+        set to `Snap`.
+    */
     void DrawGeometry(const d2d::Geometry& geometry);
+
+    /**
+    Draws the outline of a geometry with the specified color, using the stroke width and stroke
+    style in current state.
+
+    @param geometry
+        The geometry to draw, in current region coordinate.
+
+    @param color
+        The color used to draw the geometry.
+
+    @pre
+        The geometry is not null.
+
+    @throw zaf::PreconditionError
+    @throw zaf::COMError
+        Thrown if creating brush for the specified color fails.
+
+    @details
+        @note
+        This method won't snap the geometry to pixels, even if current state's pixel snap mode is
+        set to `Snap`.
+    */
     void DrawGeometry(const d2d::Geometry& geometry, const Color& color);
+
+    /**
+    Draws the outline of a geometry with the specified color and stroke width, using the stroke
+    style in current state.
+
+    @param geometry
+        The geometry to draw, in current region coordinate.
+
+    @param color
+        The color used to draw the geometry.
+
+    @param stroke_width
+        The width of stroke.
+
+    @pre
+        The geometry is not null.
+
+    @throw zaf::PreconditionError
+    @throw zaf::COMError
+        Thrown if creating brush for the specified color fails.
+
+    @details
+        @note
+        This method won't snap the geometry to pixels, even if current state's pixel snap mode is
+        set to `Snap`.
+    */
     void DrawGeometry(
         const d2d::Geometry& geometry,
         const Color& color,
@@ -477,11 +589,119 @@ public:
         const Rect& destination_rect, 
         const DrawImageOptions& options = {});
 
+    /**
+    Snaps the specified point to pixels based on the current region.
+
+    @param point
+        The point to snap, in current region coordinate.
+
+    @param stroke_width
+        The width of stroke, used to adjust the snapping. Pass a specific value if the point is 
+        used for stroking, or leave it as 0 if the point is used for filling.
+    */
+    Point SnapToPixels(const Point& point, float stroke_width = 0) const noexcept;
+
+    /**
+    Snaps the specified rectangle to pixels based on the current region.
+
+    @param rect
+        The rectangle to snap, in current region coordinate.
+
+    @param stroke_width
+        The width of stroke, used to adjust the snapping. Pass a specific value if the rectangle is
+        used for stroking, or leave it as 0 if the rectangle is used for filling.
+    */
+    Rect SnapToPixels(const Rect& rect, float stroke_width = 0) const noexcept;
+
+    /**
+    Snaps the specified rounded rectangle to pixels based on the current region.
+
+    @param rounded_rect
+        The rounded rectangle to snap, in current region coordinate.
+
+    @param stroke_width
+        The width of stroke, used to adjust the snapping. Pass a specific value if the rounded 
+        rectangle is used for stroking, or leave it as 0 if the rounded rectangle is used for
+        filling.
+    */
+    RoundedRect SnapToPixels(
+        const RoundedRect& rounded_rect,
+        float stroke_width = 0) const noexcept;
+
+    /**
+    Snaps the specified ellipse to pixels based on the current region.
+
+    @param ellipse
+        The ellipse to snap, in current region coordinate.
+
+    @param stroke_width
+        The width of stroke, used to adjust the snapping. Pass a specific value if the ellipse is
+        used for stroking, or leave it as 0 if the ellipse is used for filling.
+    */
+    Ellipse SnapToPixels(const Ellipse& ellipse, float stroke_width = 0) const noexcept;
+
+    /**
+    Creates a rectangle geometry with snapping applied based on the current region.
+
+    @param rect
+        The rectangle to snap, in current region coordinate.
+
+    @param stroke_width
+        The width of stroke, used to adjust the snapping. Pass a specific value if the rectangle is
+        used for stroking, or leave it as 0 if the rectangle is used for filling.
+
+    @return
+        The created rectangle geometry with snapping applied.
+
+    @throw zaf::COMError
+        Thrown if creating the rectangle geometry fails.
+    */
+    d2d::RectangleGeometry CreateSnappedRectangleGeometry(
+        const Rect& rect,
+        float stroke_width = 0) const;
+
+    /**
+    Creates a rounded rectangle geometry with snapping applied based on the current region.
+
+    @param rounded_rect
+        The rounded rectangle to snap, in current region coordinate.
+
+    @param stroke_width
+        The width of stroke, used to adjust the snapping. Pass a specific value if the rounded 
+        rectangle is used for stroking, or leave it as 0 if the rounded rectangle is used for 
+        filling.
+
+    @return
+        The created rounded rectangle geometry with snapping applied.
+
+    @throw zaf::COMError
+        Thrown if creating the rounded rectangle geometry fails.
+    */
+    d2d::RoundedRectangleGeometry CreateSnappedRoundedRectangleGeometry(
+        const RoundedRect& rounded_rect,
+        float stroke_width = 0) const;
+
+    /**
+    Creates an ellipse geometry with snapping applied based on the current region.
+
+    @param ellipse
+        The ellipse to snap, in current region coordinate.
+
+    @param stroke_width
+        The width of stroke, used to adjust the snapping. Pass a specific value if the ellipse is
+        used for stroking, or leave it as 0 if the ellipse is used for filling.
+
+    @return
+        The created ellipse geometry with snapping applied.
+
+    @throw zaf::COMError
+        Thrown if creating the ellipse geometry fails.
+    */
+    d2d::EllipseGeometry CreateSnappedEllipseGeometry(
+        const Ellipse& ellipse, 
+        float stroke_width = 0) const;
+
     d2d::PathGeometry CreatePathGeometry() const;
-    d2d::RectangleGeometry CreateRectangleGeometry(const Rect& rect) const;
-    d2d::RoundedRectangleGeometry CreateRoundedRectangleGeometry(
-        const RoundedRect& rounded_rect) const;
-    d2d::EllipseGeometry CreateEllipseGeometry(const Ellipse& ellipse) const;
 
 private:
     friend class CanvasClipping;
@@ -502,6 +722,9 @@ private:
     CanvasClipping InnerPushClipping(const Rect& clipping_rect) noexcept;
 
     const internal::CanvasStateData& CurrentState() const noexcept;
+
+    template<typename T>
+    T SnapToPixelsInCurrentRegion(const T& object, float stroke_width) const noexcept;
 
     template<typename T>
     T SnapToPixelsIfNeeded(const T& object, float stroke_width = 0) const noexcept;
@@ -541,7 +764,7 @@ private:
         const d2d::Geometry& geometry,
         const d2d::Brush& brush,
         float stroke_width,
-        const d2d::StrokeStyle& stroke_style);
+        const d2d::StrokeStyle& stroke_style) noexcept;
 
     void InnerDrawTextFormat(
         const std::wstring& text,

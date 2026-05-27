@@ -1049,7 +1049,7 @@ protected:
     */
     virtual void OnRectChanged(const RectChangedInfo& event_info);
 
-    /**}@*/
+    /**@}*/
 #pragma endregion
 
     virtual void UpdateStyle();
