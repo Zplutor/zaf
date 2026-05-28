@@ -725,6 +725,7 @@
     <ClInclude Include="src\zaf\crypto\md5.h" />
     <ClInclude Include="src\zaf\crypto\sha.h" />
     <ClInclude Include="SRC\ZAF\GRAPHIC\CANVAS\CANVAS_STATE_GUARD.H" />
+    <ClInclude Include="src\zaf\graphic\canvas\draw_image_options.h" />
     <ClInclude Include="src\zaf\graphic\internal\geometry_snap_data.h" />
     <ClInclude Include="src\zaf\graphic\internal\snapped_geometry_sink.h" />
     <ClInclude Include="src\zaf\graphic\internal\snapped_path_geometry.h" />

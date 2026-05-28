@@ -21,7 +21,9 @@ void DrawImageWithCenterLayout(
     d2d::InterpolationMode interpolation_mode) {
 
     auto image_rect = MakeCenteredImageRect(draw_rect, bitmap.GetSize());
-    canvas.DrawBitmap(bitmap, image_rect, DrawImageOptions().InterpolationMode(interpolation_mode));
+    DrawImageOptions options;
+    options.interpolation_mode = interpolation_mode;
+    canvas.DrawBitmap(bitmap, image_rect, options);
 }
 
 
@@ -41,7 +43,9 @@ void DrawImageWithZoomLayout(
     float zoomed_height = image_size.height / zoom_percent;
     
     auto image_rect = MakeCenteredImageRect(draw_rect, Size{ zoomed_width, zoomed_height });
-    canvas.DrawBitmap(bitmap, image_rect, DrawImageOptions().InterpolationMode(interpolation_mode));
+    DrawImageOptions options;
+    options.interpolation_mode = interpolation_mode;
+    canvas.DrawBitmap(bitmap, image_rect, options);
 }
 
 
@@ -58,7 +62,7 @@ void DrawImageWithTileLayout(
     image_rect.size = image_size;
 
     DrawImageOptions options;
-    options.InterpolationMode(interpolation_mode);
+    options.interpolation_mode = interpolation_mode;
 
     for (const auto& each_position : positions) {
         image_rect.position = each_position;
@@ -78,17 +82,21 @@ void DrawImage(
     if (image_layout == ImageLayout::None) {
 
         Rect image_rect{ draw_rect.position, bitmap.GetSize() };
+        DrawImageOptions options;
+        options.interpolation_mode = interpolation_mode;
         canvas.DrawBitmap(
             bitmap, 
             image_rect,
-            DrawImageOptions().InterpolationMode(interpolation_mode));
+            options);
     }
     else if (image_layout == ImageLayout::Stretch) {
 
+        DrawImageOptions options;
+        options.interpolation_mode = interpolation_mode;
         canvas.DrawBitmap(
             bitmap,
             draw_rect, 
-            DrawImageOptions().InterpolationMode(interpolation_mode));
+            options);
     }
     else if (image_layout == ImageLayout::Center) {
         DrawImageWithCenterLayout(canvas, draw_rect, bitmap, interpolation_mode);

@@ -542,9 +542,9 @@ void Canvas::DrawBitmap(
     renderer_.DrawBitmap(
         bitmap, 
         SnapToPixelsIfNeeded(destination_rect),
-        options.Opacity(),
-        options.InterpolationMode(),
-        options.SourceRect());
+        options.opacity,
+        options.interpolation_mode,
+        options.source_rect);
 }
 
 

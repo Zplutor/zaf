@@ -593,10 +593,9 @@ void Control::RepaintUsingCachedPainting(Canvas& canvas, const zaf::Rect& dirty_
     }
 
     //Paint into canvas from cached renderer.
-    canvas.DrawBitmap(
-        cached_renderer_.GetBitmap(),
-        dirty_rect, 
-        DrawImageOptions().SourceRect(dirty_rect));
+    DrawImageOptions options;
+    options.source_rect = dirty_rect;
+    canvas.DrawBitmap(cached_renderer_.GetBitmap(), dirty_rect, options);
 }
 
 

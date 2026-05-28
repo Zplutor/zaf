@@ -192,7 +192,7 @@ public:
         const Rect& destination_rect,
         float opacity,
         InterpolationMode interpolation_mode,
-        const Rect* bitmap_rect) noexcept;
+        const std::optional<Rect>& bitmap_rect) noexcept;
 
     void PushAxisAlignedClipping(const Rect& rect, AntialiasMode antialias_mode) noexcept {
         Ptr()->PushAxisAlignedClip(

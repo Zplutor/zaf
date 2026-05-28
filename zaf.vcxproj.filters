@@ -3311,5 +3311,8 @@
     <ClInclude Include="src\zaf\graphic\internal\snapped_path_geometry.h">
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
+    <ClInclude Include="src\zaf\graphic\canvas\draw_image_options.h">
+      <Filter>zaf\graphic\canvas</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

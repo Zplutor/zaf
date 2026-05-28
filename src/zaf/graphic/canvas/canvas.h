@@ -10,6 +10,7 @@
 #include <zaf/graphic/canvas/canvas_clipping.h>
 #include <zaf/graphic/canvas/canvas_region.h>
 #include <zaf/graphic/canvas/canvas_state.h>
+#include <zaf/graphic/canvas/draw_image_options.h>
 #include <zaf/graphic/color.h>
 #include <zaf/graphic/canvas/pixel_snap_mode.h>
 #include <zaf/graphic/d2d/brush.h>
@@ -26,44 +27,6 @@ class RoundedRectangleGeometry;
 }
 
 namespace zaf {
-
-class DrawImageOptions {
-public:
-    float Opacity() const noexcept {
-        return opacity_;
-    }
-
-    DrawImageOptions& Opacity(float value) noexcept {
-        opacity_ = value;
-        return *this;
-    }
-
-    d2d::InterpolationMode InterpolationMode() const noexcept {
-        return interpolation_mode_;
-    }
-
-    DrawImageOptions& InterpolationMode(d2d::InterpolationMode value) noexcept {
-        interpolation_mode_ = value;
-        return *this;
-    }
-
-    const Rect* SourceRect() const noexcept {
-        return has_source_rect ? &source_rect : nullptr;
-    }
-
-    DrawImageOptions& SourceRect(const Rect& value) {
-        has_source_rect = true;
-        source_rect = value;
-        return *this;
-    }
-
-private:
-    float opacity_ = 1.f;
-    d2d::InterpolationMode interpolation_mode_ = d2d::InterpolationMode::Linear;
-    bool has_source_rect = false;
-    Rect source_rect;
-};
-
 
 /**
 Provides rich functionalities for drawing graphics in a renderer.
@@ -654,6 +617,23 @@ public:
         const Point& position, 
         const Color& color);
 
+    /**
+    Draws a bitmap.
+
+    @param bitmap
+        The bitmap to draw.
+
+    @param destination_rect
+        The rectangle area where the bitmap will be drawn, in current region coordinate.
+
+    @param options
+        The options for drawing the bitmap.
+
+    @pre
+        The bitmap is not null.
+
+    @throw zaf::PreconditionError
+    */
     void DrawBitmap(
         const d2d::RenderBitmap& bitmap,
         const Rect& destination_rect, 

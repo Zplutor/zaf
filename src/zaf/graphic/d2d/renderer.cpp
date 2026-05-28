@@ -120,7 +120,7 @@ void Renderer::DrawBitmap(
     const Rect& destination_rect,
     float opacity,
     InterpolationMode interpolation_mode,
-    const Rect* bitmap_rect) noexcept {
+    const std::optional<Rect>& bitmap_rect) noexcept {
 
     std::optional<D2D1_RECT_F> d2d1_rect;
     if (bitmap_rect) {

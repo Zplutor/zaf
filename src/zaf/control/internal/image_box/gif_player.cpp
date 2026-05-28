@@ -208,7 +208,7 @@ void GifPlayer::OverlayNextFrame() {
             current_frame_rect_,
             1,
             d2d::InterpolationMode::Linear, 
-            nullptr);
+            std::nullopt);
     }
 
     composed_frame_renderer_.EndDraw();
