@@ -3295,7 +3295,6 @@
     <ClInclude Include="src\zaf\graphic\internal\canvas_state_data.h">
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
-    <ClInclude Include="SRC\ZAF\GRAPHIC\CANVAS\CANVAS_STATE_GUARD.H" />
     <ClInclude Include="src\zaf\graphic\internal\canvas_region_data.h">
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
