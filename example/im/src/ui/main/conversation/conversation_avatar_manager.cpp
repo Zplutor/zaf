@@ -203,7 +203,7 @@ static void DrawMemberAvatarImagesToConversationAvatarRenderer(
             avatar_rect,
             1.f, 
             zaf::d2d::InterpolationMode::Linear,
-            nullptr);
+            std::nullopt);
     }
 
     renderer.EndDraw();
