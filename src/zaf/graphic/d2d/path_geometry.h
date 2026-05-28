@@ -1,8 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <optional>
-#include <zaf/internal/graphic/alignment_info.h>
 #include <zaf/graphic/d2d/geometry.h>
 #include <zaf/graphic/d2d/geometry_sink.h>
 
@@ -26,18 +24,6 @@ public:
     explicit PathGeometry(COMPtr<ID2D1PathGeometry> inner) : 
         Geometry(inner), 
         inner_(std::move(inner)) { }
-
-    /**
-    Constructs an instance with a corresponding COM pointer and additional alignment info for 
-    aligning coordinates to pixels.
-
-    @remark
-        This constructor is used by zaf::Canvas internally.
-    */
-    PathGeometry(COMPtr<ID2D1PathGeometry> inner, const internal::AlignmentInfo& alignment_info) :
-        Geometry(inner),
-        inner_(std::move(inner)),
-        alignment_info_(alignment_info) { }
 
     /**
     Gets the number of figures.
@@ -70,7 +56,6 @@ public:
 
 private:
     COMPtr<ID2D1PathGeometry> inner_;
-    std::optional<internal::AlignmentInfo> alignment_info_;
 };
 
 }

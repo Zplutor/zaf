@@ -1,18 +1,17 @@
 #include <zaf/graphic/d2d/geometry_sink.h>
-#include <zaf/internal/graphic/alignment_helper.h>
 
 namespace zaf::d2d {
 
 void GeometrySink::BeginFigure(const Point& start_position, BeginFigureOption option) {
 
     Ptr()->BeginFigure(
-        ToAlignedD2DPoint(start_position),
+        start_position.ToD2D1POINT2F(),
         static_cast<D2D1_FIGURE_BEGIN>(option));
 }
 
 
 void GeometrySink::AddLine(const Point& end_point) {
-    Ptr()->AddLine(ToAlignedD2DPoint(end_point));
+    Ptr()->AddLine(end_point.ToD2D1POINT2F());
 }
 
 
@@ -22,7 +21,7 @@ void GeometrySink::AddLines(const std::vector<Point>& points) {
     d2d_points.reserve(points.size());
 
     for (const auto& each_point : points) {
-        d2d_points.push_back(ToAlignedD2DPoint(each_point));
+        d2d_points.push_back(each_point.ToD2D1POINT2F());
     }
 
     Ptr()->AddLines(d2d_points.data(), static_cast<UINT32>(d2d_points.size()));
@@ -31,24 +30,6 @@ void GeometrySink::AddLines(const std::vector<Point>& points) {
 
 void GeometrySink::AddArc(const ArcSegment& arc_segment) {
     Ptr()->AddArc(arc_segment.Inner());
-}
-
-
-D2D1_POINT_2F GeometrySink::ToAlignedD2DPoint(const Point& point) const {
-
-    D2D1_POINT_2F d2d_position{};
-    if (!alignment_info_) {
-        return point.ToD2D1POINT2F();
-    }
-
-    auto aligned_point = internal::AlignInRelatedCoordinateSystem(
-        point,
-        0,
-        alignment_info_->dpi,
-        alignment_info_->coordinate_origin,
-        alignment_info_->aligned_coordinate_origin);
-
-    return aligned_point.ToD2D1POINT2F();
 }
 
 }

@@ -102,7 +102,9 @@ void CheckBox::PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const {
     }
     else if (check_state == CheckState::Checked) {
 
-        auto path = canvas.CreatePathGeometry();
+        constexpr float MarkStrokeWidth = 1.5f;
+
+        auto path = canvas.CreateSnappedPathGeometry(MarkStrokeWidth);
         if (!path) {
             return;
         }
@@ -125,7 +127,7 @@ void CheckBox::PaintBox(Canvas& canvas, const zaf::Rect& box_rect) const {
         sink.EndFigure(d2d::GeometrySink::EndFigureOption::Open);
         sink.Close();
 
-        canvas.DrawGeometry(path, BoxBorderColor(), 1.5);
+        canvas.DrawGeometry(path, BoxBorderColor(), MarkStrokeWidth);
     }
 }
 

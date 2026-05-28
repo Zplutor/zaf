@@ -771,7 +771,25 @@ public:
         const Ellipse& ellipse, 
         float stroke_width = 0) const;
 
-    d2d::PathGeometry CreatePathGeometry() const;
+    /**
+    Creates a path geometry with snapping applied based on the current region.
+
+    @param stroke_width
+        The width of stroke, used to adjust the snapping. Pass a specific value if the path 
+        geometry is used for stroking, or leave it as 0 if the path geometry is used for filling.
+
+    @return
+        The created path geometry with snapping applied.
+
+    @throw std::bad_alloc
+    @throw zaf::COMError
+        Thrown if creating the path geometry fails.
+
+    @details
+        Snapping is applied to the path geometry when using `GeometrySink` to add lines and curves 
+        into the path geometry.
+    */
+    d2d::PathGeometry CreateSnappedPathGeometry(float stroke_width = 0) const;
 
 private:
     friend class CanvasClipping;
@@ -835,6 +853,8 @@ private:
         const d2d::Brush& brush,
         float stroke_width,
         const d2d::StrokeStyle& stroke_style) noexcept;
+
+    d2d::Geometry ExtractSnappedGeometry(const d2d::Geometry& geometry) const noexcept;
 
     void InnerDrawTextFormat(
         const std::wstring& text,

@@ -7,7 +7,8 @@
 #include <zaf/graphic/d2d/rounded_rectangle_geometry.h>
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/graphic/dwrite/text_format.h>
-#include <zaf/internal/graphic/alignment_helper.h>
+#include <zaf/graphic/internal/snapped_path_geometry.h>
+#include <zaf/graphic/internal/snapping_helper.h>
 
 using namespace zaf::d2d;
 using namespace zaf::dwrite;
@@ -29,15 +30,12 @@ template<typename T>
 T Canvas::SnapToPixelsInCurrentRegion(const T& object, float stroke_width) const noexcept {
 
     const auto& current_region = regions_.top();
-    T result = internal::AlignInRelatedCoordinateSystem(
+    return internal::SnapInCoordinateSystem(
         object,
         stroke_width,
         renderer_.GetDPI(),
         current_region.rect.position,
         current_region.snapped_rect.position);
-
-    result.AddOffset(current_region.SnappedOffset());
-    return result;
 }
 
 
@@ -411,7 +409,7 @@ void Canvas::FillGeometry(const Geometry& geometry, const Color& color) {
 
 
 void Canvas::InnerFillGeometry(const Geometry& geometry, const d2d::Brush& brush) noexcept {
-    renderer_.FillGeometry(geometry, brush, Brush{});
+    renderer_.FillGeometry(ExtractSnappedGeometry(geometry), brush, Brush{});
 }
 
 
@@ -453,7 +451,25 @@ void Canvas::InnerDrawGeometry(
     float stroke_width,
     const d2d::StrokeStyle& stroke_style) noexcept {
 
-    renderer_.DrawGeometry(geometry, brush, stroke_width, stroke_style);
+    renderer_.DrawGeometry(ExtractSnappedGeometry(geometry), brush, stroke_width, stroke_style);
+}
+
+
+d2d::Geometry Canvas::ExtractSnappedGeometry(const d2d::Geometry& geometry) const noexcept {
+
+    // If the geometry is created by `CreateSnappedPathGeometry`, it is a wrapper object that
+    // isn't created by the same factory as renderer. But Direct2D requires that when drawing
+    // geometry, the geometry must be created by the same factory as renderer. 
+    // So we need to extract the inner geometry from the wrapper object.
+
+    auto snapped_path_geometry = 
+        geometry.Ptr().Query<internal::SnappedPathGeometry>(internal::IID_SnappedPathGeometry);
+
+    if (snapped_path_geometry) {
+        return d2d::Geometry{ snapped_path_geometry->Inner() };
+    }
+
+    return geometry;
 }
 
 
@@ -582,20 +598,24 @@ EllipseGeometry Canvas::CreateSnappedEllipseGeometry(
 }
 
 
-PathGeometry Canvas::CreatePathGeometry() const {
+d2d::PathGeometry Canvas::CreateSnappedPathGeometry(float stroke_width) const {
 
-    COMPtr<ID2D1PathGeometry> inner;
-    auto factory = GraphicFactory::Instance().GetDirect2dFactoryHandle();
-    HRESULT hresult = factory->CreatePathGeometry(inner.Reset());
-    ZAF_THROW_IF_COM_ERROR(hresult);
+    auto path_geometry = GraphicFactory::Instance().CreatePathGeometry();
+    auto inner = path_geometry.Inner();
 
-    internal::AlignmentInfo alignment_info;
-    const auto& current_region = regions_.top();
-    alignment_info.coordinate_origin = current_region.rect.position;
-    alignment_info.aligned_coordinate_origin = current_region.snapped_rect.position;
-    alignment_info.dpi = renderer_.GetDPI();
+    internal::GeometrySnapData snap_data;
+    snap_data.stroke_width = stroke_width;
+    snap_data.dpi = renderer_.GetDPI();
+    if (!regions_.empty()) {
+        const auto& current_region = regions_.top();
+        snap_data.coordinate_origin = current_region.rect.position;
+        snap_data.snapped_coordinate_origin = current_region.snapped_rect.position;
+    }
 
-    return PathGeometry{ std::move(inner), alignment_info };
+    COMPtr<ID2D1PathGeometry> snapped_geometry{ 
+        new internal::SnappedPathGeometry(std::move(inner), snap_data)
+    };
+    return PathGeometry{ snapped_geometry };
 }
 
 }

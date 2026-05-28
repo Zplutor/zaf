@@ -689,7 +689,7 @@ void Control::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
     auto control_geometry = canvas.CreateSnappedRectangleGeometry(control_rect);
     auto inner_geometry = canvas.CreateSnappedRectangleGeometry(inner_rect);
     
-    auto border_geometry = canvas.CreatePathGeometry();
+    auto border_geometry = canvas.CreateSnappedPathGeometry();
     auto sink = border_geometry.Open();
     d2d::Geometry::Combine(
         control_geometry, 

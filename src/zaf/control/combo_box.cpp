@@ -168,7 +168,7 @@ void ComboBox::Paint(Canvas& canvas, const zaf::Rect& dirty_rect) const {
     Point right_point(center_point.x + height, center_point.y - half_height);
     Point bottom_point(center_point.x, center_point.y + half_height);
 
-    auto path = canvas.CreatePathGeometry();
+    auto path = canvas.CreateSnappedPathGeometry();
     if (!path) {
         return;
     }

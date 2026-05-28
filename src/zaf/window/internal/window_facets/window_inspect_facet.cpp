@@ -162,7 +162,7 @@ void WindowInspectFacet::PaintInspectedControl(Canvas& canvas, const Rect& dirty
             auto rect_geometry = canvas.CreateSnappedRectangleGeometry(rect);
             auto excluded_geometry = canvas.CreateSnappedRectangleGeometry(excluded_rect);
 
-            auto frame_geometry = canvas.CreatePathGeometry();
+            auto frame_geometry = canvas.CreateSnappedPathGeometry();
             auto sink = frame_geometry.Open();
             d2d::Geometry::Combine(
                 rect_geometry,

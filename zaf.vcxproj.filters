@@ -334,6 +334,12 @@
     <ClCompile Include="src\zaf\graphic\pixel_snapping.cpp">
       <Filter>zaf\graphic</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\graphic\internal\snapped_geometry_sink.cpp">
+      <Filter>zaf\graphic\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="src\zaf\graphic\internal\snapped_path_geometry.cpp">
+      <Filter>zaf\graphic\internal</Filter>
+    </ClCompile>
     <ClCompile Include="src\zaf\base\registry\registry_key.cpp">
       <Filter>zaf\base\registry</Filter>
     </ClCompile>
@@ -2845,12 +2851,6 @@
     <ClInclude Include="src\zaf\internal\graphic\text_inline_object_painter.h">
       <Filter>zaf\internal\graphic</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\internal\graphic\alignment_helper.h">
-      <Filter>zaf\internal\graphic</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\internal\graphic\alignment_info.h">
-      <Filter>zaf\internal\graphic</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\graphic\wic\bitmap.h">
       <Filter>zaf\graphic\wic</Filter>
     </ClInclude>
@@ -3297,6 +3297,18 @@
     </ClInclude>
     <ClInclude Include="SRC\ZAF\GRAPHIC\CANVAS\CANVAS_STATE_GUARD.H" />
     <ClInclude Include="src\zaf\graphic\internal\canvas_region_data.h">
+      <Filter>zaf\graphic\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\internal\snapping_helper.h">
+      <Filter>zaf\graphic\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\internal\geometry_snap_data.h">
+      <Filter>zaf\graphic\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\internal\snapped_geometry_sink.h">
+      <Filter>zaf\graphic\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\graphic\internal\snapped_path_geometry.h">
       <Filter>zaf\graphic\internal</Filter>
     </ClInclude>
   </ItemGroup>
