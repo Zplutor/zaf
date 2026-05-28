@@ -110,14 +110,16 @@ public:
 
 public:
     /**
-    Constructs an invalid instance.
+    Constructs a null instance.
     */
-    GeometrySink() = default;
+    GeometrySink() noexcept = default;
 
     /**
-    Constructs an instance with a corresponding COM pointer.
+    Constructs an instance with the specified corresponding COM pointer.
     */
-    explicit GeometrySink(COMPtr<ID2D1GeometrySink> inner) : COMObject(std::move(inner)) { }
+    explicit GeometrySink(COMPtr<ID2D1GeometrySink> inner) noexcept : COMObject(std::move(inner)) {
+
+    }
 
     /**
      Specifies the method used to determine which points are inside the geometry
@@ -192,6 +194,23 @@ public:
     void AddArc(const ArcSegment& arc_segment);
 
     /**
+    Creates a cubic Bezier curve between the current point and the specified end point.
+
+    @param control_point1
+        The first control point of the cubic Bezier curve.
+
+    @param control_point2
+        The second control point of the cubic Bezier curve.
+
+    @param end_point
+        The end point of the cubic Bezier curve.
+    */
+    void AddCubicBezier(
+        const Point& control_point1,
+        const Point& control_point2, 
+        const Point& end_point) noexcept;
+
+    /**
      Closes the geometry sink, indicates whether it is in an error state, and resets the sink's 
      error state.
 
@@ -203,8 +222,6 @@ public:
         HRESULT result = Ptr()->Close();
         ZAF_THROW_IF_COM_ERROR(result);
     }
-
-private:
 };
 
 ZAF_ENABLE_FLAGS_ENUM(GeometrySink::SegmentFlag);

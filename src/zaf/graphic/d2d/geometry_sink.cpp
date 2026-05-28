@@ -32,4 +32,17 @@ void GeometrySink::AddArc(const ArcSegment& arc_segment) {
     Ptr()->AddArc(arc_segment.Inner());
 }
 
+
+void GeometrySink::AddCubicBezier(
+    const Point& control_point1,
+    const Point& control_point2,
+    const Point& end_point) noexcept {
+
+    D2D1_BEZIER_SEGMENT bezier_segment;
+    bezier_segment.point1 = control_point1.ToD2D1POINT2F();
+    bezier_segment.point2 = control_point2.ToD2D1POINT2F();
+    bezier_segment.point3 = end_point.ToD2D1POINT2F();
+    Ptr()->AddBezier(&bezier_segment);
+}
+
 }
