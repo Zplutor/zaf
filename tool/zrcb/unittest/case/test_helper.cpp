@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 #include <zaf/base/error/win32_error.h>
-#include <zaf/base/handle.h>
+#include <zaf/base/unique_handle.h>
 #include <zaf/base/string/replace.h>
 #include <zaf/base/string/split.h>
 
@@ -107,7 +107,7 @@ void RunZrcb(const std::wstring& arguments) {
     SECURITY_ATTRIBUTES security_attributes{};
     security_attributes.bInheritHandle = TRUE;
 
-    zaf::Handle stdout_handle{ CreateFile(
+    zaf::UniqueHANDLE stdout_handle{ CreateFile(
         stdout_file_path.c_str(),
         GENERIC_WRITE,
         FILE_SHARE_READ,
@@ -123,8 +123,8 @@ void RunZrcb(const std::wstring& arguments) {
     STARTUPINFO startup_info{};
     startup_info.cb = sizeof(startup_info);
     startup_info.dwFlags = STARTF_USESTDHANDLES;
-    startup_info.hStdOutput = *stdout_handle;
-    startup_info.hStdError = *stdout_handle;
+    startup_info.hStdOutput = stdout_handle.Value();
+    startup_info.hStdError = stdout_handle.Value();
 
     PROCESS_INFORMATION process_information{};
 
@@ -146,11 +146,11 @@ void RunZrcb(const std::wstring& arguments) {
 
     CloseHandle(process_information.hThread);
 
-    zaf::Handle process_handle{ process_information.hProcess };
-    WaitForSingleObject(*process_handle, INFINITE);
+    zaf::UniqueHANDLE process_handle{ process_information.hProcess };
+    WaitForSingleObject(process_handle.Value(), INFINITE);
 
     DWORD exit_code{};
-    is_succeeded = GetExitCodeProcess(*process_handle, &exit_code);
+    is_succeeded = GetExitCodeProcess(process_handle.Value(), &exit_code);
     if (!is_succeeded) {
         ZAF_THROW_WIN32_ERROR(GetLastError());
     }

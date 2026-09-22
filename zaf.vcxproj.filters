@@ -1654,7 +1654,7 @@
     <ClInclude Include="src\zaf\base\registry\registry_rights.h">
       <Filter>zaf\base\registry</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\handle.h">
+    <ClInclude Include="src\zaf\base\unique_handle.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\linear_layouter.h">
