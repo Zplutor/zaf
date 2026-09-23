@@ -8,14 +8,14 @@ static_assert(std::is_move_assignable_v<zaf::UniqueHANDLE>);
 static_assert(std::is_nothrow_move_constructible_v<zaf::UniqueHANDLE>);
 static_assert(std::is_nothrow_move_assignable_v<zaf::UniqueHANDLE>);
 
-TEST(UniqueHandleTest, DefaultConstruct) {
+TEST(UniqueHANDLETest, DefaultConstruct) {
     
     zaf::UniqueHANDLE handle;
     ASSERT_EQ(handle.Value(), nullptr);
 }
 
 
-TEST(UniqueHandleTest, ConstructWithValue) {
+TEST(UniqueHANDLETest, ConstructWithValue) {
     
     HANDLE handle = CreateMutex(nullptr, TRUE, nullptr);
     {
@@ -30,7 +30,7 @@ TEST(UniqueHandleTest, ConstructWithValue) {
 }
 
 
-TEST(UniqueHandleTest, MoveConstruct) {
+TEST(UniqueHANDLETest, MoveConstruct) {
 
     HANDLE handle = CreateMutex(nullptr, TRUE, nullptr);
     zaf::UniqueHANDLE unique_handle1(handle);
@@ -43,7 +43,7 @@ TEST(UniqueHandleTest, MoveConstruct) {
 }
 
 
-TEST(UniqueHandleTest, MoveAssign) {
+TEST(UniqueHANDLETest, MoveAssign) {
 
     HANDLE handle1 = CreateMutex(nullptr, TRUE, nullptr);
     zaf::UniqueHANDLE unique_handle1(handle1);
@@ -65,7 +65,18 @@ TEST(UniqueHandleTest, MoveAssign) {
 }
 
 
-TEST(UniqueHandleTest, IsValid) {
+TEST(UniqueHANDLETest, SelfAssign) {
+
+    HANDLE handle = CreateMutex(nullptr, TRUE, nullptr);
+    zaf::UniqueHANDLE unique_handle(handle);
+
+    unique_handle = std::move(unique_handle);
+    BOOL is_succeeded = ReleaseMutex(handle);
+    ASSERT_TRUE(is_succeeded);
+}
+
+
+TEST(UniqueHANDLETest, IsValid) {
 
     {
         zaf::UniqueHANDLE handle;
@@ -94,7 +105,7 @@ TEST(UniqueHandleTest, IsValid) {
 }
 
 
-TEST(UniqueHandleTest, Reset) {
+TEST(UniqueHANDLETest, Reset) {
 
     HANDLE handle = CreateMutex(nullptr, TRUE, nullptr);
     zaf::UniqueHANDLE unique_handle(handle);
@@ -111,7 +122,7 @@ TEST(UniqueHandleTest, Reset) {
 }
 
 
-TEST(UniqueHandleTest, ResetToNewValue) {
+TEST(UniqueHANDLETest, ResetToNewValue) {
 
     {
         HANDLE handle = CreateMutex(nullptr, TRUE, nullptr);

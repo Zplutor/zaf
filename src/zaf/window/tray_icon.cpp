@@ -29,21 +29,43 @@ const GUID& TrayIcon::ID() const noexcept {
 }
 
 
-const UniqueHICON& TrayIcon::Icon() const noexcept {
-    return icon_;
+HICON TrayIcon::Icon() const noexcept {
+
+    return std::visit([](const auto& arg) {
+
+        using T = std::decay_t<decltype(arg)>;
+        if constexpr (std::is_same_v<T, HICON>) {
+            return arg;
+        }
+        else if constexpr (std::is_same_v<T, UniqueHICON>) {
+            return arg.Value();
+        }
+    },
+    icon_);
 }
 
 
 void TrayIcon::SetIcon(UniqueHICON icon) {
-
     icon_ = std::move(icon);
+    AfterIconChanged();
+}
+
+
+void TrayIcon::SetIcon(HICON icon) {
+    icon_ = icon;
+    AfterIconChanged();
+}
+
+
+void TrayIcon::AfterIconChanged() {
+
     if (icon_state_ == IconState::NotAdded) {
         return;
     }
 
     auto icon_data = MakeBasicIconData();
     icon_data.uFlags |= NIF_ICON;
-    icon_data.hIcon = icon_;
+    icon_data.hIcon = this->Icon();
     ModifyIcon(icon_data);
 }
 
@@ -122,7 +144,7 @@ bool TrayIcon::CallAdd() const noexcept {
     icon_data.uFlags |= NIF_MESSAGE | NIF_TIP | NIF_ICON;
     icon_data.hWnd = message_window_->Handle();
     icon_data.uCallbackMessage = TrayIconMessageID;
-    icon_data.hIcon = icon_;
+    icon_data.hIcon = this->Icon();
     wcscpy_s(icon_data.szTip, tooltip_.c_str());
 
     BOOL is_succeeded = Shell_NotifyIcon(NIM_ADD, &icon_data);

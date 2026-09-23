@@ -65,7 +65,30 @@ public:
     /**
     Gets the icon handle for the icon.
     */
-    const UniqueHICON& Icon() const noexcept;
+    HICON Icon() const noexcept;
+
+    /**
+    Sets the icon handle for the icon.
+
+    @param icon
+        The icon handle to be set. The ownership of the icon handle will be transferred to this 
+        instance.
+
+    @throw zaf::InvalidOperationError
+        Thrown if calling this method directly in `OnAddFailed()` or `OnModifyFailed()`, which
+        causes reentrant.
+
+    @throw zaf::UnknownRuntimeError
+        Thrown if failed to modify the icon.
+
+    @throw ...
+        Any exception will be thrown by `OnModifyFailed()` if derived class overrides it.
+
+    @details
+        If the icon has been added, this method will try to modify the icon in the system 
+        notification area. If the icon is failed to be modified, `OnModifyFailed()` will be called.
+    */
+    void SetIcon(UniqueHICON icon);
 
     /**
     Sets the icon handle for the icon.
@@ -84,10 +107,12 @@ public:
         Any exception will be thrown by `OnModifyFailed()` if derived class overrides it.
 
     @details
-        If the icon has been added, this method will try to modify the icon in the system 
-        notification area. If the icon is failed to be modified, `OnModifyFailed()` will be called.
+        This method is similiar to `SetIcon(UniqueHICON)`, but it doesn't take the ownership of the
+        icon handle. It is useful when the icon handle is managed by others.
+
+    @see zaf::TrayIcon::SetIcon(UniqueHICON)
     */
-    void SetIcon(UniqueHICON icon);
+    void SetIcon(HICON icon);
 
     /**
     Gets the tooltip for the icon.
@@ -217,6 +242,7 @@ private:
     };
 
 private:
+    void AfterIconChanged();
     void InitializeIfNeeded();
     void AddIcon();
     bool CallAdd() const noexcept;
@@ -231,7 +257,7 @@ private:
 private:
     GUID id_{};
     std::wstring tooltip_;
-    UniqueHICON icon_;
+    std::variant<HICON, UniqueHICON> icon_;
     std::unique_ptr<MessageOnlyWindow> message_window_;
 
     IconState icon_state_{ IconState::NotAdded };

@@ -46,6 +46,9 @@ public:
         The previous managed handle will be closed if it is valid.
     */
     UniqueHANDLE& operator=(UniqueHANDLE&& other) noexcept {
+        if (this == &other) {
+            return *this;
+        }
         Reset(other.value_);
         other.value_ = nullptr;
         return *this;
