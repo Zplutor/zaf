@@ -503,11 +503,126 @@ TEST_F(WindowTest, SetHeight_Destroyed) {
 }
 
 
-TEST_F(WindowTest, MinWidth_DefaultValue) {
+TEST_F(WindowTest, MinWidth_HasTitleBar) {
+
     auto window = zaf::Create<zaf::Window>();
-    auto dpi = static_cast<float>(GetDpiForSystem());
-    auto default_value = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)), dpi);
-    ASSERT_EQ(window->MinWidth(), default_value);
+
+    const auto expected = zaf::ToDIPs(
+        static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)), 
+        window->DPI());
+
+    // NotCreated
+    ASSERT_EQ(window->MinWidth(), expected);
+
+    // Creating
+    bool has_asserted_creating{};
+    auto creating_sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo&) {
+            ASSERT_EQ(window->MinWidth(), expected);
+            has_asserted_creating = true;
+        });
+    auto holder = window->CreateHandle();
+    ASSERT_TRUE(has_asserted_creating);
+
+    // Created
+    ASSERT_EQ(window->MinWidth(), expected);
+
+    // Destroying
+    bool has_asserted_destroying{};
+    auto destroying_sub = window->DestroyingEvent().Subscribe(
+        [&](const zaf::DestroyingInfo&) {
+            ASSERT_EQ(window->MinWidth(), expected);
+            has_asserted_destroying = true;
+        });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted_destroying);
+
+    // Destroyed
+    ASSERT_EQ(window->MinWidth(), 0);
+}
+
+
+TEST_F(WindowTest, MinWidth_NoTitleBar) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetIsPopup(true);
+    window->SetHasTitleBar(false);
+    window->SetHasBorder(true);
+
+    const auto unexpected = zaf::ToDIPs(
+        static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)),
+        window->DPI());
+
+    // NotCreated
+    ASSERT_NE(window->MinWidth(), unexpected);
+    ASSERT_NE(window->MinWidth(), 0);
+
+    // Creating
+    bool has_asserted_creating{};
+    auto creating_sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo&) {
+            ASSERT_NE(window->MinWidth(), unexpected);
+            ASSERT_NE(window->MinWidth(), 0);
+            has_asserted_creating = true;
+        });
+    auto holder = window->CreateHandle();
+    ASSERT_TRUE(has_asserted_creating);
+
+    // Created
+    ASSERT_NE(window->MinWidth(), unexpected);
+    ASSERT_NE(window->MinWidth(), 0);
+
+    // Destroying
+    bool has_asserted_destroying{};
+    auto destroying_sub = window->DestroyingEvent().Subscribe(
+        [&](const zaf::DestroyingInfo&) {
+            ASSERT_NE(window->MinWidth(), unexpected);
+            ASSERT_NE(window->MinWidth(), 0);
+            has_asserted_destroying = true;
+        });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted_destroying);
+
+    // Destroyed
+    ASSERT_EQ(window->MinWidth(), 0);
+}
+
+
+TEST_F(WindowTest, MinWidth_NoTitleBarAndBorder) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetIsPopup(true);
+    window->SetHasTitleBar(false);
+    window->SetHasBorder(false);
+
+    // NotCreated
+    ASSERT_EQ(window->MinWidth(), 0);
+
+    // Creating
+    bool has_asserted_creating{};
+    auto creating_sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo&) {
+            ASSERT_EQ(window->MinWidth(), 0);
+            has_asserted_creating = true;
+        });
+    auto holder = window->CreateHandle();
+    ASSERT_TRUE(has_asserted_creating);
+
+    // Created
+    ASSERT_EQ(window->MinWidth(), 0);
+
+    // Destroying
+    bool has_asserted_destroying{};
+    auto destroying_sub = window->DestroyingEvent().Subscribe(
+        [&](const zaf::DestroyingInfo&) {
+            ASSERT_EQ(window->MinWidth(), 0);
+            has_asserted_destroying = true;
+        });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted_destroying);
+
+    // Destroyed
+    ASSERT_EQ(window->MinWidth(), 0);
 }
 
 
@@ -574,11 +689,126 @@ TEST_F(WindowTest, SetMaxWidth_InvalidStates) {
 }
 
 
-TEST_F(WindowTest, MinHeight_DefaultValue) {
+TEST_F(WindowTest, MinHeight_HasTitleBar) {
+
     auto window = zaf::Create<zaf::Window>();
-    auto dpi = static_cast<float>(GetDpiForSystem());
-    auto default_value = zaf::ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)), dpi);
-    ASSERT_EQ(window->MinHeight(), default_value);
+
+    const auto expected = zaf::ToDIPs(
+        static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)),
+        window->DPI());
+
+    // NotCreated
+    ASSERT_EQ(window->MinHeight(), expected);
+
+    // Creating
+    bool has_asserted_creating{};
+    auto creating_sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo&) {
+            ASSERT_EQ(window->MinHeight(), expected);
+            has_asserted_creating = true;
+        });
+    auto holder = window->CreateHandle();
+    ASSERT_TRUE(has_asserted_creating);
+
+    // Created
+    ASSERT_EQ(window->MinHeight(), expected);
+
+    // Destroying
+    bool has_asserted_destroying{};
+    auto destroying_sub = window->DestroyingEvent().Subscribe(
+        [&](const zaf::DestroyingInfo&) {
+            ASSERT_EQ(window->MinHeight(), expected);
+            has_asserted_destroying = true;
+        });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted_destroying);
+
+    // Destroyed
+    ASSERT_EQ(window->MinHeight(), 0);
+}
+
+
+TEST_F(WindowTest, MinHeight_NoTitleBar) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetIsPopup(true);
+    window->SetHasTitleBar(false);
+    window->SetHasBorder(true);
+
+    const auto unexpected = zaf::ToDIPs(
+        static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)),
+        window->DPI());
+
+    // NotCreated
+    ASSERT_NE(window->MinHeight(), unexpected);
+    ASSERT_NE(window->MinHeight(), 0);
+
+    // Creating
+    bool has_asserted_creating{};
+    auto creating_sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo&) {
+            ASSERT_NE(window->MinHeight(), unexpected);
+            ASSERT_NE(window->MinHeight(), 0);
+            has_asserted_creating = true;
+        });
+    auto holder = window->CreateHandle();
+    ASSERT_TRUE(has_asserted_creating);
+
+    // Created
+    ASSERT_NE(window->MinHeight(), unexpected);
+    ASSERT_NE(window->MinHeight(), 0);
+
+    // Destroying
+    bool has_asserted_destroying{};
+    auto destroying_sub = window->DestroyingEvent().Subscribe(
+        [&](const zaf::DestroyingInfo&) {
+            ASSERT_NE(window->MinHeight(), unexpected);
+            ASSERT_NE(window->MinHeight(), 0);
+            has_asserted_destroying = true;
+        });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted_destroying);
+
+    // Destroyed
+    ASSERT_EQ(window->MinHeight(), 0);
+}
+
+
+TEST_F(WindowTest, MinHeight_NoTitleBarAndBorder) {
+
+    auto window = zaf::Create<zaf::Window>();
+    window->SetIsPopup(true);
+    window->SetHasTitleBar(false);
+    window->SetHasBorder(false);
+
+    // NotCreated
+    ASSERT_EQ(window->MinHeight(), 0);
+
+    // Creating
+    bool has_asserted_creating{};
+    auto creating_sub = window->HandleCreatingEvent().Subscribe(
+        [&](const zaf::HandleCreatingInfo&) {
+            ASSERT_EQ(window->MinHeight(), 0);
+            has_asserted_creating = true;
+        });
+    auto holder = window->CreateHandle();
+    ASSERT_TRUE(has_asserted_creating);
+
+    // Created
+    ASSERT_EQ(window->MinHeight(), 0);
+
+    // Destroying
+    bool has_asserted_destroying{};
+    auto destroying_sub = window->DestroyingEvent().Subscribe(
+        [&](const zaf::DestroyingInfo&) {
+            ASSERT_EQ(window->MinHeight(), 0);
+            has_asserted_destroying = true;
+        });
+    window->Destroy();
+    ASSERT_TRUE(has_asserted_destroying);
+
+    // Destroyed
+    ASSERT_EQ(window->MinHeight(), 0);
 }
 
 

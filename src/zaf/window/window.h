@@ -641,7 +641,12 @@ public:
     Gets the window's minimum width.
 
     @details
-        The default value is retrieved from `GetSystemMetrics(SM_CXMINTRACK)`.
+        If the minimum width is not set explicitly, this method returns the default minimum width,
+        with the following rules:
+        - If `HasTitleBar()` returns true, the default minimum width is retrieved from
+          `GetSystemMetrics(SM_CXMINTRACK)`.
+        - If `HasTitleBar()` returns false, the default minimum width is the window frame width.
+        - If the window handle state is `Destroyed`, this method always returns 0.
     */
     float MinWidth() const noexcept;
 
@@ -693,7 +698,12 @@ public:
     Gets the window's minimum height.
 
     @details
-        The default value is retrieved from `GetSystemMetrics(SM_CYMINTRACK)`.
+        If the minimum height is not set explicitly, this method returns the default minimum height,
+        with the following rules:
+        - If `HasTitleBar()` returns true, the default minimum height is retrieved from
+          `GetSystemMetrics(SM_CYMINTRACK)`.
+        - If `HasTitleBar()` returns false, the default minimum height is the window frame height.
+        - If the window handle state is `Destroyed`, this method always returns 0.
     */
     float MinHeight() const noexcept;
 

@@ -86,7 +86,9 @@ private:
     zaf::Size ClampSize(const zaf::Size& size) const noexcept;
     void RaiseSizeChangedEvent();
 
-    static Frame GetWindowFrame(
+    Frame GetCurrentWindowFrameForMinSize() const noexcept;
+
+    static Frame CalculateWindowFrame(
         float dpi,
         const internal::WindowBasicStyle& basic_style,
         const internal::WindowExtendedStyle& extend_style) noexcept;

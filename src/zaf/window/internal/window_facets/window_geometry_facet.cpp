@@ -251,10 +251,17 @@ void WindowGeometryFacet::SetHeight(float height) {
 
 
 float WindowGeometryFacet::MinWidth() const noexcept {
+
     if (min_width_) {
         return *min_width_;
     }
-    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)), DPI());
+
+    if (window_.HasTitleBar()) {
+        return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CXMINTRACK)), DPI());
+    }
+
+    auto window_frame = GetCurrentWindowFrameForMinSize();
+    return window_frame.Width();
 }
 
 
@@ -327,10 +334,17 @@ void WindowGeometryFacet::SetMaxWidth(float max_width) {
 
 
 float WindowGeometryFacet::MinHeight() const noexcept {
+
     if (min_height_) {
         return *min_height_;
     }
-    return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)), DPI());
+
+    if (window_.HasTitleBar()) {
+        return ToDIPs(static_cast<float>(GetSystemMetrics(SM_CYMINTRACK)), DPI());
+    }
+
+    auto window_frame = GetCurrentWindowFrameForMinSize();
+    return window_frame.Height();
 }
 
 
@@ -439,7 +453,7 @@ zaf::Size WindowGeometryFacet::ContentSize() const noexcept {
             return not_created_state_data.size;
         }
 
-        auto frame = GetWindowFrame(
+        auto frame = CalculateWindowFrame(
             this->DPI(),
             not_created_state_data.basic_style,
             not_created_state_data.extended_style);
@@ -588,7 +602,31 @@ void WindowGeometryFacet::HandleWMDPICHANGED(const Message& message) {
 }
 
 
-Frame WindowGeometryFacet::GetWindowFrame(
+Frame WindowGeometryFacet::GetCurrentWindowFrameForMinSize() const noexcept {
+
+    auto handle_state = window_.HandleState();
+    if (handle_state == WindowHandleState::Destroyed) {
+        return {};
+    }
+
+    WindowBasicStyle basic_style;
+    WindowExtendedStyle extended_style;
+
+    if (window_.HandleState() == WindowHandleState::NotCreated) {
+        const auto& not_created_state_data = window_.lifecycle_facet_->NotCreatedStateData();
+        basic_style = not_created_state_data.basic_style;
+        extended_style = not_created_state_data.extended_style;
+    }
+    else {
+        basic_style = WindowBasicStyle::FromHandle(window_.Handle());
+        extended_style = WindowExtendedStyle::FromHandle(window_.Handle());
+    }
+
+    return CalculateWindowFrame(DPI(), basic_style, extended_style);
+}
+
+
+Frame WindowGeometryFacet::CalculateWindowFrame(
     float dpi,
     const internal::WindowBasicStyle& basic_style,
     const internal::WindowExtendedStyle& extend_style) noexcept {
@@ -723,7 +761,7 @@ Point WindowGeometryFacet::GetContentOriginInScreen() const noexcept {
         auto screen = this->Screen();
         auto initial_rect = ResolveInitialRect(*screen, window_.Owner(), not_create_state_data);
 
-        auto window_frame = GetWindowFrame(
+        auto window_frame = CalculateWindowFrame(
             screen->DPI(),
             not_create_state_data.basic_style,
             not_create_state_data.extended_style);

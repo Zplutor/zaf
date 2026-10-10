@@ -19,58 +19,17 @@
 
 void BeginRun(const zaf::ApplicationStartedInfo& event_info);
 
-class CustomPaintControl : public zaf::Control {
-protected:
-    void Paint(zaf::Canvas& canvas, const zaf::Rect& dirty_rect) const override {
-
-        canvas.FillRectangle(this->RectInSelf(), zaf::Color::White());
-
-        zaf::Rect region_rect{ 0.25, 0.25, 100, 100 };
-        auto region = canvas.PushRegion(region_rect, region_rect);
-
-        canvas.FillRectangle(zaf::Rect{ 0, 0, 100, 100 }, zaf::Color::Gray());
-
-        auto state_guard = canvas.PushState();
-        state_guard.SetStrokeWidth(1);
-        state_guard.SetBrush(zaf::Color::Red());
-
-        zaf::d2d::StrokeStyleProperties stroke_properties;
-        stroke_properties.SetStartCap(zaf::d2d::LineCap::Square);
-        auto stroke_style = zaf::GraphicFactory::Instance().CreateStrokeStyle(stroke_properties);
-        state_guard.SetStrokeStyle(stroke_style);
-        canvas.DrawLine({ 0.25, 0.25 }, { 100.25, 0.25 });
-
-        /*
-        canvas.DrawRectangle(this->RectInSelf(), zaf::Color::White());
-
-        constexpr float StrokeWidth = 15;
-
-        zaf::Point start_point{ 50, 50 };
-        zaf::Point middle_point{ start_point.x + 100, start_point.y };
-        zaf::Point end_point{ middle_point.x, middle_point.y + 100 };
-
-        state_guard.SetBrush(zaf::Color::Green());
-        canvas.DrawLine(start_point, middle_point, StrokeWidth);
-        canvas.DrawLine(middle_point, end_point, StrokeWidth);
-
-        zaf::Ellipse ellipse;
-        ellipse.position.x = middle_point.x;
-        ellipse.position.y = middle_point.y;
-        ellipse.x_radius = StrokeWidth / 2;
-        ellipse.y_radius = StrokeWidth / 2;
-        canvas.DrawEllipse(ellipse);
-        */
-    }
-};
-
-
 class Window : public zaf::Window {
 protected:
     void Initialize() override {
 
         __super::Initialize();
 
-        this->SetRootControl(zaf::Create<CustomPaintControl>());
+        auto button = zaf::Create<zaf::Button>();
+        button->SetTooltip(L"Pause");
+
+        this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
+        this->RootControl()->AddChild(button);
     }
 
 private:
