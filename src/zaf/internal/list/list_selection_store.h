@@ -6,8 +6,7 @@
 #include <zaf/internal/list/list_selection_change_reason.h>
 #include <zaf/rx/subject/subject.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 
 struct ListSelectionStoreChangedInfo {
     ListSelectionChangeReason reason{};
@@ -19,13 +18,34 @@ A passive object that stores selected indexes in a list control.
 */
 class ListSelectionStore : NonCopyableNonMovable {
 public:
-    void ReplaceSelection(std::size_t index, std::size_t count);
+    /**
+    Replaces the existing selection with the specified range.
 
-    //Reverts selection at index, and returns new selection state.
-    bool RevertSelection(std::size_t index);
+    @return
+        Whether the selection is changed.
+    */
+    bool ReplaceSelection(std::size_t index, std::size_t count);
 
-    void AddSelection(std::size_t index, std::size_t count);
-    void RemoveSelection(std::size_t index, std::size_t count);
+    /**
+    Reverts selection at the specified index.
+    */
+    void RevertSelection(std::size_t index);
+
+    /**
+    Adds new selection to the existing selection with the specified range.
+
+    @return
+        Whether the selection is changed.
+    */
+    bool AddSelection(std::size_t index, std::size_t count);
+
+    /**
+    Removes selection from the existing selection with the specified range.
+
+    @return
+        Whether the selection is changed.
+    */
+    bool RemoveSelection(std::size_t index, std::size_t count);
     
     bool AdjustSelectionByAddingIndexes(std::size_t add_index, std::size_t add_count);
     bool AdjustSelectionByRemovingIndexes(std::size_t remove_index, std::size_t remove_count);
@@ -57,5 +77,4 @@ private:
     zaf::rx::Subject<ListSelectionStoreChangedInfo> changed_event_;
 };
 
-}
 }

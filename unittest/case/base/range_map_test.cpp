@@ -39,17 +39,18 @@ TEST(RangeMapTest, AddRangeToEmptyMap) {
     auto test = [](
         const Range& range, 
         const std::string& value,
+        bool expected_is_changed,
         const RangeMap<std::string>::ItemList& expected) {
     
         RangeMap<std::string> map;
-        map.AddRange(range, value);
-        return CheckRangeMapResult(map, expected);
+        bool is_changed = map.AddRange(range, value);
+        return is_changed == expected_is_changed && CheckRangeMapResult(map, expected);
     };
 
-    ASSERT_TRUE(test(Range(0, 0), "1", {}));
-    ASSERT_TRUE(test(Range(0, 1), "1", { { Range(0, 1), "1" }}));
-    ASSERT_TRUE(test(Range(0, 2), "2", { { Range(0, 2), "2" } }));
-    ASSERT_TRUE(test(Range(5, 4), "3", { { Range(5, 4), "3" } }));
+    ASSERT_TRUE(test(Range(0, 0), "1", false, {}));
+    ASSERT_TRUE(test(Range(0, 1), "1", true, { { Range(0, 1), "1" }}));
+    ASSERT_TRUE(test(Range(0, 2), "2", true, { { Range(0, 2), "2" } }));
+    ASSERT_TRUE(test(Range(5, 4), "3", true, { { Range(5, 4), "3" } }));
 }
 
 
@@ -58,6 +59,7 @@ TEST(RangeMapTest, AddRangeWithDifferentValue) {
     auto test = [](
         const Range& range,
         const std::string& value,
+        bool expected_is_changed,
         const RangeMap<std::string>::ItemList& expected) {
 
         RangeMap<std::string> map;
@@ -65,15 +67,15 @@ TEST(RangeMapTest, AddRangeWithDifferentValue) {
         map.AddRange(Range{ 5, 1 }, "1");
         map.AddRange(Range{ 10, 3 }, "1");
         map.AddRange(Range{ 15, 6 }, "3");
-        map.AddRange(range, value);
-        return CheckRangeMapResult(map, expected);
+        bool is_changed = map.AddRange(range, value);
+        return is_changed == expected_is_changed && CheckRangeMapResult(map, expected);
     };
 
     //Add a range that contains all existing ranges.
-    ASSERT_TRUE(test(Range(0, 22), "A", { { Range(0, 22), "A" }}));
+    ASSERT_TRUE(test(Range(0, 22), "A", true, { { Range(0, 22), "A" }}));
 
     //Add a new range that is equal to one of the existing ranges.
-    ASSERT_TRUE(test(Range(5, 1), "A", {
+    ASSERT_TRUE(test(Range(5, 1), "A", true, {
         { Range(0, 2), "0" },
         { Range(5, 1), "A" },
         { Range(10, 3), "1" },
@@ -81,7 +83,7 @@ TEST(RangeMapTest, AddRangeWithDifferentValue) {
     }));
 
     //Add a new range that doesn't intersect with any range.
-    ASSERT_TRUE(test(Range(2, 3), "A", {
+    ASSERT_TRUE(test(Range(2, 3), "A", true, {
         { Range(0, 2), "0" }, 
         { Range(2, 3), "A" },
         { Range(5, 1), "1" },
@@ -90,7 +92,7 @@ TEST(RangeMapTest, AddRangeWithDifferentValue) {
     }));
 
     //Add a range that is a sub range of an existing range.
-    ASSERT_TRUE(test(Range(17, 2), "A", {
+    ASSERT_TRUE(test(Range(17, 2), "A", true, {
         { Range(0, 2), "0" },
         { Range(5, 1), "1" },
         { Range(10, 3), "1" },
@@ -100,7 +102,7 @@ TEST(RangeMapTest, AddRangeWithDifferentValue) {
     }));
 
     //Add a range that intersects with the head and the tail of existing ranges.
-    ASSERT_TRUE(test(Range::FromIndexPair(12, 18), "A", {
+    ASSERT_TRUE(test(Range::FromIndexPair(12, 18), "A", true, {
         { Range(0, 2), "0" },
         { Range(5, 1), "1" },
         { Range(10, 2), "1" },
@@ -115,6 +117,7 @@ TEST(RangeMapTest, AddRangeWithSameValue) {
     auto test = [](
         const Range& range,
         const std::string& value,
+        bool expected_is_changed,
         const RangeMap<std::string>::ItemList& expected) {
 
         RangeMap<std::string> map;
@@ -122,15 +125,15 @@ TEST(RangeMapTest, AddRangeWithSameValue) {
         map.AddRange(Range{ 5, 1 }, "1");
         map.AddRange(Range{ 10, 3 }, "1");
         map.AddRange(Range{ 15, 6 }, "3");
-        map.AddRange(range, value);
-        return CheckRangeMapResult(map, expected);
+        bool is_changed = map.AddRange(range, value);
+        return is_changed == expected_is_changed && CheckRangeMapResult(map, expected);
     };
 
     //Add a range that contains all existing ranges.
-    ASSERT_TRUE(test(Range(0, 22), "1", { { Range(0, 22), "1" } }));
+    ASSERT_TRUE(test(Range(0, 22), "1", true, { { Range(0, 22), "1" } }));
 
     //Add a new range that is equal to one of the existing ranges.
-    ASSERT_TRUE(test(Range(5, 1), "1", {
+    ASSERT_TRUE(test(Range(5, 1), "1", false, {
         { Range(0, 2), "0" },
         { Range(5, 1), "1" },
         { Range(10, 3), "1" },
@@ -138,7 +141,7 @@ TEST(RangeMapTest, AddRangeWithSameValue) {
     }));
 
     //Add a new range that doesn't intersect with any range.
-    ASSERT_TRUE(test(Range::FromIndexPair(7, 9), "1", {
+    ASSERT_TRUE(test(Range::FromIndexPair(7, 9), "1", true, {
         { Range(0, 2), "0" },
         { Range(5, 1), "1" },
         { Range(7, 2), "1" },
@@ -147,7 +150,7 @@ TEST(RangeMapTest, AddRangeWithSameValue) {
     }));
 
     //Add a new range that is right before the existing range.
-    ASSERT_TRUE(test(Range::FromIndexPair(8, 10), "1", {
+    ASSERT_TRUE(test(Range::FromIndexPair(8, 10), "1", true, {
         { Range(0, 2), "0" },
         { Range(5, 1), "1" },
         { Range(8, 5), "1" },
@@ -155,21 +158,21 @@ TEST(RangeMapTest, AddRangeWithSameValue) {
     }));
 
     //Add a new range that is right before the existing range, and intersects with previous range.
-    ASSERT_TRUE(test(Range::FromIndexPair(5, 10), "1", {
+    ASSERT_TRUE(test(Range::FromIndexPair(5, 10), "1", true, {
         { Range(0, 2), "0" },
         { Range(5, 8), "1" },
         { Range(15, 6), "3" },
     }));
 
     //Add a new range that connects two existing range.
-    ASSERT_TRUE(test(Range::FromIndexPair(6, 10), "1", {
+    ASSERT_TRUE(test(Range::FromIndexPair(6, 10), "1", true, {
         { Range(0, 2), "0" },
         { Range(5, 8), "1" },
         { Range(15, 6), "3" },
     }));
 
     //Add a new range that is right after the existing range.
-    ASSERT_TRUE(test(Range::FromIndexPair(6, 8), "1", {
+    ASSERT_TRUE(test(Range::FromIndexPair(6, 8), "1", true, {
         { Range(0, 2), "0" },
         { Range(5, 3), "1" },
         { Range(10, 3), "1" },
@@ -177,22 +180,46 @@ TEST(RangeMapTest, AddRangeWithSameValue) {
     }));
 
     //Add a new range that is right after the existing range, and intersects with next range.
-    ASSERT_TRUE(test(Range::FromIndexPair(6, 12), "1", {
+    ASSERT_TRUE(test(Range::FromIndexPair(6, 12), "1", true, {
         { Range(0, 2), "0" },
         { Range(5, 8), "1" },
         { Range(15, 6), "3" },
     }));
 
     //Add a range that is a sub range of an existing range.
-    ASSERT_TRUE(test(Range(11, 1), "1", {
+    ASSERT_TRUE(test(Range(11, 1), "1", false, {
         { Range(0, 2), "0" },
         { Range(5, 1), "1" },
         { Range(10, 3), "1" },
         { Range(15, 6), "3" },
     }));
 
+    //Add a range that is the head of an existing range.
+    ASSERT_TRUE(test(Range(10, 1), "1", false, {
+        { Range(0, 2), "0" },
+        { Range(5, 1), "1" },
+        { Range(10, 3), "1" },
+        { Range(15, 6), "3" },
+    }));
+
+    //Add a range that is the tail of an existing range.
+    ASSERT_TRUE(test(Range(12, 1), "1", false, {
+        { Range(0, 2), "0" },
+        { Range(5, 1), "1" },
+        { Range(10, 3), "1" },
+        { Range(15, 6), "3" },
+    }));
+
+    //Add a range that overlaps the tail of an existing range and extends past it.
+    ASSERT_TRUE(test(Range::FromIndexPair(11, 14), "1", true, {
+        { Range(0, 2), "0" },
+        { Range(5, 1), "1" },
+        { Range(10, 4), "1" },
+        { Range(15, 6), "3" },
+    }));
+
     //Add a range that intersects with the head and the tail of existing ranges.
-    ASSERT_TRUE(test(Range::FromIndexPair(5, 12), "1", {
+    ASSERT_TRUE(test(Range::FromIndexPair(5, 12), "1", true, {
         { Range(0, 2), "0" },
         { Range(5, 8), "1" },
         { Range(15, 6), "3" },
@@ -202,45 +229,56 @@ TEST(RangeMapTest, AddRangeWithSameValue) {
 
 TEST(RangeMapTest, RemoveRange) {
 
-    auto test = [](const Range& range, const RangeMap<std::string>::ItemList& expected) {
+    auto test = [](
+        const Range& range,
+        bool expected_is_changed,
+        const RangeMap<std::string>::ItemList& expected) {
+
         RangeMap<std::string> map;
         map.AddRange(Range(0, 2), "0");
         map.AddRange(Range(5, 1), "1");
         map.AddRange(Range(10, 3), "2");
         map.AddRange(Range(15, 6), "3");
-        map.RemoveRange(range);
-        return CheckRangeMapResult(map, expected);
+        bool is_changed = map.RemoveRange(range);
+        return is_changed == expected_is_changed && CheckRangeMapResult(map, expected);
     };
 
-    ASSERT_TRUE(test(Range(2, 2), { 
+    ASSERT_TRUE(test(Range(0, 0), false, {
         { Range(0, 2), "0" },
-        { Range(5, 1), "1" },
-        { Range(10, 3), "2" },
-        { Range(15, 6), "3" }
-    }));
-
-    ASSERT_TRUE(test(Range(30, 5), {
-        { Range(0, 2), "0" },
-        { Range(5, 1), "1" },
-        { Range(10, 3), "2" }, 
-        { Range(15, 6), "3" },
-    }));
-
-    ASSERT_TRUE(test(Range(0, 3), {
         { Range(5, 1), "1" },
         { Range(10, 3), "2" },
         { Range(15, 6), "3" },
     }));
 
-    ASSERT_TRUE(test(Range(4, 3), {
+    ASSERT_TRUE(test(Range(2, 2), false, {
+        { Range(0, 2), "0" },
+        { Range(5, 1), "1" },
+        { Range(10, 3), "2" },
+        { Range(15, 6), "3" },
+    }));
+
+    ASSERT_TRUE(test(Range(30, 5), false, {
+        { Range(0, 2), "0" },
+        { Range(5, 1), "1" },
+        { Range(10, 3), "2" },
+        { Range(15, 6), "3" },
+    }));
+
+    ASSERT_TRUE(test(Range(0, 3), true, {
+        { Range(5, 1), "1" },
+        { Range(10, 3), "2" },
+        { Range(15, 6), "3" },
+    }));
+
+    ASSERT_TRUE(test(Range(4, 3), true, {
         { Range(0, 2), "0", },
         { Range(10, 3), "2" },
         { Range(15, 6), "3" },
     }));
 
-    ASSERT_TRUE(test(Range(0, 30), { }));
+    ASSERT_TRUE(test(Range(0, 30), true, { }));
 
-    ASSERT_TRUE(test(Range(11, 1), {
+    ASSERT_TRUE(test(Range(11, 1), true, {
         { Range(0, 2), "0" },
         { Range(5, 1), "1" },
         { Range(10, 1), "2" },
@@ -248,7 +286,7 @@ TEST(RangeMapTest, RemoveRange) {
         { Range(15, 6), "3" },
     }));
 
-    ASSERT_TRUE(test(Range(17, 3), {
+    ASSERT_TRUE(test(Range(17, 3), true, {
         { Range(0, 2), "0" },
         { Range(5, 1), "1" },
         { Range(10, 3), "2"},
@@ -256,28 +294,28 @@ TEST(RangeMapTest, RemoveRange) {
         { Range(20, 1), "3" },
     }));
 
-    ASSERT_TRUE(test(Range(0, 1), {
+    ASSERT_TRUE(test(Range(0, 1), true, {
         { Range(1, 1), "0" },
         { Range(5, 1), "1" },
         { Range(10, 3), "2" },
         { Range(15, 6), "3" },
     }));
 
-    ASSERT_TRUE(test(Range(1, 1), {
+    ASSERT_TRUE(test(Range(1, 1), true, {
         { Range(0, 1), "0" },
         { Range(5, 1), "1" },
         { Range(10, 3), "2" },
         { Range(15, 6), "3" },
     }));
 
-    ASSERT_TRUE(test(Range(13, 3), {
+    ASSERT_TRUE(test(Range(13, 3), true, {
         { Range(0, 2), "0" },
         { Range(5, 1), "1" },
         { Range(10, 3), "2" },
         { Range(16, 5), "3" }, 
     }));
 
-    ASSERT_TRUE(test(Range(19, 5), { 
+    ASSERT_TRUE(test(Range(19, 5), true, { 
         { Range(0, 2), "0" }, 
         { Range(5, 1), "1" },
         { Range(10, 3), "2" },

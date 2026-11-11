@@ -42,12 +42,12 @@ public:
     using const_iterator = ItemList::const_iterator;
 
 public:
-    void AddRange(const Range& added_range, T value) {
-        ReplaceRange(added_range, &value);
+    bool AddRange(const Range& added_range, T value) {
+        return ReplaceRange(added_range, &value);
     }
 
-    void RemoveRange(const Range& removed_range) {
-        ReplaceRange(removed_range, nullptr);
+    bool RemoveRange(const Range& removed_range) {
+        return ReplaceRange(removed_range, nullptr);
     }
 
     void InsertSpan(const Range& span_range) {
@@ -252,12 +252,13 @@ public:
     }
 
 private:
-    void ReplaceRange(const Range& replaced_range, T* const new_value) {
+    bool ReplaceRange(const Range& replaced_range, T* const new_value) {
 
         if (replaced_range.length == 0) {
-            return;
+            return false;
         }
 
+        bool has_changed{};
         bool has_merged_new_value{};
 
         //Loop over all items, to find insert position and modify existent ranges.
@@ -282,6 +283,7 @@ private:
                         current_range.EndIndex());
 
                     has_merged_new_value = true;
+                    has_changed = true;
                 }
                 break;
             }
@@ -289,7 +291,18 @@ private:
             //The new range contains(or equals to) the current range, the current range should be
             //removed.
             if (replaced_range.Contains(current_range)) {
+
+                //The new range is equal to the current range and has the same value.
+                if (new_value && 
+                    replaced_range == current_range && 
+                    Equal{}(*new_value, iterator->Value())) {
+
+                    has_merged_new_value = true;
+                    break;
+                }
+
                 iterator = items_.erase(iterator);
+                has_changed = true;
                 continue;
             }
 
@@ -315,6 +328,7 @@ private:
 
                 ++iterator;
                 iterator = items_.insert(iterator, std::move(latter_item));
+                has_changed = true;
                 break;
             }
 
@@ -337,7 +351,10 @@ private:
                     modified_range.length = current_range.EndIndex() - replaced_range.EndIndex();
                 }
 
-                iterator->range_ = modified_range;
+                if (modified_range != current_range) {
+                    iterator->range_ = modified_range;
+                    has_changed = true;
+                }
                 break;
             }
 
@@ -352,13 +369,24 @@ private:
                 //If the values are equal, merge two ranges.
                 if (new_value && Equal{}(*new_value, iterator->Value())) {
                     modified_range.length = replaced_range.EndIndex() - current_range.index;
+                    has_merged_new_value = true;
                 }
                 //Otherwise narrow the current range.
                 else {
                     modified_range.length = replaced_range.index - current_range.index;
                 }
 
-                iterator->range_ = modified_range;
+                if (modified_range != current_range) {
+                    iterator->range_ = modified_range;
+                    has_changed = true;
+                }
+
+                //A same-value range that ends at the current range is already covered.
+                if (has_merged_new_value &&
+                    modified_range.EndIndex() == current_range.EndIndex()) {
+                    break;
+                }
+
                 ++iterator;
                 continue;
             }
@@ -370,6 +398,7 @@ private:
 
                     iterator->range_.length += replaced_range.length;
                     has_merged_new_value = true;
+                    has_changed = true;
 
                     //Merge other trailing continous ranges.
                     auto remove_begin = iterator + 1;
@@ -400,7 +429,9 @@ private:
         //Insert the new item to the position found.
         if (new_value && !has_merged_new_value) {
             items_.insert(iterator, Item{ replaced_range, std::move(*new_value) });
+            has_changed = true;
         }
+        return has_changed;
     }
 
 private:

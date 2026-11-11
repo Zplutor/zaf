@@ -1,9 +1,21 @@
 #include <zaf/internal/list/list_selection_store.h>
 
-namespace zaf {
-namespace internal {
+namespace zaf::internal {
 
-void ListSelectionStore::ReplaceSelection(std::size_t index, std::size_t count) {
+bool ListSelectionStore::ReplaceSelection(std::size_t index, std::size_t count) {
+
+    auto range_count = range_set_.Count();
+    if (range_count == 0) {
+        if (count == 0) {
+            return false;
+        }
+    }
+    else if (range_count == 1) {
+        const auto& range = *range_set_.begin();
+        if (range.index == index && range.length == count) {
+            return false;
+        }
+    }
 
     range_set_.Clear();
     range_set_.AddRange({ index, count });
@@ -12,43 +24,45 @@ void ListSelectionStore::ReplaceSelection(std::size_t index, std::size_t count) 
         .reason = ListSelectionChangeReason::ReplaceSelection,
         .changed_range = Range{ index, count },
     });
+    return true;
 }
 
 
-bool ListSelectionStore::RevertSelection(std::size_t index) {
+void ListSelectionStore::RevertSelection(std::size_t index) {
 
     if (range_set_.ContainsIndex(index)) {
         RemoveSelection(index, 1);
-        return false;
     }
     else {
         AddSelection(index, 1);
-        return true;
     }
 }
 
 
-void ListSelectionStore::AddSelection(std::size_t index, std::size_t count) {
+bool ListSelectionStore::AddSelection(std::size_t index, std::size_t count) {
 
-    range_set_.AddRange({ index, count });
-
-    changed_event_.AsObserver().OnNext({
-        .reason = ListSelectionChangeReason::AddSelection,
-        .changed_range = Range{ index, count },
-    });
+    bool has_changed = range_set_.AddRange({ index, count });
+    if (has_changed) {
+        changed_event_.AsObserver().OnNext({
+            .reason = ListSelectionChangeReason::AddSelection,
+            .changed_range = Range{ index, count },
+        });
+    }
+    return has_changed;
 }
 
 
-void ListSelectionStore::RemoveSelection(std::size_t index, std::size_t count) {
+bool ListSelectionStore::RemoveSelection(std::size_t index, std::size_t count) {
 
-    range_set_.RemoveRange({ index, count });
-
-    changed_event_.AsObserver().OnNext({
-        .reason = ListSelectionChangeReason::RemoveSelection,
-        .changed_range = Range{ index, count },
-    });
+    bool has_changed = range_set_.RemoveRange({ index, count });
+    if (has_changed) {
+        changed_event_.AsObserver().OnNext({
+            .reason = ListSelectionChangeReason::RemoveSelection,
+            .changed_range = Range{ index, count },
+        });
+    }
+    return has_changed;
 }
-
 
 bool ListSelectionStore::AdjustSelectionByAddingIndexes(
     std::size_t add_index, 
@@ -126,5 +140,4 @@ std::vector<std::size_t> ListSelectionStore::GetAllSelectedIndexes() const {
     return indexes;
 }
 
-}
 }

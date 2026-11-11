@@ -1,13 +1,13 @@
 #pragma once
 
-#include <zaf/base/none.h>
+#include <variant>
 #include <zaf/base/range_map.h>
 
 namespace zaf::internal {
 
 class RangeSet {
 private:
-    using UnderlyingStore = RangeMap<None>;
+    using UnderlyingStore = RangeMap<std::monostate>;
 
 public:
     using value_type = Range;
@@ -53,12 +53,12 @@ public:
     using const_iterator = iterator;
 
 public:
-    void AddRange(const Range& range) {
-        store_.AddRange(range, {});
+    bool AddRange(const Range& range) {
+        return store_.AddRange(range, {});
     }
 
-    void RemoveRange(const Range& range) {
-        store_.RemoveRange(range);
+    bool RemoveRange(const Range& range) {
+        return store_.RemoveRange(range);
     }
 
     void InsertSpan(const Range& span_range) {
