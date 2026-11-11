@@ -72,12 +72,13 @@ bool ListSelectionStore::AdjustSelectionByAddingIndexes(
         return false;
     }
 
-    range_set_.InsertSpan(Range{ add_index, add_count });
-
-    changed_event_.AsObserver().OnNext({
-        .reason = ListSelectionChangeReason::ItemChange,
-    });
-    return true;
+    bool has_changed = range_set_.InsertSpan(Range{ add_index, add_count });
+    if (has_changed) {
+        changed_event_.AsObserver().OnNext({
+            .reason = ListSelectionChangeReason::ItemChange,
+        });
+    }
+    return has_changed;
 }
 
 
@@ -89,11 +90,13 @@ bool ListSelectionStore::AdjustSelectionByRemovingIndexes(
         return false;
     }
 
-    range_set_.EraseSpan(Range{ remove_index, remove_count });
-    changed_event_.AsObserver().OnNext({
-        .reason = ListSelectionChangeReason::ItemChange,
-    });
-    return true;
+    bool has_changed = range_set_.EraseSpan(Range{ remove_index, remove_count });
+    if (has_changed) {
+        changed_event_.AsObserver().OnNext({
+            .reason = ListSelectionChangeReason::ItemChange,
+        });
+    }
+    return has_changed;
 }
 
 
@@ -104,18 +107,21 @@ bool ListSelectionStore::AdjustSelectionByMovingIndex(
     if (old_index == new_index) {
         return false;
     }
-    range_set_.EraseSpan(Range{ old_index, 1 });
+
+    bool has_changed = range_set_.EraseSpan(Range{ old_index, 1 });
     if (range_set_.IsEmpty()) {
-        range_set_.AddRange(Range{ new_index, 1 });
+        has_changed |= range_set_.AddRange(Range{ new_index, 1 });
     }
     else {
-        range_set_.InsertSpan(Range{ new_index, 1 });
+        has_changed |= range_set_.InsertSpan(Range{ new_index, 1 });
     }
 
-    changed_event_.AsObserver().OnNext({
-        .reason = ListSelectionChangeReason::ItemChange,
-    });
-    return true;
+    if (has_changed) {
+        changed_event_.AsObserver().OnNext({
+            .reason = ListSelectionChangeReason::ItemChange,
+        });
+    }
+    return has_changed;
 }
 
 

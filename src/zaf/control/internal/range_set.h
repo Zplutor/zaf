@@ -61,12 +61,12 @@ public:
         return store_.RemoveRange(range);
     }
 
-    void InsertSpan(const Range& span_range) {
-        store_.InsertSpan(span_range);
+    bool InsertSpan(const Range& span_range) {
+        return store_.InsertSpan(span_range);
     }
 
-    void EraseSpan(const Range& span_range) {
-        store_.EraseSpan(span_range);
+    bool EraseSpan(const Range& span_range) {
+        return store_.EraseSpan(span_range);
     }
 
     void Clear() {

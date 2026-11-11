@@ -50,19 +50,23 @@ public:
         return ReplaceRange(removed_range, nullptr);
     }
 
-    void InsertSpan(const Range& span_range) {
+    bool InsertSpan(const Range& span_range) {
         if (!span_range.IsEmpty()) {
-            ReplaceSpan(Range{ span_range.index, 0 }, span_range.length);
+            return ReplaceSpan(Range{ span_range.index, 0 }, span_range.length);
         }
+        return false;
     }
 
-    void EraseSpan(const Range& span_range) {
+    bool EraseSpan(const Range& span_range) {
         if (!span_range.IsEmpty()) {
-            ReplaceSpan(span_range, 0);
+            return ReplaceSpan(span_range, 0);
         }
+        return false;
     }
 
-    void ReplaceSpan(const Range& span_range, std::size_t new_length) {
+    bool ReplaceSpan(const Range& span_range, std::size_t new_length) {
+
+        bool has_changed{};
 
         //Loop over all items to modify ranges.
         auto iterator = items_.begin();
@@ -77,10 +81,13 @@ public:
                 new_index -= span_range.length;
                 new_index += new_length;
 
-                *iterator = Item{
-                    Range{ new_index, current_range.length },
-                    std::move(iterator->Value())
-                };
+                if (new_index != current_range.index) {
+                    *iterator = Item{
+                        Range{ new_index, current_range.length },
+                        std::move(iterator->Value())
+                    };
+                    has_changed = true;
+                }
 
                 ++iterator;
                 continue;
@@ -91,6 +98,7 @@ public:
             if (span_range.Contains(current_range)) {
 
                 iterator = items_.erase(iterator);
+                has_changed = true;
                 continue;
             }
 
@@ -101,10 +109,14 @@ public:
                 //The new length is zero, decline the length of the current range.
                 if (new_length == 0) {
 
-                    *iterator = Item{
-                        Range{ current_range.index, current_range.length - span_range.length },
-                        std::move(iterator->Value())
-                    };
+                    auto new_item_length = current_range.length - span_range.length;
+                    if (new_item_length != current_range.length) {
+                        *iterator = Item{
+                            Range{ current_range.index, new_item_length },
+                            std::move(iterator->Value())
+                        };
+                        has_changed = true;
+                    }
 
                     ++iterator;
                 }
@@ -129,6 +141,7 @@ public:
                     ++iterator;
                     iterator = items_.insert(iterator, std::move(tail_item));
                     ++iterator;
+                    has_changed = true;
                 }
                 continue;
             }
@@ -138,13 +151,17 @@ public:
             if ((span_range.EndIndex() > current_range.index) &&
                 (span_range.EndIndex() < current_range.EndIndex())) {
 
-                *iterator = Item{
-                    Range{
-                        span_range.index + new_length,
-                        current_range.EndIndex() - span_range.EndIndex()
-                    },
-                    std::move(iterator->Value())
+                Range new_range{
+                    span_range.index + new_length,
+                    current_range.EndIndex() - span_range.EndIndex()
                 };
+                if (new_range != current_range) {
+                    *iterator = Item{
+                        new_range,
+                        std::move(iterator->Value())
+                    };
+                    has_changed = true;
+                }
 
                 ++iterator;
                 continue;
@@ -155,13 +172,17 @@ public:
             if ((span_range.index > current_range.index) &&
                 (span_range.index < current_range.EndIndex())) {
 
-                *iterator = Item{
-                    Range{
-                        current_range.index,
-                        current_range.length - (current_range.EndIndex() - span_range.index)
-                    },
-                    std::move(iterator->Value())
+                Range new_range{
+                    current_range.index,
+                    current_range.length - (current_range.EndIndex() - span_range.index)
                 };
+                if (new_range != current_range) {
+                    *iterator = Item{
+                        new_range,
+                        std::move(iterator->Value())
+                    };
+                    has_changed = true;
+                }
 
                 ++iterator;
                 continue;
@@ -169,6 +190,8 @@ public:
 
             ++iterator;
         }
+
+        return has_changed;
     }
     
     void Clear() noexcept {

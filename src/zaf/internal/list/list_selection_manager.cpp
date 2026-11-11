@@ -118,21 +118,15 @@ void ListSelectionManager::SelectItemAtIndex(std::size_t index) {
     ZAF_EXPECT(index < data_source->GetDataCount());
 
     auto& selection_store = Parts().SelectionStore();
-    if (selection_store.IsIndexSelected(index)) {
-        return;
-    }
 
     switch (selection_mode_) {
-
     case ListSelectionMode::Single:
         selection_store.ReplaceSelection(index, 1);
         break;
-
     case ListSelectionMode::SimpleMultiple:
     case ListSelectionMode::ExtendedMultiple:
         selection_store.AddSelection(index, 1);
         break;
-
     default:
         break;
     }
@@ -149,10 +143,6 @@ void ListSelectionManager::UnselectItemAtIndex(std::size_t index) {
     ZAF_EXPECT(index < data_source->GetDataCount());
 
     auto& selection_store = Parts().SelectionStore();
-    if (!selection_store.IsIndexSelected(index)) {
-        return;
-    }
-
     selection_store.RemoveSelection(index, 1);
 }
 

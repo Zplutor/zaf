@@ -218,28 +218,30 @@ TEST_F(ListSelectionStoreTest, AdjustSelectionByAddingIndexes) {
     auto test = [this](
         std::size_t add_index,
         std::size_t add_count,
+        bool expected_is_changed,
         std::size_t check_index,
         std::size_t check_count, 
         const std::set<std::size_t>& expected_selected_indexes) {
 
-        selection_store_->AdjustSelectionByAddingIndexes(add_index, add_count);
+        bool is_changed = selection_store_->AdjustSelectionByAddingIndexes(add_index, add_count);
+        ASSERT_EQ(is_changed, expected_is_changed);
         CheckSelection(check_index, check_count, expected_selected_indexes);
     };
 
     //Add indexes to empty selection.
     selection_store_->ReplaceSelection(0, 0);
-    test(0, 0, 0, 10, { });
-    test(0, 1, 0, 10, { });
-    test(3, 0, 0, 10, { });
-    test(3, 2, 0, 10, { });
+    test(0, 0, false, 0, 10, { });
+    test(0, 1, false, 0, 10, { });
+    test(3, 0, false, 0, 10, { });
+    test(3, 2, false, 0, 10, { });
 
     //Add indexes before selection.
     selection_store_->RevertSelection(0);
     selection_store_->RevertSelection(5);
-    test(0, 0, 0, 10, { 0, 5 });
-    test(0, 1, 0, 10, { 1, 6 });
-    test(1, 1, 0, 10, { 2, 7 });
-    test(0, 4, 0, 20, { 6, 11 });
+    test(0, 0, false, 0, 10, { 0, 5 });
+    test(0, 1, true, 0, 10, { 1, 6 });
+    test(1, 1, true, 0, 10, { 2, 7 });
+    test(0, 4, true, 0, 20, { 6, 11 });
 
     //Add indexes to the middle of selection.
     selection_store_->ReplaceSelection(0, 0);
@@ -247,19 +249,19 @@ TEST_F(ListSelectionStoreTest, AdjustSelectionByAddingIndexes) {
     selection_store_->RevertSelection(5);
     selection_store_->RevertSelection(6);
     selection_store_->RevertSelection(10);
-    test(6, 2, 0, 20, { 0, 5, 8, 12 });
+    test(6, 2, true, 0, 20, { 0, 5, 8, 12 });
 
     //Insert indexes into selection.
     selection_store_->ReplaceSelection(0, 10);
-    test(3, 2, 0, 20, { 0, 1, 2, 5, 6, 7, 8, 9, 10, 11 });
+    test(3, 2, true, 0, 20, { 0, 1, 2, 5, 6, 7, 8, 9, 10, 11 });
     ASSERT_EQ(0, selection_store_->GetFirstSelectedIndex());
 
     //Add indexes after selection.
     selection_store_->ReplaceSelection(0, 0);
     selection_store_->RevertSelection(0);
     selection_store_->RevertSelection(5);
-    test(1, 1, 0, 10, { 0, 6 });
-    test(1, 3, 0, 10, { 0, 9 });
+    test(1, 1, true, 0, 10, { 0, 6 });
+    test(1, 3, true, 0, 10, { 0, 9 });
 }
 
 
@@ -268,44 +270,48 @@ TEST_F(ListSelectionStoreTest, AdjustSelectionByRemovingIndexes) {
     auto test = [this](
         std::size_t remove_index,
         std::size_t remove_count,
+        bool expected_is_changed,
         std::size_t check_index,
         std::size_t check_count,
         const std::set<std::size_t>& expected_selected_indexes) {
 
-        selection_store_->AdjustSelectionByRemovingIndexes(remove_index, remove_count);
+        bool is_changed = selection_store_->AdjustSelectionByRemovingIndexes(
+            remove_index,
+            remove_count);
+        ASSERT_EQ(is_changed, expected_is_changed);
         CheckSelection(check_index, check_count, expected_selected_indexes);
     };
 
     //Remove from empty selection.
     selection_store_->ReplaceSelection(0, 0);
-    test(0, 0, 0, 10, { });
-    test(0, 3, 0, 10, { });
+    test(0, 0, false, 0, 10, { });
+    test(0, 3, false, 0, 10, { });
 
     //Remove indexes before selection.
     selection_store_->ReplaceSelection(0, 0);
     selection_store_->RevertSelection(1);
     selection_store_->RevertSelection(4);
-    test(0, 1, 0, 10, { 0, 3 });
-    test(1, 2, 0, 10, { 0, 1 });
+    test(0, 1, true, 0, 10, { 0, 3 });
+    test(1, 2, true, 0, 10, { 0, 1 });
 
     //Remove indexes at the middle of selection.
     selection_store_->ReplaceSelection(5, 5);
-    test(0, 11, 0, 20, { });
+    test(0, 11, true, 0, 20, { });
     selection_store_->ReplaceSelection(5, 5);
-    test(0, 7, 0, 20, { 0, 1, 2 });
+    test(0, 7, true, 0, 20, { 0, 1, 2 });
     selection_store_->ReplaceSelection(5, 5);
-    test(5, 2, 0, 20, { 5, 6, 7 });
+    test(5, 2, true, 0, 20, { 5, 6, 7 });
     selection_store_->ReplaceSelection(5, 5);
-    test(6, 3, 0, 20, { 5, 6 });
+    test(6, 3, true, 0, 20, { 5, 6 });
     selection_store_->ReplaceSelection(5, 5);
-    test(7, 3, 0, 20, { 5, 6 });
+    test(7, 3, true, 0, 20, { 5, 6 });
     selection_store_->ReplaceSelection(5, 5);
-    test(7, 10, 0, 20, { 5, 6 });
+    test(7, 10, true, 0, 20, { 5, 6 });
 
     //Remove indexes after selection.
     selection_store_->ReplaceSelection(0, 0);
     selection_store_->RevertSelection(0);
     selection_store_->RevertSelection(5);
-    test(6, 1, 0, 10, { 0, 5 });
-    test(3, 2, 0, 10, { 0, 3 });
+    test(6, 1, false, 0, 10, { 0, 5 });
+    test(3, 2, true, 0, 10, { 0, 3 });
 }
