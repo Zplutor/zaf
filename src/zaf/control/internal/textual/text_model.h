@@ -3,7 +3,6 @@
 #include <string_view>
 #include <zaf/base/flags_enum.h>
 #include <zaf/base/non_copyable.h>
-#include <zaf/base/none.h>
 #include <zaf/base/range.h>
 #include <zaf/control/style/color_picker.h>
 #include <zaf/control/textual/line_break.h>

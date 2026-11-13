@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
+#include <variant>
 #include <zaf/base/as.h>
 #include <zaf/base/error/precondition_error.h>
-#include <zaf/base/none.h>
 #include <zaf/control/list_control.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
@@ -44,7 +44,7 @@ TEST(ListControlTest, SelfReference) {
 
     class TestListControl : public ListControl, public ListDataSource, public ListControlDelegate {
     public:
-        std::shared_ptr<None> life = std::make_shared<None>();
+        std::shared_ptr<std::monostate> life = std::make_shared<std::monostate>();
 
     protected:
         void Initialize() override {
@@ -58,7 +58,7 @@ TEST(ListControlTest, SelfReference) {
     ASSERT_EQ(list->DataSource(), list);
     ASSERT_EQ(list->Delegate(), list);
 
-    std::weak_ptr<None> life = list->life;
+    std::weak_ptr<std::monostate> life = list->life;
     list.reset();
     ASSERT_TRUE(life.expired());
 }

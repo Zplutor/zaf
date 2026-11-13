@@ -283,7 +283,7 @@ void ListControl::OnCoreItemContainerChanged(
 }
 
 
-void ListControl::OnCoreSelectionChanged(None) {
+void ListControl::OnCoreSelectionChanged(std::monostate) {
     ListControlSelectionChangedInfo event_info{ zaf::As<ListControl>(shared_from_this()) };
     OnSelectionChanged(event_info);
 }

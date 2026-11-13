@@ -1,6 +1,7 @@
 #pragma once
 
 #include <deque>
+#include <variant>
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/list_control_delegate.h>
 #include <zaf/control/list_data_source.h>
@@ -84,7 +85,7 @@ public:
         }
     }
 
-    rx::Observable<None> SelectionChangedEvent() const;
+    rx::Observable<std::monostate> SelectionChangedEvent() const;
     rx::Observable<ListCoreItemDoubleClickInfo> ItemDoubleClickEvent() const;
 
 private:
@@ -146,7 +147,7 @@ private:
 
     bool auto_adjust_scroll_bar_small_change_{ true };
 
-    rx::Subject<None> selection_changed_event_;
+    rx::Subject<std::monostate> selection_changed_event_;
     rx::Subject<ListCoreItemDoubleClickInfo> item_double_click_event_;
 };
 

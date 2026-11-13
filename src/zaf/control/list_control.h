@@ -1,8 +1,8 @@
 #pragma once
 
 #include <deque>
+#include <variant>
 #include <zaf/base/define.h>
-#include <zaf/base/none.h>
 #include <zaf/control/event/list_control_event_infos.h>
 #include <zaf/control/list_item.h>
 #include <zaf/control/scroll_box.h>
@@ -241,7 +241,7 @@ private:
     void OnCoreDataSourceChanged(const internal::ListCoreDataSourceChangedInfo& event_info);
     void OnCoreDelegateChanged(const internal::ListCoreDelegateChangedInfo& event_info);
     void OnCoreItemContainerChanged(const internal::ListCoreItemContainerChangedInfo& event_info);
-    void OnCoreSelectionChanged(None);
+    void OnCoreSelectionChanged(std::monostate);
     void OnCoreItemDoubleClick(const internal::ListCoreItemDoubleClickInfo& event_info);
     std::shared_ptr<PopupMenu> OnCoreContextMenu(
         std::size_t item_index,

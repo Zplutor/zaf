@@ -51,10 +51,10 @@ MulticastObserver::~MulticastObserver() {
 
 std::shared_ptr<Disposable> MulticastObserver::AddObserver(ObserverShim&& observer) {
 
-    std::variant<std::monostate, std::exception_ptr, None> termination;
+    std::optional<std::variant<std::monostate, std::exception_ptr>> termination;
     {
         std::lock_guard<std::mutex> lock(lock_);
-        if (std::holds_alternative<std::monostate>(termination_)) {
+        if (!termination_) {
 
             auto producer = std::make_shared<IndividualProducer>(
                 std::move(observer), 
@@ -67,11 +67,11 @@ std::shared_ptr<Disposable> MulticastObserver::AddObserver(ObserverShim&& observ
     }
 
     // The multicast observer is terminated, notify the observer immediately.
-    auto exception = std::get_if<std::exception_ptr>(&termination);
+    auto exception = std::get_if<std::exception_ptr>(&*termination);
     if (exception) {
         observer.OnError(*exception);
     }
-    else if (std::holds_alternative<None>(termination)) {
+    else if (std::holds_alternative<std::monostate>(*termination)) {
         observer.OnCompleted();
     }
     return Disposable::Empty();
@@ -118,7 +118,7 @@ void MulticastObserver::OnCompleted() {
     {
         std::lock_guard<std::mutex> lock(lock_);
         copied_producers = producers_;
-        termination_ = None{};
+        termination_ = std::monostate{};
     }
     for (const auto& each_producer : copied_producers) {
         if (auto producer = each_producer.lock()) {

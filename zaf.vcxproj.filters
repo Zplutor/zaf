@@ -1966,9 +1966,6 @@
     <ClInclude Include="src\zaf\base\non_copyable.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\none.h">
-      <Filter>zaf\base</Filter>
-    </ClInclude>
     <ClInclude Include="src\zaf\object\internal\instance_creator.h">
       <Filter>zaf\object\internal</Filter>
     </ClInclude>

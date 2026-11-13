@@ -179,7 +179,7 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
         is_selecting_by_mouse_ = false;
         if (exit_select_by_mouse_subject_) {
             auto observer = exit_select_by_mouse_subject_->AsObserver();
-            observer.OnNext(None{});
+            observer.OnNext(std::monostate{});
             observer.OnCompleted();
             exit_select_by_mouse_subject_.reset();
         }
@@ -189,10 +189,10 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
 }
 
 
-rx::Observable<None> ListInputHandler::WhenNotSelectingByMouse() const {
+rx::Observable<std::monostate> ListInputHandler::WhenNotSelectingByMouse() const {
 
     if (!is_selecting_by_mouse_) {
-        return rx::Observable<None>::Just({});
+        return rx::Observable<std::monostate>::Just({});
     }
 
     if (!exit_select_by_mouse_subject_) {

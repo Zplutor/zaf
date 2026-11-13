@@ -778,7 +778,7 @@ void TreeControlImplementation::OnListSelectionStoreChanged(
 }
 
 
-void TreeControlImplementation::OnListSelectionChange(None) {
+void TreeControlImplementation::OnListSelectionChange(std::monostate) {
     NotifySelectionChange();
 }
 

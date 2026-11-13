@@ -1,7 +1,7 @@
 #pragma once
 
+#include <optional>
 #include <variant>
-#include <zaf/base/none.h>
 #include <zaf/rx/internal/observer_core.h>
 #include <zaf/rx/internal/producer.h>
 
@@ -31,8 +31,9 @@ private:
 private:
     mutable std::mutex lock_;
     std::vector<std::weak_ptr<IndividualProducer>> producers_;
-    //std::exception_ptr for error termination; None for normal termination.
-    std::variant<std::monostate, std::exception_ptr, None> termination_;
+    // Unset if not terminated; std::monostate for normal termination;
+    // std::exception_ptr for error termination.
+    std::optional<std::variant<std::monostate, std::exception_ptr>> termination_;
 };
 
 }

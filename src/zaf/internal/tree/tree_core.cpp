@@ -781,7 +781,7 @@ void TreeCore::OnListSelectionStoreChanged(
 }
 
 
-void TreeCore::OnListSelectionChange(None) {
+void TreeCore::OnListSelectionChange(std::monostate) {
     NotifySelectionChange();
 }
 

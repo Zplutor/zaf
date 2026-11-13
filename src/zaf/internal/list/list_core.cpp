@@ -502,7 +502,7 @@ void ListCore::OnSelectionStoreChanged(const ListSelectionStoreChangedInfo& even
         event_info.changed_range);
 
     exit_selecting_by_mouse_sub_ = 
-        Parts().InputHandler().WhenNotSelectingByMouse().Subscribe([this](None) {
+        Parts().InputHandler().WhenNotSelectingByMouse().Subscribe([this](std::monostate) {
     
         selection_changed_event_.AsObserver().OnNext({});
     });
@@ -556,7 +556,7 @@ std::optional<std::size_t> ListCore::FindItemIndexAtPosition(
 }
 
 
-rx::Observable<None> ListCore::SelectionChangedEvent() const {
+rx::Observable<std::monostate> ListCore::SelectionChangedEvent() const {
     return selection_changed_event_.AsObservable();
 }
 

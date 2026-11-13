@@ -1,5 +1,6 @@
 #pragma once
 
+#include <variant>
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/internal/tree_control/tree_data_manager.h>
 #include <zaf/control/internal/tree_control/tree_index_mapping.h>
@@ -134,7 +135,7 @@ private:
     void CheckIfItemHasChildren(const IndexPath& index_path, std::size_t list_index);
 
     void OnListSelectionStoreChanged(const ListSelectionStoreChangedInfo& event_info);
-    void OnListSelectionChange(None);
+    void OnListSelectionChange(std::monostate);
 
     void NotifySelectionChange();
 

@@ -7,9 +7,9 @@
 
 #include <Windows.h>
 #include <optional>
+#include <variant>
 #include <zaf/base/event/event.h>
 #include <zaf/base/non_copyable.h>
-#include <zaf/base/none.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/rect.h>
 #include <zaf/object/object.h>
@@ -948,7 +948,7 @@ public:
         Otherwise, it emits when the window exits both the sizing and moving states. Note that if 
         the window is destroyed before exiting these states, the single won't emit at all.
     */
-    rx::Single<None> WhenNotSizingOrMoving() const;
+    rx::Single<std::monostate> WhenNotSizingOrMoving() const;
 
     /**
     Transforms a position from the window's content area to its screen coordinates.

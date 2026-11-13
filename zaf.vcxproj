@@ -482,7 +482,6 @@
     <ClInclude Include="src\zaf\base\global_mem.h" />
     <ClInclude Include="src\zaf\base\hash.h" />
     <ClInclude Include="src\zaf\base\non_copyable.h" />
-    <ClInclude Include="src\zaf\base\none.h" />
     <ClInclude Include="src\zaf\base\range.h" />
     <ClInclude Include="src\zaf\base\range_map.h" />
     <ClInclude Include="src\zaf\base\registry\registry_value.h" />

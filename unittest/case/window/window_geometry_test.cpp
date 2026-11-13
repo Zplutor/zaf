@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <variant>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/pixel_snapping.h>
 #include <zaf/window/invalid_handle_state_error.h>
@@ -1392,7 +1393,7 @@ TEST_F(WindowTest, WhenNotSizingOrMoving_InVariantStates) {
 
     // NotCreated
     bool not_created_called{};
-    dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+    dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](std::monostate) {
         not_created_called = true;
     });
     ASSERT_TRUE(not_created_called);
@@ -1400,7 +1401,7 @@ TEST_F(WindowTest, WhenNotSizingOrMoving_InVariantStates) {
     // Creating
     bool creating_called{};
     dispose_bag += window->HandleCreatingEvent().Subscribe([&](const zaf::HandleCreatingInfo&) {
-        dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+        dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](std::monostate) {
             creating_called = true;
         });
     });
@@ -1409,7 +1410,7 @@ TEST_F(WindowTest, WhenNotSizingOrMoving_InVariantStates) {
 
     // Created
     bool created_called{};
-    dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+    dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](std::monostate) {
         created_called = true;
     });
     ASSERT_TRUE(created_called);
@@ -1417,7 +1418,7 @@ TEST_F(WindowTest, WhenNotSizingOrMoving_InVariantStates) {
     // Destroying
     bool destroying_called{};
     dispose_bag += window->DestroyingEvent().Subscribe([&](const zaf::DestroyingInfo&) {
-        dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+        dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](std::monostate) {
             destroying_called = true;
         });
     });
@@ -1426,7 +1427,7 @@ TEST_F(WindowTest, WhenNotSizingOrMoving_InVariantStates) {
 
     // Destroyed
     bool destroyed_called{};
-    dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+    dispose_bag += window->WhenNotSizingOrMoving().Subscribe([&](std::monostate) {
         destroyed_called = true;
     });
     ASSERT_TRUE(destroyed_called);
@@ -1441,7 +1442,7 @@ TEST_F(WindowTest, WhenNotSizingOrMoving_BeingSizedOrMoved) {
     window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
 
     int call_count{};
-    auto sub = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+    auto sub = window->WhenNotSizingOrMoving().Subscribe([&](std::monostate) {
         call_count++;
     });
     ASSERT_EQ(call_count, 0);
@@ -1465,7 +1466,7 @@ TEST_F(WindowTest, WhenNotSizingOrMoving_DestroyWhileBeingSizedOrMoved) {
     window->Messager().Send(WM_ENTERSIZEMOVE, 0, 0);
 
     int call_count{};
-    auto subscription = window->WhenNotSizingOrMoving().Subscribe([&](zaf::None) {
+    auto subscription = window->WhenNotSizingOrMoving().Subscribe([&](std::monostate) {
         call_count++;
     });
     window->Destroy();

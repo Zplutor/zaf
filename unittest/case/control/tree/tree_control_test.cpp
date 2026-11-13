@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/none.h>
+#include <variant>
 #include <zaf/control/tree_control.h>
 #include <zaf/control/tree_control_delegate.h>
 #include <zaf/control/tree_data_source.h>
@@ -42,7 +42,7 @@ TEST(TreeControlTest, SelfReference) {
 
     class TestTreeControl : public TreeControl, public TreeDataSource, public TreeControlDelegate {
     public:
-        std::shared_ptr<None> life = std::make_shared<None>();
+        std::shared_ptr<std::monostate> life = std::make_shared<std::monostate>();
 
     protected:
         void Initialize() override {
@@ -56,7 +56,7 @@ TEST(TreeControlTest, SelfReference) {
     ASSERT_EQ(list->DataSource(), list);
     ASSERT_EQ(list->Delegate(), list);
 
-    std::weak_ptr<None> life = list->life;
+    std::weak_ptr<std::monostate> life = list->life;
     list.reset();
     ASSERT_TRUE(life.expired());
 }

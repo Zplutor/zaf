@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/base/none.h>
+#include <variant>
 #include <zaf/base/non_copyable.h>
 #include <zaf/graphic/frame.h>
 #include <zaf/graphic/rect.h>
@@ -73,7 +73,7 @@ public:
     void HandleWMDPICHANGED(const Message& message);
 
     bool IsSizingOrMoving() const noexcept;
-    rx::Single<None> WhenNotSizingOrMoving() const;
+    rx::Single<std::monostate> WhenNotSizingOrMoving() const;
     void HandleWMENTERSIZEMOVE() noexcept;
     void HandleWMEXITSIZEMOVE();
 

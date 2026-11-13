@@ -410,7 +410,7 @@ bool Window::IsSizingOrMoving() const noexcept {
 }
 
 
-rx::Single<None> Window::WhenNotSizingOrMoving() const {
+rx::Single<std::monostate> Window::WhenNotSizingOrMoving() const {
     return geometry_facet_->WhenNotSizingOrMoving();
 }
 

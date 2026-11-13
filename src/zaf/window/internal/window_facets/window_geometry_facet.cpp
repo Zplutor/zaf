@@ -685,7 +685,7 @@ bool WindowGeometryFacet::IsSizingOrMoving() const noexcept {
 }
 
 
-rx::Single<None> WindowGeometryFacet::WhenNotSizingOrMoving() const {
+rx::Single<std::monostate> WindowGeometryFacet::WhenNotSizingOrMoving() const {
 
     auto handle_state = window_.HandleState();
     if (handle_state == WindowHandleState::Creating ||
@@ -694,7 +694,7 @@ rx::Single<None> WindowGeometryFacet::WhenNotSizingOrMoving() const {
 
         auto& state_data = window_.lifecycle_facet_->HandleStateData();
         if (!state_data.is_sizing_or_moving) {
-            return rx::Single<None>::Just({});
+            return rx::Single<std::monostate>::Just({});
         }
 
         if (!state_data.exit_sizing_or_moving_subject) {
@@ -704,7 +704,7 @@ rx::Single<None> WindowGeometryFacet::WhenNotSizingOrMoving() const {
         return state_data.exit_sizing_or_moving_subject->AsSingle();
     }
 
-    return rx::Single<None>::Just({});
+    return rx::Single<std::monostate>::Just({});
 }
 
 
