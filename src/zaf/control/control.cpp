@@ -7,6 +7,7 @@
 #include <zaf/base/error/precondition_error.h>
 #include <zaf/control/internal/cached_painting.h>
 #include <zaf/control/internal/control_facets/control_geometry_facet.h>
+#include <zaf/control/internal/control_facets/control_hierarchy_facet.h>
 #include <zaf/control/internal/control_updating.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
 #include <zaf/control/layout/anchor_layouter.h>
@@ -47,6 +48,7 @@ constexpr bool DefaultIsVisible = true;
 
 Control::Control() : 
     geometry_facet_(std::make_unique<internal::ControlGeometryFacet>(*this)),
+    hierarchy_facet_(std::make_unique<internal::ControlHierarchyFacet>(*this)),
     is_mouse_over_(false), 
     is_capturing_mouse_(false),
     is_focused_(false),
@@ -345,6 +347,135 @@ rx::Observable<SizeChangedInfo> Control::SizeChangedEvent() const {
 #pragma endregion
 
 
+#pragma region Hierarchy Management
+
+std::shared_ptr<Window> Control::Window() const noexcept {
+    return hierarchy_facet_->Window();
+}
+
+
+void Control::SetWindow(const std::shared_ptr<zaf::Window>& window) noexcept {
+    hierarchy_facet_->SetDirectWindow(window);
+}
+
+
+rx::Observable<WindowChangedInfo> Control::WindowChangedEvent() const {
+    return window_changed_event_.GetObservable();
+}
+
+
+std::shared_ptr<Control> Control::Parent() const noexcept {
+    return hierarchy_facet_->Parent();
+}
+
+
+void Control::SetParent(const std::shared_ptr<Control>& parent) {
+    hierarchy_facet_->SetParent(parent);
+}
+
+
+rx::Observable<ParentChangedInfo> Control::ParentChangedEvent() const {
+    return parent_changed_event_.GetObservable();
+}
+
+
+bool Control::IsParentOf(const Control& control) const noexcept {
+    return hierarchy_facet_->IsParentOf(control);
+}
+
+
+bool Control::IsAncestorOf(const Control& control) const noexcept {
+    return hierarchy_facet_->IsAncestorOf(control);
+}
+
+
+bool Control::IsSameOrAncestorOf(const Control& control) const noexcept {
+    return hierarchy_facet_->IsSameOrAncestorOf(control);
+}
+
+
+bool Control::HasChildren() const noexcept {
+    return !hierarchy_facet_->Children().empty();
+}
+
+
+std::size_t Control::ChildCount() const noexcept {
+    return hierarchy_facet_->Children().size();
+}
+
+
+std::shared_ptr<Control> Control::GetChildAtIndex(std::size_t index) const noexcept {
+    return hierarchy_facet_->GetChildAtIndex(index);
+}
+
+
+const std::vector<std::shared_ptr<Control>>& Control::Children() const noexcept {
+    return hierarchy_facet_->Children();
+}
+
+
+void Control::SetChildren(const std::vector<std::shared_ptr<Control>>& children) {
+    hierarchy_facet_->SetChildren(children);
+}
+
+
+void Control::AddChild(const std::shared_ptr<Control>& child) {
+    hierarchy_facet_->AddChild(child);
+}
+
+
+void Control::AddChildAtIndex(const std::shared_ptr<Control>& child, std::size_t index) {
+    hierarchy_facet_->AddChildAtIndex(child, index);
+}
+
+
+void Control::AddChildren(const std::vector<std::shared_ptr<Control>>& children) {
+    hierarchy_facet_->AddChildren(children);
+}
+
+
+void Control::AddChildrenAtIndex(
+    const std::vector<std::shared_ptr<Control>>& children,
+    std::size_t index) {
+
+    hierarchy_facet_->AddChildrenAtIndex(children, index);
+}
+
+
+void Control::RemoveChild(const std::shared_ptr<Control>& child) {
+    hierarchy_facet_->RemoveChild(child);
+}
+
+
+void Control::RemoveChildAtIndex(std::size_t index) {
+    hierarchy_facet_->RemoveChildAtIndex(index);
+}
+
+
+void Control::RemoveAllChildren() {
+    hierarchy_facet_->RemoveAllChildren();
+}
+
+
+std::shared_ptr<Control> Control::FindChild(const std::wstring& name) const noexcept {
+    return hierarchy_facet_->FindChild(name);
+}
+
+
+std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) const noexcept {
+    return hierarchy_facet_->FindChildAtPosition(position);
+}
+
+
+std::shared_ptr<Control> Control::FindChildAtPositionRecursively(
+    const Point& position) const noexcept {
+
+    return hierarchy_facet_->FindChildAtPositionRecursively(position);
+}
+
+#pragma endregion
+
+
 std::shared_ptr<Image> Control::BackgroundImage() const {
     return BackgroundImagePicker()(*this);
 }
@@ -352,41 +483,6 @@ std::shared_ptr<Image> Control::BackgroundImage() const {
 
 void Control::SetBackgroundImage(const std::shared_ptr<Image>& image) {
     SetBackgroundImagePicker(CreateImagePicker(image));
-}
-
-
-bool Control::HasChildren() const {
-    return !children_.empty();
-}
-
-
-std::size_t Control::ChildCount() const {
-    return children_.size();
-}
-
-
-const std::shared_ptr<Control>& Control::GetChildAtIndex(std::size_t index) const {
-    return children_[index];
-}
-
-
-const std::vector<std::shared_ptr<Control>>& Control::Children() const {
-    return children_;
-}
-
-
-std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) const {
-    return InnerFindChildAtPosition(position, false);
-}
-
-
-std::shared_ptr<Control> Control::FindChildAtPositionRecursively(const Point& position) const {
-    return InnerFindChildAtPosition(position, true);
-}
-
-
-std::shared_ptr<Control> Control::Parent() const {
-    return parent_.lock();
 }
 
 
@@ -422,11 +518,6 @@ bool Control::IsCapturingMouse() const noexcept {
 
 bool Control::AcceptKeyMessage(const KeyMessage& message) {
     return false;
-}
-
-
-void Control::SetWindow(const std::shared_ptr<zaf::Window>& window) noexcept {
-    window_ = window;
 }
 
 
@@ -617,7 +708,8 @@ void Control::RepaintControl(
 void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect, bool update_style) {
 
     //No need to repaint if there is no child.
-    if (children_.empty()) {
+    const auto& children = hierarchy_facet_->Children();
+    if (children.empty()) {
         return;
     }
 
@@ -627,7 +719,7 @@ void Control::RepaintChildren(Canvas& canvas, const zaf::Rect& dirty_rect, bool 
         return;
     }
 
-    for (const auto& child : children_) {
+    for (const auto& child : children) {
 
         //Don't paint the child if it is not visible.
         if (!child->IsVisible()) {
@@ -753,7 +845,7 @@ void Control::NeedRepaintRect(const zaf::Rect& rect) {
 
     RecalculateCachedPaintingRect(repaint_rect);
 
-    auto window = window_.lock();
+    auto window = hierarchy_facet_->DirectWindow();
     if (window != nullptr) {
         window->RequestRepaint(repaint_rect);
         return;
@@ -794,7 +886,7 @@ void Control::ReleaseRendererResources() {
 
     ReleaseCachedPaintingRenderer();
 
-    for (const auto& each_child : children_) {
+    for (const auto& each_child : hierarchy_facet_->Children()) {
         each_child->ReleaseRendererResources();
     }
 }
@@ -968,302 +1060,6 @@ void Control::SetLayouter(const std::shared_ptr<zaf::Layouter>& layouter) {
 }
 
 
-void Control::SetParent(const std::shared_ptr<Control>& parent) {
-
-    auto previous_parent = parent_.lock();
-    if (previous_parent == parent) {
-        return;
-    }
-
-    std::shared_ptr<zaf::Window> previous_window;
-    if (previous_parent) {
-        previous_window = previous_parent->Window();
-    }
-
-    std::shared_ptr<zaf::Window> new_window;
-    if (parent) {
-        new_window = parent->Window();
-    }
-
-    bool need_release_renderer_resources = [&previous_window, &new_window]() {
-
-        if (!previous_window) {
-            return false;
-        }
-
-        if (!new_window) {
-            return true;
-        }
-
-        return previous_window != new_window;
-    }();
-
-    if (need_release_renderer_resources) {
-        ReleaseRendererResources();
-    }
-
-    parent_ = parent;
-
-    if (parent) {
-        NeedUpdateStyle();
-    }
-
-    ParentChangedInfo parent_changed_info{ shared_from_this(), previous_parent };
-    OnParentChanged(parent_changed_info);
-
-    if (previous_window != new_window) {
-        RaiseWindowChangedEvent(previous_window);
-    }
-
-    if (GetDPIFromWindow(previous_window) != GetDPIFromWindow(new_window)) {
-        RaiseDPIChangedEvent();
-    }
-}
-
-
-void Control::SetChildren(const std::vector<std::shared_ptr<Control>>& children) {
-
-    auto update_guard = BeginUpdate();
-    RemoveAllChildren();
-    AddChildren(children);
-}
-
-
-void Control::AddChild(const std::shared_ptr<Control>& child) {
-    AddChildAtIndex(child, children_.size());
-}
-
-
-void Control::AddChildAtIndex(const std::shared_ptr<Control>& child, std::size_t index) {
-
-    ZAF_EXPECT(child.get() != this);
-    ZAF_EXPECT(index <= children_.size());
-
-    auto previous_parent = child->Parent();
-    if (previous_parent.get() == this) {
-        //Already added
-        return;
-    }
-
-    if (previous_parent != nullptr) {
-        //Remove child from previous parent
-        previous_parent->InnerRemoveChild(child, false);
-    }
-
-    children_.insert(std::next(children_.begin(), index), child);
-    child->SetParent(shared_from_this());
-
-    RequestLayout();
-    NeedRepaintRect(child->Rect());
-
-    AutoResizeToPreferredSize();
-
-    auto inspector_port = GetInspectorPort();
-    if (inspector_port) {
-        inspector_port->ControlAddChild(shared_from_this(), index);
-    }
-}
-
-
-void Control::AddChildren(const std::vector<std::shared_ptr<Control>>& children) {
-
-    auto update_guard = BeginUpdate();
-
-    for (const auto& each_child : children) {
-        AddChild(each_child);
-    }
-}
-
-
-void Control::AddChildrenAtIndex(const std::vector<std::shared_ptr<Control>>& children) {
-
-    auto update_guard = BeginUpdate();
-
-    for (auto iterator = children.rbegin(); iterator != children.rend(); ++iterator) {
-        AddChildAtIndex(*iterator, 0);
-    }
-}
-
-
-void Control::RemoveChildAtIndex(std::size_t index) {
-
-    ZAF_EXPECT(index < children_.size());
-
-    //We must use an local variable to maintain the life of the child for it will be accessed after 
-    //deleted during remove.
-    auto child = children_[index];
-    RemoveChild(child);
-}
-
-
-void Control::RemoveChild(const std::shared_ptr<Control>& child) {
-    InnerRemoveChild(child, true);
-}
-
-
-void Control::InnerRemoveChild(const std::shared_ptr<Control>& child, bool set_parent_to_null) {
-
-    auto current_parent = child->Parent();
-    if (current_parent.get() != this) {
-        //Not child
-        return;
-    }
-
-    //Remove focus before removing child.
-    auto window = Window();
-    if (window) {
-        auto focused_control = window->FocusedControl();
-        if (focused_control) {
-            if (child->IsSameOrAncestorOf(*focused_control)) {
-                focused_control->SetIsFocused(false);
-            }
-        }
-    }
-
-    auto removed_iterator = std::find(children_.begin(), children_.end(), child);
-    ZAF_EXPECT(removed_iterator != children_.end());
-
-    auto removed_index = std::distance(children_.begin(), removed_iterator);
-    children_.erase(removed_iterator);
-
-    if (set_parent_to_null) {
-        child->SetParent(nullptr);
-    }
-
-    //The child's rect may be changed while calling RequestLayout(), leading to a wrong repaint rect
-    //while calling NeedRepaintRect(), so we preserve the original rect before calling 
-    //RequestLayout().
-    auto child_rect = child->Rect();
-
-    RequestLayout();
-    NeedRepaintRect(child_rect);
-
-    AutoResizeToPreferredSize();
-
-    auto inspector_port = GetInspectorPort();
-    if (inspector_port) {
-        inspector_port->ControlRemoveChild(shared_from_this(), removed_index);
-    }
-}
-
-
-void Control::RemoveAllChildren() {
-
-    std::shared_ptr<Control> focused_control;
-    auto window = Window();
-    if (window) {
-        focused_control = window->FocusedControl();
-    }
-
-    for (const auto& each_child : children_) {
-
-        //Remove focus before removing children.
-        if (focused_control) {
-            if (each_child->IsSameOrAncestorOf(*focused_control)) {
-                focused_control->SetIsFocused(false);
-            }
-        }
-
-        each_child->SetParent(nullptr);
-    }
-
-    children_.clear();
-    NeedRepaint();
-}
-
-
-std::shared_ptr<Control> Control::FindChild(const std::wstring& name) const {
-
-    for (const auto& each_child : children_) {
-        if (each_child->Name() == name) {
-            return each_child;
-        }
-    }
-
-    for (const auto& each_child : children_) {
-        auto found_child = each_child->FindChild(name);
-        if (found_child) {
-            return found_child;
-        }
-    }
-
-    return {};
-}
-
-
-std::shared_ptr<Control> Control::InnerFindChildAtPosition(
-    const Point& position, 
-    bool recursively) const {
-
-    auto content_rect = ContentRectInSelf();
-
-    auto position_in_content = position;
-    position_in_content.x -= content_rect.position.x;
-    position_in_content.y -= content_rect.position.y;
-
-    content_rect.position.x = 0;
-    content_rect.position.y = 0;
-
-    for (auto iterator = children_.rbegin(); iterator != children_.rend(); ++iterator) {
-
-        const auto& child = *iterator;
-
-        if (!child->IsVisible()) {
-            continue;
-        }
-
-        zaf::Rect child_rect = child->Rect();
-        child_rect.Intersect(content_rect);
-
-        if (!child_rect.Contains(position_in_content)) {
-            continue;
-        }
-
-        if (!recursively) {
-            return child;
-        }
-
-        auto recursive_child = child->InnerFindChildAtPosition(
-            child->TranslateFromParent(position),
-            true);
-
-        if (recursive_child) {
-            return recursive_child;
-        }
-
-        return child;
-    }
-
-    return nullptr;
-}
-
-
-bool Control::IsParentOf(const Control& control) const {
-    return control.Parent().get() == this;
-}
-
-
-bool Control::IsAncestorOf(const Control& control) const {
-
-    auto ancestor = control.Parent();
-    while (ancestor) {
-
-        if (ancestor.get() == this) {
-            return true;
-        }
-
-        ancestor = ancestor->Parent();
-    }
-
-    return false;
-}
-
-
-bool Control::IsSameOrAncestorOf(const Control& control) const {
-    return (this == &control) || this->IsAncestorOf(control);
-}
-
-
 std::wstring Control::Name() const {
     return name_;
 }
@@ -1271,17 +1067,6 @@ std::wstring Control::Name() const {
 
 void Control::SetName(const std::wstring& name) {
     name_ = name;
-}
-
-
-std::shared_ptr<Window> Control::Window() const {
-
-    auto parent = Parent();
-    if (parent == nullptr) {
-        return window_.lock();
-    }
-
-    return parent->Window();
 }
 
 
@@ -2093,11 +1878,6 @@ void Control::OnParentChanged(const ParentChangedInfo& event_info) {
 }
 
 
-rx::Observable<ParentChangedInfo> Control::ParentChangedEvent() const {
-    return parent_changed_event_.GetObservable();
-}
-
-
 void Control::RaiseWindowChangedEvent(const std::shared_ptr<zaf::Window>& previous_window) {
 
     WindowChangedInfo window_changed_info{ shared_from_this(), previous_window };
@@ -2111,11 +1891,6 @@ void Control::RaiseWindowChangedEvent(const std::shared_ptr<zaf::Window>& previo
 
 void Control::OnWindowChanged(const WindowChangedInfo& event_info) {
     window_changed_event_.Raise(event_info);
-}
-
-
-rx::Observable<WindowChangedInfo> Control::WindowChangedEvent() const {
-    return window_changed_event_.GetObservable();
 }
 
 

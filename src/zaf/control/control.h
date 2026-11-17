@@ -1,5 +1,10 @@
 #pragma once
 
+/**
+@file
+    Defines the `zaf::Control` class.
+*/
+
 #include <Windows.h>
 #include <functional>
 #include <map>
@@ -42,6 +47,7 @@
 namespace zaf::internal {
 class ControlEventInvokerBinder;
 class ControlGeometryFacet;
+class ControlHierarchyFacet;
 class ControlUpdateLock;
 class ControlUpdateState;
 class InspectorPort;
@@ -548,6 +554,126 @@ public:
     /** @} */
 #pragma endregion
 
+#pragma region Public Hierarchy Management
+    /**
+    @name Public Hierarchy Management
+    @{
+    */
+
+    /**
+    Gets the window where the control locates.
+
+    @return
+        The window where the control locates. Returns nullptr if the control does not locate in any
+        window.
+    */
+    std::shared_ptr<Window> Window() const noexcept;
+
+    rx::Observable<WindowChangedInfo> WindowChangedEvent() const;
+
+    /**
+    Gets the control's parent.
+
+    @return
+        The control's parent. Returns nullptr if the control does not have parent.
+    */
+    std::shared_ptr<Control> Parent() const noexcept;
+
+    rx::Observable<ParentChangedInfo> ParentChangedEvent() const;
+
+    /**
+    Determines whether the current control is the direct parent of the specified control.
+    */
+    bool IsParentOf(const Control& control) const noexcept;
+
+    /**
+    Determines whether the current control is the direct or indirect parent of the specified
+    control.
+    */
+    bool IsAncestorOf(const Control& control) const noexcept;
+
+    /**
+    Determines whether the current control is either the same as the specified control, or is the
+    direct or indirect parent of the specified control.
+    */
+    bool IsSameOrAncestorOf(const Control& control) const noexcept;
+
+    /**
+    Indicates whether the control has any children.
+    */
+    bool HasChildren() const noexcept;
+
+    /**
+    Gets the number of children of the control.
+    */
+    std::size_t ChildCount() const noexcept;
+
+    /**
+    Gets the child control at the specified index.
+
+    @param index
+        The index of the child control.
+
+    @return
+        The child control at the specified index. Returns nullptr if the index is out of range.
+    */
+    std::shared_ptr<Control> GetChildAtIndex(std::size_t index) const noexcept;
+
+    /**
+    Gets the control's children.
+    */
+    const std::vector<std::shared_ptr<Control>>& Children() const noexcept;
+
+    /**
+    Removes all existing children and adds the specified children to the control.
+
+    @param children
+        The new children to be added.
+    */
+    void SetChildren(const std::vector<std::shared_ptr<Control>>& children);
+
+    /**
+     Add specified child to the control.
+     */
+    void AddChild(const std::shared_ptr<Control>& child);
+    void AddChildAtIndex(const std::shared_ptr<Control>& child, std::size_t index);
+
+    /**
+     Add specified children to the control.
+     */
+    void AddChildren(const std::vector<std::shared_ptr<Control>>& children);
+    void AddChildrenAtIndex(
+        const std::vector<std::shared_ptr<Control>>& children, 
+        std::size_t index);
+
+    /**
+     Removes specified child from the control.
+     */
+    void RemoveChild(const std::shared_ptr<Control>& child);
+
+    /**
+    Removes a child at the specified index.
+
+    @param index
+        Index of the child being removed.
+
+    @throw std::logic_error
+        Thrown if index is out of range.
+    */
+    void RemoveChildAtIndex(std::size_t index);
+
+    /**
+     Remove all children from the control.
+     */
+    void RemoveAllChildren();
+
+    std::shared_ptr<Control> FindChild(const std::wstring& name) const noexcept;
+    std::shared_ptr<Control> FindChildAtPosition(const Point& position) const noexcept;
+    std::shared_ptr<Control> FindChildAtPositionRecursively(const Point& position) const noexcept;
+
+    /** @} */
+#pragma endregion
+
     std::shared_ptr<Image> BackgroundImage() const;
 
     ImagePicker BackgroundImagePicker() const;
@@ -597,100 +723,6 @@ public:
      */
     void SetLayouter(const std::shared_ptr<zaf::Layouter>& layouter);
 
-    bool HasChildren() const;
-    std::size_t ChildCount() const;
-
-    const std::shared_ptr<Control>& GetChildAtIndex(std::size_t index) const;
-
-    /**
-     Get the control's children.
-     */
-    const std::vector<std::shared_ptr<Control>>& Children() const;
-
-    /**
-    Removes all existing children and adds the specified children to the control.
-
-    @param children
-        The new children to be added.
-    */
-    void SetChildren(const std::vector<std::shared_ptr<Control>>& children);
-
-    /**
-     Add specified child to the control.
-     */
-    void AddChild(const std::shared_ptr<Control>& child);
-
-    void AddChildAtIndex(const std::shared_ptr<Control>& child, std::size_t index);
-
-    /**
-     Add specified children to the control.
-     */
-    void AddChildren(const std::vector<std::shared_ptr<Control>>& children);
-
-    void AddChildrenAtIndex(const std::vector<std::shared_ptr<Control>>& children);
-
-    /**
-    Removes a child at the specified index.
-
-    @param index
-        Index of the child being removed.
-
-    @throw std::logic_error
-        Thrown if index is out of range.
-    */
-    void RemoveChildAtIndex(std::size_t index);
-
-    /**
-     Removes specified child from the control.
-     */
-    void RemoveChild(const std::shared_ptr<Control>& child);
-
-    /**
-     Remove all children from the control.
-     */
-    void RemoveAllChildren();
-
-    std::shared_ptr<Control> FindChild(const std::wstring& name) const;
-
-    template<typename T>
-    std::shared_ptr<T> FindChild(const std::wstring& name) const {
-        return std::dynamic_pointer_cast<T>(FindChild(name));
-    }
-
-    template<typename T>
-    bool BindChild(const std::wstring& name, std::shared_ptr<T>& child) const {
-        child = FindChild<T>(name);
-        return !!child;
-    }
-
-    std::shared_ptr<Control> FindChildAtPosition(const Point& position) const;
-
-    std::shared_ptr<Control> FindChildAtPositionRecursively(const Point& position) const;
-
-    /**
-    Determines whether the current control is the direct parent of the specified control.
-    */
-    bool IsParentOf(const Control& control) const;
-
-    /**
-    Determines whether the current control is the direct or indirect parent of the specified 
-    control.
-    */
-    bool IsAncestorOf(const Control& control) const;
-
-    /**
-    Determines whether the current control is either the same as the specified control, or is the
-    direct or indirect parent of the specified control.
-    */
-    bool IsSameOrAncestorOf(const Control& control) const;
-
-    /**
-     Get the control's parent.
-
-     Return nullptr if the control does not have parent.
-     */
-    std::shared_ptr<Control> Parent() const;
-
     /**
      Get the control's name.
 
@@ -705,13 +737,6 @@ public:
      See also Name.
      */
     void SetName(const std::wstring& name);
-
-    /**
-     Get the window where the control locates.
-
-     Return nullptr if the control does not locates in any window.
-     */
-    std::shared_ptr<Window> Window() const;
 
     /**
     Determines whether the control is visible within the context of the parent.
@@ -998,9 +1023,6 @@ public:
     rx::Observable<PreSysCharInputInfo> PreSysCharInputEvent() const;
     rx::Observable<SysCharInputInfo> SysCharInputEvent() const;
 
-    rx::Observable<ParentChangedInfo> ParentChangedEvent() const;
-    rx::Observable<WindowChangedInfo> WindowChangedEvent() const;
-
 protected:
     void InvokeInitialize() override;
     void InvokeParse() override;
@@ -1211,6 +1233,7 @@ private:
     friend class Window;
     friend class internal::ControlEventInvokerBinder;
     friend class internal::ControlGeometryFacet;
+    friend class internal::ControlHierarchyFacet;
     friend class internal::WindowControlFacet;
     friend class internal::WindowFocusedControlManager;
     friend class internal::WindowKeyboardFacet;
@@ -1253,16 +1276,11 @@ private:
     void DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect) const;
 
     void SetParent(const std::shared_ptr<Control>& parent);
-    void InnerRemoveChild(const std::shared_ptr<Control>& child, bool set_parent_to_null);
 
     /**
      Called when a child's rect has changed.
      */
     void OnChildRectChanged(const std::shared_ptr<Control>& child, const zaf::Rect& previous_rect);
-
-    std::shared_ptr<Control> InnerFindChildAtPosition(
-        const Point& position, 
-        bool recursively) const;
 
     void RequestLayout(const zaf::Size& previous_size);
 
@@ -1277,10 +1295,7 @@ private:
 
 private:
     std::unique_ptr<internal::ControlGeometryFacet> geometry_facet_;
-
-    std::weak_ptr<zaf::Window> window_;
-    std::weak_ptr<Control> parent_;
-    std::vector<std::shared_ptr<Control>> children_;
+    std::unique_ptr<internal::ControlHierarchyFacet> hierarchy_facet_;
 
     std::weak_ptr<internal::ControlUpdateLock> update_lock_;
     std::unique_ptr<internal::ControlUpdateState> update_state_;

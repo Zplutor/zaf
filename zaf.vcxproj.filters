@@ -1360,6 +1360,9 @@
     <ClCompile Include="src\zaf\control\internal\control_facets\control_geometry_facet.cpp">
       <Filter>zaf\control\internal\control_facets</Filter>
     </ClCompile>
+    <ClCompile Include="src\zaf\control\internal\control_facets\control_hierarchy_facet.cpp">
+      <Filter>zaf\control\internal\control_facets</Filter>
+    </ClCompile>
     <ClCompile Include="src\zaf\control\internal\textual\line_utility.cpp">
       <Filter>zaf\control\internal\textual</Filter>
     </ClCompile>
@@ -3215,6 +3218,9 @@
       <Filter>zaf\window\event</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\control_facets\control_geometry_facet.h">
+      <Filter>zaf\control\internal\control_facets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\zaf\control\internal\control_facets\control_hierarchy_facet.h">
       <Filter>zaf\control\internal\control_facets</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\textual\inline_object_attached_info.h">
