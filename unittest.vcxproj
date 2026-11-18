@@ -436,6 +436,7 @@
     <ClCompile Include="unittest\case\control\control_keyboard_event_routing_test.cpp" />
     <ClCompile Include="unittest\case\control\control_mouse_event_routing_test.cpp" />
     <ClCompile Include="unittest\case\control\control_test.cpp" />
+    <ClCompile Include="unittest\case\control\control_hierarchy_test.cpp" />
     <ClCompile Include="unittest\case\control\control_style_test.cpp" />
     <ClCompile Include="unittest\case\control\image_box_parse_test.cpp" />
     <ClCompile Include="unittest\case\control\internal\image_box\image_drawing_test.cpp" />

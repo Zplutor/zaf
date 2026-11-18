@@ -226,6 +226,9 @@
     <ClCompile Include="unittest\case\control\control_test.cpp">
       <Filter>case\control</Filter>
     </ClCompile>
+    <ClCompile Include="unittest\case\control\control_hierarchy_test.cpp">
+      <Filter>case\control</Filter>
+    </ClCompile>
     <ClCompile Include="unittest\case\control\internal\image_box\image_drawing_test.cpp">
       <Filter>case\control\internal\image_box</Filter>
     </ClCompile>

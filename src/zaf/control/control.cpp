@@ -369,11 +369,6 @@ std::shared_ptr<Control> Control::Parent() const noexcept {
 }
 
 
-void Control::SetParent(const std::shared_ptr<Control>& parent) {
-    hierarchy_facet_->SetParent(parent);
-}
-
-
 rx::Observable<ParentChangedInfo> Control::ParentChangedEvent() const {
     return parent_changed_event_.GetObservable();
 }

@@ -19,7 +19,6 @@ public:
     void SetDirectWindow(const std::shared_ptr<zaf::Window>& window) noexcept;
 
     std::shared_ptr<Control> Parent() const noexcept;
-    void SetParent(const std::shared_ptr<Control>& parent);
 
     bool IsParentOf(const Control& control) const noexcept;
     bool IsAncestorOf(const Control& control) const noexcept;
@@ -31,15 +30,14 @@ public:
 
     void AddChild(const std::shared_ptr<Control>& child);
     void AddChildAtIndex(const std::shared_ptr<Control>& child, std::size_t index);
-    void AddChildren(const std::vector<std::shared_ptr<Control>>& children);
+    void AddChildren(const std::vector<std::shared_ptr<Control>>& new_children);
     void AddChildrenAtIndex(
-        const std::vector<std::shared_ptr<Control>>& children, 
+        const std::vector<std::shared_ptr<Control>>& new_children,
         std::size_t index);
 
     void RemoveChild(const std::shared_ptr<Control>& child);
     void RemoveChildAtIndex(std::size_t index);
     void RemoveAllChildren();
-    void InnerRemoveChild(const std::shared_ptr<Control>& child, bool set_parent_to_null);
 
     std::shared_ptr<Control> FindChild(const std::wstring& name) const noexcept;
     std::shared_ptr<Control> FindChildAtPosition(const Point& position) const noexcept;
@@ -47,6 +45,15 @@ public:
     std::shared_ptr<Control> InnerFindChildAtPosition(
         const Point& position,
         bool recursively) const noexcept;
+
+private:
+    void SetParent(const std::shared_ptr<Control>& parent) noexcept;
+    void HandleParentChanged(
+        const std::shared_ptr<Control>& old_parent, 
+        const std::shared_ptr<Control>& new_parent) const;
+
+    void InnerRemoveChild(const std::shared_ptr<Control>& child, bool will_add_to_new_parent);
+    void InnerRemoveChildAtIndex(std::size_t index, bool will_add_to_new_parent);
 
 private:
     Control& control_;

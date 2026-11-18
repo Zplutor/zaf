@@ -46,52 +46,48 @@ std::shared_ptr<Control> ControlHierarchyFacet::Parent() const noexcept {
 }
 
 
-void ControlHierarchyFacet::SetParent(const std::shared_ptr<Control>& parent) {
+void ControlHierarchyFacet::SetParent(const std::shared_ptr<Control>& parent) noexcept {
+    parent_ = parent;
+}
 
-    auto previous_parent = parent_.lock();
-    if (previous_parent == parent) {
+
+void ControlHierarchyFacet::HandleParentChanged(
+    const std::shared_ptr<Control>& old_parent,
+    const std::shared_ptr<Control>& new_parent) const {
+
+    // No need further handling if parent is not changed.
+    if (old_parent == new_parent) {
         return;
     }
 
-    std::shared_ptr<zaf::Window> previous_window;
-    if (previous_parent) {
-        previous_window = previous_parent->Window();
+    std::shared_ptr<zaf::Window> old_window;
+    if (old_parent) {
+        old_window = old_parent->Window();
     }
 
     std::shared_ptr<zaf::Window> new_window;
-    if (parent) {
-        new_window = parent->Window();
+    if (new_parent) {
+        new_window = new_parent->Window();
     }
 
-    bool need_release_renderer_resources = [&previous_window, &new_window]() {
-        if (!previous_window) {
-            return false;
-        }
-        if (!new_window) {
-            return true;
-        }
-        return previous_window != new_window;
-    }();
-
-    if (need_release_renderer_resources) {
+    if (old_window && (old_window != new_window)) {
         control_.ReleaseRendererResources();
     }
 
-    parent_ = parent;
-
-    if (parent) {
+    if (new_parent) {
         control_.NeedUpdateStyle();
     }
 
-    ParentChangedInfo parent_changed_info{ control_.shared_from_this(), previous_parent };
+    ParentChangedInfo parent_changed_info{ control_.shared_from_this(), old_parent };
     control_.OnParentChanged(parent_changed_info);
 
-    if (previous_window != new_window) {
-        control_.RaiseWindowChangedEvent(previous_window);
-    }
+    if (old_window != new_window) {
 
-    if (GetDPIFromWindow(previous_window) != GetDPIFromWindow(new_window)) {
-        control_.RaiseDPIChangedEvent();
+        control_.RaiseWindowChangedEvent(old_window);
+
+        if (GetDPIFromWindow(old_window) != GetDPIFromWindow(new_window)) {
+            control_.RaiseDPIChangedEvent();
+        }
     }
 }
 
@@ -150,75 +146,106 @@ void ControlHierarchyFacet::AddChildAtIndex(
 
     ZAF_EXPECT(child);
 
-    auto previous_parent = child->Parent();
-    if (previous_parent) {
-
+    auto child_old_parent = child->Parent();
+    if (child_old_parent) {
         // If the child is already added to this control, do nothing.
-        if (previous_parent.get() == &control_) {
+        if (child_old_parent.get() == &control_) {
             return;
         }
-    
         // Remove the child from its previous parent.
-        previous_parent->hierarchy_facet_->InnerRemoveChild(child, false);
+        child_old_parent->hierarchy_facet_->InnerRemoveChild(child, true);
     }
 
+    // The following code must be atomic. If exception is thrown, neither children_ nor the child's
+    // parent will be changed.
     auto revised_index = std::min(index, children_.size());
-
     auto insert_iterator = std::next(children_.begin(), revised_index);
     children_.insert(insert_iterator, child);
 
-    child->SetParent(control_.shared_from_this());
+    auto child_new_parent = control_.shared_from_this();
+    child->hierarchy_facet_->SetParent(child_new_parent);
+    // Atomic codes end. It is safe to throw exception after here.
+
+    child->hierarchy_facet_->HandleParentChanged(child_old_parent, child_new_parent);
 
     control_.RequestLayout();
-    control_.NeedRepaintRect(child->Rect());
-
     control_.AutoResizeToPreferredSize();
+    control_.NeedRepaintRect(child->Rect());
 
     auto inspector_port = control_.GetInspectorPort();
     if (inspector_port) {
-        inspector_port->ControlAddChild(control_.shared_from_this(), index);
+        inspector_port->ControlAddChild(child_new_parent, index);
     }
 }
 
 
-void ControlHierarchyFacet::AddChildren(const std::vector<std::shared_ptr<Control>>& children) {
+void ControlHierarchyFacet::AddChildren(
+    const std::vector<std::shared_ptr<Control>>& new_children) {
 
-    auto update_guard = control_.BeginUpdate();
-
-    for (const auto& each_child : children) {
-        AddChild(each_child);
-    }
+    AddChildrenAtIndex(new_children, children_.size());
 }
 
 
 void ControlHierarchyFacet::AddChildrenAtIndex(
-    const std::vector<std::shared_ptr<Control>>& children,
+    const std::vector<std::shared_ptr<Control>>& new_children,
     std::size_t index) {
+
+    if (new_children.empty()) {
+        return;
+    }
+
+    // Reserve enough space for new children, preventing the bad alloc exception.
+    children_.reserve(children_.size() + new_children.size());
 
     auto update_guard = control_.BeginUpdate();
 
-    for (auto iterator = children.rbegin(); iterator != children.rend(); ++iterator) {
-        AddChildAtIndex(*iterator, index);
+    std::size_t next_index = index;
+    for (const auto& each_child : new_children) {
+        AddChildAtIndex(each_child, next_index);
+        ++next_index;
     }
 }
 
 
 void ControlHierarchyFacet::RemoveChild(const std::shared_ptr<Control>& child) {
-    InnerRemoveChild(child, true);
+    ZAF_EXPECT(child);
+    InnerRemoveChild(child, false);
+}
+
+
+void ControlHierarchyFacet::RemoveChildAtIndex(std::size_t index) {
+    InnerRemoveChildAtIndex(index, false);
 }
 
 
 void ControlHierarchyFacet::InnerRemoveChild(
     const std::shared_ptr<Control>& child,
-    bool set_parent_to_null) {
+    bool will_add_to_new_parent) {
 
-    auto current_parent = child->Parent();
-    if (current_parent.get() != &control_) {
-        //Not child
+    auto iterator = std::find(children_.begin(), children_.end(), child);
+    if (iterator == children_.end()) {
         return;
     }
 
-    //Remove focus before removing child.
+    auto index = std::distance(children_.begin(), iterator);
+    InnerRemoveChildAtIndex(index, will_add_to_new_parent);
+}
+
+
+void ControlHierarchyFacet::InnerRemoveChildAtIndex(
+    std::size_t index,
+    bool will_add_to_new_parent) {
+
+    if (index >= children_.size()) {
+        return;
+    }
+
+    // The child should be stored in a local variable to maintain its life, because it will be 
+    // accessed after being removed from children_.
+    auto child = children_[index];
+
+    // If the focused control is the child or its descendant, remove the focus before removing the 
+    // child.
     auto window = Window();
     if (window) {
         auto focused_control = window->FocusedControl();
@@ -229,14 +256,16 @@ void ControlHierarchyFacet::InnerRemoveChild(
         }
     }
 
-    auto removed_iterator = std::find(children_.begin(), children_.end(), child);
-    ZAF_EXPECT(removed_iterator != children_.end());
+    auto remove_iterator = std::next(children_.begin(), index);
+    children_.erase(remove_iterator);
 
-    auto removed_index = std::distance(children_.begin(), removed_iterator);
-    children_.erase(removed_iterator);
+    // It MUST NOT call control_.shared_from_this() here to get the old parent, because this method
+    // may be called while the parent is being destructed.
+    auto child_old_parent = child->Parent();
+    child->hierarchy_facet_->SetParent(nullptr);
 
-    if (set_parent_to_null) {
-        child->SetParent(nullptr);
+    if (!will_add_to_new_parent) {
+        child->hierarchy_facet_->HandleParentChanged(child_old_parent, nullptr);
     }
 
     //The child's rect may be changed while calling RequestLayout(), leading to a wrong repaint rect
@@ -251,44 +280,20 @@ void ControlHierarchyFacet::InnerRemoveChild(
 
     auto inspector_port = control_.GetInspectorPort();
     if (inspector_port) {
-        inspector_port->ControlRemoveChild(control_.shared_from_this(), removed_index);
+        inspector_port->ControlRemoveChild(control_.shared_from_this(), index);
     }
-}
-
-
-void ControlHierarchyFacet::RemoveChildAtIndex(std::size_t index) {
-
-    ZAF_EXPECT(index < children_.size());
-
-    //We must use an local variable to maintain the life of the child for it will be accessed after 
-    //deleted during remove.
-    auto child = children_[index];
-    RemoveChild(child);
 }
 
 
 void ControlHierarchyFacet::RemoveAllChildren() {
 
-    std::shared_ptr<Control> focused_control;
-    auto window = Window();
-    if (window) {
-        focused_control = window->FocusedControl();
+    // Make a copy of children_ to avoid the problem of modifying children_ while iterating it.
+    auto all_children = children_;
+
+    auto update_guard = control_.BeginUpdate();
+    for (const auto& each_child : all_children) {
+        RemoveChild(each_child);
     }
-
-    for (const auto& each_child : children_) {
-
-        //Remove focus before removing children.
-        if (focused_control) {
-            if (each_child->IsSameOrAncestorOf(*focused_control)) {
-                focused_control->SetIsFocused(false);
-            }
-        }
-
-        each_child->SetParent(nullptr);
-    }
-
-    children_.clear();
-    control_.NeedRepaint();
 }
 
 

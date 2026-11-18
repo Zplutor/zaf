@@ -629,42 +629,134 @@ public:
 
     @param children
         The new children to be added.
+
+    @throw std::bad_alloc
+    @throw ...
+        Any exception may be thrown while modifying the hierarchy.
+
+    @see zaf::Control::AddChildren
+    @see zaf::Control::RemoveAllChildren
     */
     void SetChildren(const std::vector<std::shared_ptr<Control>>& children);
 
     /**
-     Add specified child to the control.
-     */
+    Adds the specified child to the control, placing it at the end of the children.
+
+    @param child
+        The child to be added.
+
+    @pre 
+        The child is not null.
+
+    @throw std::bad_alloc
+    @throw zaf::PreconditionError
+    @throw ...
+        Any exception may be thrown while modifying the hierarchy.
+
+    @details
+        If the child is already added to this control, nothing will be done. If the child is 
+        already added to another control, it will be removed from the previous parent.
+    */
     void AddChild(const std::shared_ptr<Control>& child);
+
+    /**
+    Adds the specified child to the control, inserting it at the specified index.
+
+    @param child
+        The child to be added.
+
+    @param index
+        The index where the child will be inserted. If the index is greater than the number of
+        children, the child will be added at the end.
+
+    @pre 
+        The child is not null.
+
+    @throw std::bad_alloc
+    @throw zaf::PreconditionError
+    @throw ...
+        Any exception may be thrown while modifying the hierarchy.
+
+    @see zaf::Control::AddChild
+    */
     void AddChildAtIndex(const std::shared_ptr<Control>& child, std::size_t index);
 
     /**
-     Add specified children to the control.
-     */
+    Adds the specified children to the control, placing them at the end of the children.
+
+    @param children
+        The children to be added.
+
+    @throw std::bad_alloc
+    @throw ...
+        Any exception may be thrown while modifying the hierarchy.
+
+    @see zaf::Control::AddChild
+    */
     void AddChildren(const std::vector<std::shared_ptr<Control>>& children);
+
+    /**
+    Adds the specified children to the control, inserting them at the specified index.
+
+    @param children
+        The children to be added.
+
+    @param index
+        The index where the children will be inserted. If the index is greater than the number of
+        children, the children will be added at the end.
+
+    @throw std::bad_alloc
+    @throw ...
+        Any exception may be thrown while modifying the hierarchy.
+
+    @see zaf::Control::AddChild
+    */
     void AddChildrenAtIndex(
         const std::vector<std::shared_ptr<Control>>& children, 
         std::size_t index);
 
     /**
-     Removes specified child from the control.
-     */
+    Removes the specified child from the control.
+
+    @param child
+        The child to be removed.
+
+    @pre
+        The child is not null.
+
+    @throw zaf::PreconditionError
+    @throw ...
+        Any exception may be thrown while modifying the hierarchy.
+
+    @details
+        If the child is not a child of this control, nothing will be done.
+
+        If the child is the same as or is an ancestor of the focused control, the focus will be 
+        cleared before removing the child.
+    */
     void RemoveChild(const std::shared_ptr<Control>& child);
 
     /**
     Removes a child at the specified index.
 
     @param index
-        Index of the child being removed.
+        Index of the child being removed. If it is out of range, nothing will be done.
 
-    @throw std::logic_error
-        Thrown if index is out of range.
+    @throw ...
+        Any exception may be thrown while modifying the hierarchy.
+
+    @see zaf::Control::RemoveChild
     */
     void RemoveChildAtIndex(std::size_t index);
 
     /**
-     Remove all children from the control.
-     */
+    Removes all children from the control.
+
+    @throw ...
+        Any exception may be thrown while modifying the hierarchy.
+
+    @see zaf::Control::RemoveChild
+    */
     void RemoveAllChildren();
 
     std::shared_ptr<Control> FindChild(const std::wstring& name) const noexcept;
@@ -1274,8 +1366,6 @@ private:
     void RecalculateCachedPaintingRect(const zaf::Rect& repaint_rect);
     void ReleaseCachedPaintingRenderer();
     void DrawBackgroundImage(Canvas& canvas, const zaf::Rect& background_rect) const;
-
-    void SetParent(const std::shared_ptr<Control>& parent);
 
     /**
      Called when a child's rect has changed.
