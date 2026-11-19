@@ -1,5 +1,6 @@
 #include <zaf/control/internal/control_facets/control_hierarchy_facet.h>
 #include <zaf/application.h>
+#include <zaf/base/error/invalid_operation_error.h>
 #include <zaf/control/control.h>
 #include <zaf/window/inspector/internal/inspector_port.h>
 #include <zaf/window/window.h>
@@ -145,6 +146,16 @@ void ControlHierarchyFacet::AddChildAtIndex(
     std::size_t index) {
 
     ZAF_EXPECT(child);
+
+    // Prevent circular reference.
+    if (child->IsSameOrAncestorOf(control_)) {
+        throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
+    }
+
+    // Not allow to add a child that is a window's root control.
+    if (child->hierarchy_facet_->DirectWindow()) {
+        throw InvalidOperationError{ ZAF_SOURCE_LOCATION() };
+    }
 
     auto child_old_parent = child->Parent();
     if (child_old_parent) {

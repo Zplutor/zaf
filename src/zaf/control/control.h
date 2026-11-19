@@ -631,6 +631,12 @@ public:
         The new children to be added.
 
     @throw std::bad_alloc
+
+    @throw zaf::InvalidOperationError
+        Thrown if one of the children:
+        - is the same as or is an ancestor of this control;
+        - is the root control of a window.
+
     @throw ...
         Any exception may be thrown while modifying the hierarchy.
 
@@ -650,6 +656,12 @@ public:
 
     @throw std::bad_alloc
     @throw zaf::PreconditionError
+
+    @throw zaf::InvalidOperationError
+        Thrown if the child:
+        - is the same as or is an ancestor of this control;
+        - is the root control of a window.
+
     @throw ...
         Any exception may be thrown while modifying the hierarchy.
 
@@ -674,6 +686,12 @@ public:
 
     @throw std::bad_alloc
     @throw zaf::PreconditionError
+
+    @throw zaf::InvalidOperationError
+        Thrown if the child:
+        - is the same as or is an ancestor of this control;
+        - is the root control of a window.
+
     @throw ...
         Any exception may be thrown while modifying the hierarchy.
 
@@ -688,6 +706,12 @@ public:
         The children to be added.
 
     @throw std::bad_alloc
+
+    @throw zaf::InvalidOperationError
+        Thrown if one of the children:
+        - is the same as or is an ancestor of this control;
+        - is the root control of a window.
+
     @throw ...
         Any exception may be thrown while modifying the hierarchy.
 
@@ -706,6 +730,12 @@ public:
         children, the children will be added at the end.
 
     @throw std::bad_alloc
+
+    @throw zaf::InvalidOperationError
+        Thrown if one of the children:
+        - is the same as or is an ancestor of this control;
+        - is the root control of a window.
+
     @throw ...
         Any exception may be thrown while modifying the hierarchy.
 
