@@ -308,23 +308,32 @@ void ControlHierarchyFacet::RemoveAllChildren() {
 }
 
 
-std::shared_ptr<Control> ControlHierarchyFacet::FindChild(
-    const std::wstring& name) const noexcept {
-
+std::shared_ptr<Control> ControlHierarchyFacet::FindChild(std::wstring_view name) const noexcept {
     for (const auto& each_child : children_) {
         if (each_child->Name() == name) {
             return each_child;
         }
     }
+    return nullptr;
+}
+
+
+std::shared_ptr<Control> ControlHierarchyFacet::FindDescendant(
+    std::wstring_view name) const noexcept {
+
+    auto found_child = FindChild(name);
+    if (found_child) {
+        return found_child;
+    }
 
     for (const auto& each_child : children_) {
-        auto found_child = each_child->FindChild(name);
+        found_child = each_child->FindDescendant(name);
         if (found_child) {
             return found_child;
         }
     }
 
-    return {};
+    return nullptr;
 }
 
 
@@ -335,7 +344,7 @@ std::shared_ptr<Control> ControlHierarchyFacet::FindChildAtPosition(
 }
 
 
-std::shared_ptr<Control> ControlHierarchyFacet::FindChildAtPositionRecursively(
+std::shared_ptr<Control> ControlHierarchyFacet::FindDescendantAtPosition(
     const Point& position) const noexcept {
 
     return InnerFindChildAtPosition(position, true);

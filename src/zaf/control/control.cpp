@@ -452,8 +452,13 @@ void Control::RemoveAllChildren() {
 }
 
 
-std::shared_ptr<Control> Control::FindChild(const std::wstring& name) const noexcept {
+std::shared_ptr<Control> Control::FindChild(std::wstring_view name) const noexcept {
     return hierarchy_facet_->FindChild(name);
+}
+
+
+std::shared_ptr<Control> Control::FindDescendant(std::wstring_view name) const noexcept {
+    return hierarchy_facet_->FindDescendant(name);
 }
 
 
@@ -462,10 +467,10 @@ std::shared_ptr<Control> Control::FindChildAtPosition(const Point& position) con
 }
 
 
-std::shared_ptr<Control> Control::FindChildAtPositionRecursively(
+std::shared_ptr<Control> Control::FindDescendantAtPosition(
     const Point& position) const noexcept {
 
-    return hierarchy_facet_->FindChildAtPositionRecursively(position);
+    return hierarchy_facet_->FindDescendantAtPosition(position);
 }
 
 #pragma endregion

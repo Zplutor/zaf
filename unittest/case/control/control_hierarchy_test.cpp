@@ -897,6 +897,171 @@ TEST(ControlTest, RemoveAllChildren) {
 }
 
 
+TEST(ControlTest, FindChild) {
+
+    auto parent = zaf::Create<zaf::Control>();
+    parent->SetName(L"parent");
+
+    auto child1 = zaf::Create<zaf::Control>();
+    child1->SetName(L"child");
+    auto grandchild = zaf::Create<zaf::Control>();
+    grandchild->SetName(L"grandchild");
+    child1->AddChild(grandchild);
+    parent->AddChild(child1);
+
+    auto child2 = zaf::Create<zaf::Control>();
+    child2->SetName(L"child");
+    parent->AddChild(child2);
+
+    auto child3 = zaf::Create<zaf::Control>();
+    parent->AddChild(child3);
+
+    ASSERT_EQ(parent->FindChild(L"missing"), nullptr);
+    ASSERT_EQ(parent->FindChild(L"parent"), nullptr);
+    ASSERT_EQ(parent->FindChild(L"grandchild"), nullptr);
+
+    // Direct children are searched from the first index.
+    ASSERT_EQ(parent->FindChild(L"child"), child1);
+
+    // Visibility does not affect name search.
+    child1->SetIsVisible(false);
+    ASSERT_EQ(parent->FindChild(L"child"), child1);
+
+    // Empty name is supported.
+    ASSERT_EQ(parent->FindChild({}), child3);
+}
+
+
+TEST(ControlTest, FindDescendant) {
+
+    auto parent = zaf::Create<zaf::Control>();
+    parent->SetName(L"parent");
+
+    auto child1 = zaf::Create<zaf::Control>();
+    child1->SetName(L"child1");
+    auto grandchild1 = zaf::Create<zaf::Control>();
+    grandchild1->SetName(L"shared");
+    auto deep = zaf::Create<zaf::Control>();
+    deep->SetName(L"deep");
+    grandchild1->AddChild(deep);
+    child1->AddChild(grandchild1);
+
+    auto child2 = zaf::Create<zaf::Control>();
+    child2->SetName(L"child2");
+    auto grandchild2 = zaf::Create<zaf::Control>();
+    grandchild2->SetName(L"shared");
+    child2->AddChild(grandchild2);
+
+    parent->AddChild(child1);
+    parent->AddChild(child2);
+
+    ASSERT_EQ(parent->FindDescendant(L"missing"), nullptr);
+    ASSERT_EQ(parent->FindDescendant(L"parent"), nullptr);
+    ASSERT_EQ(parent->FindDescendant(L"child1"), child1);
+    ASSERT_EQ(parent->FindDescendant(L"deep"), deep);
+
+    // An earlier child's subtree is searched before a later child's descendants.
+    ASSERT_EQ(parent->FindDescendant(L"shared"), grandchild1);
+
+    // A direct child is found before a descendant with the same name.
+    grandchild1->SetName(L"child2");
+    ASSERT_EQ(parent->FindDescendant(L"child2"), child2);
+}
+
+
+TEST(ControlTest, FindChildAtPosition) {
+
+    auto parent = zaf::Create<zaf::Control>();
+    parent->SetSize(zaf::Size{ 200, 200 });
+
+    auto child1 = zaf::Create<zaf::Control>();
+    child1->SetRect(zaf::Rect{ 0, 0, 100, 100 });
+    auto child2 = zaf::Create<zaf::Control>();
+    child2->SetRect(zaf::Rect{ 50, 50, 100, 100 });
+    auto grandchild = zaf::Create<zaf::Control>();
+    grandchild->SetRect(zaf::Rect{ 0, 0, 20, 20 });
+    child2->AddChild(grandchild);
+
+    parent->AddChild(child1);
+    parent->AddChild(child2);
+
+    ASSERT_EQ(parent->FindChildAtPosition(zaf::Point{ 10, 10 }), child1);
+    ASSERT_EQ(parent->FindChildAtPosition(zaf::Point{ 10, 150 }), nullptr);
+    // The right edge is exclusive.
+    ASSERT_EQ(parent->FindChildAtPosition(zaf::Point{ 100, 10 }), nullptr);
+
+    // The later child is above the earlier child. Grandchildren are not searched.
+    ASSERT_EQ(parent->FindChildAtPosition(zaf::Point{ 60, 60 }), child2);
+
+    child2->SetIsVisible(false);
+    ASSERT_EQ(parent->FindChildAtPosition(zaf::Point{ 60, 60 }), child1);
+
+    // The position is in the control's coordinate space, while children are laid out in the
+    // content area inside the border.
+    auto bordered = zaf::Create<zaf::Control>();
+    bordered->SetSize(zaf::Size{ 200, 200 });
+    bordered->SetBorder(zaf::Frame{ 10 });
+    auto inner = zaf::Create<zaf::Control>();
+    inner->SetRect(zaf::Rect{ 0, 0, 40, 40 });
+    bordered->AddChild(inner);
+    ASSERT_EQ(bordered->FindChildAtPosition(zaf::Point{ 15, 15 }), inner);
+    ASSERT_EQ(bordered->FindChildAtPosition(zaf::Point{ 5, 5 }), nullptr);
+}
+
+
+TEST(ControlTest, FindDescendantAtPosition) {
+
+    auto parent = zaf::Create<zaf::Control>();
+    parent->SetSize(zaf::Size{ 200, 200 });
+
+    auto child1 = zaf::Create<zaf::Control>();
+    child1->SetRect(zaf::Rect{ 0, 0, 120, 120 });
+    auto child2 = zaf::Create<zaf::Control>();
+    child2->SetRect(zaf::Rect{ 80, 80, 100, 100 });
+
+    auto grandchild1 = zaf::Create<zaf::Control>();
+    grandchild1->SetRect(zaf::Rect{ 0, 0, 40, 40 });
+    auto grandchild2 = zaf::Create<zaf::Control>();
+    grandchild2->SetRect(zaf::Rect{ 10, 10, 40, 40 });
+    child2->AddChild(grandchild1);
+    child2->AddChild(grandchild2);
+
+    parent->AddChild(child1);
+    parent->AddChild(child2);
+
+    // The point is in a child that has no descendant there.
+    ASSERT_EQ(parent->FindDescendantAtPosition(zaf::Point{ 10, 10 }), child1);
+    ASSERT_EQ(parent->FindDescendantAtPosition(zaf::Point{ 190, 190 }), nullptr);
+
+    // child2 is above child1. grandchild2 is above grandchild1.
+    // Parent point (100, 100) is child2 point (20, 20).
+    ASSERT_EQ(parent->FindDescendantAtPosition(zaf::Point{ 100, 100 }), grandchild2);
+
+    // Parent point (150, 150) is inside child2 and outside both grandchildren.
+    ASSERT_EQ(parent->FindDescendantAtPosition(zaf::Point{ 150, 150 }), child2);
+
+    grandchild2->SetIsVisible(false);
+    ASSERT_EQ(parent->FindDescendantAtPosition(zaf::Point{ 100, 100 }), grandchild1);
+
+    child2->SetIsVisible(false);
+    ASSERT_EQ(parent->FindDescendantAtPosition(zaf::Point{ 100, 100 }), child1);
+
+    auto bordered = zaf::Create<zaf::Control>();
+    bordered->SetSize(zaf::Size{ 200, 200 });
+    bordered->SetBorder(zaf::Frame{ 10 });
+    auto child = zaf::Create<zaf::Control>();
+    child->SetRect(zaf::Rect{ 0, 0, 80, 80 });
+    auto grandchild = zaf::Create<zaf::Control>();
+    grandchild->SetRect(zaf::Rect{ 10, 10, 20, 20 });
+    child->AddChild(grandchild);
+    bordered->AddChild(child);
+
+    // Control point (25, 25) is content point (15, 15), then child point (15, 15).
+    ASSERT_EQ(bordered->FindDescendantAtPosition(zaf::Point{ 25, 25 }), grandchild);
+    ASSERT_EQ(bordered->FindDescendantAtPosition(zaf::Point{ 5, 5 }), nullptr);
+}
+
+
 /*
 This test case is written earlier, and may be duplicated with other WindowChangedEvent test cases.
 Keep it here anyway.

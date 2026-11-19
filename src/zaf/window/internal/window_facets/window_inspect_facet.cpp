@@ -95,7 +95,7 @@ void WindowInspectFacet::SetHighlightControl(const std::shared_ptr<Control>& con
 
 void WindowInspectFacet::HighlightControlAtPosition(const Point& position) {
 
-    auto highlight_control = window_.RootControl()->FindChildAtPositionRecursively(position);
+    auto highlight_control = window_.RootControl()->FindDescendantAtPosition(position);
     if (!highlight_control) {
         highlight_control = window_.RootControl();
     }

@@ -5,7 +5,7 @@
 namespace zaf::internal {
 
 std::shared_ptr<Control> BridgedFindControl(const Control& control, const wchar_t* name) {
-    return control.FindChild(name);
+    return control.FindDescendant(name);
 }
 
 
@@ -15,7 +15,7 @@ std::shared_ptr<Control> BridgedFindControl(const Window& window, const wchar_t*
     if (root_control->Name() == name) {
         return root_control;
     }
-    return root_control->FindChild(name);
+    return root_control->FindDescendant(name);
 }
 
 }

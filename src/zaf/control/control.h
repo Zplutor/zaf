@@ -789,9 +789,74 @@ public:
     */
     void RemoveAllChildren();
 
-    std::shared_ptr<Control> FindChild(const std::wstring& name) const noexcept;
+    /**
+    Finds the first child whose name matches the specified name.
+
+    @param name
+        The name of the child to find.
+
+    @return
+        The first child with the specified name. Returns nullptr if no child is found.
+
+    @details
+        This method only searches the direct children of the control, by the order of their 
+        indices.
+
+    @see zaf::Control::FindDescendant
+    */
+    std::shared_ptr<Control> FindChild(std::wstring_view name) const noexcept;
+
+    /**
+    Finds the first descendant whose name matches the specified name.
+
+    @param name
+        The name of the descendant to find.
+
+    @return
+        The first descendant with the specified name. Returns nullptr if no descendant is found.
+
+    @details
+        This method searches all descendants of the control recursively, using breadth-first
+        search.
+
+    @see zaf::Control::FindChild
+    */
+    std::shared_ptr<Control> FindDescendant(std::wstring_view name) const noexcept;
+
+    /**
+    Finds the topmost visible child at the specified position.
+
+    @param position
+        The position to find the child at, in the coordinate space of the control.
+
+    @return
+        The topmost visible child at the specified position. Returns nullptr if no child is found.
+
+    @details
+        This method only searches the direct children of the control, by their z-order. Invisible
+        children are skipped.
+
+    @see zaf::Control::FindDescendantAtPosition
+    */
     std::shared_ptr<Control> FindChildAtPosition(const Point& position) const noexcept;
-    std::shared_ptr<Control> FindChildAtPositionRecursively(const Point& position) const noexcept;
+
+    /**
+    Finds the topmost visible descendant at the specified position.
+
+    @param position
+        The position to find the descendant at, in the coordinate space of the control.
+
+    @return
+        The topmost visible descendant at the specified position. Returns nullptr if no descendant
+        is found.
+
+    @details
+        This method searches all descendants of the control recursively, by their z-order. 
+        Invisible descendants are skipped.
+
+    @see zaf::Control::FindChildAtPosition
+    */
+    std::shared_ptr<Control> FindDescendantAtPosition(const Point& position) const noexcept;
 
     /** @} */
 #pragma endregion

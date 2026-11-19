@@ -39,9 +39,10 @@ public:
     void RemoveChildAtIndex(std::size_t index);
     void RemoveAllChildren();
 
-    std::shared_ptr<Control> FindChild(const std::wstring& name) const noexcept;
+    std::shared_ptr<Control> FindChild(std::wstring_view name) const noexcept;
+    std::shared_ptr<Control> FindDescendant(std::wstring_view name) const noexcept;
     std::shared_ptr<Control> FindChildAtPosition(const Point& position) const noexcept;
-    std::shared_ptr<Control> FindChildAtPositionRecursively(const Point& position) const noexcept;
+    std::shared_ptr<Control> FindDescendantAtPosition(const Point& position) const noexcept;
     std::shared_ptr<Control> InnerFindChildAtPosition(
         const Point& position,
         bool recursively) const noexcept;
