@@ -654,7 +654,7 @@ void ComboBoxDropDownListBox::OnMouseMove(const MouseMoveInfo& event_info) {
         return;
     }
 
-    if (!IsCapturingMouse()) {
+    if (!HasMouseCapture()) {
         if (mouse_move_callback_) {
             mouse_move_callback_(event_info.PositionAtSender());
         }

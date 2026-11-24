@@ -28,10 +28,9 @@ public:
         const MouseMessage& message);
 
     std::shared_ptr<Control> MouseCaptureControl() const noexcept;
-    void SetMouseCaptureControl(
-        const std::shared_ptr<Control>& capture_control,
-        bool is_releasing);
-    void CancelMouseCapture();
+    bool CaptureMouseWithControl(const std::shared_ptr<Control>& control);
+    void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
+    void HandleWMCAPTURECHANGED();
 
     bool HandleWMSETCURSOR(const Message& message);
 
@@ -53,8 +52,8 @@ private:
         const MouseMessage& message,
         Point& position_at_control) const;
 
-    void CaptureMouseWithControl(const std::shared_ptr<Control>& control);
-    void ReleaseMouseWithControl(const std::shared_ptr<Control>& control);
+    std::shared_ptr<Control> CancelMouseCapturingControl();
+    void RaiseMouseCaptureChangedEvent(const std::shared_ptr<Control>& old_control);
 
     void TryToShowTooltipWindow();
     void HideTooltipWindow();

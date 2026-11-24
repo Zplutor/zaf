@@ -50,7 +50,6 @@ Control::Control() :
     geometry_facet_(std::make_unique<internal::ControlGeometryFacet>(*this)),
     hierarchy_facet_(std::make_unique<internal::ControlHierarchyFacet>(*this)),
     is_mouse_over_(false), 
-    is_capturing_mouse_(false),
     is_focused_(false),
     is_enabled_(DefaultIsEnabled),
     is_visible_(DefaultIsVisible) {
@@ -476,6 +475,176 @@ std::shared_ptr<Control> Control::FindDescendantAtPosition(
 #pragma endregion
 
 
+#pragma region Mouse Input Handling
+
+bool Control::IsMouseOver() const noexcept {
+    return is_mouse_over_;
+}
+
+
+bool Control::ContainsMouse() const noexcept {
+
+    if (IsMouseOver()) {
+        return true;
+    }
+
+    auto window = Window();
+    if (!window) {
+        return false;
+    }
+
+    const auto& mouse_over_control = window->MouseOverControl();
+    if (!mouse_over_control) {
+        return false;
+    }
+
+    return IsAncestorOf(*mouse_over_control);
+}
+
+
+rx::Observable<MouseEnterInfo> Control::MouseEnterEvent() const {
+    return mouse_enter_event_.GetObservable();
+}
+
+
+rx::Observable<MouseLeaveInfo> Control::MouseLeaveEvent() const {
+    return mouse_leave_event_.GetObservable();
+}
+
+
+rx::Observable<MouseHoverInfo> Control::MouseHoverEvent() const {
+    return mouse_hover_event_.GetObservable();
+}
+
+
+rx::Observable<MouseCursorChangingInfo> Control::MouseCursorChangingEvent() const {
+    return mouse_cursor_changing_event_.GetObservable();
+}
+
+
+rx::Observable<PreMouseMoveInfo> Control::PreMouseMoveEvent() const {
+    return pre_mouse_move_event_.GetObservable();
+}
+
+
+rx::Observable<MouseMoveInfo> Control::MouseMoveEvent() const {
+    return mouse_move_event_.GetObservable();
+}
+
+
+rx::Observable<PreMouseDownInfo> Control::PreMouseDownEvent() const {
+    return pre_mouse_down_event_.GetObservable();
+}
+
+
+rx::Observable<MouseDownInfo> Control::MouseDownEvent() const {
+    return mouse_down_event_.GetObservable();
+}
+
+
+rx::Observable<PreMouseUpInfo> Control::PreMouseUpEvent() const {
+    return pre_mouse_up_event_.GetObservable();
+}
+
+
+rx::Observable<MouseUpInfo> Control::MouseUpEvent() const {
+    return mouse_up_event_.GetObservable();
+}
+
+
+rx::Observable<PreMouseWheelInfo> Control::PreMouseWheelEvent() const {
+    return pre_mouse_wheel_event_.GetObservable();
+}
+
+
+rx::Observable<MouseWheelInfo> Control::MouseWheelEvent() const {
+    return mouse_wheel_event_.GetObservable();
+}
+
+
+bool Control::CanDoubleClick() const {
+    return can_double_click_;
+}
+
+
+void Control::SetCanDoubleClick(bool can_double_click) {
+    can_double_click_ = can_double_click;
+}
+
+
+rx::Observable<DoubleClickInfo> Control::DoubleClickEvent() const {
+    return double_click_event_.GetObservable();
+}
+
+
+bool Control::CaptureMouse() {
+
+    auto shared_this = weak_from_this().lock();
+    if (!shared_this) {
+        return false;
+    }
+
+    auto window = Window();
+    if (!window) {
+        return false;
+    }
+
+    return window->mouse_facet_->CaptureMouseWithControl(shared_this);
+}
+
+
+rx::Observable<MouseCapturedInfo> Control::MouseCapturedEvent() const {
+    return mouse_captured_event_.GetObservable();
+}
+
+
+void Control::ReleaseMouse() {
+
+    auto shared_this = weak_from_this().lock();
+    if (!shared_this) {
+        return;
+    }
+
+    auto window = Window();
+    if (!window) {
+        return;
+    }
+
+    window->mouse_facet_->ReleaseMouseWithControl(shared_this);
+}
+
+
+rx::Observable<MouseReleasedInfo> Control::MouseReleasedEvent() const {
+    return mouse_released_event_.GetObservable();
+}
+
+
+bool Control::HasMouseCapture() const noexcept {
+    auto window = Window();
+    if (window) {
+        return window->MouseCaptureControl().get() == this;
+    }
+    return false;
+}
+
+
+const Point Control::GetMousePosition() const {
+
+    auto window = Window();
+    if (window == nullptr) {
+        return Point();
+    }
+    
+    Point mouse_position = window->MousePosition();
+    Point absolute_position = *PositionInWindow();
+    mouse_position.x -= absolute_position.x;
+    mouse_position.y -= absolute_position.y;
+    return mouse_position;
+}
+
+#pragma endregion
+
+
 std::shared_ptr<Image> Control::BackgroundImage() const {
     return BackgroundImagePicker()(*this);
 }
@@ -483,11 +652,6 @@ std::shared_ptr<Image> Control::BackgroundImage() const {
 
 void Control::SetBackgroundImage(const std::shared_ptr<Image>& image) {
     SetBackgroundImagePicker(CreateImagePicker(image));
-}
-
-
-bool Control::IsMouseOver() const {
-    return is_mouse_over_;
 }
 
 
@@ -508,11 +672,6 @@ bool Control::IsFocused() const {
 
 bool Control::IsCachedPaintingEnabled() const {
     return is_cached_painting_enabled_;
-}
-
-
-bool Control::IsCapturingMouse() const noexcept {
-    return is_capturing_mouse_;
 }
 
 
@@ -1246,26 +1405,6 @@ void Control::SetIsMouseOverByWindow(bool is_mouse_over) {
 }
 
 
-bool Control::ContainsMouse() const {
-
-    if (IsMouseOver()) {
-        return true;
-    }
-
-    auto window = Window();
-    if (!window) {
-        return false;
-    }
-
-    const auto& mouse_over_control = window->MouseOverControl();
-    if (!mouse_over_control) {
-        return false;
-    }
-
-    return IsAncestorOf(*mouse_over_control);
-}
-
-
 bool Control::CanTabStop() const {
     return can_tab_stop_;
 }
@@ -1368,15 +1507,6 @@ void Control::ReleaseCachedPaintingRenderer() {
 }
 
 
-bool Control::CanDoubleClick() const {
-    return can_double_click_;
-}
-
-void Control::SetCanDoubleClick(bool can_double_click) {
-    can_double_click_ = can_double_click;
-}
-
-
 std::wstring Control::Tooltip() const {
     return tooltip_;
 }
@@ -1386,50 +1516,15 @@ void Control::SetTooltip(const std::wstring& tooltip) {
 }
 
 
-void Control::CaptureMouse() {
-
-    auto window = Window();
-    if (window != nullptr) {
-        window->mouse_facet_->SetMouseCaptureControl(shared_from_this(), false);
-    }
-}
-
-
-void Control::ReleaseMouse() {
-
-    auto window = Window();
-    if (window != nullptr) {
-        window->mouse_facet_->SetMouseCaptureControl(shared_from_this(), true);
-    }
-}
-
-
 void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
 
-    is_capturing_mouse_ = is_capturing_mouse;
-
     internal::MouseCaptureEventInfo event_info{ shared_from_this() };
-    if (is_capturing_mouse_) {
+    if (is_capturing_mouse) {
         OnMouseCaptured(event_info);
     }
     else {
         OnMouseReleased(event_info);
     }
-}
-
-
-const Point Control::GetMousePosition() const {
-
-    auto window = Window();
-    if (window == nullptr) {
-        return Point();
-    }
-    
-    Point mouse_position = window->MousePosition();
-    Point absolute_position = *PositionInWindow();
-    mouse_position.x -= absolute_position.x;
-    mouse_position.y -= absolute_position.y;
-    return mouse_position;
 }
 
 
@@ -1482,18 +1577,8 @@ void Control::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
 }
 
 
-rx::Observable<MouseCursorChangingInfo> Control::MouseCursorChangingEvent() const {
-    return mouse_cursor_changing_event_.GetObservable();
-}
-
-
 void Control::OnPreMouseMove(const PreMouseMoveInfo& event_info) {
     pre_mouse_move_event_.Raise(event_info);
-}
-
-
-rx::Observable<PreMouseMoveInfo> Control::PreMouseMoveEvent() const {
-    return pre_mouse_move_event_.GetObservable();
 }
 
 
@@ -1502,18 +1587,8 @@ void Control::OnMouseMove(const MouseMoveInfo& event_info) {
 }
 
 
-rx::Observable<MouseMoveInfo> Control::MouseMoveEvent() const {
-    return mouse_move_event_.GetObservable();
-}
-
-
 void Control::OnMouseEnter(const MouseEnterInfo& event_info) {
     mouse_enter_event_.Raise(event_info);
-}
-
-
-rx::Observable<MouseEnterInfo> Control::MouseEnterEvent() const {
-    return mouse_enter_event_.GetObservable();
 }
 
 
@@ -1522,28 +1597,13 @@ void Control::OnMouseLeave(const MouseLeaveInfo& event_info) {
 }
 
 
-rx::Observable<MouseLeaveInfo> Control::MouseLeaveEvent() const {
-    return mouse_leave_event_.GetObservable();
-}
-
-
 void Control::OnMouseHover(const MouseHoverInfo& event_info) {
     mouse_hover_event_.Raise(event_info);
 }
 
 
-rx::Observable<MouseHoverInfo> Control::MouseHoverEvent() const {
-    return mouse_hover_event_.GetObservable();
-}
-
-
 void Control::OnPreMouseDown(const PreMouseDownInfo& event_info) {
     pre_mouse_down_event_.Raise(event_info);
-}
-
-
-rx::Observable<PreMouseDownInfo> Control::PreMouseDownEvent() const {
-    return pre_mouse_down_event_.GetObservable();
 }
 
 
@@ -1586,28 +1646,13 @@ bool Control::HandleDoubleClickOnMouseDown(const Point& position) {
 }
 
 
-rx::Observable<MouseDownInfo> Control::MouseDownEvent() const {
-    return mouse_down_event_.GetObservable();
-}
-
-
 void Control::OnPreMouseUp(const PreMouseUpInfo& event_info) {
     pre_mouse_up_event_.Raise(event_info);
 }
 
 
-rx::Observable<PreMouseUpInfo> Control::PreMouseUpEvent() const {
-    return pre_mouse_up_event_.GetObservable();
-}
-
-
 void Control::OnMouseUp(const MouseUpInfo& event_info) {
     mouse_up_event_.Raise(event_info);
-}
-
-
-rx::Observable<MouseUpInfo> Control::MouseUpEvent() const {
-    return mouse_up_event_.GetObservable();
 }
 
 
@@ -1627,18 +1672,8 @@ void Control::OnDoubleClick(const DoubleClickInfo& event_info) {
 }
 
 
-rx::Observable<DoubleClickInfo> Control::DoubleClickEvent() const {
-    return double_click_event_.GetObservable();
-}
-
-
 void Control::OnPreMouseWheel(const PreMouseWheelInfo& event_info) {
     pre_mouse_wheel_event_.Raise(event_info);
-}
-
-
-rx::Observable<PreMouseWheelInfo> Control::PreMouseWheelEvent() const {
-    return pre_mouse_wheel_event_.GetObservable();
 }
 
 
@@ -1647,28 +1682,13 @@ void Control::OnMouseWheel(const MouseWheelInfo& event_info) {
 }
 
 
-rx::Observable<MouseWheelInfo> Control::MouseWheelEvent() const {
-    return mouse_wheel_event_.GetObservable();
-}
-
-
 void Control::OnMouseCaptured(const MouseCapturedInfo& event_info) {
     mouse_captured_event_.Raise(event_info);
 }
 
 
-rx::Observable<MouseCapturedInfo> Control::MouseCapturedEvent() const {
-    return mouse_captured_event_.GetObservable();
-}
-
-
 void Control::OnMouseReleased(const MouseReleasedInfo& event_info) {
     mouse_released_event_.Raise(event_info);
-}
-
-
-rx::Observable<MouseReleasedInfo> Control::MouseReleasedEvent() const {
-    return mouse_released_event_.GetObservable();
 }
 
 

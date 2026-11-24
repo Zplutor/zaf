@@ -924,7 +924,7 @@ std::optional<LRESULT> Window::HandleMessage(const Message& message) {
     }
 
     case WM_CAPTURECHANGED:
-        mouse_facet_->CancelMouseCapture();
+        mouse_facet_->HandleWMCAPTURECHANGED();
         return 0;
 
     case WM_SETCURSOR: {

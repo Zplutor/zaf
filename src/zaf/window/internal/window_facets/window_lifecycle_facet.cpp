@@ -286,7 +286,7 @@ void WindowLifecycleFacet::HandleWMDESTROY() {
     handle_state_ = WindowHandleState::Destroying;
     window_.OnDestroying(DestroyingInfo{ window_.shared_from_this(), destroy_reason_ });
 
-    window_.mouse_facet_->CancelMouseCapture();
+    window_.mouse_facet_->HandleWMCAPTURECHANGED();
     window_.focus_facet_->HandleWindowDestroy();
     window_.RootControl()->ReleaseRendererResources();
 

@@ -392,49 +392,39 @@ std::shared_ptr<Control> WindowMouseFacet::MouseCaptureControl() const noexcept 
 }
 
 
-void WindowMouseFacet::SetMouseCaptureControl(
-    const std::shared_ptr<Control>& capture_control,
-    bool is_releasing) {
+bool WindowMouseFacet::CaptureMouseWithControl(const std::shared_ptr<Control>& control) {
 
-    if (capture_control == nullptr) {
-        return;
+    // If the control is already capturing the mouse, do nothing.
+    auto capturing_control = this->MouseCaptureControl();
+    if (capturing_control == control) {
+        return true;
     }
 
-    if (!is_releasing) {
-        CaptureMouseWithControl(capture_control);
-    }
-    else {
-        ReleaseMouseWithControl(capture_control);
-    }
-}
-
-
-void WindowMouseFacet::CaptureMouseWithControl(const std::shared_ptr<Control>& control) {
-
-    auto previous_control = this->MouseCaptureControl();
-    if (previous_control == control) {
-        return;
+    // The window handle must be valid.
+    auto window_handle = window_.Handle();
+    if (!window_handle) {
+        return false;
     }
 
-    //The control must be contained in this window.
-    if (control->Window().get() != &window_) {
-        return;
+    // Set the window capture. If it fails, return false.
+    if (window_handle != GetCapture()) {
+        SetCapture(window_handle);
+        if (window_handle != GetCapture()) {
+            return false;
+        }
     }
 
-    if (previous_control != nullptr) {
-        previous_control->IsCapturingMouseChanged(false);
-    }
-    else {
-        SetCapture(window_.Handle());
-    }
+    // Cancel the previous control capture if there is one.
+    capturing_control = CancelMouseCapturingControl();
 
+    // Store the new capture control to the window.
     window_.lifecycle_facet_->HandleStateData().mouse_capture_control = control;
+
+    // Notify the new capturing control that it is now capturing the mouse.
     control->IsCapturingMouseChanged(true);
 
-    window_.OnMouseCaptureControlChanged(MouseCaptureControlChangedInfo{
-        window_.shared_from_this(),
-        previous_control
-    });
+    RaiseMouseCaptureChangedEvent(capturing_control);
+    return true;
 }
 
 
@@ -445,27 +435,51 @@ void WindowMouseFacet::ReleaseMouseWithControl(const std::shared_ptr<Control>& c
         return;
     }
 
-    //ReleaseCapture sends a WM_CAPTURECHANGED message to the window, 
-    //in which message handler will set mouse_capture_control_ to nullptr.
-    ReleaseCapture();
+    // HandleWMCAPTURECHANGED is intended for the case that the window capture is canceled 
+    // passively by other window.
+    // Here is for the case that the window capture is canceled actively by the control itself, 
+    // so we cancel the control capture explicitly to distinguish the two cases.
+
+    // Cancel the control capture.
+    capturing_control = CancelMouseCapturingControl();
+    RaiseMouseCaptureChangedEvent(capturing_control);
+
+    // Cancel the window capture.
+    if (window_.Handle() == GetCapture()) {
+        ReleaseCapture();
+    }
 }
 
 
-void WindowMouseFacet::CancelMouseCapture() {
+void WindowMouseFacet::HandleWMCAPTURECHANGED() {
 
+    auto capturing_control = CancelMouseCapturingControl();
+    if (capturing_control) {
+        RaiseMouseCaptureChangedEvent(capturing_control);
+    }
+}
+
+
+std::shared_ptr<Control> WindowMouseFacet::CancelMouseCapturingControl() {
+    
     auto capturing_control = this->MouseCaptureControl();
     if (!capturing_control) {
-        return;
+        return nullptr;
     }
 
-    //Set mouse_capture_control_ to nullptr before raising events to avoid reentering issues.
-    auto previous_control = capturing_control;
+    // Cancel the stored mouse capture control in the window.
     window_.lifecycle_facet_->HandleStateData().mouse_capture_control = nullptr;
-    previous_control->IsCapturingMouseChanged(false);
 
+    // Notify the capturing control that it is no longer capturing the mouse.
+    capturing_control->IsCapturingMouseChanged(false);
+    return capturing_control;
+}
+
+
+void WindowMouseFacet::RaiseMouseCaptureChangedEvent(const std::shared_ptr<Control>& old_control) {
     window_.OnMouseCaptureControlChanged(MouseCaptureControlChangedInfo{
         window_.shared_from_this(),
-        previous_control
+        old_control
     });
 }
 

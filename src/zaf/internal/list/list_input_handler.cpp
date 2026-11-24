@@ -127,7 +127,7 @@ void ListInputHandler::HandleMouseMoveEvent(const MouseMoveInfo& event_info) {
     }
 
     //Handle mouse move only when the list control is capturing the mouse.
-    if (!scroll_box->IsCapturingMouse()) {
+    if (!scroll_box->HasMouseCapture()) {
         return;
     }
 
@@ -162,7 +162,7 @@ void ListInputHandler::HandleMouseUpEvent(const MouseUpInfo& event_info) {
 
     if (event_info.Message().MouseButton() == MouseButton::Left) {
 
-        if (scroll_box->IsCapturingMouse()) {
+        if (scroll_box->HasMouseCapture()) {
             scroll_box->ReleaseMouse();
         }
 

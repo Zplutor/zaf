@@ -861,6 +861,112 @@ public:
     /** @} */
 #pragma endregion
 
+#pragma region Public Mouse Input Handling
+    /**
+    @name Public Mouse Input Handling
+    @{
+    */
+
+    /**
+    Indicates whether the control itself is under the mouse cursor.
+
+    @details
+        If any descendant of the control is under the mouse cursor, this method returns false.
+
+    @see zaf::Control::ContainsMouse()
+    */
+    bool IsMouseOver() const noexcept;
+
+    /**
+    Indicates whether the control or any of its descendants is under mouse cursor.
+
+    @see zaf::Control::IsMouseOver()
+    */
+    bool ContainsMouse() const noexcept;
+
+    rx::Observable<MouseEnterInfo> MouseEnterEvent() const;
+    rx::Observable<MouseLeaveInfo> MouseLeaveEvent() const;
+    rx::Observable<MouseHoverInfo> MouseHoverEvent() const;
+
+    rx::Observable<MouseCursorChangingInfo> MouseCursorChangingEvent() const;
+
+    rx::Observable<PreMouseMoveInfo> PreMouseMoveEvent() const;
+    rx::Observable<MouseMoveInfo> MouseMoveEvent() const;
+
+    rx::Observable<PreMouseDownInfo> PreMouseDownEvent() const;
+    rx::Observable<MouseDownInfo> MouseDownEvent() const;
+
+    rx::Observable<PreMouseUpInfo> PreMouseUpEvent() const;
+    rx::Observable<MouseUpInfo> MouseUpEvent() const;
+
+    rx::Observable<PreMouseWheelInfo> PreMouseWheelEvent() const;
+    rx::Observable<MouseWheelInfo> MouseWheelEvent() const;
+
+    bool CanDoubleClick() const;
+    void SetCanDoubleClick(bool can_double_click);
+    rx::Observable<DoubleClickInfo> DoubleClickEvent() const;
+
+    /**
+    Tries to capture the mouse to this control.
+
+    @return
+        True if the mouse is captured successfully, false otherwise.
+
+    @throw ...
+        Any exception may be thrown while raising events after capturing the mouse successfully.
+
+    @details
+        If the control captures the mouse successfully, all mouse messages will be sent to this
+        control until it releases the mouse capture or loses the mouse capture passively.
+
+    @see zaf::Control::HasMouseCapture()
+    @see zaf::Control::MouseCapturedEvent()
+    @see zaf::Control::ReleaseMouse()
+    @see zaf::Window::MouseCaptureControlChangedEvent()
+    */
+    bool CaptureMouse();
+
+    /**
+    Gets the mouse captured event which is raised after the control capturing mouse successfully.
+    */
+    rx::Observable<MouseCapturedInfo> MouseCapturedEvent() const;
+
+    /**
+    Release the mouse capture from this control.
+
+    @throw ...
+        Any exception may be thrown while raising events after releasing the mouse capture.
+
+    @details
+        If the control is not capturing the mouse, nothing will be done.
+
+    @see zaf::Control::CaptureMouse()
+    @see zaf::Control::MouseReleasedEvent()
+    @see zaf::Window::MouseCaptureControlChangedEvent()
+    */
+    void ReleaseMouse();
+
+    /**
+    Gets the mouse releasing event which is raised after the control released the mouse capture.
+    */
+    rx::Observable<MouseReleasedInfo> MouseReleasedEvent() const;
+
+    /**
+    Indicates whether the control has the mouse capture.
+
+    @see zaf::Control::CaptureMouse()
+    @see zaf::Control::ReleaseMouse()
+    */
+    bool HasMouseCapture() const noexcept;
+
+    /**
+     The the mouse position in control's coordinate.
+     */
+    const Point GetMousePosition() const;
+
+    /** @} */
+#pragma endregion
+
     std::shared_ptr<Image> BackgroundImage() const;
 
     ImagePicker BackgroundImagePicker() const;
@@ -992,16 +1098,6 @@ public:
     rx::Observable<IsSelectedChangedInfo> IsSelectedChangedEvent() const;
 
     /**
-     Get a value indicating that whether the control itself is under mouse cursor.
-     */
-    bool IsMouseOver() const;
-
-    /**
-    Indicates whether the control or any of its children is under mouse cursor.
-    */
-    bool ContainsMouse() const;
-
-    /**
      Get a value indicating that whether the control can be focused.
 
      The default value is false.
@@ -1064,43 +1160,8 @@ public:
 
     void SetIsCachedPaintingEnabled(bool value);
 
-    bool CanDoubleClick() const;
-    void SetCanDoubleClick(bool can_double_click);
-
     std::wstring Tooltip() const;
     void SetTooltip(const std::wstring& tooltip);
-
-    /**
-     Capture the mouse.
-     */
-    void CaptureMouse();
-
-    /**
-    Indicates whether the control is capturing the mouse.
-    */
-    bool IsCapturingMouse() const noexcept;
-
-    /**
-    Gets mouse captured event. This event is raised after the control calling CaptureMouse() and 
-    capturing mouse successfully.
-    */
-    rx::Observable<MouseCapturedInfo> MouseCapturedEvent() const;
-
-    /**
-     Release the mouse.
-     */
-    void ReleaseMouse();
-
-    /**
-    Gets mouse released event. This event is raised after the control releasing mouse capture with 
-    ReleaseMouse(), or losing mouse capture passively.
-    */
-    rx::Observable<MouseReleasedInfo> MouseReleasedEvent() const;
-
-    /**
-     The the mouse position in control's coordinate.
-     */
-    const Point GetMousePosition() const;
 
     float GetDPI() const;
 
@@ -1171,26 +1232,6 @@ public:
 
     rx::Observable<PreFocusLostInfo> PreFocusLostEvent() const;
     rx::Observable<FocusLostInfo> FocusLostEvent() const;
-
-    rx::Observable<MouseCursorChangingInfo> MouseCursorChangingEvent() const;
-
-    rx::Observable<PreMouseMoveInfo> PreMouseMoveEvent() const;
-    rx::Observable<MouseMoveInfo> MouseMoveEvent() const;
-
-    rx::Observable<MouseEnterInfo> MouseEnterEvent() const;
-    rx::Observable<MouseLeaveInfo> MouseLeaveEvent() const;
-    rx::Observable<MouseHoverInfo> MouseHoverEvent() const;
-
-    rx::Observable<PreMouseDownInfo> PreMouseDownEvent() const;
-    rx::Observable<MouseDownInfo> MouseDownEvent() const;
-
-    rx::Observable<PreMouseUpInfo> PreMouseUpEvent() const;
-    rx::Observable<MouseUpInfo> MouseUpEvent() const;
-
-    rx::Observable<DoubleClickInfo> DoubleClickEvent() const;
-
-    rx::Observable<PreMouseWheelInfo> PreMouseWheelEvent() const;
-    rx::Observable<MouseWheelInfo> MouseWheelEvent() const;
 
     rx::Observable<PreKeyDownInfo> PreKeyDownEvent() const;
     rx::Observable<KeyDownInfo> KeyDownEvent() const;
@@ -1497,7 +1538,6 @@ private:
     bool is_layouting_{ false };
 
     bool is_mouse_over_;
-    bool is_capturing_mouse_;
     bool is_focused_;
     bool can_focus_{ false };
     bool can_double_click_{ false };
