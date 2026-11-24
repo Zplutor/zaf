@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <string>
 #include <vector>
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/windows/com_error.h>
 #include <zaf/base/range.h>
 #include <zaf/graphic/d2d/brush.h>
 #include <zaf/graphic/dwrite/font_style.h>

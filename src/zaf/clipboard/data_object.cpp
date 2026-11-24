@@ -5,7 +5,7 @@
 #include <zaf/clipboard/internal/data_object_impl.h>
 #include <zaf/clipboard/drop_files_data.h>
 #include <zaf/clipboard/text_data.h>
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/windows/com_error.h>
 
 namespace zaf::clipboard {
 

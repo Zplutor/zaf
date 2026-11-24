@@ -2,7 +2,7 @@
 
 #include <bcrypt.h>
 #include <mutex>
-#include <zaf/base/error/nt_error.h>
+#include <zaf/base/windows/nt_error.h>
 #include <zaf/base/non_copyable.h>
 
 namespace zaf::crypto::internal {

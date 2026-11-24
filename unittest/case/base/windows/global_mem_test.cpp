@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/win32_error.h>
 #include <zaf/base/windows/global_mem.h>
 
 using namespace zaf;

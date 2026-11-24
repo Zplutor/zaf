@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="case">
@@ -541,11 +541,11 @@
     <ClCompile Include="unittest\utility\test_window.cpp">
       <Filter>utility</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\base\error\com_error_test.cpp">
-      <Filter>case\base\error</Filter>
+    <ClCompile Include="unittest\case\base\windows\com_error_test.cpp">
+      <Filter>case\base\windows</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\base\error\win32_error_test.cpp">
-      <Filter>case\base\error</Filter>
+    <ClCompile Include="unittest\case\base\windows\win32_error_test.cpp">
+      <Filter>case\base\windows</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\error\base_error_test.cpp">
       <Filter>case\base\error</Filter>

@@ -1,6 +1,6 @@
 #include <zaf/base/windows/global_mem.h>
 #include <strsafe.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/win32_error.h>
 
 namespace zaf {
 

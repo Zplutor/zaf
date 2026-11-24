@@ -1,6 +1,6 @@
 #include <zaf/window/internal/window_facets/window_geometry_facet.h>
 #include <zaf/base/auto_reset.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/win32_error.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/graphic/pixel_snapping.h>
 #include <zaf/window/event/dpi_changed_info.h>

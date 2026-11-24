@@ -3,7 +3,7 @@
 #include <vector>
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/windows/com_error.h>
 #include <zaf/base/flags_enum.h>
 #include <zaf/graphic/d2d/arc_segment.h>
 #include <zaf/graphic/point.h>

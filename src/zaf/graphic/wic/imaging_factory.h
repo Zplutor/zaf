@@ -3,7 +3,7 @@
 #include <wincodec.h>
 #include <filesystem>
 #include <zaf/base/com_object.h>
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/windows/com_error.h>
 #include <zaf/graphic/wic/bitmap.h>
 #include <zaf/graphic/wic/bitmap_decoder.h>
 #include <zaf/graphic/wic/bitmap_scaler.h>

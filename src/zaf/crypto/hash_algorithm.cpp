@@ -1,5 +1,5 @@
 #include <zaf/crypto/hash_algorithm.h>
-#include <zaf/base/error/nt_error.h>
+#include <zaf/base/windows/nt_error.h>
 
 namespace zaf::crypto {
 

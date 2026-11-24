@@ -1,7 +1,7 @@
 #include <zaf/clipboard/clipboard.h>
 #include <strsafe.h>
-#include <zaf/base/error/com_error.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/com_error.h>
+#include <zaf/base/windows/win32_error.h>
 #include <zaf/base/windows/global_mem.h>
 #include <zaf/base/non_copyable.h>
 

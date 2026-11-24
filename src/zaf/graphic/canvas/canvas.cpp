@@ -1,6 +1,6 @@
 #include <zaf/graphic/canvas/canvas.h>
 #include <dwrite.h>
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/windows/com_error.h>
 #include <zaf/graphic/pixel_snapping.h>
 #include <zaf/graphic/d2d/path_geometry.h>
 #include <zaf/graphic/d2d/rectangle_geometry.h>

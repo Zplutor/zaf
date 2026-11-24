@@ -4,7 +4,7 @@
 #include <cassert>
 #include <zaf/base/error/unreachable_error.h>
 #include <zaf/base/error/unknown_runtime_error.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/win32_error.h>
 #include <zaf/base/log.h>
 #include <zaf/control/caret.h>
 #include <zaf/control/control_object.h>

@@ -1,8 +1,8 @@
 #include <zaf/window/screen.h>
 #include <ShellScalingApi.h>
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/windows/com_error.h>
 #include <zaf/base/error/precondition_error.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/win32_error.h>
 #include <zaf/graphic/dpi.h>
 
 namespace zaf {

@@ -1,7 +1,7 @@
 #include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
 #include <zaf/application.h>
 #include <zaf/base/auto_reset.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/win32_error.h>
 #include <zaf/control/control.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/internal/window/window_focused_control_manager.h>

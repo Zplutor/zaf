@@ -367,8 +367,8 @@
     <ClCompile Include="src\zaf\resource\internal\uri_parsing.cpp">
       <Filter>zaf\resource\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\error\com_error.cpp">
-      <Filter>zaf\base\error</Filter>
+    <ClCompile Include="src\zaf\base\windows\com_error.cpp">
+      <Filter>zaf\base\windows</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\linear_box.cpp">
       <Filter>zaf\control</Filter>
@@ -946,11 +946,11 @@
     <ClCompile Include="src\zaf\control\event\ime_event_infos.cpp">
       <Filter>zaf\control\event</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\error\win32_error.cpp">
-      <Filter>zaf\base\error</Filter>
+    <ClCompile Include="src\zaf\base\windows\win32_error.cpp">
+      <Filter>zaf\base\windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\error\nt_error.cpp">
-      <Filter>zaf\base\error</Filter>
+    <ClCompile Include="src\zaf\base\windows\nt_error.cpp">
+      <Filter>zaf\base\windows</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\textual\styled_text_data.cpp">
       <Filter>zaf\control\textual</Filter>
@@ -1690,8 +1690,8 @@
     <ClInclude Include="src\zaf\resource\internal\uri_parsing.h">
       <Filter>zaf\resource\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\error\com_error.h">
-      <Filter>zaf\base\error</Filter>
+    <ClInclude Include="src\zaf\base\windows\com_error.h">
+      <Filter>zaf\base\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\error.h">
       <Filter>zaf\base\error</Filter>
@@ -2485,14 +2485,14 @@
     <ClInclude Include="src\zaf\base\error\runtime_error_base.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\error\win32_error.h">
-      <Filter>zaf\base\error</Filter>
+    <ClInclude Include="src\zaf\base\windows\win32_error.h">
+      <Filter>zaf\base\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\error\invalid_operation_error.h">
       <Filter>zaf\base\error</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\error\nt_error.h">
-      <Filter>zaf\base\error</Filter>
+    <ClInclude Include="src\zaf\base\windows\nt_error.h">
+      <Filter>zaf\base\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\resource\invalid_uri_error.h">
       <Filter>zaf\resource</Filter>

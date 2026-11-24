@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/win32_error.h>
 #include <zaf/window/invalid_handle_state_error.h>
 #include <zaf/window/window.h>
 #include "window_test.h"

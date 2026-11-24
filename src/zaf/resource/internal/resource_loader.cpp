@@ -1,7 +1,7 @@
 #include <zaf/resource/internal/resource_loader.h>
 #include <zaf/base/container/utility/find.h>
 #include <zaf/base/container/utility/map.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/win32_error.h>
 #include <zaf/base/string/case_conversion.h>
 
 namespace zaf::internal {

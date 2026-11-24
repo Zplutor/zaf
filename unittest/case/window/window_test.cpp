@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/application.h>
 #include <zaf/base/as.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/win32_error.h>
 #include <zaf/control/label.h>
 #include <zaf/creation.h>
 #include <zaf/graphic/pixel_snapping.h>

@@ -2,7 +2,7 @@
 #include <atlbase.h>
 #include <dwrite.h>
 #include <zaf/application_delegate.h>
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/windows/com_error.h>
 #include <zaf/base/error/precondition_error.h>
 #include <zaf/creation.h>
 #include <zaf/crypto/internal/crypto_manager.h>

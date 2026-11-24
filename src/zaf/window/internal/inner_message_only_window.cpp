@@ -1,5 +1,5 @@
 #include <zaf/window/internal/inner_message_only_window.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/win32_error.h>
 
 namespace zaf::internal {
 namespace {

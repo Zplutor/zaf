@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug-MT|Win32">
@@ -399,9 +399,9 @@
     <ClCompile Include="unittest\case\base\container\utility\union_test.cpp" />
     <ClCompile Include="unittest\case\base\container\utility\unique_test.cpp" />
     <ClCompile Include="unittest\case\base\error\base_error_test.cpp" />
-    <ClCompile Include="unittest\case\base\error\com_error_test.cpp" />
+    <ClCompile Include="unittest\case\base\windows\com_error_test.cpp" />
     <ClCompile Include="unittest\case\base\error\contract_error_test.cpp" />
-    <ClCompile Include="unittest\case\base\error\win32_error_test.cpp" />
+    <ClCompile Include="unittest\case\base\windows\win32_error_test.cpp" />
     <ClCompile Include="unittest\case\base\event\event_test.cpp" />
     <ClCompile Include="unittest\case\base\flags_enum_test.cpp" />
     <ClCompile Include="unittest\case\base\windows\global_mem_test.cpp" />

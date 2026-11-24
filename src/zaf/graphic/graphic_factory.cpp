@@ -1,7 +1,7 @@
 #include <zaf/graphic/graphic_factory.h>
 #include <zaf/application.h>
-#include <zaf/base/error/com_error.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/com_error.h>
+#include <zaf/base/windows/win32_error.h>
 #include <zaf/graphic/d2d/stroke_style_properties.h>
 #include <zaf/graphic/matrix.h>
 #include <zaf/graphic/dwrite/text_format_properties.h>

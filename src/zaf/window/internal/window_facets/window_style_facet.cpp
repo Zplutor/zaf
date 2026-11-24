@@ -1,6 +1,6 @@
 #include <zaf/window/internal/window_facets/window_style_facet.h>
 #include <zaf/base/error/precondition_error.h>
-#include <zaf/base/error/win32_error.h>
+#include <zaf/base/windows/win32_error.h>
 #include <zaf/window/internal/window_facets/window_lifecycle_facet.h>
 #include <zaf/window/internal/window_style_shim.h>
 #include <zaf/window/invalid_handle_state_error.h>

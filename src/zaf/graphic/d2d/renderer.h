@@ -3,7 +3,7 @@
 #include <memory>
 #include <zaf/base/com_object.h>
 #include <zaf/base/direct2d.h>
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/windows/com_error.h>
 #include <zaf/graphic/d2d/bitmap_brush.h>
 #include <zaf/graphic/d2d/solid_color_brush.h>
 #include <zaf/graphic/color.h>

@@ -7,7 +7,7 @@
 #include <functional>
 #include <vector>
 #include <zaf/base/com_object.h>
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/windows/com_error.h>
 
 #undef max
 #undef min

@@ -1,5 +1,5 @@
 #include <zaf/graphic/dwrite/font_family.h>
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/windows/com_error.h>
 #include <zaf/graphic/dwrite/font_collection.h>
 
 namespace zaf::dwrite {

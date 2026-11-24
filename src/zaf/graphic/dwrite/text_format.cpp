@@ -1,5 +1,5 @@
 #include <zaf/graphic/dwrite/text_format.h>
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/windows/com_error.h>
 
 namespace zaf::dwrite {
 

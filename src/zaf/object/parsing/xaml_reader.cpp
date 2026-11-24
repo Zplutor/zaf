@@ -1,7 +1,7 @@
 #include <zaf/object/parsing/xaml_reader.h>
 #include <atlbase.h>
 #include <Shlwapi.h>
-#include <zaf/base/error/com_error.h>
+#include <zaf/base/windows/com_error.h>
 #include <zaf/io/stream/stream.h>
 #include <zaf/base/string/encoding_conversion.h>
 #include <zaf/object/parsing/xaml_node_builder.h>
