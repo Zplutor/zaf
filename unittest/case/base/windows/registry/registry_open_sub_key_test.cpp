@@ -1,6 +1,6 @@
 #include <Windows.h>
 #include <gtest/gtest.h>
-#include <zaf/base/registry/registry.h>
+#include <zaf/base/windows/registry/registry.h>
 #include "registry_test.h"
 
 namespace {

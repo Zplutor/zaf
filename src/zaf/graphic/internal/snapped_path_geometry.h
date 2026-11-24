@@ -1,7 +1,7 @@
 #pragma once
 
 #include <atomic>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/windows/com_ptr.h>
 #include <zaf/base/direct2d.h>
 #include <zaf/graphic/internal/geometry_snap_data.h>
 

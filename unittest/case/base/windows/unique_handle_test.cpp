@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/unique_handle.h>
+#include <zaf/base/windows/unique_handle.h>
 
 static_assert(!std::is_copy_constructible_v<zaf::UniqueHANDLE>);
 static_assert(!std::is_copy_assignable_v<zaf::UniqueHANDLE>);

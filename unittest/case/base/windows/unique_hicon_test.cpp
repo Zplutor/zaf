@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/base/unique_hicon.h>
+#include <zaf/base/windows/unique_hicon.h>
 
 namespace {
 

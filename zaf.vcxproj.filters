@@ -46,7 +46,7 @@
     <Filter Include="zaf\window\message\internal">
       <UniqueIdentifier>{4d3ccef9-f4a7-4dd9-89de-203888e05c77}</UniqueIdentifier>
     </Filter>
-    <Filter Include="zaf\base\registry">
+    <Filter Include="zaf\base\windows\registry">
       <UniqueIdentifier>{3a7441f4-3ab1-4236-afc5-24ba0fd93ca5}</UniqueIdentifier>
     </Filter>
     <Filter Include="zaf\resource">
@@ -189,6 +189,9 @@
     </Filter>
     <Filter Include="zaf\base\type_traits">
       <UniqueIdentifier>{82e11c77-516c-45be-a15b-ee58859916d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zaf\base\windows">
+      <UniqueIdentifier>{7c4e1a92-6b38-4d5f-9e21-a8f0c3d74b16}</UniqueIdentifier>
     </Filter>
     <Filter Include="zaf\rx\thread">
       <UniqueIdentifier>{917a0620-aacd-4d62-8bb9-4bce337ab382}</UniqueIdentifier>
@@ -340,8 +343,8 @@
     <ClCompile Include="src\zaf\graphic\internal\snapped_path_geometry.cpp">
       <Filter>zaf\graphic\internal</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\registry\registry_key.cpp">
-      <Filter>zaf\base\registry</Filter>
+    <ClCompile Include="src\zaf\base\windows\registry\registry_key.cpp">
+      <Filter>zaf\base\windows\registry</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\layout\layouter.cpp">
       <Filter>zaf\control\layout</Filter>
@@ -547,8 +550,8 @@
     <ClCompile Include="src\zaf\control\internal\image_box\image_player_factory.cpp">
       <Filter>zaf\control\internal\image_box</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\registry\registry_value.cpp">
-      <Filter>zaf\base\registry</Filter>
+    <ClCompile Include="src\zaf\base\windows\registry\registry_value.cpp">
+      <Filter>zaf\base\windows\registry</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\control\property_grid.cpp">
       <Filter>zaf\control</Filter>
@@ -769,8 +772,8 @@
     <ClCompile Include="src\zaf\clipboard\drop_files_data.cpp">
       <Filter>zaf\clipboard</Filter>
     </ClCompile>
-    <ClCompile Include="src\zaf\base\global_mem.cpp">
-      <Filter>zaf\base</Filter>
+    <ClCompile Include="src\zaf\base\windows\global_mem.cpp">
+      <Filter>zaf\base\windows</Filter>
     </ClCompile>
     <ClCompile Include="src\zaf\clipboard\clipboard.cpp">
       <Filter>zaf\clipboard</Filter>
@@ -1572,8 +1575,8 @@
     <ClInclude Include="src\zaf\control\image_box.h">
       <Filter>zaf\control</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\com_ptr.h">
-      <Filter>zaf\base</Filter>
+    <ClInclude Include="src\zaf\base\windows\com_ptr.h">
+      <Filter>zaf\base\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\graphic\rounded_rect.h">
       <Filter>zaf\graphic</Filter>
@@ -1586,9 +1589,6 @@
     </ClInclude>
     <ClInclude Include="src\zaf\control\internal\image_box\gif_player.h">
       <Filter>zaf\control\internal\image_box</Filter>
-    </ClInclude>
-    <ClInclude Include="src\zaf\base\number.h">
-      <Filter>zaf\base</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\base\string\encoding_conversion.h">
       <Filter>zaf\base\string</Filter>
@@ -1648,17 +1648,17 @@
     <ClInclude Include="src\zaf\base\string\split.h">
       <Filter>zaf\base\string</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\registry\registry.h">
-      <Filter>zaf\base\registry</Filter>
+    <ClInclude Include="src\zaf\base\windows\registry\registry.h">
+      <Filter>zaf\base\windows\registry</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\registry\registry_key.h">
-      <Filter>zaf\base\registry</Filter>
+    <ClInclude Include="src\zaf\base\windows\registry\registry_key.h">
+      <Filter>zaf\base\windows\registry</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\registry\registry_rights.h">
-      <Filter>zaf\base\registry</Filter>
+    <ClInclude Include="src\zaf\base\windows\registry\registry_rights.h">
+      <Filter>zaf\base\windows\registry</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\unique_handle.h">
-      <Filter>zaf\base</Filter>
+    <ClInclude Include="src\zaf\base\windows\unique_handle.h">
+      <Filter>zaf\base\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\layout\linear_layouter.h">
       <Filter>zaf\control\layout</Filter>
@@ -1978,14 +1978,14 @@
     <ClInclude Include="src\zaf\base\string\join.h">
       <Filter>zaf\base\string</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\registry\registry_value.h">
-      <Filter>zaf\base\registry</Filter>
+    <ClInclude Include="src\zaf\base\windows\registry\registry_value.h">
+      <Filter>zaf\base\windows\registry</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\registry\registry_value_type.h">
-      <Filter>zaf\base\registry</Filter>
+    <ClInclude Include="src\zaf\base\windows\registry\registry_value_type.h">
+      <Filter>zaf\base\windows\registry</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\registry\registry_view.h">
-      <Filter>zaf\base\registry</Filter>
+    <ClInclude Include="src\zaf\base\windows\registry\registry_view.h">
+      <Filter>zaf\base\windows\registry</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\control\property_grid.h">
       <Filter>zaf\control</Filter>
@@ -2224,8 +2224,8 @@
     <ClInclude Include="src\zaf\control\rich_edit\internal\ole_callback_impl.h">
       <Filter>zaf\control\rich_edit\internal</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\global_mem.h">
-      <Filter>zaf\base</Filter>
+    <ClInclude Include="src\zaf\base\windows\global_mem.h">
+      <Filter>zaf\base\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\clipboard\medium.h">
       <Filter>zaf\clipboard</Filter>
@@ -3271,8 +3271,8 @@
     <ClInclude Include="src\zaf\window\tray_icon.h">
       <Filter>zaf\window</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\base\unique_hicon.h">
-      <Filter>zaf\base</Filter>
+    <ClInclude Include="src\zaf\base\windows\unique_hicon.h">
+      <Filter>zaf\base\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\tray_icon_events.h">
       <Filter>zaf\window</Filter>

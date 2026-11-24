@@ -1,4 +1,4 @@
-#include <zaf/base/registry/registry_key.h>
+#include <zaf/base/windows/registry/registry_key.h>
 #include <zaf/base/error/precondition_error.h>
 #include <zaf/base/error/win32_error.h>
 #include <zaf/base/string/join.h>

@@ -2,7 +2,7 @@
 
 #include <xmllite.h>
 #include <functional>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/windows/com_ptr.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/io/stream/stream.h>
 #include <zaf/base/string/to_numeric.h>

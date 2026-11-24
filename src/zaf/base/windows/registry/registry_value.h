@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <zaf/base/non_copyable.h>
-#include <zaf/base/registry/registry_value_type.h>
+#include <zaf/base/windows/registry/registry_value_type.h>
 
 namespace zaf {
 

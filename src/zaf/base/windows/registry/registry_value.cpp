@@ -1,4 +1,4 @@
-#include <zaf/base/registry/registry_value.h>
+#include <zaf/base/windows/registry/registry_value.h>
 #include <zaf/base/error/precondition_error.h>
 
 namespace zaf {

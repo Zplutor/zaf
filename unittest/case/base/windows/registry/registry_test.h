@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 #include <gtest/gtest.h>
-#include <zaf/base/registry/registry_key.h>
+#include <zaf/base/windows/registry/registry_key.h>
 
 class RegistryTest : public testing::Test {
 public:

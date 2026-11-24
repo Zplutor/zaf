@@ -8,7 +8,7 @@
 #include <Windows.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/non_copyable.h>
-#include <zaf/base/unique_hicon.h>
+#include <zaf/base/windows/unique_hicon.h>
 #include <zaf/object/object.h>
 #include <zaf/rx/disposable_host.h>
 #include <zaf/rx/observable.h>

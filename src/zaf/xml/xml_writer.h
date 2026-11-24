@@ -2,7 +2,7 @@
 
 #include <xmllite.h>
 #include <zaf/base/code_page.h>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/windows/com_ptr.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/io/stream/stream.h>
 #include <zaf/xml/xml_output_options.h>

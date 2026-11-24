@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/as.h>
-#include <zaf/base/global_mem.h>
+#include <zaf/base/windows/global_mem.h>
 #include <zaf/clipboard/internal/medium_wrapper.h>
 #include <zaf/clipboard/medium.h>
 

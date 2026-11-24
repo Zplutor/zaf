@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <memory>
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/windows/com_ptr.h>
 #include <zaf/base/non_copyable.h>
 
 namespace {

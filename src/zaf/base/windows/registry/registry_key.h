@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 #include <zaf/base/non_copyable.h>
-#include <zaf/base/registry/registry_rights.h>
-#include <zaf/base/registry/registry_value.h>
-#include <zaf/base/registry/registry_view.h>
+#include <zaf/base/windows/registry/registry_rights.h>
+#include <zaf/base/windows/registry/registry_value.h>
+#include <zaf/base/windows/registry/registry_view.h>
 
 namespace zaf {
 

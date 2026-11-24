@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <functional>
 #include <string_view>
-#include <zaf/base/global_mem.h>
+#include <zaf/base/windows/global_mem.h>
 #include <zaf/base/non_copyable.h>
 #include <zaf/clipboard/medium_type.h>
 

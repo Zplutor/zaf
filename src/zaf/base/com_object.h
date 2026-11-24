@@ -5,7 +5,7 @@
     Defines the class template zaf::COMObject.
 */
 
-#include <zaf/base/com_ptr.h>
+#include <zaf/base/windows/com_ptr.h>
 
 namespace zaf {
 

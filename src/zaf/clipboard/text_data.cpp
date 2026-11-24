@@ -1,6 +1,6 @@
 #include <zaf/clipboard/text_data.h>
 #include <zaf/base/error/invalid_operation_error.h>
-#include <zaf/base/global_mem.h>
+#include <zaf/base/windows/global_mem.h>
 
 namespace zaf::clipboard {
 
