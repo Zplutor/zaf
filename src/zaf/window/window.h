@@ -39,6 +39,7 @@
 #include <zaf/window/window_parser.h>
 
 namespace zaf::internal {
+class ControlMouseFacet;
 class MessageLoop;
 class WindowControlFacet;
 class WindowFocusFacet;
@@ -1882,6 +1883,7 @@ private:
 
     friend class Application;
     friend class Control;
+    friend class internal::ControlMouseFacet;
     friend class InspectorWindow;
     friend class WindowClassRegistry;
     friend class internal::MessageLoop;

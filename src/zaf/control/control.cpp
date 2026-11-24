@@ -8,6 +8,7 @@
 #include <zaf/control/internal/cached_painting.h>
 #include <zaf/control/internal/control_facets/control_geometry_facet.h>
 #include <zaf/control/internal/control_facets/control_hierarchy_facet.h>
+#include <zaf/control/internal/control_facets/control_mouse_facet.h>
 #include <zaf/control/internal/control_updating.h>
 #include <zaf/control/internal/image_box/image_drawing.h>
 #include <zaf/control/layout/anchor_layouter.h>
@@ -49,7 +50,7 @@ constexpr bool DefaultIsVisible = true;
 Control::Control() : 
     geometry_facet_(std::make_unique<internal::ControlGeometryFacet>(*this)),
     hierarchy_facet_(std::make_unique<internal::ControlHierarchyFacet>(*this)),
-    is_mouse_over_(false), 
+    mouse_facet_(std::make_unique<internal::ControlMouseFacet>(*this)),
     is_focused_(false),
     is_enabled_(DefaultIsEnabled),
     is_visible_(DefaultIsVisible) {
@@ -478,27 +479,12 @@ std::shared_ptr<Control> Control::FindDescendantAtPosition(
 #pragma region Mouse Input Handling
 
 bool Control::IsMouseOver() const noexcept {
-    return is_mouse_over_;
+    return mouse_facet_->IsMouseOver();
 }
 
 
 bool Control::ContainsMouse() const noexcept {
-
-    if (IsMouseOver()) {
-        return true;
-    }
-
-    auto window = Window();
-    if (!window) {
-        return false;
-    }
-
-    const auto& mouse_over_control = window->MouseOverControl();
-    if (!mouse_over_control) {
-        return false;
-    }
-
-    return IsAncestorOf(*mouse_over_control);
+    return mouse_facet_->ContainsMouse();
 }
 
 
@@ -562,13 +548,13 @@ rx::Observable<MouseWheelInfo> Control::MouseWheelEvent() const {
 }
 
 
-bool Control::CanDoubleClick() const {
-    return can_double_click_;
+bool Control::CanDoubleClick() const noexcept {
+    return mouse_facet_->CanDoubleClick();
 }
 
 
-void Control::SetCanDoubleClick(bool can_double_click) {
-    can_double_click_ = can_double_click;
+void Control::SetCanDoubleClick(bool can_double_click) noexcept {
+    mouse_facet_->SetCanDoubleClick(can_double_click);
 }
 
 
@@ -578,18 +564,7 @@ rx::Observable<DoubleClickInfo> Control::DoubleClickEvent() const {
 
 
 bool Control::CaptureMouse() {
-
-    auto shared_this = weak_from_this().lock();
-    if (!shared_this) {
-        return false;
-    }
-
-    auto window = Window();
-    if (!window) {
-        return false;
-    }
-
-    return window->mouse_facet_->CaptureMouseWithControl(shared_this);
+    return mouse_facet_->CaptureMouse();
 }
 
 
@@ -599,18 +574,7 @@ rx::Observable<MouseCapturedInfo> Control::MouseCapturedEvent() const {
 
 
 void Control::ReleaseMouse() {
-
-    auto shared_this = weak_from_this().lock();
-    if (!shared_this) {
-        return;
-    }
-
-    auto window = Window();
-    if (!window) {
-        return;
-    }
-
-    window->mouse_facet_->ReleaseMouseWithControl(shared_this);
+    mouse_facet_->ReleaseMouse();
 }
 
 
@@ -620,26 +584,92 @@ rx::Observable<MouseReleasedInfo> Control::MouseReleasedEvent() const {
 
 
 bool Control::HasMouseCapture() const noexcept {
-    auto window = Window();
-    if (window) {
-        return window->MouseCaptureControl().get() == this;
-    }
-    return false;
+    return mouse_facet_->HasMouseCapture();
 }
 
 
 const Point Control::GetMousePosition() const {
+    return mouse_facet_->GetMousePosition();
+}
 
-    auto window = Window();
-    if (window == nullptr) {
-        return Point();
-    }
-    
-    Point mouse_position = window->MousePosition();
-    Point absolute_position = *PositionInWindow();
-    mouse_position.x -= absolute_position.x;
-    mouse_position.y -= absolute_position.y;
-    return mouse_position;
+
+std::optional<HitTestResult> Control::HitTest(const HitTestMessage& message) {
+    return mouse_facet_->HitTest(message);
+}
+
+
+void Control::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
+    mouse_cursor_changing_event_.Raise(event_info);
+}
+
+
+void Control::OnPreMouseMove(const PreMouseMoveInfo& event_info) {
+    pre_mouse_move_event_.Raise(event_info);
+}
+
+
+void Control::OnMouseMove(const MouseMoveInfo& event_info) {
+    mouse_move_event_.Raise(event_info);
+}
+
+
+void Control::OnMouseEnter(const MouseEnterInfo& event_info) {
+    mouse_enter_event_.Raise(event_info);
+}
+
+
+void Control::OnMouseLeave(const MouseLeaveInfo& event_info) {
+    mouse_leave_event_.Raise(event_info);
+}
+
+
+void Control::OnMouseHover(const MouseHoverInfo& event_info) {
+    mouse_hover_event_.Raise(event_info);
+}
+
+
+void Control::OnPreMouseDown(const PreMouseDownInfo& event_info) {
+    pre_mouse_down_event_.Raise(event_info);
+}
+
+
+void Control::OnMouseDown(const MouseDownInfo& event_info) {
+    mouse_facet_->OnMouseDown(event_info);
+}
+
+
+void Control::OnPreMouseUp(const PreMouseUpInfo& event_info) {
+    pre_mouse_up_event_.Raise(event_info);
+}
+
+
+void Control::OnMouseUp(const MouseUpInfo& event_info) {
+    mouse_up_event_.Raise(event_info);
+}
+
+
+void Control::OnDoubleClick(const DoubleClickInfo& event_info) {
+    double_click_event_.Raise(event_info);
+}
+
+
+void Control::OnPreMouseWheel(const PreMouseWheelInfo& event_info) {
+    pre_mouse_wheel_event_.Raise(event_info);
+}
+
+
+void Control::OnMouseWheel(const MouseWheelInfo& event_info) {
+    mouse_wheel_event_.Raise(event_info);
+}
+
+
+void Control::OnMouseCaptured(const MouseCapturedInfo& event_info) {
+    mouse_captured_event_.Raise(event_info);
+}
+
+
+void Control::OnMouseReleased(const MouseReleasedInfo& event_info) {
+    mouse_released_event_.Raise(event_info);
 }
 
 #pragma endregion
@@ -1399,9 +1429,7 @@ rx::Observable<IsSelectedChangedInfo> Control::IsSelectedChangedEvent() const {
 
 
 void Control::SetIsMouseOverByWindow(bool is_mouse_over) {
-    is_mouse_over_ = is_mouse_over;
-    NeedUpdateStyle();
-    NeedRepaint();
+    mouse_facet_->SetIsMouseOver(is_mouse_over);
 }
 
 
@@ -1517,14 +1545,7 @@ void Control::SetTooltip(const std::wstring& tooltip) {
 
 
 void Control::IsCapturingMouseChanged(bool is_capturing_mouse) {
-
-    internal::MouseCaptureEventInfo event_info{ shared_from_this() };
-    if (is_capturing_mouse) {
-        OnMouseCaptured(event_info);
-    }
-    else {
-        OnMouseReleased(event_info);
-    }
+    mouse_facet_->IsCapturingMouseChanged(is_capturing_mouse);
 }
 
 
@@ -1557,138 +1578,6 @@ Point Control::TranslateFromParent(const Point& position) const {
     result.x -= this_position.x + parent_border.left + parent_padding.left;
     result.y -= this_position.y + parent_border.top + parent_padding.top;
     return result;
-}
-
-
-std::optional<HitTestResult> Control::HitTest(const HitTestMessage& message) {
-
-    auto parent = Parent();
-    if (parent != nullptr) {
-        return parent->HitTest(message);
-    }
-    else {
-        return {};
-    }
-}
-
-
-void Control::OnMouseCursorChanging(const MouseCursorChangingInfo& event_info) {
-    mouse_cursor_changing_event_.Raise(event_info);
-}
-
-
-void Control::OnPreMouseMove(const PreMouseMoveInfo& event_info) {
-    pre_mouse_move_event_.Raise(event_info);
-}
-
-
-void Control::OnMouseMove(const MouseMoveInfo& event_info) {
-    mouse_move_event_.Raise(event_info);
-}
-
-
-void Control::OnMouseEnter(const MouseEnterInfo& event_info) {
-    mouse_enter_event_.Raise(event_info);
-}
-
-
-void Control::OnMouseLeave(const MouseLeaveInfo& event_info) {
-    mouse_leave_event_.Raise(event_info);
-}
-
-
-void Control::OnMouseHover(const MouseHoverInfo& event_info) {
-    mouse_hover_event_.Raise(event_info);
-}
-
-
-void Control::OnPreMouseDown(const PreMouseDownInfo& event_info) {
-    pre_mouse_down_event_.Raise(event_info);
-}
-
-
-void Control::OnMouseDown(const MouseDownInfo& event_info) {
-
-    mouse_down_event_.Raise(event_info);
-
-    if (event_info.IsHandled()) {
-        return;
-    }
-
-    if (event_info.Message().MouseButton() == MouseButton::Left) {
-        if (HandleDoubleClickOnMouseDown(event_info.PositionAtSender())) {
-            event_info.MarkAsHandled();
-        }
-    }
-}
-
-
-bool Control::HandleDoubleClickOnMouseDown(const Point& position) {
-
-    if (!CanDoubleClick()) {
-        return false;
-    }
-
-    //Check if need to raise double click.
-    std::uint32_t current_time = GetTickCount();
-    if (current_time - last_mouse_down_time_ <= GetDoubleClickTime()) {
-
-        if (last_mouse_down_position_ == position) {
-            last_mouse_down_time_ = 0;
-            RaiseDoubleClickEvent(position);
-            return true;
-        }
-    }
-
-    last_mouse_down_time_ = current_time;
-    last_mouse_down_position_ = position;
-    return false;
-}
-
-
-void Control::OnPreMouseUp(const PreMouseUpInfo& event_info) {
-    pre_mouse_up_event_.Raise(event_info);
-}
-
-
-void Control::OnMouseUp(const MouseUpInfo& event_info) {
-    mouse_up_event_.Raise(event_info);
-}
-
-
-void Control::RaiseDoubleClickEvent(const Point& position) {
-
-    if (!CanDoubleClick()) {
-        return;
-    }
-
-    DoubleClickInfo event_info{ shared_from_this(), position };
-    OnDoubleClick(event_info);
-}
-
-
-void Control::OnDoubleClick(const DoubleClickInfo& event_info) {
-    double_click_event_.Raise(event_info);
-}
-
-
-void Control::OnPreMouseWheel(const PreMouseWheelInfo& event_info) {
-    pre_mouse_wheel_event_.Raise(event_info);
-}
-
-
-void Control::OnMouseWheel(const MouseWheelInfo& event_info) {
-    mouse_wheel_event_.Raise(event_info);
-}
-
-
-void Control::OnMouseCaptured(const MouseCapturedInfo& event_info) {
-    mouse_captured_event_.Raise(event_info);
-}
-
-
-void Control::OnMouseReleased(const MouseReleasedInfo& event_info) {
-    mouse_released_event_.Raise(event_info);
 }
 
 

@@ -48,6 +48,7 @@ namespace zaf::internal {
 class ControlEventInvokerBinder;
 class ControlGeometryFacet;
 class ControlHierarchyFacet;
+class ControlMouseFacet;
 class ControlUpdateLock;
 class ControlUpdateState;
 class InspectorPort;
@@ -902,8 +903,42 @@ public:
     rx::Observable<PreMouseWheelInfo> PreMouseWheelEvent() const;
     rx::Observable<MouseWheelInfo> MouseWheelEvent() const;
 
-    bool CanDoubleClick() const;
-    void SetCanDoubleClick(bool can_double_click);
+    /**
+    Indicates whether the control can be double clicked.
+
+    @return
+        True if the control can be double clicked, false otherwise.
+
+    @details
+        The default value is false. If this property is set to true, the control will raise 
+        `DoubleClickEvent()` when it is double clicked.
+
+    @see zaf::Control::DoubleClickEvent()
+    @see zaf::Control::SetCanDoubleClick()
+    */
+    bool CanDoubleClick() const noexcept;
+
+    /**
+    Sets whether the control can be double clicked.
+
+    @param can_double_click
+        True if the control can be double clicked, false otherwise.
+
+    @see zaf::Control::CanDoubleClick()
+    @see zaf::Control::DoubleClickEvent()
+    */
+    void SetCanDoubleClick(bool can_double_click) noexcept;
+
+    /**
+    Gets the double click event which is raised when the control is double clicked.
+
+    @details
+        This event is only raised when `CanDoubleClick()` returns true.
+
+    @see zaf::Control::CanDoubleClick()
+    @see zaf::Control::OnDoubleClick()
+    @see zaf::Control::SetCanDoubleClick()
+    */
     rx::Observable<DoubleClickInfo> DoubleClickEvent() const;
 
     /**
@@ -1302,6 +1337,79 @@ protected:
     /**@}*/
 #pragma endregion
 
+
+#pragma region Protected Mouse Input Handling
+    /**
+    @name Protected Mouse Input Handling
+    @{
+    */
+
+    virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
+
+    /**
+    Handles mouse cursor changing event. This method is called when the mouse is over current 
+    control and the window receives WM_SETCURSOR message.
+
+    The default implementation raises MouseCursorChangingEvent. Derived classes should call the
+    same method of base class.
+    */
+    virtual void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info);
+
+    virtual void OnPreMouseMove(const PreMouseMoveInfo& event_info);
+    virtual void OnMouseMove(const MouseMoveInfo& event_info);
+
+    virtual void OnMouseEnter(const MouseEnterInfo& event_info);
+    virtual void OnMouseLeave(const MouseLeaveInfo& event_info);
+    virtual void OnMouseHover(const MouseHoverInfo& event_info);
+
+    virtual void OnPreMouseDown(const PreMouseDownInfo& event_info);
+    virtual void OnMouseDown(const MouseDownInfo& event_info);
+
+    virtual void OnPreMouseUp(const PreMouseUpInfo& event_info);
+    virtual void OnMouseUp(const MouseUpInfo& event_info);
+
+    /**
+    Called when the control is double clicked.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        The default implementation of this method raises `DoubleClickEvent()`. Derived classes
+        should call the same method of base class if they override this method.
+    */
+    virtual void OnDoubleClick(const DoubleClickInfo& event_info);
+
+    virtual void OnPreMouseWheel(const PreMouseWheelInfo& event_info);
+    virtual void OnMouseWheel(const MouseWheelInfo& event_info);
+
+    /**
+    Called after the control has captured the mouse successfully.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        The default implementation of this method raises `MouseCapturedEvent()`. Derived classes
+        should call the same method of base class if they override this method.
+    */
+    virtual void OnMouseCaptured(const MouseCapturedInfo& event_info);
+
+    /**
+    Called after the control has released the mouse capture.
+
+    @param event_info
+        Information of the event.
+
+    @details
+        The default implementation of this method raises `MouseReleasedEvent()`. Derived classes
+        should call the same method of base class if they override this method.
+    */
+    virtual void OnMouseReleased(const MouseReleasedInfo& event_info);
+
+    /**@}*/
+#pragma endregion
+
     virtual void UpdateStyle();
     virtual void OnStyleUpdate(const StyleUpdateInfo& event_info);
 
@@ -1349,54 +1457,6 @@ protected:
     virtual zaf::Size CalculatePreferredContentSize(const zaf::Size& bound_size) const;
 
     void RaiseContentChangedEvent();
-    void RaiseDoubleClickEvent(const Point& position);
-
-    virtual std::optional<HitTestResult> HitTest(const HitTestMessage& message);
-
-    /**
-    Handles mouse cursor changing event. This method is called when the mouse is over current 
-    control and the window receives WM_SETCURSOR message.
-
-    The default implementation raises MouseCursorChangingEvent. Derived classes should call the
-    same method of base class.
-    */
-    virtual void OnMouseCursorChanging(const MouseCursorChangingInfo& event_info);
-
-    virtual void OnPreMouseMove(const PreMouseMoveInfo& event_info);
-    virtual void OnMouseMove(const MouseMoveInfo& event_info);
-
-    virtual void OnMouseEnter(const MouseEnterInfo& event_info);
-    virtual void OnMouseLeave(const MouseLeaveInfo& event_info);
-    virtual void OnMouseHover(const MouseHoverInfo& event_info);
-
-    virtual void OnPreMouseDown(const PreMouseDownInfo& event_info);
-    virtual void OnMouseDown(const MouseDownInfo& event_info);
-
-    virtual void OnPreMouseUp(const PreMouseUpInfo& event_info);
-    virtual void OnMouseUp(const MouseUpInfo& event_info);
-
-    virtual void OnDoubleClick(const DoubleClickInfo& event_info);
-
-    virtual void OnPreMouseWheel(const PreMouseWheelInfo& event_info);
-    virtual void OnMouseWheel(const MouseWheelInfo& event_info);
-
-    /**
-    Handles mouse captured event. This method is called after the control calling CaptureMouse() 
-    and capturing mouse successfully.
-
-    The default implementation raises MouseCapturedEvent. Derived classes should call the same 
-    method of base class.
-    */
-    virtual void OnMouseCaptured(const MouseCapturedInfo& event_info);
-
-    /**
-    Handles mouse released event. This method is called after the control releasing mouse capture 
-    with ReleaseMouse(), or losing mouse capture passively.
-
-    The default implementation raises MouseReleasedEvent. Derived classes should call the same 
-    method of base class.
-    */
-    virtual void OnMouseReleased(const MouseReleasedInfo& event_info);
 
     virtual void OnPreKeyDown(const PreKeyDownInfo& event_info);
     virtual void OnKeyDown(const KeyDownInfo& event_info);
@@ -1462,6 +1522,7 @@ private:
     friend class internal::ControlEventInvokerBinder;
     friend class internal::ControlGeometryFacet;
     friend class internal::ControlHierarchyFacet;
+    friend class internal::ControlMouseFacet;
     friend class internal::WindowControlFacet;
     friend class internal::WindowFocusedControlManager;
     friend class internal::WindowKeyboardFacet;
@@ -1512,8 +1573,6 @@ private:
 
     void SetInteractiveProperty(bool new_value, bool& property_value, void(Control::*notification)());
 
-    bool HandleDoubleClickOnMouseDown(const Point& position);
-
     void RaiseWindowChangedEvent(const std::shared_ptr<zaf::Window>& previous_window);
     void RaiseDPIChangedEvent();
 
@@ -1522,6 +1581,7 @@ private:
 private:
     std::unique_ptr<internal::ControlGeometryFacet> geometry_facet_;
     std::unique_ptr<internal::ControlHierarchyFacet> hierarchy_facet_;
+    std::unique_ptr<internal::ControlMouseFacet> mouse_facet_;
 
     std::weak_ptr<internal::ControlUpdateLock> update_lock_;
     std::unique_ptr<internal::ControlUpdateState> update_state_;
@@ -1537,18 +1597,13 @@ private:
     bool is_auto_resizing_{ false };
     bool is_layouting_{ false };
 
-    bool is_mouse_over_;
     bool is_focused_;
     bool can_focus_{ false };
-    bool can_double_click_{ false };
     bool is_enabled_;
     bool is_visible_;
     bool is_selected_{};
     bool can_tab_stop_{ true };
     std::optional<std::size_t> tab_index_;
-
-    std::uint32_t last_mouse_down_time_{};
-    Point last_mouse_down_position_;
 
     internal::ColorField background_color_field_;
     internal::ColorField border_color_field_;
