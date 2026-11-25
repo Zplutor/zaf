@@ -1,7 +1,7 @@
 #include <zaf/graphic/point_parser.h>
 #include <zaf/graphic/point.h>
-#include <zaf/object/parsing/parse_error.h>
-#include <zaf/object/parsing/internal/utility.h>
+#include <zaf/core/object/parsing/parse_error.h>
+#include <zaf/core/object/parsing/internal/utility.h>
 
 namespace zaf {
 

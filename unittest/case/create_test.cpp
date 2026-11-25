@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/creation.h>
-#include <zaf/object/object.h>
+#include <zaf/core/object/object.h>
 
 namespace {
 

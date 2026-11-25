@@ -1,9 +1,9 @@
 #include <zaf/graphic/frame_parser.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/graphic/frame.h>
-#include <zaf/object/parsing/internal/utility.h>
-#include <zaf/object/parsing/parse_error.h>
-#include <zaf/object/parsing/xaml_utility.h>
+#include <zaf/core/object/parsing/internal/utility.h>
+#include <zaf/core/object/parsing/parse_error.h>
+#include <zaf/core/object/parsing/xaml_utility.h>
 
 namespace zaf {
 

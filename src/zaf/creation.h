@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <type_traits>
-#include <zaf/object/internal/object_initializer.h>
+#include <zaf/core/object/internal/object_initializer.h>
 
 namespace zaf {
 

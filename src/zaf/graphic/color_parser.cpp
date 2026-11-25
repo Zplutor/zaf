@@ -2,8 +2,8 @@
 #include <zaf/base/as.h>
 #include <zaf/base/string/to_numeric.h>
 #include <zaf/graphic/color.h>
-#include <zaf/object/parsing/parse_error.h>
-#include <zaf/object/parsing/xaml_node.h>
+#include <zaf/core/object/parsing/parse_error.h>
+#include <zaf/core/object/parsing/xaml_node.h>
 
 namespace zaf {
 namespace {

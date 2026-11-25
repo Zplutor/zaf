@@ -5,9 +5,9 @@
 #include <zaf/base/direct2d.h>
 #include <zaf/base/hash.h>
 #include <zaf/base/relation_operator.h>
-#include <zaf/object/equality.h>
-#include <zaf/object/object.h>
-#include <zaf/object/property_support.h>
+#include <zaf/core/object/equality.h>
+#include <zaf/core/object/object.h>
+#include <zaf/core/object/property_support.h>
 #include <zaf/graphic/point_parser.h>
 
 namespace zaf {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <zaf/object/enum_type.h>
-#include <zaf/object/parsing/object_parser.h>
+#include <zaf/core/object/enum_type.h>
+#include <zaf/core/object/parsing/object_parser.h>
 
 namespace zaf::internal {
 

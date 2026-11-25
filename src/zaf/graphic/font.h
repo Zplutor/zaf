@@ -6,8 +6,8 @@
 #include <zaf/graphic/font_parser.h>
 #include <zaf/graphic/dwrite/font_style.h>
 #include <zaf/graphic/font_weight.h>
-#include <zaf/object/object.h>
-#include <zaf/object/property_support.h>
+#include <zaf/core/object/object.h>
+#include <zaf/core/object/property_support.h>
 #include <zaf/xml/xml_serializable.h>
 
 namespace zaf {

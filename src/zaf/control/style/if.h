@@ -2,7 +2,7 @@
 
 #include <zaf/control/style/if_parser.h>
 #include <zaf/control/style/property_value_pair.h>
-#include <zaf/object/object.h>
+#include <zaf/core/object/object.h>
 
 namespace zaf {
 

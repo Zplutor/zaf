@@ -2,8 +2,8 @@
 
 #include <zaf/base/hash.h>
 #include <zaf/graphic/point.h>
-#include <zaf/object/equality.h>
-#include <zaf/object/property_support.h>
+#include <zaf/core/object/equality.h>
+#include <zaf/core/object/property_support.h>
 
 namespace zaf {
     

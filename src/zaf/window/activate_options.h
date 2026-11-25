@@ -6,7 +6,7 @@
 */
 
 #include <zaf/base/flags_enum.h>
-#include <zaf/object/enum_support.h>
+#include <zaf/core/object/enum_support.h>
 
 namespace zaf {
 

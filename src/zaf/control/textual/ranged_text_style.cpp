@@ -1,6 +1,6 @@
 #include <zaf/control/textual/ranged_text_style.h>
 #include <zaf/base/as.h>
-#include <zaf/object/reflection.h>
+#include <zaf/core/object/reflection.h>
 #include <zaf/xml/xml_error.h>
 #include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>

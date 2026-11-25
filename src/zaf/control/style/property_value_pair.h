@@ -3,7 +3,7 @@
 #include <optional>
 #include <unordered_set>
 #include <variant>
-#include <zaf/object/object_property.h>
+#include <zaf/core/object/object_property.h>
 
 namespace zaf {
 

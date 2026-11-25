@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include <zaf/graphic/ellipse.h>
-#include <zaf/object/object_type.h>
-#include <zaf/object/parsing/object_parser.h>
-#include <zaf/object/parsing/xaml_node.h>
-#include <zaf/object/parsing/xaml_reader.h>
+#include <zaf/core/object/object_type.h>
+#include <zaf/core/object/parsing/object_parser.h>
+#include <zaf/core/object/parsing/xaml_node.h>
+#include <zaf/core/object/parsing/xaml_reader.h>
 
 TEST(EllipseParser, ParseFromNode) {
 

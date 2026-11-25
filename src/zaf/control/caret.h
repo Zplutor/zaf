@@ -2,8 +2,8 @@
 
 #include <zaf/base/non_copyable.h>
 #include <zaf/control/control.h>
-#include <zaf/object/object.h>
-#include <zaf/object/property_support.h>
+#include <zaf/core/object/object.h>
+#include <zaf/core/object/property_support.h>
 
 namespace zaf {
 

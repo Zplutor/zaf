@@ -49,7 +49,10 @@
     <Filter Include="case\control\internal\tree_control">
       <UniqueIdentifier>{7a7cf031-e029-4e97-b0ec-b37969950f34}</UniqueIdentifier>
     </Filter>
-    <Filter Include="case\object">
+    <Filter Include="case\core">
+      <UniqueIdentifier>{5e8a1c47-3b92-4d16-8f70-c2a9d4e61b58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="case\core\object">
       <UniqueIdentifier>{e27ffe32-9b94-4112-99c4-4433a094ccfd}</UniqueIdentifier>
     </Filter>
     <Filter Include="case\rx">
@@ -58,10 +61,10 @@
     <Filter Include="case\window">
       <UniqueIdentifier>{9c378360-802c-4646-a24f-a587b9a92e41}</UniqueIdentifier>
     </Filter>
-    <Filter Include="case\object\boxing">
+    <Filter Include="case\core\object\boxing">
       <UniqueIdentifier>{41b90e79-575a-4f83-85c4-7ca5c0e2f5fd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="case\object\parsing">
+    <Filter Include="case\core\object\parsing">
       <UniqueIdentifier>{1dec8fdf-0093-4e1c-8aac-6763cf9cc27a}</UniqueIdentifier>
     </Filter>
     <Filter Include="case\graphic\font">
@@ -271,23 +274,23 @@
     <ClCompile Include="unittest\case\control\layout\layout_case_test.cpp">
       <Filter>case\control\layout</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\boxing\boxing_test.cpp">
-      <Filter>case\object\boxing</Filter>
+    <ClCompile Include="unittest\case\core\object\boxing\boxing_test.cpp">
+      <Filter>case\core\object\boxing</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\boxing\numeric_boxed_type_test.cpp">
-      <Filter>case\object\boxing</Filter>
+    <ClCompile Include="unittest\case\core\object\boxing\numeric_boxed_type_test.cpp">
+      <Filter>case\core\object\boxing</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\boxing\string_boxed_type_test.cpp">
-      <Filter>case\object\boxing</Filter>
+    <ClCompile Include="unittest\case\core\object\boxing\string_boxed_type_test.cpp">
+      <Filter>case\core\object\boxing</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\property_test.cpp">
-      <Filter>case\object</Filter>
+    <ClCompile Include="unittest\case\core\object\property_test.cpp">
+      <Filter>case\core\object</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\enum_test.cpp">
-      <Filter>case\object</Filter>
+    <ClCompile Include="unittest\case\core\object\enum_test.cpp">
+      <Filter>case\core\object</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\parsing\parsing_test.cpp">
-      <Filter>case\object\parsing</Filter>
+    <ClCompile Include="unittest\case\core\object\parsing\parsing_test.cpp">
+      <Filter>case\core\object\parsing</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\flags_enum_test.cpp">
       <Filter>case\base</Filter>
@@ -295,8 +298,8 @@
     <ClCompile Include="unittest\case\graphic\font\font_weight_test.cpp">
       <Filter>case\graphic\font</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\boxing\boolean_test.cpp">
-      <Filter>case\object\boxing</Filter>
+    <ClCompile Include="unittest\case\core\object\boxing\boolean_test.cpp">
+      <Filter>case\core\object\boxing</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\base\as_test.cpp">
       <Filter>case\base</Filter>
@@ -316,8 +319,8 @@
     <ClCompile Include="unittest\case\resource\internal\resource_loader_test.cpp">
       <Filter>case\resource\internal</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\object_test.cpp">
-      <Filter>case\object</Filter>
+    <ClCompile Include="unittest\case\core\object\object_test.cpp">
+      <Filter>case\core\object</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\create_test.cpp">
       <Filter>case</Filter>
@@ -571,17 +574,17 @@
     <ClCompile Include="unittest\case\io\stream\plain_memory_stream_test.cpp">
       <Filter>case\io\stream</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\reflective_type_test.cpp">
-      <Filter>case\object</Filter>
+    <ClCompile Include="unittest\case\core\object\reflective_type_test.cpp">
+      <Filter>case\core\object</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\property_value_traits_test.cpp">
-      <Filter>case\object</Filter>
+    <ClCompile Include="unittest\case\core\object\property_value_traits_test.cpp">
+      <Filter>case\core\object</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\boxing\custom_boxing_traits_test.cpp">
-      <Filter>case\object\boxing</Filter>
+    <ClCompile Include="unittest\case\core\object\boxing\custom_boxing_traits_test.cpp">
+      <Filter>case\core\object\boxing</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\object\boxing\boxing_traits_test.cpp">
-      <Filter>case\object\boxing</Filter>
+    <ClCompile Include="unittest\case\core\object\boxing\boxing_traits_test.cpp">
+      <Filter>case\core\object\boxing</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\io\stream\referenced_global_mem_stream_test.cpp">
       <Filter>case\io\stream</Filter>

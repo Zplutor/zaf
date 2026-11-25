@@ -1,6 +1,6 @@
 #pragma once
 
-#include <zaf/object/object.h>
+#include <zaf/core/object/object.h>
 
 namespace zaf::internal {
 

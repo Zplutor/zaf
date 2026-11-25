@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <zaf/object/object_property.h>
+#include <zaf/core/object/object_property.h>
 
 namespace zaf {
 
