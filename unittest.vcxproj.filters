@@ -322,8 +322,8 @@
     <ClCompile Include="unittest\case\core\object\object_test.cpp">
       <Filter>case\core\object</Filter>
     </ClCompile>
-    <ClCompile Include="unittest\case\create_test.cpp">
-      <Filter>case</Filter>
+    <ClCompile Include="unittest\case\core\object\creation_test.cpp">
+      <Filter>case\core\object</Filter>
     </ClCompile>
     <ClCompile Include="unittest\case\string\join_test.cpp">
       <Filter>case\base\string</Filter>

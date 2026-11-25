@@ -3,7 +3,7 @@
 #include <zaf/base/as.h>
 #include <zaf/base/windows/win32_error.h>
 #include <zaf/control/label.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/graphic/pixel_snapping.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/window/invalid_handle_state_error.h>

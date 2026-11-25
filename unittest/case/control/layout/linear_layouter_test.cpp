@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/control/control.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/control/layout/linear_layouter.h>
 
 namespace {

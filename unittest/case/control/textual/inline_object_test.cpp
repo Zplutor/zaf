@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/control/textual_control.h>
 #include <zaf/control/textual/inline_object.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/core/object/object_type.h>
 
 using namespace zaf;

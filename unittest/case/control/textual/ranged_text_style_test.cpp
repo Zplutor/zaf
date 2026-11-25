@@ -2,7 +2,7 @@
 #include <zaf/base/as.h>
 #include <zaf/control/textual/active_inline_object.h>
 #include <zaf/control/textual/ranged_text_style.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/xml/xml_error.h>
 #include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>

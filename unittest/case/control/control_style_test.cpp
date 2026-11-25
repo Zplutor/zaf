@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/base/as.h>
 #include <zaf/control/button.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include "utility/test_window.h"
 
 using namespace zaf;

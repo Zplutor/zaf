@@ -3,7 +3,7 @@
 #include <zaf/control/control_object.h>
 #include <zaf/control/scroll_bar_arrow.h>
 #include <zaf/control/scroll_bar_thumb.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/graphic/canvas/canvas.h>
 #include <zaf/graphic/d2d/geometry_sink.h>
 #include <zaf/graphic/d2d/path_geometry.h>

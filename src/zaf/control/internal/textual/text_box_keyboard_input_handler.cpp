@@ -2,7 +2,7 @@
 #include <zaf/control/internal/textual/text_model.h>
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/control/text_box.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/control/internal/textual/text_box_caret_manager.h>
 #include <zaf/control/internal/textual/text_box_clipboard_operation.h>
 #include <zaf/control/internal/textual/text_box_editor.h>

@@ -2,7 +2,7 @@
 #include <zaf/control/button.h>
 #include <zaf/control/label.h>
 #include <zaf/control/rich_edit.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/window/window.h>
 
 static void OnApplicationStarted(const zaf::ApplicationStartedInfo&);

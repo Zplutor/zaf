@@ -1515,8 +1515,8 @@
     <ClInclude Include="src\zaf\base\define.h">
       <Filter>zaf\base</Filter>
     </ClInclude>
-    <ClInclude Include="src\zaf\creation.h">
-      <Filter>zaf</Filter>
+    <ClInclude Include="src\zaf\core\object\creation.h">
+      <Filter>zaf\core\object</Filter>
     </ClInclude>
     <ClInclude Include="src\zaf\window\dialog_result.h">
       <Filter>zaf\window</Filter>

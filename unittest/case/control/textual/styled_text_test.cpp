@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/io/stream/stream.h>
 #include <zaf/control/textual/styled_text.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/xml/xml_error.h>
 #include <zaf/xml/xml_reader.h>
 #include <zaf/xml/xml_writer.h>

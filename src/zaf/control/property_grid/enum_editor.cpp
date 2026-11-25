@@ -3,7 +3,7 @@
 #include <zaf/base/container/utility/unique.h>
 #include <zaf/base/range.h>
 #include <zaf/core/object/enum_type.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 
 namespace zaf::property_grid {
 

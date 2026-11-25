@@ -1,7 +1,7 @@
 #pragma once
 
 #include <zaf/base/flags_enum.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/internal/object/enum_constant_registrar.h>
 #include <zaf/internal/object/enum_parser.h>
 #include <zaf/internal/object/enum_value_combiner.h>

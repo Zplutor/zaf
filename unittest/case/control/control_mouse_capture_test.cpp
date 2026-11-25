@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <Windows.h>
 #include <zaf/control/control.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/window/window.h>
 #include "utility/test_window.h"
 

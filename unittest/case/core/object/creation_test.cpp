@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/core/object/object.h>
 
 namespace {
@@ -33,7 +33,7 @@ private:
 
 }
 
-TEST(CreateTest, CreateZafObject) {
+TEST(CreationTest, CreateZafObject) {
 
     auto object = zaf::Create<Object>();
     ASSERT_NE(object, nullptr);
@@ -45,14 +45,14 @@ TEST(CreateTest, CreateZafObject) {
     ASSERT_EQ(object->InitialValue(), 105);
     ASSERT_TRUE(object->HasInitialized());
 
-    object = zaf::Init(new Object(240));
+    object = zaf::Adopt(new Object(240));
     ASSERT_NE(object, nullptr);
     ASSERT_EQ(object->InitialValue(), 240);
     ASSERT_TRUE(object->HasInitialized());
 }
 
 
-TEST(CreateTest, CreateNonZafObject) {
+TEST(CreationTest, CreateNonZafObject) {
 
     auto string = zaf::Create<std::string>();
     ASSERT_NE(string, nullptr);
@@ -62,7 +62,14 @@ TEST(CreateTest, CreateNonZafObject) {
     ASSERT_NE(string, nullptr);
     ASSERT_EQ(*string, "nonzafobject");
 
-    string = zaf::Init(new std::string("pointer"));
+    string = zaf::Adopt(new std::string("pointer"));
     ASSERT_NE(string, nullptr);
     ASSERT_EQ(*string, "pointer");
+}
+
+
+TEST(CreationTest, Adopt_NullPointer) {
+
+    auto result = zaf::Adopt<zaf::Object>(nullptr);
+    ASSERT_EQ(result, nullptr);
 }

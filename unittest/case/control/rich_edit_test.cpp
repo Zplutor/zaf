@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/control/rich_edit.h>
 #include <zaf/control/rich_edit/embedded_object.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 
 namespace {
 

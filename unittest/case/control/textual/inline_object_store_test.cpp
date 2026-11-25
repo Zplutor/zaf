@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/control/textual/inline_object_store.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 
 using namespace zaf::textual;
 

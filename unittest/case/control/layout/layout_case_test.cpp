@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/control/linear_box.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 
 //Children would not be layouted if it is invisible.
 TEST(LayoutCaseTest, Case1) {

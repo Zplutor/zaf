@@ -1,7 +1,7 @@
 #include <Windows.h>
 #include <zaf/application.h>
 #include <zaf/window/window.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include "root_control.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {

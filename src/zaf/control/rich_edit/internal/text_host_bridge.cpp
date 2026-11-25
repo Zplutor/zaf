@@ -1,6 +1,6 @@
 #include <zaf/control/rich_edit/internal/text_host_bridge.h>
 #include <zaf/control/caret.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/graphic/pixel_snapping.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/rx/scheduler/main_thread_scheduler.h>

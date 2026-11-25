@@ -3,7 +3,7 @@
 #include <zaf/control/text_box.h>
 #include <zaf/control/textual/inline_object.h>
 #include <zaf/control/textual/styled_text.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/window/window.h>
 #include "utility/test_window.h"
 

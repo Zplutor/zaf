@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/control/control.h>
 #include <zaf/control/layout/stretch_layouter.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 
 TEST(StretchLayouterTest, Layout) {
 

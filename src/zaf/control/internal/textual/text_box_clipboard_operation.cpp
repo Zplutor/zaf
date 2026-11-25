@@ -4,7 +4,7 @@
 #include <zaf/clipboard/clipboard.h>
 #include <zaf/clipboard/text_data.h>
 #include <zaf/control/textual/styled_text_data.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 
 using namespace zaf::clipboard;
 using namespace zaf::textual;

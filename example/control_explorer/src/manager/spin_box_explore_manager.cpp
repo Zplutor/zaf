@@ -1,6 +1,6 @@
 #include "manager/spin_box_explore_manager.h"
 #include <zaf/control/spin_box.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 
 std::shared_ptr<zaf::Control> SpinBoxExploreManager::CreateExploredControl() {
 

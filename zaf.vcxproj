@@ -719,7 +719,7 @@
     <ClInclude Include="src\zaf\control\tree_item.h" />
     <ClInclude Include="src\zaf\control\tree_item_container.h" />
     <ClInclude Include="src\zaf\control\tree_item_expand_button.h" />
-    <ClInclude Include="src\zaf\creation.h" />
+    <ClInclude Include="src\zaf\core\object\creation.h" />
     <ClInclude Include="src\zaf\crypto\hash_algorithm.h" />
     <ClInclude Include="src\zaf\crypto\internal\algorithm_provider.h" />
     <ClInclude Include="src\zaf\crypto\internal\crypto_manager.h" />

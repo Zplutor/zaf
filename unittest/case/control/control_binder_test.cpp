@@ -2,7 +2,7 @@
 #include <zaf/control/control.h>
 #include <zaf/control/control_binder.h>
 #include <zaf/control/label.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/window/window.h>
 
 namespace {

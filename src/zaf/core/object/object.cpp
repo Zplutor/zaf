@@ -2,7 +2,7 @@
 #include <zaf/core/object/object_type.h>
 #include <sstream>
 #include <zaf/base/windows/win32_error.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/core/object/parsing/object_parser.h>
 #include <zaf/core/object/parsing/xaml_reader.h>
 #include <zaf/base/string/encoding_conversion.h>

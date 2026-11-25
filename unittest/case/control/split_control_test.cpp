@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/control/split_control.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 
 TEST(SplitControlTest, SetSplitBarThickness) {
 

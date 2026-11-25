@@ -3,7 +3,7 @@
 #include <zaf/application.h>
 #include <zaf/base/auto_reset.h>
 #include <zaf/base/windows/win32_error.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/graphic/pixel_snapping.h>
 #include <zaf/graphic/dpi.h>
 #include <zaf/internal/tab_stop_utility.h>

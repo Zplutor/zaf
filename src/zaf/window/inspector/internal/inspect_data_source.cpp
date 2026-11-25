@@ -1,5 +1,5 @@
 #include <zaf/window/inspector/internal/inspect_data_source.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 
 namespace zaf::internal {
 

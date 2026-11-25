@@ -4,7 +4,7 @@
 #include <zaf/application_delegate.h>
 #include <zaf/base/windows/com_error.h>
 #include <zaf/base/error/precondition_error.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/crypto/internal/crypto_manager.h>
 #include <zaf/graphic/wic/imaging_factory.h>
 #include <zaf/graphic/graphic_factory.h>

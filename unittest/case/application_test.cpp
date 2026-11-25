@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/application.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/window/window.h>
 
 static_assert(!std::is_copy_constructible_v<zaf::Application>);

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <zaf/base/error/invalid_type_error.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/core/object/parsing/helpers.h>
 #include <zaf/core/object/parsing/xaml_reader.h>
 #include <zaf/core/object/object_type.h>

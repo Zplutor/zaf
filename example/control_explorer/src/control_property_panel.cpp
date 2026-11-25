@@ -1,6 +1,6 @@
 #include "control_property_panel.h"
 #include <zaf/control/layout/linear_layouter.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 
 void ControlPropertyPanel::Initialize() {
 

@@ -4,7 +4,7 @@
 #include <zaf/control/label.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/linear_box.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/window/window.h>
 
 TEST(ControlTest, GeometryInWindow) {

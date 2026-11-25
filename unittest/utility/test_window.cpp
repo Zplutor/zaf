@@ -1,5 +1,5 @@
 #include "utility/test_window.h"
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 
 void TestWithWindow(const std::function<void(zaf::Window&)>& test) {
 

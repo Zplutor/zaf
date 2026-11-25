@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <zaf/control/layout/linear_layouter.h>
 #include <zaf/control/linear_box.h>
-#include <zaf/creation.h>
+#include <zaf/core/object/creation.h>
 #include <zaf/core/object/parsing/helpers.h>
 
 TEST(LinearBoxTest, Normal) {
