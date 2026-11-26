@@ -31,8 +31,6 @@ protected:
         this->RootControl()->SetLayouter(zaf::Create<zaf::VerticalLayouter>());
         this->RootControl()->AddChild(button);
     }
-
-private:
 };
 
 

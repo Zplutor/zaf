@@ -6,32 +6,9 @@
 */
 
 #include <memory>
-#include <type_traits>
 #include <zaf/core/object/internal/object_initializer.h>
 
 namespace zaf {
-
-class Object;
-
-namespace internal {
-
-class DumbInitializer {
-public:
-    static void Initialize(void*) { }
-};
-
-
-template<typename T>
-class ObjectInitializerSelector {
-public:
-    using Type = std::conditional_t<
-        std::is_base_of_v<Object, T>,
-        ObjectInitializer,
-        DumbInitializer
-    >;
-};
-
-}
 
 /**
 Creates an object of the specified type managed by a shared pointer, and initializes the object if
